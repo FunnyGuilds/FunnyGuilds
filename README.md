@@ -5,4 +5,4 @@ FunnyGuilds
 <br>
 <br>
 Version timeline: <br>
-1.0.x ---> 1.x.x (Sweetness)
+<i>1.0.x ---> 1.x.x (Sweetness)</i>
