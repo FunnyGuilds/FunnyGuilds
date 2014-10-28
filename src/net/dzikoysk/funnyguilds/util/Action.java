@@ -50,7 +50,7 @@ public class Action {
 		else if(action == ActionType.PREFIX_GLOBAL_UPDATE) IndividualPrefixManager.updatePlayers();
 		else if(action == ActionType.PREFIX_GLOBAL_UPDATE_PLAYER) IndividualPrefixManager.updatePlayer((Player)values[0]);
 		else if(action == ActionType.PREFIX_GLOBAL_ADD_GUILD) IndividualPrefixManager.addGuild((Guild)values[0]);
-		else if(action == ActionType.PREFIX_GLOBAL_ADD_PLAYER) IndividualPrefixManager.addPlayer((Player)values[0]);
+		else if(action == ActionType.PREFIX_GLOBAL_ADD_PLAYER) IndividualPrefixManager.addPlayer((OfflinePlayer)values[0]);
 		else if(action == ActionType.PREFIX_GLOBAL_REMOVE_GUILD) IndividualPrefixManager.removeGuild((Guild)values[0]);
 		else if(action == ActionType.PREFIX_GLOBAL_REMOVE_PLAYER) IndividualPrefixManager.removePlayer((OfflinePlayer)values[0]);
 	}

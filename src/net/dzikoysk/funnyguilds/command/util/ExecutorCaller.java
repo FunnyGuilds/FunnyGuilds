@@ -53,6 +53,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
     	if(!cmd.getName().equalsIgnoreCase(this.overriding)) return false;
+    	ExecutorCaller main = null;
     	for(ExecutorCaller ec : this.executors){
 	    	if(ec.secondary != null){
 	    		if(ec.secondary.length > args.length) continue;
@@ -64,6 +65,9 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
 	    			}
 	    		} if(sec) continue;
     			args = Arrays.copyOfRange(args, ec.secondary.length, args.length);
+	    	} else {
+	    		main = ec;
+	    		continue;
 	    	}
     		if(sender instanceof Player){
     			if(ec.permission != null && !sender.hasPermission(ec.permission)){
@@ -74,6 +78,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         	ec.executor.execute(sender, args);
         	return true;
 		}
+    	main.executor.execute(sender, args);
     	return false;
     }
 

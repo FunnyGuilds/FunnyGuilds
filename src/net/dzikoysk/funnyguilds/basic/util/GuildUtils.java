@@ -3,11 +3,19 @@ package net.dzikoysk.funnyguilds.basic.util;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.DataManager;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
+import net.dzikoysk.funnyguilds.util.ActionType;
+import net.dzikoysk.funnyguilds.util.IndependentThread;
 
 public class GuildUtils {
 	
@@ -43,12 +51,22 @@ public class GuildUtils {
 	}
 	
 	public static void deleteGuild(Guild guild){
+		DataManager.getInstance().stop();
+
+		Region region = RegionUtils.get(guild.getRegion());
+		if(region != null){
+			Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
+			if(block.getLocation().getBlockY() > 1) block.setType(Material.AIR);
+		}
+		
+		IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_GUILD, guild);
+		
 		UserUtils.removeGuild(guild.getMembers());
 		RankManager.getInstance().remove(guild);
 		RegionUtils.delete(Region.get(guild.getRegion()));
 		for(String name : guild.getRegions()){
-			Region region = Region.get(name);
-			if(region != null) RegionUtils.delete(region);
+			Region r = RegionUtils.get(name);
+			if(r != null) RegionUtils.delete(r);
 		}
 		if(Config.getInstance().flat){
 			File file = new File(guildsFolder, guild.getName()+".yml");
@@ -58,6 +76,7 @@ public class GuildUtils {
 			new DatabaseGuild(guild).delete();
 		}
 		guild.delete();
+		DataManager.getInstance().start();
 	}
 	
 	public static List<String> getNames(List<Guild> lsg){

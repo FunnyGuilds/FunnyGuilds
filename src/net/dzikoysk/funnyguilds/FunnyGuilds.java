@@ -18,6 +18,11 @@ import net.dzikoysk.funnyguilds.command.ExcKick;
 import net.dzikoysk.funnyguilds.command.ExcLeave;
 import net.dzikoysk.funnyguilds.command.ExcPlayer;
 import net.dzikoysk.funnyguilds.command.ExcTop;
+import net.dzikoysk.funnyguilds.command.admin.AxcAdd;
+import net.dzikoysk.funnyguilds.command.admin.AxcDelete;
+import net.dzikoysk.funnyguilds.command.admin.AxcGuild;
+import net.dzikoysk.funnyguilds.command.admin.AxcKick;
+import net.dzikoysk.funnyguilds.command.admin.AxcTeleport;
 import net.dzikoysk.funnyguilds.command.util.ExecutorCaller;
 import net.dzikoysk.funnyguilds.data.Config;
 import net.dzikoysk.funnyguilds.data.DataManager;
@@ -79,6 +84,12 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new ExcBreak(), c.excBreak, "funnyguilds.break");
 		new ExecutorCaller(new ExcPlayer(), c.excPlayer, "funnyguilds.info");
 		new ExecutorCaller(new ExcTop(), c.excTop, "funnyguilds.top");
+		
+		new ExecutorCaller(new AxcGuild(), "ga", "funnyguilds.admin");
+		new ExecutorCaller(new AxcAdd(), "ga dodaj", "funnyguilds.admin");
+		new ExecutorCaller(new AxcDelete(), "ga usun", "funnyguilds.admin");
+		new ExecutorCaller(new AxcKick(), "ga wyrzuc", "funnyguilds.admin");
+		new ExecutorCaller(new AxcTeleport(), "ga tp", "funnyguilds.admin");
 		
 		PluginManager pm = Bukkit.getPluginManager();
 

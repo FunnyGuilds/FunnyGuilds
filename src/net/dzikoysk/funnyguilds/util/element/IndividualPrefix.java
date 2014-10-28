@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.data.Config;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -23,7 +22,7 @@ public class IndividualPrefix {
 		user.setIndividualPrefix(this);
 	}
 
-	protected void addPlayer(Player player){
+	protected void addPlayer(OfflinePlayer player){
 		if(player == null) return;
 		User user = User.get(player);
 		if(!user.hasGuild()) return;

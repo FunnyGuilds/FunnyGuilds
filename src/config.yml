@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#        1.5.3 Sweetness        #
+#        1.5.5 Sweetness        #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -163,21 +163,21 @@ player-list-patch: false
 
 # Nazwy komend (na razie bez wsparcia subkomend)
 commands:
-  create: zaloz
-  delete: usun
-  confirm: potwierdz
-  invite: zapros
-  join: dolacz
-  leave: opusc
-  kick: wyrzuc
-  base: baza
-  enlarge: powieksz
-  guild: gildia
-  g: g
-  ally: sojusz
-  break: rozwiaz
-  player: gracz
-  top: top
+  create: 'zaloz'
+  delete: 'usun'
+  confirm: 'potwierdz'
+  invite: 'zapros'
+  join: 'dolacz'
+  leave: 'opusc'
+  kick: 'wyrzuc'
+  base: 'baza'
+  enlarge: 'powieksz'
+  guild: 'gildia'
+  g: 'g'
+  ally: 'sojusz'
+  break: 'rozwiaz'
+  player: 'gracz'
+  top: 'top'
   
 # Co ile minut ma automatycznie zapisywac dane
 data-interval: 1

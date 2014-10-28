@@ -27,7 +27,7 @@ public class IndividualPrefixManager {
 		updatePlayers();
 	}
 	
-	public static void addPlayer(Player player){
+	public static void addPlayer(OfflinePlayer player){
 		for(Player p : Bukkit.getOnlinePlayers())
 			User.get(p).getIndividualPrefix().addPlayer(player);
 		updatePlayers();
