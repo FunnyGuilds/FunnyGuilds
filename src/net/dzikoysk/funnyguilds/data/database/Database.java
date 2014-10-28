@@ -34,7 +34,7 @@ public class Database {
 
 	public Connection openConnection() {
 		try {
-			if (checkConnection()) return connection;
+			if(checkConnection()) return connection;
 			Class.forName("com.mysql.jdbc.Driver");
 			String s = "jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database;
 			connection = DriverManager.getConnection(s, this.user, this.password);
@@ -60,7 +60,7 @@ public class Database {
 
 	public boolean checkConnection(){
 		try {
-			return connection != null && ! connection.isClosed();
+			return connection != null && !connection.isClosed();
 		} catch (SQLException e){
 			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
@@ -68,6 +68,7 @@ public class Database {
 	}
 
 	public Connection getConnection() {
+		if(!checkConnection()) openConnection();
 		return connection;
 	}
 
@@ -83,7 +84,7 @@ public class Database {
 
 	public ResultSet executeQuery(String query) {
 		try {
-			if (checkConnection()) openConnection();
+			if(!checkConnection()) openConnection();
 			if(connection == null) return null;
 			Statement statement = connection.createStatement();
 			ResultSet result = statement.executeQuery(query);
@@ -96,8 +97,7 @@ public class Database {
 
 	public int executeUpdate(String query){
 		try {
-			if(checkConnection()) openConnection();
-			if(connection == null) return 0;
+			if(!checkConnection()) openConnection();
 			Statement statement = connection.createStatement();
 			int result = statement.executeUpdate(query);
 			return result;

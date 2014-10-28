@@ -25,10 +25,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class ExcCreate implements Executor {
 	
+	@Override
 	public void execute(final CommandSender s, String[] args){
-		
 		Messages m = Messages.getInstance();
-		
 		Player p = (Player)s;
 		User u = User.get(p);
 		

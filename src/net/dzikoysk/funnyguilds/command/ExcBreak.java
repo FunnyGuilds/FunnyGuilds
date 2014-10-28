@@ -2,11 +2,10 @@ package net.dzikoysk.funnyguilds.command;
 
 import java.util.List;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.ActionType;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
@@ -14,45 +13,32 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ExcBreak extends Exc {
+public class ExcBreak implements Executor {
 	
-	public ExcBreak(String command, String perm){
-		super(command, perm);
-		this.register();
-	}
 	
-	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args){
-		if(!cmd.getName().equalsIgnoreCase(Config.getInstance().excBreak)) return false;
-
-		if(!(s instanceof Player)){
-			FunnyGuilds.info("Console can not use this command");
-			return true;
-		}
-	    
+	public void execute(CommandSender s, String[] args){
 	    Messages m = Messages.getInstance();
-		
 		Player p = (Player) s;
 		User lp = User.get(p);
 		
 	    if(!lp.hasGuild()){
 	    	p.sendMessage(m.getMessage("breakHasNotGuild"));
-	    	return true;
+	    	return;
 	    }
 	    
 	    if(!lp.isOwner()){
 	    	p.sendMessage(m.getMessage("breakIsNotOwner"));
-	    	return true;
+	    	return;
 	    }
 	    
 	    Guild guild = lp.getGuild();
 	    
 	    if(guild.getAllies() == null || guild.getAllies().isEmpty()){
 	    	p.sendMessage(m.getMessage("breakHasNotAllies"));
-	    	return true;
+	    	return;
 	    }
 	    
 	    if(args.length < 1){
@@ -63,7 +49,7 @@ public class ExcBreak extends Exc {
 				p.sendMessage(msgs[i]
 					.replace("{GUILDS}", iss)
 				);
-			return true;
+			return;
 	    }
 	    
 	    String tag = args[0];
@@ -73,7 +59,7 @@ public class ExcBreak extends Exc {
 	    		m.getMessage("breakGuildExists")
 	    		.replace("{TAG}", tag)
 	    	);
-	    	return true;
+	    	return;
 		}
 	    
 	    Guild tb = GuildUtils.byTag(tag);
@@ -107,6 +93,6 @@ public class ExcBreak extends Exc {
 	    	.replace("{TAG}", guild.getTag())
 		);
 	    
-		return true;
+		return;
 	}
 }

@@ -23,7 +23,8 @@ public class DatabaseGuild {
 	}
 	
 	public void save(Database db) {
-		db.executeUpdate(getInsert());
+		String update = getInsert();
+		if(update != null) db.executeUpdate(update);
 	}
 	
 	public void delete() {

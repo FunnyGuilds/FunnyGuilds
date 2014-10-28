@@ -18,7 +18,7 @@ import org.bukkit.entity.Player;
 
 public class ExecutorCaller implements CommandExecutor, TabExecutor {
     
-	private final List<ExecutorCaller> ecs = new ArrayList<>();
+	private static final List<ExecutorCaller> ecs = new ArrayList<>();
 
 	private final String overriding;
 	private final Executor executor;
@@ -40,14 +40,12 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         	for(int i = 1; i < splited.length; i++) this.secondary[i-1] = splited[i];
         } else this.secondary = null;
         
-        boolean register = false;
         for(ExecutorCaller ec : ecs){
         	if(ec.overriding.equalsIgnoreCase(this.overriding)){
         		ec.executors.add(this);
-        		register = true;
+        		return;
         	}
         }
-        if(register) return;
     	this.register();
     	executors.add(this);
     	ecs.add(this);
@@ -55,21 +53,18 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
     	if(!cmd.getName().equalsIgnoreCase(this.overriding)) return false;
-    	System.out.println("1");
     	for(ExecutorCaller ec : this.executors){
-    		System.out.println("2");
 	    	if(ec.secondary != null){
-	    		System.out.println("3");
 	    		if(ec.secondary.length > args.length) continue;
-	    		System.out.println("4");
+	    		boolean sec = false;
 	    		for(int i = 0; i < ec.secondary.length; i++){
-	    			System.out.println("5");
-	    			if(!ec.secondary[i].equalsIgnoreCase(args[i])) continue;
-	    		}
-	    		System.out.println("6");
+	    			if(!ec.secondary[i].equalsIgnoreCase(args[i])){
+	    				sec = true;
+	    				break;
+	    			}
+	    		} if(sec) continue;
     			args = Arrays.copyOfRange(args, ec.secondary.length, args.length);
 	    	}
-	    	System.out.println("7");
     		if(sender instanceof Player){
     			if(ec.permission != null && !sender.hasPermission(ec.permission)){
     				sender.sendMessage(Messages.getInstance().getMessage("permission"));

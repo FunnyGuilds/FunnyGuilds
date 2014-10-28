@@ -1,33 +1,21 @@
 package net.dzikoysk.funnyguilds.command;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.ActionType;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ExcKick extends Exc {
+public class ExcKick implements Executor {
 	
-	public ExcKick(String command, String perm){
-		super(command, perm);
-		this.register();
-	}
-	
-	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args){
-		if(!cmd.getName().equalsIgnoreCase(Config.getInstance().excKick)) return false;
-		
-		if(!(s instanceof Player)){
-			FunnyGuilds.info("Console can not use this command");
-			return true;
-		}
+	@Override
+	public void execute(CommandSender s, String[] args){
 		
 		Messages m = Messages.getInstance();
 		
@@ -36,17 +24,17 @@ public class ExcKick extends Exc {
 		
 		if(!u.hasGuild()){
 			p.sendMessage(m.getMessage("kickHasNotGuild"));
-			return true;
+			return;
 		}
 		
 		if(!u.isOwner()){
 			p.sendMessage(m.getMessage("kickIsNotOwner"));
-			return true;
+			return;
 		}
 		
 		if(args.length < 1){
 			p.sendMessage(m.getMessage("kickPlayer"));
-			return true;
+			return;
 		}
 
 		OfflinePlayer up = Bukkit.getOfflinePlayer(args[0]);
@@ -54,17 +42,17 @@ public class ExcKick extends Exc {
 
 		if(!uk.hasGuild()){
 			p.sendMessage(m.getMessage("kickToHasNotGuild"));
-			return true;
+			return;
 		}
 		
 		if(!u.getGuild().equals(uk.getGuild())){
 			p.sendMessage(m.getMessage("kickOtherGuild"));
-			return true;
+			return;
 		}
 		
 		if(uk.isOwner()){
 			p.sendMessage(m.getMessage("kickOwner"));
-			return true;
+			return;
 		}
 		
 		Guild guild = u.getGuild();
@@ -92,7 +80,6 @@ public class ExcKick extends Exc {
 			.replace("{GUILD}", guild.getName())
 			.replace("{TAG}", guild.getTag())
 		);
-		return true;
 	}
 
 }

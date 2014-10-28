@@ -1,58 +1,46 @@
 package net.dzikoysk.funnyguilds.command;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Config;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ExcInvite extends Exc {
+public class ExcInvite implements Executor {
 	
-	public ExcInvite(String command, String perm){
-		super(command, perm);
-		this.register();
-	}
-		
-	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args){
-		if (!cmd.getName().equalsIgnoreCase(Config.getInstance().excInvite)) return false;
-		
-		if(!(s instanceof Player)){
-			FunnyGuilds.info("Console can not use this command");
-			return true;
-		}
+	@Override
+	public void execute(CommandSender s, String[] args){
 		
 		Messages m = Messages.getInstance();
-		
 		Player p = (Player) s;
 		User lp = User.get(p);
 		
 		if(!lp.hasGuild()){
 			p.sendMessage(m.getMessage("inviteHasNotGuild"));
-			return true;
+			return;
 		}
 		
 		if(!lp.isOwner()){
 			p.sendMessage(m.getMessage("inviteIsNotOwner"));
-			return true;
+			return;
 		}
 		
 		if(args.length < 1){
 			p.sendMessage(m.getMessage("invitePlayer"));
-			return true;
+			return;
 		}
 		Guild guild = lp.getGuild();
 		
 		if(guild.getMembers().size() >= Config.getInstance().inviteMembers){
 			p.sendMessage(m.getMessage("inviteAmount")
 				.replace("{AMOUNT}", Integer.toString(Config.getInstance().inviteMembers)));
-			return true;
+			return;
 		}
 			
 		OfflinePlayer oi = Bukkit.getOfflinePlayer(args[0]);
@@ -70,19 +58,19 @@ public class ExcInvite extends Exc {
 					.replace("{TAG}", guild.getTag())
 				);
 			}
-			return true;
+			return;
 		}
 		
 		if(oi == null || !oi.isOnline()){
 			p.sendMessage(m.getMessage("invitePlayerExists"));
-			return true;
+			return;
 		}
 		
 		Player invited = oi.getPlayer();
 		
 		if(ip.hasGuild()){
 			p.sendMessage(m.getMessage("inviteHasGuild"));
-			return true;
+			return;
 		}
 
 		InvitationsList.get(ip, 0).add(guild.getTag());
@@ -98,6 +86,5 @@ public class ExcInvite extends Exc {
 			.replace("{GUILD}", guild.getName())
 			.replace("{TAG}", guild.getTag())
 		);
-		return true;   
 	}
 }

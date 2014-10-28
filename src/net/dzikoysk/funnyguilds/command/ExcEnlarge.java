@@ -1,46 +1,33 @@
 package net.dzikoysk.funnyguilds.command;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Config;
 import net.dzikoysk.funnyguilds.data.Messages;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class ExcEnlarge extends Exc {
+public class ExcEnlarge implements Executor {
 	
-	public ExcEnlarge(String command, String perm){
-		super(command, perm);
-		this.register();
-	}
-	
-	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args){
-	    if(!cmd.getName().equalsIgnoreCase(Config.getInstance().excEnlarge) || !Config.getInstance().enlargeEnable) return false;
-	    
-	    if(!(s instanceof Player)){
-			FunnyGuilds.info("Console can not use this command");
-			return true;
-		}
-	    
+	@Override
+	public void execute(CommandSender s, String[] args){
 	    Messages m = Messages.getInstance();
-		
 		Player p = (Player)s;
 		User lp = User.get(p);
 		
 		if(!lp.hasGuild()){
 			p.sendMessage(m.getMessage("enlargeHasNotGuild"));
-			return true;
+			return;
 		}
 		
 		if(!lp.isOwner()){
 			p.sendMessage(m.getMessage("enlargeIsNotOwner"));
-			return true;
+			return;
 		}
 		
 		Region region = Region.get(lp.getGuild().getRegion());
@@ -50,7 +37,7 @@ public class ExcEnlarge extends Exc {
 		
 		if(enlarge > c.enlargeItems.size()-1){
 			p.sendMessage(m.getMessage("enlargeMaxSize"));
-			return true;
+			return;
 		}
 		
 		ItemStack need = c.enlargeItems.get(enlarge);
@@ -59,7 +46,7 @@ public class ExcEnlarge extends Exc {
 				m.getMessage("enlargeItem")
 				.replace("{ITEM}", need.getAmount() + " " + need.getType().name().toLowerCase())
 			);
-			return true;
+			return;
 		}
 		
 		p.getInventory().removeItem(need);
@@ -76,8 +63,7 @@ public class ExcEnlarge extends Exc {
 				of.getPlayer().sendMessage(tm);
 			}
 		}
-		
-	    return true;
+	    return;
 	}
 
 }

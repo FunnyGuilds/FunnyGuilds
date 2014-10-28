@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.ExcAlly;
 import net.dzikoysk.funnyguilds.command.ExcBase;
 import net.dzikoysk.funnyguilds.command.ExcBreak;
+import net.dzikoysk.funnyguilds.command.ExcConfirm;
 import net.dzikoysk.funnyguilds.command.ExcCreate;
 import net.dzikoysk.funnyguilds.command.ExcDelete;
 import net.dzikoysk.funnyguilds.command.ExcEnlarge;
@@ -63,21 +64,21 @@ public class FunnyGuilds extends JavaPlugin {
 		DataManager data = new DataManager();
 		Config c = data.getConfig();
 		
-		new ExecutorCaller(new ExcFunnyGuilds(), "g funnyguilds", null);
-		new ExecutorCaller(new ExcCreate(), "g zaloz", null);
-		new ExcDelete(c.excDelete, "funnyguilds.delete");
-		new ExcDelete(c.excConfirm, "funnyguilds.delete");
-		new ExcInvite(c.excInvite, "funnyguilds.invite");
-		new ExcJoin(c.excJoin, "funnyguilds.join");
-		new ExcLeave(c.excLeave, "funnyguilds.leave");
-		new ExcKick(c.excKick, "funnyguilds.kick");
-		new ExcBase(c.excBase, "funnyguilds.base");
-		new ExcEnlarge(c.excEnlarge, "funnyguilds.enlarge");
-		new ExcGuild(c.excGuild, "funnyguilds.help", c.excG);
-		new ExcAlly(c.excAlly, "funnyguilds.ally");
-		new ExcBreak(c.excBreak, "funnyguilds.break");
-		new ExcPlayer(c.excPlayer, "funnyguilds.info");
-		new ExcTop(c.excTop, "funnyguilds.top");
+		new ExecutorCaller(new ExcFunnyGuilds(), "funnyguilds", null);
+		new ExecutorCaller(new ExcCreate(), c.excCreate, "funnyguilds.create");
+		new ExecutorCaller(new ExcDelete(), c.excDelete, "funnyguilds.delete");
+		new ExecutorCaller(new ExcConfirm(), c.excConfirm, "funnyguilds.delete");
+		new ExecutorCaller(new ExcInvite(), c.excInvite, "funnyguilds.invite");
+		new ExecutorCaller(new ExcJoin(), c.excJoin, "funnyguilds.join");
+		new ExecutorCaller(new ExcLeave(), c.excLeave, "funnyguilds.leave");
+		new ExecutorCaller(new ExcKick(), c.excKick, "funnyguilds.kick");
+		new ExecutorCaller(new ExcBase(), c.excBase, "funnyguilds.base");
+		new ExecutorCaller(new ExcEnlarge(), c.excEnlarge, "funnyguilds.enlarge");
+		new ExecutorCaller(new ExcGuild(), c.excGuild, "funnyguilds.help", c.excG);
+		new ExecutorCaller(new ExcAlly(), c.excAlly, "funnyguilds.ally");
+		new ExecutorCaller(new ExcBreak(), c.excBreak, "funnyguilds.break");
+		new ExecutorCaller(new ExcPlayer(), c.excPlayer, "funnyguilds.info");
+		new ExecutorCaller(new ExcTop(), c.excTop, "funnyguilds.top");
 		
 		PluginManager pm = Bukkit.getPluginManager();
 

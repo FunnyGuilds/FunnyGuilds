@@ -32,7 +32,12 @@ public class IndependentThread extends Thread {
 	private void execute(List<Action> actions){
 		for(Action action : actions){
 			try {
+				//int mb = 1024*1024;
+		        //Runtime runtime = Runtime.getRuntime();	         
+		        //long l = (runtime.totalMemory() - runtime.freeMemory()) / mb)
 				action.execute();
+				//long now = ((runtime.totalMemory() - runtime.freeMemory()) / mb) - l;
+		        // if(now != 0) System.out.println("[" + action.getActionType().name() + "] Difference: " + now);
 			} catch (Exception e) {
 				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 				continue;

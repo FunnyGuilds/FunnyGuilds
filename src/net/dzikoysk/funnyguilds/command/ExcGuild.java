@@ -4,22 +4,16 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
-public class ExcGuild extends Exc {
+public class ExcGuild implements Executor {
 	
-	public ExcGuild(String command, String perm, String... aliases){
-		super(command, perm, aliases);
-		this.register();
-	}
-	
-	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args){
-		if(!cmd.getName().equalsIgnoreCase(Config.getInstance().excGuild) && !cmd.getName().equalsIgnoreCase(Config.getInstance().excG)) return false;
+	@Override
+	public void execute(CommandSender s, String[] args){
 		
 		Messages msg = Messages.getInstance();
 		
@@ -27,13 +21,13 @@ public class ExcGuild extends Exc {
 			String tag = args[0];
 			if(!GuildUtils.tagExists(tag)){
 				s.sendMessage(msg.getMessage("infoExists"));
-				return true;
+				return;
 			}
 			
 			Guild guild = GuildUtils.byTag(tag);
 			if(guild == null){
 				s.sendMessage(msg.getMessage("infoExists"));
-				return true;
+				return;
 			}
 			
 			for(String m : msg.getList("infoList")){
@@ -50,11 +44,10 @@ public class ExcGuild extends Exc {
 				else m = StringUtils.replace(m, "{ALLIES}", "Brak");
 				s.sendMessage(m);
 			}
-			return true;
+			return;
 		}
 		
 		for(String line : msg.getList("helpList"))
 			s.sendMessage(line);
-		return true;
 	}
 }

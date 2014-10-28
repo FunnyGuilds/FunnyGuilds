@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 public class ExcFunnyGuilds implements Executor {
 
+	@Override
 	public void execute(final CommandSender s, String[] args){
 		if(args.length > 0){
 			if(args[0].equalsIgnoreCase("reload")){

@@ -2,11 +2,10 @@ package net.dzikoysk.funnyguilds.command;
 
 import java.util.List;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
 import net.dzikoysk.funnyguilds.util.ActionType;
@@ -15,38 +14,25 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ExcAlly extends Exc {
+public class ExcAlly implements Executor {
 	
-	public ExcAlly(String command, String perm){
-		super(command, perm);
-		this.register();
-	}
-	
-	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args){
-	    if(!cmd.getName().equalsIgnoreCase(Config.getInstance().excAlly)) return false;
-
-	    if(!(s instanceof Player)){
-			FunnyGuilds.info("Console can not use this command");
-			return true;
-		}
-	    
+	@Override
+	public void execute(CommandSender s, String[] args){
 	    Messages m = Messages.getInstance();
-		
 		Player p = (Player) s;
 		User lp = User.get(p);
 		
 	    if(!lp.hasGuild()){
 	    	p.sendMessage(m.getMessage("allyHasNotGuild"));
-	    	return true;
+	    	return;
 	    }
 	    
 	    if(!lp.isOwner()){
 	    	p.sendMessage(m.getMessage("allyIsNotOwner"));
-	    	return true;
+	    	return;
 	    }
 	    
 	    Guild guild = lp.getGuild();
@@ -55,7 +41,7 @@ public class ExcAlly extends Exc {
 
 	    	if(InvitationsList.get(guild, 1).getLS().isEmpty()){
 				p.sendMessage(m.getMessage("allyHasNotInvitation"));
-				return true;
+				return;
 			}
 	    	
 	    	List<String> list = m.getList("allyInvitationList");
@@ -65,7 +51,7 @@ public class ExcAlly extends Exc {
 				p.sendMessage(msgs[i]
 					.replace("{GUILDS}", iss)
 				);
-			return true;
+			return;
 	    }
 	    
 	    String tag = args[0];
@@ -73,19 +59,19 @@ public class ExcAlly extends Exc {
 	    if(!GuildUtils.tagExists(tag)){
 	    	p.sendMessage(StringUtils
 	    		.replace(m.getMessage("allyGuildExists"), "{TAG}", tag));
-	    	return true;
+	    	return;
 		}
 	    
 	    Guild inv = GuildUtils.byTag(tag);
 	    
 	    if(guild.equals(inv)){
 	    	p.sendMessage(m.getMessage("allySame"));
-	    	return true;
+	    	return;
 	    }
 	    
 	    if(guild.getAllies().contains(inv)){
 	    	p.sendMessage(m.getMessage("allyAlly"));
-	    	return true;
+	    	return;
 	    }
 	    
 	    if(InvitationsList.get(guild, 1).contains(inv.getName())){
@@ -109,7 +95,7 @@ public class ExcAlly extends Exc {
 			for(User u : inv.getMembers())
 				IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, guild);
 			
-	    	return true;
+	    	return;
 	    }
 	    
 	    if(InvitationsList.get(inv, 1).getLS().contains(guild.getName())){
@@ -124,7 +110,7 @@ public class ExcAlly extends Exc {
 		    	.replace("{GUILD}", guild.getName())
 			);
 		    
-	    	return true;
+	    	return;
 	    }
 	    
 	    InvitationsList.get(inv, 1).add(guild.getName());
@@ -137,6 +123,6 @@ public class ExcAlly extends Exc {
 	    if(of.isOnline()) of.getPlayer().sendMessage(m.getMessage("allyToInvited")
 	    	.replace("{GUILD}", guild.getName())
 		);
-	    return true;
+	    return;
 	}
 }

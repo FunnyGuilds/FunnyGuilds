@@ -1,32 +1,20 @@
 package net.dzikoysk.funnyguilds.command;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ExcPlayer extends Exc {
+public class ExcPlayer implements Executor {
 	
-	public ExcPlayer(String command, String perm){
-		super(command, perm);
-		this.register();
-	}
-	
-	public boolean onCommand(CommandSender s, Command cmd, String label, String[] args){
-		if(!cmd.getName().equalsIgnoreCase(Config.getInstance().excPlayer)) return false;
-		if(!(s instanceof Player)){
-			FunnyGuilds.info("Console can not use this command");
-			return true;
-		}
+	@Override
+	public void execute(CommandSender s, String[] args){
 	    
 	    Messages msg = Messages.getInstance();
-		
 		Player p = (Player) s;
 		String name = p.getName();
 		
@@ -35,7 +23,7 @@ public class ExcPlayer extends Exc {
 		
 		if(user.getUUID() == null){
 			s.sendMessage(msg.getMessage("playerInfoExists"));
-			return true;
+			return;
 		}
 		
 		for(String m : msg.getList("playerInfoList")){
@@ -53,7 +41,6 @@ public class ExcPlayer extends Exc {
 			m = StringUtils.replace(m, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user)));
 			s.sendMessage(m);
 		}
-		return true;
 	}
 
 }
