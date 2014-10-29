@@ -8,6 +8,8 @@ public class ExcPvP implements Executor {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
+	
+	
 	}
 
 }
