@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#        1.5.6 Sweetness        #
+#        1.5.7 Sweetness        #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -85,10 +85,8 @@ chat-global-design: '&8[&cChat globalny gildii&8] &8{TAG} &7{PLAYER}&8:&f {MESSA
 
 # Ranking od ktorego rozpoczyna gracz
 rank-start: 1000
-# Ilosc punktow zyskiwanych po zabiciu gracza
-rank-kill: 10
-# Ilosc traconych punktow po smierci 
-rank-death: 15
+# Jaki procent punktow zabitego ma przyznawac zabojcy
+rank-percent: 2
 
 # Czy czlonkowie gildii moga sobie zadawac obrazenia
 damage-guild: false
@@ -178,6 +176,17 @@ commands:
   break: 'rozwiaz'
   player: 'gracz'
   top: 'top'
+  
+  admin:
+    main: 'ga'
+    add: 'ga dodaj'
+    delete: 'ga usun'
+    kick: 'ga wyrzuc'
+    teleport: 'ga tp'
+    points: 'ga points'
+    kills: 'ga kills'
+    deaths: 'ga deaths'
+    
   
 # Co ile minut ma automatycznie zapisywac dane
 data-interval: 1

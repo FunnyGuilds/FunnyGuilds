@@ -26,17 +26,15 @@ public class PlayerChat implements Listener{
 			if(chat(event, message, c, player, guild)) return;
 		}
 		String format = event.getFormat();
-		if(user.hasGuild()) format = StringUtils.replace(format, "{TAG}", StringUtils
-				.replace(c.chatGuild, "{TAG}", user.getGuild().getTag()));
-		else format = StringUtils.replace(format, "{TAG}", "");
 		format = StringUtils.replace(format, "{RANK}", StringUtils
 				.replace(c.chatRank, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user))));
 		format = StringUtils.replace(format, "{POINTS}", StringUtils
 				.replace(c.chatPoints, "{POINTS}", Integer.toString(user.getRank().getPoints())));
+		if(user.hasGuild()) format = StringUtils.replace(format, "{TAG}", StringUtils
+				.replace(c.chatGuild, "{TAG}", user.getGuild().getTag()));
+		else format = StringUtils.replace(format, "{TAG}", "");
 		event.setFormat(format);
 	}
-
-	
 	
 	private boolean chat(AsyncPlayerChatEvent event, String message, Config c, Player player, Guild guild){
 		if(global(event, message, c, player, guild)) return true;

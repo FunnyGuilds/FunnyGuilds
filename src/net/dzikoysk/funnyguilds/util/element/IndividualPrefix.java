@@ -82,7 +82,7 @@ public class IndividualPrefix {
 	}
 
 	protected void removeGuild(Guild guild){
-		if(guild == null) return;
+		if(guild == null || guild.getTag() == null || guild.getTag().isEmpty()) return;
 		Team team = getUser().getScoreboard().getTeam(guild.getTag());
 		if(team != null) team.unregister();
 	}

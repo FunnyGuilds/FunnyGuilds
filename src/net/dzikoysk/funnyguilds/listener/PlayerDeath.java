@@ -21,17 +21,19 @@ public class PlayerDeath implements Listener {
 		
 		if(v == null || a == null) return;
 		
-		Config config = Config.getInstance();
 		Messages msg = Messages.getInstance();
 		
 		User victim = User.get(v);
 		User attacker = User.get(a);
 		
+		Double d = victim.getRank().getPoints() * (Config.getInstance().rankPercent / 100);
+		int points = d.intValue();
+		
 		victim.getRank().addDeath();
-		victim.getRank().removePoints(config.rankDeath);
+		victim.getRank().removePoints(points);
 		
 		attacker.getRank().addKill();
-		attacker.getRank().addPoints(config.rankKill);
+		attacker.getRank().addPoints(points);
 		
 		IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
 		IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
@@ -46,8 +48,8 @@ public class PlayerDeath implements Listener {
 		String death = msg.getMessage("rankDeathMessage");
 		death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());
 		death = StringUtils.replace(death, "{VICTIM}", victim.getName());
-		death = StringUtils.replace(death, "{-}", Integer.toString(config.rankDeath));
-		death = StringUtils.replace(death, "{+}", Integer.toString(config.rankKill));
+		death = StringUtils.replace(death, "{-}", Integer.toString(points));
+		death = StringUtils.replace(death, "{+}", Integer.toString(points));
 		death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
 		event.setDeathMessage(death);
 	}

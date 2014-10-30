@@ -21,7 +21,7 @@ import net.dzikoysk.funnyguilds.command.ExcTop;
 import net.dzikoysk.funnyguilds.command.admin.AxcAdd;
 import net.dzikoysk.funnyguilds.command.admin.AxcDeaths;
 import net.dzikoysk.funnyguilds.command.admin.AxcDelete;
-import net.dzikoysk.funnyguilds.command.admin.AxcGuild;
+import net.dzikoysk.funnyguilds.command.admin.AxcMain;
 import net.dzikoysk.funnyguilds.command.admin.AxcKick;
 import net.dzikoysk.funnyguilds.command.admin.AxcKills;
 import net.dzikoysk.funnyguilds.command.admin.AxcPoints;
@@ -88,14 +88,14 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new ExcPlayer(), c.excPlayer, "funnyguilds.info");
 		new ExecutorCaller(new ExcTop(), c.excTop, "funnyguilds.top");
 		
-		new ExecutorCaller(new AxcGuild(), "ga", "funnyguilds.admin");
-		new ExecutorCaller(new AxcAdd(), "ga dodaj", "funnyguilds.admin");
-		new ExecutorCaller(new AxcDelete(), "ga usun", "funnyguilds.admin");
-		new ExecutorCaller(new AxcKick(), "ga wyrzuc", "funnyguilds.admin");
-		new ExecutorCaller(new AxcTeleport(), "ga tp", "funnyguilds.admin");
-		new ExecutorCaller(new AxcPoints(), "ga setpoints", "funnyguilds.admin");
-		new ExecutorCaller(new AxcKills(), "ga setkills", "funnyguilds.admin");
-		new ExecutorCaller(new AxcDeaths(), "ga setdeaths", "funnyguilds.admin");
+		new ExecutorCaller(new AxcMain(), c.axcMain, "funnyguilds.admin");
+		new ExecutorCaller(new AxcAdd(), c.axcAdd, "funnyguilds.admin");
+		new ExecutorCaller(new AxcDelete(), c.axcDelete, "funnyguilds.admin");
+		new ExecutorCaller(new AxcKick(), c.axcKick, "funnyguilds.admin");
+		new ExecutorCaller(new AxcTeleport(), c.axcTeleport, "funnyguilds.admin");
+		new ExecutorCaller(new AxcPoints(), c.axcPoints, "funnyguilds.admin");
+		new ExecutorCaller(new AxcKills(), c.axcKills, "funnyguilds.admin");
+		new ExecutorCaller(new AxcDeaths(), c.axcDeaths, "funnyguilds.admin");
 		
 		PluginManager pm = Bukkit.getPluginManager();
 

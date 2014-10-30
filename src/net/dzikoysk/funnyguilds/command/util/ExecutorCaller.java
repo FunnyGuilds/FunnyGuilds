@@ -51,7 +51,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     	ecs.add(this);
     }
     
-    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+    private boolean call(CommandSender sender, Command cmd, String[] args){
     	if(!cmd.getName().equalsIgnoreCase(this.overriding)) return false;
     	ExecutorCaller main = null;
     	for(ExecutorCaller ec : this.executors){
@@ -81,12 +81,8 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     	main.executor.execute(sender, args);
     	return false;
     }
-
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-        return null;
-    }
     
-    public void register() {
+    private void register() {
     	try {
 	    	Performer p = new Performer(this.overriding);
 	        if (this.aliases != null) p.setAliases(this.aliases);
@@ -99,5 +95,16 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     	} catch (Exception e) { 
     		if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
         }
+    }
+    
+    @Override
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+    	return call(sender, cmd, args);
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+    	if(this.secondary != null) return Arrays.asList(this.secondary);
+    	else return null;
     }
 }

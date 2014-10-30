@@ -57,8 +57,7 @@ public class Config {
 	public String chatGlobalDesign;
 	
 	public int rankStart;
-	public int rankDeath;
-	public int rankKill;
+	public double rankPercent;
 	
 	public boolean damageGuild;
 	public boolean damageAlly;
@@ -87,6 +86,15 @@ public class Config {
 	public String excPlayer;
 	public String excTop;
 	public String excG;
+	
+	public String axcMain;
+	public String axcAdd;
+	public String axcDelete;
+	public String axcKick;
+	public String axcTeleport;
+	public String axcPoints;
+	public String axcKills;
+	public String axcDeaths;
 	
 	public int dataInterval;
 	public boolean flat;
@@ -186,8 +194,7 @@ public class Config {
 	
 	private void loadRankSection(){
 		this.rankStart = yml.getInt("rank-start");
-		this.rankKill = yml.getInt("rank-kill");
-		this.rankDeath = yml.getInt("rank-death");
+		this.rankPercent = yml.getInt("rank-percent");
 	}
 	
 	private void loadDamageSection(){
@@ -248,6 +255,15 @@ public class Config {
 		this.excBreak = yml.getString("commands.break");
 		this.excPlayer = yml.getString("commands.player");
 		this.excTop = yml.getString("commands.top");
+		
+		this.axcMain = yml.getString("commands.admin.main");
+		this.axcAdd = yml.getString("commands.admin.add");
+		this.axcDelete = yml.getString("commands.admin.delete");
+		this.axcKick = yml.getString("commands.admin.kick");
+		this.axcTeleport = yml.getString("commands.admin.teleport");
+		this.axcPoints = yml.getString("commands.admin.points");
+		this.axcKills = yml.getString("commands.admin.kills");
+		this.axcDeaths = yml.getString("commands.admin.deaths");
 	}
 	
 	private void loadDataSection(){
