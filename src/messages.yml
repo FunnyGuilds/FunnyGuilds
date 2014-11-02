@@ -2,8 +2,8 @@
 permission: '&cNie masz wystarczajacych uprawnien do uzycia tej komendy!'
 
 # <------- Rank Messages -------> #
-# Available variables: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}
-rankDeathMessage: '&b{ATTACKER} &7(&b+{+}&7) zabil &b{VICTIM} &7(&b-{-}&7)'
+# Available variables: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {TAG}
+rankDeathMessage: '&c{TAG} &b{ATTACKER} &7(&b+{+}&7) &azabil &c{TAG} &b{VICTIM} &7(&b-{-}&7)'
 
 # <------- Notification Bar Messages -------> #
 # Available variables: {PLAYER}
