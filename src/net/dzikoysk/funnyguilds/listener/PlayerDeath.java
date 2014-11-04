@@ -48,7 +48,7 @@ public class PlayerDeath implements Listener {
 		String death = msg.getMessage("rankDeathMessage");
 		death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());
 		death = StringUtils.replace(death, "{VICTIM}", victim.getName());
-		death = StringUtils.replace(death, "{TAG}", guild.getName());
+		death = StringUtils.replace(death, "{TAG}", user.getGuild().getTag()));
 		death = StringUtils.replace(death, "{-}", Integer.toString(points));
 		death = StringUtils.replace(death, "{+}", Integer.toString(points));
 		death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
