@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.Timer;
+import net.dzikoysk.funnyguilds.util.Ticking;
 
 public class PlayerList {
 
@@ -68,7 +68,7 @@ public class PlayerList {
 			}
 			s = StringUtils.replace(s, "{ONLINE}", Integer.toString(Bukkit.getOnlinePlayers().length));
 			s = StringUtils.replace(s, "{PLAYER}", user.getName());
-			s = StringUtils.replace(s, "{TPS}", Double.toString(Timer.getTPS()));
+			s = StringUtils.replace(s, "{TPS}", Double.toString(Ticking.getTPS()));
 			s = StringUtils.replace(s, "{PING}", Integer.toString(user.getPing()));
 			s = StringUtils.replace(s, "{POINTS}", Integer.toString(user.getRank().getPoints()));
 			s = StringUtils.replace(s, "{KILLS}", Integer.toString(user.getRank().getKills()));

@@ -31,16 +31,17 @@ public class DatabaseBasic {
 		db.openConnection();
 		
 		usersTable(db);
+		regionsTable(db);
+		guildsTable(db);
+		
 		ResultSet users = Database.getInstance().executeQuery("SELECT * FROM users");
 		while(users.next()) DatabaseUser.deserialize(users);
 		FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());
 		
-		regionsTable(db);
 		ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM regions");
 		while(regions.next()) DatabaseRegion.deserialize(regions);
 		FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
 		
-		guildsTable(db);
 		ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM guilds");
 		while(guilds.next()) DatabaseGuild.deserialize(guilds);
 		FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
@@ -76,48 +77,61 @@ public class DatabaseBasic {
 		db.closeConnection();
 	}
 	
-	public void guildsTable(Database db) throws Exception {
+	public void guildsTable(Database db) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("create table if not exists guilds(");
 		sb.append("uuid varchar(100) not null,");
-		sb.append("name varchar(50) not null,");
-		sb.append("tag varchar(50) not null,");
-		sb.append("owner varchar(50) not null,");
-		sb.append("home varchar(50) not null,");
-		sb.append("region varchar(50) not null,");
+		sb.append("name text not null,");
+		sb.append("tag text not null,");
+		sb.append("owner text not null,");
+		sb.append("home text not null,");
+		sb.append("region text not null,");
 		sb.append("members text not null,");
 		sb.append("regions text not null,");
 		sb.append("points int not null,");
+		sb.append("lives int not null,");
+		sb.append("ban bigint not null,");
+		sb.append("born bigint not null,");
+		sb.append("validity bigint not null,");
+		sb.append("attacked bigint,");
 		sb.append("allies text,");
 		sb.append("enemies text,");
 		sb.append("info text,");
-		sb.append("deputy varchar(50),");
-		sb.append("pvp boolean,");
+		sb.append("deputy text,");
 		sb.append("primary key (uuid));");
 		db.executeUpdate(sb.toString());
+		db.executeUpdate("alter table guilds add born bigint not null;");
+		db.executeUpdate("alter table guilds add validity bigint not null;");
+		db.executeUpdate("alter table guilds add attacked bigint not null;");
+		db.executeUpdate("alter table guilds add lives int not null;");
+		db.executeUpdate("alter table guilds add ban bigint not null;");
 	}
 	
-	public void regionsTable(Database db) throws Exception {
+	public void regionsTable(Database db) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("create table if not exists regions(");
-		sb.append("name varchar(50) not null,");
-		sb.append("center varchar(100) not null,");
+		sb.append("name varchar(100) not null,");
+		sb.append("center text not null,");
 		sb.append("size int not null,");
 		sb.append("enlarge int not null,");
 		sb.append("primary key (name));");
 		db.executeUpdate(sb.toString());
 	}
 	
-	public void usersTable(Database db) throws Exception {
+	public void usersTable(Database db) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("create table if not exists users(");
 		sb.append("uuid varchar(100) not null,");
-		sb.append("name varchar(50) not null,");
+		sb.append("name text not null,");
 		sb.append("points int not null,");
 		sb.append("kills int not null,");
 		sb.append("deaths int not null,");
+		sb.append("ban bigint,");
+		sb.append("reason text,");
 		sb.append("primary key (uuid));");
 		db.executeUpdate(sb.toString());
+		db.executeUpdate("alter table users add ban bigint;");
+		db.executeUpdate("alter table users add reason text;");
 	}
 
 	public static DatabaseBasic getInstance(){

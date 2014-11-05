@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
@@ -58,7 +59,8 @@ public class DatabaseGuild {
 		String allies = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
 		String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 		sb.append("INSERT INTO guilds (");
-		sb.append("uuid, name, tag, owner, home, region, members, regions, allies, enemies, points");
+		sb.append("uuid, name, tag, owner, home, region, members, regions, allies, enemies, points, ");
+		sb.append("born, validity, attacked, ban, lives");
 		sb.append(") VALUES (");
 		sb.append("'" + guild.getUUID().toString() + "',");
 		sb.append("'" + guild.getName() + "',");
@@ -70,7 +72,12 @@ public class DatabaseGuild {
 		sb.append("'" + regions + "',");
 		sb.append("'" + allies + "',");
 		sb.append("'" + enemies + "',");
-		sb.append("" + guild.getRank().getPoints() + "");
+		sb.append("" + guild.getRank().getPoints() + ",");
+		sb.append("" + guild.getBorn() + ",");
+		sb.append("" + guild.getValidity() + ",");
+		sb.append("" + guild.getAttacked() + ",");
+		sb.append("" + guild.getBan() + ",");
+		sb.append("" + guild.getLives() + "");
 		sb.append(") ON DUPLICATE KEY UPDATE ");
 		sb.append("name='" + guild.getName() + "',");
 		sb.append("tag='" + guild.getTag() + "',");
@@ -81,7 +88,12 @@ public class DatabaseGuild {
 		sb.append("regions='" + regions + "',");
 		sb.append("allies='" + allies + "',");
 		sb.append("enemies='" + enemies + "',");
-		sb.append("points=" + guild.getRank().getPoints() + ";");
+		sb.append("points=" + guild.getRank().getPoints() + ",");
+		sb.append("born=" + guild.getBorn() + ",");
+		sb.append("validity=" + guild.getValidity() + ",");
+		sb.append("attacked=" + guild.getAttacked() + ",");
+		sb.append("ban=" + guild.getBan() + ",");
+		sb.append("lives=" + guild.getLives() + ";");
 		return sb.toString();
 	}
 	
@@ -98,6 +110,11 @@ public class DatabaseGuild {
 		String rgs = rs.getString("regions");
 		String als = rs.getString("allies");
 		String ens = rs.getString("enemies");
+		long born = rs.getLong("born");
+		long validity = rs.getLong("validity");
+		long attacked = rs.getLong("attacked");
+		long ban = rs.getLong("ban");
+		int lives = rs.getInt("lives");
 		
 		if(name == null || tag == null || os == null){
 			FunnyGuilds.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
@@ -116,7 +133,7 @@ public class DatabaseGuild {
 		List<Guild> enemies = new ArrayList<>();
 		if(ens != null && !ens.equals("")) enemies = GuildUtils.getGuilds(StringUtils.fromString(ens));
 
-		Object[] values = new Object[10];
+		Object[] values = new Object[15];
 		values[0] = uuid;
 		values[1] = name;
 		values[2] = tag;
@@ -127,8 +144,12 @@ public class DatabaseGuild {
 		values[7] = regions;
 		values[8] = allies;
 		values[9] = enemies;
-		Guild guild = Guild.deserialize(values);
-		return guild;
+		values[10] = born;
+		values[11] = validity;
+		values[12] = attacked;
+		values[13] = lives;
+		values[14] = ban;
+		return DeserializationUtils.deserializeGuild(values);
 	}
 
 }

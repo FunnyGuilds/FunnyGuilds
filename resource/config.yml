@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#        1.5.7 Sweetness        #
+#        1.9.9 Sweetness        #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -20,7 +20,7 @@ items:
 # Odleglosc od spawnu
 create-distance: 100
 # Blok, jaki pojawi sie pod nami po stworzeniu gildii
-create-material: bedrock
+create-material: ender crystal
 # Wielkosc regionu gildii
 region-size: 50
 # Minimalna odleglosc miedzy terenami gildii
@@ -161,21 +161,54 @@ player-list-patch: false
 
 # Nazwy komend (na razie bez wsparcia subkomend)
 commands:
-  create: 'zaloz'
-  delete: 'usun'
-  confirm: 'potwierdz'
-  invite: 'zapros'
-  join: 'dolacz'
-  leave: 'opusc'
-  kick: 'wyrzuc'
-  base: 'baza'
-  enlarge: 'powieksz'
-  guild: 'gildia'
-  g: 'g'
-  ally: 'sojusz'
-  break: 'rozwiaz'
-  player: 'gracz'
-  top: 'top'
+  guild: 
+    name: 'gildia'
+    aliases:
+    - 'gildie'
+    - 'g'
+  create:
+    name: 'zaloz'
+    aliases: []
+  delete:
+    name: 'usun'
+    aliases: []
+  confirm:
+    name: 'potwierdz'
+    aliases: []
+  invite:
+    name: 'zapros'
+    aliases: []
+  join:
+    name: 'dolacz'
+    aliases: []
+  leave:
+    name:  'opusc'
+    aliases: []
+  kick:
+    name: 'wyrzuc'
+    aliases: []
+  base: 
+    name: 'baza'
+    aliases: []
+  enlarge: 
+    name: 'powieksz'
+    aliases: []
+  ally: 
+    name: 'sojusz'
+    aliases: []
+  break: 
+    name: 'rozwiaz'
+    aliases: []
+  info: 
+    name: 'info'
+    aliases: []
+  player: 
+    name: 'gracz'
+    aliases: []
+  top: 
+    name: 'top'
+    aliases:
+    - 'top10'
   
   admin:
     main: 'ga'
@@ -186,7 +219,7 @@ commands:
     points: 'ga points'
     kills: 'ga kills'
     deaths: 'ga deaths'
-    
+    ban: 'ga ban'
   
 # Co ile minut ma automatycznie zapisywac dane
 data-interval: 1

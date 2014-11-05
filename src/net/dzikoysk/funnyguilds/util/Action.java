@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.util;
 
+import java.util.Arrays;
+
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
@@ -54,4 +56,23 @@ public class Action {
 		else if(action == ActionType.PREFIX_GLOBAL_REMOVE_GUILD) IndividualPrefixManager.removeGuild((Guild)values[0]);
 		else if(action == ActionType.PREFIX_GLOBAL_REMOVE_PLAYER) IndividualPrefixManager.removePlayer((OfflinePlayer)values[0]);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((action == null) ? 0 : action.hashCode());
+		result = prime * result + Arrays.hashCode(values);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(this.getClass() != o.getClass()) return false;
+		Action a = (Action) o;
+		if(action != a.getActionType()) return false;
+		return Arrays.equals(values, a.getValues());
+	}
+	
 }

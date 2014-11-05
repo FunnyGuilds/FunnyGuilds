@@ -4,6 +4,7 @@ import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
+import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.ActionType;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
 import org.bukkit.scheduler.BukkitTask;
@@ -21,7 +22,7 @@ public class DataManager {
 		messages = new Messages();
 		config = new Config();
 		if(Config.getInstance().mysql) new DatabaseBasic();
-		else new Basic();
+		else new Flat();
 		new Data();
 		this.start();
 	}
@@ -29,7 +30,7 @@ public class DataManager {
 	public void save(){
 		if(Config.getInstance().flat)
 			try {
-				Basic.getInstance().save();
+				Flat.getInstance().save();
 			} catch (Exception e) {
 				FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
 				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();

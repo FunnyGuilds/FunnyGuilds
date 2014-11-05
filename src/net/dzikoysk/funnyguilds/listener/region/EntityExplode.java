@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
@@ -9,9 +10,11 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Config;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.util.SpaceUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -32,12 +35,16 @@ public class EntityExplode implements Listener {
 		Location protect = region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
 		
         Iterator<Block> it = destroyed.iterator();
-        while (it.hasNext()) {
-        	if(it.next().getLocation().equals(protect)){
-        		it.remove();
-        		break;
-        	}
+        while(it.hasNext()) {
+        	if(it.next().getLocation().equals(protect)) it.remove();
         }
+        
+		List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
+		Random random = new Random();
+		for(Location l : sphere){
+			if(l.getBlock().getType() != Material.OBSIDIAN) continue;
+    		if(random.nextFloat() <= 0.33f) l.getBlock().breakNaturally();
+		}
         
         Guild guild = region.getGuild();
         guild.setBuild(System.currentTimeMillis() + Config.getInstance().regionExplode*1000);

@@ -13,59 +13,59 @@ public class RankManager {
 	private final ArrayList<Rank> users = new ArrayList<>();
 	private final ArrayList<Rank> guilds = new ArrayList<>();
 	
-	public RankManager(){
+	public RankManager() {
 		instance = this;
 	}
 	
-	public void update(User user){
-		if(!users.contains(user.getRank())) users.add(user.getRank());
-		Collections.sort(users);
+	public void update(User user) {
+		if(!this.users.contains(user.getRank())) this.users.add(user.getRank());
+		Collections.sort(this.users);
+		if(user.hasGuild()) update(user.getGuild());
 	}
 	
-	public void update(Guild guild){
-		if(!guilds.contains(guild.getRank())) guilds.add(guild.getRank());
-		Collections.sort(guilds);
+	public void update(Guild guild) {
+		if(!this.guilds.contains(guild.getRank())) this.guilds.add(guild.getRank());
+		Collections.sort(this.guilds);
 	}
 	
-	public void remove(User user){
-		users.remove(user.getRank());
-		Collections.sort(users);
+	public void remove(User user) {
+		this.users.remove(user.getRank());
+		Collections.sort(this.users);
 	}
 	
-	public void remove(Guild guild){
-		guilds.remove(guild.getRank());
-		Collections.sort(guilds);
+	public void remove(Guild guild) {
+		this.guilds.remove(guild.getRank());
+		Collections.sort(this.guilds);
 	}
 	
-	public int getPosition(User user){
-		return users.indexOf(user.getRank())+1;
+	public int getPosition(User user) {
+		return this.users.indexOf(user.getRank()) + 1;
 	}
 	
-	public int getPosition(Guild guild){
-		return guilds.indexOf(guild.getRank())+1;
+	public int getPosition(Guild guild) {
+		return this.guilds.indexOf(guild.getRank()) + 1;
 	}
 	
-	public User getUser(int i){
-		if(i-1 < users.size()) return users.get(i-1).getUser();
+	public User getUser(int i) {
+		if (i - 1 < this.users.size()) return (this.users.get(i - 1)).getUser();
 		return null;
 	}
 	
-	public Guild getGuild(int i){
-		if(i-1 < guilds.size()) return guilds.get(i-1).getGuild();
+	public Guild getGuild(int i) {
+		if (i - 1 < this.guilds.size()) return (this.guilds.get(i - 1)).getGuild();
 		return null;
 	}
 	
-	public int users(){
-		return users.size();
+	public int users() {
+		return this.users.size();
 	}
 	
-	public int guilds(){
-		return guilds.size();
+	public int guilds() {
+		return this.guilds.size();
 	}
 	
-	public static RankManager getInstance(){
-		if(instance == null) new RankManager();
+	public static RankManager getInstance() {
+		if (instance == null) new RankManager();
 		return instance;
 	}
-
 }

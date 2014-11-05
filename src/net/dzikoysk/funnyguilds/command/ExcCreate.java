@@ -18,8 +18,10 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -158,7 +160,10 @@ public class ExcCreate implements Executor {
 		
 		u.setGuild(guild);
 		
-		loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
+		if(c.createMaterial != null && c.createMaterial != Material.AIR)
+			loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
+		else if(c.createStringMaterial.equalsIgnoreCase("ender crystal"))
+			loc.getWorld().spawn(loc.toVector().toLocation(loc.getWorld()), EnderCrystal.class);
 		
 		DataManager.getInstance().start();
 		

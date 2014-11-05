@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.util;
 import java.lang.reflect.Method;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -36,30 +37,34 @@ public class PacketUtils {
 	       	Object handle = craftPlayer.getMethod("getHandle").invoke(cp);
 	      	Object con = handle.getClass().getField("playerConnection").get(handle);
 	       	Method method = con.getClass().getMethod("sendPacket", packetClass);
-	        for(Object o : os) method.invoke(con, o);
+	        for(Object o : os){
+	        	if(o == null) continue;
+	        	method.invoke(con, o);
+	        }
 	   	} catch (Exception e){
 	        if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 	    }
 	}
 	
-	public static Object getPacketPlayOutPlayerInfo(String s, boolean b, int i){
+	public static Object getPacket(String s, boolean b, int i){
 		if(type == 0){
 			try {
 				return packetClass.getConstructor(typesClass).newInstance(s, b, i);
 			} catch (Exception e){
-				FunnyGuilds.exception(e.getCause());
+				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 			}
 		}else{
 			try {
 				Class<?> clazz = ReflectionUtils.getCraftClass("PacketPlayOutPlayerInfo");
-				Object packet = packetClass.getConstructor(typesClass).newInstance();
+				Object packet = packetClass.getConstructor().newInstance();
 				ReflectionUtils.getPrivateField(clazz, "username").set(packet, s);
-				ReflectionUtils.getPrivateField(clazz, "player").set(packet, Bukkit.getOfflinePlayer(s));
 				ReflectionUtils.getPrivateField(clazz, "gamemode").set(packet, 1);
 				ReflectionUtils.getPrivateField(clazz, "ping").set(packet, i);
+				ReflectionUtils.getPrivateField(clazz, "player").set(packet, new OfflineUser(s).getProfile());
+				if(!b) ReflectionUtils.getPrivateField(clazz, "action").set(packet, 4);
 				return packet;
 			} catch (Exception e){
-				FunnyGuilds.exception(e.getCause());
+				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 			}
 		}
 		return null;

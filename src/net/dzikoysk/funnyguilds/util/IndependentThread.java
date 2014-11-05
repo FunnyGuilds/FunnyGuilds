@@ -12,9 +12,11 @@ public class IndependentThread extends Thread {
 	private Object locker = new Object();
 	
 	public IndependentThread(){
+		FunnyGuilds.info("Available Processors: " + Runtime.getRuntime().availableProcessors());
+		FunnyGuilds.info("Active Threads: " + Thread.activeCount());
 		instance = this;
 	}
-	
+
 	@Override
 	public void run() {
 		while(true) try {
@@ -32,12 +34,7 @@ public class IndependentThread extends Thread {
 	private void execute(List<Action> actions){
 		for(Action action : actions){
 			try {
-				//int mb = 1024*1024;
-		        //Runtime runtime = Runtime.getRuntime();	         
-		        //long l = (runtime.totalMemory() - runtime.freeMemory()) / mb)
 				action.execute();
-				//long now = ((runtime.totalMemory() - runtime.freeMemory()) / mb) - l;
-		        // if(now != 0) System.out.println("[" + action.getActionType().name() + "] Difference: " + now);
 			} catch (Exception e) {
 				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 				continue;
@@ -46,8 +43,9 @@ public class IndependentThread extends Thread {
 	}
 	
 	public static void action(Action... actions){
-		for(Action action : temp) getInstance().actions.add(action);
-		for(Action action : actions) getInstance().actions.add(action);
+		IndependentThread it = getInstance();
+		for(Action action : temp) if(!it.actions.contains(action)) it.actions.add(action);
+		for(Action action : actions) if(!it.actions.contains(action)) it.actions.add(action);
 		temp.clear();
 		synchronized(getInstance().locker){
 			getInstance().locker.notify();
@@ -63,11 +61,13 @@ public class IndependentThread extends Thread {
 	}
 	
 	public static void actions(ActionType type){
-		temp.add(new Action(type));
+		Action action = new Action(type);
+		if(!temp.contains(action)) temp.add(action);
 	}
 	
 	public static void actions(ActionType type, Object... values){
-		temp.add(new Action(type, values));
+		Action action = new Action(type, values);
+		if(!temp.contains(action)) temp.add(action);
 	}
 	
 	public static IndependentThread getInstance(){

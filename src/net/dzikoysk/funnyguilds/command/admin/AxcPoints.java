@@ -5,6 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 
@@ -40,6 +41,8 @@ public class AxcPoints implements Executor {
 
 		User user = User.get(args[0]);
 		user.getRank().setPoints(points);
+		RankManager.getInstance().update(user);
+		
 		player.sendMessage(ChatColor.GRAY + "Ustawiono " + ChatColor.AQUA + points + " punktow " + ChatColor.GRAY + "dla " + ChatColor.AQUA + user.getName());
 		return;
 	}

@@ -13,8 +13,8 @@ public class PlayerQuit implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event){
 		Player player = event.getPlayer();
-		NotificationBar.remove(player);
 		User user = User.get(player);
+		NotificationBar.remove(player);
 		user.setIndividualPrefix(null);
 		user.setPlayerList(null);
 		user.setScoreboard(null);

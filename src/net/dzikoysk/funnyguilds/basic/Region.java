@@ -1,28 +1,22 @@
 package net.dzikoysk.funnyguilds.basic;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
 
 public class Region {
 		
 	private final String name;
-	
 	private Guild guild;
-
 	private Location center;
 	private World world;
 	private int size;
-	
+	private int enlarge;
 	private Location l;
 	private Location p;
-	
-	private int enlarge;
 	
 	private Region(String name){
 		this.name = name;
@@ -35,8 +29,8 @@ public class Region {
 		this.world = loc.getWorld();
 		this.center = loc;
 		this.size = size;
-		RegionUtils.addRegion(this);
 		this.update();
+		RegionUtils.addRegion(this);
 	}
 	
 	public static Region get(String name){
@@ -45,45 +39,22 @@ public class Region {
 		return new Region(name);
 	}
 	
-	public YamlConfiguration serialize(YamlConfiguration yaml) {
-		yaml.set("name", this.name);
-		yaml.set("center", this.world.getName() + "," + this.center.getBlockX() + "," + this.center.getBlockY() + "," + this.center.getBlockZ());
-		yaml.set("size", this.size);
-		yaml.set("enlarge", this.enlarge);
-		return yaml;
-	}
-	
-	public static Region deserialize(Object[] values){
-		if(values == null){
-			FunnyGuilds.error("Cannot deserialize region! Caused by: null");
-			return null;
-		}
-		Region region = Region.get((String) values[0]);
-		region.setCenter((Location) values[1]);
-		region.setSize((int) values[2]);
-		region.setEnlarge((int) values[3]);
-		region.update();
-		return region;
-	}
-	
 	public void update(){
-		if(this.center != null){
-			if(this.size > 0){
-				if(this.world == null) this.world = Bukkit.getWorlds().get(0);
-				if(this.world != null){
-					int lx = this.center.getBlockX() + this.size;
-					int lz = this.center.getBlockZ() + this.size;
-					
-					int px = this.center.getBlockX() - this.size;
-					int pz = this.center.getBlockZ() - this.size;
-					
-					Vector l = new Vector(lx, 0, lz);
-					Vector p = new Vector(px, this.world.getMaxHeight(), pz);
-					
-					this.l = l.toLocation(this.world);
-					this.p = p.toLocation(this.world);
-				}
-			}
+		if(this.center == null) return;
+		if(this.size < 1) return;
+		if(this.world == null) this.world = Bukkit.getWorlds().get(0);
+		if(this.world != null){
+			int lx = this.center.getBlockX() + this.size;
+			int lz = this.center.getBlockZ() + this.size;
+			
+			int px = this.center.getBlockX() - this.size;
+			int pz = this.center.getBlockZ() - this.size;
+			
+			Vector l = new Vector(lx, 0, lz);
+			Vector p = new Vector(px, this.world.getMaxHeight(), pz);
+			
+			this.l = l.toLocation(this.world);
+			this.p = p.toLocation(this.world);
 		}
 	}
 	
@@ -213,5 +184,10 @@ public class Region {
 		int y = this.p.getBlockZ();
 		if(x > y) return y;
 		return x;
+	}
+	
+	@Override
+	public String toString(){
+		return this.name;
 	}
 }

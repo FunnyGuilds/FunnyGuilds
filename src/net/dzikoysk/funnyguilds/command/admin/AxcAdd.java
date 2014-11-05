@@ -48,6 +48,11 @@ public class AxcAdd implements Executor {
 		
 		Guild guild = GuildUtils.byTag(tag);
 		
+		if(guild == null){
+			player.sendMessage(ChatColor.RED + "Taka gildia nie istnieje!");
+			return;
+		}
+		
 		guild.addMember(user);
 		user.setGuild(guild);
 		

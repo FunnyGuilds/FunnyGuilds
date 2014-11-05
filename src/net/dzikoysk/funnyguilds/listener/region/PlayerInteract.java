@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.listener.region.util.ProtectionUtils;
+import net.dzikoysk.funnyguilds.system.protection.ProtectionUtils;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

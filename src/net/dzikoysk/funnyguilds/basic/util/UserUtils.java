@@ -11,8 +11,7 @@ public class UserUtils {
 	private static List<User> users = new ArrayList<User>();
 
 	public static List<User> getUsers(){
-		List<User> x = new ArrayList<User>(users);
-		return x;
+		return new ArrayList<User>(users);
 	}
 	
 	public static void addUser(User user){
@@ -24,30 +23,22 @@ public class UserUtils {
 	}
 	
 	public static void removeGuild(List<User> users){
-		for(User u : users){
-			u.removeGuild();
-		}
+		for(User u : users) u.removeGuild();
 	}
 	
 	public static void setGuild(List<User> users, Guild guild){
-		for(User u : users){
-			u.setGuild(guild);
-		}
+		for(User u : users) u.setGuild(guild);
 	}
 	
 	public static List<String> getNames(List<User> users){
 		List<String> list = new ArrayList<>();
-		for(User u : users){
-			list.add(u.getName());
-		}
+		for(User u : users) list.add(u.getName());
 		return list;
 	}
 	
 	public static List<User> getUsers(List<String> names){
 		List<User> list = new ArrayList<>();
-		for(String s : names){
-			list.add(User.get(s));
-		}
+		for(String s : names) list.add(User.get(s));
 		return list;
 	}
 }

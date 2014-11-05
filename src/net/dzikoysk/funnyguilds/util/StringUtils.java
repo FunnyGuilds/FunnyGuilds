@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.ChatColor;
+
 public class StringUtils {
 	
 	public static String replace(String text, String searchString, String replacement) {
@@ -29,6 +31,10 @@ public class StringUtils {
 	    return sb.toString();
 	}
 	
+	public static String colored(String s){
+		return ChatColor.translateAlternateColorCodes('&', s);
+	}
+	
 	public static String toString(List<String> list, boolean send){
 		StringBuilder sb = new StringBuilder();
 		for(String s : list){
@@ -48,5 +54,8 @@ public class StringUtils {
 		list = Arrays.asList(s.split(","));
 		return list;
 	}
-
+	
+	public static List<String> getEmptyList(){
+		return new ArrayList<String>();
+	}
 }

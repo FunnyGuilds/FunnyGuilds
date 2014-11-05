@@ -3,11 +3,11 @@ package net.dzikoysk.funnyguilds.util.element;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.Config;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -53,7 +53,7 @@ public class IndividualPrefix {
 			Team team = scoreboard.getTeam(to.getTag());
 			if(team == null) team = scoreboard.registerNewTeam(to.getTag());
 			for(User u : to.getMembers()){
-				OfflinePlayer player = Bukkit.getOfflinePlayer(u.getName());
+				OfflineUser player = new OfflineUser(u.getName());
 				if(!team.hasPlayer(player)) team.addPlayer(player);
 			}
 			String prefix = Config.getInstance().prefixOther;
@@ -64,7 +64,7 @@ public class IndividualPrefix {
 			Team team = scoreboard.getTeam(to.getTag());
 			if(team == null) team = scoreboard.registerNewTeam(to.getTag());
 			for(User u : to.getMembers()){
-				OfflinePlayer player = Bukkit.getOfflinePlayer(u.getName());
+				OfflineUser player = new OfflineUser(u.getName());
 				if(!team.hasPlayer(player)) team.addPlayer(player);
 			}
 			team.setPrefix(Config.getInstance().prefixOther.replace("{TAG}", to.getTag()));
@@ -102,7 +102,8 @@ public class IndividualPrefix {
 			Team team = scoreboard.getTeam(guild.getTag());
 			if(team == null) team = scoreboard.registerNewTeam(guild.getTag());
 			for(User u : guild.getMembers()){
-				OfflinePlayer player = Bukkit.getOfflinePlayer(u.getName());
+				if(u.getName() == null) continue;
+				OfflineUser player = new OfflineUser(u.getName());
 				if(!team.hasPlayer(player)) team.addPlayer(player);
 			}
 			team.setPrefix(our.replace("{TAG}", guild.getTag()));
@@ -111,7 +112,8 @@ public class IndividualPrefix {
 				team = scoreboard.getTeam(one.getTag());
 				if(team == null) team = scoreboard.registerNewTeam(one.getTag());
 				for(User u : one.getMembers()){
-					OfflinePlayer player = Bukkit.getOfflinePlayer(u.getName());
+					if(u.getName() == null) continue;
+					OfflineUser player = new OfflineUser(u.getName());
 					if(!team.hasPlayer(player)) team.addPlayer(player);
 				}
 				if(guild.getAllies().contains(one)) team.setPrefix(ally.replace("{TAG}", one.getTag()));
@@ -125,7 +127,8 @@ public class IndividualPrefix {
 				Team team = scoreboard.getTeam(one.getTag());
 				if(team == null) team = scoreboard.registerNewTeam(one.getTag());
 				for(User u : one.getMembers()){
-					OfflinePlayer player = Bukkit.getOfflinePlayer(u.getName());
+					if(u.getName() == null) continue;
+					OfflineUser player = new OfflineUser(u.getName());
 					if(!team.hasPlayer(player)) team.addPlayer(player);
 				}
 				team.setPrefix(other.replace("{TAG}", one.getTag()));

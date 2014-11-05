@@ -17,19 +17,16 @@ public class PlayerDeath implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event){
 		Player v = event.getEntity();
-		Player a = event.getEntity().getKiller();
-		
-		if(v == null || a == null) return;
-		
-		Messages msg = Messages.getInstance();
-		
 		User victim = User.get(v);
+		victim.getRank().addDeath();
+		
+		Player a = event.getEntity().getKiller();
+		if(a == null) return;		
 		User attacker = User.get(a);
 		
 		Double d = victim.getRank().getPoints() * (Config.getInstance().rankPercent / 100);
 		int points = d.intValue();
 		
-		victim.getRank().addDeath();
 		victim.getRank().removePoints(points);
 		
 		attacker.getRank().addKill();
@@ -45,12 +42,18 @@ public class PlayerDeath implements Listener {
 			IndependentThread.action(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
 		}
 		
-		String death = msg.getMessage("rankDeathMessage");
+		String death = Messages.getInstance().getMessage("rankDeathMessage");
 		death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());
 		death = StringUtils.replace(death, "{VICTIM}", victim.getName());
 		death = StringUtils.replace(death, "{-}", Integer.toString(points));
 		death = StringUtils.replace(death, "{+}", Integer.toString(points));
 		death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
+		if(victim.hasGuild()) death = StringUtils.replace(death, "{VTAG}", 
+			StringUtils.replace(Config.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
+		if(attacker.hasGuild()) death = StringUtils.replace(death, "{VTAG}", 
+			StringUtils.replace(Config.getInstance().chatGuild, "{TAG}", attacker.getGuild().getTag()));
+		death = StringUtils.replace(death, "{VTAG}", "");
+		death = StringUtils.replace(death, "{ATAG}", "");
 		event.setDeathMessage(death);
 	}
 

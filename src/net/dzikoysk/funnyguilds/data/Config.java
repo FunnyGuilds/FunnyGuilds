@@ -26,6 +26,7 @@ public class Config {
 	public List<ItemStack> createItems;
 	public int createDistance;
 	public Material createMaterial;
+	public String createStringMaterial;
 	
 	public int regionSize;
 	public int regionMaxSize;
@@ -83,9 +84,25 @@ public class Config {
 	public String excGuild;
 	public String excAlly;
 	public String excBreak;
+	public String excInfo;
 	public String excPlayer;
 	public String excTop;
-	public String excG;
+	
+	public List<String> excCreateAliases;
+	public List<String> excDeleteAliases;
+	public List<String> excConfirmAliases;
+	public List<String> excInviteAliases;
+	public List<String> excJoinAliases;
+	public List<String> excLeaveAliases;
+	public List<String> excKickAliases;
+	public List<String> excBaseAliases;
+	public List<String> excEnlargeAliases;
+	public List<String> excGuildAliases;
+	public List<String> excAllyAliases;
+	public List<String> excBreakAliases;
+	public List<String> excInfoAliases;
+	public List<String> excPlayerAliases;
+	public List<String> excTopAliases;
 	
 	public String axcMain;
 	public String axcAdd;
@@ -95,6 +112,7 @@ public class Config {
 	public String axcPoints;
 	public String axcKills;
 	public String axcDeaths;
+	public String axcBan;
 	
 	public int dataInterval;
 	public boolean flat;
@@ -142,7 +160,8 @@ public class Config {
 		}
 		this.createItems = items;
 		this.createDistance = yml.getInt("create-distance");
-		this.createMaterial = Parser.parseMaterial(yml.getString("create-material"));
+		this.createStringMaterial = yml.getString("create-material");
+		this.createMaterial = Parser.parseMaterial(createStringMaterial);
 	}
 	
 	private void loadRegionsSection(){
@@ -195,6 +214,7 @@ public class Config {
 	private void loadRankSection(){
 		this.rankStart = yml.getInt("rank-start");
 		this.rankPercent = yml.getInt("rank-percent");
+		if(this.rankPercent == 1) this.rankPercent = 1;
 	}
 	
 	private void loadDamageSection(){
@@ -240,21 +260,37 @@ public class Config {
 	}
 	
 	private void loadCommandsSection(){
-		this.excCreate = yml.getString("commands.create");
-		this.excDelete = yml.getString("commands.delete");
-		this.excConfirm = yml.getString("commands.confirm");
-		this.excInvite = yml.getString("commands.invite");
-		this.excJoin = yml.getString("commands.join");
-		this.excLeave = yml.getString("commands.leave");
-		this.excKick = yml.getString("commands.kick");
-		this.excBase = yml.getString("commands.base");
-		this.excEnlarge = yml.getString("commands.enlarge");
-		this.excGuild = yml.getString("commands.guild");
-		this.excG = yml.getString("commands.g");
-		this.excAlly = yml.getString("commands.ally");
-		this.excBreak = yml.getString("commands.break");
-		this.excPlayer = yml.getString("commands.player");
-		this.excTop = yml.getString("commands.top");
+		this.excCreate = yml.getString("commands.create.name");
+		this.excDelete = yml.getString("commands.delete.name");
+		this.excConfirm = yml.getString("commands.confirm.name");
+		this.excInvite = yml.getString("commands.invite.name");
+		this.excJoin = yml.getString("commands.join.name");
+		this.excLeave = yml.getString("commands.leave.name");
+		this.excKick = yml.getString("commands.kick.name");
+		this.excBase = yml.getString("commands.base.name");
+		this.excEnlarge = yml.getString("commands.enlarge.name");
+		this.excGuild = yml.getString("commands.guild.name");
+		this.excAlly = yml.getString("commands.ally.name");
+		this.excBreak = yml.getString("commands.break.name");
+		this.excInfo = yml.getString("commands.info.name");
+		this.excPlayer = yml.getString("commands.player.name");
+		this.excTop = yml.getString("commands.top.name");
+		
+		this.excCreateAliases = yml.getStringList("commands.create.aliases");
+		this.excDeleteAliases = yml.getStringList("commands.delete.aliases");
+		this.excConfirmAliases = yml.getStringList("commands.confirm.aliases");
+		this.excInviteAliases = yml.getStringList("commands.invite.aliases");
+		this.excJoinAliases = yml.getStringList("commands.join.aliases");
+		this.excLeaveAliases = yml.getStringList("commands.leave.aliases");
+		this.excKickAliases = yml.getStringList("commands.kick.aliases");
+		this.excBaseAliases = yml.getStringList("commands.base.aliases");
+		this.excEnlargeAliases = yml.getStringList("commands.enlarge.aliases");
+		this.excGuildAliases = yml.getStringList("commands.guild.aliases");
+		this.excAllyAliases = yml.getStringList("commands.ally.aliases");
+		this.excBreakAliases = yml.getStringList("commands.break.aliases");
+		this.excInfoAliases = yml.getStringList("commands.info.aliases");
+		this.excPlayerAliases = yml.getStringList("commands.player.aliases");
+		this.excTopAliases = yml.getStringList("commands.top.aliases");
 		
 		this.axcMain = yml.getString("commands.admin.main");
 		this.axcAdd = yml.getString("commands.admin.add");
@@ -264,6 +300,7 @@ public class Config {
 		this.axcPoints = yml.getString("commands.admin.points");
 		this.axcKills = yml.getString("commands.admin.kills");
 		this.axcDeaths = yml.getString("commands.admin.deaths");
+		this.axcBan = yml.getString("commands.admin.ban");
 	}
 	
 	private void loadDataSection(){

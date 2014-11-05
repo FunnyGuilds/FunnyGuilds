@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.data.Config;
 public class Rank implements Comparable<Rank> {
 	
 	private BasicType type;
+	private String idns;
 	private Guild guild;
 	private User user;
 	private int points;
@@ -15,11 +16,13 @@ public class Rank implements Comparable<Rank> {
 	public Rank(User user){
 		this.type = BasicType.USER;
 		this.points = Config.getInstance().rankStart;
+		this.idns = user.getName();
 		this.user = user;
 	}
 	
 	public Rank(Guild guild){
 		this.type = BasicType.GUILD;
+		this.idns = guild.getName();
 		this.guild = guild;
 	}
 	
@@ -71,6 +74,10 @@ public class Rank implements Comparable<Rank> {
 		return this.deaths;
 	}
 	
+	public String getIDNS(){
+		return idns;
+	}
+	
 	public BasicType getType(){
 		return type;
 	}
@@ -83,6 +90,16 @@ public class Rank implements Comparable<Rank> {
 		return guild;
 	}
 	
+	@Override
+	public boolean equals(Object o){
+		if(o == null) return false;
+		if(o.getClass() != this.getClass()) return false;
+		Rank rank = (Rank) o;
+		if(!rank.getIDNS().equalsIgnoreCase(idns)) return false;
+		return true;
+	}
+	
+	@Override
 	public String toString(){
 		return Integer.toString(getPoints());
 	}
@@ -90,15 +107,7 @@ public class Rank implements Comparable<Rank> {
 	@Override
 	public int compareTo(Rank rank) {
 		int i = Integer.compare(rank.getPoints(), getPoints());
-		if(i == 0){
-			if(type == BasicType.USER && rank.getType() == BasicType.USER){
-				if(user.getName().equals(rank.getUser().getName())) return 0;
-				return user.getName().compareTo(rank.getUser().getName());	
-			}
-			else if(type == BasicType.GUILD && rank.getType() == BasicType.GUILD)
-				if(guild.getName().equals(rank.getGuild().getName())) return 0;
-				return guild.getName().compareTo(rank.getGuild().getName());
-		}
+		if(i == 0) i = idns.compareTo(rank.getIDNS());
 		return i;
 	}
 

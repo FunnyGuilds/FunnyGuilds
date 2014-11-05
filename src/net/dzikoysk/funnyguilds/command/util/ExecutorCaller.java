@@ -20,17 +20,19 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     
 	private static final List<ExecutorCaller> ecs = new ArrayList<>();
 
-	private final String overriding;
-	private final Executor executor;
-    private final String permission;
-    private final List<String> aliases;
-    private final String[] secondary;
-    private final List<ExecutorCaller> executors = new ArrayList<>();
+	private String overriding;
+	private Executor executor;
+    private String permission;
+    private List<String> aliases;
+    private String[] secondary;
+    private List<ExecutorCaller> executors = new ArrayList<>();
     
-    public ExecutorCaller(Executor exc, String command, String perm, String... aliases) {
-        this.executor = exc;
+    public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases) {
+        if(exc == null || command == null);
+    	
+    	this.executor = exc;
         this.permission = perm;
-        if(aliases != null && aliases.length > 0) this.aliases = new ArrayList<String>(Arrays.asList(aliases));
+        if(aliases != null && aliases.size() > 0) this.aliases = aliases;
         else this.aliases = null;
         
         String[] splited = command.split("\\s+");

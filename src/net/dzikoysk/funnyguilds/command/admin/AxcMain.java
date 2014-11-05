@@ -29,5 +29,6 @@ public class AxcMain implements Executor {
 		player.sendMessage(ChatColor.AQUA + "/" + c.axcPoints + " [nick] [points] " + ChatColor.GRAY + "- Ustawia punkty gracza");
 		player.sendMessage(ChatColor.AQUA + "/" + c.axcKills + " [nick] [kills] " + ChatColor.GRAY + "- Ustawia ilosc zabojstw gracza");
 		player.sendMessage(ChatColor.AQUA + "/" + c.axcDeaths + " [nick] [deaths]" + ChatColor.GRAY + "- Ustawia ilosc smierci gracza");
+		player.sendMessage(ChatColor.AQUA + "/" + c.axcBan + " [tag] [czas]" + ChatColor.GRAY + "- Banuje gildie na okreslony czas");
 	}
 }

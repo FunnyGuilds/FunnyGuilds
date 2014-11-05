@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 
-public class ScoreboardStack {
+public class ScoreboardStack implements Runnable {
 	
 	private static ScoreboardStack instance;
 	private static Stack<Scoreboard> stack = new Stack<>();
@@ -18,13 +18,13 @@ public class ScoreboardStack {
 		instance = this;
 	}
 	
+	@Override
+	public void run(){
+		fill();
+	}
+	
 	public void start(){
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(FunnyGuilds.getInstance(), new Runnable(){
-			@Override
-			public void run(){
-				fill();
-			}
-		}, 0, 20);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(FunnyGuilds.getInstance(), this, 0, 20);
 	}
 	
 	private void fill(){

@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.util.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.util.element.PlayerList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -26,6 +27,9 @@ public class User extends Object {
 	
 	private long notification;
 	private boolean enter;
+	
+	private long ban;
+	private String reason;
 	
 	private BukkitTask teleportation;
 	private Scoreboard scoreboard;
@@ -62,6 +66,14 @@ public class User extends Object {
 		this.rank = r;
 	}
 	
+	public void setBan(long l){
+		this.ban = l;
+	}
+	
+	public void setReason(String s){
+		this.reason = s;
+	}
+	
 	public void setNotificationTime(long time){
 		this.notification = time;
 	}
@@ -72,10 +84,6 @@ public class User extends Object {
 	
 	public void setTeleportation(BukkitTask task){
 		this.teleportation = task;
-	}
-	
-	public String toString(){
-		return this.name;
 	}
 	
 	public UUID getUUID(){
@@ -106,10 +114,9 @@ public class User extends Object {
 	}
 	
 	public Rank getRank(){
-		if(this.rank == null){
-			this.rank = new Rank(this);
-			RankManager.getInstance().update(this);
-		}
+		if(this.rank != null) return this.rank;
+		this.rank = new Rank(this);
+		RankManager.getInstance().update(this);
 		return this.rank;
 	}
 	
@@ -123,6 +130,15 @@ public class User extends Object {
 	
 	public BukkitTask getTeleportation(){
 		return this.teleportation;
+	}
+	
+	public long getBan(){
+		return this.ban;
+	}
+	
+	public String getReason(){
+		if(this.reason != null) return ChatColor.translateAlternateColorCodes('&', this.reason);
+		return null;
 	}
 	
 	public Player getPlayer(){
@@ -172,23 +188,23 @@ public class User extends Object {
 		return true;
 	}
 	
-// Static get section {
-	
-	private User(String name){
-		OfflinePlayer offp = Bukkit.getOfflinePlayer(name);
-		new User(offp);
+	public boolean isBanned(){
+		return this.ban != 0;
 	}
 	
-	private User(Player p){
-		this.uuid = p.getUniqueId();
-		this.name = p.getName();
+	private User(String name){
+		this(new OfflineUser(name));
+	}
+	
+	private User(Player player){
+		this.uuid = player.getUniqueId();
+		this.name = player.getName();
 		UserUtils.addUser(this);
 	}
 	
-	private User(OfflinePlayer of){
-		if(!of.isOnline()) this.name = of.getName();
-		else this.uuid = of.getPlayer().getUniqueId();
-		this.name = of.getName();
+	private User(OfflineUser offline){
+		this.uuid = UUID.fromString(offline.getUniqueId());
+		this.name = offline.getName();
 		UserUtils.addUser(this);
 	}
 	
@@ -197,20 +213,20 @@ public class User extends Object {
 		return new User(uuid);
 	}
 
-	public static User get(Player p){
-		for(User lp : UserUtils.getUsers()){
-			if(lp.getName() == null) continue;
-			if(lp.getName().equalsIgnoreCase(p.getName())) return lp;
+	public static User get(Player player){
+		for(User u : UserUtils.getUsers()){
+			if(u.getName() == null) continue;
+			if(u.getName().equalsIgnoreCase(player.getName())) return u;
 		}
-		return new User(p);
+		return new User(player);
 	}
 	
-	public static User get(OfflinePlayer of){
-		for(User lp : UserUtils.getUsers()){
-			if(lp.getName() == null) continue;
-			if(lp.getName().equalsIgnoreCase(of.getName())) return lp;
+	public static User get(OfflinePlayer offline){
+		for(User u : UserUtils.getUsers()){
+			if(u.getName() == null) continue;
+			if(u.getName().equalsIgnoreCase(offline.getName())) return u;
 		}
-		return new User(of);
+		return new User(offline.getName());
 	}
 	
 	public static User get(String name){
@@ -218,4 +234,27 @@ public class User extends Object {
 		return new User(name);
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(o == null) return false;
+		if(o.getClass() != this.getClass()) return false;
+		User u = (User) o;
+		if(u.getUUID() != this.uuid) return false;
+		if(u.getName() != this.name) return false;
+		return true;
+	}
+
+	@Override
+	public String toString(){
+		return this.name;
+	}
 }

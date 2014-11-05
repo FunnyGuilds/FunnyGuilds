@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.util;
 
+import java.util.Stack;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -43,7 +45,8 @@ public class Parser {
 		m = m.replaceAll(" ", "_");
 		Material material = Material.getMaterial(m);
 		if(material == null){
-			FunnyGuilds.parser("Unknown material: " + string);
+			if(!string.equalsIgnoreCase("ender crystal"))
+				FunnyGuilds.parser("Unknown material: " + string);
 			return Material.AIR;
 		}
 		return material;
@@ -92,6 +95,50 @@ public class Parser {
 			FunnyGuilds.parser("Unknown number: " + sb.toString());
 		}
 		return null;
+	}
+	
+	public static long parseTime(String string){
+		if(string == null || string.isEmpty()) return 0;
+		
+		Stack<Character> type = new Stack<>();
+		StringBuilder value = new StringBuilder();
+		
+		boolean calc = false;
+		long time = 0;
+		
+		for(char c : string.toCharArray()){
+			switch(c){
+			case 'd':
+			case 'h':
+			case 'm':
+			case 's':
+				if(!calc){
+					type.push(c);
+					calc = true;
+				}
+				if(calc){
+					try {
+						int i = Integer.valueOf(value.toString());
+						switch(type.pop()){
+						case 'd': time += i*86400000; break;
+						case 'h': time += i*3600000; break;
+						case 'm': time += i*60000; break;
+						case 's': time += i*1000; break;
+						}
+					} catch (NumberFormatException e){
+						FunnyGuilds.parser("Unknown number: " + value.toString());
+						return time;
+					}
+				}
+				type.push(c);
+				calc = true;
+				break;
+			default:
+				value.append(c);
+				break;
+			}
+		}
+		return time;
 	}
 	
 	public static String toString(Location loc){

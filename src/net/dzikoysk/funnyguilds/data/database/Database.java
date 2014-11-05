@@ -101,7 +101,8 @@ public class Database {
 			Statement statement = connection.createStatement();
 			int result = statement.executeUpdate(query);
 			return result;
-		} catch (Exception e) {
+		} catch (SQLException e) {
+			if(e.getSQLState().equals("42S21")) return 4221;
 			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
 		return 0;

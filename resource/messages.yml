@@ -2,8 +2,12 @@
 permission: '&cNie masz wystarczajacych uprawnien do uzycia tej komendy!'
 
 # <------- Rank Messages -------> #
-# Available variables: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}
-rankDeathMessage: '&b{ATTACKER} &7(&b+{+}&7) zabil &b{VICTIM} &7(&b-{-}&7)'
+# Available variables: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}
+rankDeathMessage: '{ATAG}&b{ATTACKER} &7(&b+{+}&7) zabil {VTAG}&b{VICTIM} &7(&b-{-}&7)'
+
+# <------- Rank Messages -------> #
+# Available variables: {PLAYER}, {REASON}, {DATE}, {NEWLINE}
+banMessage: '&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}'
 
 # <------- Notification Bar Messages -------> #
 # Available variables: {PLAYER}
@@ -51,6 +55,7 @@ helpList:
 - '&a/usun &8- &7Usuwa gildie'
 
 # <------- Info Messages -------> #
+infoTag: '&cPodaj tag gildii!'
 infoExists: '&cGildia o takim tagu nie istnieje!'
 # Available variables: {GUILD}, {TAG}, {OWNER}, {MEMBERS}, {POINTS}, {KILLS}, {DEATHS}, {ALLIES}, {RANK}
 infoList:

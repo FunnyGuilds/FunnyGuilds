@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.listener.region.util;
+package net.dzikoysk.funnyguilds.system.protection;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 
@@ -43,6 +44,15 @@ public class ProtectionUtils {
 		} else Messages.getInstance().getMessage("regionOther");
 
 		return true;
+	}
+	
+	public static boolean endercrystal(EnderCrystal ec){
+		if(!RegionUtils.isIn(ec.getLocation())) return false;
+		Region region = RegionUtils.getAt(ec.getLocation());
+		if(region == null) return false;
+		if(region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
+			.equals(ec.getLocation().getBlock().getLocation().toVector())) return true;
+		return false;
 	}
 	
 	public static boolean action(Action action, Block block){
