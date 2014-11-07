@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#        1.9.9 Sweetness        #
+#           2.0 Valor           #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -17,20 +17,20 @@ tag-min-length: 2
 items:
 - 5 stone
 - 5 dirt
+# Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip
+items-vip:
+- 1 stone
 # Odleglosc od spawnu
 create-distance: 100
 # Blok, jaki pojawi sie pod nami po stworzeniu gildii
 create-material: ender crystal
-# Wielkosc regionu gildii
-region-size: 50
-# Minimalna odleglosc miedzy terenami gildii
-region-min-distance: 10
 
 # Mozliwosc powiekszania gildii
 enlarge-enable: true
 # O ile powieksza teren gildii 1 poziom
 enlarge-size: 5
-# Koszt powiekszania gildii (kazdy myslnik, to 1 poziom gildii)
+# Koszt powiekszania gildii 
+# - kazdy myslnik, to 1 poziom gildii
 enlarge-items:
 - 8 diamond
 - 16 diamond
@@ -43,15 +43,31 @@ enlarge-items:
 - 72 diamond
 - 80 diamond
 
-# Maxymalna ilosc czlonkow w gildii
-invite-members: 15
-
+# Wielkosc regionu gildii
+region-size: 50
+# Minimalna odleglosc miedzy terenami gildii
+region-min-distance: 10
 # Czas wyswietlania powiadomienia na pasku powiadomien (w sekundach)
 region-notification-time: 15
 # Co ile moze byc wywolywany pasek powiadomien przez jednego gracza (w sekundach)
 region-notification-cooldown: 60
 # Przez ile sekund nie mozna budowac na terenie gildii po wybuchu
 region-explode: 120
+
+# Ile zyc ma gildia
+war-lives: 3
+# Po jakim czasie od zalozenia mozna zaatakowac gildie
+war-protection: 24h
+# Ile czasu trzeba czekac do nastepnego ataku na gildie
+war-wait: 24h
+
+# Jaka waznosc ma gildia po jej zalozeniu
+validity-start: 14d
+# Ile czasu dodaje przedluzenie gildii
+validity-time: 14d
+# Koszt przedluzenia gildii
+validity-items:
+- 10 diamond
 
 # Wyglad tagu osob w gildii
 prefix-our: '&a{TAG}&f '
@@ -63,11 +79,11 @@ prefix-enemies: '&c{TAG}&f '
 prefix-other: '&7{TAG}&f '
 
 # Wyglad znaczika {TAG} wstawionego w format chatu
-chat-guild: '&2{TAG}'
+chat-guild: '&b{TAG} '
 # Wyglad znaczika {RANK} wstawionego w format chatu
-chat-rank: '&2{RANK}'
+chat-rank: '&b{RANK} '
 # Wyglad znaczika {POINTS} wstawionego w format chatu
-chat-points: '&2{POINTS}'
+chat-points: '&b{POINTS} '
 
 # Symbol od ktorego zaczyna sie wiadomosc do gildii/sojusznikow/wszystkich gildii
 chat-priv: '!'
@@ -103,6 +119,9 @@ base-items:
 - 1 diamond
 - 1 emerald
 
+# Maxymalna ilosc czlonkow w gildii
+invite-members: 15
+
 # Wyglad listy graczy. Przedzial od 1 do 60
 # Limit znakow: 30
 # > Spis zmiennych:
@@ -118,8 +137,8 @@ base-items:
 # {SECOND} - Sekunda
 # {MINUTE} - Minuta
 # {HOUR} - Godzina
-# {PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu
-# {GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu
+# {PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu (np. {PTOP-1}, {PTOP-60})
+# {GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})
 player-list:
   1: '&7Nick: &b{PLAYER}'
   2: '&7Ping: &b{PING}'
@@ -209,7 +228,10 @@ commands:
     name: 'top'
     aliases:
     - 'top10'
-  
+  validity:
+    name: 'przedluz'
+    aliases: []
+  # Komendy administratora
   admin:
     main: 'ga'
     add: 'ga dodaj'

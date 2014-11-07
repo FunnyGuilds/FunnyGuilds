@@ -119,7 +119,10 @@ public class ExcCreate implements Executor {
 			return;
 		}
  
-		List<ItemStack> itemsList = Config.getInstance().createItems;
+		List<ItemStack> itemsList = null;
+		if(p.hasPermission("funnyguilds.vip")) itemsList = Config.getInstance().createItemsVip;
+		else itemsList = Config.getInstance().createItems;
+		
 		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
 		for(int i = 0; i < items.length; i++){
 			if(!p.getInventory().containsAtLeast(items[i], items[i].getAmount())){
@@ -153,6 +156,10 @@ public class ExcCreate implements Executor {
 		Guild guild = new Guild(name);
 		guild.setTag(tag);
 		guild.setOwner(u);
+		guild.setLives(c.warLives);
+		guild.setBorn(System.currentTimeMillis());
+		guild.setValidity(System.currentTimeMillis() + c.validityStart);
+		guild.setAttacked(System.currentTimeMillis() - c.warWait + c.warProtection);
 		
 		Region region = new Region(guild, loc, c.regionSize);
 		guild.setRegion(region.getName());

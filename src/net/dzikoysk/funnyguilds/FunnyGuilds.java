@@ -20,6 +20,7 @@ import net.dzikoysk.funnyguilds.command.ExcKick;
 import net.dzikoysk.funnyguilds.command.ExcLeave;
 import net.dzikoysk.funnyguilds.command.ExcPlayer;
 import net.dzikoysk.funnyguilds.command.ExcTop;
+import net.dzikoysk.funnyguilds.command.ExcValidity;
 import net.dzikoysk.funnyguilds.command.admin.AxcAdd;
 import net.dzikoysk.funnyguilds.command.admin.AxcBan;
 import net.dzikoysk.funnyguilds.command.admin.AxcDeaths;
@@ -45,6 +46,7 @@ import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
 import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
 import net.dzikoysk.funnyguilds.listener.region.BucketAction;
 import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
@@ -93,6 +95,7 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new ExcPlayer(), c.excPlayer, "funnyguilds.player", c.excPlayerAliases);
 		new ExecutorCaller(new ExcInfo(), c.excInfo, "funnyguilds.info", c.excInfoAliases);
 		new ExecutorCaller(new ExcTop(), c.excTop, "funnyguilds.top", c.excTopAliases);
+		new ExecutorCaller(new ExcValidity(), c.excValidity, "funnyguilds.validity", c.excValidityAliases);
 		
 		new ExecutorCaller(new AxcMain(), c.axcMain, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcAdd(), c.axcAdd, "funnyguilds.admin", null);
@@ -105,9 +108,9 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new AxcBan(), c.axcBan, "funnyguilds.admin", null);
 		
 		PluginManager pm = Bukkit.getPluginManager();
-
-		pm.registerEvents(new PlayerChat(), this);
+		
 		pm.registerEvents(new EntityDamage(), this);
+		pm.registerEvents(new PlayerChat(), this);
 		pm.registerEvents(new PlayerDeath(), this);
 		pm.registerEvents(new PlayerJoin(), this);
 		pm.registerEvents(new PlayerLogin(), this);
@@ -120,6 +123,7 @@ public class FunnyGuilds extends JavaPlugin {
 		pm.registerEvents(new BlockPlace(), this);
 		pm.registerEvents(new BucketAction(), this);
 		pm.registerEvents(new EntityExplode(), this);
+		pm.registerEvents(new PlayerInteract(), this);
 		pm.registerEvents(new PlayerMove(), this);
 		
 		this.start();

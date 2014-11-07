@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.data.Config;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
@@ -99,6 +100,7 @@ public class DatabaseGuild {
 	
 	public static Guild deserialize(ResultSet rs) throws SQLException{
 		if(rs == null) return null;
+		Object[] values = new Object[15];
 		
 		String id = rs.getString("uuid");
 		String name = rs.getString("name");
@@ -133,7 +135,10 @@ public class DatabaseGuild {
 		List<Guild> enemies = new ArrayList<>();
 		if(ens != null && !ens.equals("")) enemies = GuildUtils.getGuilds(StringUtils.fromString(ens));
 
-		Object[] values = new Object[15];
+		if(born == 0) born = System.currentTimeMillis(); 
+		if(validity == 0) validity = System.currentTimeMillis() + Config.getInstance().validityStart; 
+		if(lives == 0) lives = Config.getInstance().warLives;
+		
 		values[0] = uuid;
 		values[1] = name;
 		values[2] = tag;

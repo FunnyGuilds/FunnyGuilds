@@ -3,11 +3,11 @@ package net.dzikoysk.funnyguilds.system.ban;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 
-public class BanManager {
+public class BanSystem {
 
-	private static BanManager instance;
+	private static BanSystem instance;
 	
-	public BanManager(){
+	public BanSystem(){
 		instance = this;
 	}
 	
@@ -17,8 +17,8 @@ public class BanManager {
 		}
 	}
 	
-	public static BanManager getInstance(){
-		if(instance == null) new BanManager();
+	public static BanSystem getInstance(){
+		if(instance == null) new BanSystem();
 		return instance;
 	}
 }

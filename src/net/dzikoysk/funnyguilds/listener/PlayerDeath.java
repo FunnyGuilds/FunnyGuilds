@@ -50,7 +50,7 @@ public class PlayerDeath implements Listener {
 		death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
 		if(victim.hasGuild()) death = StringUtils.replace(death, "{VTAG}", 
 			StringUtils.replace(Config.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
-		if(attacker.hasGuild()) death = StringUtils.replace(death, "{VTAG}", 
+		if(attacker.hasGuild()) death = StringUtils.replace(death, "{ATAG}", 
 			StringUtils.replace(Config.getInstance().chatGuild, "{TAG}", attacker.getGuild().getTag()));
 		death = StringUtils.replace(death, "{VTAG}", "");
 		death = StringUtils.replace(death, "{ATAG}", "");

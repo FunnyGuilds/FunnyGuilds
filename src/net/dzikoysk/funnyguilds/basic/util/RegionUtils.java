@@ -32,6 +32,7 @@ public class RegionUtils {
 	
 	public static boolean isNear(Location center){
 		for(Region region : regions){
+			if(!center.getWorld().equals(region.getCenter().getWorld())) return false;
 			double distance = center.distance(region.getCenter());
 			int i = Config.getInstance().regionSize;
 			if(Config.getInstance().enlargeItems != null) i = Config.getInstance().enlargeItems.size()*Config.getInstance().enlargeSize + i;

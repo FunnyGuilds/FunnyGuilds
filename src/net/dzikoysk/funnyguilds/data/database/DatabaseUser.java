@@ -49,7 +49,8 @@ public class DatabaseUser {
 		sb.append("kills=" + user.getRank().getKills() + ",");
 		sb.append("deaths=" + user.getRank().getDeaths() + ",");
 		sb.append("ban=" + user.getBan() + ",");
-		sb.append("reason='" + user.getBan() + "';");
+		sb.append("reason='" + user.getReason() + "'");
+		sb.append(';');
 		return sb.toString();
 	}
 	

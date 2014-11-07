@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -63,6 +64,12 @@ public class AxcBan implements Executor {
 
 		BanUtils.ban(guild, time, reason);
 		player.sendMessage(StringUtils.colored("&7Zbanowano gildie &b" + guild.getName() + " &7na okres &b" + ts + "&7!"));
+		Bukkit.broadcastMessage(Messages.getInstance().getMessage("broadcastBan")
+			.replace("{GUILD}", guild.getName())
+			.replace("{TAG}", guild.getTag())
+			.replace("{REASON}", StringUtils.colored(reason))
+			.replace("{TIME}", ts)
+		);
 	}
 
 }

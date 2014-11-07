@@ -138,7 +138,7 @@ public class User extends Object {
 	
 	public String getReason(){
 		if(this.reason != null) return ChatColor.translateAlternateColorCodes('&', this.reason);
-		return null;
+		return "";
 	}
 	
 	public Player getPlayer(){

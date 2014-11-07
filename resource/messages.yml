@@ -38,6 +38,12 @@ broadcastJoin: '&a{PLAYER} &7dolaczyl do gildii &a{GUILD}&7!'
 broadcastLeave: '&c{PLAYER} &7opuscil gildie &c{GUILD}&7!'
 # Available variables: {PLAYER}, {GUILD}, {TAG}
 broadcastKick: '&c{PLAYER} &7zostal &cwyrzucony &7z gildii &c{GUILD}&7!'
+# Available variables: {GUILD}, {TAG}, {REASON}, {TIME}
+broadcastBan: '&7Gildia &c{GUILD}&7 zostala zbanowana za &c{REASON}&7, gratulacje!'
+# Available variables: {GUILD}, {TAG}, {X}, {Y}, {Z}
+broadcastValidity: '&7Gildia &b{GUILD} &7wygasla&b! &7Jej baza znajdowala sie na x: &b{X} &7y: &b{Y} &7z: &b{Z}&7!'
+# Available variables: {WINNER}, {LOSER}
+broadcastWar: '&7Gildia &4{WINNER}&7 podblila gildie &4{LOSER}&7!!'
 
 # <------- Help Messages -------> #
 helpList:
@@ -45,9 +51,10 @@ helpList:
 - '&a/zaloz [tag] [nazwa] &8- &7Tworzy gildie'
 - '&a/zapros [gracz] &8- &7Zaprasza gracza do gildii'
 - '&a/dolacz [tag] &8- &7Przyjmuje zaproszenie do gildii'
-- '&a/gildia [tag] &8- &7Informacje o danej gildii'
+- '&a/info [tag] &8- &7Informacje o danej gildii'
 - '&a/baza &8- &7Teleportuje do bazy gildii'
 - '&a/powieksz &8- &7Powieksza teren gildii'
+- '&a/przedluz &8- &7Przedluza waznosc gildii'
 - '&a/sojusz [tag] &8- &7Pozwala nawiazac sojusz'
 - '&a/opusc &8- &7Opuszcza gildie'
 - '&a/wyrzuc [gracz] &8- &7Wyrzuca gracza z gildii'
@@ -57,13 +64,17 @@ helpList:
 # <------- Info Messages -------> #
 infoTag: '&cPodaj tag gildii!'
 infoExists: '&cGildia o takim tagu nie istnieje!'
-# Available variables: {GUILD}, {TAG}, {OWNER}, {MEMBERS}, {POINTS}, {KILLS}, {DEATHS}, {ALLIES}, {RANK}
+# Available variables: {GUILD}, {TAG}, {OWNER}, {MEMBERS}, 
+# {POINTS}, {KILLS}, {DEATHS}, {ALLIES}, {RANK}, {VALIDITY},
+# {LIVES}
 infoList:
 - '&8-------------------------------'
 - '&7Gildia: &a{GUILD} &7[&a{TAG}&7]'
 - '&7Zalozyciel: &a{OWNER}'
-- '&7Czlonkowie: &a{MEMBERS}'
 - '&7Punkty: &a{POINTS}'
+- '&7Zycia: &c{LIVES}'
+- '&7Waznosc: &a{VALIDITY}'
+- '&7Czlonkowie: &a{MEMBERS}'
 - '&7Sojusze: &a{ALLIES}'
 - '&8-------------------------------'
 
@@ -234,4 +245,27 @@ breakAllyExists: '&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7&c{GUILD
 breakDone: '&7Rozwiazano sojusz z gildia &c{GUILD}&7!'
 # Available variables: {GUILD}, {TAG}
 breakIDone: '&7Gildia &c{GUILD} &7rozwiazala sojusz z Twoja gildia!'
+
+# <------- Validity Messages -------> #
+validityHasNotGuild: '&cNie masz gildii!'
+validityIsNotOwner: '&cNie jestes zalozycielem gildii!'
+# Available variables: {ITEM}
+validityItems: '&7Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz &c{ITEM}'
+# Available variables: {DATE}
+validityDone: '&7Waznosc gildii przedluzona do &a{DATE}&7!'
+
+# <------- Validity Messages -------> #
+warHasNotGuild: '&cMusisz miec gildie, aby zaatkowac inna!'
+warAlly: '&cNie mozesz zaatakowac sojusznika!'
+# Available variables: {TIME}
+warWait: '&7Atak na gildie mozliwy za &4{TIME}'
+# Available variables: {ATTACKED}
+warAttacker: '&7Twoja gildia pozbawila gildie &4{ATTACKED} &7z &41 zycia&7!'
+# Available variables: {ATTACKER}
+warAttacked: '&7Twoja gildia stracila &41 zycie &7przez &4{ATTACKER}&7!'
+# Available variables: {LOSER}
+warWin: '&7Twoja gildia &apodbila &7gildie &a{LOSER}&7! Zyskujecie &c1 zycie&7!'
+# Available variables: {WINNER}
+warLose: '&7Twoja gildia &4przegrala &7wojne z gildia &4{WINNER}&7! &4Gildia zostaje zniszona&7!'
+
 

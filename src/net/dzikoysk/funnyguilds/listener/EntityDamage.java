@@ -17,7 +17,7 @@ public class EntityDamage implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof EnderCrystal){
-			if(ProtectionUtils.endercrystal((EnderCrystal) event.getEntity())) event.setCancelled(true);
+			if(ProtectionUtils.endercrystal(event)) event.setCancelled(true);
 			return;
 		}
 		if(event.getEntity() instanceof Player){

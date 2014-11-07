@@ -102,6 +102,7 @@ public class Region {
 	public boolean isIn(Location loc){
 		this.update();
 		if(loc == null || this.l == null || this.p == null) return false;
+		if(!this.center.getWorld().equals(loc.getWorld())) return false;
 		if(loc.getBlockX() > this.getLowerX() && loc.getBlockX() < this.getUpperX()) {
             if(loc.getBlockY() > this.getLowerY() && loc.getBlockY() < this.getUpperY()) {
                 if(loc.getBlockZ() > this.getLowerZ() && loc.getBlockZ() < this.getUpperZ()){

@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -40,6 +44,8 @@ public class ExcInfo implements Executor {
 			s.sendMessage(msg.getMessage("infoExists"));
 			return;
 		}
+		DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+		Date v = new Date(guild.getValidity());
 		
 		for(String m : msg.getList("infoList")){
 			m = StringUtils.replace(m, "{GUILD}", guild.getName());
@@ -50,6 +56,8 @@ public class ExcInfo implements Executor {
 			m = StringUtils.replace(m, "{KILLS}", Integer.toString(guild.getRank().getKills()));
 			m = StringUtils.replace(m, "{DEATHS}", Integer.toString(guild.getRank().getDeaths()));
 			m = StringUtils.replace(m, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(guild)));
+			m = StringUtils.replace(m, "{VALIDITY}", date.format(v));
+			m = StringUtils.replace(m, "{LIVES}", Integer.toString(guild.getLives()));
 			if(guild.getAllies().size() > 0)
 				m = StringUtils.replace(m, "{ALLIES}", StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
 			else m = StringUtils.replace(m, "{ALLIES}", "Brak");

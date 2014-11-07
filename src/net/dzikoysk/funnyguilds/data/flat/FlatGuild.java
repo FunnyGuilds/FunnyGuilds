@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.data.Config;
 import net.dzikoysk.funnyguilds.data.DataManager;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
@@ -134,7 +135,11 @@ public class FlatGuild {
 		List<Guild> enemies = new ArrayList<Guild>();
 		if(ens != null)
 			for(String s : ens) enemies.add(Guild.get(s));
-
+		
+		if(born == 0) born = System.currentTimeMillis(); 
+		if(validity == 0) validity = System.currentTimeMillis() + Config.getInstance().validityStart; 
+		if(lives == 0) lives = Config.getInstance().warLives; 
+		
 		values[0] = uuid;
 		values[1] = name;
 		values[2] = tag;

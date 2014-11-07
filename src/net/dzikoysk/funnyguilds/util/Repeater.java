@@ -6,14 +6,17 @@ import org.bukkit.scheduler.BukkitTask;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Config;
-import net.dzikoysk.funnyguilds.system.ban.BanManager;
+import net.dzikoysk.funnyguilds.system.ban.BanSystem;
+import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
 
 public class Repeater implements Runnable {
 
 	private static Repeater instance;
 	private volatile BukkitTask repeater;
 	
-	private int playerlist;
+	private int player_list;
+	private int ban_system;
+	private int validity_system;
 
 	public Repeater(){
 		instance = this;
@@ -26,9 +29,13 @@ public class Repeater implements Runnable {
 	
 	@Override
 	public void run() {
-		BanManager.getInstance().run();
-		if(playerlist == Config.getInstance().playerlistInterval) playerList();
-		playerlist++;
+		player_list++;
+		ban_system++;
+		validity_system++;
+		
+		if(player_list == Config.getInstance().playerlistInterval) playerList();
+		if(validity_system >= 5) validitySystem();
+		if(ban_system >= 5) banSystem();
 	}
 	
 	private void playerList(){
@@ -36,7 +43,17 @@ public class Repeater implements Runnable {
 			IndependentThread.action(ActionType.PLAYERLIST_GLOBAL_UPDATE);
 			for(Player p : Bukkit.getOnlinePlayers()) PacketUtils.sendPacket(p, PacketUtils.getPacket(p.getPlayerListName(), false, 0));
 		}
-		playerlist = 0;
+		player_list = 0;
+	}
+	
+	private void validitySystem(){
+		ValiditySystem.getInstance().run();
+		validity_system = 0;
+	}
+	
+	private void banSystem(){
+		BanSystem.getInstance().run();
+		ban_system = 0;
 	}
 	
 	public void stop(){

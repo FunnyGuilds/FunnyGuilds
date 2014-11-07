@@ -26,6 +26,9 @@ public class GuildUtils {
 	private static File guildsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "guilds" + File.separator);
 	
 	public static void deleteGuild(Guild guild){
+		if(guild == null) return;
+		guild.delete();
+		
 		DataManager.getInstance().stop();
 		
 		Region region = RegionUtils.get(guild.getRegion());

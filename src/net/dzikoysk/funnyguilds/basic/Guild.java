@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.data.Config;
 
 import org.bukkit.Location;
 
@@ -32,12 +33,13 @@ public class Guild {
 	private long build;
 	
 	private Guild(UUID uuid){
+		this.born = System.currentTimeMillis();
 		this.uuid = uuid;
 		GuildUtils.addGuild(this);
 	}
 	
 	public Guild(String name){
-		this.uuid = UUID.randomUUID();
+		this(UUID.randomUUID());
 		this.name = name;
 		GuildUtils.addGuild(this);
 	}
@@ -116,6 +118,10 @@ public class Guild {
 		this.ban = 0;
 	}
 	
+	public void addLive(){
+		this.lives++;
+	}
+	
 	public void addMember(User user){
 		if(this.members.contains(user)) return;
 		this.members.add(user);
@@ -145,6 +151,10 @@ public class Guild {
 			if(region != null) region.setGuild(this);
 		}
 	}
+	
+	public void removeLive(){
+		this.lives--;
+	}
 
 	public void removeMember(User user){
 		this.members.remove(user);
@@ -162,6 +172,15 @@ public class Guild {
 		GuildUtils.removeGuild(this);
 		this.uuid = null;
 		this.name = null;
+	}
+	
+	public boolean isValid(){
+		if(this.validity > System.currentTimeMillis()) return true;
+		if(this.validity == 0){
+			this.validity = System.currentTimeMillis() + Config.getInstance().validityStart;
+			return this.isValid();
+		}
+		return false;
 	}
 	
 	public boolean isBanned(){
@@ -268,9 +287,12 @@ public class Guild {
 	@Override
 	public boolean equals(Object o){
 		if(o == null) return false;
+		if(o == this) return true;
 		if(o.getClass() != this.getClass()) return false;
-		if(!((Guild)o).getUUID().equals(this.uuid)) return false;
-		return true;
+		Guild guild = (Guild) o;
+		if(guild.getName() != null && this.name != null)
+			return guild.getName().equalsIgnoreCase(this.name);
+		return false;
 	}
 	
 	@Override

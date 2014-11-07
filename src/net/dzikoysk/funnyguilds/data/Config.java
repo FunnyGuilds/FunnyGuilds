@@ -24,6 +24,7 @@ public class Config {
 	public int createTagLength;	
 	public int createTagMinLength;
 	public List<ItemStack> createItems;
+	public List<ItemStack> createItemsVip;
 	public int createDistance;
 	public Material createMaterial;
 	public String createStringMaterial;
@@ -38,6 +39,14 @@ public class Config {
 	public boolean enlargeEnable;
 	public int enlargeSize;
 	public List<ItemStack> enlargeItems;
+	
+	public int warLives;
+	public long warProtection;
+	public long warWait;
+	
+	public long validityStart;
+	public long validityTime;
+	public List<ItemStack> validityItems;
 	
 	public int inviteMembers;
 	
@@ -87,6 +96,7 @@ public class Config {
 	public String excInfo;
 	public String excPlayer;
 	public String excTop;
+	public String excValidity;
 	
 	public List<String> excCreateAliases;
 	public List<String> excDeleteAliases;
@@ -103,6 +113,7 @@ public class Config {
 	public List<String> excInfoAliases;
 	public List<String> excPlayerAliases;
 	public List<String> excTopAliases;
+	public List<String> excValidityAliases;
 	
 	public String axcMain;
 	public String axcAdd;
@@ -133,6 +144,8 @@ public class Config {
 		this.loadCreateSection();
 		this.loadRegionsSection();
 		this.loadEnlargeSection();
+		this.loadWarSection();
+		this.loadValiditySection();
 		this.loadInviteSection();
 		this.loadPrefixSection();
 		this.loadChatSection();
@@ -159,6 +172,15 @@ public class Config {
 			if(itemstack != null) items.add(itemstack);
 		}
 		this.createItems = items;
+		
+		list = yml.getStringList("items-vip");
+		items = new ArrayList<ItemStack>();
+		for(String item : list){
+			ItemStack itemstack = Parser.parseItem(item);
+			if(itemstack != null) items.add(itemstack);
+		}
+		this.createItemsVip = items;
+		
 		this.createDistance = yml.getInt("create-distance");
 		this.createStringMaterial = yml.getString("create-material");
 		this.createMaterial = Parser.parseMaterial(createStringMaterial);
@@ -185,6 +207,24 @@ public class Config {
 			}
 			this.enlargeItems = items;
 		}
+	}
+	
+	private void loadWarSection(){
+		this.warLives = yml.getInt("war-lives");
+		this.warProtection = Parser.parseTime(yml.getString("war-protection"));
+		this.warWait = Parser.parseTime(yml.getString("war-wait"));
+	}
+	
+	private void loadValiditySection(){
+		this.validityStart = Parser.parseTime(yml.getString("validity-start"));
+		this.validityTime = Parser.parseTime(yml.getString("validity-time"));
+		List<String> list = yml.getStringList("validity-items");
+		List<ItemStack> items = new ArrayList<ItemStack>();
+		for(String item : list){
+			ItemStack itemstack = Parser.parseItem(item);
+			if(itemstack != null) items.add(itemstack);
+		}
+		this.validityItems = items;
 	}
 	
 	private void loadInviteSection(){
@@ -275,6 +315,7 @@ public class Config {
 		this.excInfo = yml.getString("commands.info.name");
 		this.excPlayer = yml.getString("commands.player.name");
 		this.excTop = yml.getString("commands.top.name");
+		this.excValidity = yml.getString("commands.validity.name");
 		
 		this.excCreateAliases = yml.getStringList("commands.create.aliases");
 		this.excDeleteAliases = yml.getStringList("commands.delete.aliases");
@@ -291,6 +332,7 @@ public class Config {
 		this.excInfoAliases = yml.getStringList("commands.info.aliases");
 		this.excPlayerAliases = yml.getStringList("commands.player.aliases");
 		this.excTopAliases = yml.getStringList("commands.top.aliases");
+		this.excValidityAliases = yml.getStringList("commands.validity.aliases");
 		
 		this.axcMain = yml.getString("commands.admin.main");
 		this.axcAdd = yml.getString("commands.admin.add");
