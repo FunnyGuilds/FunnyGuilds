@@ -14,8 +14,9 @@ public class ScoreboardStack implements Runnable {
 	private static Stack<Scoreboard> stack = new Stack<>();
 	
 	public ScoreboardStack(){
-		this.fill();
 		instance = this;
+		stack = new Stack<>();
+		this.fill();
 	}
 	
 	@Override
@@ -24,15 +25,21 @@ public class ScoreboardStack implements Runnable {
 	}
 	
 	public void start(){
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(FunnyGuilds.getInstance(), this, 0, 20);
+		Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), this, 0, 20);
 	}
 	
 	private void fill(){
 		int required = Bukkit.getMaxPlayers()*2;
 		if(stack.size() < required){
 			ScoreboardManager sm = Bukkit.getScoreboardManager();
+			if(sm == null) {
+				FunnyGuilds.error("[ScoreboardStack] ScoreboardManager is null!");
+				return;
+			}
 			int loop = Bukkit.getMaxPlayers()*2 - stack.size();
-			for(int i = 0; i < loop; i++) stack.push(sm.getNewScoreboard());
+			for(int i = 0; i < loop; i++){
+				stack.push(sm.getNewScoreboard());
+			}
 		}
 	}
 	

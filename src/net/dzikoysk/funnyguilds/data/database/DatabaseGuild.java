@@ -18,7 +18,7 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 
 public class DatabaseGuild {
 	
-	Guild guild;
+	private final Guild guild;
 	
 	public DatabaseGuild(Guild guild){
 		this.guild = guild;
@@ -31,18 +31,26 @@ public class DatabaseGuild {
 	
 	public void delete() {
 		if(guild == null) return;
-		if(guild.getUUID() == null){
-			guild.delete();
-			return;
+		if(guild.getUUID() != null){
+			Database db = Database.getInstance();
+			db.openConnection();
+			StringBuilder update = new StringBuilder();
+			update.append("DELETE FROM guilds WHERE uuid='");
+			update.append(guild.getUUID().toString());
+			update.append("';");
+			db.executeUpdate(update.toString());
+			db.closeConnection();
+		}else if(guild.getName() != null){
+			Database db = Database.getInstance();
+			db.openConnection();
+			StringBuilder update = new StringBuilder();
+			update.append("DELETE FROM guilds WHERE name='");
+			update.append(guild.getName());
+			update.append("';");
+			db.executeUpdate(update.toString());
+			db.closeConnection();
 		}
-		Database db = Database.getInstance();
-		db.openConnection();
-		StringBuilder update = new StringBuilder();
-		update.append("DELETE FROM guilds WHERE uuid='");
-		update.append(guild.getUUID().toString());
-		update.append("';");
-		db.executeUpdate(update.toString());
-		db.closeConnection();
+		guild.delete();
 	}
 	
 	public void updatePoints(){

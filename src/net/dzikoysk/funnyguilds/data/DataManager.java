@@ -7,6 +7,8 @@ import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.ActionType;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
+
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 public class DataManager {
@@ -47,7 +49,7 @@ public class DataManager {
 	
 	public void start(){
 		if(this.task != null) return;
-		this.task = FunnyGuilds.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
+		this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
 			 public void run() {
 				 IndependentThread.action(ActionType.SAVE_DATA);
 			 }

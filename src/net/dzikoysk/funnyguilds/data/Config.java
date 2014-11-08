@@ -140,7 +140,7 @@ public class Config {
 	
 	public Config(){
 		instance = this;
-		this.yml =  YamlConfiguration.loadConfiguration(new File(FunnyGuilds.getInstance().getDataFolder(), "config.yml"));
+		this.yml =  YamlConfiguration.loadConfiguration(new File("plugins/FunnyGuilds", "config.yml"));
 		this.loadCreateSection();
 		this.loadRegionsSection();
 		this.loadEnlargeSection();

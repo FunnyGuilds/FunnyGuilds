@@ -66,18 +66,47 @@ public class FunnyGuilds extends JavaPlugin {
 	
 	private static Plugin funnyguilds;
 	private static Thread thread;
-		
+	
 	@Override
 	public void onEnable(){
 		
-		thread = Thread.currentThread();
-		funnyguilds = this;
-
 		new ScoreboardStack().start();
 		new IndependentThread().start();
 		
-		DataManager data = new DataManager();
-		Config c = data.getConfig();
+		new DataManager();
+		
+		PluginManager pm = Bukkit.getPluginManager();
+		pm.registerEvents(new EntityDamage(), this);
+		pm.registerEvents(new PlayerChat(), this);
+		pm.registerEvents(new PlayerDeath(), this);
+		pm.registerEvents(new PlayerJoin(), this);
+		pm.registerEvents(new PlayerLogin(), this);
+		pm.registerEvents(new PlayerQuit(), this);
+		
+		pm.registerEvents(new BlockBreak(), this);
+		pm.registerEvents(new BlockDamage(), this);
+		pm.registerEvents(new BlockIgnite(), this);
+		pm.registerEvents(new BlockPhysics(), this);
+		pm.registerEvents(new BlockPlace(), this);
+		pm.registerEvents(new BucketAction(), this);
+		pm.registerEvents(new EntityExplode(), this);
+		pm.registerEvents(new PlayerInteract(), this);
+		pm.registerEvents(new PlayerMove(), this);
+		
+		this.start();
+		new Ticking().start();
+		new Repeater().start();
+		this.patch();
+		info("~ Created by & © Dzikoysk ~");
+	} 
+	
+	@Override
+	public void onLoad(){
+		
+		thread = Thread.currentThread();
+		funnyguilds = this;
+		
+		Config c = Config.getInstance();
 		
 		new ExecutorCaller(new ExcFunnyGuilds(), "funnyguilds", null, null);
 		new ExecutorCaller(new ExcCreate(), c.excCreate, "funnyguilds.create", c.excCreateAliases);
@@ -106,33 +135,7 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new AxcKills(), c.axcKills, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcDeaths(), c.axcDeaths, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcBan(), c.axcBan, "funnyguilds.admin", null);
-		
-		PluginManager pm = Bukkit.getPluginManager();
-		
-		pm.registerEvents(new EntityDamage(), this);
-		pm.registerEvents(new PlayerChat(), this);
-		pm.registerEvents(new PlayerDeath(), this);
-		pm.registerEvents(new PlayerJoin(), this);
-		pm.registerEvents(new PlayerLogin(), this);
-		pm.registerEvents(new PlayerQuit(), this);
-		
-		pm.registerEvents(new BlockBreak(), this);
-		pm.registerEvents(new BlockDamage(), this);
-		pm.registerEvents(new BlockIgnite(), this);
-		pm.registerEvents(new BlockPhysics(), this);
-		pm.registerEvents(new BlockPlace(), this);
-		pm.registerEvents(new BucketAction(), this);
-		pm.registerEvents(new EntityExplode(), this);
-		pm.registerEvents(new PlayerInteract(), this);
-		pm.registerEvents(new PlayerMove(), this);
-		
-		this.start();
-		new Ticking().start();
-		new Repeater().start();
-		
-		this.patch();
-		info("~ Created by & © Dzikoysk ~");
-	} 
+	}
 	
 	@Override
 	public void onDisable(){

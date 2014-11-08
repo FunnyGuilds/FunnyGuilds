@@ -171,8 +171,6 @@ public class Guild {
 	
 	public void delete(){
 		GuildUtils.removeGuild(this);
-		this.uuid = null;
-		this.name = null;
 	}
 	
 	public boolean isValid(){
