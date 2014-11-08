@@ -119,7 +119,8 @@ public class GuildUtils {
 	}
 	
 	public static void addGuild(Guild guild){
-		guilds.add(guild);
+		if(guild == null || guild.getName() == null) return;
+		if(get(guild.getName()) == null) guilds.add(guild);
 	}
 	
 	public static void removeGuild(Guild guild){

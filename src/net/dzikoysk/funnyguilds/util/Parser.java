@@ -53,7 +53,9 @@ public class Parser {
 	}
 	
 	public static Location parseLocation(String string){
+		if(string == null) return null;
 		String[] shs = string.split(",");
+		if(shs.length < 4) return null;
 		World world = Bukkit.getWorld(shs[0]);
 		if(world == null) world = Bukkit.getWorlds().get(0);
 		Location loc = new Location(world, Integer.valueOf(shs[1]), Integer.valueOf(shs[2]), Integer.valueOf(shs[3]));

@@ -288,7 +288,6 @@ public class Guild {
 
 	@Override
 	public boolean equals(Object o){
-		if(o == null) return false;
 		if(o == this) return true;
 		if(o.getClass() != this.getClass()) return false;
 		Guild guild = (Guild) o;

@@ -30,6 +30,11 @@ public class DatabaseGuild {
 	}
 	
 	public void delete() {
+		if(guild == null) return;
+		if(guild.getUUID() == null){
+			guild.delete();
+			return;
+		}
 		Database db = Database.getInstance();
 		db.openConnection();
 		StringBuilder update = new StringBuilder();
