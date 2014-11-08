@@ -26,7 +26,7 @@ public class ExcInfo implements Executor {
 		if(args.length > 0) tag = args[0];
 		else if(s instanceof Player){
 			User user = User.get((Player) s);
-			if(user.hasGuild()) tag = user.getGuild().getName();
+			if(user.hasGuild()) tag = user.getGuild().getTag();
 		}
 		
 		if(tag == null || tag.isEmpty()){

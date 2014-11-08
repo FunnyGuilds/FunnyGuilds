@@ -60,7 +60,7 @@ public class FlatGuild {
 		yaml.set("allies", GuildUtils.getNames(guild.getAllies()));
 		yaml.set("enemies", GuildUtils.getNames(guild.getEnemies()));
 		yaml.set("born", guild.getBorn());
-		yaml.set("validity", guild.getBorn());
+		yaml.set("validity", guild.getValidity());
 		yaml.set("attacked", guild.getAttacked());
 		yaml.set("lives", guild.getLives());
 		yaml.set("ban", guild.getBan());

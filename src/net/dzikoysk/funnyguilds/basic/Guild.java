@@ -98,7 +98,8 @@ public class Guild {
 	}
 	
 	public void setValidity(long l){
-		this.validity = l;
+		if(l == this.born) this.validity = System.currentTimeMillis() + Config.getInstance().validityStart;
+		else this.validity = l;
 	}
 	
 	public void setAttacked(long l){
@@ -175,6 +176,7 @@ public class Guild {
 	}
 	
 	public boolean isValid(){
+		if(this.validity == this.born) this.validity = System.currentTimeMillis() + Config.getInstance().validityStart;
 		if(this.validity > System.currentTimeMillis()) return true;
 		if(this.validity == 0){
 			this.validity = System.currentTimeMillis() + Config.getInstance().validityStart;
