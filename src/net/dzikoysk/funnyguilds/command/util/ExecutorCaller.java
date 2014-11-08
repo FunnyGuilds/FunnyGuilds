@@ -92,19 +92,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
 	        Field f = Bukkit.getServer().getClass().getDeclaredField("commandMap");
 	        f.setAccessible(true);
 	        CommandMap cmap = (CommandMap) f.get(Bukkit.getServer());
-	        if(cmap.getCommand(this.overriding) != null){
-	        	boolean u = true;
-	        	for(ExecutorCaller ec : ecs){
-	        		if(ec.overriding.equalsIgnoreCase(this.overriding)){
-	        			u = false;
-	        			break;
-	        		}
-	        	}
-	        	if(u){
-	        		cmap.getCommand(this.overriding).unregister(cmap);
-	        		cmap.register("", p);
-	        	}
-	        } else cmap.register("", p);
+	        cmap.register("", p);
 	        p.setExecutor(this);
     	} catch (Exception e) { 
     		if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();

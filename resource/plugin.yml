@@ -1,8 +1,9 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: 2.0 Valor
+version: 2.0.1 Valor
 author: Dzikoysk
 website: http://www.dzikoysk.net/
+load: startup
 permissions:
     funnyguilds.*:
         default: op
