@@ -40,7 +40,6 @@ import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
-import net.dzikoysk.funnyguilds.listener.region.BlockDamage;
 import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
 import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
 import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
@@ -69,7 +68,7 @@ public class FunnyGuilds extends JavaPlugin {
 	
 	@Override
 	public void onEnable(){
-		
+				
 		new ScoreboardStack().start();
 		new IndependentThread().start();
 		
@@ -84,7 +83,6 @@ public class FunnyGuilds extends JavaPlugin {
 		pm.registerEvents(new PlayerQuit(), this);
 		
 		pm.registerEvents(new BlockBreak(), this);
-		pm.registerEvents(new BlockDamage(), this);
 		pm.registerEvents(new BlockIgnite(), this);
 		pm.registerEvents(new BlockPhysics(), this);
 		pm.registerEvents(new BlockPlace(), this);
@@ -106,6 +104,7 @@ public class FunnyGuilds extends JavaPlugin {
 		thread = Thread.currentThread();
 		funnyguilds = this;
 		
+		DataManager.loadDefaultFiles(new String[] { "messages.yml", "config.yml" });
 		Config c = Config.getInstance();
 		
 		new ExecutorCaller(new ExcFunnyGuilds(), "funnyguilds", null, null);

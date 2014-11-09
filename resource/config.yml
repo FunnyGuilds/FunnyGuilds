@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#          2.0.3 Valor          #
+#          2.0.4 Valor          #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -24,6 +24,9 @@ items-vip:
 create-distance: 100
 # Blok, jaki pojawi sie pod nami po stworzeniu gildii
 create-material: ender crystal
+# Na jakim poziomie ma byc wyznaczone centrum gildii
+# - Wpisz 0, jezeli ma byc ustalone przez gracza
+create-center-y: 60
 
 # Mozliwosc powiekszania gildii
 enlarge-enable: true

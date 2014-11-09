@@ -7,15 +7,12 @@ import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.system.war.WarSystem;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class ProtectionUtils {
 	
@@ -42,25 +39,9 @@ public class ProtectionUtils {
 				return true;
 			}
 			if(!loc.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) return false;
-			Messages.getInstance().getMessage("regionCenter");
-		} else Messages.getInstance().getMessage("regionOther");
+		} else player.sendMessage(Messages.getInstance().getMessage("regionOther"));
 
 		return true;
-	}
-	
-	public static boolean endercrystal(EntityDamageByEntityEvent event){
-		EnderCrystal ec = (EnderCrystal) event.getEntity();
-		if(!RegionUtils.isIn(ec.getLocation())) return false;
-		Region region = RegionUtils.getAt(ec.getLocation());
-		if(region == null) return false;
-		if(region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
-			.equals(ec.getLocation().getBlock().getLocation().toVector())){
-			if(event.getDamager() instanceof Player){
-				WarSystem.getInstance().attack((Player) event.getDamager(), region.getGuild());
-			}
-			return true;
-		}
-		return false;
 	}
 	
 	public static boolean action(Action action, Block block){
@@ -73,6 +54,7 @@ public class ProtectionUtils {
 			case CHEST:
 			case ENCHANTMENT_TABLE:
 			case FURNACE:
+			case ENDER_CHEST:
 			case WORKBENCH:
 			case ANVIL:
 				return true;

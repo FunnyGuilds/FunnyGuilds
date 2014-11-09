@@ -12,9 +12,10 @@ public class IndependentThread extends Thread {
 	private Object locker = new Object();
 	
 	public IndependentThread(){
+		instance = this;
+		this.setName("IndependentThread");
 		FunnyGuilds.info("Available Processors: " + Runtime.getRuntime().availableProcessors());
 		FunnyGuilds.info("Active Threads: " + Thread.activeCount());
-		instance = this;
 	}
 
 	@Override

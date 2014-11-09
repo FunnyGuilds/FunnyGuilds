@@ -40,6 +40,10 @@ public class Parser {
 	}
 	
 	public static Material parseMaterial(String string){
+		if(string == null){
+			FunnyGuilds.parser("Unknown material: null");
+			return Material.AIR;
+		}
 		String m = string;
 		m = m.toUpperCase();
 		m = m.replaceAll(" ", "_");

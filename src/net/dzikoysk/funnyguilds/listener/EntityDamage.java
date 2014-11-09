@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Config;
-import net.dzikoysk.funnyguilds.system.protection.ProtectionUtils;
+import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.LivingEntity;
@@ -17,7 +17,7 @@ public class EntityDamage implements Listener {
 	@EventHandler
 	public void onDamage(EntityDamageByEntityEvent event){
 		if(event.getEntity() instanceof EnderCrystal){
-			if(ProtectionUtils.endercrystal(event)) event.setCancelled(true);
+			if(ProtectionSystem.endercrystal(event)) event.setCancelled(true);
 			return;
 		}
 		if(event.getEntity() instanceof Player){

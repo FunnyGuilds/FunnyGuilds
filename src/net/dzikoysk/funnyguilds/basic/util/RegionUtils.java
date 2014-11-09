@@ -31,7 +31,9 @@ public class RegionUtils {
 	}
 	
 	public static boolean isNear(Location center){
+		if(center == null) return false;
 		for(Region region : regions){
+			if(region.getCenter() == null) return false;
 			if(!center.getWorld().equals(region.getCenter().getWorld())) return false;
 			double distance = center.distance(region.getCenter());
 			int i = Config.getInstance().regionSize;

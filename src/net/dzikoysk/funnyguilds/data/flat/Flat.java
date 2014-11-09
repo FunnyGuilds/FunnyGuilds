@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
-import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.util.BasicUtils;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
@@ -25,7 +25,7 @@ public class Flat {
 		loadUsers();
 		loadRegions();
 		loadGuilds();
-		checkObjects();
+		BasicUtils.checkObjects();
 	}
 	
 	public void save() {
@@ -87,33 +87,6 @@ public class Flat {
 		}
 		IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
 		FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
-	}
-	
-	public void checkObjects(){
-		List<String> guilds = GuildUtils.getNames(GuildUtils.getGuilds());
-		List<String> regions = RegionUtils.getNames(RegionUtils.getRegions());
-		int i = 0;
-		for(Guild guild : GuildUtils.getGuilds()){
-			if(guild.getName() != null && regions.contains(guild.getName())){
-				guilds.remove(guild.getName());
-				continue;
-			}
-			GuildUtils.deleteGuild(guild);
-			i++;
-		}
-		
-		guilds = GuildUtils.getNames(GuildUtils.getGuilds());
-		regions = RegionUtils.getNames(RegionUtils.getRegions());
-		
-		for(Region region : RegionUtils.getRegions()){
-			if(region.getName() != null && guilds.contains(region.getName())){
-				regions.remove(region.getName());
-				continue;
-			}
-			RegionUtils.delete(region);
-			i++;
-		}
-		if(i > 0) FunnyGuilds.warning("Repaired conflicts: " + i);
 	}
 	
 	public static File getUserFile(User user){

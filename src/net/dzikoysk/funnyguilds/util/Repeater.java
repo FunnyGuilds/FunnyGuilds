@@ -24,7 +24,7 @@ public class Repeater implements Runnable {
 	
 	public void start() {
 		if(this.repeater != null) return;
-		this.repeater = FunnyGuilds.getInstance().getServer().getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), this, 0, 20);
+		this.repeater = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), this, 0, 20);
 	}
 	
 	@Override
