@@ -1,15 +1,20 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 public class ExcBase implements Executor {
@@ -43,12 +48,41 @@ public class ExcBase implements Executor {
 		}
 		
 		final Vector before = p.getLocation().toVector();
-		final int time = Config.getInstance().baseDelay;
+		final int time = Settings.getInstance().baseDelay;
 		if(time < 1){
 			p.teleport(region.getCenter());
 			p.sendMessage(m.getMessage("baseTeleport"));
 			return;
 		}
+		
+		List<ItemStack> itemsList = Settings.getInstance().baseItems;
+		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
+		for(int i = 0; i < items.length; i++){
+			if(!p.getInventory().containsAtLeast(items[i], items[i].getAmount())){
+				String msg = m.getMessage("baseItems");
+				if(msg.contains("{ITEM}")){
+					StringBuilder sb = new StringBuilder();
+					sb.append(items[i].getAmount());
+					sb.append(" ");
+					sb.append(items[i].getType().toString().toLowerCase());
+					msg = msg.replace("{ITEM}", sb.toString());
+				}
+				if(msg.contains("{ITEMS}")){
+					ArrayList<String> list = new ArrayList<String>();
+					for(ItemStack it : itemsList){
+						StringBuilder sb = new StringBuilder();
+						sb.append(it.getAmount());
+						sb.append(" ");
+						sb.append(it.getType().toString().toLowerCase());
+						list.add(sb.toString());
+					}
+					msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
+				}
+				p.sendMessage(msg);
+				return;
+			}
+		}
+		p.getInventory().removeItem(items);
 		
 		p.sendMessage(m.getMessage("baseDontMove")
 			.replace("{TIME}", time+"")

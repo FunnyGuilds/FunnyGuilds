@@ -14,7 +14,7 @@ import org.bukkit.scheduler.BukkitTask;
 public class DataManager {
 
 	private static DataManager instance;
-	private static Config config;
+	private static Settings config;
 	private static Messages messages;
 	private volatile BukkitTask task = null;
 	
@@ -22,22 +22,22 @@ public class DataManager {
 		loadDefaultFiles(new String[] { "messages.yml", "config.yml" });
 		instance = this;
 		messages = new Messages();
-		config = new Config();
-		if(Config.getInstance().mysql) new DatabaseBasic();
+		config = new Settings();
+		if(Settings.getInstance().mysql) new DatabaseBasic();
 		else new Flat();
 		new Data();
 		this.start();
 	}
 	
 	public void save(){
-		if(Config.getInstance().flat)
+		if(Settings.getInstance().flat)
 			try {
 				Flat.getInstance().save();
 			} catch (Exception e) {
 				FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
 				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 			}
-		if(Config.getInstance().mysql)
+		if(Settings.getInstance().mysql)
 			try {
 				DatabaseBasic.getInstance().save();
 			} catch (Exception e) {
@@ -53,7 +53,7 @@ public class DataManager {
 			 public void run() {
 				 IndependentThread.action(ActionType.SAVE_DATA);
 			 }
-		}, Config.getInstance().dataInterval*60*20, Config.getInstance().dataInterval*60*20);
+		}, Settings.getInstance().dataInterval*60*20, Settings.getInstance().dataInterval*60*20);
 	}
 	
 	public void stop(){
@@ -107,7 +107,7 @@ public class DataManager {
 		return new DataManager();
 	}
 	
-	public Config getConfig(){
+	public Settings getConfig(){
 		return config;
 	}
 	

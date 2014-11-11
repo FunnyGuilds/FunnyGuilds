@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.ActionType;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
@@ -24,7 +24,7 @@ public class PlayerDeath implements Listener {
 		if(a == null) return;		
 		User attacker = User.get(a);
 		
-		Double d = victim.getRank().getPoints() * (Config.getInstance().rankPercent / 100);
+		Double d = victim.getRank().getPoints() * (Settings.getInstance().rankPercent / 100);
 		int points = d.intValue();
 		
 		victim.getRank().removePoints(points);
@@ -35,7 +35,7 @@ public class PlayerDeath implements Listener {
 		IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
 		IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
 		
-		if(Config.getInstance().mysql){
+		if(Settings.getInstance().mysql){
 			if(victim.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
 			if(attacker.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, attacker.getGuild());
 			IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
@@ -49,9 +49,9 @@ public class PlayerDeath implements Listener {
 		death = StringUtils.replace(death, "{+}", Integer.toString(points));
 		death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
 		if(victim.hasGuild()) death = StringUtils.replace(death, "{VTAG}", 
-			StringUtils.replace(Config.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
+			StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
 		if(attacker.hasGuild()) death = StringUtils.replace(death, "{ATAG}", 
-			StringUtils.replace(Config.getInstance().chatGuild, "{TAG}", attacker.getGuild().getTag()));
+			StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", attacker.getGuild().getTag()));
 		death = StringUtils.replace(death, "{VTAG}", "");
 		death = StringUtils.replace(death, "{ATAG}", "");
 		event.setDeathMessage(death);

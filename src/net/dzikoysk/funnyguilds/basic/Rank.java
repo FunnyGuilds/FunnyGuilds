@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.basic;
 
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Rank implements Comparable<Rank> {
 	
@@ -15,7 +15,7 @@ public class Rank implements Comparable<Rank> {
 	
 	public Rank(User user){
 		this.type = BasicType.USER;
-		this.points = Config.getInstance().rankStart;
+		this.points = Settings.getInstance().rankStart;
 		this.idns = user.getName();
 		this.user = user;
 	}

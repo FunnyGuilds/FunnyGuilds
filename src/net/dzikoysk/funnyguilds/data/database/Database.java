@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Database {
 	
@@ -22,7 +22,7 @@ public class Database {
 
 	public Database(){
 		instance = this;
-		Config c = Config.getInstance();
+		Settings c = Settings.getInstance();
 		this.hostname = c.mysqlHostname;
 		this.port = c.mysqlPort;
 		this.database = c.mysqlDatabase;

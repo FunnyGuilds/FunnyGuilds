@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -15,13 +15,13 @@ public class BlockPhysics implements Listener {
 
 	@EventHandler
 	public void onPhysics(BlockPhysicsEvent event) {
-		Material m = Config.getInstance().createMaterial;
+		Material m = Settings.getInstance().createMaterial;
 		if(m == null || event.getBlock().getType() != m) return;
 		
 		Location loc = event.getBlock().getLocation();
 		
-		if(!RegionUtils.isIn(loc)) return;
 		Region region = RegionUtils.getAt(loc);
+		if(region == null) return;
 		
 		if(loc.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())){
 			event.setCancelled(true);

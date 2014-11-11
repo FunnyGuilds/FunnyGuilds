@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.system.protection.ProtectionUtils;
+import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,13 +10,13 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 public class BucketAction implements Listener {
 	
 	@EventHandler
-	public void onFill(PlayerBucketFillEvent event){
-		if(ProtectionUtils.check(event.getPlayer(), event.getBlockClicked())) event.setCancelled(true);
+	public void onFill(PlayerBucketFillEvent e){
+		if(ProtectionSystem.build(e.getPlayer(), e.getBlockClicked().getLocation())) e.setCancelled(true);
 	}
 	
 	@EventHandler
-	public void onEmpty(PlayerBucketEmptyEvent event){
-		if(ProtectionUtils.check(event.getPlayer(), event.getBlockClicked())) event.setCancelled(true);
+	public void onEmpty(PlayerBucketEmptyEvent e){
+		if(ProtectionSystem.build(e.getPlayer(), e.getBlockClicked().getLocation())) e.setCancelled(true);
 	}
 
 }

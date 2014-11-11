@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
@@ -149,8 +149,8 @@ public class DatabaseGuild {
 		if(ens != null && !ens.equals("")) enemies = GuildUtils.getGuilds(StringUtils.fromString(ens));
 
 		if(born == 0) born = System.currentTimeMillis(); 
-		if(validity == 0) validity = System.currentTimeMillis() + Config.getInstance().validityStart; 
-		if(lives == 0) lives = Config.getInstance().warLives;
+		if(validity == 0) validity = System.currentTimeMillis() + Settings.getInstance().validityStart; 
+		if(lives == 0) lives = Settings.getInstance().warLives;
 		
 		values[0] = uuid;
 		values[1] = name;

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
+import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.StringUtils;
@@ -19,8 +20,12 @@ public class ExcPlayer implements Executor {
 		String name = p.getName();
 		
 		if(args.length > 0) name = args[0];
-		User user = User.get(name);
+		if(!UserUtils.playedBefore(name)){
+			s.sendMessage(msg.getMessage("playerInfoExists"));
+			return;
+		}
 		
+		User user = User.get(name);
 		if(user.getUUID() == null){
 			s.sendMessage(msg.getMessage("playerInfoExists"));
 			return;

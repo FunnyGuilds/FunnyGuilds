@@ -148,6 +148,7 @@ public class Parser {
 	}
 	
 	public static String toString(Location loc){
+		if(loc == null) return null;
 		StringBuilder sb = new StringBuilder();
 		sb.append(loc.getWorld().getName());
 		sb.append(",");

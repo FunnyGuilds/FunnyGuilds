@@ -1,9 +1,5 @@
 package net.dzikoysk.funnyguilds.util.element;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.util.PacketUtils;
@@ -16,7 +12,6 @@ import org.bukkit.scoreboard.Team;
 
 public class PlayerListManager {
 	
-	private static final String[] colorsCode = new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
 	private static String[] scheme  = new String[60];
 	private static boolean enable;
 	private static int ping;
@@ -89,24 +84,5 @@ public class PlayerListManager {
 	
 	public static void patch(boolean p){
 		patch = p;
-	}
-	
-	public static String[] uniqueFields(){
-		List<String> fields = new ArrayList<>();
-		Random random = new Random();
-		StringBuilder sb = new StringBuilder();
-		sb.append(".r");
-		for(int i = 0; i < 60; i++){
-			while(fields.contains(sb.toString())){
-				sb.setLength(0);
-				for(int x = 0; x < 3; x++){
-					String r = colorsCode[random.nextInt(colorsCode.length)];
-					sb.append(".");
-					sb.append(r);
-				}
-			}
-			fields.add(sb.toString());
-		}
-		return fields.toArray(new String[60]);
 	}
 }

@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 public class WarSystem {
 	
@@ -28,8 +28,8 @@ public class WarSystem {
 			WarUtils.message(player, 1);
 			return;
 		}
-		if(guild.getAttacked() != 0 && guild.getAttacked() + Config.getInstance().warWait > System.currentTimeMillis()){
-			WarUtils.message(player, 2, (guild.getAttacked() + Config.getInstance().warWait) - System.currentTimeMillis());
+		if(guild.getAttacked() != 0 && guild.getAttacked() + Settings.getInstance().warWait > System.currentTimeMillis()){
+			WarUtils.message(player, 2, (guild.getAttacked() + Settings.getInstance().warWait) - System.currentTimeMillis());
 			return;
 		}
 		guild.setAttacked(System.currentTimeMillis());

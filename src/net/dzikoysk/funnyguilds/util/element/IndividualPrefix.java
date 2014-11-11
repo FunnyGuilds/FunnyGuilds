@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.scoreboard.Scoreboard;
@@ -36,7 +36,7 @@ public class IndividualPrefix {
 		}
 		if(this.getUser().hasGuild())
 			if(this.getUser().equals(user) || this.getUser().getGuild().getMembers().contains(user))
-				team.setPrefix(Config.getInstance().prefixOur
+				team.setPrefix(Settings.getInstance().prefixOur
 					.replace("{TAG}", user.getGuild().getTag()));
 		team.addPlayer(player);
 	}
@@ -56,9 +56,9 @@ public class IndividualPrefix {
 				OfflineUser player = new OfflineUser(u.getName());
 				if(!team.hasPlayer(player)) team.addPlayer(player);
 			}
-			String prefix = Config.getInstance().prefixOther;
-			if(guild.getAllies().contains(to)) prefix = Config.getInstance().prefixAllies;
-			if(guild.getEnemies().contains(to)) prefix = Config.getInstance().prefixEnemies;
+			String prefix = Settings.getInstance().prefixOther;
+			if(guild.getAllies().contains(to)) prefix = Settings.getInstance().prefixAllies;
+			if(guild.getEnemies().contains(to)) prefix = Settings.getInstance().prefixEnemies;
 			team.setPrefix(prefix.replace("{TAG}", to.getTag()));
 		} else {
 			Team team = scoreboard.getTeam(to.getTag());
@@ -67,7 +67,7 @@ public class IndividualPrefix {
 				OfflineUser player = new OfflineUser(u.getName());
 				if(!team.hasPlayer(player)) team.addPlayer(player);
 			}
-			team.setPrefix(Config.getInstance().prefixOther.replace("{TAG}", to.getTag()));
+			team.setPrefix(Settings.getInstance().prefixOther.replace("{TAG}", to.getTag()));
 		}
 	}
 
@@ -76,7 +76,7 @@ public class IndividualPrefix {
 		Team team = getUser().getScoreboard().getPlayerTeam(op);
 		if(team != null){
 			team.removePlayer(op);
-			if(team.getName() != null) team.setPrefix(Config.getInstance().prefixOther
+			if(team.getName() != null) team.setPrefix(Settings.getInstance().prefixOther
 					.replace("{TAG}", team.getName()));
 		}
 	}
@@ -94,7 +94,7 @@ public class IndividualPrefix {
 		Guild guild = getUser().getGuild();
 		if(guild != null){
 			guilds.remove(guild);
-			Config config = Config.getInstance();
+			Settings config = Settings.getInstance();
 			String our = config.prefixOur;
 			String ally = config.prefixAllies;
 			String enemy = config.prefixEnemies;
@@ -121,7 +121,7 @@ public class IndividualPrefix {
 				else team.setPrefix(other.replace("{TAG}", one.getTag()));	
 			}
 		} else {
-			String other = Config.getInstance().prefixOther;
+			String other = Settings.getInstance().prefixOther;
 			for(Guild one : guilds){
 				if(one == null || one.getTag() == null) continue;
 				Team team = scoreboard.getTeam(one.getTag());

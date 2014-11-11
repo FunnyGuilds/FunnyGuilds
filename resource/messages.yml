@@ -26,6 +26,7 @@ regionCenter: '&cNie mozesz zniszczyc srodka swojej gildii!'
 regionExplode: '&cBudowanie na terenie gildii zablokowane na czas &4{TIME} sekund&c!'
 # Available variables: {TIME}
 regionExplodeInteract: '&cNie mozna budowac jeszcze przez &4{TIME} sekund&c!'
+regionCommand: '&cTej komendy nie mozna uzyc na terenie innej gildii!'
 
 # <------- Broadcast Messages -------> #
 # Available variables: {PLAYER}, {GUILD}, {TAG}
@@ -200,6 +201,8 @@ baseHasNotGuild: '&cNie masz gildii!'
 baseHasNotRegion: '&cTwoja gildia nie posiada terenu!'
 baseHasNotCenter: '&cTwoja gildia nie posiada srodka regionu!'
 baseIsTeleportation: '&cWlasnie sie teleportujesz!'
+# Available variables: {ITEM}, {ITEMS}
+baseItems: '&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}'
 baseDontMove: '&7Nie ruszaj sie przez &c{TIME} &7sekund!'
 baseMove: '&cRuszyles sie, teleportacja przerwana!'
 baseTeleport: '&7Teleportacja ...'
@@ -267,5 +270,10 @@ warAttacked: '&7Twoja gildia stracila &41 zycie &7przez &4{ATTACKER}&7!'
 warWin: '&7Twoja gildia &apodbila &7gildie &a{LOSER}&7! Zyskujecie &c1 zycie&7!'
 # Available variables: {WINNER}
 warLose: '&7Twoja gildia &4przegrala &7wojne z gildia &4{WINNER}&7! &4Gildia zostaje zniszona&7!'
+
+
+
+
+
 
 

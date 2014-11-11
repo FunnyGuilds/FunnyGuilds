@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
 
 import org.bukkit.Bukkit;
@@ -33,7 +33,7 @@ public class ExcEnlarge implements Executor {
 		Region region = Region.get(lp.getGuild().getRegion());
 		int enlarge = region.getEnlarge();
 		
-		Config c = Config.getInstance();
+		Settings c = Settings.getInstance();
 		
 		if(enlarge > c.enlargeItems.size()-1){
 			p.sendMessage(m.getMessage("enlargeMaxSize"));

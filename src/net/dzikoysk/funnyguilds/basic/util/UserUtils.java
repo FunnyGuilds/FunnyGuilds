@@ -22,6 +22,11 @@ public class UserUtils {
 		users.remove(user);
 	}
 	
+	public static boolean playedBefore(String s){
+		for(User u : users) if(u.getName() != null && u.getName().equalsIgnoreCase(s)) return true;
+		return false;
+	}
+	
 	public static void removeGuild(List<User> users){
 		for(User u : users) u.removeGuild();
 	}

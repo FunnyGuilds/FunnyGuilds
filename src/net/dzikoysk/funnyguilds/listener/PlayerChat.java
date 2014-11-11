@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
@@ -19,7 +19,7 @@ public class PlayerChat implements Listener{
 	public void onChat(AsyncPlayerChatEvent event){
 		Player player = event.getPlayer();
 		User user = User.get(player);
-		Config c = Config.getInstance();
+		Settings c = Settings.getInstance();
 		if(user.hasGuild()){
 			Guild guild = user.getGuild();
 			String message = event.getMessage();
@@ -36,14 +36,14 @@ public class PlayerChat implements Listener{
 		event.setFormat(format);
 	}
 	
-	private boolean chat(AsyncPlayerChatEvent event, String message, Config c, Player player, Guild guild){
+	private boolean chat(AsyncPlayerChatEvent event, String message, Settings c, Player player, Guild guild){
 		if(global(event, message, c, player, guild)) return true;
 		if(ally(event, message, c, player, guild)) return true;
 		if(priv(event, message, c, player, guild)) return true;
 		return false;
 	}
 
-	private boolean priv(AsyncPlayerChatEvent event, String message, Config c, Player player, Guild guild){
+	private boolean priv(AsyncPlayerChatEvent event, String message, Settings c, Player player, Guild guild){
 		String priv = c.chatPriv;
 		int length = priv.length();
 		if(message.length() > length && message.substring(0, length).equals(priv)){
@@ -61,7 +61,7 @@ public class PlayerChat implements Listener{
 		return false;
 	}
 	
-	private boolean ally(AsyncPlayerChatEvent event, String message, Config c, Player player, Guild guild){
+	private boolean ally(AsyncPlayerChatEvent event, String message, Settings c, Player player, Guild guild){
 		String ally = c.chatAlly;
 		int length = ally.length();
 		if(message.length() > length && message.substring(0, length).equals(ally)){
@@ -85,7 +85,7 @@ public class PlayerChat implements Listener{
 		return false;
 	}
 	
-	private boolean global(AsyncPlayerChatEvent event, String message, Config c, Player player, Guild guild){
+	private boolean global(AsyncPlayerChatEvent event, String message, Settings c, Player player, Guild guild){
 		String global = c.chatGlobal;
 		int length = global.length();
 		if(message.length() > length && message.substring(0, length).equals(global)){

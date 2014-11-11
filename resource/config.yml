@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#          2.0.4 Valor          #
+#           2.1 Valor           #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -56,6 +56,9 @@ region-notification-time: 15
 region-notification-cooldown: 60
 # Przez ile sekund nie mozna budowac na terenie gildii po wybuchu
 region-explode: 120
+# Blokowane komendy dla graczy spoza gildii na jej terenie
+region-commands:
+- sethome
 
 # Ile zyc ma gildia
 war-lives: 3
@@ -76,8 +79,6 @@ validity-items:
 prefix-our: '&a{TAG}&f '
 # Wyglad tagu gildii sojuszniczej
 prefix-allies: '&6{TAG}&f '
-# Wyglad tagu wrogiej gildii
-prefix-enemies: '&c{TAG}&f '
 # Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)
 prefix-other: '&7{TAG}&f '
 
@@ -105,7 +106,7 @@ chat-global-design: '&8[&cChat globalny gildii&8] &8{TAG} &7{PLAYER}&8:&f {MESSA
 # Ranking od ktorego rozpoczyna gracz
 rank-start: 1000
 # Jaki procent punktow zabitego ma przyznawac zabojcy
-rank-percent: 2
+rank-percent: 2.0
 
 # Czy czlonkowie gildii moga sobie zadawac obrazenia
 damage-guild: false
@@ -116,7 +117,6 @@ damage-ally: false
 base-enable: true
 # Czas oczekiwania na teleportacje (w sekundach)
 base-delay: 5
-# UWAGA: Platonosc za teleportacje jeszcze nie zostala napisana
 # Koszt teleportacji do gildii (jezeli brak, wystarczy zrobic: base-items: [])
 base-items:
 - 1 diamond
@@ -245,7 +245,9 @@ commands:
     kills: 'ga kills'
     deaths: 'ga deaths'
     ban: 'ga ban'
-  
+    lives: 'ga zycia'
+
+
 # Co ile minut ma automatycznie zapisywac dane
 data-interval: 1
 # Typ zapisu danych
@@ -262,7 +264,9 @@ mysql:
   user: root
   password: passwd
 
+  
 # Utils
 patch-scoreboard: true
 mcstats: true
 debug: true
+

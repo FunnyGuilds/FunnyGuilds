@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 
@@ -47,11 +47,11 @@ public class EntityExplode implements Listener {
 		}
         
         Guild guild = region.getGuild();
-        guild.setBuild(System.currentTimeMillis() + Config.getInstance().regionExplode*1000);
+        guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode*1000);
         for(User user : guild.getMembers()){
         	Player player = Bukkit.getPlayer(user.getName());
         	if(player != null) player.sendMessage(Messages.getInstance().getMessage("regionExplode")
-        		.replace("{TIME}", Integer.toString(Config.getInstance().regionExplode)));
+        		.replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));
         }
     }
 	

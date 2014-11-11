@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
 import net.dzikoysk.funnyguilds.util.YamlFactor;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
+import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
 
 public class Data {
 	
@@ -70,7 +71,7 @@ public class Data {
 				List<String> scheme = yaml.getParent().getStringList("scheme");
 				PlayerListManager.scheme(scheme.toArray(new String[60]));
 			}else{
-				String[] scheme = PlayerListManager.uniqueFields();
+				String[] scheme = PlayerListScheme.uniqueFields();
 				PlayerListManager.scheme(scheme);
 				YamlFactor yaml = new YamlFactor(file);
 				yaml.getParent().set("scheme", scheme);

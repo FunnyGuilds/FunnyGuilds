@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
@@ -35,7 +35,7 @@ public class ExcValidity implements Executor {
 			return;
 		}
 	
-		List<ItemStack> itemsList = Config.getInstance().validityItems;
+		List<ItemStack> itemsList = Settings.getInstance().validityItems;
 		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
 		for(int i = 0; i < items.length; i++){
 			if(!p.getInventory().containsAtLeast(items[i], items[i].getAmount())){
@@ -67,7 +67,7 @@ public class ExcValidity implements Executor {
 		Guild guild = user.getGuild();
 		long c = guild.getValidity();
 		if(c == 0) c = System.currentTimeMillis();
-		c += Config.getInstance().validityTime;
+		c += Settings.getInstance().validityTime;
 		guild.setValidity(c);
 		
 		DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

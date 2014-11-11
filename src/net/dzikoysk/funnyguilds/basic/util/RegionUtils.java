@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 
 import org.bukkit.Location;
@@ -16,17 +16,20 @@ public class RegionUtils {
 	private static File regionsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "regions" + File.separator);
 	
 	public static Region get(String name){
-		for(Region region : regions) if(region.getName().equalsIgnoreCase(name)) return region;
+		for(Region region : regions)
+			if(region.getName().equalsIgnoreCase(name)) return region;
 		return null;
 	}
 	
 	public static boolean isIn(Location loc){
-		for(Region region : regions) if(region.isIn(loc)) return true;
+		for(Region region : regions) 
+			if(region.isIn(loc)) return true;
 		return false;
 	}
 	
 	public static Region getAt(Location loc){
-		for(Region region : regions) if(region.isIn(loc)) return region;
+		for(Region region : regions) 
+			if(region.isIn(loc)) return region;
 		return null;
 	}
 	
@@ -36,16 +39,16 @@ public class RegionUtils {
 			if(region.getCenter() == null) return false;
 			if(!center.getWorld().equals(region.getCenter().getWorld())) return false;
 			double distance = center.distance(region.getCenter());
-			int i = Config.getInstance().regionSize;
-			if(Config.getInstance().enlargeItems != null) i = Config.getInstance().enlargeItems.size()*Config.getInstance().enlargeSize + i;
-			if(distance < (2 * i + Config.getInstance().regionMinDistance)) return true;
+			int i = Settings.getInstance().regionSize;
+			if(Settings.getInstance().enlargeItems != null) i = Settings.getInstance().enlargeItems.size()*Settings.getInstance().enlargeSize + i;
+			if(distance < (2 * i + Settings.getInstance().regionMinDistance)) return true;
 		}
 		return false;	
 	}
 	
 	public static void delete(Region region){
-		if(Config.getInstance().flat) new File(regionsFolder, region.getName()+".yml").delete();
-		if(Config.getInstance().mysql) new DatabaseRegion(region).delete();
+		if(Settings.getInstance().flat) new File(regionsFolder, region.getName()+".yml").delete();
+		if(Settings.getInstance().mysql) new DatabaseRegion(region).delete();
 		region.delete();
 	}
 	

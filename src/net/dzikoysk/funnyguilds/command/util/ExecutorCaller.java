@@ -81,7 +81,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         	return true;
 		}
     	main.executor.execute(sender, args);
-    	return false;
+    	return true;
     }
     
     private void register() {

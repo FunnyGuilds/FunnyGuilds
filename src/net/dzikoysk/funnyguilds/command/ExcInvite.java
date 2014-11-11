@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
 
@@ -37,9 +37,9 @@ public class ExcInvite implements Executor {
 		}
 		Guild guild = lp.getGuild();
 		
-		if(guild.getMembers().size() >= Config.getInstance().inviteMembers){
+		if(guild.getMembers().size() >= Settings.getInstance().inviteMembers){
 			p.sendMessage(m.getMessage("inviteAmount")
-				.replace("{AMOUNT}", Integer.toString(Config.getInstance().inviteMembers)));
+				.replace("{AMOUNT}", Integer.toString(Settings.getInstance().inviteMembers)));
 			return;
 		}
 			

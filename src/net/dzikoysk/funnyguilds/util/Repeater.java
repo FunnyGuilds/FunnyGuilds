@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
 
@@ -33,13 +33,13 @@ public class Repeater implements Runnable {
 		ban_system++;
 		validity_system++;
 		
-		if(player_list == Config.getInstance().playerlistInterval) playerList();
+		if(player_list == Settings.getInstance().playerlistInterval) playerList();
 		if(validity_system >= 5) validitySystem();
 		if(ban_system >= 5) banSystem();
 	}
 	
 	private void playerList(){
-		if(Config.getInstance().playerlistEnable){
+		if(Settings.getInstance().playerlistEnable){
 			IndependentThread.action(ActionType.PLAYERLIST_GLOBAL_UPDATE);
 			for(Player p : Bukkit.getOnlinePlayers()) PacketUtils.sendPacket(p, PacketUtils.getPacket(p.getPlayerListName(), false, 0));
 		}

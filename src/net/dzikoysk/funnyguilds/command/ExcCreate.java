@@ -9,11 +9,12 @@ import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.DataManager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.ActionType;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
+import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
@@ -51,7 +52,7 @@ public class ExcCreate implements Executor {
     		}
 		}
 		
-		Config c = Config.getInstance();
+		Settings c = Settings.getInstance();
 		
 		String tag = args[0];
 		String name = args[1];
@@ -103,9 +104,10 @@ public class ExcCreate implements Executor {
     	}
 		
 		Location loc = p.getLocation();
+		if(c.createCenterY != 0) loc.setY(c.createCenterY);
 		
-		int d = Config.getInstance().regionSize + Config.getInstance().createDistance;
-		if(Config.getInstance().enlargeItems != null) d = Config.getInstance().enlargeItems.size()*Config.getInstance().enlargeSize + d;
+		int d = c.regionSize + c.createDistance;
+		if(c.enlargeItems != null) d = c.enlargeItems.size()*c.enlargeSize + d;
 		
 		if(d > p.getWorld().getSpawnLocation().distance(loc)){
 			p.sendMessage(m.getMessage("createSpawn")
@@ -120,8 +122,8 @@ public class ExcCreate implements Executor {
 		}
  
 		List<ItemStack> itemsList = null;
-		if(p.hasPermission("funnyguilds.vip")) itemsList = Config.getInstance().createItemsVip;
-		else itemsList = Config.getInstance().createItems;
+		if(p.hasPermission("funnyguilds.vip")) itemsList = c.createItemsVip;
+		else itemsList = c.createItems;
 		
 		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
 		for(int i = 0; i < items.length; i++){
@@ -167,6 +169,9 @@ public class ExcCreate implements Executor {
 		
 		u.setGuild(guild);
 		
+		List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
+		for(Location l : sphere)
+			if(l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.AIR);
 		if(c.createMaterial != null && c.createMaterial != Material.AIR)
 			loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
 		else if(c.createStringMaterial.equalsIgnoreCase("ender crystal"))

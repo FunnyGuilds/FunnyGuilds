@@ -5,7 +5,7 @@ import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.DataManager;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
@@ -53,7 +53,7 @@ public class FlatRegion {
 			FunnyGuilds.error("Cannot deserialize region! Caused by: center is null");
 			return null;
 		}
-		if(size < 1) size = Config.getInstance().regionSize;
+		if(size < 1) size = Settings.getInstance().regionSize;
 			
 		values[0] = name;
 		values[1] = center;

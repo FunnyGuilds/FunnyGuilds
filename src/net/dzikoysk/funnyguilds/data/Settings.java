@@ -13,9 +13,9 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-public class Config {
+public class Settings {
 	
-	private static Config instance;
+	private static Settings instance;
 	
 	private YamlConfiguration yml;
 	
@@ -28,6 +28,7 @@ public class Config {
 	public int createDistance;
 	public Material createMaterial;
 	public String createStringMaterial;
+	public int createCenterY;
 	
 	public int regionSize;
 	public int regionMaxSize;
@@ -35,6 +36,7 @@ public class Config {
 	public int regionNotificationTime;
 	public int regionNotificationCooldown;
 	public int regionExplode;
+	public List<String> regionCommands;
 	
 	public boolean enlargeEnable;
 	public int enlargeSize;
@@ -124,6 +126,7 @@ public class Config {
 	public String axcKills;
 	public String axcDeaths;
 	public String axcBan;
+	public String axcLives;
 	
 	public int dataInterval;
 	public boolean flat;
@@ -138,7 +141,7 @@ public class Config {
 	public boolean mcstats;
 	public boolean debug;
 	
-	public Config(){
+	public Settings(){
 		instance = this;
 		this.yml =  YamlConfiguration.loadConfiguration(new File("plugins/FunnyGuilds", "config.yml"));
 		this.loadCreateSection();
@@ -184,6 +187,7 @@ public class Config {
 		this.createDistance = yml.getInt("create-distance");
 		this.createStringMaterial = yml.getString("create-material");
 		this.createMaterial = Parser.parseMaterial(createStringMaterial);
+		this.createCenterY = yml.getInt("create-center-y");
 	}
 	
 	private void loadRegionsSection(){
@@ -192,6 +196,7 @@ public class Config {
 		this.regionNotificationTime = yml.getInt("region-notification-time");
 		this.regionNotificationCooldown = yml.getInt("region-notification-cooldown");
 		this.regionExplode = yml.getInt("region-explode");
+		this.regionCommands = yml.getStringList("region-commands");
 	}
 	
 	private void loadEnlargeSection() {
@@ -234,7 +239,6 @@ public class Config {
 	private void loadPrefixSection(){
 		this.prefixOur = ChatColor.translateAlternateColorCodes('&', yml.getString("prefix-our"));
 		this.prefixAllies = ChatColor.translateAlternateColorCodes('&', yml.getString("prefix-allies"));
-		this.prefixEnemies = ChatColor.translateAlternateColorCodes('&', yml.getString("prefix-enemies"));
 		this.prefixOther = ChatColor.translateAlternateColorCodes('&', yml.getString("prefix-other"));
 	}
 	
@@ -253,8 +257,8 @@ public class Config {
 	
 	private void loadRankSection(){
 		this.rankStart = yml.getInt("rank-start");
-		this.rankPercent = yml.getInt("rank-percent");
-		if(this.rankPercent == 1) this.rankPercent = 1;
+		this.rankPercent = yml.getDouble("rank-percent");
+		if(this.rankPercent == 0) this.rankPercent = 1.0;
 	}
 	
 	private void loadDamageSection(){
@@ -265,7 +269,7 @@ public class Config {
 	private void loadBaseSection(){
 		this.baseEnable = yml.getBoolean("base-enable");
 		if(this.baseEnable){
-			List<String> list = yml.getStringList("items");
+			List<String> list = yml.getStringList("base-items");
 			List<ItemStack> items = new ArrayList<ItemStack>();
 			for(String item : list){
 				ItemStack itemstack = Parser.parseItem(item);
@@ -343,6 +347,7 @@ public class Config {
 		this.axcKills = yml.getString("commands.admin.kills");
 		this.axcDeaths = yml.getString("commands.admin.deaths");
 		this.axcBan = yml.getString("commands.admin.ban");
+		this.axcLives = yml.getString("commands.admin.lives");
 	}
 	
 	private void loadDataSection(){
@@ -364,8 +369,8 @@ public class Config {
 		this.debug = yml.getBoolean("debug");
 	}
 	
-	public static Config getInstance(){
+	public static Settings getInstance(){
 		if(instance != null) return instance;
-		return new Config();
+		return new Settings();
 	}
 }

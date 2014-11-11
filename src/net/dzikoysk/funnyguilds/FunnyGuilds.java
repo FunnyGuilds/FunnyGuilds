@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.ExcAlly;
 import net.dzikoysk.funnyguilds.command.ExcBase;
 import net.dzikoysk.funnyguilds.command.ExcBreak;
@@ -25,14 +24,16 @@ import net.dzikoysk.funnyguilds.command.admin.AxcAdd;
 import net.dzikoysk.funnyguilds.command.admin.AxcBan;
 import net.dzikoysk.funnyguilds.command.admin.AxcDeaths;
 import net.dzikoysk.funnyguilds.command.admin.AxcDelete;
+import net.dzikoysk.funnyguilds.command.admin.AxcLives;
 import net.dzikoysk.funnyguilds.command.admin.AxcMain;
 import net.dzikoysk.funnyguilds.command.admin.AxcKick;
 import net.dzikoysk.funnyguilds.command.admin.AxcKills;
 import net.dzikoysk.funnyguilds.command.admin.AxcPoints;
 import net.dzikoysk.funnyguilds.command.admin.AxcTeleport;
 import net.dzikoysk.funnyguilds.command.util.ExecutorCaller;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.DataManager;
+import net.dzikoysk.funnyguilds.listener.EntityInteract;
 import net.dzikoysk.funnyguilds.listener.PlayerChat;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
@@ -40,20 +41,21 @@ import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
+import net.dzikoysk.funnyguilds.listener.region.BlockExplode;
 import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
 import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
 import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
 import net.dzikoysk.funnyguilds.listener.region.BucketAction;
 import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
-import net.dzikoysk.funnyguilds.util.Metrics;
-import net.dzikoysk.funnyguilds.util.Metrics.Graph;
 import net.dzikoysk.funnyguilds.util.Repeater;
 import net.dzikoysk.funnyguilds.util.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.Ticking;
+import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -68,7 +70,7 @@ public class FunnyGuilds extends JavaPlugin {
 	
 	@Override
 	public void onEnable(){
-				
+		
 		new ScoreboardStack().start();
 		new IndependentThread().start();
 		
@@ -76,6 +78,7 @@ public class FunnyGuilds extends JavaPlugin {
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new EntityDamage(), this);
+		pm.registerEvents(new EntityInteract(), this);
 		pm.registerEvents(new PlayerChat(), this);
 		pm.registerEvents(new PlayerDeath(), this);
 		pm.registerEvents(new PlayerJoin(), this);
@@ -83,18 +86,21 @@ public class FunnyGuilds extends JavaPlugin {
 		pm.registerEvents(new PlayerQuit(), this);
 		
 		pm.registerEvents(new BlockBreak(), this);
+		pm.registerEvents(new BlockExplode(), this);
 		pm.registerEvents(new BlockIgnite(), this);
 		pm.registerEvents(new BlockPhysics(), this);
 		pm.registerEvents(new BlockPlace(), this);
 		pm.registerEvents(new BucketAction(), this);
 		pm.registerEvents(new EntityExplode(), this);
+		pm.registerEvents(new PlayerCommand(), this);
 		pm.registerEvents(new PlayerInteract(), this);
 		pm.registerEvents(new PlayerMove(), this);
 		
-		this.start();
+		this.update();
+		this.patch();
 		new Ticking().start();
 		new Repeater().start();
-		this.patch();
+		new MetricsCollector().start();
 		info("~ Created by & © Dzikoysk ~");
 	} 
 	
@@ -105,7 +111,7 @@ public class FunnyGuilds extends JavaPlugin {
 		funnyguilds = this;
 		
 		DataManager.loadDefaultFiles(new String[] { "messages.yml", "config.yml" });
-		Config c = Config.getInstance();
+		Settings c = Settings.getInstance();
 		
 		new ExecutorCaller(new ExcFunnyGuilds(), "funnyguilds", null, null);
 		new ExecutorCaller(new ExcCreate(), c.excCreate, "funnyguilds.create", c.excCreateAliases);
@@ -134,6 +140,7 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new AxcKills(), c.axcKills, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcDeaths(), c.axcDeaths, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcBan(), c.axcBan, "funnyguilds.admin", null);
+		new ExecutorCaller(new AxcLives(), c.axcLives, "funnyguilds.admin", null);
 	}
 	
 	@Override
@@ -144,30 +151,7 @@ public class FunnyGuilds extends JavaPlugin {
 		funnyguilds = null;
 	}
 	
-	private void metrics(){
-		try {
-		    Metrics metrics = new Metrics(this);
-		    Graph global = metrics.createGraph("Guilds and Users");
-		    global.addPlotter(new Metrics.Plotter("Guilds"){
-				@Override
-				public int getValue() {
-					return GuildUtils.getGuilds().size();
-				}
-		    });
-		    global.addPlotter(new Metrics.Plotter("Users"){
-				@Override
-				public int getValue() {
-					return UserUtils.getUsers().size();
-				}
-		    });
-		    metrics.addGraph(global);
-		    metrics.start();
-		} catch (Exception e) {
-			error("[FunnyGuilds][Metrics] " + e.getMessage());
-		}
-	}
-	
-	private void thread(){
+	private void update(){
 		Thread thread = new Thread(){
 			@Override
 			public void run(){
@@ -186,19 +170,15 @@ public class FunnyGuilds extends JavaPlugin {
 		thread.start();
 	}
 	
-	private void start(){
-		metrics();
-		thread();
-	}
-	
 	private void patch(){
 		for(Player p : Bukkit.getOnlinePlayers()){
 			User user = User.get(p);
 			user.getScoreboard();
 			user.getRank();
 		}
-		for(Guild guild : GuildUtils.getGuilds())
+		for(Guild guild : GuildUtils.getGuilds()){
 			guild.getRank();
+		}
 	}
 	
 	public static void update(String content){
@@ -248,7 +228,7 @@ public class FunnyGuilds extends JavaPlugin {
 	    error("");
 	    return false;
 	}
-	
+
 	public static String getVersion(){
 		return funnyguilds.getDescription().getVersion();
 	}

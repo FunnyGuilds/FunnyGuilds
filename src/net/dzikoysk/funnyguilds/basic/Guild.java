@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.data.Config;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 import org.bukkit.Location;
 
@@ -98,7 +98,7 @@ public class Guild {
 	}
 	
 	public void setValidity(long l){
-		if(l == this.born) this.validity = System.currentTimeMillis() + Config.getInstance().validityStart;
+		if(l == this.born) this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
 		else this.validity = l;
 	}
 	
@@ -174,10 +174,10 @@ public class Guild {
 	}
 	
 	public boolean isValid(){
-		if(this.validity == this.born) this.validity = System.currentTimeMillis() + Config.getInstance().validityStart;
+		if(this.validity == this.born) this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
 		if(this.validity > System.currentTimeMillis()) return true;
 		if(this.validity == 0){
-			this.validity = System.currentTimeMillis() + Config.getInstance().validityStart;
+			this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
 			return this.isValid();
 		}
 		return false;
