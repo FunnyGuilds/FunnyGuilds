@@ -27,7 +27,7 @@ public class PlayerCommand implements Listener {
 				command = null;
 				break;
 			}
-		} if(command == null) return;
+		} if(command != null) return;
 		
 		Region region = RegionUtils.getAt(player.getLocation());
 		if(region == null) return;
