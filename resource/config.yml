@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#          2.1.1 Valor          #
+#           2.2 Valor           #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -27,6 +27,8 @@ create-material: ender crystal
 # Na jakim poziomie ma byc wyznaczone centrum gildii
 # - Wpisz 0, jezeli ma byc ustalone przez gracza
 create-center-y: 60
+# Czy ma tworzyc pusta przestrzen dookola centrum gildii
+create-center-sphere: true
 
 # Mozliwosc powiekszania gildii
 enlarge-enable: true
@@ -234,6 +236,14 @@ commands:
   validity:
     name: 'przedluz'
     aliases: []
+  leader:
+    name: 'lider'
+    aliases:
+    - 'zalozyciel'
+  deputy:
+    name: 'zastepca'
+    aliases: []
+
   # Komendy administratora
   admin:
     main: 'ga'
@@ -263,10 +273,6 @@ mysql:
   database: db
   user: root
   password: passwd
-
   
 # Utils
-patch-scoreboard: true
-mcstats: true
-debug: true
-
+config-version: 2.2 Valor

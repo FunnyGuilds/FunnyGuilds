@@ -25,7 +25,7 @@ public class ExcEnlarge implements Executor {
 			return;
 		}
 		
-		if(!lp.isOwner()){
+		if(!lp.isOwner() || !lp.isDeputy()){
 			p.sendMessage(m.getMessage("enlargeIsNotOwner"));
 			return;
 		}

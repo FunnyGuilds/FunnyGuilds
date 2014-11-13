@@ -18,6 +18,7 @@ public class Guild {
 	private String name;
 	private String tag;
 	private User owner;
+	private User deputy;
 	private Rank rank;
 	private String region;
 	private Location home;
@@ -58,7 +59,11 @@ public class Guild {
 	
 	public void setOwner(User user){
 		this.owner = user;
-		this.members.add(user);
+		this.addMember(user);
+	}
+	
+	public void setDeputy(User user){
+		this.deputy = user;
 	}
 	
 	public void setRank(Rank rank){
@@ -175,11 +180,8 @@ public class Guild {
 	
 	public boolean isValid(){
 		if(this.validity == this.born) this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
-		if(this.validity > System.currentTimeMillis()) return true;
-		if(this.validity == 0){
-			this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
-			return this.isValid();
-		}
+		if(this.validity == 0) this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+		if(this.validity >= System.currentTimeMillis()) return true;
 		return false;
 	}
 	
@@ -209,6 +211,10 @@ public class Guild {
 	
 	public User getOwner(){
 		return this.owner;
+	}
+	
+	public User getDeputy(){
+		return this.deputy;
 	}
 	
 	public String getRegion(){

@@ -17,6 +17,7 @@ public class Settings {
 	
 	private static Settings instance;
 	
+	private File settings =  new File("plugins/FunnyGuilds", "config.yml");
 	private YamlConfiguration yml;
 	
 	public int createNameLength;
@@ -29,6 +30,7 @@ public class Settings {
 	public Material createMaterial;
 	public String createStringMaterial;
 	public int createCenterY;
+	public boolean createCenterSphere;
 	
 	public int regionSize;
 	public int regionMaxSize;
@@ -99,6 +101,8 @@ public class Settings {
 	public String excPlayer;
 	public String excTop;
 	public String excValidity;
+	public String excLeader;
+	public String excDeputy;
 	
 	public List<String> excCreateAliases;
 	public List<String> excDeleteAliases;
@@ -116,6 +120,8 @@ public class Settings {
 	public List<String> excPlayerAliases;
 	public List<String> excTopAliases;
 	public List<String> excValidityAliases;
+	public List<String> excLeaderAliases;
+	public List<String> excDeputyAliases;
 	
 	public String axcMain;
 	public String axcAdd;
@@ -137,13 +143,13 @@ public class Settings {
 	public String mysqlUser;
 	public String mysqlPassword;
 	
-	public boolean patchScoreboard;
-	public boolean mcstats;
-	public boolean debug;
-	
 	public Settings(){
 		instance = this;
-		this.yml =  YamlConfiguration.loadConfiguration(new File("plugins/FunnyGuilds", "config.yml"));
+		this.load();
+	}
+	
+	private void load(){
+		this.yml =  YamlConfiguration.loadConfiguration(settings);
 		this.loadCreateSection();
 		this.loadRegionsSection();
 		this.loadEnlargeSection();
@@ -158,7 +164,7 @@ public class Settings {
 		this.loadPlayerListSection();
 		this.loadCommandsSection();
 		this.loadDataSection();
-		this.loadUtilsSection();
+		this.rewrite();
 	}
 
 	private void loadCreateSection(){
@@ -188,6 +194,7 @@ public class Settings {
 		this.createStringMaterial = yml.getString("create-material");
 		this.createMaterial = Parser.parseMaterial(createStringMaterial);
 		this.createCenterY = yml.getInt("create-center-y");
+		this.createCenterSphere = yml.getBoolean("create-center-sphere");
 	}
 	
 	private void loadRegionsSection(){
@@ -320,6 +327,8 @@ public class Settings {
 		this.excPlayer = yml.getString("commands.player.name");
 		this.excTop = yml.getString("commands.top.name");
 		this.excValidity = yml.getString("commands.validity.name");
+		this.excLeader = yml.getString("commands.leader.name");
+		this.excDeputy = yml.getString("commands.deputy.name");
 		
 		this.excCreateAliases = yml.getStringList("commands.create.aliases");
 		this.excDeleteAliases = yml.getStringList("commands.delete.aliases");
@@ -337,6 +346,8 @@ public class Settings {
 		this.excPlayerAliases = yml.getStringList("commands.player.aliases");
 		this.excTopAliases = yml.getStringList("commands.top.aliases");
 		this.excValidityAliases = yml.getStringList("commands.validity.aliases");
+		this.excLeaderAliases = yml.getStringList("commands.leader.aliases");
+		this.excDeputyAliases = yml.getStringList("commands.deputy.aliases");
 		
 		this.axcMain = yml.getString("commands.admin.main");
 		this.axcAdd = yml.getString("commands.admin.add");
@@ -363,10 +374,13 @@ public class Settings {
 		}
 	}
 	
-	private void loadUtilsSection() {
-		this.patchScoreboard = yml.getBoolean("patch-scoreboard");
-		this.mcstats = yml.getBoolean("mcstats");
-		this.debug = yml.getBoolean("debug");
+	private void rewrite(){
+		/*
+		String version = yml.getString("config-version");
+		if(version != null && version.equals(FunnyGuilds.getVersion())) return;
+		settings.delete();
+		DataManager.loadDefaultFiles(new String[] { "config.yml" });
+		*/
 	}
 	
 	public static Settings getInstance(){

@@ -271,9 +271,25 @@ warWin: '&7Twoja gildia &apodbila &7gildie &a{LOSER}&7! Zyskujecie &c1 zycie&7!'
 # Available variables: {WINNER}
 warLose: '&7Twoja gildia &4przegrala &7wojne z gildia &4{WINNER}&7! &4Gildia zostaje zniszona&7!'
 
+# <------- Leader Messages -------> #
+leaderHasNotGuild: '&cNie masz gildii!'
+leaderIsNotOwner: '&cNie jestes zalozycielem gildii'
+leaderPlayer: '&cPodaj gracza!'
+leaderPlayedBefore: '&cTen gracz nigdy nie byl na serwerze!'
+leaderIsNotMember: '&cTen gracz nie jest czlonkiem Twojej gildii!'
+leaderSet: '&7Ustanowiono nowego &alidera &7gildii!'
+leaderOwner: '&7Zostales nowym &aliderem &7gildii!'
 
+# <------- Deputy Messages -------> #
+deputyHasNotGuild: '&cNie masz gildii!'
+deputyIsNotOwner: '&cNie jestes zalozycielem gildii'
+deputyPlayer: '&cPodaj gracza!'
+deputyPlayedBefore: '&cTen gracz nigdy nie byl na serwerze!'
+deputyIsNotMember: '&cTen gracz nie jest czlonkiem Twojej gildii!'
+deputyRemove: '&7Zdegradowno gracza z funkcji &czastepcy&7!'
+deputyMember: '&7Zdegradowano Cie z funkcji &czastepcy&7!'
+deputySet: '&7Ustanowiono nowego &azastepce &7gildii!'
+deputyOwner: '&7Zostales nowym &azastepca &7gildii!'
 
-
-
-
-
+# Utils
+version: 2.2 Valor

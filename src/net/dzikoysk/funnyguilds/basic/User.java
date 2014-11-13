@@ -180,6 +180,12 @@ public class User extends Object {
 		if(this.guild.getOwner().equals(this)) return true;
 		return false;
 	}
+	
+	public boolean isDeputy(){
+		if(!hasGuild()) return false;
+		if(this.guild.getDeputy().equals(this)) return true;
+		return false;
+	}
 
 	public boolean isOnline(){
 		if(this.name == null) return false;

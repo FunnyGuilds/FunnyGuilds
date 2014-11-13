@@ -30,7 +30,7 @@ public class ExcValidity implements Executor {
 			return;
 		}
 		
-		if(!user.isOwner()){
+		if(!user.isOwner() || !user.isDeputy()){
 			p.sendMessage(m.getMessage("validityIsNotOwner"));
 			return;
 		}

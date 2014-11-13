@@ -64,7 +64,7 @@ public class FlatGuild {
 		yaml.set("attacked", guild.getAttacked());
 		yaml.set("lives", guild.getLives());
 		yaml.set("ban", guild.getBan());
-		
+		yaml.set("deputy", guild.getDeputy().getName());
 		yml.close();
 		return true;
 	}
@@ -72,12 +72,12 @@ public class FlatGuild {
 	public static Guild deserialize(File file){
 		YamlFactor yml = new YamlFactor(file);
 		YamlConfiguration yaml = yml.getParent();
-		Object[] values = new Object[15];
 		
 		String id = yaml.getString("uuid");
 		String name = yaml.getString("name");
 		String tag = yaml.getString("tag");
 		String os = yaml.getString("owner");
+		String dp = yaml.getString("deputy");
 		String hs = yaml.getString("home");
 		String region = yaml.getString("region");
 		List<String> ms = yaml.getStringList("members");
@@ -103,17 +103,18 @@ public class FlatGuild {
 			FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
 			return null;
 		}
-		
-		UUID uuid = UUID.randomUUID();
-		if(id != null) uuid = UUID.fromString(id);
-		
-		User owner = User.get(os);
-		
 		Region rg = RegionUtils.get(region);
 		if(rg == null){
 			FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
 			return null;
 		}
+		
+		UUID uuid = UUID.randomUUID();
+		if(id != null) uuid = UUID.fromString(id);
+		
+		User owner = User.get(os);
+		User deputy = null;
+		if(dp != null) deputy = User.get(dp);
 		
 		Location home = rg.getCenter();
 		if(hs != null) home = Parser.parseLocation(hs);
@@ -140,6 +141,7 @@ public class FlatGuild {
 		if(validity == 0) validity = System.currentTimeMillis() + Settings.getInstance().validityStart; 
 		if(lives == 0) lives = Settings.getInstance().warLives; 
 		
+		Object[] values = new Object[16];
 		values[0] = uuid;
 		values[1] = name;
 		values[2] = tag;
@@ -155,6 +157,7 @@ public class FlatGuild {
 		values[12] = attacked;
 		values[13] = lives;
 		values[14] = ban;
+		values[15] = deputy;
 		return DeserializationUtils.deserializeGuild(values);
 	}
 

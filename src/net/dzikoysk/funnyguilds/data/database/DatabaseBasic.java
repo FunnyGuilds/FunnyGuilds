@@ -105,6 +105,7 @@ public class DatabaseBasic {
 		db.executeUpdate("alter table guilds add attacked bigint not null;");
 		db.executeUpdate("alter table guilds add lives int not null;");
 		db.executeUpdate("alter table guilds add ban bigint not null;");
+		db.executeUpdate("alter table guilds add deputy text;");
 	}
 	
 	public void regionsTable(Database db) {

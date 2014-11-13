@@ -102,24 +102,6 @@ public class ExcCreate implements Executor {
 			p.sendMessage(m.getMessage("createTagExists"));
     		return;
     	}
-		
-		Location loc = p.getLocation();
-		if(c.createCenterY != 0) loc.setY(c.createCenterY);
-		
-		int d = c.regionSize + c.createDistance;
-		if(c.enlargeItems != null) d = c.enlargeItems.size()*c.enlargeSize + d;
-		
-		if(d > p.getWorld().getSpawnLocation().distance(loc)){
-			p.sendMessage(m.getMessage("createSpawn")
-				.replace("{DISTANCE}", Integer.toString(d))
-			);
-			return;
-		}
-		
-		if(RegionUtils.isNear(loc)){
-			p.sendMessage(m.getMessage("createIsNear"));
-			return;
-		}
  
 		List<ItemStack> itemsList = null;
 		if(p.hasPermission("funnyguilds.vip")) itemsList = c.createItemsVip;
@@ -151,6 +133,25 @@ public class ExcCreate implements Executor {
 				return;
 			}
 		}
+		
+		Location loc = p.getLocation();
+		if(c.createCenterY != 0) loc.setY(c.createCenterY);
+		
+		int d = c.regionSize + c.createDistance;
+		if(c.enlargeItems != null) d = c.enlargeItems.size()*c.enlargeSize + d;
+		
+		if(d > p.getWorld().getSpawnLocation().distance(loc)){
+			p.sendMessage(m.getMessage("createSpawn")
+				.replace("{DISTANCE}", Integer.toString(d))
+			);
+			return;
+		}
+		
+		if(RegionUtils.isNear(loc)){
+			p.sendMessage(m.getMessage("createIsNear"));
+			return;
+		}
+		
 		p.getInventory().removeItem(items);
 		
 		DataManager.getInstance().stop();
@@ -169,9 +170,11 @@ public class ExcCreate implements Executor {
 		
 		u.setGuild(guild);
 		
-		List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
-		for(Location l : sphere)
-			if(l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.AIR);
+		if(c.createCenterSphere){
+			List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
+			for(Location l : sphere)
+				if(l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.AIR);
+		}
 		if(c.createMaterial != null && c.createMaterial != Material.AIR)
 			loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
 		else if(c.createStringMaterial.equalsIgnoreCase("ender crystal"))
