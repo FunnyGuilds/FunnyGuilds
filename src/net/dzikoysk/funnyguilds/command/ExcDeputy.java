@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -41,6 +42,11 @@ public class ExcDeputy implements Executor {
 		}
 		
 		User user = User.get(name);
+		if(owner.equals(user)){
+			p.sendMessage(StringUtils.colored("&cNie mozesz mianowac siebie zastepca!"));
+			return;
+		}
+		
 		Guild guild = owner.getGuild();
 		
 		if(!guild.getMembers().contains(user)){

@@ -64,7 +64,7 @@ public class FlatGuild {
 		yaml.set("attacked", guild.getAttacked());
 		yaml.set("lives", guild.getLives());
 		yaml.set("ban", guild.getBan());
-		yaml.set("deputy", guild.getDeputy().getName());
+		if(guild.getDeputy() != null) yaml.set("deputy", guild.getDeputy().getName());
 		yml.close();
 		return true;
 	}

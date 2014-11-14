@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 
 public class DatabaseUser {
 
-	private User user;
+	private final User user;
 	
 	public DatabaseUser(User user){
 		this.user = user;

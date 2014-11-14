@@ -27,7 +27,7 @@ public class ExcKick implements Executor {
 			return;
 		}
 		
-		if(!u.isOwner() || !u.isDeputy()){
+		if(!u.isOwner() && !u.isDeputy()){
 			p.sendMessage(m.getMessage("kickIsNotOwner"));
 			return;
 		}

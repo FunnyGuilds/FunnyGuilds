@@ -1,8 +1,12 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
@@ -16,8 +20,9 @@ import org.bukkit.inventory.ItemStack;
 public class Settings {
 	
 	private static Settings instance;
+	private static String version = "2.2 Valor";
+	private static File settings =  new File("plugins/FunnyGuilds", "config.yml");
 	
-	private File settings =  new File("plugins/FunnyGuilds", "config.yml");
 	private YamlConfiguration yml;
 	
 	public int createNameLength;
@@ -149,7 +154,7 @@ public class Settings {
 	}
 	
 	private void load(){
-		this.yml =  YamlConfiguration.loadConfiguration(settings);
+		this.update();
 		this.loadCreateSection();
 		this.loadRegionsSection();
 		this.loadEnlargeSection();
@@ -164,9 +169,26 @@ public class Settings {
 		this.loadPlayerListSection();
 		this.loadCommandsSection();
 		this.loadDataSection();
-		this.rewrite();
 	}
 
+	private void update(){
+		this.yml =  YamlConfiguration.loadConfiguration(settings);
+		String version = yml.getString("config-version");
+		if(version != null && version.equals(Settings.version)) return;
+		FunnyGuilds.info("Updating the plugin settings ...");
+		Map<String, Object> values = yml.getValues(true);
+		settings.delete();
+		DataManager.loadDefaultFiles(new String[] { "config.yml" });
+		yml = YamlConfiguration.loadConfiguration(settings);
+		for(Entry<String, Object> entry : values.entrySet()) yml.set(entry.getKey(), entry.getValue());
+		try {
+			yml.save(settings);
+			FunnyGuilds.info("Successfully updated settings!");
+		} catch (IOException e){
+			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+		}
+	}
+	
 	private void loadCreateSection(){
 		this.createNameLength = yml.getInt("name-length");
 		this.createTagLength = yml.getInt("tag-length");
@@ -372,15 +394,6 @@ public class Settings {
 			this.mysqlUser = yml.getString("mysql.user");
 			this.mysqlPassword = yml.getString("mysql.password");
 		}
-	}
-	
-	private void rewrite(){
-		/*
-		String version = yml.getString("config-version");
-		if(version != null && version.equals(FunnyGuilds.getVersion())) return;
-		settings.delete();
-		DataManager.loadDefaultFiles(new String[] { "config.yml" });
-		*/
 	}
 	
 	public static Settings getInstance(){

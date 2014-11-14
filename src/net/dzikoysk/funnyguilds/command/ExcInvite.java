@@ -26,7 +26,7 @@ public class ExcInvite implements Executor {
 			return;
 		}
 		
-		if(!lp.isOwner() || !lp.isDeputy()){
+		if(!lp.isOwner() && !lp.isDeputy()){
 			p.sendMessage(m.getMessage("inviteIsNotOwner"));
 			return;
 		}

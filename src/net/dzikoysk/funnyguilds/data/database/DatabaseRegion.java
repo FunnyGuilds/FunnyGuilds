@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.util.Parser;
 
 public class DatabaseRegion {
 
-	Region region;
+	private final Region region;
 	
 	public DatabaseRegion(Region region){
 		this.region = region;

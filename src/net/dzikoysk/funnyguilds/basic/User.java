@@ -183,6 +183,7 @@ public class User extends Object {
 	
 	public boolean isDeputy(){
 		if(!hasGuild()) return false;
+		if(this.guild.getDeputy() == null) return false;
 		if(this.guild.getDeputy().equals(this)) return true;
 		return false;
 	}

@@ -29,6 +29,14 @@ public class EntityExplode implements Listener {
         List<Block> destroyed = event.blockList();
         Location loc = event.getLocation();
 		
+        List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
+		Random random = new Random();
+		for(Location l : sphere){
+			Material m = l.getBlock().getType();
+			if(m != Material.OBSIDIAN && m != Material.WATER && m != Material.LAVA) continue;
+    		if(random.nextFloat() < 0.33f) l.getBlock().breakNaturally();
+		}
+		
 		if(!RegionUtils.isIn(loc)) return;
 		Region region = RegionUtils.getAt(loc);
 		
@@ -38,13 +46,6 @@ public class EntityExplode implements Listener {
         while(it.hasNext()) {
         	if(it.next().getLocation().equals(protect)) it.remove();
         }
-        
-		List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
-		Random random = new Random();
-		for(Location l : sphere){
-			if(l.getBlock().getType() != Material.OBSIDIAN) continue;
-    		if(random.nextFloat() <= 0.33f) l.getBlock().breakNaturally();
-		}
         
         Guild guild = region.getGuild();
         guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode*1000);

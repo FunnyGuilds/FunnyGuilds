@@ -16,6 +16,7 @@ public class BlockExplode implements Listener {
 		if(event.getEntity() instanceof EnderCrystal){
 			Location loc = ProtectionSystem.endercrystal((EnderCrystal) event.getEntity());
 			if(loc != null) {
+				event.setCancelled(true);
 				loc.setY(loc.getY()-1);
 				loc.getWorld().spawn(loc, EnderCrystal.class);
 			}
