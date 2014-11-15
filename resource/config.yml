@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#          2.2.1 Valor          #
+#          2.2.2 Valor          #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -183,7 +183,7 @@ player-list-ping: 0
 # Wlacz ta opcje
 player-list-patch: false
 
-# Nazwy komend (na razie bez wsparcia subkomend)
+# Nazwy komend
 commands:
   guild: 
     name: 'gildia'

@@ -37,10 +37,14 @@ public class EntityDamage implements Listener {
 				if(!Settings.getInstance().damageAlly) event.setCancelled(true);
 			return;
 		}
-		if(entity instanceof EnderCrystal && damager instanceof Player){
-			if(ProtectionSystem.endercrystal((EnderCrystal) entity, (Player) damager))
-				event.setCancelled(true);
-			return;
+		if(entity instanceof EnderCrystal){
+			if(damager instanceof Player){
+				if(ProtectionSystem.endercrystal((EnderCrystal) entity, (Player) damager))
+					event.setCancelled(true);
+			}else if(damager instanceof Projectile){
+				if(ProtectionSystem.endercrystal((EnderCrystal) entity) != null)
+					event.setCancelled(true);
+			}
 		}
 	}
 }

@@ -1,6 +1,6 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: 2.2.1 Valor
+version: 2.2.2 Valor
 author: Dzikoysk
 website: http://www.dzikoysk.net/
 permissions:
@@ -13,6 +13,8 @@ permissions:
         default: op
         children:
             funnyguilds.reload: true
+            funnyguilds.admin.build: true
+            funnyguilds.admin.notification: true
     funnyguilds.player:
         default: true
         children:
@@ -34,6 +36,10 @@ permissions:
             funnyguilds.leader: true
             funnyguilds.deputy: true
     funnyguilds.reload:
+        default: op
+    funnyguilds.admin.build:
+        default: op
+    funnyguilds.admin.notification:
         default: op
     funnyguilds.info:
         default: true

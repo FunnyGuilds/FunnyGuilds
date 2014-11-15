@@ -43,7 +43,7 @@ public class ProtectionSystem {
 	
 	public static boolean build(Player player, Location location, boolean build){
 		if(player == null || location == null) return false;
-		if(player.hasPermission("funnyguilds.admin")) return false;
+		if(player.hasPermission("funnyguilds.admin.build")) return false;
 		Region region = RegionUtils.getAt(location);
 		if(region == null) return false;
 		Guild guild = region.getGuild();

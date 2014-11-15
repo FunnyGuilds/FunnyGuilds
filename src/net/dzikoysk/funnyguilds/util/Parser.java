@@ -87,7 +87,7 @@ public class Parser {
 				Guild guild = RankManager.getInstance().getGuild(i);
 				if(guild != null) return StringUtils
 					.replace(string, "{GTOP-" + Integer.toString(i) + '}',
-							guild.getTag() + " (" + Integer.toString(guild.getRank().getPoints()) + ")");
+							guild.getTag() + " [" + Integer.toString(guild.getRank().getPoints()) + "]");
 				else return StringUtils
 					.replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
 			}else if(string.contains("PTOP")){

@@ -45,6 +45,8 @@ public class Settings {
 	public int regionExplode;
 	public List<String> regionCommands;
 	
+	public boolean eventPhysics;
+	
 	public boolean enlargeEnable;
 	public int enlargeSize;
 	public List<ItemStack> enlargeItems;
@@ -157,6 +159,7 @@ public class Settings {
 		this.update();
 		this.loadCreateSection();
 		this.loadRegionsSection();
+		this.loadEventSection();
 		this.loadEnlargeSection();
 		this.loadWarSection();
 		this.loadValiditySection();
@@ -226,6 +229,11 @@ public class Settings {
 		this.regionNotificationCooldown = yml.getInt("region-notification-cooldown");
 		this.regionExplode = yml.getInt("region-explode");
 		this.regionCommands = yml.getStringList("region-commands");
+	}
+	
+	private void loadEventSection(){
+		if(this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG)
+			this.eventPhysics = true;
 	}
 	
 	private void loadEnlargeSection() {

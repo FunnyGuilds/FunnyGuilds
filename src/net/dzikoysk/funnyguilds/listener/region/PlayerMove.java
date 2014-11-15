@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -26,10 +27,11 @@ public class PlayerMove implements Listener {
 		
 		Player player = event.getPlayer();
 		User user = User.get(player);
-				
-		if(RegionUtils.isIn(to)){
+		
+		Region region = RegionUtils.getAt(to);
+		if(region != null){
 			if(user.getEnter()) return;
-			Guild guild = RegionUtils.getAt(to).getGuild();
+			Guild guild = region.getGuild();
 			if(guild == null || guild.getName() == null) return;
 			
 			user.setEnter(true);
@@ -48,7 +50,7 @@ public class PlayerMove implements Listener {
 				.replace("{TAG}", guild.getTag())
 			);
 			
-			if(player.hasPermission("funnyguilds.admin")) return;
+			if(player.hasPermission("funnyguilds.admin.notification")) return;
 			if(user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime()) return;
 			
 			NotificationBar.set(player, m.getMessage("notificationOther")
@@ -68,14 +70,15 @@ public class PlayerMove implements Listener {
 			user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getInstance().regionNotificationCooldown);
 			return;
 		}else if(user.getEnter()){
-			if(RegionUtils.getAt(event.getFrom()) != null){
-				Guild guild = RegionUtils.getAt(event.getFrom()).getGuild();
+			user.setEnter(false);
+			region = RegionUtils.getAt(from);
+			if(region != null){
+				Guild guild = region.getGuild();
 				player.sendMessage(Messages.getInstance().getMessage("regionLeave")
 					.replace("{GUILD}", guild.getName())
 					.replace("{TAG}", guild.getTag())
 				);
 			} 
-			user.setEnter(false);
 		}
 	}
 }

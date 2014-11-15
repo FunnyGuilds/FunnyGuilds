@@ -77,6 +77,7 @@ public class FunnyGuilds extends JavaPlugin {
 		new IndependentThread().start();
 		
 		new DataManager();
+		Settings s = Settings.getInstance();
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new EntityDamage(), this);
@@ -90,13 +91,14 @@ public class FunnyGuilds extends JavaPlugin {
 		pm.registerEvents(new BlockBreak(), this);
 		pm.registerEvents(new BlockExplode(), this);
 		pm.registerEvents(new BlockIgnite(), this);
-		pm.registerEvents(new BlockPhysics(), this);
 		pm.registerEvents(new BlockPlace(), this);
 		pm.registerEvents(new BucketAction(), this);
 		pm.registerEvents(new EntityExplode(), this);
 		pm.registerEvents(new PlayerCommand(), this);
 		pm.registerEvents(new PlayerInteract(), this);
 		pm.registerEvents(new PlayerMove(), this);
+		
+		if(s.eventPhysics) pm.registerEvents(new BlockPhysics(), this);
 		
 		this.update();
 		this.patch();

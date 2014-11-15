@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -30,17 +30,7 @@ public class ExcBase implements Executor {
 			return;
 		}
 		
-		final Region region = Region.get(user.getGuild().getRegion());
-		
-		if(region == null){
-			p.sendMessage(m.getMessage("baseHasNotRegion"));
-			return;
-		}
-		
-		if(region.getCenter() == null){
-			p.sendMessage(m.getMessage("baseHasNotCenter"));
-			return;
-		}
+		final Guild guild = user.getGuild();
 		
 		if(user.getTeleportation() != null){
 			p.sendMessage(m.getMessage("baseIsTeleportation"));
@@ -50,7 +40,7 @@ public class ExcBase implements Executor {
 		final Vector before = p.getLocation().toVector();
 		final int time = Settings.getInstance().baseDelay;
 		if(time < 1){
-			p.teleport(region.getCenter());
+			p.teleport(guild.getHome());
 			p.sendMessage(m.getMessage("baseTeleport"));
 			return;
 		}
@@ -101,7 +91,7 @@ public class ExcBase implements Executor {
 				if(i > time){
 					user.getTeleportation().cancel();
 					p.sendMessage(m.getMessage("baseTeleport"));
-					p.teleport(region.getCenter());
+					p.teleport(guild.getHome());
 					user.setTeleportation(null);
 					return;
 				}

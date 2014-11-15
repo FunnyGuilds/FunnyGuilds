@@ -74,7 +74,7 @@ public class DatabaseGuild {
 		String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 		sb.append("INSERT INTO guilds (");
 		sb.append("uuid, name, tag, owner, home, region, members, regions, allies, enemies, points, ");
-		sb.append("born, validity, attacked, ban, lives, deputy");
+		sb.append("born, validity, attacked, ban, lives");
 		sb.append(") VALUES (");
 		sb.append("'" + guild.getUUID().toString() + "',");
 		sb.append("'" + guild.getName() + "',");
@@ -92,7 +92,6 @@ public class DatabaseGuild {
 		sb.append("" + guild.getAttacked() + ",");
 		sb.append("" + guild.getBan() + ",");
 		sb.append("" + guild.getLives() + "");
-		if(guild.getDeputy() != null) sb.append("," + guild.getDeputy().getName() + "");
 		sb.append(") ON DUPLICATE KEY UPDATE ");
 		sb.append("name='" + guild.getName() + "',");
 		sb.append("tag='" + guild.getTag() + "',");
@@ -109,8 +108,13 @@ public class DatabaseGuild {
 		sb.append("attacked=" + guild.getAttacked() + ",");
 		sb.append("ban=" + guild.getBan() + ",");
 		sb.append("lives=" + guild.getLives() + "");
-		if(guild.getDeputy() != null) sb.append(",deputy='" + guild.getDeputy().getName() + "'");
 		sb.append(";");
+		if(guild.getDeputy() != null){
+			sb.append("INSERT INTO guilds (deputy) VALUES (");
+			sb.append("," + guild.getDeputy().getName() + "");
+			sb.append(") ON DUPLICATE KEY UPDATE ");
+			sb.append("deputy='" + guild.getDeputy().getName() + "';");
+		}
 		return sb.toString();
 	}
 	
