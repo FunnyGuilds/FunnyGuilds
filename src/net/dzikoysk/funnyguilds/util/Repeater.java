@@ -34,8 +34,8 @@ public class Repeater implements Runnable {
 		validity_system++;
 		
 		if(player_list == Settings.getInstance().playerlistInterval) playerList();
-		if(validity_system >= 5) validitySystem();
-		if(ban_system >= 5) banSystem();
+		if(validity_system >= 10) validitySystem();
+		if(ban_system >= 7) banSystem();
 	}
 	
 	private void playerList(){

@@ -30,6 +30,10 @@ public class AxcMain implements Executor {
 		player.sendMessage(ChatColor.AQUA + "/" + c.axcKills + " [nick] [kills] " + ChatColor.GRAY + "- Ustawia ilosc zabojstw gracza");
 		player.sendMessage(ChatColor.AQUA + "/" + c.axcDeaths + " [nick] [deaths] " + ChatColor.GRAY + "- Ustawia ilosc smierci gracza");
 		player.sendMessage(ChatColor.AQUA + "/" + c.axcBan + " [tag] [czas] " + ChatColor.GRAY + "- Banuje gildie na okreslony czas");
+		player.sendMessage(ChatColor.AQUA + "/" + c.axcUnban + " [tag] " + ChatColor.GRAY + "- Odbanowywuje gildie");
 		player.sendMessage(ChatColor.AQUA + "/" + c.axcLives + " [tag] [zycia] " + ChatColor.GRAY + "- Ustawia ilosc zyc gildii");
+		player.sendMessage(ChatColor.AQUA + "/" + c.axcMove + " [tag]" + ChatColor.GRAY + "- Przenosi teren gildii");
+		player.sendMessage(ChatColor.AQUA + "/" + c.axcValidity + " [tag] [czas] " + ChatColor.GRAY + "- Przedluza waznosc gildii o podany czas");
+		player.sendMessage(ChatColor.AQUA + "/" + c.axcName + " [tag] [nazwa] " + ChatColor.GRAY + "- Zmienia nazwe gildii");
 	}
 }

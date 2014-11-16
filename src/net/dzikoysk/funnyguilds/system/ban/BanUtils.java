@@ -31,6 +31,17 @@ public class BanUtils {
 		user.setReason(reason);
 	}
 	
+	public static void unban(Guild guild){
+		for(User user : guild.getMembers()){
+			unban(user);
+		}
+	}
+	
+	public static void unban(User user){
+		user.setBan(0);
+		user.setReason(null);
+	}
+	
 	public static boolean check(User user){
 		if(System.currentTimeMillis() < user.getBan()) return true;
 		user.setBan(0);

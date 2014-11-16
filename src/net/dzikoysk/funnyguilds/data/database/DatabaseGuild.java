@@ -50,7 +50,6 @@ public class DatabaseGuild {
 			db.executeUpdate(update.toString());
 			db.closeConnection();
 		}
-		guild.delete();
 	}
 	
 	public void updatePoints(){
@@ -74,7 +73,7 @@ public class DatabaseGuild {
 		String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 		sb.append("INSERT INTO guilds (");
 		sb.append("uuid, name, tag, owner, home, region, members, regions, allies, enemies, points, ");
-		sb.append("born, validity, attacked, ban, lives");
+		sb.append("born, validity, attacked, ban, lives, pvp");
 		sb.append(") VALUES (");
 		sb.append("'" + guild.getUUID().toString() + "',");
 		sb.append("'" + guild.getName() + "',");
@@ -91,7 +90,8 @@ public class DatabaseGuild {
 		sb.append("" + guild.getValidity() + ",");
 		sb.append("" + guild.getAttacked() + ",");
 		sb.append("" + guild.getBan() + ",");
-		sb.append("" + guild.getLives() + "");
+		sb.append("" + guild.getLives() + ",");
+		sb.append("" + guild.getPvP() + "");
 		sb.append(") ON DUPLICATE KEY UPDATE ");
 		sb.append("name='" + guild.getName() + "',");
 		sb.append("tag='" + guild.getTag() + "',");
@@ -107,11 +107,12 @@ public class DatabaseGuild {
 		sb.append("validity=" + guild.getValidity() + ",");
 		sb.append("attacked=" + guild.getAttacked() + ",");
 		sb.append("ban=" + guild.getBan() + ",");
-		sb.append("lives=" + guild.getLives() + "");
+		sb.append("lives=" + guild.getLives() + ",");
+		sb.append("pvp=" + guild.getPvP() + "");
 		sb.append(";");
 		if(guild.getDeputy() != null){
 			sb.append("INSERT INTO guilds (deputy) VALUES (");
-			sb.append("," + guild.getDeputy().getName() + "");
+			sb.append("'" + guild.getDeputy().getName() + "'");
 			sb.append(") ON DUPLICATE KEY UPDATE ");
 			sb.append("deputy='" + guild.getDeputy().getName() + "';");
 		}
@@ -132,6 +133,7 @@ public class DatabaseGuild {
 		String rgs = rs.getString("regions");
 		String als = rs.getString("allies");
 		String ens = rs.getString("enemies");
+		boolean pvp = rs.getBoolean("pvp");
 		long born = rs.getLong("born");
 		long validity = rs.getLong("validity");
 		long attacked = rs.getLong("attacked");
@@ -161,7 +163,7 @@ public class DatabaseGuild {
 		if(validity == 0) validity = System.currentTimeMillis() + Settings.getInstance().validityStart; 
 		if(lives == 0) lives = Settings.getInstance().warLives;
 		
-		Object[] values = new Object[16];
+		Object[] values = new Object[17];
 		values[0] = uuid;
 		values[1] = name;
 		values[2] = tag;
@@ -178,6 +180,7 @@ public class DatabaseGuild {
 		values[13] = lives;
 		values[14] = ban;
 		values[15] = deputy;
+		values[16] = pvp;
 		return DeserializationUtils.deserializeGuild(values);
 	}
 

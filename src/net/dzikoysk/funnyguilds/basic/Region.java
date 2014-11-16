@@ -9,7 +9,7 @@ import org.bukkit.util.Vector;
 
 public class Region {
 		
-	private final String name;
+	private String name;
 	private Guild guild;
 	private Location center;
 	private World world;
@@ -56,6 +56,10 @@ public class Region {
 			this.l = l.toLocation(this.world);
 			this.p = p.toLocation(this.world);
 		}
+	}
+	
+	public void setName(String s){
+		this.name = s;
 	}
 	
 	public void setGuild(Guild guild){

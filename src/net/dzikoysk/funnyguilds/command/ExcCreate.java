@@ -163,6 +163,7 @@ public class ExcCreate implements Executor {
 		guild.setBorn(System.currentTimeMillis());
 		guild.setValidity(System.currentTimeMillis() + c.validityStart);
 		guild.setAttacked(System.currentTimeMillis() - c.warWait + c.warProtection);
+		guild.setPvP(c.damageGuild);
 		
 		Region region = new Region(guild, loc, c.regionSize);
 		guild.setRegion(region.getName());
@@ -178,7 +179,7 @@ public class ExcCreate implements Executor {
 		if(c.createMaterial != null && c.createMaterial != Material.AIR)
 			loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
 		else if(c.createStringMaterial.equalsIgnoreCase("ender crystal"))
-			loc.getWorld().spawn(loc.toVector().toLocation(loc.getWorld()), EnderCrystal.class);
+			loc.getWorld().spawn(loc.getBlock().getLocation().toVector().toLocation(loc.getWorld()), EnderCrystal.class);
 		
 		DataManager.getInstance().start();
 		

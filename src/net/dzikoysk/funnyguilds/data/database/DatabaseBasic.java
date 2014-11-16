@@ -93,6 +93,7 @@ public class DatabaseBasic {
 		sb.append("ban bigint not null,");
 		sb.append("born bigint not null,");
 		sb.append("validity bigint not null,");
+		sb.append("pvp boolean not null,");
 		sb.append("attacked bigint,");
 		sb.append("allies text,");
 		sb.append("enemies text,");
@@ -105,6 +106,7 @@ public class DatabaseBasic {
 		db.executeUpdate("alter table guilds add attacked bigint not null;");
 		db.executeUpdate("alter table guilds add lives int not null;");
 		db.executeUpdate("alter table guilds add ban bigint not null;");
+		db.executeUpdate("alter table guilds add pvp boolean not null;");
 		db.executeUpdate("alter table guilds add deputy text;");
 	}
 	

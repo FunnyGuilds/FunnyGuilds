@@ -64,6 +64,7 @@ public class FlatGuild {
 		yaml.set("attacked", guild.getAttacked());
 		yaml.set("lives", guild.getLives());
 		yaml.set("ban", guild.getBan());
+		yaml.set("pvp", guild.getPvP());
 		if(guild.getDeputy() != null) yaml.set("deputy", guild.getDeputy().getName());
 		yml.close();
 		return true;
@@ -84,6 +85,7 @@ public class FlatGuild {
 		List<String> rgs = yaml.getStringList("regions");
 		List<String> als = yaml.getStringList("allies");
 		List<String> ens = yaml.getStringList("enemies");
+		boolean pvp = yaml.getBoolean("pvp");
 		long born = yaml.getLong("born");
 		long validity = yaml.getLong("validity");
 		long attacked = yaml.getLong("attacked");
@@ -141,7 +143,7 @@ public class FlatGuild {
 		if(validity == 0) validity = System.currentTimeMillis() + Settings.getInstance().validityStart; 
 		if(lives == 0) lives = Settings.getInstance().warLives; 
 		
-		Object[] values = new Object[16];
+		Object[] values = new Object[17];
 		values[0] = uuid;
 		values[1] = name;
 		values[2] = tag;
@@ -158,6 +160,7 @@ public class FlatGuild {
 		values[13] = lives;
 		values[14] = ban;
 		values[15] = deputy;
+		values[16] = pvp;
 		return DeserializationUtils.deserializeGuild(values);
 	}
 

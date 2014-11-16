@@ -1,7 +1,16 @@
+# <------- FunnyGuilds Version -------> #
+version: 2.5 Valor
+
 # <------- Permission Messages -------> #
 permission: '&cNie masz wystarczajacych uprawnien do uzycia tej komendy!'
 
 # <------- Rank Messages -------> #
+rankAddressAttacker: '&7Wykryto ten sam &cadres&7, punkty nie zostaja naliczone!'
+rankAddressVictim: '&7Wykryto ten sam &cadres&7, punkty nie zostaja odebrane!'
+rankLastVictimV: '&7Ostatnio zostales zabity przez tego samego gracza, puntky nie zostaja odebrane!'
+rankLastVictimA: '&7Ostatnio zabiles tego samego gracza, puntky nie zostaja dodane!'
+rankLastAttackerV: '&7Ostatnio zostales zabity przez tego samego gracza, puntky nie zostaja odebrane!'
+rankLastAttackerA: '&7Ten gracz byl ostatnio zabity przez Ciebie, puntky nie zostaja dodane!'
 # Available variables: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}
 rankDeathMessage: '{ATAG}&b{ATTACKER} &7(&b+{+}&7) zabil {VTAG}&b{VICTIM} &7(&b-{-}&7)'
 
@@ -13,13 +22,13 @@ banMessage: '&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}'
 # Available variables: {PLAYER}
 notificationMember: '&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!'
 # Available variables: {GUILD}, {TAG}
-notificationOther: '&7Wkroczyles na teren gildii &c{GUILD}&7!'
+notificationOther: '&7Wkroczyles na teren gildii &c{TAG}&7!'
 
 # <------- Region Messages -------> #
 # Available variables: {GUILD}, {TAG}
-regionEnter: '&7Wkroczyles na teren gildii &c{GUILD}&7!'
+regionEnter: '&7Wkroczyles na teren gildii &c{TAG}&7!'
 # Available variables: {GUILD}, {TAG}
-regionLeave: '&7Opuszczono teren gildii &c{GUILD}&7!' 
+regionLeave: '&7Opuszczono teren gildii &c{TAG}&7!' 
 regionOther: '&cTen teren nalezy do innej gildii!'
 regionCenter: '&cNie mozesz zniszczyc srodka swojej gildii!'
 # Available variables: {TIME}
@@ -32,17 +41,19 @@ regionCommand: '&cTej komendy nie mozna uzyc na terenie innej gildii!'
 # Available variables: {PLAYER}, {GUILD}, {TAG}
 broadcastCreate: '&a{PLAYER} &7zalozyl gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!'
 # Available variables: {PLAYER}, {GUILD}, {TAG}
-broadcastDelete: '&c{PLAYER} &7rozwiazal gildie &c{GUILD}&7!'
+broadcastDelete: '&c{PLAYER} &7rozwiazal gildie &c{TAG}&7!'
 # Available variables: {PLAYER}, {GUILD}, {TAG}
-broadcastJoin: '&a{PLAYER} &7dolaczyl do gildii &a{GUILD}&7!'
+broadcastJoin: '&a{PLAYER} &7dolaczyl do gildii &a{TAG}&7!'
 # Available variables: {PLAYER}, {GUILD}, {TAG}
-broadcastLeave: '&c{PLAYER} &7opuscil gildie &c{GUILD}&7!'
+broadcastLeave: '&c{PLAYER} &7opuscil gildie &c{TAG}&7!'
 # Available variables: {PLAYER}, {GUILD}, {TAG}
-broadcastKick: '&c{PLAYER} &7zostal &cwyrzucony &7z gildii &c{GUILD}&7!'
+broadcastKick: '&c{PLAYER} &7zostal &cwyrzucony &7z gildii &c{TAG}&7!'
 # Available variables: {GUILD}, {TAG}, {REASON}, {TIME}
-broadcastBan: '&7Gildia &c{GUILD}&7 zostala zbanowana za &c{REASON}&7, gratulacje!'
+broadcastBan: '&7Gildia &c{TAG}&7 zostala zbanowana za &c{REASON}&7, gratulacje!'
+# Available variables: {GUILD}, {TAG}
+broadcastUnban: '&7Gildia &a{TAG}&7 zostala &aodbanowana&7!'
 # Available variables: {GUILD}, {TAG}, {X}, {Y}, {Z}
-broadcastValidity: '&7Gildia &b{GUILD} &7wygasla&b! &7Jej baza znajdowala sie na x: &b{X} &7y: &b{Y} &7z: &b{Z}&7!'
+broadcastValidity: '&7Gildia &b{TAG} &7wygasla&b! &7Jej baza znajdowala sie na x: &b{X} &7y: &b{Y} &7z: &b{Z}&7!'
 # Available variables: {WINNER}, {LOSER}
 broadcastWar: '&7Gildia &4{WINNER}&7 podblila gildie &4{LOSER}&7!!'
 
@@ -72,13 +83,13 @@ infoExists: '&cGildia o takim tagu nie istnieje!'
 # {LIVES}
 infoList:
 - '&8-------------------------------'
-- '&7Gildia: &a{GUILD} &7[&a{TAG}&7]'
-- '&7Zalozyciel: &a{OWNER}'
-- '&7Punkty: &a{POINTS}'
-- '&7Zycia: &c{LIVES}'
-- '&7Waznosc: &a{VALIDITY}'
-- '&7Czlonkowie: &a{MEMBERS}'
-- '&7Sojusze: &a{ALLIES}'
+- '&7Gildia: &c{GUILD} &8[&c{TAG}&8]'
+- '&7Zalozyciel: &c{OWNER}'
+- '&7Punkty: &c{POINTS} &8[&c{RANK}&8]'
+- '&7Zycia: &4{LIVES}'
+- '&7Waznosc: &c{VALIDITY}'
+- '&7Czlonkowie: &7{MEMBERS}'
+- '&7Sojusze: &c{ALLIES}'
 - '&8-------------------------------'
 
 # <------- Player Info Messages -------> #
@@ -107,6 +118,21 @@ topList:
 - '&78&8. &c{GTOP-8}'
 - '&79&8. &c{GTOP-9}'
 - '&710&8. &c{GTOP-10}'
+
+# <------- Ranking Messages -------> #
+# {PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu
+rankingList:
+- '&8----------{ &cTOP 10 Graczy &8}----------'
+- '&71&8. &c{PTOP-1}'
+- '&72&8. &c{PTOP-2}'
+- '&73&8. &c{PTOP-3}'
+- '&74&8. &c{PTOP-4}'
+- '&75&8. &c{PTOP-5}'
+- '&76&8. &c{PTOP-6}'
+- '&77&8. &c{PTOP-7}'
+- '&78&8. &c{PTOP-8}'
+- '&79&8. &c{PTOP-9}'
+- '&710&8. &c{PTOP-10}'
 
 # <------- Create Guild Messages -------> #
 createHasGuild: '&cMasz juz gildie!'
@@ -166,6 +192,8 @@ joinTagExists: '&cNie ma gildii o takim tagu!'
 joinInvitationList:
 - '&7Otrzymano zaproszenia od gildii: &a{GUILDS}'
 - '&7Wpisz &a/dolacz [tag] &7aby dolaczyc do wybranej gildii'
+# Available variables: {ITEM}, {ITEMS}
+joinItems: '&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}'
 # Available variables: {GUILD}, {TAG}
 joinToMember: '&aDolaczyles do gildii &7{GUILD}'
 # Available variables: {PLAYER}
@@ -293,5 +321,14 @@ deputyMember: '&7Zdegradowano Cie z funkcji &czastepcy&7!'
 deputySet: '&7Ustanowiono nowego &azastepce &7gildii!'
 deputyOwner: '&7Zostales nowym &azastepca &7gildii!'
 
-# Utils
-version: 2.2 Valor
+# <------- Setbase Messages -------> #
+setbaseHasNotGuild: '&cNie masz gildii!'
+setbaseIsNotOwner: '&cNie jestes zalozycielem gildii!'
+setbaseOutside: '&cNie mozna ustawic domu gildii poza jej terenem!'
+setbaseDone: '&7Przeniesiono &adom &7gildii!'
+
+# <------- PvP Messages -------> #
+pvpHasNotGuild: '&cNie masz gildii!'
+pvpIsNotOwner: '&cNie jestes zalozycielem gildii!'
+pvpOn: '&cWlaczono &7pvp w gildii!'
+pvpOff: '&aWylaczono &7pvp w gildii!'

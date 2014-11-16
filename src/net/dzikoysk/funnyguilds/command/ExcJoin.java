@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
@@ -7,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
 import net.dzikoysk.funnyguilds.util.ActionType;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
@@ -15,6 +17,7 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class ExcJoin implements Executor {
 	
@@ -57,6 +60,35 @@ public class ExcJoin implements Executor {
 			p.sendMessage(m.getMessage("joinHasNotInvitationTo"));
 			return;
 		}
+		
+		List<ItemStack> itemsList = Settings.getInstance().joinItems;
+		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
+		for(int i = 0; i < items.length; i++){
+			if(!p.getInventory().containsAtLeast(items[i], items[i].getAmount())){
+				String msg = m.getMessage("joinItems");
+				if(msg.contains("{ITEM}")){
+					StringBuilder sb = new StringBuilder();
+					sb.append(items[i].getAmount());
+					sb.append(" ");
+					sb.append(items[i].getType().toString().toLowerCase());
+					msg = msg.replace("{ITEM}", sb.toString());
+				}
+				if(msg.contains("{ITEMS}")){
+					ArrayList<String> list = new ArrayList<String>();
+					for(ItemStack it : itemsList){
+						StringBuilder sb = new StringBuilder();
+						sb.append(it.getAmount());
+						sb.append(" ");
+						sb.append(it.getType().toString().toLowerCase());
+						list.add(sb.toString());
+					}
+					msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
+				}
+				p.sendMessage(msg);
+				return;
+			}
+		}
+		p.getInventory().removeItem(items);
 		
 		Guild guild = GuildUtils.byTag(tag);
 		

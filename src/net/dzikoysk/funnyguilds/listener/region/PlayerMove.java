@@ -69,7 +69,7 @@ public class PlayerMove implements Listener {
 			
 			user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getInstance().regionNotificationCooldown);
 			return;
-		}else if(user.getEnter()){
+		} else if(user.getEnter()) {
 			user.setEnter(false);
 			region = RegionUtils.getAt(from);
 			if(region != null){

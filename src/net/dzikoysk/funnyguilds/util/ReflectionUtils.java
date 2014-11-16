@@ -11,8 +11,20 @@ import org.bukkit.entity.Entity;
 
 public class ReflectionUtils {
 
-        public static Class<?> getCraftClass(String ClassName) {
-            String className = "net.minecraft.server." + getVersion() + ClassName;
+        public static Class<?> getCraftClass(String name) {
+            String className = "net.minecraft.server." + getVersion() + name;
+            Class<?> c = null;
+            try {
+                c = Class.forName(className);
+            }
+            catch (Exception e) { 
+            	if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            }
+            return c;
+        }
+        
+        public static Class<?> getBukkitClass(String name) {
+            String className = "org.bukkit.craftbukkit." + getVersion() + name;
             Class<?> c = null;
             try {
                 c = Class.forName(className);

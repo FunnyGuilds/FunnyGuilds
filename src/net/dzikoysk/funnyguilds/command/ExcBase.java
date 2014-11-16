@@ -12,6 +12,8 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -46,7 +48,7 @@ public class ExcBase implements Executor {
 		}
 		
 		List<ItemStack> itemsList = Settings.getInstance().baseItems;
-		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
+		final ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
 		for(int i = 0; i < items.length; i++){
 			if(!p.getInventory().containsAtLeast(items[i], items[i].getAmount())){
 				String msg = m.getMessage("baseItems");
@@ -86,10 +88,17 @@ public class ExcBase implements Executor {
 					user.getTeleportation().cancel();
 					p.sendMessage(m.getMessage("baseMove"));
 					user.setTeleportation(null);
+					p.getInventory().addItem(items);
 					return;
 				}
 				if(i > time){
 					user.getTeleportation().cancel();
+					if(guild.getHome().getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR){
+						for(int i = guild.getHome().getBlockY(); i > 0; i--){
+							guild.getHome().setY(i);
+							if(guild.getHome().getBlock().getType() != Material.AIR) break;
+						}
+					}
 					p.sendMessage(m.getMessage("baseTeleport"));
 					p.teleport(guild.getHome());
 					user.setTeleportation(null);

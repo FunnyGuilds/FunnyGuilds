@@ -15,7 +15,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class Messages {
 	
 	private static Messages instance;
-	private static String version = "2.2 Valor";
+	private static String version = "2.5 Valor";
 	private static File messages =  new File("plugins/FunnyGuilds", "messages.yml");
 	
 	private HashMap<String, String> single = new HashMap<>();

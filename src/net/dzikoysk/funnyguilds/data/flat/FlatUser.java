@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
 
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.YamlFactor;
@@ -39,6 +40,8 @@ public class FlatUser {
 		long ban = yaml.getParent().getLong("ban");
 		String reason = yaml.getParent().getString("reason");
 		yaml.close();
+		
+		if(id == null) id = new OfflineUser(name).getUniqueId();
 		
 		values[0] = id;
 		values[1] = name;

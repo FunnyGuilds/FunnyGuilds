@@ -41,6 +41,15 @@ public class UserUtils {
 		return list;
 	}
 	
+	public static List<String> getOnlineNames(List<User> users){
+		List<String> list = new ArrayList<>();
+		for(User u : users){
+			if(u.isOnline()) list.add("<online>" + u.getName() + "</online>");
+			else list.add(u.getName());
+		}
+		return list;
+	}
+	
 	public static List<User> getUsers(List<String> names){
 		List<User> list = new ArrayList<>();
 		for(String s : names) list.add(User.get(s));

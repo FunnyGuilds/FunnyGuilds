@@ -22,12 +22,12 @@ public class WarUtils {
 		}
 		case 3: {
 			message = m.getMessage("warAttacker");
-			message = StringUtils.replace(message, "{ATTACKED}", ((Guild)values[0]).getName());
+			message = StringUtils.replace(message, "{ATTACKED}", ((Guild)values[0]).getTag());
 			break;
 		}
 		case 4:{
 			message = m.getMessage("warAttacked");
-			message = StringUtils.replace(message, "{ATTACKER}", ((Guild)values[0]).getName());
+			message = StringUtils.replace(message, "{ATTACKER}", ((Guild)values[0]).getTag());
 			break;
 		}
 		}
@@ -36,22 +36,22 @@ public class WarUtils {
 
 	public static String getWinMessage(Guild conqueror, Guild loser){
 		return Messages.getInstance().getMessage("warWin")
-				.replace("{WINNER}", conqueror.getName())
-				.replace("{LOSER}", loser.getName())
+				.replace("{WINNER}", conqueror.getTag())
+				.replace("{LOSER}", loser.getTag())
 		;
 	}
 	
 	public static String getLoseMessage(Guild conqueror, Guild loser){
 		return Messages.getInstance().getMessage("warLose")
-				.replace("{WINNER}", conqueror.getName())
-				.replace("{LOSER}", loser.getName())
+				.replace("{WINNER}", conqueror.getTag())
+				.replace("{LOSER}", loser.getTag())
 		;
 	}
 	
 	public static String getBroadcastMessage(Guild conqueror, Guild loser){
 		return Messages.getInstance().getMessage("broadcastWar")
-				.replace("{WINNER}", conqueror.getName())
-				.replace("{LOSER}", loser.getName())
+				.replace("{WINNER}", conqueror.getTag())
+				.replace("{LOSER}", loser.getTag())
 		;
 	}
 }

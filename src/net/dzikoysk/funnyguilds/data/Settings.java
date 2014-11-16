@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
 public class Settings {
 	
 	private static Settings instance;
-	private static String version = "2.2 Valor";
+	private static String version = "2.5 Valor";
 	private static File settings =  new File("plugins/FunnyGuilds", "config.yml");
 	
 	private YamlConfiguration yml;
@@ -60,6 +60,8 @@ public class Settings {
 	public List<ItemStack> validityItems;
 	
 	public int inviteMembers;
+	public List<ItemStack> joinItems;
+	public boolean infoPlayerSneaking;
 	
 	public String prefixOur;
 	public String prefixAllies;
@@ -91,6 +93,7 @@ public class Settings {
 	public int playerlistInterval;
 	public int playerlistPing;
 	public boolean playerlistPatch;
+	public String playerlistPoints;
 	
 	public String excCreate;
 	public String excDelete;
@@ -110,6 +113,10 @@ public class Settings {
 	public String excValidity;
 	public String excLeader;
 	public String excDeputy;
+	public String excRanking;
+	
+	public String mxcBase;
+	public String mxcPvP;
 	
 	public List<String> excCreateAliases;
 	public List<String> excDeleteAliases;
@@ -129,6 +136,10 @@ public class Settings {
 	public List<String> excValidityAliases;
 	public List<String> excLeaderAliases;
 	public List<String> excDeputyAliases;
+	public List<String> excRankingAliases;
+	
+	public List<String> mxcBaseAliases;
+	public List<String> mxcPvPAliases;
 	
 	public String axcMain;
 	public String axcAdd;
@@ -139,7 +150,11 @@ public class Settings {
 	public String axcKills;
 	public String axcDeaths;
 	public String axcBan;
+	public String axcUnban;
 	public String axcLives;
+	public String axcMove;
+	public String axcValidity;
+	public String axcName;
 	
 	public int dataInterval;
 	public boolean flat;
@@ -176,7 +191,7 @@ public class Settings {
 
 	private void update(){
 		this.yml =  YamlConfiguration.loadConfiguration(settings);
-		String version = yml.getString("config-version");
+		String version = yml.getString("version");
 		if(version != null && version.equals(Settings.version)) return;
 		FunnyGuilds.info("Updating the plugin settings ...");
 		Map<String, Object> values = yml.getValues(true);
@@ -271,6 +286,13 @@ public class Settings {
 	
 	private void loadInviteSection(){
 		this.inviteMembers = yml.getInt("invite-members");
+		this.infoPlayerSneaking = yml.getBoolean("info-player-sneaking");
+		List<ItemStack> items = new ArrayList<ItemStack>();
+		for(String item : yml.getStringList("join-items")){
+			ItemStack itemstack = Parser.parseItem(item);
+			if(itemstack != null) items.add(itemstack);
+		}
+		this.joinItems = items;
 	}
 	
 	private void loadPrefixSection(){
@@ -335,6 +357,7 @@ public class Settings {
 		this.playerlistInterval = yml.getInt("player-list-interval");
 		this.playerlistPing = yml.getInt("player-list-ping");
 		this.playerlistPatch = yml.getBoolean("player-list-patch");
+		this.playerlistPoints = yml.getString("player-list-points");
 		PlayerListManager.enable(this.playerlistEnable);
 		PlayerListManager.patch(this.playerlistPatch);
 		PlayerListManager.ping(this.playerlistPing);
@@ -359,6 +382,10 @@ public class Settings {
 		this.excValidity = yml.getString("commands.validity.name");
 		this.excLeader = yml.getString("commands.leader.name");
 		this.excDeputy = yml.getString("commands.deputy.name");
+		this.excRanking = yml.getString("commands.ranking.name");
+		
+		this.mxcPvP = yml.getString("commands.pvp.name");
+		this.mxcBase = yml.getString("commands.setbase.name");
 		
 		this.excCreateAliases = yml.getStringList("commands.create.aliases");
 		this.excDeleteAliases = yml.getStringList("commands.delete.aliases");
@@ -378,6 +405,10 @@ public class Settings {
 		this.excValidityAliases = yml.getStringList("commands.validity.aliases");
 		this.excLeaderAliases = yml.getStringList("commands.leader.aliases");
 		this.excDeputyAliases = yml.getStringList("commands.deputy.aliases");
+		this.excRankingAliases = yml.getStringList("commands.ranking.aliases");
+		
+		this.mxcPvPAliases = yml.getStringList("commands.pvp.aliases");
+		this.mxcBaseAliases = yml.getStringList("commands.setbase.aliases");
 		
 		this.axcMain = yml.getString("commands.admin.main");
 		this.axcAdd = yml.getString("commands.admin.add");
@@ -388,7 +419,12 @@ public class Settings {
 		this.axcKills = yml.getString("commands.admin.kills");
 		this.axcDeaths = yml.getString("commands.admin.deaths");
 		this.axcBan = yml.getString("commands.admin.ban");
+		this.axcUnban = yml.getString("commands.admin.unban");
 		this.axcLives = yml.getString("commands.admin.lives");
+		this.axcMove = yml.getString("commands.admin.move");
+		this.axcValidity = yml.getString("commands.admin.validity");
+		this.axcName = yml.getString("commands.admin.name");
+		
 	}
 	
 	private void loadDataSection(){

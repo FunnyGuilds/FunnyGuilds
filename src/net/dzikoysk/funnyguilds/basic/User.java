@@ -24,18 +24,18 @@ public class User extends Object {
 	private UUID uuid;
 	private String name;
 	private Guild guild;
-	
-	private long notification;
-	private boolean enter;
-	
+	private Rank rank;
+	private Scoreboard scoreboard;
+	private PlayerList list;
+	private IndividualPrefix prefix;
 	private long ban;
 	private String reason;
 	
+	private User lastAttacker;
+	private User lastVictim;
 	private BukkitTask teleportation;
-	private Scoreboard scoreboard;
-	private IndividualPrefix prefix;
-	private PlayerList list;
-	private Rank rank;
+	private long notification;
+	private boolean enter;
 	
 	private User(UUID uuid){
 		this.uuid = uuid;
@@ -74,16 +74,57 @@ public class User extends Object {
 		this.reason = s;
 	}
 	
-	public void setNotificationTime(long time){
-		this.notification = time;
-	}
-	
 	public void setEnter(boolean b){
 		this.enter = b;
 	}
 	
+	public void setLastVictim(User user){
+		this.lastVictim = user;
+	}
+	
+	public void setLastAttacker(User user){
+		this.lastAttacker = user;
+	}
+
+	public void setNotificationTime(long time){
+		this.notification = time;
+	}
+	
 	public void setTeleportation(BukkitTask task){
 		this.teleportation = task;
+	}
+	
+	public void removeGuild(){
+		this.guild = null;
+		IndependentThread.action(ActionType.RANK_UPDATE_USER, this);
+	}
+	
+	public boolean hasGuild(){
+		if(this.guild == null) return false;
+		return true;
+	}
+	
+	public boolean isOwner(){
+		if(!hasGuild()) return false;
+		if(this.guild.getOwner().equals(this)) return true;
+		return false;
+	}
+	
+	public boolean isDeputy(){
+		if(!hasGuild()) return false;
+		if(this.guild.getDeputy() == null) return false;
+		if(this.guild.getDeputy().equals(this)) return true;
+		return false;
+	}
+
+	public boolean isOnline(){
+		if(this.name == null) return false;
+		if(Bukkit.getPlayer(this.name) != null) return true;
+		return false;
+	}
+	
+	public boolean isBanned(){
+		return this.ban != 0;
 	}
 	
 	public UUID getUUID(){
@@ -120,6 +161,15 @@ public class User extends Object {
 		return this.rank;
 	}
 	
+	public long getBan(){
+		return this.ban;
+	}
+	
+	public String getReason(){
+		if(this.reason != null) return ChatColor.translateAlternateColorCodes('&', this.reason);
+		return "";
+	}
+	
 	public long getNotificationTime(){
 		return this.notification;
 	}
@@ -128,17 +178,16 @@ public class User extends Object {
 		return this.enter;
 	}
 	
+	public User getLastVictim(){
+		return this.lastVictim;
+	}
+	
+	public User getLastAttacker(){
+		return this.lastAttacker;
+	}
+	
 	public BukkitTask getTeleportation(){
 		return this.teleportation;
-	}
-	
-	public long getBan(){
-		return this.ban;
-	}
-	
-	public String getReason(){
-		if(this.reason != null) return ChatColor.translateAlternateColorCodes('&', this.reason);
-		return "";
 	}
 	
 	public Player getPlayer(){
@@ -151,52 +200,14 @@ public class User extends Object {
 		Player p = getPlayer();
 		if(p == null) return ping;
 		try {
-			Class<?> craftPlayer = Class.forName("org.bukkit.craftbukkit." + ReflectionUtils.getVersion() + "entity.CraftPlayer");
+			Class<?> craftPlayer = ReflectionUtils.getBukkitClass("entity.CraftPlayer");
 			Object cp = craftPlayer.cast(p);
 	        Object handle = craftPlayer.getMethod("getHandle").invoke(cp);
 			ping = (int) handle.getClass().getField("ping").get(handle);
-		} catch (ClassNotFoundException e) {
-			FunnyGuilds.exception(e);
-		} catch (NoSuchFieldException e) {
-			FunnyGuilds.exception(e.getCause());
 		} catch (Exception e) {
-			FunnyGuilds.exception(e.getCause());
+			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
 		return ping;
-	}
-	
-	public void removeGuild(){
-		this.guild = null;
-		IndependentThread.action(ActionType.RANK_UPDATE_USER, this);
-	}
-	
-	public boolean hasGuild(){
-		if(this.guild == null) return false;
-		return true;
-	}
-	
-	public boolean isOwner(){
-		if(!hasGuild()) return false;
-		if(this.guild.getOwner().equals(this)) return true;
-		return false;
-	}
-	
-	public boolean isDeputy(){
-		if(!hasGuild()) return false;
-		if(this.guild.getDeputy() == null) return false;
-		if(this.guild.getDeputy().equals(this)) return true;
-		return false;
-	}
-
-	public boolean isOnline(){
-		if(this.name == null) return false;
-		Player p = Bukkit.getPlayer(this.name);
-		if(p == null) return false;
-		return true;
-	}
-	
-	public boolean isBanned(){
-		return this.ban != 0;
 	}
 	
 	private User(String name){

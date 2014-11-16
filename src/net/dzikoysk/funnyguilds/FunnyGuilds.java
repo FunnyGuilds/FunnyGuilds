@@ -20,6 +20,7 @@ import net.dzikoysk.funnyguilds.command.ExcKick;
 import net.dzikoysk.funnyguilds.command.ExcLeader;
 import net.dzikoysk.funnyguilds.command.ExcLeave;
 import net.dzikoysk.funnyguilds.command.ExcPlayer;
+import net.dzikoysk.funnyguilds.command.ExcRanking;
 import net.dzikoysk.funnyguilds.command.ExcTop;
 import net.dzikoysk.funnyguilds.command.ExcValidity;
 import net.dzikoysk.funnyguilds.command.admin.AxcAdd;
@@ -30,8 +31,14 @@ import net.dzikoysk.funnyguilds.command.admin.AxcLives;
 import net.dzikoysk.funnyguilds.command.admin.AxcMain;
 import net.dzikoysk.funnyguilds.command.admin.AxcKick;
 import net.dzikoysk.funnyguilds.command.admin.AxcKills;
+import net.dzikoysk.funnyguilds.command.admin.AxcMove;
+import net.dzikoysk.funnyguilds.command.admin.AxcName;
 import net.dzikoysk.funnyguilds.command.admin.AxcPoints;
 import net.dzikoysk.funnyguilds.command.admin.AxcTeleport;
+import net.dzikoysk.funnyguilds.command.admin.AxcUnban;
+import net.dzikoysk.funnyguilds.command.admin.AxcValidity;
+import net.dzikoysk.funnyguilds.command.manager.MxcBase;
+import net.dzikoysk.funnyguilds.command.manager.MxcPvP;
 import net.dzikoysk.funnyguilds.command.util.ExecutorCaller;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.DataManager;
@@ -136,6 +143,10 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new ExcValidity(), s.excValidity, "funnyguilds.validity", s.excValidityAliases);
 		new ExecutorCaller(new ExcLeader(), s.excLeader, "funnyguilds.leader", s.excLeaderAliases);
 		new ExecutorCaller(new ExcDeputy(), s.excDeputy, "funnyguilds.deputy", s.excDeputyAliases);
+		new ExecutorCaller(new ExcRanking(), s.excDeputy, "funnyguilds.ranking", s.excDeputyAliases);
+		
+		new ExecutorCaller(new MxcPvP(), s.mxcPvP, "funnyguilds.manage", s.mxcPvPAliases);
+		new ExecutorCaller(new MxcBase(), s.mxcBase, "funnyguilds.manage", s.mxcBaseAliases);
 		
 		new ExecutorCaller(new AxcMain(), s.axcMain, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcAdd(), s.axcAdd, "funnyguilds.admin", null);
@@ -146,7 +157,11 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new AxcKills(), s.axcKills, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcDeaths(), s.axcDeaths, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcBan(), s.axcBan, "funnyguilds.admin", null);
+		new ExecutorCaller(new AxcUnban(), s.axcUnban, "funnyguilds.admin", null);
 		new ExecutorCaller(new AxcLives(), s.axcLives, "funnyguilds.admin", null);
+		new ExecutorCaller(new AxcMove(), s.axcMove, "funnyguilds.admin", null);
+		new ExecutorCaller(new AxcValidity(), s.axcValidity, "funnyguilds.admin", null);
+		new ExecutorCaller(new AxcName(), s.axcName, "funnyguilds.admin", null);
 	}
 	
 	@Override

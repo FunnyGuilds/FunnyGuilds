@@ -18,7 +18,7 @@ public class Flat {
 	
 	private static File guildsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "guilds");
 	private static File regionsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "regions");
-	private static File usersFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data" + File.separator + "users" + File.separator);
+	private static File usersFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data" + File.separator + "users");
 	
 	public Flat(){
 		instance = this;
@@ -90,7 +90,24 @@ public class Flat {
 	}
 	
 	public static File getUserFile(User user){
-		return new File(usersFolder, user.getName() + ".yml");
+		StringBuilder sb = new StringBuilder();
+		sb.append(user.getName());
+		sb.append(".yml");
+		return new File(usersFolder, sb.toString());
+	}
+	
+	public static File getRegionFile(Region region){
+		StringBuilder sb = new StringBuilder();
+		sb.append(region.getName());
+		sb.append(".yml");
+		return new File(regionsFolder, sb.toString());
+	}
+	
+	public static File getGuildFile(Guild guild){
+		StringBuilder sb = new StringBuilder();
+		sb.append(guild.getName());
+		sb.append(".yml");
+		return new File(guildsFolder, sb.toString());
 	}
 	
 	public static Flat getInstance(){

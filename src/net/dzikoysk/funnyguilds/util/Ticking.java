@@ -1,58 +1,44 @@
 package net.dzikoysk.funnyguilds.util;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.LinkedList;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import org.bukkit.Bukkit;
 
 public class Ticking implements Runnable {
-	
-	private static Ticking instance;
-	private int id;
-	private long mills = System.currentTimeMillis();
-	private int time;
-	private static double TPS = 20.0D;
 
+	private static DecimalFormat df = new DecimalFormat("#,###.##");
+	private transient long lastPoll = System.nanoTime();
+	private final LinkedList<Double> history = new LinkedList<>();
+	private static String result = "20.0";
+	
 	public Ticking(){
-		instance = this;
+		history.add(Double.valueOf(20.0D));
 	}
 	
 	public void start(){
-		this.mills = System.currentTimeMillis();
-		this.id = Bukkit.getScheduler().scheduleSyncRepeatingTask(FunnyGuilds.getInstance(), this, 1L, 1L);
+		Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), this, 1000L, 50L);
 	}
-
+	
 	@Override
 	public void run(){
-		this.time += 1;
-		if (this.time != 200) return;
-		
-		long outmils = System.currentTimeMillis();
-		double r = ((outmils - this.mills) / 50.0D - 200.0D) / 10.0D;
-		double tick = 20.0D - r;
-		
-		BigDecimal bd = new BigDecimal(tick).setScale(1, RoundingMode.UP);
-		tick = Double.valueOf(bd.doubleValue()).doubleValue();
-		if (tick >= 21.0D) tick = 20.0D - (tick - 20.0D);
-		else if (tick >= 19.899999999999999D) tick = 20.0D;
-	
-		TPS = tick;
-		this.time = 0;
-		this.mills = System.currentTimeMillis();
-	}
-
-	public void stop(){
-		if(this.id == 0) return;
-		Bukkit.getScheduler().cancelTask(this.id);
-	}
-
-	public static double getTPS(){
-		return TPS;
+		long startTime = System.nanoTime();
+		long timeSpent = (startTime - this.lastPoll) / 1000L;
+		if (timeSpent == 0L) timeSpent = 1L;
+		if (history.size() > 10) history.remove();
+		double tps = 50000000.0D / timeSpent;
+		if (tps <= 21.0D) history.add(Double.valueOf(tps));
+		this.lastPoll = startTime;
+		double avg = 0.0D;
+		for (Double f : history) if(f != null) avg += f.doubleValue();
+		df.setRoundingMode(RoundingMode.HALF_UP);
+	    result = df.format((avg / history.size()));
 	}
 	
-	public static Ticking getInstance(){
-		return instance;
+	public static String getTPS() { 
+		return result;
 	}
 }

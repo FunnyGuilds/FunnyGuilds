@@ -31,17 +31,15 @@ public class EntityDamage implements Listener {
 			User uv = User.get(victim);
 			User ua = User.get(attacker);
 			if(!(uv.hasGuild() && ua.hasGuild())) return;
-			if(uv.getGuild().getName().equals(ua.getGuild().getName()))
-				if(!Settings.getInstance().damageGuild) event.setCancelled(true);
+			if(uv.getGuild().equals(ua.getGuild()))
+				if(!uv.getGuild().getPvP()) event.setCancelled(true);
 			if(uv.getGuild().getAllies().contains(ua.getGuild()))
 				if(!Settings.getInstance().damageAlly) event.setCancelled(true);
-			return;
-		}
-		if(entity instanceof EnderCrystal){
+		} else if(entity instanceof EnderCrystal){
 			if(damager instanceof Player){
 				if(ProtectionSystem.endercrystal((EnderCrystal) entity, (Player) damager))
 					event.setCancelled(true);
-			}else if(damager instanceof Projectile){
+			} else if(damager instanceof Projectile){
 				if(ProtectionSystem.endercrystal((EnderCrystal) entity) != null)
 					event.setCancelled(true);
 			}

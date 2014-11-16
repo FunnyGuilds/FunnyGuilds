@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -51,7 +52,7 @@ public class ExcInfo implements Executor {
 			m = StringUtils.replace(m, "{GUILD}", guild.getName());
 			m = StringUtils.replace(m, "{TAG}", guild.getTag());
 			m = StringUtils.replace(m, "{OWNER}", guild.getOwner().getName());
-			m = StringUtils.replace(m, "{MEMBERS}", StringUtils.toString(UserUtils.getNames(guild.getMembers()), true));
+			m = StringUtils.replace(m, "{MEMBERS}", StringUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
 			m = StringUtils.replace(m, "{POINTS}", Integer.toString(guild.getRank().getPoints()));
 			m = StringUtils.replace(m, "{KILLS}", Integer.toString(guild.getRank().getKills()));
 			m = StringUtils.replace(m, "{DEATHS}", Integer.toString(guild.getRank().getDeaths()));
@@ -61,6 +62,11 @@ public class ExcInfo implements Executor {
 			if(guild.getAllies().size() > 0)
 				m = StringUtils.replace(m, "{ALLIES}", StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
 			else m = StringUtils.replace(m, "{ALLIES}", "Brak");
+			if(m.contains("<online>")){
+				String color = ChatColor.getLastColors(m.split("<online>")[0]);
+				m = StringUtils.replace(m, "<online>", ChatColor.GREEN + "");
+				m = StringUtils.replace(m, "</online>", color);
+			}
 			s.sendMessage(m);
 		}
 		return;

@@ -1,7 +1,7 @@
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#          2.2.2 Valor          #
+#           2.5 Valor           #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -110,7 +110,7 @@ rank-start: 1000
 # Jaki procent punktow zabitego ma przyznawac zabojcy
 rank-percent: 2.0
 
-# Czy czlonkowie gildii moga sobie zadawac obrazenia
+# Czy czlonkowie gildii moga sobie zadawac obrazenia (domyslnie)
 damage-guild: false
 # Czy sojuszniczy moga sobie zadawac obrazenia
 damage-ally: false
@@ -124,8 +124,13 @@ base-items:
 - 1 diamond
 - 1 emerald
 
+# Koszt dolaczenia do gildii (jezeli brak, wystarczy zrobic: join-items: [])
+join-items:
+- 1 diamond
 # Maxymalna ilosc czlonkow w gildii
 invite-members: 15
+# Czy trzeba kucac, zeby przy klikniecu prawym na gracza wyswietlilo informacje o nim
+info-player-sneaking: true
 
 # Wyglad listy graczy. Przedzial od 1 do 60
 # Limit znakow: 30
@@ -182,6 +187,8 @@ player-list-ping: 0
 # - Po wejsciu gracza wszystko sie rozjezdza
 # Wlacz ta opcje
 player-list-patch: false
+# Wyglad punktow wyswietlanych przy gildii w rankingu
+player-list-points: '&7[&b{POINTS}&7]'
 
 # Nazwy komend
 commands:
@@ -243,6 +250,18 @@ commands:
   deputy:
     name: 'zastepca'
     aliases: []
+  ranking: 
+    name: 'ranking'
+    aliases: []
+
+  setbase:
+    name: 'ustawbaze'
+    aliases:
+    - 'ustawdom'
+  pvp:
+    name: 'pvp'
+    aliases:
+    - 'ustawpvp'
 
   # Komendy administratora
   admin:
@@ -256,6 +275,10 @@ commands:
     deaths: 'ga deaths'
     ban: 'ga ban'
     lives: 'ga zycia'
+    move: 'ga przenies'
+    unban: 'ga unban'
+    validity: 'ga przedluz'
+    name: 'ga nazwa'
 
 
 # Co ile minut ma automatycznie zapisywac dane
@@ -274,5 +297,5 @@ mysql:
   user: root
   password: passwd
   
-# Utils
-config-version: 2.2 Valor
+# Config Version
+version: 2.5 Valor

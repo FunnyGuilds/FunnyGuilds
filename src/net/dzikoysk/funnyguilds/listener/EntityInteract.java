@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.ExcInfo;
 import net.dzikoysk.funnyguilds.command.ExcPlayer;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EnderCrystal;
@@ -20,7 +21,7 @@ public class EntityInteract implements Listener {
 	public void onInteract(PlayerInteractEntityEvent event) {
 		Entity entity = event.getRightClicked();
 		if(entity instanceof Player){
-			if(!event.getPlayer().isSneaking()) return;
+			if(Settings.getInstance().infoPlayerSneaking && !event.getPlayer().isSneaking()) return;
 			Player clicked = (Player) entity;
 			new ExcPlayer().execute(event.getPlayer(), new String[] { clicked.getName() });
 		} else if(entity instanceof EnderCrystal){

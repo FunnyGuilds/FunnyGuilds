@@ -26,6 +26,7 @@ public class Guild {
 	private List<String> regions = new ArrayList<>();
 	private List<Guild> allies = new ArrayList<>();
 	private List<Guild> enemies = new ArrayList<>();
+	private boolean pvp;
 	private long born;
 	private long validity;
 	private long attacked;
@@ -98,6 +99,10 @@ public class Guild {
 		this.enemies = guilds;
 	}
 
+	public void setPvP(boolean b){
+		this.pvp = b;
+	}
+	
 	public void setBorn(long l){
 		this.born = l;
 	}
@@ -239,6 +244,10 @@ public class Guild {
 	
 	public List<Guild> getEnemies(){
 		return this.enemies;
+	}
+	
+	public boolean getPvP(){
+		return this.pvp;
 	}
 	
 	public long getBorn(){

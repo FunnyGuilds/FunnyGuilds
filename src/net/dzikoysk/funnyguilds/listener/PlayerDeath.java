@@ -17,12 +17,28 @@ public class PlayerDeath implements Listener {
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event){
 		Player v = event.getEntity();
+		Player a = event.getEntity().getKiller();
+		
 		User victim = User.get(v);
 		victim.getRank().addDeath();
 		
-		Player a = event.getEntity().getKiller();
-		if(a == null) return;		
+		if(a == null) return;
+		if(a.getAddress().equals(v.getAddress())){
+			v.sendMessage(Messages.getInstance().getMessage("rankAddressVictim"));
+			a.sendMessage(Messages.getInstance().getMessage("rankAddressAttacker"));
+			return;
+		}
+		
 		User attacker = User.get(a);
+		if(attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)){
+			v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));
+			a.sendMessage(Messages.getInstance().getMessage("rankLastVictimA"));
+			return;
+		} else if(victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)){
+			v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
+			a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
+			return;
+		}
 		
 		Double d = victim.getRank().getPoints() * (Settings.getInstance().rankPercent / 100);
 		int points = d.intValue();
