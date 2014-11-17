@@ -33,6 +33,8 @@ public class User extends Object {
 	
 	private User lastAttacker;
 	private User lastVictim;
+	private long lastAttackerTime;
+	private long lastVictimTime;
 	private BukkitTask teleportation;
 	private long notification;
 	private boolean enter;
@@ -80,12 +82,14 @@ public class User extends Object {
 	
 	public void setLastVictim(User user){
 		this.lastVictim = user;
+		this.lastVictimTime = System.currentTimeMillis();
 	}
 	
 	public void setLastAttacker(User user){
 		this.lastAttacker = user;
+		this.lastAttackerTime = System.currentTimeMillis();
 	}
-
+	
 	public void setNotificationTime(long time){
 		this.notification = time;
 	}
@@ -184,6 +188,14 @@ public class User extends Object {
 	
 	public User getLastAttacker(){
 		return this.lastAttacker;
+	}
+	
+	public long getLastVictimTime(){
+		return this.lastVictimTime;
+	}
+	
+	public long getLastAttackerTime(){
+		return this.lastAttackerTime;
 	}
 	
 	public BukkitTask getTeleportation(){

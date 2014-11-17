@@ -47,6 +47,7 @@ public class ProtectionSystem {
 		Region region = RegionUtils.getAt(location);
 		if(region == null) return false;
 		Guild guild = region.getGuild();
+		if(guild == null || guild.getName() == null) return false;
 		User user = User.get(player);
 		if(guild.getMembers().contains(user)){
 			if(build && !guild.canBuild()){

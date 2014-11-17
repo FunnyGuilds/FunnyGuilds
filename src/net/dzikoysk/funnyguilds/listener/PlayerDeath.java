@@ -23,7 +23,7 @@ public class PlayerDeath implements Listener {
 		victim.getRank().addDeath();
 		
 		if(a == null) return;
-		if(a.getAddress().equals(v.getAddress())){
+		if(a.getAddress().getAddress().getHostAddress().equals(v.getAddress().getAddress().getHostAddress())){
 			v.sendMessage(Messages.getInstance().getMessage("rankAddressVictim"));
 			a.sendMessage(Messages.getInstance().getMessage("rankAddressAttacker"));
 			return;
@@ -31,22 +31,28 @@ public class PlayerDeath implements Listener {
 		
 		User attacker = User.get(a);
 		if(attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)){
-			v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));
-			a.sendMessage(Messages.getInstance().getMessage("rankLastVictimA"));
-			return;
+			if(attacker.getLastVictimTime() + 7200000 > System.currentTimeMillis()){
+				v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));
+				a.sendMessage(Messages.getInstance().getMessage("rankLastVictimA"));
+				return;
+			}
 		} else if(victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)){
-			v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
-			a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
-			return;
+			if(victim.getLastVictimTime() + 7200000 > System.currentTimeMillis()){
+				v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
+				a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
+				return;
+			}
 		}
 		
 		Double d = victim.getRank().getPoints() * (Settings.getInstance().rankPercent / 100);
 		int points = d.intValue();
 		
 		victim.getRank().removePoints(points);
+		victim.setLastAttacker(attacker);
 		
 		attacker.getRank().addKill();
 		attacker.getRank().addPoints(points);
+		attacker.setLastVictim(victim);
 		
 		IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
 		IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);

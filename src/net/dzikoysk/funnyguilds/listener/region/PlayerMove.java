@@ -33,17 +33,17 @@ public class PlayerMove implements Listener {
 			if(user.getEnter()) return;
 			Guild guild = region.getGuild();
 			if(guild == null || guild.getName() == null) return;
-			
 			user.setEnter(true);
-			Messages m = Messages.getInstance();
-			
+	
 			if(guild.getMembers().contains(user)){
-				player.sendMessage(m.getMessage("regionEnter")
+				player.sendMessage(Messages.getInstance().getMessage("regionEnter")
 					.replace("{GUILD}", guild.getName())
 					.replace("{TAG}", guild.getTag()));
 				user.setEnter(true);
 				return;
 			}
+			
+			Messages m = Messages.getInstance();
 			
 			player.sendMessage(m.getMessage("notificationOther")
 				.replace("{GUILD}", guild.getName())

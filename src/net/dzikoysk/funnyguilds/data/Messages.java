@@ -23,13 +23,11 @@ public class Messages {
 	
 	public Messages(){
 		instance = this;
-		
 		YamlConfiguration yml = loadConfiguration();
 		if(yml == null){
 			FunnyGuilds.error("[Messages] Messages.yml not loaded!");
 			return;
 		}
-		
 		for(String key : yml.getKeys(true)){
 			if(key.toLowerCase().contains("list")){
 				List<String> list =  yml.getStringList(key);
@@ -60,6 +58,7 @@ public class Messages {
 		DataManager.loadDefaultFiles(new String[] { "messages.yml" });
 		yml = YamlConfiguration.loadConfiguration(messages);
 		for(Entry<String, Object> entry : values.entrySet()) yml.set(entry.getKey(), entry.getValue());
+		yml.set("version", Messages.version);
 		try {
 			yml.save(messages);
 			FunnyGuilds.info("Successfully updated messages!");

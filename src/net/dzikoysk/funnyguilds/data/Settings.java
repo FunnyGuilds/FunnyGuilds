@@ -199,6 +199,7 @@ public class Settings {
 		DataManager.loadDefaultFiles(new String[] { "config.yml" });
 		yml = YamlConfiguration.loadConfiguration(settings);
 		for(Entry<String, Object> entry : values.entrySet()) yml.set(entry.getKey(), entry.getValue());
+		yml.set("version", Settings.version);
 		try {
 			yml.save(settings);
 			FunnyGuilds.info("Successfully updated settings!");
