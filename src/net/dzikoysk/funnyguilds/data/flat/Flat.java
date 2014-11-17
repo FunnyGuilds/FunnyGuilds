@@ -93,7 +93,7 @@ public class Flat {
 		StringBuilder sb = new StringBuilder();
 		sb.append(user.getName());
 		sb.append(".yml");
-		return new File(usersFolder, sb.toString());
+		return new File(usersFolder + File.separator + sb.toString());
 	}
 	
 	public static File getRegionFile(Region region){

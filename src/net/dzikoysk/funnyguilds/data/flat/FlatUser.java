@@ -16,7 +16,10 @@ public class FlatUser {
 	}
 	
 	public boolean serialize(){
-		YamlFactor yaml = new YamlFactor(Flat.getUserFile(user));
+		File file = Flat.getUserFile(user);
+		if(file.isDirectory()) return false;
+		
+		YamlFactor yaml = new YamlFactor(file);
 		yaml.getParent().set("uuid", user.getUUID().toString());
 		yaml.getParent().set("name", user.getName());
 		yaml.getParent().set("points", user.getRank().getPoints());
@@ -29,6 +32,8 @@ public class FlatUser {
 	}
 	
 	public static User deserialize(File file){
+		if(file.isDirectory()) return null;
+		
 		YamlFactor yaml = new YamlFactor(file);
 		Object[] values = new Object[7];
 		

@@ -143,7 +143,7 @@ public class FunnyGuilds extends JavaPlugin {
 		new ExecutorCaller(new ExcValidity(), s.excValidity, "funnyguilds.validity", s.excValidityAliases);
 		new ExecutorCaller(new ExcLeader(), s.excLeader, "funnyguilds.leader", s.excLeaderAliases);
 		new ExecutorCaller(new ExcDeputy(), s.excDeputy, "funnyguilds.deputy", s.excDeputyAliases);
-		new ExecutorCaller(new ExcRanking(), s.excDeputy, "funnyguilds.ranking", s.excDeputyAliases);
+		new ExecutorCaller(new ExcRanking(), s.excRanking, "funnyguilds.ranking", s.excRankingAliases);
 		
 		new ExecutorCaller(new MxcPvP(), s.mxcPvP, "funnyguilds.manage", s.mxcPvPAliases);
 		new ExecutorCaller(new MxcBase(), s.mxcBase, "funnyguilds.manage", s.mxcBaseAliases);
