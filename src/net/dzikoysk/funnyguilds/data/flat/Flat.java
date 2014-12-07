@@ -46,8 +46,11 @@ public class Flat {
 	private void loadUsers(){	
 		int i = 0;
 		File[] path = usersFolder.listFiles();
-		if(path != null) for(File file : path)
-			if(FlatUser.deserialize(file) == null) file.delete();
+		if(path != null) for(File file : path){
+			User user = FlatUser.deserialize(file);
+			if(user == null) file.delete();
+			else user.changed();
+		}
 		if(i > 0) FunnyGuilds.warning("Repaired conflicts: " + i);
 		FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());	
 	}
@@ -67,7 +70,9 @@ public class Flat {
 	private void loadRegions(){
 		File[] path = regionsFolder.listFiles();
 		if(path != null) for(File file : path) {
-			if(FlatRegion.deserialize(file) == null) file.delete();
+			Region region = FlatRegion.deserialize(file);
+			if(region == null) file.delete();
+			else region.changed();
 		}
 		FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
 	}
@@ -88,7 +93,9 @@ public class Flat {
 		GuildUtils.getGuilds().clear();
 		File[] path = guildsFolder.listFiles();
 		if(path != null) for(File file : path){
-			if(FlatGuild.deserialize(file) == null) file.delete();
+			Guild guild = FlatGuild.deserialize(file);
+			if(guild == null) file.delete();
+			else guild.changed();
 		}
 		IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
 		FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());

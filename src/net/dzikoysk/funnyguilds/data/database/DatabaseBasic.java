@@ -31,15 +31,24 @@ public class DatabaseBasic {
 			guildsTable(db);
 			
 			ResultSet users = Database.getInstance().executeQuery("SELECT * FROM users");
-			while(users.next()) DatabaseUser.deserialize(users);
+			while(users.next()){
+				User user = DatabaseUser.deserialize(users);
+				if(user != null) user.changed();
+			}
 			FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());
 			
 			ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM regions");
-			while(regions.next()) DatabaseRegion.deserialize(regions);
+			while(regions.next()){
+				Region region = DatabaseRegion.deserialize(regions);
+				if(region != null) region.changed();
+			}
 			FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
 			
 			ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM guilds");
-			while(guilds.next()) DatabaseGuild.deserialize(guilds);
+			while(guilds.next()){
+				Guild guild = DatabaseGuild.deserialize(guilds);
+				if(guild != null) guild.changed();
+			}
 			FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
 			
 			db.closeConnection();
@@ -53,7 +62,7 @@ public class DatabaseBasic {
 		Database db = Database.getInstance();
 		db.openConnection();
 		for(User user : UserUtils.getUsers()){
-			if(!user.changed()) continue;
+			if(!user.changed())	continue;
 			try {
 				new DatabaseUser(user).save(db);
 			} catch (Exception e){
@@ -140,8 +149,6 @@ public class DatabaseBasic {
 		db.executeUpdate("alter table users add ban bigint;");
 		db.executeUpdate("alter table users add reason text;");
 		db.executeUpdate("alter table users add guild varchar(100);");
-		db.executeUpdate("alter table users add constraint guild foreign key (guild) references guilds (name) on update cascade;");
-
 	}
 
 	public static DatabaseBasic getInstance(){

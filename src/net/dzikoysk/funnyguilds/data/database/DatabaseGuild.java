@@ -72,44 +72,17 @@ public class DatabaseGuild {
 		String regions = StringUtils.toString(guild.getRegions(), false);
 		String allies = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
 		String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
+
 		sb.append("INSERT INTO guilds (");
-		sb.append("uuid, name, tag, owner, home, region, members, regions, allies, enemies, points, ");
-		sb.append("born, validity, attacked, ban, lives, pvp");
-		sb.append(") VALUES (");
-		sb.append("'" + guild.getUUID().toString() + "',");
-		sb.append("'" + guild.getName() + "',");
-		sb.append("'" + guild.getTag() + "',");
-		sb.append("'" + guild.getOwner().getName() + "',");
-		sb.append("'" + Parser.toString(guild.getHome()) + "',");
-		sb.append("'" + guild.getRegion() + "',");
-		sb.append("'" + members + "',");
-		sb.append("'" + regions + "',");
-		sb.append("'" + allies + "',");
-		sb.append("'" + enemies + "',");
-		sb.append("" + guild.getRank().getPoints() + ",");
-		sb.append("" + guild.getBorn() + ",");
-		sb.append("" + guild.getValidity() + ",");
-		sb.append("" + guild.getAttacked() + ",");
-		sb.append("" + guild.getBan() + ",");
-		sb.append("" + guild.getLives() + ",");
-		sb.append("" + guild.getPvP() + "");
-		sb.append(") ON DUPLICATE KEY UPDATE ");
-		sb.append("name='" + guild.getName() + "',");
-		sb.append("tag='" + guild.getTag() + "',");
-		sb.append("owner='" + guild.getOwner().getName() + "',");
-		sb.append("home='" + Parser.toString(guild.getHome()) + "',");
-		sb.append("region='" + guild.getRegion() + "',");
-		sb.append("members='" + members + "',");
-		sb.append("regions='" + regions + "',");
-		sb.append("allies='" + allies + "',");
-		sb.append("enemies='" + enemies + "',");
-		sb.append("points=" + guild.getRank().getPoints() + ",");
-		sb.append("born=" + guild.getBorn() + ",");
-		sb.append("validity=" + guild.getValidity() + ",");
-		sb.append("attacked=" + guild.getAttacked() + ",");
-		sb.append("ban=" + guild.getBan() + ",");
-		sb.append("lives=" + guild.getLives() + ",");
-		sb.append("pvp=" + guild.getPvP() + "");
+		sb.append("uuid, name, tag, owner, home, region, members, regions, allies, ");
+		sb.append("enemies, points, born, validity, attacked, ban, lives, pvp");
+		sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");
+		sb.append("'%members%','%regions%','%allies%','%enemies%',%points%,%born%,");
+		sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%) ON DUPLICATE KEY UPDATE ");
+		sb.append("uuid='%uuid%',name='%name%',tag='%tag%',owner='%owner%',home='%home%',");
+		sb.append("region='%region%',members='%members%',regions='%regions%',allies='%allies%',");
+		sb.append("enemies='%enemies%',points=%points%,born=%born%,validity=%validity%,");
+		sb.append("attacked=%attacked%,ban=%ban%,lives=%lives%,pvp=%pvp%");
 		if(guild.getDeputy() != null) {
 			sb.append("; UPDATE guilds SET deputy='");
 			sb.append(guild.getDeputy().getName());
@@ -121,7 +94,25 @@ public class DatabaseGuild {
 			sb.append(guild.getUUID().toString());
 			sb.append("'");
 		}
-		return sb.toString();
+		String is = sb.toString();
+		is = StringUtils.replace(is, "%uuid%", guild.getUUID().toString());
+		is = StringUtils.replace(is, "%name%", guild.getName());
+		is = StringUtils.replace(is, "%tag%", guild.getTag());
+		is = StringUtils.replace(is, "%owner%", guild.getOwner().getName());
+		is = StringUtils.replace(is, "%home%", Parser.toString(guild.getHome()));
+		is = StringUtils.replace(is, "%region%", guild.getRegion());
+		is = StringUtils.replace(is, "%members%", members);
+		is = StringUtils.replace(is, "%regions%", regions);
+		is = StringUtils.replace(is, "%allies%", allies);
+		is = StringUtils.replace(is, "%enemies%", enemies);
+		is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));
+		is = StringUtils.replace(is, "%born%", Long.toString(guild.getBorn()));
+		is = StringUtils.replace(is, "%validity%", Long.toString(guild.getValidity()));
+		is = StringUtils.replace(is, "%attacked%", Long.toString(guild.getAttacked()));
+		is = StringUtils.replace(is, "%ban%", Long.toString(guild.getBan()));
+		is = StringUtils.replace(is, "%lives%", Integer.toString(guild.getLives()));
+		is = StringUtils.replace(is, "%pvp%", Boolean.toString(guild.getPvP()));
+		return is;
 	}
 	
 	public static Guild deserialize(ResultSet rs) throws SQLException{

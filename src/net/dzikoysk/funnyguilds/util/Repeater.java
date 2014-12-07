@@ -56,6 +56,12 @@ public class Repeater implements Runnable {
 		player_list = 0;
 	}
 	
+	private void protectionSystem(){
+		if(Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal"))
+			for(Guild guild : GuildUtils.getGuilds()) ProtectionSystem.respawn(guild);
+		protection_system = 0;
+	}
+	
 	private void validitySystem(){
 		ValiditySystem.getInstance().run();
 		validity_system = 0;
@@ -64,11 +70,6 @@ public class Repeater implements Runnable {
 	private void banSystem(){
 		BanSystem.getInstance().run();
 		ban_system = 0;
-	}
-	
-	private void protectionSystem(){
-		for(Guild guild : GuildUtils.getGuilds()) ProtectionSystem.respawn(guild);
-		protection_system = 0;
 	}
 	
 	public void reload(){

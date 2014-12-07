@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.command.manager;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,6 +41,13 @@ public class MxcBase implements Executor {
 		}
 		
 		guild.setHome(loc);
+		if(guild.getHome().getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR){
+			for(int i = guild.getHome().getBlockY(); i > 0; i--){
+				guild.getHome().setY(i);
+				if(guild.getHome().getBlock().getType() != Material.AIR) break;
+			}
+		}
+		
 		p.sendMessage(m.getMessage("setbaseDone"));
 	}
 

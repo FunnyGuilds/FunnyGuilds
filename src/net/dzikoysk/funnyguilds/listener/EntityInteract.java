@@ -28,6 +28,7 @@ public class EntityInteract implements Listener {
 			EnderCrystal ec = (EnderCrystal) entity;
 			Region region = RegionUtils.getAt(ec.getLocation());
 			if(region == null) return;
+			event.setCancelled(true);
 			if(region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
 				.equals(ec.getLocation().getBlock().getLocation().toVector())){
 				Guild guild = region.getGuild();

@@ -9,15 +9,14 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
+import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 public class ExcBase implements Executor {
 	
@@ -36,14 +35,6 @@ public class ExcBase implements Executor {
 		
 		if(user.getTeleportation() != null){
 			p.sendMessage(m.getMessage("baseIsTeleportation"));
-			return;
-		}
-		
-		final Vector before = p.getLocation().toVector();
-		final int time = Settings.getInstance().baseDelay;
-		if(time < 1){
-			p.teleport(guild.getHome());
-			p.sendMessage(m.getMessage("baseTeleport"));
 			return;
 		}
 		
@@ -76,31 +67,33 @@ public class ExcBase implements Executor {
 		}
 		p.getInventory().removeItem(items);
 		
+		final int time = Settings.getInstance().baseDelay;
+		if(time < 1){
+			p.teleport(guild.getHome());
+			p.sendMessage(m.getMessage("baseTeleport"));
+			return;
+		}
 		p.sendMessage(m.getMessage("baseDontMove")
 			.replace("{TIME}", time+"")
 		);
 		
 		user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), new Runnable(){		
+			Location before = p.getLocation();
+			Player player = p;
 			int i = 0;
 			public void run(){
 				i++;
-				if(!p.getLocation().toVector().equals(before)){
+				if(!LocationUtils.equals(player.getLocation(), before)){
 					user.getTeleportation().cancel();
-					p.sendMessage(m.getMessage("baseMove"));
+					player.sendMessage(m.getMessage("baseMove"));
 					user.setTeleportation(null);
-					p.getInventory().addItem(items);
+					player.getInventory().addItem(items);
 					return;
 				}
 				if(i > time){
 					user.getTeleportation().cancel();
-					if(guild.getHome().getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR){
-						for(int i = guild.getHome().getBlockY(); i > 0; i--){
-							guild.getHome().setY(i);
-							if(guild.getHome().getBlock().getType() != Material.AIR) break;
-						}
-					}
-					p.sendMessage(m.getMessage("baseTeleport"));
-					p.teleport(guild.getHome());
+					player.sendMessage(m.getMessage("baseTeleport"));
+					player.teleport(guild.getHome());
 					user.setTeleportation(null);
 					return;
 				}

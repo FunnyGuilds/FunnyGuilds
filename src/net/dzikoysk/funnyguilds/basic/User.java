@@ -41,8 +41,8 @@ public class User extends Object {
 	
 	private User(UUID uuid){
 		this.uuid = uuid;
+		this.changes = true;
 		UserUtils.addUser(this);
-		this.changes();
 	}
 
 	public void setName(String name){
@@ -233,25 +233,26 @@ public class User extends Object {
 	public boolean changed(){
 		boolean c = changes;
 		if(c) this.changes = false;
-		return true;
+		return c;
 	}
 	
 	private User(String name){
 		this(new OfflineUser(name));
+		this.changes = true;
 	}
 	
 	private User(Player player){
 		this.uuid = player.getUniqueId();
 		this.name = player.getName();
 		UserUtils.addUser(this);
-		this.changes();
+		this.changes = true;
 	}
 	
 	private User(OfflineUser offline){
 		this.uuid = UUID.fromString(offline.getUniqueId());
 		this.name = offline.getName();
 		UserUtils.addUser(this);
-		this.changes();
+		this.changes = true;
 	}
 	
 	public static User get(UUID uuid){

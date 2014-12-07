@@ -21,6 +21,7 @@ public class Region {
 	
 	private Region(String name){
 		this.name = name;
+		this.changes = true;
 		RegionUtils.addRegion(this);
 	}
 	
@@ -32,7 +33,7 @@ public class Region {
 		this.size = size;
 		this.update();
 		RegionUtils.addRegion(this);
-		this.changes();
+		this.changes = true;
 	}
 	
 	public static Region get(String name){

@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.war.WarSystem;
+import net.dzikoysk.funnyguilds.util.LocationUtils;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,13 +24,14 @@ public class ProtectionSystem {
 		if(loc == null){
 			Region region = RegionUtils.get(guild.getRegion());
 			if(region == null) return;
-			loc = region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation();
+			loc = region.getCenter().getBlock().getLocation();
 			guild.setEnderCrystal(loc);
 		}
 		for(EnderCrystal ec : loc.getWorld().getEntitiesByClass(EnderCrystal.class)){
-			if(ec.getLocation().equals(loc)) return;
+			if(LocationUtils.equalsFlat(ec.getLocation(), loc)) return;
 		}
-		loc.setY(loc.getY() - 1);
+		guild.setEnderCrystal(loc);
+		loc.setY(loc.getY());
 		loc.getWorld().spawn(loc, EnderCrystal.class);
 	}
 	
