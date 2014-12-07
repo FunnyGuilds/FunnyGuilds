@@ -155,7 +155,7 @@ public class ExcCreate implements Executor {
 		p.getInventory().removeItem(items);
 		
 		DataManager.getInstance().stop();
-		
+				
 		Guild guild = new Guild(name);
 		guild.setTag(tag);
 		guild.setOwner(u);

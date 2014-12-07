@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.system.fight.FightUtils;
 import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 
 import org.bukkit.entity.EnderCrystal;
@@ -19,6 +20,7 @@ public class EntityDamage implements Listener {
 	public void onDamage(EntityDamageByEntityEvent event){
 		Entity entity = event.getEntity();
 		Entity damager = event.getDamager();
+		
 		if(entity instanceof Player){
 			Player attacker = null;
 			if(damager instanceof Player) attacker = (Player) damager;
@@ -26,15 +28,26 @@ public class EntityDamage implements Listener {
 				LivingEntity le = ((Projectile) damager).getShooter();
 				if(le instanceof Player) attacker = (Player) le;
 			}
+			
 			if(attacker == null) return;
 			Player victim = (Player) event.getEntity();
 			User uv = User.get(victim);
 			User ua = User.get(attacker);
-			if(!(uv.hasGuild() && ua.hasGuild())) return;
-			if(uv.getGuild().equals(ua.getGuild()))
-				if(!uv.getGuild().getPvP()) event.setCancelled(true);
-			if(uv.getGuild().getAllies().contains(ua.getGuild()))
-				if(!Settings.getInstance().damageAlly) event.setCancelled(true);
+			
+			if(uv.hasGuild() && ua.hasGuild()){
+				if(uv.getGuild().equals(ua.getGuild()))
+					if(!uv.getGuild().getPvP()){
+						event.setCancelled(true);
+						return;
+					}
+				if(uv.getGuild().getAllies().contains(ua.getGuild()))
+					if(!Settings.getInstance().damageAlly){
+						event.setCancelled(true);
+						return;
+					}
+			}
+			FightUtils.attacked(uv);
+			
 		} else if(entity instanceof EnderCrystal){
 			if(damager instanceof Player){
 				if(ProtectionSystem.endercrystal((EnderCrystal) entity, (Player) damager))

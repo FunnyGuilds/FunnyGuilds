@@ -17,10 +17,9 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.DataManager;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.YamlFactor;
+import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class FlatGuild {
 	
@@ -46,51 +45,50 @@ public class FlatGuild {
 		}else if(guild.getUUID() == null) guild.setUUID(UUID.randomUUID());
 		
 		File file = DataManager.loadCustomFile(BasicType.GUILD, guild.getName());
-		YamlFactor yml = new YamlFactor(file);
-		YamlConfiguration yaml = yml.getParent();
+		PandaConfiguration pc = new PandaConfiguration(file);
 		
-		yaml.set("uuid", guild.getUUID().toString());
-		yaml.set("name", guild.getName());
-		yaml.set("tag", guild.getTag());
-		yaml.set("owner", guild.getOwner().getName());
-		yaml.set("home", Parser.toString(guild.getHome()));
-		yaml.set("members", UserUtils.getNames(guild.getMembers()));
-		yaml.set("region", guild.getRegion());
-		yaml.set("regions", guild.getRegions());
-		yaml.set("allies", GuildUtils.getNames(guild.getAllies()));
-		yaml.set("enemies", GuildUtils.getNames(guild.getEnemies()));
-		yaml.set("born", guild.getBorn());
-		yaml.set("validity", guild.getValidity());
-		yaml.set("attacked", guild.getAttacked());
-		yaml.set("lives", guild.getLives());
-		yaml.set("ban", guild.getBan());
-		yaml.set("pvp", guild.getPvP());
-		if(guild.getDeputy() != null) yaml.set("deputy", guild.getDeputy().getName());
-		yml.close();
+		pc.set("uuid", guild.getUUID().toString());
+		pc.set("name", guild.getName());
+		pc.set("tag", guild.getTag());
+		pc.set("owner", guild.getOwner().getName());
+		pc.set("home", Parser.toString(guild.getHome()));
+		pc.set("members", UserUtils.getNames(guild.getMembers()));
+		pc.set("region", guild.getRegion());
+		pc.set("regions", guild.getRegions());
+		pc.set("allies", GuildUtils.getNames(guild.getAllies()));
+		pc.set("enemies", GuildUtils.getNames(guild.getEnemies()));
+		pc.set("born", guild.getBorn());
+		pc.set("validity", guild.getValidity());
+		pc.set("attacked", guild.getAttacked());
+		pc.set("lives", guild.getLives());
+		pc.set("ban", guild.getBan());
+		pc.set("pvp", guild.getPvP());
+		if(guild.getDeputy() != null) pc.set("deputy", guild.getDeputy().getName());
+		pc.save();
+		pc.clear();
 		return true;
 	}
 	
 	public static Guild deserialize(File file){
-		YamlFactor yml = new YamlFactor(file);
-		YamlConfiguration yaml = yml.getParent();
-		
-		String id = yaml.getString("uuid");
-		String name = yaml.getString("name");
-		String tag = yaml.getString("tag");
-		String os = yaml.getString("owner");
-		String dp = yaml.getString("deputy");
-		String hs = yaml.getString("home");
-		String region = yaml.getString("region");
-		List<String> ms = yaml.getStringList("members");
-		List<String> rgs = yaml.getStringList("regions");
-		List<String> als = yaml.getStringList("allies");
-		List<String> ens = yaml.getStringList("enemies");
-		boolean pvp = yaml.getBoolean("pvp");
-		long born = yaml.getLong("born");
-		long validity = yaml.getLong("validity");
-		long attacked = yaml.getLong("attacked");
-		long ban = yaml.getLong("ban");
-		int lives = yaml.getInt("lives");
+		PandaConfiguration pc = new PandaConfiguration(file);
+		String id = pc.getString("uuid");
+		String name = pc.getString("name");
+		String tag = pc.getString("tag");
+		String os = pc.getString("owner");
+		String dp = pc.getString("deputy");
+		String hs = pc.getString("home");
+		String region = pc.getString("region");
+		List<String> ms = pc.getStringList("members");
+		List<String> rgs = pc.getStringList("regions");
+		List<String> als = pc.getStringList("allies");
+		List<String> ens = pc.getStringList("enemies");
+		boolean pvp = pc.getBoolean("pvp");
+		long born = pc.getLong("born");
+		long validity = pc.getLong("validity");
+		long attacked = pc.getLong("attacked");
+		long ban = pc.getLong("ban");
+		int lives = pc.getInt("lives");
+		pc.clear();
 		
 		if(name == null){
 			FunnyGuilds.error("[Deserialize] Cannot deserialize guild! Caused by: name is null");

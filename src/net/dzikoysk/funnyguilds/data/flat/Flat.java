@@ -15,20 +15,22 @@ import net.dzikoysk.funnyguilds.util.IndependentThread;
 public class Flat {
 	
 	private static Flat instance;
-	
 	private static File guildsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "guilds");
 	private static File regionsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "regions");
 	private static File usersFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data" + File.separator + "users");
 	
 	public Flat(){
 		instance = this;
+	}
+	
+	public void load(){
 		loadUsers();
 		loadRegions();
 		loadGuilds();
 		BasicUtils.checkObjects();
 	}
 	
-	public void save() {
+	public void save(){
 		saveUsers();
 		saveRegions();
 		saveGuilds();
@@ -37,7 +39,8 @@ public class Flat {
 	private void saveUsers(){
 		if(UserUtils.getUsers() == null || UserUtils.getUsers().isEmpty()) return;
 		for(User user : UserUtils.getUsers())
-			if(user.getUUID() != null && user.getName() != null) new FlatUser(user).serialize();
+			if(user.getUUID() != null && user.getName() != null && user.changed())
+				new FlatUser(user).serialize();
 	}
 	
 	private void loadUsers(){	
@@ -52,6 +55,7 @@ public class Flat {
 	private void saveRegions(){
 		int i = 0;
 		for(Region region : RegionUtils.getRegions()){
+			if(!region.changed()) continue;
 			if(!new FlatRegion(region).serialize()){
 				RegionUtils.delete(region);
 				i++;
@@ -71,6 +75,7 @@ public class Flat {
 	private void saveGuilds(){
 		int i = 0;
 		for(Guild guild : GuildUtils.getGuilds()){
+			if(!guild.changed()) continue;
 			if(!new FlatGuild(guild).serialize()){
 				GuildUtils.deleteGuild(guild);
 				i++;
@@ -111,8 +116,8 @@ public class Flat {
 	}
 	
 	public static Flat getInstance(){
-		if(instance != null) return instance;
-		return new Flat();
+		if(instance == null) new Flat();
+		return instance;
 	}
 
 }

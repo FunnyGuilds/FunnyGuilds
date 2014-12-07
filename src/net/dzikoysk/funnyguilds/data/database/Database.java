@@ -98,9 +98,13 @@ public class Database {
 	public int executeUpdate(String query){
 		try {
 			if(!checkConnection()) openConnection();
+			if(connection == null){
+				openConnection();
+				if(connection == null) return 0;
+			}
 			Statement statement = connection.createStatement();
-			int result = statement.executeUpdate(query);
-			return result;
+			if(statement == null) return 0;
+			return statement.executeUpdate(query);
 		} catch (SQLException e) {
 			if(e.getSQLState().equals("42S21")) return 4221;
 			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();

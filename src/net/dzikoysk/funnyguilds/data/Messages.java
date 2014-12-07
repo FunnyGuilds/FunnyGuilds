@@ -1,16 +1,15 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class Messages {
 	
@@ -23,14 +22,15 @@ public class Messages {
 	
 	public Messages(){
 		instance = this;
-		YamlConfiguration yml = loadConfiguration();
-		if(yml == null){
+		PandaConfiguration pc = loadConfiguration();
+		if(pc == null){
 			FunnyGuilds.error("[Messages] Messages.yml not loaded!");
 			return;
 		}
-		for(String key : yml.getKeys(true)){
+		for(String key : pc.getKeys()){
 			if(key.toLowerCase().contains("list")){
-				List<String> list =  yml.getStringList(key);
+				List<String> list =  pc.getStringList(key);
+				if(list == null) continue;
 				for(int i = 0; i < list.size(); i++){
 					list.set(i, ChatColor.translateAlternateColorCodes('&', list.get(i))
 						.replace("Ä", "")
@@ -40,7 +40,7 @@ public class Messages {
 				multiple.put(key, list);
 				continue;
 			}
-			String message = ChatColor.translateAlternateColorCodes('&', yml.getString(key));
+			String message = ChatColor.translateAlternateColorCodes('&', pc.getString(key));
 			single.put(key, message
 				.replace("Ä", "")
 				.replace("Â", "")
@@ -48,24 +48,21 @@ public class Messages {
 		}
 	}
 	
-	private YamlConfiguration loadConfiguration(){
-		YamlConfiguration yml =  YamlConfiguration.loadConfiguration(messages);
-		String version = yml.getString("version");
-		if(version != null && version.equals(Messages.version)) return yml;
+	private PandaConfiguration loadConfiguration(){
+		PandaConfiguration pc = new PandaConfiguration(messages);
+		String version = pc.getString("version");
+		if(version != null && version.equals(Messages.version)) return pc;
 		FunnyGuilds.info("Updating the plugin messages ...");
-		Map<String, Object> values = yml.getValues(true);
+		Map<String, Object> values = pc.getMap();
 		messages.delete();
 		DataManager.loadDefaultFiles(new String[] { "messages.yml" });
-		yml = YamlConfiguration.loadConfiguration(messages);
-		for(Entry<String, Object> entry : values.entrySet()) yml.set(entry.getKey(), entry.getValue());
-		yml.set("version", Messages.version);
-		try {
-			yml.save(messages);
-			FunnyGuilds.info("Successfully updated messages!");
-		} catch (IOException e){
-			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-		}
-		return yml;
+		pc = new PandaConfiguration(messages);
+		for(Entry<String, Object> entry : values.entrySet())
+			pc.set(entry.getKey(), entry.getValue());
+		pc.set("version", Messages.version);
+		pc.save(messages);
+		FunnyGuilds.info("Successfully updated messages!");
+		return pc;
 	}
 	
 	public String getMessage(String key){

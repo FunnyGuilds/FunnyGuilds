@@ -30,7 +30,6 @@ public class User extends Object {
 	private IndividualPrefix prefix;
 	private long ban;
 	private String reason;
-	
 	private User lastAttacker;
 	private User lastVictim;
 	private long lastAttackerTime;
@@ -38,18 +37,22 @@ public class User extends Object {
 	private BukkitTask teleportation;
 	private long notification;
 	private boolean enter;
+	private boolean changes;
 	
 	private User(UUID uuid){
 		this.uuid = uuid;
 		UserUtils.addUser(this);
+		this.changes();
 	}
 
 	public void setName(String name){
 		this.name = name;
+		this.changes();
 	}
 	
 	public void setGuild(Guild guild){
 		this.guild = guild;
+		this.changes();
 	}
 	
 	public void setScoreboard(Scoreboard sb){
@@ -66,14 +69,17 @@ public class User extends Object {
 	
 	public void setRank(Rank r){
 		this.rank = r;
+		this.changes();
 	}
 	
 	public void setBan(long l){
 		this.ban = l;
+		this.changes();
 	}
 	
 	public void setReason(String s){
 		this.reason = s;
+		this.changes();
 	}
 	
 	public void setEnter(boolean b){
@@ -101,6 +107,7 @@ public class User extends Object {
 	public void removeGuild(){
 		this.guild = null;
 		IndependentThread.action(ActionType.RANK_UPDATE_USER, this);
+		this.changes();
 	}
 	
 	public boolean hasGuild(){
@@ -162,6 +169,7 @@ public class User extends Object {
 		if(this.rank != null) return this.rank;
 		this.rank = new Rank(this);
 		RankManager.getInstance().update(this);
+		this.changes();
 		return this.rank;
 	}
 	
@@ -222,6 +230,12 @@ public class User extends Object {
 		return ping;
 	}
 	
+	public boolean changed(){
+		boolean c = changes;
+		if(c) this.changes = false;
+		return true;
+	}
+	
 	private User(String name){
 		this(new OfflineUser(name));
 	}
@@ -230,12 +244,14 @@ public class User extends Object {
 		this.uuid = player.getUniqueId();
 		this.name = player.getName();
 		UserUtils.addUser(this);
+		this.changes();
 	}
 	
 	private User(OfflineUser offline){
 		this.uuid = UUID.fromString(offline.getUniqueId());
 		this.name = offline.getName();
 		UserUtils.addUser(this);
+		this.changes();
 	}
 	
 	public static User get(UUID uuid){
@@ -262,6 +278,10 @@ public class User extends Object {
 	public static User get(String name){
 		for(User lp : UserUtils.getUsers()) if(name.equalsIgnoreCase(lp.getName())) return lp;
 		return new User(name);
+	}
+
+	private void changes(){
+		this.changes = true;
 	}
 
 	@Override

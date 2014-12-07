@@ -17,9 +17,9 @@ public class ValidityUtils {
 			.replace("{TAG}", guild.getTag())
 			.replace("{GUILD}", guild.getName());
 		if(region != null) message = message
-			.replace("{X}", Double.toString(region.getCenter().getX()))
-			.replace("{Y}", Double.toString(region.getCenter().getY()))
-			.replace("{Z}", Double.toString(region.getCenter().getZ()));
+			.replace("{X}", Integer.toString(region.getCenter().getBlockX()))
+			.replace("{Y}", Integer.toString(region.getCenter().getBlockY()))
+			.replace("{Z}", Integer.toString(region.getCenter().getBlockZ()));
 		Bukkit.broadcastMessage(message);
 	}
 

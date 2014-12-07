@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +8,12 @@ import java.util.Map.Entry;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.Parser;
+import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 public class Settings {
@@ -23,7 +22,7 @@ public class Settings {
 	private static String version = "2.5 Valor";
 	private static File settings =  new File("plugins/FunnyGuilds", "config.yml");
 	
-	private YamlConfiguration yml;
+	private PandaConfiguration pc;
 	
 	public int createNameLength;
 	public int createNameMinLength;
@@ -171,59 +170,58 @@ public class Settings {
 	}
 	
 	private void load(){
-		this.update();
-		this.loadCreateSection();
-		this.loadRegionsSection();
-		this.loadEventSection();
-		this.loadEnlargeSection();
-		this.loadWarSection();
-		this.loadValiditySection();
-		this.loadInviteSection();
-		this.loadPrefixSection();
-		this.loadChatSection();
-		this.loadRankSection();
-		this.loadDamageSection();
-		this.loadBaseSection();
-		this.loadPlayerListSection();
-		this.loadCommandsSection();
-		this.loadDataSection();
+		if(this.update()){
+			this.loadCreateSection();
+			this.loadRegionsSection();
+			this.loadEventSection();
+			this.loadEnlargeSection();
+			this.loadWarSection();
+			this.loadValiditySection();
+			this.loadInviteSection();
+			this.loadPrefixSection();
+			this.loadChatSection();
+			this.loadRankSection();
+			this.loadDamageSection();
+			this.loadBaseSection();
+			this.loadPlayerListSection();
+			this.loadCommandsSection();
+			this.loadDataSection();
+		}
 	}
 
-	private void update(){
-		this.yml =  YamlConfiguration.loadConfiguration(settings);
-		String version = yml.getString("version");
-		if(version != null && version.equals(Settings.version)) return;
+	private boolean update(){
+		this.pc = new PandaConfiguration(settings);
+		String version = pc.getString("version");
+		if(version != null && version.equals(Settings.version)) return true;
 		FunnyGuilds.info("Updating the plugin settings ...");
-		Map<String, Object> values = yml.getValues(true);
+		Map<String, Object> values = pc.getMap();
 		settings.delete();
 		DataManager.loadDefaultFiles(new String[] { "config.yml" });
-		yml = YamlConfiguration.loadConfiguration(settings);
-		for(Entry<String, Object> entry : values.entrySet()) yml.set(entry.getKey(), entry.getValue());
-		yml.set("version", Settings.version);
-		try {
-			yml.save(settings);
-			FunnyGuilds.info("Successfully updated settings!");
-		} catch (IOException e){
-			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-		}
+		pc = new PandaConfiguration(settings);
+		for(Entry<String, Object> entry : values.entrySet()) pc.set(entry.getKey(), entry.getValue());
+		pc.set("version", Settings.version);
+		pc.save();
+		FunnyGuilds.info("Successfully updated settings!");
+		return true;
 	}
 	
 	private void loadCreateSection(){
-		this.createNameLength = yml.getInt("name-length");
-		this.createTagLength = yml.getInt("tag-length");
+		this.createNameLength = pc.getInt("name-length");
+		this.createTagLength = pc.getInt("tag-length");
 		
-		this.createNameMinLength = yml.getInt("name-min-length");
-		this.createTagMinLength = yml.getInt("tag-min-length");
+		this.createNameMinLength = pc.getInt("name-min-length");
+		this.createTagMinLength = pc.getInt("tag-min-length");
 		
-		List<String> list = yml.getStringList("items");
+		List<String> list = pc.getStringList("items");
 		List<ItemStack> items = new ArrayList<ItemStack>();
 		for(String item : list){
+			if(item == null) continue;
 			ItemStack itemstack = Parser.parseItem(item);
 			if(itemstack != null) items.add(itemstack);
 		}
 		this.createItems = items;
 		
-		list = yml.getStringList("items-vip");
+		list = pc.getStringList("items-vip");
 		items = new ArrayList<ItemStack>();
 		for(String item : list){
 			ItemStack itemstack = Parser.parseItem(item);
@@ -231,20 +229,20 @@ public class Settings {
 		}
 		this.createItemsVip = items;
 		
-		this.createDistance = yml.getInt("create-distance");
-		this.createStringMaterial = yml.getString("create-material");
+		this.createDistance = pc.getInt("create-distance");
+		this.createStringMaterial = pc.getString("create-material");
 		this.createMaterial = Parser.parseMaterial(createStringMaterial);
-		this.createCenterY = yml.getInt("create-center-y");
-		this.createCenterSphere = yml.getBoolean("create-center-sphere");
+		this.createCenterY = pc.getInt("create-center-y");
+		this.createCenterSphere = pc.getBoolean("create-center-sphere");
 	}
 	
 	private void loadRegionsSection(){
-		this.regionSize = yml.getInt("region-size");
-		this.regionMinDistance = yml.getInt("region-min-distance");
-		this.regionNotificationTime = yml.getInt("region-notification-time");
-		this.regionNotificationCooldown = yml.getInt("region-notification-cooldown");
-		this.regionExplode = yml.getInt("region-explode");
-		this.regionCommands = yml.getStringList("region-commands");
+		this.regionSize = pc.getInt("region-size");
+		this.regionMinDistance = pc.getInt("region-min-distance");
+		this.regionNotificationTime = pc.getInt("region-notification-time");
+		this.regionNotificationCooldown = pc.getInt("region-notification-cooldown");
+		this.regionExplode = pc.getInt("region-explode");
+		this.regionCommands = pc.getStringList("region-commands");
 	}
 	
 	private void loadEventSection(){
@@ -253,11 +251,11 @@ public class Settings {
 	}
 	
 	private void loadEnlargeSection() {
-		this.enlargeEnable = yml.getBoolean("enlarge-enable");
+		this.enlargeEnable = pc.getBoolean("enlarge-enable");
 		if(this.enlargeEnable){
-			this.enlargeSize = yml.getInt("enlarge-size");
+			this.enlargeSize = pc.getInt("enlarge-size");
 		
-			List<String> list = yml.getStringList("enlarge-items");
+			List<String> list = pc.getStringList("enlarge-items");
 			List<ItemStack> items = new ArrayList<ItemStack>();
 			for(String item : list){
 				ItemStack itemstack = Parser.parseItem(item);
@@ -268,15 +266,15 @@ public class Settings {
 	}
 	
 	private void loadWarSection(){
-		this.warLives = yml.getInt("war-lives");
-		this.warProtection = Parser.parseTime(yml.getString("war-protection"));
-		this.warWait = Parser.parseTime(yml.getString("war-wait"));
+		this.warLives = pc.getInt("war-lives");
+		this.warProtection = Parser.parseTime(pc.getString("war-protection"));
+		this.warWait = Parser.parseTime(pc.getString("war-wait"));
 	}
 	
 	private void loadValiditySection(){
-		this.validityStart = Parser.parseTime(yml.getString("validity-start"));
-		this.validityTime = Parser.parseTime(yml.getString("validity-time"));
-		List<String> list = yml.getStringList("validity-items");
+		this.validityStart = Parser.parseTime(pc.getString("validity-start"));
+		this.validityTime = Parser.parseTime(pc.getString("validity-time"));
+		List<String> list = pc.getStringList("validity-items");
 		List<ItemStack> items = new ArrayList<ItemStack>();
 		for(String item : list){
 			ItemStack itemstack = Parser.parseItem(item);
@@ -286,10 +284,10 @@ public class Settings {
 	}
 	
 	private void loadInviteSection(){
-		this.inviteMembers = yml.getInt("invite-members");
-		this.infoPlayerSneaking = yml.getBoolean("info-player-sneaking");
+		this.inviteMembers = pc.getInt("invite-members");
+		this.infoPlayerSneaking = pc.getBoolean("info-player-sneaking");
 		List<ItemStack> items = new ArrayList<ItemStack>();
-		for(String item : yml.getStringList("join-items")){
+		for(String item : pc.getStringList("join-items")){
 			ItemStack itemstack = Parser.parseItem(item);
 			if(itemstack != null) items.add(itemstack);
 		}
@@ -297,147 +295,147 @@ public class Settings {
 	}
 	
 	private void loadPrefixSection(){
-		this.prefixOur = ChatColor.translateAlternateColorCodes('&', yml.getString("prefix-our"));
-		this.prefixAllies = ChatColor.translateAlternateColorCodes('&', yml.getString("prefix-allies"));
-		this.prefixOther = ChatColor.translateAlternateColorCodes('&', yml.getString("prefix-other"));
+		this.prefixOur = ChatColor.translateAlternateColorCodes('&', pc.getString("prefix-our"));
+		this.prefixAllies = ChatColor.translateAlternateColorCodes('&', pc.getString("prefix-allies"));
+		this.prefixOther = ChatColor.translateAlternateColorCodes('&', pc.getString("prefix-other"));
 	}
 	
 	private void loadChatSection(){
-		this.chatGuild = ChatColor.translateAlternateColorCodes('&', yml.getString("chat-guild"));
-		this.chatRank = ChatColor.translateAlternateColorCodes('&', yml.getString("chat-rank"));
-		this.chatPoints = ChatColor.translateAlternateColorCodes('&', yml.getString("chat-points"));
+		this.chatGuild = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-guild"));
+		this.chatRank = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-rank"));
+		this.chatPoints = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-points"));
 		
-		this.chatPriv = yml.getString("chat-priv");
-		this.chatAlly = yml.getString("chat-ally");
-		this.chatGlobal = yml.getString("chat-global");
-		this.chatPrivDesign = ChatColor.translateAlternateColorCodes('&', yml.getString("chat-priv-design"));
-		this.chatAllyDesign = ChatColor.translateAlternateColorCodes('&', yml.getString("chat-ally-design"));
-		this.chatGlobalDesign = ChatColor.translateAlternateColorCodes('&', yml.getString("chat-global-design"));
+		this.chatPriv = pc.getString("chat-priv");
+		this.chatAlly = pc.getString("chat-ally");
+		this.chatGlobal = pc.getString("chat-global");
+		this.chatPrivDesign = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-priv-design"));
+		this.chatAllyDesign = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-ally-design"));
+		this.chatGlobalDesign = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-global-design"));
 	}
 	
 	private void loadRankSection(){
-		this.rankStart = yml.getInt("rank-start");
-		this.rankPercent = yml.getDouble("rank-percent");
+		this.rankStart = pc.getInt("rank-start");
+		this.rankPercent = pc.getDouble("rank-percent");
 		if(this.rankPercent == 0) this.rankPercent = 1.0;
 	}
 	
 	private void loadDamageSection(){
-		this.damageGuild = yml.getBoolean("damage-guild");
-		this.damageAlly = yml.getBoolean("damage-ally");
+		this.damageGuild = pc.getBoolean("damage-guild");
+		this.damageAlly = pc.getBoolean("damage-ally");
 	}
 	
 	private void loadBaseSection(){
-		this.baseEnable = yml.getBoolean("base-enable");
+		this.baseEnable = pc.getBoolean("base-enable");
 		if(this.baseEnable){
-			List<String> list = yml.getStringList("base-items");
+			List<String> list = pc.getStringList("base-items");
 			List<ItemStack> items = new ArrayList<ItemStack>();
 			for(String item : list){
 				ItemStack itemstack = Parser.parseItem(item);
 				if(itemstack != null) items.add(itemstack);
 			}
 			this.baseItems = items;
-			this.baseDelay = yml.getInt("base-delay");
+			this.baseDelay = pc.getInt("base-delay");
 		}
 	}
 	
 	private void loadPlayerListSection(){
 		String[] ss = new String[60];
-		for(String path : yml.getConfigurationSection("player-list").getKeys(true)){
+		for(String path : pc.getSectionKeys("player-list")){
 			try {
 				int i = Integer.parseInt(path);
 				if(i > 60) continue;
-				String s = yml.getString("player-list." + path);
+				String s = pc.getString("player-list." + path);
 				if(s != null) s = ChatColor.translateAlternateColorCodes('&', s);
 				ss[i-1] = s;
 			} catch (NumberFormatException e){
-				FunnyGuilds.parser("Unknown number: " + path);
+				FunnyGuilds.parser("[Settings] Unknown number: " + path);
 			}
 		}
 		new PlayerListScheme(ss);
-		this.playerlistEnable = yml.getBoolean("player-list-enable");
-		this.playerlistInterval = yml.getInt("player-list-interval");
-		this.playerlistPing = yml.getInt("player-list-ping");
-		this.playerlistPatch = yml.getBoolean("player-list-patch");
-		this.playerlistPoints = yml.getString("player-list-points");
+		this.playerlistEnable = pc.getBoolean("player-list-enable");
+		this.playerlistInterval = pc.getInt("player-list-interval");
+		this.playerlistPing = pc.getInt("player-list-ping");
+		this.playerlistPatch = pc.getBoolean("player-list-patch");
+		this.playerlistPoints = pc.getString("player-list-points");
 		PlayerListManager.enable(this.playerlistEnable);
 		PlayerListManager.patch(this.playerlistPatch);
 		PlayerListManager.ping(this.playerlistPing);
 	}
 	
 	private void loadCommandsSection(){
-		this.excCreate = yml.getString("commands.create.name");
-		this.excDelete = yml.getString("commands.delete.name");
-		this.excConfirm = yml.getString("commands.confirm.name");
-		this.excInvite = yml.getString("commands.invite.name");
-		this.excJoin = yml.getString("commands.join.name");
-		this.excLeave = yml.getString("commands.leave.name");
-		this.excKick = yml.getString("commands.kick.name");
-		this.excBase = yml.getString("commands.base.name");
-		this.excEnlarge = yml.getString("commands.enlarge.name");
-		this.excGuild = yml.getString("commands.guild.name");
-		this.excAlly = yml.getString("commands.ally.name");
-		this.excBreak = yml.getString("commands.break.name");
-		this.excInfo = yml.getString("commands.info.name");
-		this.excPlayer = yml.getString("commands.player.name");
-		this.excTop = yml.getString("commands.top.name");
-		this.excValidity = yml.getString("commands.validity.name");
-		this.excLeader = yml.getString("commands.leader.name");
-		this.excDeputy = yml.getString("commands.deputy.name");
-		this.excRanking = yml.getString("commands.ranking.name");
+		this.excCreate = pc.getString("commands.create.name");
+		this.excDelete = pc.getString("commands.delete.name");
+		this.excConfirm = pc.getString("commands.confirm.name");
+		this.excInvite = pc.getString("commands.invite.name");
+		this.excJoin = pc.getString("commands.join.name");
+		this.excLeave = pc.getString("commands.leave.name");
+		this.excKick = pc.getString("commands.kick.name");
+		this.excBase = pc.getString("commands.base.name");
+		this.excEnlarge = pc.getString("commands.enlarge.name");
+		this.excGuild = pc.getString("commands.guild.name");
+		this.excAlly = pc.getString("commands.ally.name");
+		this.excBreak = pc.getString("commands.break.name");
+		this.excInfo = pc.getString("commands.info.name");
+		this.excPlayer = pc.getString("commands.player.name");
+		this.excTop = pc.getString("commands.top.name");
+		this.excValidity = pc.getString("commands.validity.name");
+		this.excLeader = pc.getString("commands.leader.name");
+		this.excDeputy = pc.getString("commands.deputy.name");
+		this.excRanking = pc.getString("commands.ranking.name");
 		
-		this.mxcPvP = yml.getString("commands.pvp.name");
-		this.mxcBase = yml.getString("commands.setbase.name");
+		this.mxcPvP = pc.getString("commands.pvp.name");
+		this.mxcBase = pc.getString("commands.setbase.name");
 		
-		this.excCreateAliases = yml.getStringList("commands.create.aliases");
-		this.excDeleteAliases = yml.getStringList("commands.delete.aliases");
-		this.excConfirmAliases = yml.getStringList("commands.confirm.aliases");
-		this.excInviteAliases = yml.getStringList("commands.invite.aliases");
-		this.excJoinAliases = yml.getStringList("commands.join.aliases");
-		this.excLeaveAliases = yml.getStringList("commands.leave.aliases");
-		this.excKickAliases = yml.getStringList("commands.kick.aliases");
-		this.excBaseAliases = yml.getStringList("commands.base.aliases");
-		this.excEnlargeAliases = yml.getStringList("commands.enlarge.aliases");
-		this.excGuildAliases = yml.getStringList("commands.guild.aliases");
-		this.excAllyAliases = yml.getStringList("commands.ally.aliases");
-		this.excBreakAliases = yml.getStringList("commands.break.aliases");
-		this.excInfoAliases = yml.getStringList("commands.info.aliases");
-		this.excPlayerAliases = yml.getStringList("commands.player.aliases");
-		this.excTopAliases = yml.getStringList("commands.top.aliases");
-		this.excValidityAliases = yml.getStringList("commands.validity.aliases");
-		this.excLeaderAliases = yml.getStringList("commands.leader.aliases");
-		this.excDeputyAliases = yml.getStringList("commands.deputy.aliases");
-		this.excRankingAliases = yml.getStringList("commands.ranking.aliases");
+		this.excCreateAliases = pc.getStringList("commands.create.aliases");
+		this.excDeleteAliases = pc.getStringList("commands.delete.aliases");
+		this.excConfirmAliases = pc.getStringList("commands.confirm.aliases");
+		this.excInviteAliases = pc.getStringList("commands.invite.aliases");
+		this.excJoinAliases = pc.getStringList("commands.join.aliases");
+		this.excLeaveAliases = pc.getStringList("commands.leave.aliases");
+		this.excKickAliases = pc.getStringList("commands.kick.aliases");
+		this.excBaseAliases = pc.getStringList("commands.base.aliases");
+		this.excEnlargeAliases = pc.getStringList("commands.enlarge.aliases");
+		this.excGuildAliases = pc.getStringList("commands.guild.aliases");
+		this.excAllyAliases = pc.getStringList("commands.ally.aliases");
+		this.excBreakAliases = pc.getStringList("commands.break.aliases");
+		this.excInfoAliases = pc.getStringList("commands.info.aliases");
+		this.excPlayerAliases = pc.getStringList("commands.player.aliases");
+		this.excTopAliases = pc.getStringList("commands.top.aliases");
+		this.excValidityAliases = pc.getStringList("commands.validity.aliases");
+		this.excLeaderAliases = pc.getStringList("commands.leader.aliases");
+		this.excDeputyAliases = pc.getStringList("commands.deputy.aliases");
+		this.excRankingAliases = pc.getStringList("commands.ranking.aliases");
 		
-		this.mxcPvPAliases = yml.getStringList("commands.pvp.aliases");
-		this.mxcBaseAliases = yml.getStringList("commands.setbase.aliases");
+		this.mxcPvPAliases = pc.getStringList("commands.pvp.aliases");
+		this.mxcBaseAliases = pc.getStringList("commands.setbase.aliases");
 		
-		this.axcMain = yml.getString("commands.admin.main");
-		this.axcAdd = yml.getString("commands.admin.add");
-		this.axcDelete = yml.getString("commands.admin.delete");
-		this.axcKick = yml.getString("commands.admin.kick");
-		this.axcTeleport = yml.getString("commands.admin.teleport");
-		this.axcPoints = yml.getString("commands.admin.points");
-		this.axcKills = yml.getString("commands.admin.kills");
-		this.axcDeaths = yml.getString("commands.admin.deaths");
-		this.axcBan = yml.getString("commands.admin.ban");
-		this.axcUnban = yml.getString("commands.admin.unban");
-		this.axcLives = yml.getString("commands.admin.lives");
-		this.axcMove = yml.getString("commands.admin.move");
-		this.axcValidity = yml.getString("commands.admin.validity");
-		this.axcName = yml.getString("commands.admin.name");
+		this.axcMain = pc.getString("commands.admin.main");
+		this.axcAdd = pc.getString("commands.admin.add");
+		this.axcDelete = pc.getString("commands.admin.delete");
+		this.axcKick = pc.getString("commands.admin.kick");
+		this.axcTeleport = pc.getString("commands.admin.teleport");
+		this.axcPoints = pc.getString("commands.admin.points");
+		this.axcKills = pc.getString("commands.admin.kills");
+		this.axcDeaths = pc.getString("commands.admin.deaths");
+		this.axcBan = pc.getString("commands.admin.ban");
+		this.axcUnban = pc.getString("commands.admin.unban");
+		this.axcLives = pc.getString("commands.admin.lives");
+		this.axcMove = pc.getString("commands.admin.move");
+		this.axcValidity = pc.getString("commands.admin.validity");
+		this.axcName = pc.getString("commands.admin.name");
 		
 	}
 	
 	private void loadDataSection(){
-		this.dataInterval = yml.getInt("data-interval");
-		this.flat = yml.getBoolean("data-type.flat");
-		this.mysql = yml.getBoolean("data-type.mysql");
+		this.dataInterval = pc.getInt("data-interval");
+		this.flat = pc.getBoolean("data-type.flat");
+		this.mysql = pc.getBoolean("data-type.mysql");
 		if(this.mysql){
-			this.mysqlHostname = yml.getString("mysql.hostname");
-			this.mysqlPort = yml.getString("mysql.port");
-			this.mysqlDatabase = yml.getString("mysql.database");
-			this.mysqlUser = yml.getString("mysql.user");
-			this.mysqlPassword = yml.getString("mysql.password");
+			this.mysqlHostname = pc.getString("mysql.hostname");
+			this.mysqlPort = pc.getString("mysql.port");
+			this.mysqlDatabase = pc.getString("mysql.database");
+			this.mysqlUser = pc.getString("mysql.user");
+			this.mysqlPassword = pc.getString("mysql.password");
 		}
 	}
 	

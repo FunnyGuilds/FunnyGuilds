@@ -19,41 +19,41 @@ public class DatabaseBasic {
 	
 	public DatabaseBasic(){
 		instance = this;
-		Database db = Database.getInstance();
+	}
+	
+	public void load(){
 		try {
-			load(db);
-		} catch (Exception e) {
-			FunnyGuilds.exception(e.getCause());
+			Database db = Database.getInstance();
+			db.openConnection();
+			
+			usersTable(db);
+			regionsTable(db);
+			guildsTable(db);
+			
+			ResultSet users = Database.getInstance().executeQuery("SELECT * FROM users");
+			while(users.next()) DatabaseUser.deserialize(users);
+			FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());
+			
+			ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM regions");
+			while(regions.next()) DatabaseRegion.deserialize(regions);
+			FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
+			
+			ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM guilds");
+			while(guilds.next()) DatabaseGuild.deserialize(guilds);
+			FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
+			
+			db.closeConnection();
+			IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
+		} catch (Exception e){
+			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
 	}
 	
-	public void load(Database db) throws Exception {
-		db.openConnection();
-		
-		usersTable(db);
-		regionsTable(db);
-		guildsTable(db);
-		
-		ResultSet users = Database.getInstance().executeQuery("SELECT * FROM users");
-		while(users.next()) DatabaseUser.deserialize(users);
-		FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());
-		
-		ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM regions");
-		while(regions.next()) DatabaseRegion.deserialize(regions);
-		FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
-		
-		ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM guilds");
-		while(guilds.next()) DatabaseGuild.deserialize(guilds);
-		FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
-		
-		db.closeConnection();
-		IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
-	}
-	
-	public void save() throws ClassNotFoundException, SQLException{
+	public void save() throws ClassNotFoundException, SQLException {
 		Database db = Database.getInstance();
 		db.openConnection();
 		for(User user : UserUtils.getUsers()){
+			if(!user.changed()) continue;
 			try {
 				new DatabaseUser(user).save(db);
 			} catch (Exception e){
@@ -61,6 +61,7 @@ public class DatabaseBasic {
 			}
 		}
 		for(Region region : RegionUtils.getRegions()){
+			if(!region.changed()) continue;
 			try {
 				new DatabaseRegion(region).save(db);
 			} catch (Exception e){
@@ -68,6 +69,7 @@ public class DatabaseBasic {
 			}
 		}
 		for(Guild guild : GuildUtils.getGuilds()){
+			if(!guild.changed()) continue;
 			try {
 				new DatabaseGuild(guild).save(db);
 			} catch (Exception e){
@@ -108,6 +110,7 @@ public class DatabaseBasic {
 		db.executeUpdate("alter table guilds add ban bigint not null;");
 		db.executeUpdate("alter table guilds add pvp boolean not null;");
 		db.executeUpdate("alter table guilds add deputy text;");
+		//db.executeUpdate("alter table guilds add constraint deputy foreign key (deputy) references users (name) on update cascade;");
 	}
 	
 	public void regionsTable(Database db) {
@@ -129,12 +132,16 @@ public class DatabaseBasic {
 		sb.append("points int not null,");
 		sb.append("kills int not null,");
 		sb.append("deaths int not null,");
+		sb.append("guild varchar(100),");
 		sb.append("ban bigint,");
 		sb.append("reason text,");
 		sb.append("primary key (uuid));");
 		db.executeUpdate(sb.toString());
 		db.executeUpdate("alter table users add ban bigint;");
 		db.executeUpdate("alter table users add reason text;");
+		db.executeUpdate("alter table users add guild varchar(100);");
+		db.executeUpdate("alter table users add constraint guild foreign key (guild) references guilds (name) on update cascade;");
+
 	}
 
 	public static DatabaseBasic getInstance(){

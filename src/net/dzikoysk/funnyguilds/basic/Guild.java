@@ -26,6 +26,7 @@ public class Guild {
 	private List<String> regions = new ArrayList<>();
 	private List<Guild> allies = new ArrayList<>();
 	private List<Guild> enemies = new ArrayList<>();
+	private Location endercrystal;
 	private boolean pvp;
 	private long born;
 	private long validity;
@@ -33,42 +34,51 @@ public class Guild {
 	private long ban;
 	private int lives;
 	private long build;
+	private boolean changes;
 	
 	private Guild(UUID uuid){
 		this.born = System.currentTimeMillis();
 		this.uuid = uuid;
+		this.changes = true;
 		GuildUtils.addGuild(this);
 	}
 	
 	public Guild(String name){
 		this(UUID.randomUUID());
 		this.name = name;
+		this.changes = true;
 		GuildUtils.addGuild(this);
 	}
 	
 	public void setUUID(UUID uuid){
 		this.uuid = uuid;
+		this.changes();
 	}
 	
 	public void setName(String name){
 		this.name = name;
+		this.changes();
 	}
 
 	public void setTag(String tag){
 		this.tag = tag;
+		this.changes();
 	}
 	
 	public void setOwner(User user){
 		this.owner = user;
 		this.addMember(user);
+		this.changes();
 	}
 	
 	public void setDeputy(User user){
 		this.deputy = user;
+		this.changes();
 	}
 	
 	public void setRank(Rank rank){
 		this.rank = rank;
+		this.changes();
 	}
 	
 	public void setRegion(String s){
@@ -77,81 +87,107 @@ public class Guild {
 			Region region = Region.get(s);
 			this.home = region.getCenter();
 		}
+		this.changes();
 	}
 	
 	public void setHome(Location home){
 		this.home = home;
+		this.changes();
 	}
 	
 	public void setMembers(List<User> members){
 		this.members = members;
+		this.changes();
 	}
 	
 	public void setRegions(List<String> regions){
 		this.regions = regions;
+		this.changes();
 	}
 	
 	public void setAllies(List<Guild> guilds){
 		this.allies = guilds;
+		this.changes();
 	}
 	
 	public void setEnemies(List<Guild> guilds){
 		this.enemies = guilds;
+		this.changes();
 	}
 
 	public void setPvP(boolean b){
 		this.pvp = b;
+		this.changes();
 	}
 	
 	public void setBorn(long l){
 		this.born = l;
+		this.changes();
 	}
 	
 	public void setValidity(long l){
 		if(l == this.born) this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
 		else this.validity = l;
+		this.changes();
 	}
 	
 	public void setAttacked(long l){
 		this.attacked = l;
+		this.changes();
 	}
 	
 	public void setLives(int i){
 		this.lives = i;
+		this.changes();
 	}
 	
 	public void setBuild(long time){
 		this.build = time;
+		this.changes();
 	}
 	
 	public void setBan(long l){
 		if(l > System.currentTimeMillis()) this.ban = l;
-		this.ban = 0;
+		else this.ban = 0;
+		this.changes();
+	}
+	
+	public void setEnderCrystal(Location loc){
+		this.endercrystal = loc;
+	}
+	
+	public void changes(){
+		this.changes = true;
 	}
 	
 	public void addLive(){
 		this.lives++;
+		this.changes();
 	}
 	
 	public void addMember(User user){
 		if(this.members.contains(user)) return;
 		this.members.add(user);
 		this.getRank();
+		this.changes();
 	}
 	
 	public void addRegion(String s){
 		if(this.regions.contains(s)) return;
 		this.regions.add(s);
+		this.changes();
 	}
 	
 	public void addAlly(Guild guild){
 		if(this.allies.contains(guild)) return;
 		this.allies.add(guild);
+		this.changes();
 	}
 	
 	public void addEnemy(Guild guild){
 		if(this.enemies.contains(guild)) return;
 		this.enemies.add(guild);
+		this.changes();
 	}
 	
 	public void deserializationUpdate() {
@@ -165,18 +201,22 @@ public class Guild {
 	
 	public void removeLive(){
 		this.lives--;
+		this.changes();
 	}
 
 	public void removeMember(User user){
 		this.members.remove(user);
+		this.changes();
 	}
 	
 	public void removeAlly(Guild guild){
 		this.allies.remove(guild);
+		this.changes();
 	}
 	
 	public void removeEnemy(Guild guild){
 		this.enemies.remove(guild);
+		this.changes();
 	}
 	
 	public void delete(){
@@ -184,8 +224,14 @@ public class Guild {
 	}
 	
 	public boolean isValid(){
-		if(this.validity == this.born) this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
-		if(this.validity == 0) this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+		if(this.validity == this.born){
+			this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+			this.changes();
+		}
+		if(this.validity == 0){
+			this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+			this.changes();
+		}
 		if(this.validity >= System.currentTimeMillis()) return true;
 		return false;
 	}
@@ -193,12 +239,14 @@ public class Guild {
 	public boolean isBanned(){
 		if(this.ban > System.currentTimeMillis()) return true;
 		this.ban = 0;
+		this.changes();
 		return false;
 	}
 	
 	public boolean canBuild(){
 		if(this.build > System.currentTimeMillis()) return false;
 		this.build = 0;
+		this.changes();
 		return true;
 	}
 	
@@ -272,13 +320,23 @@ public class Guild {
 	
 	public long getBuild(){
 		return this.build;
-	}
+	} 
 	
 	public Rank getRank(){
 		if(this.rank != null) return this.rank;
 		this.rank = new Rank(this);
 		RankManager.getInstance().update(this);
 		return this.rank;
+	}
+	
+	public Location getEnderCrystal(){
+		return this.endercrystal;
+	}
+	
+	public boolean changed(){
+		boolean c = changes;
+		this.changes = false;
+		return c;
 	}
 	
 	public static Guild get(UUID uuid){

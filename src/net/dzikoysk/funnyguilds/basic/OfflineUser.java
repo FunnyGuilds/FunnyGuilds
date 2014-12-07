@@ -106,10 +106,8 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 	}
 	
 	public static OfflinePlayer deserialize(Map<String, Object> args){
-		if(args.get("name") != null) {
-			return new OfflineUser((String)args.get("name"));
-		}
-		return null;
+		if(args.get("name") == null) return null;
+		return new OfflineUser((String)args.get("name"));
 	}
 		
 	public String toString() {

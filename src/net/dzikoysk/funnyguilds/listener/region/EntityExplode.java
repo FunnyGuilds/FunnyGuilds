@@ -33,8 +33,11 @@ public class EntityExplode implements Listener {
 		Random random = new Random();
 		for(Location l : sphere){
 			Material m = l.getBlock().getType();
-			if(m != Material.OBSIDIAN && m != Material.WATER && m != Material.LAVA) continue;
-    		if(random.nextFloat() < 0.33f) l.getBlock().breakNaturally();
+			if(m == Material.OBSIDIAN){
+				if(random.nextFloat() < 0.1f) l.getBlock().breakNaturally();
+			} else if(m == Material.WATER || m == Material.LAVA){
+				if(random.nextFloat() < 0.2f) l.getBlock().setType(Material.AIR);
+			}
 		}
 		
 		if(!RegionUtils.isIn(loc)) return;
@@ -48,7 +51,8 @@ public class EntityExplode implements Listener {
         }
         
         Guild guild = region.getGuild();
-        guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode*1000);
+        if(!guild.canBuild()) return;
+        guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode * 1000L);
         for(User user : guild.getMembers()){
         	Player player = Bukkit.getPlayer(user.getName());
         	if(player != null) player.sendMessage(Messages.getInstance().getMessage("regionExplode")

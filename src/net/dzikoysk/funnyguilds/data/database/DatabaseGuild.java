@@ -26,7 +26,9 @@ public class DatabaseGuild {
 	
 	public void save(Database db) {
 		String update = getInsert();
-		if(update != null) db.executeUpdate(update);
+		if(update != null) for(String query : update.split(";")){
+			db.executeUpdate(query);
+		}
 	}
 	
 	public void delete() {
@@ -37,7 +39,7 @@ public class DatabaseGuild {
 			StringBuilder update = new StringBuilder();
 			update.append("DELETE FROM guilds WHERE uuid='");
 			update.append(guild.getUUID().toString());
-			update.append("';");
+			update.append("'");
 			db.executeUpdate(update.toString());
 			db.closeConnection();
 		}else if(guild.getName() != null){
@@ -46,7 +48,6 @@ public class DatabaseGuild {
 			StringBuilder update = new StringBuilder();
 			update.append("DELETE FROM guilds WHERE name='");
 			update.append(guild.getName());
-			update.append("';");
 			db.executeUpdate(update.toString());
 			db.closeConnection();
 		}
@@ -60,7 +61,7 @@ public class DatabaseGuild {
 		update.append(guild.getRank().getPoints());
 		update.append(" WHERE uuid='");
 		update.append(guild.getUUID().toString());
-		update.append("';");
+		update.append("'");
 		db.executeUpdate(update.toString());
 		db.closeConnection();
 	}
@@ -109,12 +110,16 @@ public class DatabaseGuild {
 		sb.append("ban=" + guild.getBan() + ",");
 		sb.append("lives=" + guild.getLives() + ",");
 		sb.append("pvp=" + guild.getPvP() + "");
-		sb.append(";");
-		if(guild.getDeputy() != null){
-			sb.append("INSERT INTO guilds (deputy) VALUES (");
-			sb.append("'" + guild.getDeputy().getName() + "'");
-			sb.append(") ON DUPLICATE KEY UPDATE ");
-			sb.append("deputy='" + guild.getDeputy().getName() + "';");
+		if(guild.getDeputy() != null) {
+			sb.append("; UPDATE guilds SET deputy='");
+			sb.append(guild.getDeputy().getName());
+			sb.append("' WHERE uuid='");
+			sb.append(guild.getUUID().toString());
+			sb.append("'");
+		} else {
+			sb.append("; UPDATE guilds SET deputy=NULL WHERE uuid='");
+			sb.append(guild.getUUID().toString());
+			sb.append("'");
 		}
 		return sb.toString();
 	}

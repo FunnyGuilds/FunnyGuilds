@@ -61,7 +61,11 @@ public class Rank implements Comparable<Rank> {
 			int points = 0;
 			if(guild.getMembers().size() == 0) return 0;
 			for(User user : guild.getMembers()) points += user.getRank().getPoints();
-			this.points = points / guild.getMembers().size();
+			int calc = points / guild.getMembers().size();
+			if(calc != this.points){
+				this.points = calc;
+				guild.changes();
+			}
 			return this.points;
 		}
 	}
@@ -95,6 +99,7 @@ public class Rank implements Comparable<Rank> {
 		if(o == null) return false;
 		if(o.getClass() != this.getClass()) return false;
 		Rank rank = (Rank) o;
+		if(rank.getType() != type) return false;
 		if(!rank.getIDNS().equalsIgnoreCase(idns)) return false;
 		return true;
 	}
@@ -107,7 +112,11 @@ public class Rank implements Comparable<Rank> {
 	@Override
 	public int compareTo(Rank rank) {
 		int i = Integer.compare(rank.getPoints(), getPoints());
-		if(i == 0) i = idns.compareTo(rank.getIDNS());
+		if(i == 0){
+			if(idns == null) return -1;
+			if(rank.getIDNS() == null) return 1;
+			i = idns.compareTo(rank.getIDNS());
+		}
 		return i;
 	}
 

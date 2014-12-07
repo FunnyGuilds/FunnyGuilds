@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.util.element;
 
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.util.PacketUtils;
 
 import org.bukkit.Bukkit;
@@ -31,10 +32,16 @@ public class PlayerListManager {
 		String[] prefix = pl.getPrefix();
 		String[] suffix = pl.getSuffix();
 		for(int i = 0; i < 60; i++){
-			Team team = sb.getTeam(scheme[i]);
+			if(scheme[i] == null){
+				Data.getPlayerListFile().delete();
+				scheme = PlayerListScheme.uniqueFields();
+			}
+			String s = scheme[i];
+			if(s == null) continue;
+			Team team = sb.getTeam(s);
 			if(team == null){
-				team = sb.registerNewTeam(scheme[i]);
-				team.addPlayer(new OfflineUser(scheme[i]));
+				team = sb.registerNewTeam(s);
+				team.addPlayer(new OfflineUser(s));
 			}
 			if(prefix[i] != null) team.setPrefix(prefix[i]);
 			if(suffix[i] != null) team.setSuffix(suffix[i]);

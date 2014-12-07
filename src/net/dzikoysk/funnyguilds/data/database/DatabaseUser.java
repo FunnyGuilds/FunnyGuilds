@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 
@@ -15,8 +16,16 @@ public class DatabaseUser {
 	}
 	
 	public void save(Database db){
+		db.openConnection();
 		String update = getInsert();
-		if(update != null) db.executeUpdate(update);
+		if(update != null) for(String query : update.split(";")){
+			try {
+				db.executeUpdate(query);
+			} catch (Exception e){
+				FunnyGuilds.error("[MySQL] Update: " + query);
+				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+			}
+		}
 	}
 	
 	public void updatePoints(){
@@ -27,7 +36,7 @@ public class DatabaseUser {
 		update.append(user.getRank().getPoints());
 		update.append(" WHERE uuid='");
 		update.append(user.getUUID().toString());
-		update.append("';");
+		update.append("'");
 		db.executeUpdate(update.toString());
 		db.closeConnection();
 	}
@@ -50,7 +59,17 @@ public class DatabaseUser {
 		sb.append("deaths=" + user.getRank().getDeaths() + ",");
 		sb.append("ban=" + user.getBan() + ",");
 		sb.append("reason='" + user.getReason() + "'");
-		sb.append(';');
+		if(user.hasGuild()) {
+			sb.append("; UPDATE users SET guild='");
+			sb.append(user.getGuild().getName());
+			sb.append("' WHERE uuid='");
+			sb.append(user.getUUID().toString());
+			sb.append("'");
+		} else {
+			sb.append("; UPDATE users SET guild=NULL WHERE uuid='");
+			sb.append(user.getUUID().toString());
+			sb.append("'");
+		}
 		return sb.toString();
 	}
 	

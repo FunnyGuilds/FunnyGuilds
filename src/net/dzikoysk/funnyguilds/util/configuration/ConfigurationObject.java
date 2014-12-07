@@ -2,12 +2,29 @@ package net.dzikoysk.funnyguilds.util.configuration;
 
 public class ConfigurationObject {
 	
-	private final Object object;
 	private final ConfigurationType type;
+	private Object object;
+	private int position;
 	
-	public ConfigurationObject(Object object, ConfigurationType type){
-		this.object = object;
+	public ConfigurationObject(ConfigurationType type){
 		this.type = type;
+	}
+	
+	public void setObject(Object o){
+		this.object = o;
+	}
+	
+	public void setPosition(int i){
+		this.position = i;
+	}
+	
+	public String getString(){
+		if(type == ConfigurationType.STRING) return (String) object;
+		return null;
+	}
+	
+	public int getPosition(){
+		return this.position;
 	}
 
 	public Object getObject(){

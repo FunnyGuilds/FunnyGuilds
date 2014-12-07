@@ -58,11 +58,12 @@ public class WarSystem {
 			Player player = Bukkit.getPlayer(user.getName());
 			if(player != null) player.sendMessage(message);
 		}
-		message = WarUtils.getBroadcastMessage(conqueror, loser);
-		Bukkit.broadcastMessage(message);
 		
 		GuildUtils.deleteGuild(loser);
 		conqueror.addLive();
+		
+		message = WarUtils.getBroadcastMessage(conqueror, loser);
+		Bukkit.broadcastMessage(message);
 	}
 
 	public static WarSystem getInstance(){

@@ -5,7 +5,7 @@ import java.io.File;
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.YamlFactor;
+import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
 
 public class FlatUser {
 	
@@ -19,35 +19,37 @@ public class FlatUser {
 		File file = Flat.getUserFile(user);
 		if(file.isDirectory()) return false;
 		
-		YamlFactor yaml = new YamlFactor(file);
-		yaml.getParent().set("uuid", user.getUUID().toString());
-		yaml.getParent().set("name", user.getName());
-		yaml.getParent().set("points", user.getRank().getPoints());
-		yaml.getParent().set("kills", user.getRank().getKills());
-		yaml.getParent().set("deaths", user.getRank().getDeaths());
-		yaml.getParent().set("ban", user.getBan());
-		yaml.getParent().set("reason", user.getReason());
-		yaml.close();
+		PandaConfiguration pc = new PandaConfiguration(file);
+		pc.set("uuid", user.getUUID().toString());
+		pc.set("name", user.getName());
+		pc.set("points", user.getRank().getPoints());
+		pc.set("kills", user.getRank().getKills());
+		pc.set("deaths", user.getRank().getDeaths());
+		pc.set("ban", user.getBan());
+		pc.set("reason", user.getReason());
+		pc.save();
+		pc.clear();
 		return true;
 	}
 	
 	public static User deserialize(File file){
 		if(file.isDirectory()) return null;
 		
-		YamlFactor yaml = new YamlFactor(file);
-		Object[] values = new Object[7];
+		PandaConfiguration pc = new PandaConfiguration(file);
 		
-		String id = yaml.getParent().getString("uuid");			
-		String name = yaml.getParent().getString("name");
-		int points = yaml.getParent().getInt("points");
-		int kills = yaml.getParent().getInt("kills");
-		int deaths = yaml.getParent().getInt("deaths");
-		long ban = yaml.getParent().getLong("ban");
-		String reason = yaml.getParent().getString("reason");
-		yaml.close();
+		String id = pc.getString("uuid");			
+		String name = pc.getString("name");
+		int points = pc.getInt("points");
+		int kills = pc.getInt("kills");
+		int deaths = pc.getInt("deaths");
+		long ban = pc.getLong("ban");
+		String reason = pc.getString("reason");
+		pc.clear();
 		
+		if(name == null) return null;
 		if(id == null) id = new OfflineUser(name).getUniqueId();
 		
+		Object[] values = new Object[7];
 		values[0] = id;
 		values[1] = name;
 		values[2] = points;

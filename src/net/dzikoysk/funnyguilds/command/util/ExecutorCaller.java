@@ -28,7 +28,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     private List<ExecutorCaller> executors = new ArrayList<>();
     
     public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases) {
-        if(exc == null || command == null);
+        if(exc == null || command == null) return;
     	
     	this.executor = exc;
         this.permission = perm;

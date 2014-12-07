@@ -14,8 +14,8 @@ import org.bukkit.util.Vector;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.DataManager;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.util.ActionType;
 import net.dzikoysk.funnyguilds.util.IndependentThread;
@@ -27,10 +27,8 @@ public class GuildUtils {
 	
 	public static void deleteGuild(Guild guild){
 		if(guild == null) return;
-		guild.delete();
-		
 		DataManager.getInstance().stop();
-		
+		guild.delete();
 		Region region = RegionUtils.get(guild.getRegion());
 		if(region != null){
 			if(Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")){
@@ -55,7 +53,6 @@ public class GuildUtils {
 		if(Settings.getInstance().flat) new File(guildsFolder, guild.getName()+".yml").delete();
 		if(Settings.getInstance().mysql) new DatabaseGuild(guild).delete();
 		guild.delete();
-		
 		DataManager.getInstance().start();
 	}
 	

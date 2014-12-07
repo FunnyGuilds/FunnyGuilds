@@ -1,7 +1,7 @@
-#~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
+﻿#~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#          2.5.2 Valor          #
+#           2.7 Valor           #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -155,7 +155,7 @@ player-list:
   3: '&7TPS: &b{TPS}'
   
   4: '&7Punkty: &b{POINTS}'
-  5: '&7Zabojstwa: &b{KILLS}' 
+  5: '&7Zabojstwa: &b{KILLS}'
   6: '&7Smierci: &b{DEATHS}'
   
   7: '&7Godzina: &b{HOUR}'
@@ -213,7 +213,7 @@ commands:
     name: 'dolacz'
     aliases: []
   leave:
-    name:  'opusc'
+    name: 'opusc'
     aliases: []
   kick:
     name: 'wyrzuc'

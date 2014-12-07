@@ -5,8 +5,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
+import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
 
 public class Repeater implements Runnable {
@@ -17,9 +20,13 @@ public class Repeater implements Runnable {
 	private int player_list;
 	private int ban_system;
 	private int validity_system;
+	private int protection_system;
+	
+	private int player_list_time;
 
 	public Repeater(){
 		instance = this;
+		player_list_time = Settings.getInstance().playerlistInterval;
 	}
 	
 	public void start() {
@@ -32,16 +39,19 @@ public class Repeater implements Runnable {
 		player_list++;
 		ban_system++;
 		validity_system++;
+		protection_system++;
 		
-		if(player_list == Settings.getInstance().playerlistInterval) playerList();
+		if(player_list == player_list_time) playerList();
 		if(validity_system >= 10) validitySystem();
 		if(ban_system >= 7) banSystem();
+		if(protection_system >= 20) protectionSystem();
 	}
 	
 	private void playerList(){
 		if(Settings.getInstance().playerlistEnable){
 			IndependentThread.action(ActionType.PLAYERLIST_GLOBAL_UPDATE);
-			for(Player p : Bukkit.getOnlinePlayers()) PacketUtils.sendPacket(p, PacketUtils.getPacket(p.getPlayerListName(), false, 0));
+			if(Settings.getInstance().playerlistPatch)
+				for(Player p : Bukkit.getOnlinePlayers()) PacketUtils.sendPacket(p, PacketUtils.getPacket(p.getPlayerListName(), false, 0));
 		}
 		player_list = 0;
 	}
@@ -54,6 +64,15 @@ public class Repeater implements Runnable {
 	private void banSystem(){
 		BanSystem.getInstance().run();
 		ban_system = 0;
+	}
+	
+	private void protectionSystem(){
+		for(Guild guild : GuildUtils.getGuilds()) ProtectionSystem.respawn(guild);
+		protection_system = 0;
+	}
+	
+	public void reload(){
+		player_list_time = Settings.getInstance().playerlistInterval;
 	}
 	
 	public void stop(){

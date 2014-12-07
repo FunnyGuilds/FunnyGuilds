@@ -23,13 +23,8 @@ public class PlayerDeath implements Listener {
 		victim.getRank().addDeath();
 		
 		if(a == null) return;
-		if(a.getAddress().getAddress().getHostAddress().equals(v.getAddress().getAddress().getHostAddress())){
-			v.sendMessage(Messages.getInstance().getMessage("rankAddressVictim"));
-			a.sendMessage(Messages.getInstance().getMessage("rankAddressAttacker"));
-			return;
-		}
-		
 		User attacker = User.get(a);
+		
 		if(attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)){
 			if(attacker.getLastVictimTime() + 7200000 > System.currentTimeMillis()){
 				v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));

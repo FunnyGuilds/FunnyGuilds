@@ -9,10 +9,9 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.DataManager;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.YamlFactor;
+import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
 
 import org.bukkit.Location;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 public class FlatRegion {
 	
@@ -24,24 +23,23 @@ public class FlatRegion {
 	
 	public boolean serialize() {
 		File file = DataManager.loadCustomFile(BasicType.REGION, region.getName());
-		YamlFactor yml = new YamlFactor(file);
-		YamlConfiguration yaml = yml.getParent();
-		yaml.set("name", region.getName());
-		yaml.set("center", Parser.toString(region.getCenter()));
-		yaml.set("size", region.getSize());
-		yaml.set("enlarge", region.getEnlarge());
-		yml.close();
+		PandaConfiguration pc = new PandaConfiguration(file);
+		pc.set("name", region.getName());
+		pc.set("center", Parser.toString(region.getCenter()));
+		pc.set("size", region.getSize());
+		pc.set("enlarge", region.getEnlarge());
+		pc.save();
+		pc.clear();
 		return true;
 	}
 	
 	public static Region deserialize(File file){
-		YamlFactor yaml = new YamlFactor(file);
-
-		Object[] values = new Object[4];
-		String name = yaml.getParent().getString("name");
-		String cs = yaml.getParent().getString("center");
-		int size = yaml.getParent().getInt("size");
-		int enlarge = yaml.getParent().getInt("enlarge");
+		PandaConfiguration pc = new PandaConfiguration(file);
+		String name = pc.getString("name");
+		String cs = pc.getString("center");
+		int size = pc.getInt("size");
+		int enlarge = pc.getInt("enlarge");
+		pc.clear();
 		
 		if(name == null || cs == null){
 			FunnyGuilds.error("Cannot deserialize region! Caused by: name/center is null");
@@ -53,8 +51,10 @@ public class FlatRegion {
 			FunnyGuilds.error("Cannot deserialize region! Caused by: center is null");
 			return null;
 		}
+		
 		if(size < 1) size = Settings.getInstance().regionSize;
-			
+		
+		Object[] values = new Object[4];
 		values[0] = name;
 		values[1] = center;
 		values[2] = size;

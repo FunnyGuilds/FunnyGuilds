@@ -14,18 +14,16 @@ import org.bukkit.scheduler.BukkitTask;
 public class DataManager {
 
 	private static DataManager instance;
-	private static Settings config;
-	private static Messages messages;
 	private volatile BukkitTask task = null;
 	
 	public DataManager(){
-		loadDefaultFiles(new String[] { "messages.yml", "config.yml" });
 		instance = this;
-		messages = new Messages();
-		config = new Settings();
-		if(Settings.getInstance().mysql) new DatabaseBasic();
-		else new Flat();
-		new Data();
+		loadDefaultFiles(new String[] { "messages.yml", "config.yml" });
+		Messages.getInstance();
+		Settings.getInstance();
+		if(Settings.getInstance().mysql) DatabaseBasic.getInstance().load();
+		else Flat.getInstance().load();
+		Data.getInstance();
 		this.start();
 	}
 	
@@ -48,6 +46,7 @@ public class DataManager {
 	}
 	
 	public void start(){
+		if(FunnyGuilds.getInstance().isDisabling()) return;
 		if(this.task != null) return;
 		this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
 			 public void run() {
@@ -107,11 +106,11 @@ public class DataManager {
 		return new DataManager();
 	}
 	
-	public Settings getConfig(){
-		return config;
+	public Settings getSettings(){
+		return Settings.getInstance();
 	}
 	
 	public Messages getMessages(){
-		return messages;
+		return Messages.getInstance();
 	}
 }

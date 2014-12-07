@@ -126,10 +126,10 @@ public class Parser {
 					try {
 						int i = Integer.valueOf(value.toString());
 						switch(type.pop()){
-						case 'd': time += i*86400000; break;
-						case 'h': time += i*3600000; break;
-						case 'm': time += i*60000; break;
-						case 's': time += i*1000; break;
+						case 'd': time += i*86400000L; break;
+						case 'h': time += i*3600000L; break;
+						case 'm': time += i*60000L; break;
+						case 's': time += i*1000L; break;
 						}
 					} catch (NumberFormatException e){
 						FunnyGuilds.parser("Unknown number: " + value.toString());

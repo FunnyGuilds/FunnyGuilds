@@ -17,6 +17,7 @@ public class Region {
 	private int enlarge;
 	private Location l;
 	private Location p;
+	private boolean changes;
 	
 	private Region(String name){
 		this.name = name;
@@ -31,6 +32,7 @@ public class Region {
 		this.size = size;
 		this.update();
 		RegionUtils.addRegion(this);
+		this.changes();
 	}
 	
 	public static Region get(String name){
@@ -56,42 +58,51 @@ public class Region {
 			this.l = l.toLocation(this.world);
 			this.p = p.toLocation(this.world);
 		}
+		this.changes();
 	}
 	
 	public void setName(String s){
 		this.name = s;
+		this.changes();
 	}
 	
 	public void setGuild(Guild guild){
 		this.guild = guild;
+		this.changes();
 	}
 	
 	public void setCenter(Location loc){
 		this.center = loc;
 		this.world = loc.getWorld();
 		this.update();
+		this.changes();
 	}
 	
 	public void setSize(int i){
 		this.size = i;
 		this.update();
+		this.changes();
 	}
 	
 	public void setWorld(World world){
 		this.world = world;
 		this.update();
+		this.changes();
 	}
 	
 	public void setL(Location loc){
 		this.l = loc;
+		this.changes();
 	}
 	
 	public void setP(Location loc){
 		this.p = loc;
+		this.changes();
 	}
 	
 	public void setEnlarge(int i){
 		this.enlarge = i;
+		this.changes();
 	}
 	
 	public void delete(){
@@ -189,6 +200,16 @@ public class Region {
 		int y = this.p.getBlockZ();
 		if(x > y) return y;
 		return x;
+	}
+	
+	private void changes(){
+		this.changes = true;
+	}
+	
+	public boolean changed(){
+		boolean c = changes;
+		this.changes = false;
+		return c;
 	}
 	
 	@Override

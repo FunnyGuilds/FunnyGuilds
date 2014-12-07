@@ -18,8 +18,22 @@ import org.bukkit.entity.Player;
 
 public class ProtectionSystem {
 	
+	public static void respawn(Guild guild){
+		Location loc = guild.getEnderCrystal();
+		if(loc == null){
+			Region region = RegionUtils.get(guild.getRegion());
+			if(region == null) return;
+			loc = region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation();
+			guild.setEnderCrystal(loc);
+		}
+		for(EnderCrystal ec : loc.getWorld().getEntitiesByClass(EnderCrystal.class)){
+			if(ec.getLocation().equals(loc)) return;
+		}
+		loc.setY(loc.getY() - 1);
+		loc.getWorld().spawn(loc, EnderCrystal.class);
+	}
+	
 	public static Location endercrystal(EnderCrystal ec){
-		if(!RegionUtils.isIn(ec.getLocation())) return null;
 		Region region = RegionUtils.getAt(ec.getLocation());
 		if(region == null) return null;
 		Location center = region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation();
@@ -30,12 +44,21 @@ public class ProtectionSystem {
 	}
 		
 	public static boolean endercrystal(EnderCrystal ec, Player damager){
-		if(!RegionUtils.isIn(ec.getLocation())) return false;
 		Region region = RegionUtils.getAt(ec.getLocation());
 		if(region == null) return false;
 		if(region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
 			.equals(ec.getLocation().getBlock().getLocation().toVector())){
 				WarSystem.getInstance().attack(damager, region.getGuild());
+				return true;
+		}
+		return false;
+	}
+	
+	public static boolean center(Location loc){
+		Region region = RegionUtils.getAt(loc);
+		if(region == null) return false;
+		if(region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
+			.equals(loc.getBlock().getLocation().toVector())){
 				return true;
 		}
 		return false;

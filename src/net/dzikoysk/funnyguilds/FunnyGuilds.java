@@ -56,6 +56,8 @@ import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
 import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
 import net.dzikoysk.funnyguilds.listener.region.BucketAction;
 import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.ExplosionPrime;
+import net.dzikoysk.funnyguilds.listener.region.ExtendPiston;
 import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
@@ -68,14 +70,14 @@ import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class FunnyGuilds extends JavaPlugin {
 	
-	private static Plugin funnyguilds;
+	private static FunnyGuilds funnyguilds;
 	private static Thread thread;
+	private boolean disabling;
 	
 	@Override
 	public void onEnable(){
@@ -84,7 +86,6 @@ public class FunnyGuilds extends JavaPlugin {
 		new IndependentThread().start();
 		
 		new DataManager();
-		Settings s = Settings.getInstance();
 		
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new EntityDamage(), this);
@@ -101,11 +102,13 @@ public class FunnyGuilds extends JavaPlugin {
 		pm.registerEvents(new BlockPlace(), this);
 		pm.registerEvents(new BucketAction(), this);
 		pm.registerEvents(new EntityExplode(), this);
+		pm.registerEvents(new ExplosionPrime(), this);
+		pm.registerEvents(new ExtendPiston(), this);
 		pm.registerEvents(new PlayerCommand(), this);
 		pm.registerEvents(new PlayerInteract(), this);
 		pm.registerEvents(new PlayerMove(), this);
 		
-		if(s.eventPhysics) pm.registerEvents(new BlockPhysics(), this);
+		if(Settings.getInstance().eventPhysics) pm.registerEvents(new BlockPhysics(), this);
 		
 		this.update();
 		this.patch();
@@ -166,6 +169,7 @@ public class FunnyGuilds extends JavaPlugin {
 	
 	@Override
 	public void onDisable(){
+		disabling = true;
 		Repeater.getInstance().stop();
 		DataManager.getInstance().stop();
 		DataManager.getInstance().save();
@@ -249,6 +253,10 @@ public class FunnyGuilds extends JavaPlugin {
 	    error("");
 	    return false;
 	}
+	
+	public boolean isDisabling(){
+		return disabling;
+	}
 
 	public static String getVersion(){
 		return funnyguilds.getDescription().getVersion();
@@ -258,7 +266,7 @@ public class FunnyGuilds extends JavaPlugin {
 		return thread;
 	}
 	
-	public static Plugin getInstance(){
+	public static FunnyGuilds getInstance(){
 		return funnyguilds;
 	}
 }

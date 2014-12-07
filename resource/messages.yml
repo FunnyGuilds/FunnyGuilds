@@ -75,6 +75,18 @@ helpList:
 - '&a/rozwiaz [tag] &8- &7Rozwiazuje sojusz'
 - '&a/usun &8- &7Usuwa gildie'
 
+# <------- Player Info Messages -------> #
+playerInfoExists: '&cTaki gracz nigdy nie byl na serwerze!'
+# Available variables: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {RANK}
+playerInfoList:
+- '&8--------------.-----------------'
+- '&7Gracz: &a{PLAYER}'
+- '&7Gildia: &a{TAG}'
+- '&7Miejsce: &a{RANK} &8(&a{POINTS}&8)'
+- '&7Zabojstwa: &a{KILLS}'
+- '&7Smierci: &a{DEATHS}'
+- '&8-------------.------------------'
+
 # <------- Info Messages -------> #
 infoTag: '&cPodaj tag gildii!'
 infoExists: '&cGildia o takim tagu nie istnieje!'
@@ -90,18 +102,6 @@ infoList:
 - '&7Waznosc: &c{VALIDITY}'
 - '&7Czlonkowie: &7{MEMBERS}'
 - '&7Sojusze: &c{ALLIES}'
-- '&8-------------------------------'
-
-# <------- Player Info Messages -------> #
-playerInfoExists: '&cTaki gracz nigdy nie byl na serwerze!'
-# Available variables: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {RANK}
-playerInfoList:
-- '&8-------------------------------'
-- '&7Gracz: &a{PLAYER}'
-- '&7Gildia: &a{TAG}'
-- '&7Miejsce: &a{RANK} &8(&a{POINTS}&8)'
-- '&7Zabojstwa: &a{KILLS}'
-- '&7Smierci: &a{DEATHS}'
 - '&8-------------------------------'
 
 # <------- Top Messages -------> #
