@@ -22,40 +22,48 @@ public class DatabaseBasic {
 	}
 	
 	public void load(){
+		Database db = Database.getInstance();
+		db.openConnection();
+		
+		usersTable(db);
+		regionsTable(db);
+		guildsTable(db);
+		
+		ResultSet users = Database.getInstance().executeQuery("SELECT * FROM users");
 		try {
-			Database db = Database.getInstance();
-			db.openConnection();
-			
-			usersTable(db);
-			regionsTable(db);
-			guildsTable(db);
-			
-			ResultSet users = Database.getInstance().executeQuery("SELECT * FROM users");
 			while(users.next()){
 				User user = DatabaseUser.deserialize(users);
 				if(user != null) user.changed();
 			}
 			FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());
-			
-			ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM regions");
+		} catch (Exception e){
+			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+		}
+		
+		ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM regions");
+		try {
 			while(regions.next()){
 				Region region = DatabaseRegion.deserialize(regions);
 				if(region != null) region.changed();
 			}
 			FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
-			
-			ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM guilds");
+		} catch (Exception e){
+			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+		}
+		
+		ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM guilds");
+		try {
 			while(guilds.next()){
 				Guild guild = DatabaseGuild.deserialize(guilds);
 				if(guild != null) guild.changed();
 			}
 			FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
-			
-			db.closeConnection();
-			IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
 		} catch (Exception e){
 			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
+		
+		db.closeConnection();
+		IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
 	}
 	
 	public void save() throws ClassNotFoundException, SQLException {

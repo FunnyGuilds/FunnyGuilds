@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -115,69 +114,73 @@ public class DatabaseGuild {
 		return is;
 	}
 	
-	public static Guild deserialize(ResultSet rs) throws SQLException{
+	public static Guild deserialize(ResultSet rs) {
 		if(rs == null) return null;
-		
-		String id = rs.getString("uuid");
-		String name = rs.getString("name");
-		String tag = rs.getString("tag");
-		String os = rs.getString("owner");
-		String dp = rs.getString("deputy");
-		String home = rs.getString("home");
-		String region = rs.getString("region");
-		String m = rs.getString("members");
-		String rgs = rs.getString("regions");
-		String als = rs.getString("allies");
-		String ens = rs.getString("enemies");
-		boolean pvp = rs.getBoolean("pvp");
-		long born = rs.getLong("born");
-		long validity = rs.getLong("validity");
-		long attacked = rs.getLong("attacked");
-		long ban = rs.getLong("ban");
-		int lives = rs.getInt("lives");
-		
-		if(name == null || tag == null || os == null){
-			FunnyGuilds.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
-			return null;
+		try {
+			String id = rs.getString("uuid");
+			String name = rs.getString("name");
+			String tag = rs.getString("tag");
+			String os = rs.getString("owner");
+			String dp = rs.getString("deputy");
+			String home = rs.getString("home");
+			String region = rs.getString("region");
+			String m = rs.getString("members");
+			String rgs = rs.getString("regions");
+			String als = rs.getString("allies");
+			String ens = rs.getString("enemies");
+			boolean pvp = rs.getBoolean("pvp");
+			long born = rs.getLong("born");
+			long validity = rs.getLong("validity");
+			long attacked = rs.getLong("attacked");
+			long ban = rs.getLong("ban");
+			int lives = rs.getInt("lives");
+			
+			if(name == null || tag == null || os == null){
+				FunnyGuilds.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
+				return null;
+			}
+			
+			UUID uuid = UUID.randomUUID();
+			if(id != null) uuid = UUID.fromString(id);
+			
+			User owner = User.get(os);
+			User deputy = null;
+			if(dp != null) deputy = User.get(dp);
+			List<User> members = new ArrayList<>();
+			if(m != null && !m.equals("")) members = UserUtils.getUsers(StringUtils.fromString(m));
+			List<String> regions = StringUtils.fromString(rgs);
+			List<Guild> allies = new ArrayList<>();
+			if(als != null && !als.equals("")) allies = GuildUtils.getGuilds(StringUtils.fromString(als));
+			List<Guild> enemies = new ArrayList<>();
+			if(ens != null && !ens.equals("")) enemies = GuildUtils.getGuilds(StringUtils.fromString(ens));
+	
+			if(born == 0) born = System.currentTimeMillis(); 
+			if(validity == 0) validity = System.currentTimeMillis() + Settings.getInstance().validityStart; 
+			if(lives == 0) lives = Settings.getInstance().warLives;
+			
+			Object[] values = new Object[17];
+			values[0] = uuid;
+			values[1] = name;
+			values[2] = tag;
+			values[3] = owner;
+			values[4] = Parser.parseLocation(home);
+			values[5] = region;
+			values[6] = members;
+			values[7] = regions;
+			values[8] = allies;
+			values[9] = enemies;
+			values[10] = born;
+			values[11] = validity;
+			values[12] = attacked;
+			values[13] = lives;
+			values[14] = ban;
+			values[15] = deputy;
+			values[16] = pvp;
+			return DeserializationUtils.deserializeGuild(values);
+		} catch (Exception e){
+			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
-		
-		UUID uuid = UUID.randomUUID();
-		if(id != null) uuid = UUID.fromString(id);
-		
-		User owner = User.get(os);
-		User deputy = null;
-		if(dp != null) deputy = User.get(dp);
-		List<User> members = new ArrayList<>();
-		if(m != null && !m.equals("")) members = UserUtils.getUsers(StringUtils.fromString(m));
-		List<String> regions = StringUtils.fromString(rgs);
-		List<Guild> allies = new ArrayList<>();
-		if(als != null && !als.equals("")) allies = GuildUtils.getGuilds(StringUtils.fromString(als));
-		List<Guild> enemies = new ArrayList<>();
-		if(ens != null && !ens.equals("")) enemies = GuildUtils.getGuilds(StringUtils.fromString(ens));
-
-		if(born == 0) born = System.currentTimeMillis(); 
-		if(validity == 0) validity = System.currentTimeMillis() + Settings.getInstance().validityStart; 
-		if(lives == 0) lives = Settings.getInstance().warLives;
-		
-		Object[] values = new Object[17];
-		values[0] = uuid;
-		values[1] = name;
-		values[2] = tag;
-		values[3] = owner;
-		values[4] = Parser.parseLocation(home);
-		values[5] = region;
-		values[6] = members;
-		values[7] = regions;
-		values[8] = allies;
-		values[9] = enemies;
-		values[10] = born;
-		values[11] = validity;
-		values[12] = attacked;
-		values[13] = lives;
-		values[14] = ban;
-		values[15] = deputy;
-		values[16] = pvp;
-		return DeserializationUtils.deserializeGuild(values);
+		return null;
 	}
 
 }

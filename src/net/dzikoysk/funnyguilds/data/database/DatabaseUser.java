@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -73,25 +72,29 @@ public class DatabaseUser {
 		return sb.toString();
 	}
 	
-	public static User deserialize(ResultSet rs) throws SQLException{
+	public static User deserialize(ResultSet rs){
 		if(rs == null) return null;
-		Object[] values = new Object[7];
-		
-		String uuid = rs.getString("uuid");
-		String name = rs.getString("name");
-		int points = rs.getInt("points");
-		int kills = rs.getInt("kills");
-		int deaths = rs.getInt("deaths");
-		long ban = rs.getLong("ban");
-		String reason = rs.getString("reason");
-		
-		values[0] = uuid;
-		values[1] = name;
-		values[2] = points;
-		values[3] = kills;
-		values[4] = deaths;
-		values[5] = ban;
-		values[6] = reason;
-		return DeserializationUtils.deserializeUser(values);
+		try {	
+			String uuid = rs.getString("uuid");
+			String name = rs.getString("name");
+			int points = rs.getInt("points");
+			int kills = rs.getInt("kills");
+			int deaths = rs.getInt("deaths");
+			long ban = rs.getLong("ban");
+			String reason = rs.getString("reason");
+			
+			Object[] values = new Object[7];
+			values[0] = uuid;
+			values[1] = name;
+			values[2] = points;
+			values[3] = kills;
+			values[4] = deaths;
+			values[5] = ban;
+			values[6] = reason;
+			return DeserializationUtils.deserializeUser(values);
+		} catch (Exception e){
+			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+		}
+		return null;
 	}
 }

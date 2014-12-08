@@ -1,6 +1,6 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: 2.7.1 Valor Beta
+version: 2.7.2 Valor Beta
 author: Dzikoysk
 website: http://www.dzikoysk.net/
 permissions:
@@ -81,3 +81,4 @@ permissions:
         default: true
     funnyguilds.ranking:
         default: true
+

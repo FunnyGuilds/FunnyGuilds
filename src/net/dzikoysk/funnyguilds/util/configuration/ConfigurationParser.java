@@ -39,11 +39,15 @@ public class ConfigurationParser {
 			chars.setLength(0);
 			int whitespace = 0;
 			boolean separator = false;
+			boolean apostrophe = false;
+			boolean abeen = false;
+			boolean skip = false;
+			
 			for(char c : line.toCharArray()){
 				charpos++;
 				switch(c){
 				case ' ':
-					if(chars.length() == 0){
+					if(!apostrophe && chars.length() == 0){
 						whitespace++;
 						continue;
 					} else {
@@ -51,8 +55,20 @@ public class ConfigurationParser {
 						break;
 					}
 				case '\'':
-					if(chars.length() == 0) continue;
-					if(line.length() == charpos) continue;
+					if(chars.length() == 0){
+						if(apostrophe){
+							abeen = true;
+							skip = true;
+							break;
+						}
+						apostrophe = true;
+						continue;
+					}
+					if(line.length() == charpos){
+						apostrophe = false;
+						abeen = true;
+						continue;
+					}
 					chars.append(c);
 					break;
 				case ':':
@@ -100,12 +116,13 @@ public class ConfigurationParser {
 				default:
 					chars.append(c);
 				}
+				if(skip) break;
 			}
 			
 			int position = whitespace / 2;
 			String string = chars.toString();
 			chars.setLength(0);
-						
+					
 			if(operators.isEmpty()){
 				lastPosition = position;
 				continue;
@@ -130,7 +147,7 @@ public class ConfigurationParser {
 				continue;
 			}
 			
-			if(string.isEmpty()){
+			if(!abeen && string.isEmpty()){
 				char c = operators.pop();
 				switch(c){
 				case ']':

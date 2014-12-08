@@ -3,8 +3,6 @@ package net.dzikoysk.funnyguilds.data;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.Parser;
@@ -194,13 +192,9 @@ public class Settings {
 		String version = pc.getString("version");
 		if(version != null && version.equals(Settings.version)) return true;
 		FunnyGuilds.info("Updating the plugin settings ...");
-		Map<String, Object> values = pc.getMap();
 		settings.delete();
 		DataManager.loadDefaultFiles(new String[] { "config.yml" });
 		pc = new PandaConfiguration(settings);
-		for(Entry<String, Object> entry : values.entrySet()) pc.set(entry.getKey(), entry.getValue());
-		pc.set("version", Settings.version);
-		pc.save();
 		FunnyGuilds.info("Successfully updated settings!");
 		return true;
 	}

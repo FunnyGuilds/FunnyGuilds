@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
@@ -45,19 +45,23 @@ public class DatabaseRegion {
 		return sb.toString();
 	}
 	
-	public static Region deserialize(ResultSet rs) throws SQLException {
+	public static Region deserialize(ResultSet rs) {
 		if(rs == null) return null;
-		
-		String name = rs.getString("name");
-		String center = rs.getString("center");
-		int size = rs.getInt("size");
-		int enlarge = rs.getInt("enlarge");
-		
-		Object[] values = new Object[4];
-		values[0] = name;
-		values[1] = Parser.parseLocation(center);
-		values[2] = size;
-		values[3] = enlarge;
-		return DeserializationUtils.deserializeRegion(values);
+		try {
+			String name = rs.getString("name");
+			String center = rs.getString("center");
+			int size = rs.getInt("size");
+			int enlarge = rs.getInt("enlarge");
+			
+			Object[] values = new Object[4];
+			values[0] = name;
+			values[1] = Parser.parseLocation(center);
+			values[2] = size;
+			values[3] = enlarge;
+			return DeserializationUtils.deserializeRegion(values);
+		} catch (Exception e){
+			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+		}
+		return null;
 	}
 }
