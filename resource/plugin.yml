@@ -3,6 +3,7 @@ main: net.dzikoysk.funnyguilds.FunnyGuilds
 version: 2.7.2 Valor Beta
 author: Dzikoysk
 website: http://www.dzikoysk.net/
+loadbefore: [WorldEdit]
 permissions:
     funnyguilds.*:
         default: op
