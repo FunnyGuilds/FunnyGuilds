@@ -2,14 +2,14 @@ package net.dzikoysk.funnyguilds.util.element;
 
 import java.util.Calendar;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.Ticking;
+import net.dzikoysk.funnyguilds.util.runnable.Ticking;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class PlayerList {
 

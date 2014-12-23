@@ -124,7 +124,7 @@ public class Parser {
 				}
 				if(calc){
 					try {
-						int i = Integer.valueOf(value.toString());
+						long i = Integer.valueOf(value.toString());
 						switch(type.pop()){
 						case 'd': time += i*86400000L; break;
 						case 'h': time += i*3600000L; break;

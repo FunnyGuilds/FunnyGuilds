@@ -1,37 +1,37 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.runnable;
+
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.system.ban.BanSystem;
+import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
+import net.dzikoysk.funnyguilds.util.PacketUtils;
+import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.system.ban.BanSystem;
-import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
-import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
+public class AsynchronouslyRepeater implements Runnable {
 
-public class Repeater implements Runnable {
-
-	private static Repeater instance;
+	private static AsynchronouslyRepeater instance;
 	private volatile BukkitTask repeater;
 	
 	private int player_list;
 	private int ban_system;
 	private int validity_system;
-	private int protection_system;
-	
+	private int funnyguilds_stats;
 	private int player_list_time;
 
-	public Repeater(){
+	public AsynchronouslyRepeater(){
 		instance = this;
 		player_list_time = Settings.getInstance().playerlistInterval;
 	}
 	
 	public void start() {
 		if(this.repeater != null) return;
-		this.repeater = Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), this, 0, 20);
+		this.repeater = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), this, 100, 20);
 	}
 	
 	@Override
@@ -39,12 +39,12 @@ public class Repeater implements Runnable {
 		player_list++;
 		ban_system++;
 		validity_system++;
-		protection_system++;
+		funnyguilds_stats++;
 		
 		if(player_list == player_list_time) playerList();
 		if(validity_system >= 10) validitySystem();
 		if(ban_system >= 7) banSystem();
-		if(protection_system >= 20) protectionSystem();
+		if(funnyguilds_stats >= 10) funnyguildsStats();
 	}
 	
 	private void playerList(){
@@ -56,12 +56,6 @@ public class Repeater implements Runnable {
 		player_list = 0;
 	}
 	
-	private void protectionSystem(){
-		if(Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal"))
-			for(Guild guild : GuildUtils.getGuilds()) ProtectionSystem.respawn(guild);
-		protection_system = 0;
-	}
-	
 	private void validitySystem(){
 		ValiditySystem.getInstance().run();
 		validity_system = 0;
@@ -70,6 +64,11 @@ public class Repeater implements Runnable {
 	private void banSystem(){
 		BanSystem.getInstance().run();
 		ban_system = 0;
+	}
+	
+	private void funnyguildsStats(){
+		MetricsCollector.getMetrics();
+		funnyguilds_stats = 0;
 	}
 	
 	public void reload(){
@@ -83,8 +82,8 @@ public class Repeater implements Runnable {
 		}
 	}
 	
-	public static Repeater getInstance(){
-		if(instance == null) new Repeater();
+	public static AsynchronouslyRepeater getInstance(){
+		if(instance == null) new AsynchronouslyRepeater();
 		return instance;
 	}
 

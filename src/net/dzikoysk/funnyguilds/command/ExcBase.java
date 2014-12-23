@@ -7,8 +7,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
@@ -73,8 +73,9 @@ public class ExcBase implements Executor {
 			p.sendMessage(m.getMessage("baseTeleport"));
 			return;
 		}
+		
 		p.sendMessage(m.getMessage("baseDontMove")
-			.replace("{TIME}", time+"")
+			.replace("{TIME}", Integer.toString(time))
 		);
 		
 		user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), new Runnable(){		

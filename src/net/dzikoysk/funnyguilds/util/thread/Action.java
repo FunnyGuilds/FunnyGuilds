@@ -1,18 +1,18 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.thread;
 
 import java.util.Arrays;
-
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
-import net.dzikoysk.funnyguilds.data.DataManager;
+import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
+
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 public class Action {
 	
@@ -37,7 +37,7 @@ public class Action {
 	}
 	
 	public void execute(){
-		if(action == ActionType.SAVE_DATA) DataManager.getInstance().save();
+		if(action == ActionType.SAVE_DATA) Manager.getInstance().save();
 		
 		else if(action == ActionType.MYSQL_UPDATE_USER_POINTS) new DatabaseUser((User)values[0]).updatePoints();
 		else if(action == ActionType.MYSQL_UPDATE_GUILD_POINTS) new DatabaseGuild((Guild)values[0]).updatePoints();

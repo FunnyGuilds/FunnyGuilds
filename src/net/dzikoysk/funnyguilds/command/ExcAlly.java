@@ -8,9 +8,9 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
-import net.dzikoysk.funnyguilds.util.ActionType;
-import net.dzikoysk.funnyguilds.util.IndependentThread;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

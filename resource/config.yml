@@ -1,9 +1,12 @@
 ﻿#~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#          2.7.2 Valor          #
+#         3.0 Christmas         #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
+
+# Wyswietlana nazwa pluginu
+plugin-name: 'FunnyGuilds'
 
 # Maksymalna dlugosc nazwy gildii
 name-length: 22
@@ -73,6 +76,8 @@ war-wait: 24h
 validity-start: 14d
 # Ile czasu dodaje przedluzenie gildii
 validity-time: 14d
+# Ile dni przed koncem wygasania mozna przedluzyc gildie (wpisz 0, jezeli funkcja ma byc wylaczona)
+validity-when: 14d
 # Koszt przedluzenia gildii
 validity-items:
 - 10 diamond
@@ -132,6 +137,15 @@ invite-members: 15
 # Czy trzeba kucac, zeby przy klikniecu prawym na gracza wyswietlilo informacje o nim
 info-player-sneaking: true
 
+# Jaki ma byc zasieg pobieranych przedmiotow po wybuchu (jezeli chcesz wylaczyc, wpisz 0)
+explode-radius: 3
+# Jakie materialy i z jaka szansa maja byc niszczone po wybuchu
+# <material>: <szansa (w %)
+explode-materials:
+  obsidian: 20
+  water: 33
+  lava: 33
+
 # Wyglad listy graczy. Przedzial od 1 do 60
 # Limit znakow: 30
 # > Spis zmiennych:
@@ -189,6 +203,9 @@ player-list-ping: 0
 player-list-patch: false
 # Wyglad punktow wyswietlanych przy gildii w rankingu
 player-list-points: '&7[&b{POINTS}&7]'
+
+# Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)
+event-move: true
 
 # Nazwy komend
 commands:
@@ -298,4 +315,4 @@ mysql:
   password: passwd
   
 # Config Version
-version: 2.5 Valor
+version: 3.0 Christmas

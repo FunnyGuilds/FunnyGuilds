@@ -4,18 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.DataManager;
+import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.util.ActionType;
-import net.dzikoysk.funnyguilds.util.IndependentThread;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -102,14 +102,25 @@ public class ExcCreate implements Executor {
 			p.sendMessage(m.getMessage("createTagExists"));
     		return;
     	}
+		
+		Location loc = p.getLocation();
+		loc = loc.getBlock().getLocation();
+		
+		if(c.createCenterY != 0) loc.setY(c.createCenterY);
+		int d = c.regionSize + c.createDistance;
+		if(c.enlargeItems != null) d = c.enlargeItems.size()*c.enlargeSize + d;
+		if(d > p.getWorld().getSpawnLocation().distance(loc)){
+			p.sendMessage(m.getMessage("createSpawn").replace("{DISTANCE}", Integer.toString(d)));
+			return;
+		}
  
 		List<ItemStack> itemsList = null;
 		if(p.hasPermission("funnyguilds.vip")) itemsList = c.createItemsVip;
 		else itemsList = c.createItems;
-		
 		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
-		for(int i = 0; i < items.length; i++){
-			if(!p.getInventory().containsAtLeast(items[i], items[i].getAmount())){
+		if(!u.getBypass()){
+			for(int i = 0; i < items.length; i++){
+				if(p.getInventory().containsAtLeast(items[i], items[i].getAmount())) continue;
 				String msg = m.getMessage("createItems");
 				if(msg.contains("{ITEM}")){
 					StringBuilder sb = new StringBuilder();
@@ -126,25 +137,11 @@ public class ExcCreate implements Executor {
 						sb.append(" ");
 						sb.append(it.getType().toString().toLowerCase());
 						list.add(sb.toString());
-					}
-					msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
+					} msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
 				}
 				p.sendMessage(msg);
 				return;
 			}
-		}
-		
-		Location loc = p.getLocation();
-		loc = loc.getBlock().getLocation();
-		
-		if(c.createCenterY != 0) loc.setY(c.createCenterY);
-		int d = c.regionSize + c.createDistance;
-		if(c.enlargeItems != null) d = c.enlargeItems.size()*c.enlargeSize + d;
-		if(d > p.getWorld().getSpawnLocation().distance(loc)){
-			p.sendMessage(m.getMessage("createSpawn")
-				.replace("{DISTANCE}", Integer.toString(d))
-			);
-			return;
 		}
 		
 		if(RegionUtils.isNear(loc)){
@@ -152,9 +149,10 @@ public class ExcCreate implements Executor {
 			return;
 		}
 		
-		p.getInventory().removeItem(items);
+		if(u.getBypass()) u.setBypass(false);
+		else p.getInventory().removeItem(items);
 		
-		DataManager.getInstance().stop();
+		Manager.getInstance().stop();
 				
 		Guild guild = new Guild(name);
 		guild.setTag(tag);
@@ -172,16 +170,20 @@ public class ExcCreate implements Executor {
 		u.setGuild(guild);
 		
 		if(c.createCenterSphere){
-			List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
-			for(Location l : sphere)
+			for(Location l : SpaceUtils.sphere(loc, 4, 4, false, true, 0))
 				if(l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.AIR);
+			for(Location l : SpaceUtils.sphere(loc, 4, 4, true, true, 0))
+				if(l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.OBSIDIAN);
 		}
+		
 		if(c.createMaterial != null && c.createMaterial != Material.AIR)
 			loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
 		else if(c.createStringMaterial.equalsIgnoreCase("ender crystal"))
 			loc.getWorld().spawn(loc.getBlock().getLocation().toVector().toLocation(loc.getWorld()), EnderCrystal.class);
 		
-		DataManager.getInstance().start();
+		p.teleport(loc);
+		
+		Manager.getInstance().start();
 		
 		IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);
 		IndependentThread.actions(ActionType.PREFIX_GLOBAL_ADD_GUILD, guild);

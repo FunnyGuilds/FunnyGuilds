@@ -10,8 +10,8 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.util.ActionType;
-import net.dzikoysk.funnyguilds.util.IndependentThread;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 public class DatabaseBasic {
 	

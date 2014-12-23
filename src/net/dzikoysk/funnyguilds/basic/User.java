@@ -3,14 +3,15 @@ package net.dzikoysk.funnyguilds.basic;
 import java.util.UUID;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.util.ActionType;
-import net.dzikoysk.funnyguilds.util.IndependentThread;
 import net.dzikoysk.funnyguilds.util.ReflectionUtils;
-import net.dzikoysk.funnyguilds.util.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.util.element.PlayerList;
+import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,7 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
-public class User extends Object {
+public class User implements Basic {
 	
 	private UUID uuid;
 	private String name;
@@ -37,6 +38,7 @@ public class User extends Object {
 	private BukkitTask teleportation;
 	private long notification;
 	private boolean enter;
+	private boolean bypass;
 	private boolean changes;
 	
 	private User(UUID uuid){
@@ -102,6 +104,10 @@ public class User extends Object {
 	
 	public void setTeleportation(BukkitTask task){
 		this.teleportation = task;
+	}
+	
+	public void setBypass(boolean b){
+		this.bypass = b;
 	}
 	
 	public void removeGuild(){
@@ -215,6 +221,10 @@ public class User extends Object {
 		return Bukkit.getPlayer(this.name);
 	}
 	
+	public boolean getBypass(){
+		return this.bypass;
+	}
+	
 	public int getPing(){
 		int ping = 0;
 		Player p = getPlayer();
@@ -230,12 +240,6 @@ public class User extends Object {
 		return ping;
 	}
 	
-	public boolean changed(){
-		boolean c = changes;
-		if(c) this.changes = false;
-		return c;
-	}
-	
 	private User(String name){
 		this(new OfflineUser(name));
 		this.changes = true;
@@ -244,15 +248,15 @@ public class User extends Object {
 	private User(Player player){
 		this.uuid = player.getUniqueId();
 		this.name = player.getName();
-		UserUtils.addUser(this);
 		this.changes = true;
+		UserUtils.addUser(this);
 	}
 	
 	private User(OfflineUser offline){
 		this.uuid = UUID.fromString(offline.getUniqueId());
 		this.name = offline.getName();
-		UserUtils.addUser(this);
 		this.changes = true;
+		UserUtils.addUser(this);
 	}
 	
 	public static User get(UUID uuid){
@@ -281,10 +285,23 @@ public class User extends Object {
 		return new User(name);
 	}
 
-	private void changes(){
+	@Override
+	public boolean changed(){
+		boolean c = changes;
+		if(c) this.changes = false;
+		return c;
+	}
+	
+	@Override
+	public void changes(){
 		this.changes = true;
 	}
-
+	
+	@Override
+	public BasicType getType(){
+		return BasicType.USER;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

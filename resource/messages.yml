@@ -1,5 +1,5 @@
 # <------- FunnyGuilds Version -------> #
-version: 2.5 Valor
+version: '3.0 Christmas'
 
 # <------- Permission Messages -------> #
 permission: '&cNie masz wystarczajacych uprawnien do uzycia tej komendy!'
@@ -7,10 +7,10 @@ permission: '&cNie masz wystarczajacych uprawnien do uzycia tej komendy!'
 # <------- Rank Messages -------> #
 rankAddressAttacker: '&7Wykryto ten sam &cadres&7, punkty nie zostaja naliczone!'
 rankAddressVictim: '&7Wykryto ten sam &cadres&7, punkty nie zostaja odebrane!'
-rankLastVictimV: '&7Ostatnio zostales zabity przez tego samego gracza, puntky nie zostaja odebrane!'
-rankLastVictimA: '&7Ostatnio zabiles tego samego gracza, puntky nie zostaja dodane!'
-rankLastAttackerV: '&7Ostatnio zostales zabity przez tego samego gracza, puntky nie zostaja odebrane!'
-rankLastAttackerA: '&7Ten gracz byl ostatnio zabity przez Ciebie, puntky nie zostaja dodane!'
+rankLastVictimV: '&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!'
+rankLastVictimA: '&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!'
+rankLastAttackerV: '&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!'
+rankLastAttackerA: '&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!'
 # Available variables: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}
 rankDeathMessage: '{ATAG}&b{ATTACKER} &7(&b+{+}&7) zabil {VTAG}&b{VICTIM} &7(&b-{-}&7)'
 
@@ -282,6 +282,8 @@ breakIDone: '&7Gildia &c{GUILD} &7rozwiazala sojusz z Twoja gildia!'
 # <------- Validity Messages -------> #
 validityHasNotGuild: '&cNie masz gildii!'
 validityIsNotOwner: '&cNie jestes zalozycielem gildii!'
+# Available variables: {TIME}
+validityWhen: '&7NGildie mozesz przedluzyc dopiero za &c{TIME}&7!'
 # Available variables: {ITEM}
 validityItems: '&7Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz &c{ITEM}'
 # Available variables: {DATE}

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -17,10 +18,12 @@ import org.bukkit.inventory.ItemStack;
 public class Settings {
 	
 	private static Settings instance;
-	private static String version = "2.5 Valor";
-	private static File settings =  new File("plugins/FunnyGuilds", "config.yml");
+	private static String version = "3.0 Christmas";
+	private static File settings =  new File(FunnyGuilds.getInstance().getDataFolder(), "config.yml");
 	
 	private PandaConfiguration pc;
+	
+	public String pluginName;
 	
 	public int createNameLength;
 	public int createNameMinLength;
@@ -42,6 +45,7 @@ public class Settings {
 	public int regionExplode;
 	public List<String> regionCommands;
 	
+	public boolean eventMove;
 	public boolean eventPhysics;
 	
 	public boolean enlargeEnable;
@@ -54,6 +58,7 @@ public class Settings {
 	
 	public long validityStart;
 	public long validityTime;
+	public long validityWhen;
 	public List<ItemStack> validityItems;
 	
 	public int inviteMembers;
@@ -85,6 +90,9 @@ public class Settings {
 	public boolean baseEnable;
 	public int baseDelay;
 	public List<ItemStack> baseItems;
+	
+	public int explodeRadius;
+	public HashMap<Material, Double> explodeMaterials;
 	
 	public boolean playerlistEnable;
 	public int playerlistInterval;
@@ -164,11 +172,13 @@ public class Settings {
 	
 	public Settings(){
 		instance = this;
+		Manager.loadDefaultFiles(new String[] { "config.yml" });
 		this.load();
 	}
 	
 	private void load(){
 		if(this.update()){
+			this.loadPluginSection();
 			this.loadCreateSection();
 			this.loadRegionsSection();
 			this.loadEventSection();
@@ -181,6 +191,7 @@ public class Settings {
 			this.loadRankSection();
 			this.loadDamageSection();
 			this.loadBaseSection();
+			this.loadExplosionSection();
 			this.loadPlayerListSection();
 			this.loadCommandsSection();
 			this.loadDataSection();
@@ -192,11 +203,17 @@ public class Settings {
 		String version = pc.getString("version");
 		if(version != null && version.equals(Settings.version)) return true;
 		FunnyGuilds.info("Updating the plugin settings ...");
-		settings.delete();
-		DataManager.loadDefaultFiles(new String[] { "config.yml" });
+		settings.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "config.old"));
+		Manager.loadDefaultFiles(new String[] { "config.yml" });
 		pc = new PandaConfiguration(settings);
 		FunnyGuilds.info("Successfully updated settings!");
 		return true;
+	}
+	
+	private void loadPluginSection(){
+		this.pluginName = "FunnyGuilds";
+		String name = pc.getString("plugin-name");
+		if(name != null && !name.isEmpty()) this.pluginName = name;
 	}
 	
 	private void loadCreateSection(){
@@ -242,6 +259,7 @@ public class Settings {
 	private void loadEventSection(){
 		if(this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG)
 			this.eventPhysics = true;
+		this.eventMove = pc.getBoolean("event-move");
 	}
 	
 	private void loadEnlargeSection() {
@@ -268,6 +286,7 @@ public class Settings {
 	private void loadValiditySection(){
 		this.validityStart = Parser.parseTime(pc.getString("validity-start"));
 		this.validityTime = Parser.parseTime(pc.getString("validity-time"));
+		this.validityWhen = Parser.parseTime(pc.getString("validity-when"));
 		List<String> list = pc.getStringList("validity-items");
 		List<ItemStack> items = new ArrayList<ItemStack>();
 		for(String item : list){
@@ -330,6 +349,19 @@ public class Settings {
 			this.baseItems = items;
 			this.baseDelay = pc.getInt("base-delay");
 		}
+	}
+	
+	private void loadExplosionSection(){
+		this.explodeRadius = pc.getInt("explode-radius");
+		HashMap<Material, Double> map = new HashMap<>();
+		for(String path : pc.getSectionKeys("explode-materials")){
+			Material material = Parser.parseMaterial(path);
+			if(material == null || material == Material.AIR) continue;
+			double chance = pc.getDouble("explode-materials." + path);
+			if(chance == 0) continue;
+			map.put(material, chance);
+		}
+		this.explodeMaterials = map;
 	}
 	
 	private void loadPlayerListSection(){

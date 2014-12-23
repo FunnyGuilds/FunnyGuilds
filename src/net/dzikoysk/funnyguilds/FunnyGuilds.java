@@ -1,50 +1,16 @@
 package net.dzikoysk.funnyguilds;
 
+import java.io.InputStream;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.command.ExcAlly;
-import net.dzikoysk.funnyguilds.command.ExcBase;
-import net.dzikoysk.funnyguilds.command.ExcBreak;
-import net.dzikoysk.funnyguilds.command.ExcConfirm;
-import net.dzikoysk.funnyguilds.command.ExcCreate;
-import net.dzikoysk.funnyguilds.command.ExcDelete;
-import net.dzikoysk.funnyguilds.command.ExcDeputy;
-import net.dzikoysk.funnyguilds.command.ExcEnlarge;
-import net.dzikoysk.funnyguilds.command.ExcFunnyGuilds;
-import net.dzikoysk.funnyguilds.command.ExcGuild;
-import net.dzikoysk.funnyguilds.command.ExcInfo;
-import net.dzikoysk.funnyguilds.command.ExcInvite;
-import net.dzikoysk.funnyguilds.command.ExcJoin;
-import net.dzikoysk.funnyguilds.command.ExcKick;
-import net.dzikoysk.funnyguilds.command.ExcLeader;
-import net.dzikoysk.funnyguilds.command.ExcLeave;
-import net.dzikoysk.funnyguilds.command.ExcPlayer;
-import net.dzikoysk.funnyguilds.command.ExcRanking;
-import net.dzikoysk.funnyguilds.command.ExcTop;
-import net.dzikoysk.funnyguilds.command.ExcValidity;
-import net.dzikoysk.funnyguilds.command.admin.AxcAdd;
-import net.dzikoysk.funnyguilds.command.admin.AxcBan;
-import net.dzikoysk.funnyguilds.command.admin.AxcDeaths;
-import net.dzikoysk.funnyguilds.command.admin.AxcDelete;
-import net.dzikoysk.funnyguilds.command.admin.AxcLives;
-import net.dzikoysk.funnyguilds.command.admin.AxcMain;
-import net.dzikoysk.funnyguilds.command.admin.AxcKick;
-import net.dzikoysk.funnyguilds.command.admin.AxcKills;
-import net.dzikoysk.funnyguilds.command.admin.AxcMove;
-import net.dzikoysk.funnyguilds.command.admin.AxcName;
-import net.dzikoysk.funnyguilds.command.admin.AxcPoints;
-import net.dzikoysk.funnyguilds.command.admin.AxcTeleport;
-import net.dzikoysk.funnyguilds.command.admin.AxcUnban;
-import net.dzikoysk.funnyguilds.command.admin.AxcValidity;
-import net.dzikoysk.funnyguilds.command.manager.MxcBase;
-import net.dzikoysk.funnyguilds.command.manager.MxcPvP;
-import net.dzikoysk.funnyguilds.command.util.ExecutorCaller;
+import net.dzikoysk.funnyguilds.command.Commands;
+import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.DataManager;
+import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
 import net.dzikoysk.funnyguilds.listener.PlayerChat;
-import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
@@ -61,12 +27,15 @@ import net.dzikoysk.funnyguilds.listener.region.ExtendPiston;
 import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
+import net.dzikoysk.funnyguilds.system.event.EventManager;
+import net.dzikoysk.funnyguilds.util.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.IOUtils;
-import net.dzikoysk.funnyguilds.util.IndependentThread;
-import net.dzikoysk.funnyguilds.util.Repeater;
-import net.dzikoysk.funnyguilds.util.ScoreboardStack;
-import net.dzikoysk.funnyguilds.util.Ticking;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
+import net.dzikoysk.funnyguilds.util.runnable.AsynchronouslyRepeater;
+import net.dzikoysk.funnyguilds.util.runnable.Repeater;
+import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
+import net.dzikoysk.funnyguilds.util.runnable.Ticking;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -80,13 +49,31 @@ public class FunnyGuilds extends JavaPlugin {
 	private boolean disabling;
 	
 	@Override
+	public void onLoad(){
+		funnyguilds = this;
+		thread = Thread.currentThread();
+		
+		new DescriptionChanger(this.getDescription()).name(Settings.getInstance().pluginName);
+		new Commands().register();
+		
+		EventManager em = EventManager.getEventManager();
+		em.load();
+	}
+	
+	@Override
 	public void onEnable(){
 		
 		new ScoreboardStack().start();
 		new IndependentThread().start();
+		new Manager().start();
+		new Repeater().start();
+		new AsynchronouslyRepeater().start();
+		new Ticking().start();
+		new MetricsCollector().start();
 		
-		new DataManager();
-		
+		EventManager em = EventManager.getEventManager();
+		em.enable();
+
 		PluginManager pm = Bukkit.getPluginManager();
 		pm.registerEvents(new EntityDamage(), this);
 		pm.registerEvents(new EntityInteract(), this);
@@ -106,73 +93,26 @@ public class FunnyGuilds extends JavaPlugin {
 		pm.registerEvents(new ExtendPiston(), this);
 		pm.registerEvents(new PlayerCommand(), this);
 		pm.registerEvents(new PlayerInteract(), this);
-		pm.registerEvents(new PlayerMove(), this);
 		
+		if(Settings.getInstance().eventMove) pm.registerEvents(new PlayerMove(), this);
 		if(Settings.getInstance().eventPhysics) pm.registerEvents(new BlockPhysics(), this);
 		
-		this.update();
-		this.patch();
-		new Ticking().start();
-		new Repeater().start();
-		new MetricsCollector().start();
+		patch();
+		update();
 		info("~ Created by & © Dzikoysk ~");
 	} 
 	
 	@Override
-	public void onLoad(){
-		
-		thread = Thread.currentThread();
-		funnyguilds = this;
-		
-		DataManager.loadDefaultFiles(new String[] { "messages.yml", "config.yml" });
-		Settings s = Settings.getInstance();
-		
-		new ExecutorCaller(new ExcFunnyGuilds(), "funnyguilds", null, null);
-		new ExecutorCaller(new ExcCreate(), s.excCreate, "funnyguilds.create", s.excCreateAliases);
-		new ExecutorCaller(new ExcDelete(), s.excDelete, "funnyguilds.delete", s.excDeleteAliases);
-		new ExecutorCaller(new ExcConfirm(), s.excConfirm, "funnyguilds.delete", s.excConfirmAliases);
-		new ExecutorCaller(new ExcInvite(), s.excInvite, "funnyguilds.invite", s.excInviteAliases);
-		new ExecutorCaller(new ExcJoin(), s.excJoin, "funnyguilds.join", s.excJoinAliases);
-		new ExecutorCaller(new ExcLeave(), s.excLeave, "funnyguilds.leave", s.excLeaveAliases);
-		new ExecutorCaller(new ExcKick(), s.excKick, "funnyguilds.kick", s.excKickAliases);
-		new ExecutorCaller(new ExcBase(), s.excBase, "funnyguilds.base", s.excBaseAliases);
-		new ExecutorCaller(new ExcEnlarge(), s.excEnlarge, "funnyguilds.enlarge", s.excEnlargeAliases);
-		new ExecutorCaller(new ExcGuild(), s.excGuild, "funnyguilds.help", s.excGuildAliases);
-		new ExecutorCaller(new ExcAlly(), s.excAlly, "funnyguilds.ally", s.excAllyAliases);
-		new ExecutorCaller(new ExcBreak(), s.excBreak, "funnyguilds.break", s.excBreakAliases);
-		new ExecutorCaller(new ExcPlayer(), s.excPlayer, "funnyguilds.player", s.excPlayerAliases);
-		new ExecutorCaller(new ExcInfo(), s.excInfo, "funnyguilds.info", s.excInfoAliases);
-		new ExecutorCaller(new ExcTop(), s.excTop, "funnyguilds.top", s.excTopAliases);
-		new ExecutorCaller(new ExcValidity(), s.excValidity, "funnyguilds.validity", s.excValidityAliases);
-		new ExecutorCaller(new ExcLeader(), s.excLeader, "funnyguilds.leader", s.excLeaderAliases);
-		new ExecutorCaller(new ExcDeputy(), s.excDeputy, "funnyguilds.deputy", s.excDeputyAliases);
-		new ExecutorCaller(new ExcRanking(), s.excRanking, "funnyguilds.ranking", s.excRankingAliases);
-		
-		new ExecutorCaller(new MxcPvP(), s.mxcPvP, "funnyguilds.manage", s.mxcPvPAliases);
-		new ExecutorCaller(new MxcBase(), s.mxcBase, "funnyguilds.manage", s.mxcBaseAliases);
-		
-		new ExecutorCaller(new AxcMain(), s.axcMain, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcAdd(), s.axcAdd, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcDelete(), s.axcDelete, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcKick(), s.axcKick, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcTeleport(), s.axcTeleport, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcPoints(), s.axcPoints, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcKills(), s.axcKills, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcDeaths(), s.axcDeaths, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcBan(), s.axcBan, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcUnban(), s.axcUnban, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcLives(), s.axcLives, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcMove(), s.axcMove, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcValidity(), s.axcValidity, "funnyguilds.admin", null);
-		new ExecutorCaller(new AxcName(), s.axcName, "funnyguilds.admin", null);
-	}
-	
-	@Override
 	public void onDisable(){
 		disabling = true;
+		
+		EventManager em = EventManager.getEventManager();
+		em.disable();
+		
 		Repeater.getInstance().stop();
-		DataManager.getInstance().stop();
-		DataManager.getInstance().save();
+		Manager.getInstance().stop();
+		Manager.getInstance().save();
+		
 		funnyguilds = null;
 	}
 	
@@ -254,16 +194,21 @@ public class FunnyGuilds extends JavaPlugin {
 	    return false;
 	}
 	
+	@Override
+	public InputStream getResource(String s) {
+		return super.getResource(s);
+	}
+	
 	public boolean isDisabling(){
 		return disabling;
-	}
-
-	public static String getVersion(){
-		return funnyguilds.getDescription().getVersion();
 	}
 	
 	public static Thread getThread(){
 		return thread;
+	}
+	
+	public static String getVersion(){
+		return funnyguilds.getDescription().getVersion();
 	}
 	
 	public static FunnyGuilds getInstance(){

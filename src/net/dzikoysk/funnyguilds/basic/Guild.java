@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
@@ -12,7 +13,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 
 import org.bukkit.Location;
 
-public class Guild {
+public class Guild implements Basic {
 
 	private UUID uuid;
 	private String name;
@@ -156,10 +157,6 @@ public class Guild {
 		this.endercrystal = loc;
 	}
 	
-	public void changes(){
-		this.changes = true;
-	}
-	
 	public void addLive(){
 		this.lives++;
 		this.changes();
@@ -179,15 +176,15 @@ public class Guild {
 	}
 	
 	public void addAlly(Guild guild){
+		this.changes();
 		if(this.allies.contains(guild)) return;
 		this.allies.add(guild);
-		this.changes();
 	}
 	
 	public void addEnemy(Guild guild){
+		this.changes();
 		if(this.enemies.contains(guild)) return;
 		this.enemies.add(guild);
-		this.changes();
 	}
 	
 	public void deserializationUpdate() {
@@ -254,6 +251,7 @@ public class Guild {
 		return this.uuid;
 	}
 	
+	@Override
 	public String getName(){
 		return this.name;
 	}
@@ -333,12 +331,6 @@ public class Guild {
 		return this.endercrystal;
 	}
 	
-	public boolean changed(){
-		boolean c = changes;
-		this.changes = false;
-		return c;
-	}
-	
 	public static Guild get(UUID uuid){
 		for(Guild guild : GuildUtils.getGuilds()) if(guild.getUUID().equals(uuid)) return guild;
 		return new Guild(uuid);
@@ -347,6 +339,23 @@ public class Guild {
 	public static Guild get(String name){
 		for(Guild guild : GuildUtils.getGuilds()) if(guild.getName().equalsIgnoreCase(name)) return guild;
 		return new Guild(name);
+	}
+	
+	@Override
+	public boolean changed(){
+		boolean c = changes;
+		this.changes = false;
+		return c;
+	}
+	
+	@Override
+	public void changes(){
+		this.changes = true;
+	}
+	
+	@Override
+	public BasicType getType(){
+		return BasicType.GUILD;
 	}
 	
 	@Override

@@ -1,26 +1,31 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.BasicUtils;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.util.ActionType;
-import net.dzikoysk.funnyguilds.util.IndependentThread;
+import net.dzikoysk.funnyguilds.data.Data;
+import net.dzikoysk.funnyguilds.util.IOUtils;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 public class Flat {
 	
+	public static final File GUILDS = new File(Data.DATA + File.separator + "guilds");
+	public static final File REGIONS = new File(Data.DATA + File.separator + "regions");
+	public static final File USERS = new File(Data.DATA + File.separator + "users");
 	private static Flat instance;
-	private static File guildsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "guilds");
-	private static File regionsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "regions");
-	private static File usersFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data" + File.separator + "users");
 	
 	public Flat(){
 		instance = this;
+		new FlatPatcher().patch();
 	}
 	
 	public void load(){
@@ -45,8 +50,12 @@ public class Flat {
 	
 	private void loadUsers(){	
 		int i = 0;
-		File[] path = usersFolder.listFiles();
+		File[] path = USERS.listFiles();
 		if(path != null) for(File file : path){
+			if(file.isDirectory() || file.length() == 0){
+				file.delete();
+				continue;
+			}
 			User user = FlatUser.deserialize(file);
 			if(user == null) file.delete();
 			else user.changed();
@@ -68,7 +77,7 @@ public class Flat {
 	}
 	
 	private void loadRegions(){
-		File[] path = regionsFolder.listFiles();
+		File[] path = REGIONS.listFiles();
 		if(path != null) for(File file : path) {
 			Region region = FlatRegion.deserialize(file);
 			if(region == null) file.delete();
@@ -91,7 +100,7 @@ public class Flat {
 	
 	private void loadGuilds(){
 		GuildUtils.getGuilds().clear();
-		File[] path = guildsFolder.listFiles();
+		File[] path = GUILDS.listFiles();
 		if(path != null) for(File file : path){
 			Guild guild = FlatGuild.deserialize(file);
 			if(guild == null) file.delete();
@@ -101,25 +110,47 @@ public class Flat {
 		FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
 	}
 	
+	public static File loadCustomFile(BasicType type, String name){
+		switch(type){
+		case GUILD: {
+			File file = new File(GUILDS + File.separator + name + ".yml");
+			IOUtils.initizalize(file, true);
+			return file;
+		} 
+		case REGION: {
+			File file = new File(REGIONS + File.separator + name + ".yml");
+			IOUtils.initizalize(file, true);
+			return file;
+		}
+		case USER: {
+			File file = new File(USERS + File.separator + name + ".yml");
+			IOUtils.initizalize(file, true);
+			return file;
+		}
+		default: 
+			return null;
+		}
+	}
+	
 	public static File getUserFile(User user){
 		StringBuilder sb = new StringBuilder();
 		sb.append(user.getName());
 		sb.append(".yml");
-		return new File(usersFolder + File.separator + sb.toString());
+		return new File(USERS + File.separator + sb.toString());
 	}
 	
 	public static File getRegionFile(Region region){
 		StringBuilder sb = new StringBuilder();
 		sb.append(region.getName());
 		sb.append(".yml");
-		return new File(regionsFolder, sb.toString());
+		return new File(REGIONS, sb.toString());
 	}
 	
 	public static File getGuildFile(Guild guild){
 		StringBuilder sb = new StringBuilder();
 		sb.append(guild.getName());
 		sb.append(".yml");
-		return new File(guildsFolder, sb.toString());
+		return new File(GUILDS, sb.toString());
 	}
 	
 	public static Flat getInstance(){

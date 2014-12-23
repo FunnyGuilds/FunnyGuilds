@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.thread;
 
 public enum ActionType {
 	

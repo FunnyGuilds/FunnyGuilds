@@ -1,7 +1,8 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.thread;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public class IndependentThread extends Thread {

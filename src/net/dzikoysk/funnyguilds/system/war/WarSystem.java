@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.system.war;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class WarSystem {
 	

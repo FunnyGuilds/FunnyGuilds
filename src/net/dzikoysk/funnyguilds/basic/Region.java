@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.basic;
 
+import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 
 import org.bukkit.Bukkit;
@@ -7,7 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
-public class Region {
+public class Region implements Basic {
 		
 	private String name;
 	private Guild guild;
@@ -203,14 +204,21 @@ public class Region {
 		return x;
 	}
 	
-	private void changes(){
-		this.changes = true;
-	}
-	
+	@Override
 	public boolean changed(){
 		boolean c = changes;
 		this.changes = false;
 		return c;
+	}
+	
+	@Override
+	public void changes(){
+		this.changes = true;
+	}
+	
+	@Override
+	public BasicType getType(){
+		return BasicType.REGION;
 	}
 	
 	@Override

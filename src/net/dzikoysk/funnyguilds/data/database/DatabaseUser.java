@@ -46,10 +46,10 @@ public class DatabaseUser {
 		sb.append("INSERT INTO users (uuid, name, points, kills, deaths, ban, reason) VALUES (");
 		sb.append("'" + user.getUUID().toString() + "',");
 		sb.append("'" + user.getName() + "',");
-		sb.append("" + user.getRank().getPoints() + ",");
-		sb.append("" + user.getRank().getKills() + ",");
-		sb.append("" + user.getRank().getDeaths() + ",");
-		sb.append("" + user.getBan() + ",");
+		sb.append(user.getRank().getPoints() + ",");
+		sb.append(user.getRank().getKills() + ",");
+		sb.append(user.getRank().getDeaths() + ",");
+		sb.append(user.getBan() + ",");
 		sb.append("'" + user.getReason() + "'");
 		sb.append(") ON DUPLICATE KEY UPDATE ");
 		sb.append("name='" + user.getName() + "',");

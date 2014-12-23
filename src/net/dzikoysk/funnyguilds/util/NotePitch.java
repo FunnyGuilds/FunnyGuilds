@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.util;
 
+import org.bukkit.Sound;
 import org.bukkit.Note.Tone;
+import org.bukkit.entity.Player;
 
 public enum NotePitch {
 	NOTE_1C(1, Tone.C, 0.5F), 
@@ -46,5 +48,9 @@ public enum NotePitch {
 		for (NotePitch note : values())
 			if (note.octave == octave && note.tone == tone) return note.pitch;
 		return 0.0F;
+	}
+	
+	public static void play(Player player, int octave, Tone tone){
+		player.playSound(player.getEyeLocation(), Sound.NOTE_PIANO, 1, NotePitch.getPitch(octave, tone));
 	}
 }

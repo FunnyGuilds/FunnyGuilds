@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Note.Tone;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class Version {
@@ -26,23 +25,18 @@ public class Version {
 						int interval = 225;
 						for(int i = 0; i < 4; i++){
 							try {
-								play(player, 3, Tone.C);
-								play(player, 4, Tone.C);
+								NotePitch.play(player, 3, Tone.C);
+								NotePitch.play(player, 4, Tone.C);
 								Thread.sleep(interval);
 							} catch (Exception e){
 								if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 							}
 						}
-						play(player, 3, Tone.G);
+						NotePitch.play(player, 3, Tone.G);
 					}
 				}
 			};
 			thread.start();
 		}
 	}
-	
-	private static void play(Player player, int octave, Tone tone){
-		player.playSound(player.getEyeLocation(), Sound.NOTE_PIANO, 1, NotePitch.getPitch(octave, tone));
-	}
-
 }

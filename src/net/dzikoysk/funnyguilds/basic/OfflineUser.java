@@ -32,13 +32,12 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 		this.uuid = uuid;
 		this.name = name;
 		try {
-			if(type == 1){
+			if(type == 1)
 				this.profile = GameProfile.class.getConstructor(new Class<?>[]{ String.class, String.class }).newInstance(uuid.toString(), name);	
-			} else if(type == 2){
+			else if(type == 2)
 				this.profile = GameProfile.class.getConstructor(new Class<?>[]{ UUID.class, String.class }).newInstance(uuid, name);	
-			} else {
+			else
 				this.profile = null;
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			this.profile = null;

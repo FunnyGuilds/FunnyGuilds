@@ -6,10 +6,9 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.DataManager;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
+import net.dzikoysk.funnyguilds.util.configuration.Yamler;
 
 import org.bukkit.Location;
 
@@ -22,24 +21,24 @@ public class FlatRegion {
 	}
 	
 	public boolean serialize() {
-		File file = DataManager.loadCustomFile(BasicType.REGION, region.getName());
-		PandaConfiguration pc = new PandaConfiguration(file);
+		File file = Flat.loadCustomFile(BasicType.REGION, region.getName());
+		Yamler pc = new Yamler(file);
 		pc.set("name", region.getName());
 		pc.set("center", Parser.toString(region.getCenter()));
 		pc.set("size", region.getSize());
 		pc.set("enlarge", region.getEnlarge());
 		pc.save();
-		pc.clear();
+		pc = null;
 		return true;
 	}
 	
 	public static Region deserialize(File file){
-		PandaConfiguration pc = new PandaConfiguration(file);
+		Yamler pc = new Yamler(file);
 		String name = pc.getString("name");
 		String cs = pc.getString("center");
 		int size = pc.getInt("size");
 		int enlarge = pc.getInt("enlarge");
-		pc.clear();
+		pc = null;
 		
 		if(name == null || cs == null){
 			FunnyGuilds.error("Cannot deserialize region! Caused by: name/center is null");

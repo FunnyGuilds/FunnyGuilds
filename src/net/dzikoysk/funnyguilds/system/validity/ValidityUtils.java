@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.system.validity;
 
-import org.bukkit.Bukkit;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
+
+import org.bukkit.Bukkit;
 
 public class ValidityUtils {
 	

@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 public class Rank implements Comparable<Rank> {
 	
 	private BasicType type;
+	private Basic basic;
 	private String idns;
 	private Guild guild;
 	private User user;
@@ -13,46 +14,51 @@ public class Rank implements Comparable<Rank> {
 	private int kills;
 	private int deaths;
 	
-	public Rank(User user){
-		this.type = BasicType.USER;
-		this.points = Settings.getInstance().rankStart;
-		this.idns = user.getName();
-		this.user = user;
-	}
-	
-	public Rank(Guild guild){
-		this.type = BasicType.GUILD;
-		this.idns = guild.getName();
-		this.guild = guild;
+	public Rank(Basic basic){
+		this.basic = basic;
+		this.type = basic.getType();
+		this.idns = basic.getName();
+		if(this.type == BasicType.GUILD) this.guild = (Guild) basic;
+		else if(this.type == BasicType.USER){
+			this.user = (User) basic;
+			this.points = Settings.getInstance().rankStart;
+		}
 	}
 	
 	public void removePoints(int i){
 		this.points -= i;
 		if(this.points < 1) this.points = 0;
+		this.basic.changes();
 	}
 	
 	public void addPoints(int i){
 		this.points += i;
+		this.basic.changes();
 	}
 	
 	public void addKill(){
 		this.kills += 1;
+		this.basic.changes();
 	}
 	
 	public void addDeath(){
 		this.deaths += 1;
+		this.basic.changes();
 	}
 	
 	public void setPoints(int i){
 		this.points = i;
+		this.basic.changes();
 	}
 	
 	public void setKills(int i){
 		this.kills = i;
+		this.basic.changes();
 	}
 	
 	public void setDeaths(int i){
 		this.deaths = i;
+		this.basic.changes();
 	}
 	
 	public int getPoints(){
@@ -64,7 +70,7 @@ public class Rank implements Comparable<Rank> {
 			int calc = points / guild.getMembers().size();
 			if(calc != this.points){
 				this.points = calc;
-				guild.changes();
+				this.basic.changes();
 			}
 			return this.points;
 		}
@@ -92,6 +98,10 @@ public class Rank implements Comparable<Rank> {
 	
 	public Guild getGuild(){
 		return guild;
+	}
+	
+	public Basic getBasic(){
+		return basic;
 	}
 	
 	@Override

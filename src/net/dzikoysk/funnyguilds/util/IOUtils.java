@@ -1,6 +1,9 @@
 package net.dzikoysk.funnyguilds.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -9,6 +12,19 @@ import java.util.concurrent.TimeoutException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public class IOUtils {
+	
+	public static File initizalize(File file, boolean b){
+		if(!file.exists()){
+			try {
+				file.getParentFile().mkdirs();
+				if(b) file.createNewFile();
+				else file.mkdir();
+			} catch (IOException e){
+				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+			}
+		}
+		return file;
+	}
 	
 	public static String getContent(String s){
 		String body = null;
@@ -25,6 +41,18 @@ public class IOUtils {
 			FunnyGuilds.warning(e.getMessage());
 		}
 		return body;
+	}
+	
+	public static void delete(File f) {
+		if(!f.exists()) return;
+		if (f.isDirectory())
+			for (File c : f.listFiles()) delete(c);
+		if (!f.delete())
+			try {
+				throw new FileNotFoundException("Failed to delete file: " + f);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 	}
 
 	public static String toString(InputStream in, String encoding) throws Exception {

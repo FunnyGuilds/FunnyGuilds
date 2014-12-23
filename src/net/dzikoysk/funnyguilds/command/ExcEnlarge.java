@@ -3,8 +3,8 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

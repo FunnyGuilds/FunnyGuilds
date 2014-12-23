@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 
 import org.bukkit.Bukkit;
@@ -14,6 +15,7 @@ public class PlayerLogin implements Listener {
 	@EventHandler
 	public void onLogin(PlayerLoginEvent event){
 		if(Bukkit.hasWhitelist()) return;
+		if(!UserUtils.playedBefore(event.getPlayer().getName())) return;
 		User user = User.get(event.getPlayer());
 		if(!user.isBanned()) return;
 		if(!BanUtils.check(user)) return;

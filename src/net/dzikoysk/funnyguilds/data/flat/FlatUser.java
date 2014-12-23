@@ -5,7 +5,7 @@ import java.io.File;
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
+import net.dzikoysk.funnyguilds.util.configuration.Yamler;
 
 public class FlatUser {
 	
@@ -19,7 +19,7 @@ public class FlatUser {
 		File file = Flat.getUserFile(user);
 		if(file.isDirectory()) return false;
 		
-		PandaConfiguration pc = new PandaConfiguration(file);
+		Yamler pc = new Yamler(file);
 		pc.set("uuid", user.getUUID().toString());
 		pc.set("name", user.getName());
 		pc.set("points", user.getRank().getPoints());
@@ -28,14 +28,14 @@ public class FlatUser {
 		pc.set("ban", user.getBan());
 		pc.set("reason", user.getReason());
 		pc.save();
-		pc.clear();
+		pc = null;
 		return true;
 	}
 	
 	public static User deserialize(File file){
 		if(file.isDirectory()) return null;
 		
-		PandaConfiguration pc = new PandaConfiguration(file);
+		Yamler pc = new Yamler(file);
 		
 		String id = pc.getString("uuid");			
 		String name = pc.getString("name");
@@ -44,7 +44,7 @@ public class FlatUser {
 		int deaths = pc.getInt("deaths");
 		long ban = pc.getLong("ban");
 		String reason = pc.getString("reason");
-		pc.clear();
+		pc = null;
 		
 		if(name == null) return null;
 		if(id == null) id = new OfflineUser(name).getUniqueId();

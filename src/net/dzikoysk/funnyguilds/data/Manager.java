@@ -1,30 +1,28 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
-import net.dzikoysk.funnyguilds.util.ActionType;
-import net.dzikoysk.funnyguilds.util.IndependentThread;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
-public class DataManager {
+public class Manager {
 
-	private static DataManager instance;
+	private static Manager instance;
 	private volatile BukkitTask task = null;
 	
-	public DataManager(){
+	public Manager(){
 		instance = this;
-		loadDefaultFiles(new String[] { "messages.yml", "config.yml" });
 		Messages.getInstance();
 		Settings.getInstance();
 		if(Settings.getInstance().mysql) DatabaseBasic.getInstance().load();
 		else Flat.getInstance().load();
 		Data.getInstance();
-		this.start();
 	}
 	
 	public void save(){
@@ -69,41 +67,10 @@ public class DataManager {
 		}
 	}
 	
-	public static File loadCustomFile(BasicType type, String name){
-		switch(type){
-			case GUILD:
-				try{
-					File file = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "guilds" + File.separator + name + ".yml");
-					if(!file.exists()){
-						file.getParentFile().mkdirs();
-						file.createNewFile();
-					}
-					return file;
-				} catch (Exception e) {
-					FunnyGuilds.error("[Info] Cannot load custom file (for guild)! Caused by: Exception");
-					if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-				}
-			case REGION:
-				try{
-					File file = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "regions" + File.separator + name + ".yml");
-					if(!file.exists()){
-						file.getParentFile().mkdirs();
-						file.createNewFile();
-					}
-					return file;
-				} catch (Exception e) {
-					FunnyGuilds.error("[Info] Cannot load custom file (for guild)! Caused by: Exception");
-					if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-				}
-			default:
-				break;
-		}
-		return null;
-	}
-	
-	public static DataManager getInstance(){
+	public static Manager getInstance(){
 		if(instance != null) return instance;
-		return new DataManager();
+		new Manager().start();
+		return instance;
 	}
 	
 	public Settings getSettings(){

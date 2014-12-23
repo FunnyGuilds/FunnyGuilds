@@ -14,10 +14,9 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.DataManager;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
+import net.dzikoysk.funnyguilds.util.configuration.Yamler;
 
 import org.bukkit.Location;
 
@@ -44,8 +43,8 @@ public class FlatGuild {
 			return false;
 		}else if(guild.getUUID() == null) guild.setUUID(UUID.randomUUID());
 		
-		File file = DataManager.loadCustomFile(BasicType.GUILD, guild.getName());
-		PandaConfiguration pc = new PandaConfiguration(file);
+		File file = Flat.loadCustomFile(BasicType.GUILD, guild.getName());
+		Yamler pc = new Yamler(file);
 		
 		pc.set("uuid", guild.getUUID().toString());
 		pc.set("name", guild.getName());
@@ -65,12 +64,12 @@ public class FlatGuild {
 		pc.set("pvp", guild.getPvP());
 		if(guild.getDeputy() != null) pc.set("deputy", guild.getDeputy().getName());
 		pc.save();
-		pc.clear();
+		pc = null;
 		return true;
 	}
 	
 	public static Guild deserialize(File file){
-		PandaConfiguration pc = new PandaConfiguration(file);
+		Yamler pc = new Yamler(file);
 		String id = pc.getString("uuid");
 		String name = pc.getString("name");
 		String tag = pc.getString("tag");
@@ -88,7 +87,7 @@ public class FlatGuild {
 		long attacked = pc.getLong("attacked");
 		long ban = pc.getLong("ban");
 		int lives = pc.getInt("lives");
-		pc.clear();
+		pc = null;
 		
 		if(name == null){
 			FunnyGuilds.error("[Deserialize] Cannot deserialize guild! Caused by: name is null");

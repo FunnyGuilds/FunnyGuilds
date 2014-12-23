@@ -25,8 +25,6 @@ public class SpaceUtils {
                 }
             }
         }
-
         return circleblocks;
     }
-
 }

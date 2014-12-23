@@ -9,18 +9,6 @@ import net.dzikoysk.funnyguilds.basic.User;
 public class UserUtils {
 	
 	private static List<User> users = new ArrayList<User>();
-
-	public static List<User> getUsers(){
-		return new ArrayList<User>(users);
-	}
-	
-	public static void addUser(User user){
-		users.add(user);
-	}
-	
-	public static void removeUser(User user){
-		users.remove(user);
-	}
 	
 	public static boolean playedBefore(String s){
 		for(User u : users) if(u.getName() != null && u.getName().equalsIgnoreCase(s)) return true;
@@ -54,5 +42,17 @@ public class UserUtils {
 		List<User> list = new ArrayList<>();
 		for(String s : names) list.add(User.get(s));
 		return list;
+	}
+	
+	public static void addUser(User user){
+		users.add(user);
+	}
+	
+	public static void removeUser(User user){
+		users.remove(user);
+	}
+	
+	public static List<User> getUsers(){
+		return new ArrayList<User>(users);
 	}
 }

@@ -2,9 +2,9 @@ package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.DataManager;
+import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.Version;
 
 import org.bukkit.ChatColor;
@@ -26,7 +26,7 @@ public class ExcFunnyGuilds implements Executor {
 				Thread thread = new Thread(){
 					@Override
 					public void run(){
-						DataManager dm = DataManager.getInstance();
+						Manager dm = Manager.getInstance();
 						dm.stop();
 						dm.save();
 						new Messages();

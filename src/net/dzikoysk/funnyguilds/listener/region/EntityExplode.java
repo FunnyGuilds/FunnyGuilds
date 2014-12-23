@@ -2,14 +2,15 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.util.RandomizationUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 
 import org.bukkit.Bukkit;
@@ -28,18 +29,20 @@ public class EntityExplode implements Listener {
 	public void onExplode(EntityExplodeEvent event) {
         List<Block> destroyed = event.blockList();
         Location loc = event.getLocation();
+		Settings s = Settings.getInstance();
 		
-        List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
-		Random random = new Random();
+        List<Location> sphere = SpaceUtils.sphere(loc, s.explodeRadius, s.explodeRadius, false, true, 0);
+        Map<Material, Double> materials = s.explodeMaterials;
 		for(Location l : sphere){
-			Material m = l.getBlock().getType();
-			if(m == Material.OBSIDIAN){
-				if(random.nextFloat() < 0.1f) l.getBlock().breakNaturally();
-			} else if(m == Material.WATER || m == Material.LAVA){
-				if(random.nextFloat() < 0.2f) l.getBlock().setType(Material.AIR);
+			Material material = l.getBlock().getType();
+			if(!materials.containsKey(material)) continue;
+			if(material == Material.WATER || material == Material.LAVA){
+				if(RandomizationUtils.chance(materials.get(material))) l.getBlock().setType(Material.AIR);
+			} else {
+				if(RandomizationUtils.chance(materials.get(material))) l.getBlock().breakNaturally();
 			}
 		}
-		
+
 		if(!RegionUtils.isIn(loc)) return;
 		Region region = RegionUtils.getAt(loc);
 		

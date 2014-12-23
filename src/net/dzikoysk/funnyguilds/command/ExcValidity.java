@@ -6,16 +6,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.TimeUtils;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class ExcValidity implements Executor {
 
@@ -24,6 +25,7 @@ public class ExcValidity implements Executor {
 		Messages m = Messages.getInstance();
 		Player p = (Player)sender;
 		User user = User.get(p);
+		Guild guild = user.getGuild();
 		
 		if(!user.hasGuild()){
 			p.sendMessage(m.getMessage("validityHasNotGuild"));
@@ -35,6 +37,16 @@ public class ExcValidity implements Executor {
 			return;
 		}
 	
+		long c = guild.getValidity();
+		if(c == 0) c = System.currentTimeMillis();
+		long d = c - System.currentTimeMillis();
+		if(d > Settings.getInstance().validityWhen){
+			p.sendMessage(m.getMessage("validityWhen")
+				.replace("{TIME}", TimeUtils.getDurationBreakdown(d))
+			);
+			return;
+		}
+		
 		List<ItemStack> itemsList = Settings.getInstance().validityItems;
 		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
 		for(int i = 0; i < items.length; i++){
@@ -64,8 +76,6 @@ public class ExcValidity implements Executor {
 		}
 		p.getInventory().removeItem(items);
 		
-		Guild guild = user.getGuild();
-		long c = guild.getValidity();
 		if(c == 0) c = System.currentTimeMillis();
 		c += Settings.getInstance().validityTime;
 		guild.setValidity(c);

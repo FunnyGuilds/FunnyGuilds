@@ -3,31 +3,30 @@ package net.dzikoysk.funnyguilds.data;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
+import net.dzikoysk.funnyguilds.util.configuration.Yamler;
 
 import org.bukkit.ChatColor;
 
 public class Messages {
 	
 	private static Messages instance;
-	private static String version = "2.5 Valor";
-	private static File messages =  new File("plugins/FunnyGuilds", "messages.yml");
+	private static String version = "3.0 Christmas";
+	private static File messages =  new File(FunnyGuilds.getInstance().getDataFolder(), "messages.yml");
 	
 	private HashMap<String, String> single = new HashMap<>();
 	private HashMap<String, List<String>> multiple = new HashMap<>();
 	
 	public Messages(){
 		instance = this;
-		PandaConfiguration pc = loadConfiguration();
+		Manager.loadDefaultFiles(new String[] { "messages.yml" });
+		Yamler pc = loadConfiguration();
 		if(pc == null){
 			FunnyGuilds.error("[Messages] Messages.yml not loaded!");
 			return;
 		}
-		for(String key : pc.getKeys()){
+		for(String key : pc.getKeys(true)){
 			if(key.toLowerCase().contains("list")){
 				List<String> list =  pc.getStringList(key);
 				if(list == null) continue;
@@ -48,19 +47,14 @@ public class Messages {
 		}
 	}
 	
-	private PandaConfiguration loadConfiguration(){
-		PandaConfiguration pc = new PandaConfiguration(messages);
+	private Yamler loadConfiguration(){
+		Yamler pc = new Yamler(messages);
 		String version = pc.getString("version");
 		if(version != null && version.equals(Messages.version)) return pc;
 		FunnyGuilds.info("Updating the plugin messages ...");
-		Map<String, Object> values = pc.getMap();
-		messages.delete();
-		DataManager.loadDefaultFiles(new String[] { "messages.yml" });
-		pc = new PandaConfiguration(messages);
-		for(Entry<String, Object> entry : values.entrySet())
-			pc.set(entry.getKey(), entry.getValue());
-		pc.set("version", Messages.version);
-		pc.save(messages);
+		messages.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "messages.old"));
+		Manager.loadDefaultFiles(new String[] { "messages.yml" });
+		pc = new Yamler(messages);
 		FunnyGuilds.info("Successfully updated messages!");
 		return pc;
 	}

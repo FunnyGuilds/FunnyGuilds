@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.util.metrics;
 
-import org.bukkit.Bukkit;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+
+import org.bukkit.Bukkit;
 
 public class MetricsCollector implements Runnable {
 
@@ -19,7 +19,7 @@ public class MetricsCollector implements Runnable {
 	}
 	
 	public void start(){
-		Bukkit.getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), this, 1L);
+		Bukkit.getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), this, 20L);
 	}
 	
 	@Override
