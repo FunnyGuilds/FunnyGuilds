@@ -27,7 +27,6 @@ public class ChristmasGift {
 		};
 		ir.setLore(Arrays.asList(redLore));
 		redGift.setItemMeta(ir);
-		redGift.addUnsafeEnchantment(new ChristmasEnchantment(24), 24);
 		
 		greenGift = new ItemStack(Material.NOTE_BLOCK);
 		ItemMeta ig = greenGift.getItemMeta();
@@ -42,7 +41,6 @@ public class ChristmasGift {
 		};
 		ig.setLore(Arrays.asList(greenLore));
 		greenGift.setItemMeta(ig);
-		greenGift.addUnsafeEnchantment(new ChristmasEnchantment(24), 24);
 		
 		emeraldGift = new ItemStack(Material.NOTE_BLOCK);
 		ItemMeta ie = emeraldGift.getItemMeta();
@@ -56,9 +54,7 @@ public class ChristmasGift {
 			ChatColor.AQUA + "•" + ChatColor.RED + " 1%   " + ChatColor.AQUA + "Zycie dla gildii"
 		};
 		ie.setLore(Arrays.asList(emeraldLore));
-		emeraldGift.setItemMeta(ie);
-		emeraldGift.addUnsafeEnchantment(new ChristmasEnchantment(24), 24);
-				
+		emeraldGift.setItemMeta(ie);				
 	}
 	
 	public static ItemStack getRedGift(){

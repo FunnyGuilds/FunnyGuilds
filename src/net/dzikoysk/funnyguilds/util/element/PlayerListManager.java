@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util.element;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Data;
@@ -60,7 +61,11 @@ public class PlayerListManager {
 			for(int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
 			PacketUtils.sendPacket(player, packets(ss, false));
 		}
-		player.setScoreboard(sb);
+		try {
+			player.setScoreboard(sb);
+		} catch (IllegalStateException e){
+			FunnyGuilds.warning("[PlayerList] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
+		}
 		user.setScoreboard(sb);
 	}
 	

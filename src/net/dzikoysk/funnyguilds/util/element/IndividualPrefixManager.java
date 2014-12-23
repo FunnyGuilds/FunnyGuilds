@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util.element;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 
@@ -17,7 +18,11 @@ public class IndividualPrefixManager {
 	public static void updatePlayer(Player player){
 		if(!player.isOnline()) return;
 		User user = User.get(player);
-		player.setScoreboard(user.getIndividualPrefix().getScoreboard());
+		try {
+			player.setScoreboard(user.getIndividualPrefix().getScoreboard());
+		} catch (IllegalStateException e){
+			FunnyGuilds.warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
+		}
 		user.setScoreboard(user.getIndividualPrefix().getScoreboard());
 	}
 	
