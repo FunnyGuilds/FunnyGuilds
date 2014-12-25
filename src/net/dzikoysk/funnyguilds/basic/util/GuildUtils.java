@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.basic.util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
+import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
@@ -24,7 +24,6 @@ import org.bukkit.util.Vector;
 public class GuildUtils {
 	
 	private static List<Guild> guilds = new ArrayList<>();
-	private static File guildsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "guilds" + File.separator);
 	
 	public static void deleteGuild(final Guild guild){
 		if(guild == null) return;
@@ -54,7 +53,7 @@ public class GuildUtils {
 				RegionUtils.delete(Region.get(guild.getRegion()));
 				for(Guild g : guild.getAllies()) g.removeAlly(guild);
 				for(Guild g : guild.getEnemies()) g.removeEnemy(guild);
-				if(Settings.getInstance().flat) new File(guildsFolder, guild.getName()+".yml").delete();
+				if(Settings.getInstance().flat) Flat.getGuildFile(guild).delete();
 				if(Settings.getInstance().mysql) new DatabaseGuild(guild).delete();
 				guild.delete();
 				Manager.getInstance().start();

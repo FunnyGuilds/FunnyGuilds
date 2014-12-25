@@ -1,2 +1,6 @@
 # Event Swiateczny (Prezentowy)
 christmas-event: true
+
+# Event Noworoczny
+# Funkcja wylaczona
+newYear-event: false

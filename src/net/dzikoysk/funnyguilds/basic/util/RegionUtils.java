@@ -1,20 +1,18 @@
 package net.dzikoysk.funnyguilds.basic.util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
+import net.dzikoysk.funnyguilds.data.flat.Flat;
 
 import org.bukkit.Location;
 
 public class RegionUtils {
 	
 	public static List<Region> regions = new ArrayList<>();
-	private static File regionsFolder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "regions" + File.separator);
 	
 	public static Region get(String name){
 		for(Region region : regions)
@@ -48,7 +46,7 @@ public class RegionUtils {
 	}
 	
 	public static void delete(Region region){
-		if(Settings.getInstance().flat) new File(regionsFolder, region.getName()+".yml").delete();
+		if(Settings.getInstance().flat) Flat.getRegionFile(region).delete();
 		if(Settings.getInstance().mysql) new DatabaseRegion(region).delete();
 		region.delete();
 	}

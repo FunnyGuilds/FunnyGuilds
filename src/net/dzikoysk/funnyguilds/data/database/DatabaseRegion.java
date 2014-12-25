@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import java.sql.ResultSet;
 
+import org.bukkit.Location;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -52,10 +54,19 @@ public class DatabaseRegion {
 			String center = rs.getString("center");
 			int size = rs.getInt("size");
 			int enlarge = rs.getInt("enlarge");
+			Location loc = Parser.parseLocation(center);
+			
+			if(name == null){
+				FunnyGuilds.error("Cannot deserialize region! Caused by: name == null");
+				return null;
+			}else if(loc == null){
+				FunnyGuilds.error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
+				return null;
+			}
 			
 			Object[] values = new Object[4];
 			values[0] = name;
-			values[1] = Parser.parseLocation(center);
+			values[1] = loc;
 			values[2] = size;
 			values[3] = enlarge;
 			return DeserializationUtils.deserializeRegion(values);

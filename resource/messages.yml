@@ -283,7 +283,7 @@ breakIDone: '&7Gildia &c{GUILD} &7rozwiazala sojusz z Twoja gildia!'
 validityHasNotGuild: '&cNie masz gildii!'
 validityIsNotOwner: '&cNie jestes zalozycielem gildii!'
 # Available variables: {TIME}
-validityWhen: '&7NGildie mozesz przedluzyc dopiero za &c{TIME}&7!'
+validityWhen: '&7Gildie mozesz przedluzyc dopiero za &c{TIME}&7!'
 # Available variables: {ITEM}
 validityItems: '&7Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz &c{ITEM}'
 # Available variables: {DATE}
