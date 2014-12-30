@@ -300,9 +300,12 @@ public class Settings {
 		this.inviteMembers = pc.getInt("invite-members");
 		this.infoPlayerSneaking = pc.getBoolean("info-player-sneaking");
 		List<ItemStack> items = new ArrayList<ItemStack>();
-		for(String item : pc.getStringList("join-items")){
-			ItemStack itemstack = Parser.parseItem(item);
-			if(itemstack != null) items.add(itemstack);
+		List<String> joinItems = pc.getStringList("join-items");
+		if(joinItems != null){
+			for(String item : joinItems){
+				ItemStack itemstack = Parser.parseItem(item);
+				if(itemstack != null) items.add(itemstack);
+			}
 		}
 		this.joinItems = items;
 	}
