@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.util.ReflectionUtils;
+import net.dzikoysk.funnyguilds.util.element.Dummy;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.util.element.PlayerList;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
@@ -29,6 +30,7 @@ public class User implements Basic {
 	private Scoreboard scoreboard;
 	private PlayerList list;
 	private IndividualPrefix prefix;
+	private Dummy dummy;
 	private long ban;
 	private String reason;
 	private User lastAttacker;
@@ -67,6 +69,10 @@ public class User implements Basic {
 	
 	public void setPlayerList(PlayerList pl){
 		this.list = pl;
+	}
+	
+	public void setDummy(Dummy dummy){
+		this.dummy = dummy;
 	}
 	
 	public void setRank(Rank r){
@@ -136,7 +142,8 @@ public class User implements Basic {
 
 	public boolean isOnline(){
 		if(this.name == null) return false;
-		if(Bukkit.getPlayer(this.name) != null) return true;
+		Player player = Bukkit.getPlayer(this.name);
+		if(player != null && player.getName().equals(this.name) && player.isOnline()) return true;
 		return false;
 	}
 	
@@ -169,6 +176,11 @@ public class User implements Basic {
 	public PlayerList getPlayerList(){
 		if(this.list == null) new PlayerList(this);
 		return this.list;
+	}
+	
+	public Dummy getDummy(){
+		if(this.dummy == null) new Dummy(this);
+		return this.dummy;
 	}
 	
 	public Rank getRank(){
@@ -219,6 +231,10 @@ public class User implements Basic {
 	public Player getPlayer(){
 		if(!isOnline()) return null;
 		return Bukkit.getPlayer(this.name);
+	}
+	
+	public OfflineUser getOfflineUser(){
+		return new OfflineUser(this.name);
 	}
 	
 	public boolean getBypass(){

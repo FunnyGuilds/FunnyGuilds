@@ -49,6 +49,8 @@ public class PlayerDeath implements Listener {
 		attacker.getRank().addPoints(points);
 		attacker.setLastVictim(victim);
 		
+		IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, victim);
+		IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, attacker);
 		IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
 		IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
 		

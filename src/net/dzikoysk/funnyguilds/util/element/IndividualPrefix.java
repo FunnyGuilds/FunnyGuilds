@@ -18,7 +18,7 @@ public class IndividualPrefix {
 	
 	public IndividualPrefix(User user){
 		this.user = user;
-		this.basic();
+		this.initialize();
 		user.setIndividualPrefix(this);
 	}
 
@@ -47,7 +47,7 @@ public class IndividualPrefix {
 		Guild guild = getUser().getGuild();
 		if(guild != null){
 			if(guild.equals(to)){
-				basic();
+				initialize();
 				return;
 			}
 			Team team = scoreboard.getTeam(to.getTag());
@@ -87,7 +87,7 @@ public class IndividualPrefix {
 		if(team != null) team.unregister();
 	}
 
-	private void basic(){
+	private void initialize(){
 		if(getUser() == null) return;
 		List<Guild> guilds = GuildUtils.getGuilds();
 		Scoreboard scoreboard = getUser().getScoreboard();

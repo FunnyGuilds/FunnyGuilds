@@ -3,15 +3,16 @@ package net.dzikoysk.funnyguilds.util.thread;
 import java.util.Arrays;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
+import net.dzikoysk.funnyguilds.util.element.DummyManager;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class Action {
@@ -29,32 +30,65 @@ public class Action {
 	}
 	
 	public ActionType getActionType(){
-		return action;
+		return this.action;
 	}
 	
 	public Object[] getValues(){
-		return values;
+		return this.values;
 	}
 	
 	public void execute(){
-		if(action == ActionType.SAVE_DATA) Manager.getInstance().save();
-		
-		else if(action == ActionType.MYSQL_UPDATE_USER_POINTS) new DatabaseUser((User)values[0]).updatePoints();
-		else if(action == ActionType.MYSQL_UPDATE_GUILD_POINTS) new DatabaseGuild((Guild)values[0]).updatePoints();
-		
-		else if(action == ActionType.RANK_UPDATE_USER) RankManager.getInstance().update((User)values[0]);
-		else if(action == ActionType.RANK_UPDATE_GUILD) RankManager.getInstance().update((Guild)values[0]);
-		
-		else if(action == ActionType.PLAYERLIST_SEND) ((User) values[0]).getPlayerList().send();
-		else if(action == ActionType.PLAYERLIST_GLOBAL_UPDATE) PlayerListManager.updatePlayers();
-		
-		else if(action == ActionType.PREFIX_UPDATE_GUILD) ((User) values[0]).getIndividualPrefix().addGuild((Guild)values[1]);
-		else if(action == ActionType.PREFIX_GLOBAL_UPDATE) IndividualPrefixManager.updatePlayers();
-		else if(action == ActionType.PREFIX_GLOBAL_UPDATE_PLAYER) IndividualPrefixManager.updatePlayer((Player)values[0]);
-		else if(action == ActionType.PREFIX_GLOBAL_ADD_GUILD) IndividualPrefixManager.addGuild((Guild)values[0]);
-		else if(action == ActionType.PREFIX_GLOBAL_ADD_PLAYER) IndividualPrefixManager.addPlayer((OfflinePlayer)values[0]);
-		else if(action == ActionType.PREFIX_GLOBAL_REMOVE_GUILD) IndividualPrefixManager.removeGuild((Guild)values[0]);
-		else if(action == ActionType.PREFIX_GLOBAL_REMOVE_PLAYER) IndividualPrefixManager.removePlayer((OfflinePlayer)values[0]);
+		switch(action){
+		case PLAYERLIST_SEND:
+			((User) values[0]).getPlayerList().send();
+			break;
+		case PLAYERLIST_GLOBAL_UPDATE:
+			PlayerListManager.updatePlayers();
+			break;
+		case SAVE_DATA:
+			Manager.getInstance().save();
+			break;
+		case MYSQL_UPDATE_USER_POINTS:
+			new DatabaseUser((User) values[0]).updatePoints();
+		case MYSQL_UPDATE_GUILD_POINTS:
+			new DatabaseGuild((Guild) values[0]).updatePoints();
+		case DUMMY_GLOBAL_UPDATE:
+			DummyManager.updatePlayers();
+			break;
+		case DUMMY_GLOBAL_UPDATE_USER:
+			DummyManager.updateScore((User) values[0]);
+			break;
+		case DUMMY_UPDATE_USER:
+			((User) values[0]).getDummy();
+			break;
+		case RANK_UPDATE_USER:
+			RankManager.getInstance().update((User) values[0]);
+			break;
+		case RANK_UPDATE_GUILD:
+			RankManager.getInstance().update((Guild) values[0]);
+			break;
+		case PREFIX_GLOBAL_ADD_GUILD:
+			IndividualPrefixManager.addGuild((Guild) values[0]);
+			break;
+		case PREFIX_GLOBAL_ADD_PLAYER:
+			IndividualPrefixManager.addPlayer((OfflineUser) values[0]);
+			break;
+		case PREFIX_GLOBAL_REMOVE_GUILD:
+			IndividualPrefixManager.removeGuild((Guild) values[0]);
+			break;
+		case PREFIX_GLOBAL_REMOVE_PLAYER:
+			IndividualPrefixManager.removePlayer((OfflineUser) values[0]);
+			break;
+		case PREFIX_GLOBAL_UPDATE:
+			IndividualPrefixManager.updatePlayers();
+			break;
+		case PREFIX_GLOBAL_UPDATE_PLAYER:
+			IndividualPrefixManager.updatePlayer((Player) values[0]);
+			break;
+		case PREFIX_UPDATE_GUILD:
+			((User) values[0]).getIndividualPrefix().addGuild((Guild) values[1]);
+			break;
+		}
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 ﻿#~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#        3.0.2 Christmas        #
+#          3.5 NewYear          #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -32,6 +32,20 @@ create-material: ender crystal
 create-center-y: 60
 # Czy ma tworzyc pusta przestrzen dookola centrum gildii
 create-center-sphere: true
+# Maxymalna ilosc czlonkow w gildii
+max-members: 15
+
+# Mozliwosc teleportacji do gildii
+base-enable: true
+# Czas oczekiwania na teleportacje (w sekundach)
+base-delay: 5
+# Koszt teleportacji do gildii (jezeli brak, wystarczy zrobic: base-items: [])
+base-items:
+- 1 diamond
+- 1 emerald
+# Koszt dolaczenia do gildii (jezeli brak, wystarczy zrobic: join-items: [])
+join-items:
+- 1 diamond
 
 # Mozliwosc powiekszania gildii
 enlarge-enable: true
@@ -59,12 +73,21 @@ region-min-distance: 10
 region-notification-time: 15
 # Co ile moze byc wywolywany pasek powiadomien przez jednego gracza (w sekundach)
 region-notification-cooldown: 60
-# Przez ile sekund nie mozna budowac na terenie gildii po wybuchu
-region-explode: 120
 # Blokowane komendy dla graczy spoza gildii na jej terenie
 region-commands:
 - sethome
+# Przez ile sekund nie mozna budowac na terenie gildii po wybuchu
+region-explode: 120
 
+# Jaki ma byc zasieg pobieranych przedmiotow po wybuchu (jezeli chcesz wylaczyc, wpisz 0)
+explode-radius: 3
+# Jakie materialy i z jaka szansa maja byc niszczone po wybuchu
+# <material>: <szansa (w %)
+explode-materials:
+  obsidian: 20
+  water: 33
+  lava: 33
+  
 # Ile zyc ma gildia
 war-lives: 3
 # Po jakim czasie od zalozenia mozna zaatakowac gildie
@@ -82,12 +105,17 @@ validity-when: 14d
 validity-items:
 - 10 diamond
 
-# Wyglad tagu osob w gildii
-prefix-our: '&a{TAG}&f '
-# Wyglad tagu gildii sojuszniczej
-prefix-allies: '&6{TAG}&f '
-# Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)
-prefix-other: '&7{TAG}&f '
+# Ranking od ktorego rozpoczyna gracz
+rank-start: 1000
+# Jaki procent punktow zabitego ma przyznawac zabojcy
+rank-percent: 2.0
+# Czy trzeba kucac, zeby przy klikniecu prawym na gracza wyswietlilo informacje o nim
+info-player-sneaking: true
+
+# Czy czlonkowie gildii moga sobie zadawac obrazenia (domyslnie)
+damage-guild: false
+# Czy sojuszniczy moga sobie zadawac obrazenia
+damage-ally: false
 
 # Wyglad znaczika {TAG} wstawionego w format chatu
 chat-guild: '&b{TAG} '
@@ -110,41 +138,17 @@ chat-ally-design: '&8[&6Chat sojuszniczy&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}'
 # Zmienne: {PLAYER}, {TAG}, {MESSAGE}
 chat-global-design: '&8[&cChat globalny gildii&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}'
 
-# Ranking od ktorego rozpoczyna gracz
-rank-start: 1000
-# Jaki procent punktow zabitego ma przyznawac zabojcy
-rank-percent: 2.0
+# Wyglad tagu osob w gildii
+prefix-our: '&a{TAG}&f '
+# Wyglad tagu gildii sojuszniczej
+prefix-allies: '&6{TAG}&f '
+# Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)
+prefix-other: '&7{TAG}&f '
 
-# Czy czlonkowie gildii moga sobie zadawac obrazenia (domyslnie)
-damage-guild: false
-# Czy sojuszniczy moga sobie zadawac obrazenia
-damage-ally: false
-
-# Mozliwosc teleportacji do gildii
-base-enable: true
-# Czas oczekiwania na teleportacje (w sekundach)
-base-delay: 5
-# Koszt teleportacji do gildii (jezeli brak, wystarczy zrobic: base-items: [])
-base-items:
-- 1 diamond
-- 1 emerald
-
-# Koszt dolaczenia do gildii (jezeli brak, wystarczy zrobic: join-items: [])
-join-items:
-- 1 diamond
-# Maxymalna ilosc czlonkow w gildii
-invite-members: 15
-# Czy trzeba kucac, zeby przy klikniecu prawym na gracza wyswietlilo informacje o nim
-info-player-sneaking: true
-
-# Jaki ma byc zasieg pobieranych przedmiotow po wybuchu (jezeli chcesz wylaczyc, wpisz 0)
-explode-radius: 3
-# Jakie materialy i z jaka szansa maja byc niszczone po wybuchu
-# <material>: <szansa (w %)
-explode-materials:
-  obsidian: 20
-  water: 33
-  lava: 33
+# Czy wlaczyc dummy z punktami
+dummy-enable: true
+# Wyglad nazwy wyswietlanej (suffix, za punktami)
+dummy-suffix: 'pkt'
 
 # Wyglad listy graczy. Przedzial od 1 do 60
 # Limit znakow: 30
@@ -203,9 +207,6 @@ player-list-ping: 0
 player-list-patch: false
 # Wyglad punktow wyswietlanych przy gildii w rankingu
 player-list-points: '&7[&b{POINTS}&7]'
-
-# Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)
-event-move: true
 
 # Nazwy komend
 commands:
@@ -297,6 +298,8 @@ commands:
     validity: 'ga przedluz'
     name: 'ga nazwa'
 
+# Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)
+event-move: true
 
 # Co ile minut ma automatycznie zapisywac dane
 data-interval: 1
@@ -315,4 +318,4 @@ mysql:
   password: passwd
   
 # Config Version
-version: 3.0 Christmas
+version: 3.5 NewYear

@@ -139,6 +139,7 @@ public class FunnyGuilds extends JavaPlugin {
 		for(Player p : Bukkit.getOnlinePlayers()){
 			User user = User.get(p);
 			user.getScoreboard();
+			user.getDummy();
 			user.getRank();
 		}
 		for(Guild guild : GuildUtils.getGuilds()){

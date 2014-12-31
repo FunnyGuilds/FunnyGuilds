@@ -1,6 +1,37 @@
 # Event Swiateczny (Prezentowy)
-christmas-event: true
+christmas-event: false
 
 # Event Noworoczny
-# Funkcja wylaczona
-newYear-event: false
+newYear-event: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Wersja ustawien
+version: 3.5 NewYear

@@ -7,22 +7,21 @@ import java.util.List;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.Parser;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 public class Settings {
 	
+	private static final File SETTINGS =  new File(FunnyGuilds.getInstance().getDataFolder(), "config.yml");
+	private static final String VERSION = "3.5 NewYear";
+	
 	private static Settings instance;
-	private static String version = "3.0 Christmas";
-	private static File settings =  new File(FunnyGuilds.getInstance().getDataFolder(), "config.yml");
-	
 	private PandaConfiguration pc;
-	
 	public String pluginName;
 	
 	public int createNameLength;
@@ -69,6 +68,9 @@ public class Settings {
 	public String prefixAllies;
 	public String prefixEnemies;
 	public String prefixOther;
+	
+	public boolean dummyEnable;
+	public String dummySuffix;
 	
 	public String chatGuild;
 	public String chatRank;
@@ -173,53 +175,32 @@ public class Settings {
 	public Settings(){
 		instance = this;
 		Manager.loadDefaultFiles(new String[] { "config.yml" });
+		this.update();
 		this.load();
 	}
 	
-	private void load(){
-		if(this.update()){
-			this.loadPluginSection();
-			this.loadCreateSection();
-			this.loadRegionsSection();
-			this.loadEventSection();
-			this.loadEnlargeSection();
-			this.loadWarSection();
-			this.loadValiditySection();
-			this.loadInviteSection();
-			this.loadPrefixSection();
-			this.loadChatSection();
-			this.loadRankSection();
-			this.loadDamageSection();
-			this.loadBaseSection();
-			this.loadExplosionSection();
-			this.loadPlayerListSection();
-			this.loadCommandsSection();
-			this.loadDataSection();
-		}
-	}
-
 	private boolean update(){
-		this.pc = new PandaConfiguration(settings);
+		this.pc = new PandaConfiguration(SETTINGS);
 		String version = pc.getString("version");
-		if(version != null && version.equals(Settings.version)) return true;
+		if(version != null && version.equals(Settings.VERSION)) return true;
 		FunnyGuilds.info("Updating the plugin settings ...");
-		settings.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "config.old"));
+		SETTINGS.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "config.old"));
 		Manager.loadDefaultFiles(new String[] { "config.yml" });
-		pc = new PandaConfiguration(settings);
+		pc = new PandaConfiguration(SETTINGS);
 		FunnyGuilds.info("Successfully updated settings!");
 		return true;
 	}
-	
-	private void loadPluginSection(){
+
+	private void load(){
+		
+// Plugin Section
 		this.pluginName = "FunnyGuilds";
 		String name = pc.getString("plugin-name");
 		if(name != null && !name.isEmpty()) this.pluginName = name;
-	}
-	
-	private void loadCreateSection(){
+
+// Create Section
 		this.createNameLength = pc.getInt("name-length");
 		this.createTagLength = pc.getInt("tag-length");
-		
 		this.createNameMinLength = pc.getInt("name-min-length");
 		this.createTagMinLength = pc.getInt("tag-min-length");
 		
@@ -231,7 +212,7 @@ public class Settings {
 			if(itemstack != null) items.add(itemstack);
 		}
 		this.createItems = items;
-		
+
 		list = pc.getStringList("items-vip");
 		items = new ArrayList<ItemStack>();
 		for(String item : list){
@@ -239,109 +220,100 @@ public class Settings {
 			if(itemstack != null) items.add(itemstack);
 		}
 		this.createItemsVip = items;
-		
 		this.createDistance = pc.getInt("create-distance");
 		this.createStringMaterial = pc.getString("create-material");
 		this.createMaterial = Parser.parseMaterial(createStringMaterial);
 		this.createCenterY = pc.getInt("create-center-y");
 		this.createCenterSphere = pc.getBoolean("create-center-sphere");
-	}
-	
-	private void loadRegionsSection(){
+
+// Region Section
 		this.regionSize = pc.getInt("region-size");
 		this.regionMinDistance = pc.getInt("region-min-distance");
 		this.regionNotificationTime = pc.getInt("region-notification-time");
 		this.regionNotificationCooldown = pc.getInt("region-notification-cooldown");
 		this.regionExplode = pc.getInt("region-explode");
 		this.regionCommands = pc.getStringList("region-commands");
-	}
-	
-	private void loadEventSection(){
-		if(this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG)
+
+// Event Section
+		if(this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG) 
 			this.eventPhysics = true;
 		this.eventMove = pc.getBoolean("event-move");
-	}
-	
-	private void loadEnlargeSection() {
+
+// Enlarge Section
 		this.enlargeEnable = pc.getBoolean("enlarge-enable");
 		if(this.enlargeEnable){
 			this.enlargeSize = pc.getInt("enlarge-size");
 		
-			List<String> list = pc.getStringList("enlarge-items");
-			List<ItemStack> items = new ArrayList<ItemStack>();
+			list = pc.getStringList("enlarge-items");
+			items = new ArrayList<ItemStack>();
 			for(String item : list){
 				ItemStack itemstack = Parser.parseItem(item);
 				if(itemstack != null) items.add(itemstack);
 			}
 			this.enlargeItems = items;
 		}
-	}
-	
-	private void loadWarSection(){
+
+// War section
 		this.warLives = pc.getInt("war-lives");
 		this.warProtection = Parser.parseTime(pc.getString("war-protection"));
 		this.warWait = Parser.parseTime(pc.getString("war-wait"));
-	}
-	
-	private void loadValiditySection(){
+
+// Validity Section
 		this.validityStart = Parser.parseTime(pc.getString("validity-start"));
 		this.validityTime = Parser.parseTime(pc.getString("validity-time"));
 		this.validityWhen = Parser.parseTime(pc.getString("validity-when"));
-		List<String> list = pc.getStringList("validity-items");
-		List<ItemStack> items = new ArrayList<ItemStack>();
+		list = pc.getStringList("validity-items");
+		items = new ArrayList<ItemStack>();
 		for(String item : list){
 			ItemStack itemstack = Parser.parseItem(item);
 			if(itemstack != null) items.add(itemstack);
 		}
 		this.validityItems = items;
-	}
-	
-	private void loadInviteSection(){
-		this.inviteMembers = pc.getInt("invite-members");
+
+// Other Section
+		this.inviteMembers = pc.getInt("max-members");
 		this.infoPlayerSneaking = pc.getBoolean("info-player-sneaking");
-		List<ItemStack> items = new ArrayList<ItemStack>();
+		items = new ArrayList<ItemStack>();
 		for(String item : pc.getStringList("join-items")){
 			ItemStack itemstack = Parser.parseItem(item);
 			if(itemstack != null) items.add(itemstack);
 		}
 		this.joinItems = items;
-	}
 	
-	private void loadPrefixSection(){
-		this.prefixOur = ChatColor.translateAlternateColorCodes('&', pc.getString("prefix-our"));
-		this.prefixAllies = ChatColor.translateAlternateColorCodes('&', pc.getString("prefix-allies"));
-		this.prefixOther = ChatColor.translateAlternateColorCodes('&', pc.getString("prefix-other"));
-	}
-	
-	private void loadChatSection(){
-		this.chatGuild = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-guild"));
-		this.chatRank = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-rank"));
-		this.chatPoints = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-points"));
+// Prefix Section
+		this.prefixOur =  StringUtils.colored(pc.getString("prefix-our"));
+		this.prefixAllies =  StringUtils.colored(pc.getString("prefix-allies"));
+		this.prefixOther =  StringUtils.colored(pc.getString("prefix-other"));
+
+// Dummy Section
+		this.dummyEnable = pc.getBoolean("dummy-enable");
+		this.dummySuffix = StringUtils.colored(pc.getString("dummy-suffix"));
 		
+// Chat Section
+		this.chatGuild =  StringUtils.colored(pc.getString("chat-guild"));
+		this.chatRank =  StringUtils.colored(pc.getString("chat-rank"));
+		this.chatPoints =  StringUtils.colored(pc.getString("chat-points"));
 		this.chatPriv = pc.getString("chat-priv");
 		this.chatAlly = pc.getString("chat-ally");
 		this.chatGlobal = pc.getString("chat-global");
-		this.chatPrivDesign = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-priv-design"));
-		this.chatAllyDesign = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-ally-design"));
-		this.chatGlobalDesign = ChatColor.translateAlternateColorCodes('&', pc.getString("chat-global-design"));
-	}
+		this.chatPrivDesign = StringUtils.colored(pc.getString("chat-priv-design"));
+		this.chatAllyDesign =  StringUtils.colored(pc.getString("chat-ally-design"));
+		this.chatGlobalDesign =  StringUtils.colored(pc.getString("chat-global-design"));
 	
-	private void loadRankSection(){
+// Rank Section
 		this.rankStart = pc.getInt("rank-start");
 		this.rankPercent = pc.getDouble("rank-percent");
 		if(this.rankPercent == 0) this.rankPercent = 1.0;
-	}
-	
-	private void loadDamageSection(){
+
+// Damage Section
 		this.damageGuild = pc.getBoolean("damage-guild");
 		this.damageAlly = pc.getBoolean("damage-ally");
-	}
-	
-	private void loadBaseSection(){
+
+// Base Section
 		this.baseEnable = pc.getBoolean("base-enable");
 		if(this.baseEnable){
-			List<String> list = pc.getStringList("base-items");
-			List<ItemStack> items = new ArrayList<ItemStack>();
+			list = pc.getStringList("base-items");
+			items = new ArrayList<ItemStack>();
 			for(String item : list){
 				ItemStack itemstack = Parser.parseItem(item);
 				if(itemstack != null) items.add(itemstack);
@@ -349,9 +321,8 @@ public class Settings {
 			this.baseItems = items;
 			this.baseDelay = pc.getInt("base-delay");
 		}
-	}
-	
-	private void loadExplosionSection(){
+		
+// Explosion Section
 		this.explodeRadius = pc.getInt("explode-radius");
 		HashMap<Material, Double> map = new HashMap<>();
 		for(String path : pc.getSectionKeys("explode-materials")){
@@ -362,16 +333,15 @@ public class Settings {
 			map.put(material, chance);
 		}
 		this.explodeMaterials = map;
-	}
-	
-	private void loadPlayerListSection(){
+
+// PlayerList Section
 		String[] ss = new String[60];
 		for(String path : pc.getSectionKeys("player-list")){
 			try {
 				int i = Integer.parseInt(path);
 				if(i > 60) continue;
 				String s = pc.getString("player-list." + path);
-				if(s != null) s = ChatColor.translateAlternateColorCodes('&', s);
+				if(s != null) s =  StringUtils.colored(s);
 				ss[i-1] = s;
 			} catch (NumberFormatException e){
 				FunnyGuilds.parser("[Settings] Unknown number: " + path);
@@ -386,9 +356,8 @@ public class Settings {
 		PlayerListManager.enable(this.playerlistEnable);
 		PlayerListManager.patch(this.playerlistPatch);
 		PlayerListManager.ping(this.playerlistPing);
-	}
-	
-	private void loadCommandsSection(){
+
+// Commands Section
 		this.excCreate = pc.getString("commands.create.name");
 		this.excDelete = pc.getString("commands.delete.name");
 		this.excConfirm = pc.getString("commands.confirm.name");
@@ -450,9 +419,8 @@ public class Settings {
 		this.axcValidity = pc.getString("commands.admin.validity");
 		this.axcName = pc.getString("commands.admin.name");
 		
-	}
 	
-	private void loadDataSection(){
+// Data Section
 		this.dataInterval = pc.getInt("data-interval");
 		this.flat = pc.getBoolean("data-type.flat");
 		this.mysql = pc.getBoolean("data-type.mysql");

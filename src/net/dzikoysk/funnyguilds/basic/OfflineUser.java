@@ -22,30 +22,29 @@ import com.google.common.base.Charsets;
 @SerializableAs("Player")
 public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 
+	private static int type;
 	private GameProfile profile;
 	private String name;
 	private UUID uuid;
-	private static int type;
 
-	public OfflineUser(UUID uuid, String name){
-		this.init();
-		this.uuid = uuid;
+	public OfflineUser(String name){
 		this.name = name;
+		this.uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
+		this.init();
 		try {
 			if(type == 1)
-				this.profile = GameProfile.class.getConstructor(new Class<?>[]{ String.class, String.class }).newInstance(uuid.toString(), name);	
+				this.profile = GameProfile.class.getConstructor(new Class<?>[]{ 
+					String.class, 
+					String.class 
+				}).newInstance(uuid.toString(), name);	
 			else if(type == 2)
-				this.profile = GameProfile.class.getConstructor(new Class<?>[]{ UUID.class, String.class }).newInstance(uuid, name);	
-			else
-				this.profile = null;
+				this.profile = GameProfile.class.getConstructor(new Class<?>[]{ 
+					UUID.class,
+					String.class 
+				}).newInstance(uuid, name);
 		} catch (Exception e) {
 			e.printStackTrace();
-			this.profile = null;
 		}
-	}
-	
-	public OfflineUser(String name){
-		this(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), name);
 	}
 
 	public GameProfile getProfile(){

@@ -2,10 +2,10 @@ package net.dzikoysk.funnyguilds.util.element;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class IndividualPrefixManager {
@@ -32,7 +32,7 @@ public class IndividualPrefixManager {
 		updatePlayers();
 	}
 	
-	public static void addPlayer(OfflinePlayer player){
+	public static void addPlayer(OfflineUser player){
 		for(Player p : Bukkit.getOnlinePlayers())
 			User.get(p).getIndividualPrefix().addPlayer(player);
 		updatePlayers();
@@ -44,7 +44,7 @@ public class IndividualPrefixManager {
 		updatePlayers();
 	}
 	
-	public static void removePlayer(OfflinePlayer player){
+	public static void removePlayer(OfflineUser player){
 		for(Player ps : Bukkit.getOnlinePlayers())
 			User.get(ps).getIndividualPrefix().removePlayer(player);
 		updatePlayers();
