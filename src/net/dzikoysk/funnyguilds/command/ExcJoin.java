@@ -98,7 +98,7 @@ public class ExcJoin implements Executor {
 		guild.addMember(lp);
 		lp.setGuild(guild);
 		
-	    IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, p);
+	    IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, lp.getOfflineUser());
 				
 		p.sendMessage(m.getMessage("joinToMember")
 			.replace("{GUILD}", guild.getName())

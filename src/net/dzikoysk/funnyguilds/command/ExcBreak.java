@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.command;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -11,8 +12,6 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -86,7 +85,7 @@ public class ExcBreak implements Executor {
 	    	.replace("{TAG}", tb.getTag())
 	    );
 	    
-	    OfflinePlayer of = Bukkit.getOfflinePlayer(tb.getOwner().getName());
+	    OfflineUser of = tb.getOwner().getOfflineUser();
 	    if(of.isOnline()) of.getPlayer().sendMessage(
 	    	m.getMessage("allyIDone")
 	    	.replace("{GUILD}", guild.getName())

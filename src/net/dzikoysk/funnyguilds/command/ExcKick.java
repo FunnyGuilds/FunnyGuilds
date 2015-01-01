@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
@@ -8,7 +9,6 @@ import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -36,9 +36,9 @@ public class ExcKick implements Executor {
 			p.sendMessage(m.getMessage("kickPlayer"));
 			return;
 		}
-
-		OfflinePlayer up = Bukkit.getOfflinePlayer(args[0]);
+		
 		User uk = User.get(args[0]);
+		OfflineUser up = uk.getOfflineUser();
 
 		if(!uk.hasGuild()){
 			p.sendMessage(m.getMessage("kickToHasNotGuild"));

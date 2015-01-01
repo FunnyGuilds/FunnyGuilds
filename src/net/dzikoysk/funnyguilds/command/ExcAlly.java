@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.command;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -12,8 +13,6 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -84,7 +83,7 @@ public class ExcAlly implements Executor {
 		    	.replace(m.getMessage("allyDone"), "{GUILD}", inv.getName())
 	    	);
 	    	
-	    	OfflinePlayer of = Bukkit.getOfflinePlayer(inv.getOwner().getName());
+	    	OfflineUser of = inv.getOwner().getOfflineUser();
 		    if(of.isOnline()) of.getPlayer().sendMessage(
 		    	m.getMessage("allyIDone")
 		    	.replace("{GUILD}", guild.getName())
@@ -105,7 +104,7 @@ public class ExcAlly implements Executor {
 	    		.replace("{GUILD}", inv.getName())
 	    	);
 	    	
-	    	OfflinePlayer of = Bukkit.getOfflinePlayer(inv.getOwner().getName());
+	    	OfflineUser of = inv.getOwner().getOfflineUser();
 		    if(of.isOnline()) of.getPlayer().sendMessage(m.getMessage("allyIReturn")
 		    	.replace("{GUILD}", guild.getName())
 			);
@@ -119,7 +118,7 @@ public class ExcAlly implements Executor {
 	    	.replace("{GUILD}", inv.getName())
 	    );
 	    
-	    OfflinePlayer of = Bukkit.getOfflinePlayer(inv.getOwner().getName());
+	    OfflineUser of = inv.getOwner().getOfflineUser();
 	    if(of.isOnline()) of.getPlayer().sendMessage(m.getMessage("allyToInvited")
 	    	.replace("{GUILD}", guild.getName())
 		);

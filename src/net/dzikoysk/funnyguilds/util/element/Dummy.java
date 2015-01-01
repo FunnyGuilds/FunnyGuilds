@@ -9,6 +9,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Dummy {
 	
@@ -26,6 +27,7 @@ public class Dummy {
 		if(objective == null){
 			objective = scoreboard.registerNewObjective("points", "dummy");
 			objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+			objective.setDisplayName(Settings.getInstance().dummySuffix);
 		}
 		OfflineUser offline = user.getOfflineUser();
 		objective.getScore(offline).setScore(user.getRank().getPoints());
@@ -37,6 +39,7 @@ public class Dummy {
 		if(objective == null){
 			objective = scoreboard.registerNewObjective("points", "dummy");
 			objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
+			objective.setDisplayName(Settings.getInstance().dummySuffix);
 		}
 		for(Player player : Bukkit.getOnlinePlayers()){
 			User user = User.get(player);
