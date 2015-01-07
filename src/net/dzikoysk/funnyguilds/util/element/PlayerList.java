@@ -70,7 +70,7 @@ public class PlayerList {
 			if(user.hasGuild()){
 				s = StringUtils.replace(s, "{GUILD}", user.getGuild().getName());
 				s = StringUtils.replace(s, "{TAG}", user.getGuild().getTag());
-			}else{
+			} else {
 				s = StringUtils.replace(s, "{GUILD}", "Brak");
 				s = StringUtils.replace(s, "{TAG}", "Brak");
 			}
