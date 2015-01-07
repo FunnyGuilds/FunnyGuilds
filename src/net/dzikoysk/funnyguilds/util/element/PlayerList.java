@@ -35,12 +35,12 @@ public class PlayerList {
 			if(s == null || s.isEmpty()) continue;
 			if(s.length() <= 16) prefix[i] = s;
 			else {
-				String prefix = s.substring(0, 16);
-				if(prefix.charAt(15) == '§') prefix = s.substring(0, 15);
-				String color = ChatColor.getLastColors(prefix);
+				String px = s.substring(0, 16);
+				if(px.charAt(15) == '§') px = s.substring(0, 15);
+				String color = ChatColor.getLastColors(px);
 				if(color == null || color.isEmpty()) color = "§f";
 				String sx = color;
-				if(prefix.length() == 15){
+				if(px.length() == 15){
 					int l = s.length();
 					if(l < 32) sx += s.substring(15, s.length());
 					else sx += s.substring(15, 32);
@@ -49,6 +49,7 @@ public class PlayerList {
 					if(l < 32) sx += s.substring(16, s.length());
 					else sx += s.substring(16, 32);
 				}
+				prefix[i] = px;
 				suffix[i] = sx;
 			}
 		}
