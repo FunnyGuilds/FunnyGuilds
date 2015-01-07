@@ -66,11 +66,11 @@ public class DatabaseBasic {
 		IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
 	}
 	
-	public void save() throws ClassNotFoundException, SQLException {
+	public void save(boolean b) throws ClassNotFoundException, SQLException {
 		Database db = Database.getInstance();
 		db.openConnection();
 		for(User user : UserUtils.getUsers()){
-			if(!user.changed())	continue;
+			if(!b) if(!user.changed())	continue;
 			try {
 				new DatabaseUser(user).save(db);
 			} catch (Exception e){
@@ -78,7 +78,7 @@ public class DatabaseBasic {
 			}
 		}
 		for(Region region : RegionUtils.getRegions()){
-			if(!region.changed()) continue;
+			if(!b) if(!region.changed()) continue;
 			try {
 				new DatabaseRegion(region).save(db);
 			} catch (Exception e){
@@ -86,7 +86,7 @@ public class DatabaseBasic {
 			}
 		}
 		for(Guild guild : GuildUtils.getGuilds()){
-			if(!guild.changed()) continue;
+			if(!b) if(!guild.changed()) continue;
 			try {
 				new DatabaseGuild(guild).save(db);
 			} catch (Exception e){

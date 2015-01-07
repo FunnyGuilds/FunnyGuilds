@@ -2,10 +2,12 @@ package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -42,7 +44,12 @@ public class ExcInvite implements Executor {
 				.replace("{AMOUNT}", Integer.toString(Settings.getInstance().inviteMembers)));
 			return;
 		}
-			
+		
+		if(!UserUtils.playedBefore(args[0])){
+			p.sendMessage(StringUtils.colored("&cTen gracz nie byl nigdy na serwerze!"));
+			return;
+		}
+		
 		OfflinePlayer oi = Bukkit.getOfflinePlayer(args[0]);
 		User ip = User.get(args[0]);
 		

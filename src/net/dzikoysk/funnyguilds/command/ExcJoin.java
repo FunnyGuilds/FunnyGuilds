@@ -23,18 +23,16 @@ public class ExcJoin implements Executor {
 	
 	@Override
 	public void execute(CommandSender s, String[] args){
-		
 		Messages m = Messages.getInstance();
-		
 		Player p = (Player) s;
-		User lp = User.get(p);
+		User user = User.get(p);
 		
-		if(lp.hasGuild()){
+		if(user.hasGuild()){
 			p.sendMessage(m.getMessage("joinHasGuild"));
 			return;
 		}
 				
-		if(InvitationsList.get(lp, 0).getLS().isEmpty()){
+		if(InvitationsList.get(user, 0).getLS().isEmpty()){
 			p.sendMessage(m.getMessage("joinHasNotInvitation"));
 			return;
 		}
@@ -42,7 +40,7 @@ public class ExcJoin implements Executor {
 		if(args.length < 1){
 			List<String> list = m.getList("joinInvitationList");
 			String[] msgs = list.toArray(new String[list.size()]);
-			String iss = StringUtils.toString(InvitationsList.get(lp, 0).getLS(), true);
+			String iss = StringUtils.toString(InvitationsList.get(user, 0).getLS(), true);
 			for(int i = 0; i < msgs.length; i++)
 				p.sendMessage(msgs[i]
 					.replace("{GUILDS}", iss)
@@ -56,7 +54,7 @@ public class ExcJoin implements Executor {
 			return;
 		}
 		
-		if(!InvitationsList.get(lp, 0).contains(tag)){
+		if(!InvitationsList.get(user, 0).contains(tag)){
 			p.sendMessage(m.getMessage("joinHasNotInvitationTo"));
 			return;
 		}
@@ -92,13 +90,13 @@ public class ExcJoin implements Executor {
 		
 		Guild guild = GuildUtils.byTag(tag);
 		
-		InvitationsList.get(lp, 0).remove(guild.getTag());
-		InvitationsList.get(lp, 0).getLS().clear();
+		InvitationsList.get(user, 0).remove(guild.getTag());
+		InvitationsList.get(user, 0).getLS().clear();
 		
-		guild.addMember(lp);
-		lp.setGuild(guild);
+		guild.addMember(user);
+		user.setGuild(guild);
 		
-	    IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, lp.getOfflineUser());
+	    IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
 				
 		p.sendMessage(m.getMessage("joinToMember")
 			.replace("{GUILD}", guild.getName())

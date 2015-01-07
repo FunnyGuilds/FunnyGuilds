@@ -6,10 +6,11 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.util.ReflectionUtils;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.element.Dummy;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.util.element.PlayerList;
+import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -179,7 +180,7 @@ public class User implements Basic {
 	}
 	
 	public Dummy getDummy(){
-		if(this.dummy == null) new Dummy(this);
+		if(this.dummy == null && Settings.getInstance().dummyEnable) new Dummy(this);
 		return this.dummy;
 	}
 	
@@ -246,7 +247,7 @@ public class User implements Basic {
 		Player p = getPlayer();
 		if(p == null) return ping;
 		try {
-			Class<?> craftPlayer = ReflectionUtils.getBukkitClass("entity.CraftPlayer");
+			Class<?> craftPlayer = Reflections.getBukkitClass("entity.CraftPlayer");
 			Object cp = craftPlayer.cast(p);
 	        Object handle = craftPlayer.getMethod("getHandle").invoke(cp);
 			ping = (int) handle.getClass().getField("ping").get(handle);

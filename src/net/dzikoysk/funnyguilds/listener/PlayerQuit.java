@@ -18,6 +18,7 @@ public class PlayerQuit implements Listener {
 		user.setIndividualPrefix(null);
 		user.setPlayerList(null);
 		user.setScoreboard(null);
+		user.setDummy(null);
 	}
 
 }

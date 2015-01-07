@@ -3,9 +3,6 @@ package net.dzikoysk.funnyguilds.system.event;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.dzikoysk.funnyguilds.system.event.christmas.Christmas;
-import net.dzikoysk.funnyguilds.system.event.new_year.NewYear;
-
 public class EventManager {
 
 	private static EventManager instance;
@@ -16,9 +13,7 @@ public class EventManager {
 		instance = this;
 		settings = EventSettings.getInstance();
 		extensions = new ArrayList<>();
-		
-		if(settings.christmasEvent) extensions.add(new Christmas());
-		if(settings.newYearEvent) extensions.add(new NewYear());
+		settings.hashCode();
 	}
 	
 	public final void load(){

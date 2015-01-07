@@ -15,8 +15,9 @@ public class RegionUtils {
 	public static List<Region> regions = new ArrayList<>();
 	
 	public static Region get(String name){
+		if(name == null) return null;
 		for(Region region : regions)
-			if(region.getName().equalsIgnoreCase(name)) return region;
+			if(region != null && region.getName().equalsIgnoreCase(name)) return region;
 		return null;
 	}
 	

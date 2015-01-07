@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.reflect;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -9,7 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
-public class ReflectionUtils {
+public class Reflections {
 
         public static Class<?> getCraftClass(String name) {
             String className = "net.minecraft.server." + getVersion() + name;
@@ -65,6 +65,48 @@ public class ReflectionUtils {
             }
         }
         
+        public static <T> FieldAccessor<T> getField(Class<?> target, Class<T> fieldType, int index) {
+            return getField(target, null, fieldType, index);
+        }
+        
+		private static <T> FieldAccessor<T> getField(Class<?> target, String name, Class<T> fieldType, int index) {
+            for (final Field field : target.getDeclaredFields()) {
+                if ((name == null || field.getName().equals(name)) && fieldType.isAssignableFrom(field.getType()) && index-- <= 0) {
+                    field.setAccessible(true);
+
+                    return new FieldAccessor<T>() {
+                        @SuppressWarnings("unchecked")
+                        @Override
+                        public T get(Object target) {
+                            try {
+                                return (T) field.get(target);
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException("Cannot access reflection.", e);
+                            }
+                        }
+
+                        @Override
+                        public void set(Object target, Object value) {
+                            try {
+                                field.set(target, value);
+                            } catch (IllegalAccessException e) {
+                                throw new RuntimeException("Cannot access reflection.", e);
+                            }
+                        }
+
+                        @Override
+                        public boolean hasField(Object target) {
+                            return field.getDeclaringClass().isAssignableFrom(target.getClass());
+                        }
+                    };
+                }
+            }
+
+            if (target.getSuperclass() != null)
+                return getField(target.getSuperclass(), name, fieldType, index);
+            throw new IllegalArgumentException("Cannot find field with type " + fieldType);
+        }
+        
         public static Field getPrivateField(Class<?> cl, String field_name) {
             try {
             	Field field = cl.getDeclaredField(field_name);
@@ -108,5 +150,19 @@ public class ReflectionUtils {
             String version = name.substring(name.lastIndexOf('.') + 1) + ".";
             return version;
         }
+        
+        public interface ConstructorInvoker {
+        	public Object invoke(Object... arguments);
+        }
 
-    }
+        public interface MethodInvoker {
+        	public Object invoke(Object target, Object... arguments);
+        }
+
+        public interface FieldAccessor<T> {
+        	public T get(Object target);
+            public void set(Object target, Object value);
+            public boolean hasField(Object target);
+        }
+
+}

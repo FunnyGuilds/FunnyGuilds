@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
@@ -22,7 +23,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -179,15 +179,15 @@ public class ExcCreate implements Executor {
 		if(c.createMaterial != null && c.createMaterial != Material.AIR)
 			loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
 		else if(c.createStringMaterial.equalsIgnoreCase("ender crystal"))
-			loc.getWorld().spawn(loc.getBlock().getLocation().toVector().toLocation(loc.getWorld()), EnderCrystal.class);
-		
+			EntityUtil.spawn(guild);
+			
 		p.teleport(loc);
 		
 		Manager.getInstance().start();
 		
 		IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);
 		IndependentThread.actions(ActionType.PREFIX_GLOBAL_ADD_GUILD, guild);
-		IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, p);
+		IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, u.getOfflineUser());
 		
 		p.sendMessage(
 			m.getMessage("createGuild")

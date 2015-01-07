@@ -2,9 +2,12 @@ package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
+import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.Version;
 
 import org.bukkit.ChatColor;
@@ -38,10 +41,30 @@ public class ExcFunnyGuilds implements Executor {
 				s.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
 				thread.start();
 				return;
-			}
-			if(args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")){
+			}else if(args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")){
 				if(s instanceof Player) Version.check((Player)s);
 				else FunnyGuilds.info("Console can not use this command");
+				return;
+			}else if(args[0].equalsIgnoreCase("save-all")){
+				s.sendMessage(ChatColor.GRAY + "Zapisywanie...");
+				long l = System.currentTimeMillis();
+				if(Settings.getInstance().flat)
+					try {
+						Flat.getInstance().save(true);
+					} catch (Exception e) {
+						FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
+						if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+					}
+				if(Settings.getInstance().mysql)
+					try {
+						DatabaseBasic.getInstance().save(true);
+					} catch (Exception e) {
+						FunnyGuilds.error("An error occurred while saving data to database! Caused by: Exception");
+						if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+					}
+				Data.getInstance().save();
+				s.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA +
+							 (System.currentTimeMillis() - l) / 1000F + "s" + ChatColor.GRAY + ")!");
 				return;
 			}
 			if(args[0].equalsIgnoreCase("admin") || args[0].equalsIgnoreCase("zarzadzaj")){

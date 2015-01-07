@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.reflect;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
@@ -15,7 +15,7 @@ public class DescriptionChanger {
 	public void name(String s){
 		if(s == null || s.isEmpty()) return;
 		try {
-			ReflectionUtils.getPrivateField(desc.getClass(), "name").set(desc, s);
+			Reflections.getPrivateField(desc.getClass(), "name").set(desc, s);
 		} catch (Exception e){
 			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}

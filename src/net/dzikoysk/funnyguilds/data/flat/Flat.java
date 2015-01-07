@@ -18,9 +18,9 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 public class Flat {
 	
-	public static final File GUILDS = new File(Data.DATA + File.separator + "guilds");
-	public static final File REGIONS = new File(Data.DATA + File.separator + "regions");
-	public static final File USERS = new File(Data.DATA + File.separator + "users");
+	public static final File GUILDS = new File(Data.getDataFolder() + File.separator + "guilds");
+	public static final File REGIONS = new File(Data.getDataFolder() + File.separator + "regions");
+	public static final File USERS = new File(Data.getDataFolder() + File.separator + "users");
 	private static Flat instance;
 	
 	public Flat(){
@@ -35,17 +35,19 @@ public class Flat {
 		BasicUtils.checkObjects();
 	}
 	
-	public void save(){
-		saveUsers();
-		saveRegions();
-		saveGuilds();
+	public void save(boolean b){
+		saveUsers(b);
+		saveRegions(b);
+		saveGuilds(b);
 	}
 	
-	private void saveUsers(){
+	private void saveUsers(boolean b){
 		if(UserUtils.getUsers() == null || UserUtils.getUsers().isEmpty()) return;
 		for(User user : UserUtils.getUsers())
-			if(user.getUUID() != null && user.getName() != null && user.changed())
+			if(user.getUUID() != null && user.getName() != null){
+				if(!b) if(!user.changed()) continue;
 				new FlatUser(user).serialize();
+			}
 	}
 	
 	private void loadUsers(){	
@@ -64,10 +66,10 @@ public class Flat {
 		FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());	
 	}
 	
-	private void saveRegions(){
+	private void saveRegions(boolean b){
 		int i = 0;
 		for(Region region : RegionUtils.getRegions()){
-			if(!region.changed()) continue;
+			if(!b) if(!region.changed()) continue;
 			if(!new FlatRegion(region).serialize()){
 				RegionUtils.delete(region);
 				i++;
@@ -86,10 +88,10 @@ public class Flat {
 		FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
 	}
 	
-	private void saveGuilds(){
+	private void saveGuilds(boolean b){
 		int i = 0;
 		for(Guild guild : GuildUtils.getGuilds()){
-			if(!guild.changed()) continue;
+			if(!b) if(!guild.changed()) continue;
 			if(!new FlatGuild(guild).serialize()){
 				GuildUtils.deleteGuild(guild);
 				i++;

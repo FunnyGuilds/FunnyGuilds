@@ -22,6 +22,7 @@ public class ExcValidity implements Executor {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
+		Settings s = Settings.getInstance();
 		Messages m = Messages.getInstance();
 		Player p = (Player)sender;
 		User user = User.get(p);
@@ -37,17 +38,18 @@ public class ExcValidity implements Executor {
 			return;
 		}
 	
-		long c = guild.getValidity();
-		if(c == 0) c = System.currentTimeMillis();
-		long d = c - System.currentTimeMillis();
-		if(d > Settings.getInstance().validityWhen){
-			p.sendMessage(m.getMessage("validityWhen")
-				.replace("{TIME}", TimeUtils.getDurationBreakdown(d))
-			);
-			return;
+		if(s.validityWhen != 0){
+			long c = guild.getValidity();
+			long d = c - System.currentTimeMillis();
+			if(d > s.validityWhen){
+				p.sendMessage(m.getMessage("validityWhen")
+					.replace("{TIME}", TimeUtils.getDurationBreakdown(d))
+				);
+				return;
+			}
 		}
 		
-		List<ItemStack> itemsList = Settings.getInstance().validityItems;
+		List<ItemStack> itemsList = s.validityItems;
 		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
 		for(int i = 0; i < items.length; i++){
 			if(!p.getInventory().containsAtLeast(items[i], items[i].getAmount())){
@@ -76,6 +78,7 @@ public class ExcValidity implements Executor {
 		}
 		p.getInventory().removeItem(items);
 		
+		long c = guild.getValidity();
 		if(c == 0) c = System.currentTimeMillis();
 		c += Settings.getInstance().validityTime;
 		guild.setValidity(c);

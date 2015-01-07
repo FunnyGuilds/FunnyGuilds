@@ -17,10 +17,10 @@ public class EventSettings {
 	
 	public EventSettings(){
 		instance = this;
-		load();
+		FILE.delete();
 	}
 	
-	private void load(){
+	protected void load(){
 		Manager.loadDefaultFiles(new String[] { "events.yml" });
 		PandaConfiguration pc = new PandaConfiguration(FILE);
 		String version = pc.getString("version");

@@ -17,23 +17,19 @@ public class Dummy {
 	
 	public Dummy(User user){
 		this.user = user;
-		this.initialize();
 		this.user.setDummy(this);
+		this.initialize();
 	}
 
 	public void updateScore(User user){
 		Scoreboard scoreboard = this.user.getScoreboard();
 		Objective objective = scoreboard.getObjective("points");
-		if(objective == null){
-			objective = scoreboard.registerNewObjective("points", "dummy");
-			objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-			objective.setDisplayName(Settings.getInstance().dummySuffix);
-		}
+		if(objective == null) objective = initialize();
 		OfflineUser offline = user.getOfflineUser();
 		objective.getScore(offline).setScore(user.getRank().getPoints());
 	}
 	
-	private void initialize(){
+	private Objective initialize(){
 		Scoreboard scoreboard = this.user.getScoreboard();
 		Objective objective = scoreboard.getObjective("points");
 		if(objective == null){
@@ -46,5 +42,6 @@ public class Dummy {
 			Score score = objective.getScore(user.getOfflineUser());
 			score.setScore(user.getRank().getPoints());
 		}
+		return objective;
 	}
 }

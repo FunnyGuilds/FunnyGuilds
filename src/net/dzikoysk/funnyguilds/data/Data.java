@@ -4,18 +4,22 @@ import java.io.File;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
+import net.dzikoysk.funnyguilds.util.Reloader;
+import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
 import net.dzikoysk.funnyguilds.util.configuration.Yamler;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
 
 public class Data {
 	
-	public static final File DATA = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data");
+	private static final File DATA = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data");
 	private static enum DO { SAVE, LOAD; }
 	private static Data instance;
 	private static File folder;
@@ -23,13 +27,25 @@ public class Data {
 	public Data(){
 		folder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data");
 		instance = this;
+		funnyguilds(DO.LOAD);
 		invitations(DO.LOAD);
 		playerlist(DO.LOAD);
 	}
 	
 	public void save(){
+		funnyguilds(DO.SAVE);
 		invitations(DO.SAVE);
 		playerlist(DO.SAVE);
+	}
+	
+	private void funnyguilds(DO todo){
+		File file = new File(folder, "funnyguilds.dat");
+		PandaConfiguration pc = new PandaConfiguration(file);
+		if(todo == DO.SAVE){
+			pc.set("played-before", Bukkit.getOnlinePlayers().length);
+			pc.set("reload-count", Reloader.getReloadCount());
+			pc.save();
+		}
 	}
 	
 	private void invitations(DO todo){
@@ -96,6 +112,10 @@ public class Data {
 	
 	public static File getPlayerListFile(){
 		return new File(folder, "playerlist.yml");
+	}
+	
+	public static final File getDataFolder(){
+		return DATA;
 	}
 	
 	public static Data getInstance(){

@@ -31,18 +31,25 @@ public class PlayerList {
 		this.prefix = new String[60];
 		this.suffix = new String[60];
 		for(int i = 0; i < 60; i++){
-			if(ss[i] == null || ss[i].isEmpty()) continue;
-			String[] s = ss[i].split("(?<=\\G................)");
-			if(s.length >= 2){
-				prefix[i] = s[0];
-				String color = ChatColor.getLastColors(prefix[i]);
+			String s = ss[i];
+			if(s == null || s.isEmpty()) continue;
+			if(s.length() <= 16) prefix[i] = s;
+			else {
+				String prefix = s.substring(0, 16);
+				if(prefix.charAt(15) == '§') prefix = s.substring(0, 15);
+				String color = ChatColor.getLastColors(prefix);
 				if(color == null || color.isEmpty()) color = "§f";
-				String sx = color + s[1];
-				if(sx.length() > 15) suffix[i] = sx.substring(0, 15);
-				else suffix[i] = sx;
-			}else if(s.length == 1){
-				prefix[i] = s[0];
-				suffix[i] = "";
+				String sx = color;
+				if(prefix.length() == 15){
+					int l = s.length();
+					if(l < 32) sx += s.substring(15, s.length());
+					else sx += s.substring(15, 32);
+				} else {
+					int l = s.length();
+					if(l < 32) sx += s.substring(16, s.length());
+					else sx += s.substring(16, 32);
+				}
+				suffix[i] = sx;
 			}
 		}
 	}

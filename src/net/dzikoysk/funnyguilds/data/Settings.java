@@ -352,7 +352,7 @@ public class Settings {
 		this.playerlistInterval = pc.getInt("player-list-interval");
 		this.playerlistPing = pc.getInt("player-list-ping");
 		this.playerlistPatch = pc.getBoolean("player-list-patch");
-		this.playerlistPoints = pc.getString("player-list-points");
+		this.playerlistPoints = StringUtils.colored(pc.getString("player-list-points"));
 		PlayerListManager.enable(this.playerlistEnable);
 		PlayerListManager.patch(this.playerlistPatch);
 		PlayerListManager.ping(this.playerlistPing);

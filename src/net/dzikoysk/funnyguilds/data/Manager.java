@@ -28,14 +28,14 @@ public class Manager {
 	public void save(){
 		if(Settings.getInstance().flat)
 			try {
-				Flat.getInstance().save();
+				Flat.getInstance().save(false);
 			} catch (Exception e) {
 				FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
 				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 			}
 		if(Settings.getInstance().mysql)
 			try {
-				DatabaseBasic.getInstance().save();
+				DatabaseBasic.getInstance().save(false);
 			} catch (Exception e) {
 				FunnyGuilds.error("An error occurred while saving data to database! Caused by: Exception");
 				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();

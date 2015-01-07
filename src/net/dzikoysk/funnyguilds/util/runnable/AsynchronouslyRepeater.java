@@ -4,8 +4,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
-import net.dzikoysk.funnyguilds.util.PacketUtils;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
+import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
@@ -51,7 +51,7 @@ public class AsynchronouslyRepeater implements Runnable {
 		if(Settings.getInstance().playerlistEnable){
 			IndependentThread.action(ActionType.PLAYERLIST_GLOBAL_UPDATE);
 			if(Settings.getInstance().playerlistPatch)
-				for(Player p : Bukkit.getOnlinePlayers()) PacketUtils.sendPacket(p, PacketUtils.getPacket(p.getPlayerListName(), false, 0));
+				for(Player p : Bukkit.getOnlinePlayers()) PacketSender.sendPacket(p, PacketSender.getPacket(p.getPlayerListName(), false, 0));
 		}
 		player_list = 0;
 	}

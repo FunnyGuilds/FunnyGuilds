@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -87,7 +88,10 @@ public class Parser {
 				Guild guild = RankManager.getInstance().getGuild(i);
 				if(guild != null) return StringUtils
 					.replace(string, "{GTOP-" + Integer.toString(i) + '}',
-							guild.getTag() + " [" + Integer.toString(guild.getRank().getPoints()) + "]");
+							guild.getTag() + " " + 
+							StringUtils.replace(Settings.getInstance().playerlistPoints, 
+							"{POINTS}", Integer.toString(guild.getRank().getPoints()))
+					);
 				else return StringUtils
 					.replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
 			}else if(string.contains("PTOP")){

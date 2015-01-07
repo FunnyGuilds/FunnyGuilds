@@ -10,29 +10,29 @@ import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.PacketReceive;
 import net.dzikoysk.funnyguilds.listener.PlayerChat;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
-import net.dzikoysk.funnyguilds.listener.region.BlockExplode;
 import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
 import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
 import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
 import net.dzikoysk.funnyguilds.listener.region.BucketAction;
 import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
-import net.dzikoysk.funnyguilds.listener.region.ExplosionPrime;
-import net.dzikoysk.funnyguilds.listener.region.ExtendPiston;
 import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
-import net.dzikoysk.funnyguilds.util.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.IOUtils;
+import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
+import net.dzikoysk.funnyguilds.util.reflect.DescriptionChanger;
+import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
+import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import net.dzikoysk.funnyguilds.util.runnable.AsynchronouslyRepeater;
-import net.dzikoysk.funnyguilds.util.runnable.Repeater;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.runnable.Ticking;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -53,7 +53,8 @@ public class FunnyGuilds extends JavaPlugin {
 		funnyguilds = this;
 		thread = Thread.currentThread();
 		
-		new DescriptionChanger(this.getDescription()).name(Settings.getInstance().pluginName);
+		new Reloader().init();
+		new DescriptionChanger(getDescription()).name(Settings.getInstance().pluginName);
 		new Commands().register();
 		
 		EventManager em = EventManager.getEventManager();
@@ -62,11 +63,9 @@ public class FunnyGuilds extends JavaPlugin {
 	
 	@Override
 	public void onEnable(){
-		
 		new ScoreboardStack().start();
 		new IndependentThread().start();
 		new Manager().start();
-		new Repeater().start();
 		new AsynchronouslyRepeater().start();
 		new Ticking().start();
 		new MetricsCollector().start();
@@ -75,6 +74,8 @@ public class FunnyGuilds extends JavaPlugin {
 		em.enable();
 
 		PluginManager pm = Bukkit.getPluginManager();
+		pm.registerEvents(new PacketReceive(), this);
+		
 		pm.registerEvents(new EntityDamage(), this);
 		pm.registerEvents(new EntityInteract(), this);
 		pm.registerEvents(new PlayerChat(), this);
@@ -84,13 +85,10 @@ public class FunnyGuilds extends JavaPlugin {
 		pm.registerEvents(new PlayerQuit(), this);
 		
 		pm.registerEvents(new BlockBreak(), this);
-		pm.registerEvents(new BlockExplode(), this);
 		pm.registerEvents(new BlockIgnite(), this);
 		pm.registerEvents(new BlockPlace(), this);
 		pm.registerEvents(new BucketAction(), this);
 		pm.registerEvents(new EntityExplode(), this);
-		pm.registerEvents(new ExplosionPrime(), this);
-		pm.registerEvents(new ExtendPiston(), this);
 		pm.registerEvents(new PlayerCommand(), this);
 		pm.registerEvents(new PlayerInteract(), this);
 		
@@ -106,10 +104,12 @@ public class FunnyGuilds extends JavaPlugin {
 	public void onDisable(){
 		disabling = true;
 		
+		EntityUtil.despawn();
+		PacketExtension.unregisterFunnyGuildsChannel();
 		EventManager em = EventManager.getEventManager();
 		em.disable();
 		
-		Repeater.getInstance().stop();
+		AsynchronouslyRepeater.getInstance().stop();
 		Manager.getInstance().stop();
 		Manager.getInstance().save();
 		
@@ -136,13 +136,20 @@ public class FunnyGuilds extends JavaPlugin {
 	}
 	
 	private void patch(){
-		for(Player p : Bukkit.getOnlinePlayers()){
-			User user = User.get(p);
+		for(final Player player : Bukkit.getOnlinePlayers()){
+			Bukkit.getScheduler().runTask(this, new Runnable(){
+				@Override
+				public void run(){
+					PacketExtension.registerPlayer(player);
+				}
+			});
+			User user = User.get(player);
 			user.getScoreboard();
 			user.getDummy();
 			user.getRank();
 		}
 		for(Guild guild : GuildUtils.getGuilds()){
+			EntityUtil.spawn(guild);
 			guild.getRank();
 		}
 	}

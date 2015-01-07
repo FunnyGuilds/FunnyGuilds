@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
@@ -9,7 +10,6 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -32,7 +32,7 @@ public class AxcKick implements Executor {
 		}
 		
 		User user = User.get(args[0]);
-		OfflinePlayer offline = Bukkit.getOfflinePlayer(user.getName());
+		OfflineUser offline = user.getOfflineUser();
 		Player p = Bukkit.getPlayer(user.getName());
 		
 		if(!user.hasGuild()){

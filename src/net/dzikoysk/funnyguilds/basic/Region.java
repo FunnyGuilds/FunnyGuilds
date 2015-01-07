@@ -207,7 +207,7 @@ public class Region implements Basic {
 	@Override
 	public boolean changed(){
 		boolean c = changes;
-		this.changes = false;
+		if(c) this.changes = false;
 		return c;
 	}
 	

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -10,7 +11,6 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,7 +18,6 @@ public class AxcAdd implements Executor {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		
 		Messages m = Messages.getInstance();
 		Player player = (Player) sender;
 		
@@ -39,7 +38,7 @@ public class AxcAdd implements Executor {
 		
 		String tag = args[0];
 		User user = User.get(args[1]);
-		OfflinePlayer offline = Bukkit.getOfflinePlayer(user.getName());
+		OfflineUser offline = user.getOfflineUser();
 		
 		if(user.hasGuild()){
 			player.sendMessage(ChatColor.RED + "Ten gracz ma juz gildie!");
@@ -47,7 +46,6 @@ public class AxcAdd implements Executor {
 		}
 		
 		Guild guild = GuildUtils.byTag(tag);
-		
 		if(guild == null){
 			player.sendMessage(ChatColor.RED + "Taka gildia nie istnieje!");
 			return;

@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Data;
-import net.dzikoysk.funnyguilds.util.PacketUtils;
+import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -52,14 +52,14 @@ public class PlayerListManager {
 			String[] ss = new String[ps.length];
 			for(int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
 			pl.init(true);
-			PacketUtils.sendPacket(player, packets(ss, false));
-			PacketUtils.sendPacket(player, packets(scheme, true));
+			PacketSender.sendPacket(player, packets(ss, false));
+			PacketSender.sendPacket(player, packets(scheme, true));
 		}
 		if(patch){
 			Player[] ps = Bukkit.getOnlinePlayers();
 			String[] ss = new String[ps.length];
 			for(int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
-			PacketUtils.sendPacket(player, packets(ss, false));
+			PacketSender.sendPacket(player, packets(ss, false));
 		}
 		try {
 			player.setScoreboard(sb);
@@ -71,7 +71,7 @@ public class PlayerListManager {
 	
 	private static Object[] packets(String[] ss, boolean b) {
 		Object[] packets = new Object[ss.length];
-		for(int i = 0; i < ss.length; i++) packets[i] = PacketUtils.getPacket(ss[i], b, ping);
+		for(int i = 0; i < ss.length; i++) packets[i] = PacketSender.getPacket(ss[i], b, ping);
 		return packets;
 	}
 	

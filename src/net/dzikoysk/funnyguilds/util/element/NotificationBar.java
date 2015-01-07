@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.ReflectionUtils;
+import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -64,10 +64,10 @@ public class NotificationBar {
 
     private static void sendPacket(Player player, Object packet) {
         try {
-            Object nmsPlayer = ReflectionUtils.getHandle(player);
+            Object nmsPlayer = Reflections.getHandle(player);
             Field connectionField = nmsPlayer.getClass().getField("playerConnection");
             Object connection = connectionField.get(nmsPlayer);
-            Method sendPacket = ReflectionUtils.getMethod(connection.getClass(), "sendPacket");
+            Method sendPacket = Reflections.getMethod(connection.getClass(), "sendPacket");
             sendPacket.invoke(connection, packet);
         }
         catch (Exception e) {
@@ -100,7 +100,7 @@ public class NotificationBar {
             this.y = loc.getBlockY();
             this.z = loc.getBlockZ();
             this.health = percent * MAX_HEALTH;
-            this.world = ReflectionUtils.getHandle(loc.getWorld());
+            this.world = Reflections.getHandle(loc.getWorld());
         }
 
         public void setHealth(float percent) {
@@ -112,25 +112,25 @@ public class NotificationBar {
         }
 
         public Object getSpawnPacket() {
-            Class<?> Entity = ReflectionUtils.getCraftClass("Entity");
-            Class<?> EntityLiving = ReflectionUtils.getCraftClass("EntityLiving");
-            Class<?> EntityEnderDragon = ReflectionUtils.getCraftClass("EntityEnderDragon");
+            Class<?> Entity = Reflections.getCraftClass("Entity");
+            Class<?> EntityLiving = Reflections.getCraftClass("EntityLiving");
+            Class<?> EntityEnderDragon = Reflections.getCraftClass("EntityEnderDragon");
 
             try{
-                dragon = EntityEnderDragon.getConstructor(ReflectionUtils.getCraftClass("World")).newInstance(world);
+                dragon = EntityEnderDragon.getConstructor(Reflections.getCraftClass("World")).newInstance(world);
 
-                ReflectionUtils.getMethod(EntityEnderDragon, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
-                ReflectionUtils.getMethod(EntityEnderDragon, "setInvisible", boolean.class).invoke(dragon, visible);
-                ReflectionUtils.getMethod(EntityEnderDragon, "setCustomName", String.class ).invoke(dragon, name);
-                ReflectionUtils.getMethod(EntityEnderDragon, "setHealth", float.class).invoke(dragon, health);
+                Reflections.getMethod(EntityEnderDragon, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
+                Reflections.getMethod(EntityEnderDragon, "setInvisible", boolean.class).invoke(dragon, visible);
+                Reflections.getMethod(EntityEnderDragon, "setCustomName", String.class ).invoke(dragon, name);
+                Reflections.getMethod(EntityEnderDragon, "setHealth", float.class).invoke(dragon, health);
 
-                ReflectionUtils.getField(Entity, "motX").set(dragon, xvel);
-                ReflectionUtils.getField(Entity, "motY").set(dragon, yvel);
-                ReflectionUtils.getField(Entity, "motZ").set(dragon, zvel);
+                Reflections.getField(Entity, "motX").set(dragon, xvel);
+                Reflections.getField(Entity, "motY").set(dragon, yvel);
+                Reflections.getField(Entity, "motZ").set(dragon, zvel);
 
-                this.id = (Integer) ReflectionUtils.getMethod(EntityEnderDragon, "getId").invoke(dragon);
+                this.id = (Integer) Reflections.getMethod(EntityEnderDragon, "getId").invoke(dragon);
 
-                Class<?> packetClass = ReflectionUtils.getCraftClass("PacketPlayOutSpawnEntityLiving");
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
                 return packetClass.getConstructor(new Class<?>[]{ EntityLiving }).newInstance(dragon);
             }
             catch(Exception e){
@@ -141,7 +141,7 @@ public class NotificationBar {
 
         public Object getDestroyPacket(){
             try{
-                Class<?> packetClass = ReflectionUtils.getCraftClass("PacketPlayOutEntityDestroy");
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
                 return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
             }
             catch(Exception e){
@@ -152,8 +152,8 @@ public class NotificationBar {
 
         public Object getMetaPacket(Object watcher){
             try{
-                Class<?> watcherClass = ReflectionUtils.getCraftClass("DataWatcher");
-                Class<?> packetClass = ReflectionUtils.getCraftClass("PacketPlayOutEntityMetadata");
+                Class<?> watcherClass = Reflections.getCraftClass("DataWatcher");
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
                 return packetClass.getConstructor(new Class<?>[] { int.class, watcherClass, boolean.class }).newInstance(id, watcher, true);
             }
             catch(Exception e){
@@ -164,7 +164,7 @@ public class NotificationBar {
 
         public Object getTeleportPacket(Location loc){
             try{
-                Class<?> packetClass = ReflectionUtils.getCraftClass("PacketPlayOutEntityTeleport");
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityTeleport");
                 return packetClass.getConstructor(new Class<?>[] { int.class, int.class, int.class, int.class, byte.class, byte.class }).newInstance(
                         this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
             }
@@ -175,12 +175,12 @@ public class NotificationBar {
         }
 
         public Object getWatcher(){
-            Class<?> Entity = ReflectionUtils.getCraftClass("Entity");
-            Class<?> DataWatcher = ReflectionUtils.getCraftClass("DataWatcher");
+            Class<?> Entity = Reflections.getCraftClass("Entity");
+            Class<?> DataWatcher = Reflections.getCraftClass("DataWatcher");
 
             try{
                 Object watcher = DataWatcher.getConstructor(new Class<?>[] { Entity }).newInstance(dragon);
-                Method a = ReflectionUtils.getMethod(DataWatcher, "a", new Class<?>[] { int.class, Object.class });
+                Method a = Reflections.getMethod(DataWatcher, "a", new Class<?>[] { int.class, Object.class });
 
                 a.invoke(watcher, 0, visible ? (byte) 0 : (byte) 0x20);
                 a.invoke(watcher, 6, (Float) health);

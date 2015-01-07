@@ -47,6 +47,7 @@ public class DatabaseGuild {
 			StringBuilder update = new StringBuilder();
 			update.append("DELETE FROM guilds WHERE name='");
 			update.append(guild.getName());
+			update.append("'");
 			db.executeUpdate(update.toString());
 			db.closeConnection();
 		}
