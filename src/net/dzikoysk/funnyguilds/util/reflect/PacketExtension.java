@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.util.reflect;
 
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
 import net.dzikoysk.funnyguilds.util.reflect.event.PacketReceiveEvent;
-import net.dzikoysk.funnyguilds.util.reflect.event.PacketSendEvent;
 import net.minecraft.util.io.netty.channel.Channel;
 import net.minecraft.util.io.netty.channel.ChannelPipeline;
 import net.minecraft.util.io.netty.channel.ChannelPromise;
@@ -47,20 +46,22 @@ public class PacketExtension {
 		Channel c = getChannel(p);
 		ChannelHandler handler = new ChannelDuplexHandler() {
 			@Override
-			public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception{
-				PacketSendEvent event = new PacketSendEvent(msg, p);
-				Bukkit.getPluginManager().callEvent(event);
-				if (event.isCancelled() || event.getPacket() == null) return;
-				super.write(ctx, event.getPacket(), promise);
+			public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception{
+				if(msg == null) return;
+				super.write(ctx, msg, promise);
 			}
 			@Override
-			public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+			public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+				if(msg == null) return;
 				PacketReceiveEvent event = new PacketReceiveEvent(msg, p);
 				Bukkit.getPluginManager().callEvent(event);
 				if (event.isCancelled() || event.getPacket() == null) return;
-				super.channelRead(ctx, event.getPacket());
+				try {
+					super.channelRead(ctx, event.getPacket());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
-
 		};
 		ChannelPipeline cp = c.pipeline();
 		cp.addBefore("packet_handler", "FunnyGuilds", handler);

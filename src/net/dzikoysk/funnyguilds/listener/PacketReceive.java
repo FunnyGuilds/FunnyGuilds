@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener;
 
 import java.util.Map.Entry;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.command.ExcInfo;
 import net.dzikoysk.funnyguilds.system.war.WarSystem;
@@ -10,7 +9,6 @@ import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import net.dzikoysk.funnyguilds.util.reflect.event.PacketReceiveEvent;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,12 +27,7 @@ public class PacketReceive implements Listener {
 			for(final Entry<Guild, Integer> entry : EntityUtil.map.entrySet()){
 				if(!entry.getValue().equals(id)) continue;
 				if(action == 1) WarSystem.getInstance().attack(player, entry.getKey());
-				else Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable(){
-					@Override
-					public void run(){
-						new ExcInfo().execute(player, new String[] { entry.getKey().getTag() });
-					}
-				});
+				else new ExcInfo().execute(player, new String[] { entry.getKey().getTag() });
 			}
 		} catch (Exception e){
 			e.printStackTrace();
