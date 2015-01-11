@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
+import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
@@ -17,9 +18,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.EnderCrystal;
-import org.bukkit.entity.Entity;
-import org.bukkit.util.Vector;
 
 public class GuildUtils {
 	
@@ -35,9 +33,7 @@ public class GuildUtils {
 				final Region region = RegionUtils.get(guild.getRegion());
 				if(region != null){
 					if(Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")){
-						Vector v = region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector();
-						for(Entity e : region.getCenter().getWorld().getEntitiesByClass(EnderCrystal.class))
-							if(e.getLocation().getBlock().getLocation().toVector().equals(v)) e.remove();
+						EntityUtil.despawn(guild);
 					} else {
 						Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
 						if(block.getLocation().getBlockY() > 1) block.setType(Material.AIR);

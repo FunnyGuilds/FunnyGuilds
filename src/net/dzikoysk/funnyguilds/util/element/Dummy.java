@@ -13,27 +13,31 @@ import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Dummy {
 	
+	private static String name = "points";
 	private final User user;
 	
 	public Dummy(User user){
 		this.user = user;
-		this.user.setDummy(this);
 		this.initialize();
 	}
 
 	public void updateScore(User user){
+		if(!Settings.getInstance().dummyEnable) return;
 		Scoreboard scoreboard = this.user.getScoreboard();
-		Objective objective = scoreboard.getObjective("points");
-		if(objective == null) objective = initialize();
-		OfflineUser offline = user.getOfflineUser();
-		objective.getScore(offline).setScore(user.getRank().getPoints());
+		Objective objective = scoreboard.getObjective(name);
+		if(objective == null || !objective.getName().equals(name)) initialize();
+		else {
+			OfflineUser offline = user.getOfflineUser();
+			objective.getScore(offline).setScore(user.getRank().getPoints());
+		}
 	}
 	
-	private Objective initialize(){
+	private void initialize(){
+		if(!Settings.getInstance().dummyEnable) return;
 		Scoreboard scoreboard = this.user.getScoreboard();
-		Objective objective = scoreboard.getObjective("points");
-		if(objective == null){
-			objective = scoreboard.registerNewObjective("points", "dummy");
+		Objective objective = scoreboard.getObjective(name);
+		if(objective == null || !objective.getName().equals(name)){
+			objective = scoreboard.registerNewObjective(name, "dummy");
 			objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 			objective.setDisplayName(Settings.getInstance().dummySuffix);
 		}
@@ -42,6 +46,5 @@ public class Dummy {
 			Score score = objective.getScore(user.getOfflineUser());
 			score.setScore(user.getRank().getPoints());
 		}
-		return objective;
 	}
 }

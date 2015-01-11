@@ -17,7 +17,8 @@ public class RegionUtils {
 	public static Region get(String name){
 		if(name == null) return null;
 		for(Region region : regions)
-			if(region != null && region.getName().equalsIgnoreCase(name)) return region;
+			if(region != null && region.getName() != null && region.getName().equalsIgnoreCase(name)) 
+				return region;
 		return null;
 	}
 	

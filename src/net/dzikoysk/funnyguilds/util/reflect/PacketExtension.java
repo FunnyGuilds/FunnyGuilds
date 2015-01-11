@@ -69,7 +69,10 @@ public class PacketExtension {
 
 	public static void unregisterFunnyGuildsChannel() {
 		for(Player player : Bukkit.getOnlinePlayers()){
-			getChannel(player).pipeline().remove("FunnyGuilds");
+			Channel c = getChannel(player);
+			if(c == null || c.pipeline() == null) continue;
+			ChannelPipeline cp = c.pipeline();
+			if(cp.names().contains("FunnyGuilds")) cp.remove("FunnyGuilds");
 		}
 	}
 

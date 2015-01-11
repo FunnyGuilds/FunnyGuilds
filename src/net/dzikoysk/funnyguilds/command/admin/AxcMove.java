@@ -11,16 +11,14 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.EnderCrystal;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 public class AxcMove implements Executor {
 
@@ -68,9 +66,7 @@ public class AxcMove implements Executor {
 		if(region == null) region = new Region(guild, loc, s.regionSize);
 		else {
 			if(s.createStringMaterial.equalsIgnoreCase("ender crystal")){
-				Vector v = region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector();
-				for(Entity e : region.getCenter().getWorld().getEntitiesByClass(EnderCrystal.class))
-					if(e.getLocation().getBlock().getLocation().toVector().equals(v)) e.remove();
+				EntityUtil.despawn(guild);
 			} else {
 				Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
 				if(block.getLocation().getBlockY() > 1) block.setType(Material.AIR);
@@ -85,7 +81,7 @@ public class AxcMove implements Executor {
 		if(s.createMaterial != null && s.createMaterial != Material.AIR)
 			loc.getBlock().getRelative(BlockFace.DOWN).setType(s.createMaterial);
 		else if(s.createStringMaterial.equalsIgnoreCase("ender crystal"))
-			loc.getWorld().spawn(loc.getBlock().getLocation().toVector().toLocation(loc.getWorld()), EnderCrystal.class);
+			EntityUtil.spawn(guild);
 		
 		player.sendMessage(StringUtils.colored("&7Przeniesiono teren gildii &a" + guild.getName() + "&7!"));
 		return;

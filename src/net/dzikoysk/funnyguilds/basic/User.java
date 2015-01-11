@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.element.Dummy;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.util.element.PlayerList;
@@ -180,7 +179,7 @@ public class User implements Basic {
 	}
 	
 	public Dummy getDummy(){
-		if(this.dummy == null && Settings.getInstance().dummyEnable) new Dummy(this);
+		if(this.dummy == null) this.dummy = new Dummy(this);
 		return this.dummy;
 	}
 	
