@@ -16,9 +16,12 @@ public class PlayerLogin implements Listener {
 	@EventHandler
 	public void onLogin(PlayerLoginEvent event){
 		if(Bukkit.hasWhitelist()) return;
-		if(event.getPlayer().getName().matches("[a-zA-Z]+"))
-			event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick zawiera niedozwolone znaki!"));
+		String name = event.getPlayer().getName();
+		if(name.length() < 3) event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick jest za krotki!"));
+		if(name.length() > 16) event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick jest za dlugi!"));
+		if(!name.matches("[a-zA-Z0-9_]+")) event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick zawiera niedozwolone znaki!"));
 		if(!UserUtils.playedBefore(event.getPlayer().getName())) return;
+		
 		User user = User.get(event.getPlayer());
 		if(!user.isBanned()) return;
 		if(!BanUtils.check(user)) return;
