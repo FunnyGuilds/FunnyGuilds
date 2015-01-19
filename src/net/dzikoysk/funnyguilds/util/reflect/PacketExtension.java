@@ -46,12 +46,12 @@ public class PacketExtension {
 		Channel c = getChannel(p);
 		ChannelHandler handler = new ChannelDuplexHandler() {
 			@Override
-			public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception{
+			public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception{
 				if(msg == null) return;
 				super.write(ctx, msg, promise);
 			}
 			@Override
-			public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+			public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 				if(msg == null) return;
 				PacketReceiveEvent event = new PacketReceiveEvent(msg, p);
 				Bukkit.getPluginManager().callEvent(event);
@@ -64,7 +64,8 @@ public class PacketExtension {
 			}
 		};
 		ChannelPipeline cp = c.pipeline();
-		cp.addBefore("packet_handler", "FunnyGuilds", handler);
+		if(cp.names().contains("packet_handler"))
+			cp.addBefore("packet_handler", "FunnyGuilds", handler);
 	}
 
 	public static void unregisterFunnyGuildsChannel() {

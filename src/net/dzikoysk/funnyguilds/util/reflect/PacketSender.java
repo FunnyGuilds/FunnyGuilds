@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.util.reflect;
 import java.lang.reflect.Method;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,18 +11,6 @@ public class PacketSender {
 	
 	private static final String packageName = Bukkit.getServer().getClass().getPackage().getName();
 	private static final String version = packageName.substring(packageName.lastIndexOf(".") + 1);
-	
-	private static final Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutPlayerInfo");
-	private static final Class<?>[] typesClass = new Class<?>[] { String.class, boolean.class, int.class };
-	private static int type = 0;
-	
-	static{
-		try {
-			if(packetClass.getConstructor(typesClass) == null) type = 1;
-		} catch (Exception e) {
-			type = 1;
-		}
-	}
 	
 	public static void sendPacket(Player player, Object... os){
 		sendPacket(new Player[]{ player }, os);
@@ -48,28 +35,5 @@ public class PacketSender {
 			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
 	}
-	
-	public static Object getPacket(String s, boolean b, int i){
-		if(type == 0){
-			try {
-				return packetClass.getConstructor(typesClass).newInstance(s, b, i);
-			} catch (Exception e){
-				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-			}
-		}else{
-			try {
-				Class<?> clazz = Reflections.getCraftClass("PacketPlayOutPlayerInfo");
-				Object packet = packetClass.getConstructor().newInstance();
-				Reflections.getPrivateField(clazz, "username").set(packet, s);
-				Reflections.getPrivateField(clazz, "gamemode").set(packet, 1);
-				Reflections.getPrivateField(clazz, "ping").set(packet, i);
-				Reflections.getPrivateField(clazz, "player").set(packet, new OfflineUser(s).getProfile());
-				if(!b) Reflections.getPrivateField(clazz, "action").set(packet, 4);
-				return packet;
-			} catch (Exception e){
-				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-			}
-		}
-		return null;
-	}
+
 }

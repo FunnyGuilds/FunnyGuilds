@@ -55,8 +55,8 @@ public class PlayerDeath implements Listener {
 		IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
 		
 		if(Settings.getInstance().mysql){
-			if(victim.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim.getGuild());
-			if(attacker.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, attacker.getGuild());
+			if(victim.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
+			if(attacker.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, attacker.getGuild());
 			IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
 			IndependentThread.action(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
 		}

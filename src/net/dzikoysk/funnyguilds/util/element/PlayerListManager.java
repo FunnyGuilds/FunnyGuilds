@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
+import net.dzikoysk.funnyguilds.util.reflect.transition.PacketPlayOutPlayerInfo;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -71,7 +72,7 @@ public class PlayerListManager {
 	
 	private static Object[] packets(String[] ss, boolean b) {
 		Object[] packets = new Object[ss.length];
-		for(int i = 0; i < ss.length; i++) packets[i] = PacketSender.getPacket(ss[i], b, ping);
+		for(int i = 0; i < ss.length; i++) packets[i] = PacketPlayOutPlayerInfo.getPacket(ss[i], b, ping);
 		return packets;
 	}
 	
