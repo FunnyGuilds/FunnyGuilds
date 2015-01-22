@@ -48,9 +48,12 @@ public class FunnyGuilds extends JavaPlugin {
 	private static Thread thread;
 	private boolean disabling;
 	
+	public FunnyGuilds(){
+		funnyguilds = this;
+	}
+	
 	@Override
 	public void onLoad(){
-		funnyguilds = this;
 		thread = Thread.currentThread();
 		
 		new Reloader().init();
@@ -220,6 +223,7 @@ public class FunnyGuilds extends JavaPlugin {
 	}
 	
 	public static FunnyGuilds getInstance(){
+		if(funnyguilds == null) return new FunnyGuilds();
 		return funnyguilds;
 	}
 }

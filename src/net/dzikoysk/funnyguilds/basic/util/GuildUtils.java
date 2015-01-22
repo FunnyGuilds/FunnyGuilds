@@ -25,36 +25,36 @@ public class GuildUtils {
 	
 	public static void deleteGuild(final Guild guild){
 		if(guild == null) return;
-		Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable(){
-			@Override
-			public void run(){
-				Manager.getInstance().stop();
-				guild.delete();
-				final Region region = RegionUtils.get(guild.getRegion());
-				if(region != null){
-					if(Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")){
-						EntityUtil.despawn(guild);
-					} else {
+		Manager.getInstance().stop();
+		guild.delete();
+		final Region region = RegionUtils.get(guild.getRegion());
+		if(region != null){
+			if(Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")){
+				EntityUtil.despawn(guild);
+			} else {
+				Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable(){
+					@Override
+					public void run(){
 						Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
 						if(block.getLocation().getBlockY() > 1) block.setType(Material.AIR);
 					}
-				}
-				IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_GUILD, guild);
-				for(String name : guild.getRegions()){
-					Region r = RegionUtils.get(name);
-					if(r != null) RegionUtils.delete(r);
-				}
-				UserUtils.removeGuild(guild.getMembers());
-				RankManager.getInstance().remove(guild);
-				RegionUtils.delete(Region.get(guild.getRegion()));
-				for(Guild g : guild.getAllies()) g.removeAlly(guild);
-				for(Guild g : guild.getEnemies()) g.removeEnemy(guild);
-				if(Settings.getInstance().flat) Flat.getGuildFile(guild).delete();
-				if(Settings.getInstance().mysql) new DatabaseGuild(guild).delete();
-				guild.delete();
-				Manager.getInstance().start();
+				});
 			}
-		});
+		}
+		IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_GUILD, guild);
+		for(String name : guild.getRegions()){
+			Region r = RegionUtils.get(name);
+			if(r != null) RegionUtils.delete(r);
+		}
+		UserUtils.removeGuild(guild.getMembers());
+		RankManager.getInstance().remove(guild);
+		RegionUtils.delete(Region.get(guild.getRegion()));
+		for(Guild g : guild.getAllies()) g.removeAlly(guild);
+		for(Guild g : guild.getEnemies()) g.removeEnemy(guild);
+		if(Settings.getInstance().flat) Flat.getGuildFile(guild).delete();
+		if(Settings.getInstance().mysql) new DatabaseGuild(guild).delete();
+		guild.delete();
+		Manager.getInstance().start();
 	}
 
 	
