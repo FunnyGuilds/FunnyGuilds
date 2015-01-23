@@ -24,7 +24,8 @@ public class RankManager {
 	}
 	
 	public void update(Guild guild) {
-		if(!this.guilds.contains(guild.getRank())) this.guilds.add(guild.getRank());
+		if(!this.guilds.contains(guild.getRank()) && guild.getMembers().size() > 3)
+			this.guilds.add(guild.getRank());
 		Collections.sort(this.guilds);
 	}
 	
@@ -43,6 +44,7 @@ public class RankManager {
 	}
 	
 	public int getPosition(Guild guild) {
+		if(guild.getMembers().size() < 4) return 0;
 		return this.guilds.indexOf(guild.getRank()) + 1;
 	}
 	

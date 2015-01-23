@@ -121,8 +121,6 @@ public class Rank implements Comparable<Rank> {
 	
 	@Override
 	public int compareTo(Rank rank) {
-		if(rank.getGuild() != null)
-			if(rank.getGuild().getMembers().size() < 4) return -1;
 		int i = Integer.compare(rank.getPoints(), getPoints());
 		if(i == 0){
 			if(idns == null) return -1;
