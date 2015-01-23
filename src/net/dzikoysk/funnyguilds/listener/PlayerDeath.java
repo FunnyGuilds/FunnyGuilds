@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -49,17 +50,23 @@ public class PlayerDeath implements Listener {
 		attacker.getRank().addPoints(points);
 		attacker.setLastVictim(victim);
 		
+		if(Settings.getInstance().mysql){
+			if(victim.hasGuild()){
+				Guild guild = victim.getGuild();
+				IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, guild);
+			}
+			if(attacker.hasGuild()){
+				Guild guild = attacker.getGuild();
+				IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, guild);
+			}
+			IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
+			IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
+		}
+		
 		IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, victim);
 		IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, attacker);
 		IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
 		IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
-		
-		if(Settings.getInstance().mysql){
-			if(victim.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
-			if(attacker.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, attacker.getGuild());
-			IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
-			IndependentThread.action(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
-		}
 		
 		String death = Messages.getInstance().getMessage("rankDeathMessage");
 		death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());

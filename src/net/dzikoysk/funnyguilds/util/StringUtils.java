@@ -9,7 +9,8 @@ import org.bukkit.ChatColor;
 public class StringUtils {
 	
 	public static String replace(String text, String searchString, String replacement) {
-	    if (text == null || text.isEmpty() || searchString.isEmpty() || replacement == null) return text;
+	    if (text == null || text.isEmpty() || searchString.isEmpty()) return text;
+	    if(replacement == null) replacement = "";
 
 	    int start = 0;
 	    int max = -1;
