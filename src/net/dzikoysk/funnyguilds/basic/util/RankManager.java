@@ -24,9 +24,9 @@ public class RankManager {
 	}
 	
 	public void update(Guild guild) {
-		if(!this.guilds.contains(guild.getRank()) && guild.getMembers().size() > 3)
-			this.guilds.add(guild.getRank());
-		Collections.sort(this.guilds);
+		if(!this.guilds.contains(guild.getRank())) this.guilds.add(guild.getRank());
+		if(guild.getMembers().size() < 4) remove(guild);
+		else Collections.sort(this.guilds);
 	}
 	
 	public void remove(User user) {

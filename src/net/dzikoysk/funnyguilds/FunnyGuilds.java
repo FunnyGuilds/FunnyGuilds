@@ -109,8 +109,7 @@ public class FunnyGuilds extends JavaPlugin {
 		
 		EntityUtil.despawn();
 		PacketExtension.unregisterFunnyGuildsChannel();
-		EventManager em = EventManager.getEventManager();
-		em.disable();
+		EventManager.getEventManager().disable();
 		
 		AsynchronouslyRepeater.getInstance().stop();
 		Manager.getInstance().stop();
@@ -153,7 +152,7 @@ public class FunnyGuilds extends JavaPlugin {
 		}
 		for(Guild guild : GuildUtils.getGuilds()){
 			EntityUtil.spawn(guild);
-			guild.getRank();
+			guild.updateRank();
 		}
 	}
 	

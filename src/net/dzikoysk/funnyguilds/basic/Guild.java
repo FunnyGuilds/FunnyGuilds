@@ -98,6 +98,7 @@ public class Guild implements Basic {
 	
 	public void setMembers(List<User> members){
 		this.members = members;
+		this.updateRank();
 		this.changes();
 	}
 	
@@ -165,7 +166,7 @@ public class Guild implements Basic {
 	public void addMember(User user){
 		if(this.members.contains(user)) return;
 		this.members.add(user);
-		this.getRank();
+		this.updateRank();
 		this.changes();
 	}
 	
@@ -203,6 +204,7 @@ public class Guild implements Basic {
 
 	public void removeMember(User user){
 		this.members.remove(user);
+		this.updateRank();
 		this.changes();
 	}
 	
@@ -245,6 +247,11 @@ public class Guild implements Basic {
 		this.build = 0;
 		this.changes();
 		return true;
+	}
+	
+	public void updateRank(){
+		this.getRank();
+		RankManager.getInstance().update(this);;
 	}
 	
 	public UUID getUUID(){

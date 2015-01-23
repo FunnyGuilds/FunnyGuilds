@@ -64,12 +64,14 @@ public class Rank implements Comparable<Rank> {
 	public int getPoints(){
 		if(this.type == BasicType.USER) return this.points;
 		else {
-			int points = 0;
-			if(guild.getMembers().size() == 0) return 0;
-			for(User user : guild.getMembers()) points += user.getRank().getPoints();
-			int calc = points / guild.getMembers().size();
+			double points = 0;
+			int size = guild.getMembers().size();
+			if(size == 0) return 0;
+			for(User user : guild.getMembers()) 
+				points += user.getRank().getPoints();
+			double calc = points / size;
 			if(calc != this.points){
-				this.points = calc;
+				this.points = (int) calc;
 				this.basic.changes();
 			}
 			return this.points;

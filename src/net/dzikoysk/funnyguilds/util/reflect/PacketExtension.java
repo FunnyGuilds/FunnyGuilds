@@ -64,17 +64,13 @@ public class PacketExtension {
 			}
 		};
 		ChannelPipeline cp = c.pipeline();
-		if(cp.names().contains("packet_handler"))
-			cp.addBefore("packet_handler", "FunnyGuilds", handler);
+		if(cp.names().contains("packet_handler")){
+			if(cp.names().contains("FunnyGuilds")) cp.replace("FunnyGuilds", "FunnyGuilds", handler);
+			else cp.addBefore("packet_handler", "FunnyGuilds", handler);
+		}
 	}
 
 	public static void unregisterFunnyGuildsChannel() {
-		for(Player player : Bukkit.getOnlinePlayers()){
-			Channel c = getChannel(player);
-			if(c == null || c.pipeline() == null) continue;
-			ChannelPipeline cp = c.pipeline();
-			if(cp.names().contains("FunnyGuilds")) cp.remove("FunnyGuilds");
-		}
 	}
 
 }
