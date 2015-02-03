@@ -20,11 +20,9 @@ public class ExcFunnyGuilds implements Executor {
 	public void execute(final CommandSender s, String[] args){
 		if(args.length > 0){
 			if(args[0].equalsIgnoreCase("reload")){
-				if(s instanceof Player){
-					if(!s.hasPermission("funnyguilds.reload")){
-						s.sendMessage(Messages.getInstance().getMessage("permission"));
-						return;
-					}
+				if(s instanceof Player && !s.hasPermission("funnyguilds.reload")){
+					s.sendMessage(Messages.getInstance().getMessage("permission"));
+					return;
 				}
 				Thread thread = new Thread(){
 					@Override
@@ -46,6 +44,10 @@ public class ExcFunnyGuilds implements Executor {
 				else FunnyGuilds.info("Console can not use this command");
 				return;
 			}else if(args[0].equalsIgnoreCase("save-all")){
+				if(s instanceof Player && !s.hasPermission("funnyguilds.admin")){
+					s.sendMessage(Messages.getInstance().getMessage("permission"));
+					return;
+				}
 				s.sendMessage(ChatColor.GRAY + "Zapisywanie...");
 				long l = System.currentTimeMillis();
 				if(Settings.getInstance().flat)
@@ -68,7 +70,6 @@ public class ExcFunnyGuilds implements Executor {
 				return;
 			}
 			if(args[0].equalsIgnoreCase("admin") || args[0].equalsIgnoreCase("zarzadzaj")){
-				
 				return;
 			}
 		}
