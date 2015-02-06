@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.bukkit.ChatColor;
 
 public class Messages {
 	
+	public static final String NOT_FOUND = ChatColor.RED + "Message %s was not found. Please re-generate your messages.yml file!";
 	private static Messages instance;
 	private static String version = "3.0 Christmas";
 	private static File messages =  new File(FunnyGuilds.getInstance().getDataFolder(), "messages.yml");
@@ -32,8 +34,8 @@ public class Messages {
 				if(list == null) continue;
 				for(int i = 0; i < list.size(); i++){
 					list.set(i, ChatColor.translateAlternateColorCodes('&', list.get(i))
-						.replace("Ä", "")
-						.replace("Â", "")
+						.replace("Ã„", "")
+						.replace("Ã‚", "")
 					);
 				}
 				multiple.put(key, list);
@@ -41,8 +43,8 @@ public class Messages {
 			}
 			String message = ChatColor.translateAlternateColorCodes('&', pc.getString(key));
 			single.put(key, message
-				.replace("Ä", "")
-				.replace("Â", "")
+				.replace("Ã„", "")
+				.replace("Ã‚", "")
 			);
 		}
 	}
@@ -60,11 +62,19 @@ public class Messages {
 	}
 	
 	public String getMessage(String key){
-		return single.get(key);
+		if(single.containsKey(key)){
+			return single.get(key);
+		}else{
+			return String.format(Messages.NOT_FOUND, key);
+		}
 	}
 	
 	public List<String> getList(String key){
-		return multiple.get(key);
+		if(multiple.containsKey(key)){
+			return multiple.get(key);
+		}else{
+			return Arrays.asList(String.format(Messages.NOT_FOUND, key));
+		}
 	}
 	
 	public static Messages getInstance(){
