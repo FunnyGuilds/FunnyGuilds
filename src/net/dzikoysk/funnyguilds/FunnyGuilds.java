@@ -98,9 +98,13 @@ public class FunnyGuilds extends JavaPlugin {
 		if(Settings.getInstance().eventMove) pm.registerEvents(new PlayerMove(), this);
 		if(Settings.getInstance().eventPhysics) pm.registerEvents(new BlockPhysics(), this);
 		
+		if(Bukkit.getMaxPlayers() < 60) {
+			setTablistSize(Bukkit.getMaxPlayers() + (60 - Bukkit.getMaxPlayers()));
+		}
+		
 		patch();
 		update();
-		info("~ Created by & © Dzikoysk ~");
+		info("~ Created by & Â© Dzikoysk ~");
 	} 
 	
 	@Override
@@ -116,6 +120,16 @@ public class FunnyGuilds extends JavaPlugin {
 		Manager.getInstance().save();
 		
 		funnyguilds = null;
+	}
+	
+	private void setTablistSize(int size){
+		try{
+		Object playerList = Bukkit.getServer().getClass().getMethod("getHandle", new Class[0]).invoke(Bukkit.getServer(), new Object[0]);
+		Field f = playerList.getClass().getSuperclass().getDeclaredField("maxPlayers");
+		f.setAccessible(true);
+		f.setInt(playerList, size);
+		f.setAccessible(false);
+		}catch (Exception e) {}
 	}
 	
 	private void update(){
