@@ -50,8 +50,10 @@ public class Action {
 			break;
 		case MYSQL_UPDATE_USER_POINTS:
 			new DatabaseUser((User) values[0]).updatePoints();
+			break;
 		case MYSQL_UPDATE_GUILD_POINTS:
 			new DatabaseGuild((Guild) values[0]).updatePoints();
+			break;
 		case DUMMY_GLOBAL_UPDATE:
 			DummyManager.updatePlayers();
 			break;
@@ -106,7 +108,8 @@ public class Action {
 		if(this.getClass() != o.getClass()) return false;
 		Action a = (Action) o;
 		if(action != a.getActionType()) return false;
-		return Arrays.equals(values, a.getValues());
+		if(values == null && a.getValues() == null) return true;
+		return false;
 	}
 	
 }

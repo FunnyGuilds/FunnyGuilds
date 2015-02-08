@@ -1,14 +1,16 @@
-package net.dzikoysk.funnyguilds.util.configuration;
+package net.dzikoysk.funnyguilds.util.configuration.util;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
+
+import net.minecraft.util.com.google.common.base.Charsets;
+import net.minecraft.util.com.google.common.io.Files;
 
 public class ConfigurationUtils {
 	
@@ -18,15 +20,12 @@ public class ConfigurationUtils {
 	    	if(!file.exists()){
 	    		file.getParentFile().mkdirs();
 				file.createNewFile();
-	    	}	
-	    	BufferedReader br = new BufferedReader(new FileReader(file));
-	        String line = br.readLine();
-	        while (line != null) {
-	            sb.append(line);
-	            sb.append(System.lineSeparator());
-	            line = br.readLine();
-	        }
-	        br.close();
+	    	}
+	    	List<String> list = Files.readLines(file, Charsets.UTF_8);
+	    	for(String s : list){
+	    		sb.append(s);
+	    		sb.append(System.lineSeparator());
+	    	}
 	    } catch (IOException e) {
 	    	e.printStackTrace();
 		}
@@ -34,26 +33,13 @@ public class ConfigurationUtils {
 	}
 
 	public static String[] getLines(File file){
-		try{
-			if(!file.exists()){
-				file.getParentFile().mkdirs();
-				file.createNewFile();
-			}
-	    	String[] ss = new String[countLines(file.getPath()) + 1];
-	    	BufferedReader br = new BufferedReader(new FileReader(file));
-	        String line = br.readLine();
-	        int i = 0;
-	        while (line != null) {
-	            ss[i] = line;
-	            line = br.readLine();
-	            i++;
-	        }
-	        br.close();
-	        return ss;
-	    } catch (IOException e) {
-	    	e.printStackTrace();
-		}
-		return null;
+		try {
+			List<String> list = Files.readLines(file, Charsets.UTF_8);
+			String[] result = new String[list.size()];
+			return list.toArray(result);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} return null;
 	}
 	
 	public static int countLines(String filename) throws IOException {

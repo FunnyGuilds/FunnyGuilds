@@ -1,7 +1,7 @@
 ﻿#~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#        3.9.6.3 Cleaned        #
+#        3.9.6.4 Cleaned        #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -128,13 +128,13 @@ chat-points: '&b{POINTS} '
 chat-priv: '!'
 chat-ally: '!!'
 chat-global: '!!!'
-# Wyglad wiadomosci wysylanej na czacie gildii.
+# Wyglad wiadomosci wysylanej na czacie gildii
 # Zmienne: {PLAYER}, {TAG}, {MESSAGE}
 chat-priv-design: '&8[&aChat gildii&8] &7{PLAYER}&8:&f {MESSAGE}'
-# Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow.
+# Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow
 # Zmienne: {PLAYER}, {TAG}, {MESSAGE}
 chat-ally-design: '&8[&6Chat sojuszniczy&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}'
-# Wyglad wiadomosci wysylanej na czacie globalnym gildii.
+# Wyglad wiadomosci wysylanej na czacie globalnym gildii
 # Zmienne: {PLAYER}, {TAG}, {MESSAGE}
 chat-global-design: '&8[&cChat globalny gildii&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}'
 

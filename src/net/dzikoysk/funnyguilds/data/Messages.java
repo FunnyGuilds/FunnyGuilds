@@ -1,10 +1,12 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.configuration.Yamler;
 
 import org.bukkit.ChatColor;
@@ -60,11 +62,16 @@ public class Messages {
 	}
 	
 	public String getMessage(String key){
-		return single.get(key);
+		String s = single.get(key);
+		if(s == null) return StringUtils.colored("&cMessage '" + key + "' not found");
+		else return s;
 	}
 	
 	public List<String> getList(String key){
-		return multiple.get(key);
+		List<String> list = multiple.get(key);
+		if(list == null) list = new ArrayList<>(); 
+		if(list.isEmpty()) list.add(StringUtils.colored("&cMessage '" + key + "' not found"));
+		return list;
 	}
 	
 	public static Messages getInstance(){

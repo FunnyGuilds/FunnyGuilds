@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -27,13 +26,13 @@ public class PlayerDeath implements Listener {
 		User attacker = User.get(a);
 		
 		if(attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)){
-			if(attacker.getLastVictimTime() + 7200000 > System.currentTimeMillis()){
+			if(attacker.getLastVictimTime() + 7200000L > System.currentTimeMillis()){
 				v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));
 				a.sendMessage(Messages.getInstance().getMessage("rankLastVictimA"));
 				return;
 			}
 		} else if(victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)){
-			if(victim.getLastVictimTime() + 7200000 > System.currentTimeMillis()){
+			if(victim.getLastVictimTime() + 7200000L > System.currentTimeMillis()){
 				v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
 				a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
 				return;
@@ -51,14 +50,8 @@ public class PlayerDeath implements Listener {
 		attacker.setLastVictim(victim);
 		
 		if(Settings.getInstance().mysql){
-			if(victim.hasGuild()){
-				Guild guild = victim.getGuild();
-				IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, guild);
-			}
-			if(attacker.hasGuild()){
-				Guild guild = attacker.getGuild();
-				IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, guild);
-			}
+			if(victim.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
+			if(attacker.hasGuild())IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, attacker.getGuild());
 			IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
 			IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
 		}

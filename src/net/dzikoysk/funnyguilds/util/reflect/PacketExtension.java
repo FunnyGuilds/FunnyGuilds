@@ -1,19 +1,19 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
 import net.dzikoysk.funnyguilds.util.reflect.event.PacketReceiveEvent;
 import net.minecraft.util.io.netty.channel.Channel;
-import net.minecraft.util.io.netty.channel.ChannelPipeline;
-import net.minecraft.util.io.netty.channel.ChannelPromise;
 import net.minecraft.util.io.netty.channel.ChannelDuplexHandler;
 import net.minecraft.util.io.netty.channel.ChannelHandler;
 import net.minecraft.util.io.netty.channel.ChannelHandlerContext;
+import net.minecraft.util.io.netty.channel.ChannelPipeline;
+import net.minecraft.util.io.netty.channel.ChannelPromise;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 public class PacketExtension {
 
@@ -43,30 +43,34 @@ public class PacketExtension {
 	}
 
 	public static void registerPlayer(final Player p) {
-		Channel c = getChannel(p);
-		ChannelHandler handler = new ChannelDuplexHandler() {
-			@Override
-			public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception{
-				if(msg == null) return;
-				super.write(ctx, msg, promise);
-			}
-			@Override
-			public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-				if(msg == null) return;
-				PacketReceiveEvent event = new PacketReceiveEvent(msg, p);
-				Bukkit.getPluginManager().callEvent(event);
-				if (event.isCancelled() || event.getPacket() == null) return;
-				try {
-					super.channelRead(ctx, event.getPacket());
-				} catch (Exception e) {
-					e.printStackTrace();
+		try {
+			Channel c = getChannel(p);
+			ChannelHandler handler = new ChannelDuplexHandler() {
+				@Override
+				public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception{
+					if(msg == null) return;
+					super.write(ctx, msg, promise);
 				}
+				@Override
+				public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+					try {
+						if(msg == null) return;
+						PacketReceiveEvent event = new PacketReceiveEvent(msg, p);
+						Bukkit.getPluginManager().callEvent(event);
+						if (event.isCancelled() || event.getPacket() == null) return;
+						super.channelRead(ctx, event.getPacket());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			ChannelPipeline cp = c.pipeline();
+			if(cp.names().contains("packet_handler")){
+				if(cp.names().contains("FunnyGuilds")) cp.replace("FunnyGuilds", "FunnyGuilds", handler);
+				else cp.addBefore("packet_handler", "FunnyGuilds", handler);
 			}
-		};
-		ChannelPipeline cp = c.pipeline();
-		if(cp.names().contains("packet_handler")){
-			if(cp.names().contains("FunnyGuilds")) cp.replace("FunnyGuilds", "FunnyGuilds", handler);
-			else cp.addBefore("packet_handler", "FunnyGuilds", handler);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

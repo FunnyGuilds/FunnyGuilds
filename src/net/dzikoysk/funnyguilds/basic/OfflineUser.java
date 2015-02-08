@@ -84,6 +84,7 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 		return Bukkit.getServer().getBannedPlayers().contains(this);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void setBanned(boolean value) {
 		getReal().setBanned(value);
 	}

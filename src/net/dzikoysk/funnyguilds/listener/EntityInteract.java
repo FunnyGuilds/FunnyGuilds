@@ -30,7 +30,7 @@ public class EntityInteract implements Listener {
 			if(region == null) return;
 			event.setCancelled(true);
 			if(region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
-				.equals(ec.getLocation().getBlock().getLocation().toVector())){
+					.equals(ec.getLocation().getBlock().getLocation().toVector())){
 				Guild guild = region.getGuild();
 				if(guild == null) return;
 				new ExcInfo().execute(event.getPlayer(), new String[] { guild.getTag() });
