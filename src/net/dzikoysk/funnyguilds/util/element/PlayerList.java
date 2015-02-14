@@ -36,9 +36,9 @@ public class PlayerList {
 			if(s.length() <= 16) prefix[i] = s;
 			else {
 				String px = s.substring(0, 16);
-				if(px.charAt(15) == '§') px = s.substring(0, 15);
+				if(px.charAt(15) == '\u00A7') px = s.substring(0, 15);
 				String color = ChatColor.getLastColors(px);
-				if(color == null || color.isEmpty()) color = "§f";
+				if(color == null || color.isEmpty()) color = "\u00A7f";
 				String sx = color;
 				if(px.length() == 15){
 					int l = s.length();
@@ -84,6 +84,8 @@ public class PlayerList {
 			s = StringUtils.replace(s, "{HOUR}", Integer.toString(now.get(Calendar.HOUR_OF_DAY)));
 			String r = Parser.parseRank(s);
 			if(r != null) s = r;
+			prefix[i] = "";
+			suffix[i] = "";
 			ss[i] = s;
 		}
 	}

@@ -40,10 +40,11 @@ public class RegionUtils {
 			if(region.getCenter() == null) return false;
 			if(!center.getWorld().equals(region.getCenter().getWorld())) return false;
 			double distance = center.distance(region.getCenter());
-			int i = Settings.getInstance().regionSize;
-			if(Settings.getInstance().enlargeItems != null) i = Settings.getInstance().enlargeItems.size()*Settings.getInstance().enlargeSize + i;
-			if(distance < (2 * i + Settings.getInstance().regionMinDistance)) return true;
-		}
+			Settings s = Settings.getInstance();
+			int i = s.regionSize;
+			if(s.enlargeItems != null) i += s.enlargeItems.size() * s.enlargeSize;
+			return distance < (2 * i + s.regionMinDistance);
+		} 
 		return false;	
 	}
 	

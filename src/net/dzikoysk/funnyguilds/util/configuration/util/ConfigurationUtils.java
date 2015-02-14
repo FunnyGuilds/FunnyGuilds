@@ -33,7 +33,8 @@ public class ConfigurationUtils {
 	}
 
 	public static String[] getLines(File file){
-		try {
+		if(!file.exists()) return new String[0];
+		else try {
 			List<String> list = Files.readLines(file, Charsets.UTF_8);
 			String[] result = new String[list.size()];
 			return list.toArray(result);

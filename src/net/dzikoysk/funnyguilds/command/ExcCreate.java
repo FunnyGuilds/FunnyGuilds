@@ -108,7 +108,7 @@ public class ExcCreate implements Executor {
 		
 		if(c.createCenterY != 0) loc.setY(c.createCenterY);
 		int d = c.regionSize + c.createDistance;
-		if(c.enlargeItems != null) d = c.enlargeItems.size()*c.enlargeSize + d;
+		if(c.enlargeItems != null) d += c.enlargeItems.size()*c.enlargeSize;
 		if(d > p.getWorld().getSpawnLocation().distance(loc)){
 			p.sendMessage(m.getMessage("createSpawn").replace("{DISTANCE}", Integer.toString(d)));
 			return;

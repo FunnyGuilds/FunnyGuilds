@@ -17,6 +17,7 @@ public class ConfigurationFile {
 	public ConfigurationFile(File file, PandaConfiguration panda){
 		this.file = file;
 		this.panda = panda;
+		
 	}
 
 	@SuppressWarnings("unchecked")

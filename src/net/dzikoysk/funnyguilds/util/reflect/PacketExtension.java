@@ -60,7 +60,7 @@ public class PacketExtension {
 						if (event.isCancelled() || event.getPacket() == null) return;
 						super.channelRead(ctx, event.getPacket());
 					} catch (Exception e) {
-						e.printStackTrace();
+						super.channelRead(ctx, msg);
 					}
 				}
 			};
