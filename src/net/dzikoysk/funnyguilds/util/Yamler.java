@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.configuration;
+package net.dzikoysk.funnyguilds.util;
 
 import java.io.File;
 import java.io.IOException;

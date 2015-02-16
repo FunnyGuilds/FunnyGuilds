@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util;
 
-import org.bukkit.Sound;
 import org.bukkit.Note.Tone;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public enum NotePitch {

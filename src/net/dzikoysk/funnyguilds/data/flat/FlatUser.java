@@ -5,7 +5,7 @@ import java.io.File;
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.configuration.Yamler;
+import net.dzikoysk.funnyguilds.util.Yamler;
 
 public class FlatUser {
 	

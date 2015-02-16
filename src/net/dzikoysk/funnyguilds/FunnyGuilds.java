@@ -25,6 +25,7 @@ import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
 import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
+import net.dzikoysk.funnyguilds.script.ScriptManager;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
@@ -72,6 +73,7 @@ public class FunnyGuilds extends JavaPlugin {
 		new AsynchronouslyRepeater().start();
 		new Ticking().start();
 		new MetricsCollector().start();
+		new ScriptManager().start();
 		
 		EventManager em = EventManager.getEventManager();
 		em.enable();

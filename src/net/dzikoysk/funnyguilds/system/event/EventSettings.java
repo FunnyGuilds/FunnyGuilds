@@ -4,7 +4,7 @@ import java.io.File;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Manager;
-import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
+import net.dzikoysk.panda.util.configuration.PandaConfiguration;
 
 public class EventSettings {
 	

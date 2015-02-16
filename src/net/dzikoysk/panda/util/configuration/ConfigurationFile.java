@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.configuration;
+package net.dzikoysk.panda.util.configuration;
 
 import java.io.BufferedWriter;
 import java.io.File;

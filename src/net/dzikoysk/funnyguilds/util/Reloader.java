@@ -2,10 +2,10 @@ package net.dzikoysk.funnyguilds.util;
 
 import java.io.File;
 
-import org.bukkit.Bukkit;
-
 import net.dzikoysk.funnyguilds.data.Data;
-import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
+import net.dzikoysk.panda.util.configuration.PandaConfiguration;
+
+import org.bukkit.Bukkit;
 
 public class Reloader {
 	

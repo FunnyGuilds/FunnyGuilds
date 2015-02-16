@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.configuration;
+package net.dzikoysk.panda.util.configuration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.dzikoysk.funnyguilds.util.configuration.util.ConfigurationUtils;
+import net.dzikoysk.panda.util.configuration.util.ConfigurationUtils;
 
 public class PandaConfiguration {
 	

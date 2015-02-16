@@ -7,7 +7,7 @@ import java.util.List;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.configuration.Yamler;
+import net.dzikoysk.funnyguilds.util.Yamler;
 
 import org.bukkit.ChatColor;
 

@@ -14,6 +14,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class PlayerDeath implements Listener {
 	
+	private static long attackerCooldown = 7200000L;
+	public static long victimCooldown = 7200000L;
+	
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event){
 		Player v = event.getEntity();
@@ -26,13 +29,13 @@ public class PlayerDeath implements Listener {
 		User attacker = User.get(a);
 		
 		if(attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)){
-			if(attacker.getLastVictimTime() + 7200000L > System.currentTimeMillis()){
+			if(attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()){
 				v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));
 				a.sendMessage(Messages.getInstance().getMessage("rankLastVictimA"));
 				return;
 			}
 		} else if(victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)){
-			if(victim.getLastVictimTime() + 7200000L > System.currentTimeMillis()){
+			if(victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()){
 				v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
 				a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
 				return;

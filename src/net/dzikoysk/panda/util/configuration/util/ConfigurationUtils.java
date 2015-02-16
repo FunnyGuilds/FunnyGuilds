@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.configuration.util;
+package net.dzikoysk.panda.util.configuration.util;
 
 import java.io.BufferedInputStream;
 import java.io.File;

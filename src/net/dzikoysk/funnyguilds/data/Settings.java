@@ -8,9 +8,9 @@ import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
+import net.dzikoysk.panda.util.configuration.PandaConfiguration;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

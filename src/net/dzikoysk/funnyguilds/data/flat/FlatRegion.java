@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.configuration.Yamler;
+import net.dzikoysk.funnyguilds.util.Yamler;
 
 import org.bukkit.Location;
 

@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.configuration;
+package net.dzikoysk.panda.util.configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Stack;
 
-import net.dzikoysk.funnyguilds.util.configuration.util.ConfigurationUtils;
-import net.dzikoysk.funnyguilds.util.configuration.util.PandaEntry;
+import net.dzikoysk.panda.util.configuration.util.ConfigurationUtils;
+import net.dzikoysk.panda.util.configuration.util.PandaEntry;
 
 public class ConfigurationParser {
 	

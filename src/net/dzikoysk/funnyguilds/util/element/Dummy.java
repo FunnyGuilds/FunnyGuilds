@@ -1,15 +1,15 @@
 package net.dzikoysk.funnyguilds.util.element;
 
+import net.dzikoysk.funnyguilds.basic.OfflineUser;
+import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.data.Settings;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
-
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
-import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Dummy {
 	

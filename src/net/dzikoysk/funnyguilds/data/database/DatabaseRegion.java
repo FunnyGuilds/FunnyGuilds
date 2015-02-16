@@ -2,12 +2,12 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import java.sql.ResultSet;
 
-import org.bukkit.Location;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
+
+import org.bukkit.Location;
 
 public class DatabaseRegion {
 

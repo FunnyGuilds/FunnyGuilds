@@ -43,6 +43,22 @@ public class IOUtils {
 		return body;
 	}
 	
+	public static File getFile(String s, boolean folder){
+		File file = new File(s);
+		try {
+			if(!file.exists()){
+				if(folder) file.mkdirs();
+				else{
+					file.getParentFile().mkdirs();
+					file.createNewFile();
+				}
+			}
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+		return file;
+	}
+	
 	public static void delete(File f) {
 		if(!f.exists()) return;
 		if (f.isDirectory())

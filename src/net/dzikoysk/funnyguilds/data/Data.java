@@ -4,18 +4,18 @@ import java.io.File;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.bukkit.Bukkit;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
 import net.dzikoysk.funnyguilds.util.Reloader;
-import net.dzikoysk.funnyguilds.util.configuration.PandaConfiguration;
-import net.dzikoysk.funnyguilds.util.configuration.Yamler;
+import net.dzikoysk.funnyguilds.util.Yamler;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
+import net.dzikoysk.panda.util.configuration.PandaConfiguration;
+
+import org.bukkit.Bukkit;
 
 public class Data {
 	
