@@ -32,7 +32,7 @@ public class ExcBase implements Executor {
 		}
 		
 		final Guild guild = user.getGuild();
-		
+
 		if(user.getTeleportation() != null){
 			p.sendMessage(m.getMessage("baseIsTeleportation"));
 			return;

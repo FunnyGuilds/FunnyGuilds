@@ -19,6 +19,7 @@ public class ReflectionParser {
 			String line = code[i];
 			if(line == null) continue;
 			for(String part : line.split(";")){
+				if(part.startsWith("#") || part.startsWith("//")) continue;
 				Pattern p = Pattern.compile("(.*)>>(.*)=(.*)");
 				Matcher m = p.matcher(part);
 				while(m.find()){
