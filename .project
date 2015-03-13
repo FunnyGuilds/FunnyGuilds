@@ -3,6 +3,7 @@
 	<name>FunnyGuilds</name>
 	<comment></comment>
 	<projects>
+		<project>Panda</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

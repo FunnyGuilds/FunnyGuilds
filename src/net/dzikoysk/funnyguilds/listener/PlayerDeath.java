@@ -15,7 +15,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 public class PlayerDeath implements Listener {
 	
 	private static long attackerCooldown = 7200000L;
-	public static long victimCooldown = 7200000L;
+	private static long victimCooldown = 7200000L;
 	
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event){
@@ -32,12 +32,14 @@ public class PlayerDeath implements Listener {
 			if(attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()){
 				v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));
 				a.sendMessage(Messages.getInstance().getMessage("rankLastVictimA"));
+				changeMessage(event, attacker, victim, 0, 0);
 				return;
 			}
 		} else if(victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)){
 			if(victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()){
 				v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
 				a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
+				changeMessage(event, attacker, victim, 0, 0);
 				return;
 			}
 		}
@@ -64,11 +66,15 @@ public class PlayerDeath implements Listener {
 		IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
 		IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
 		
+		changeMessage(event, attacker, victim, points, points);
+	}
+	
+	private void changeMessage(PlayerDeathEvent event, User attacker, User victim, int pointsA, int pointsV){
 		String death = Messages.getInstance().getMessage("rankDeathMessage");
 		death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());
 		death = StringUtils.replace(death, "{VICTIM}", victim.getName());
-		death = StringUtils.replace(death, "{-}", Integer.toString(points));
-		death = StringUtils.replace(death, "{+}", Integer.toString(points));
+		death = StringUtils.replace(death, "{+}", Integer.toString(pointsA));
+		death = StringUtils.replace(death, "{-}", Integer.toString(pointsV));
 		death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
 		if(victim.hasGuild()) death = StringUtils.replace(death, "{VTAG}", 
 			StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
@@ -79,4 +85,11 @@ public class PlayerDeath implements Listener {
 		event.setDeathMessage(death);
 	}
 
+	public static long getAttackerCooldown(){
+		return victimCooldown;
+	}
+	
+	public static long getVictimCooldown(){
+		return victimCooldown;
+	}
 }
