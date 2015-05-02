@@ -1,7 +1,7 @@
 ﻿#~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 #                               #
 #          FunnyGuilds          #
-#        3.9.9.1 Cleaned        #
+#          4.0 Cleaned          #
 #                               #
 #~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
 
@@ -318,4 +318,4 @@ mysql:
   password: passwd
   
 # Config Version
-version: 3.5 NewYear
+version: 4.0

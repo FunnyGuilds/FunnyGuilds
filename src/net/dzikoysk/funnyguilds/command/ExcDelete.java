@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,23 +10,22 @@ import org.bukkit.entity.Player;
 public class ExcDelete implements Executor {
 	
 	@Override
-	public void execute(CommandSender s, String[] args){
-		Messages m = Messages.getInstance();
+	public void execute(CommandSender sender, String[] args){
+		Messages messages = Messages.getInstance();
+		Player player = (Player) sender;
+		User user = User.get(player);
 	   
-		Player p = (Player) s;
-		User u = User.get(p);
-	   
-		if(!u.hasGuild()){
-			p.sendMessage(m.getMessage("deleteHasNotGuild"));
+		if(!user.hasGuild()){
+			player.sendMessage(messages.getMessage("deleteHasNotGuild"));
 			return;
 		}
 	   
-		if(!u.isOwner()){
-			p.sendMessage(m.getMessage("deleteIsNotOwner"));
+		if(!user.isOwner()){
+			player.sendMessage(messages.getMessage("deleteIsNotOwner"));
 			return;
 		}
 	   
-		ConfirmationList.add(u.getUUID());
-		p.sendMessage(m.getMessage("deleteConfirm"));
+		//ConfirmationList.add(user.getUUID());
+		player.sendMessage(messages.getMessage("deleteConfirm"));
 	} 
 }

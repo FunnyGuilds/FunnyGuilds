@@ -7,7 +7,8 @@ public interface Basic {
 	public BasicType getType();
 	public String getName();
 	
-	public void changes();
-	public boolean changed();
+	public void passVariable(String... field);
+	public Object getVariable(String field) throws Exception;
+	public <T> T getVariable(String field, Class<T> clazz) throws Exception;
 	
 }

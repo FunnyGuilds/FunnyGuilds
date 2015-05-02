@@ -31,7 +31,7 @@ public class IndependentThread extends Thread {
 		} catch (InterruptedException e){
 			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
-    }
+	}
 	
 	private void execute(List<Action> actions){
 		for(Action action : actions){

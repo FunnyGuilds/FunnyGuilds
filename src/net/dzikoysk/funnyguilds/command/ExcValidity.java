@@ -22,38 +22,37 @@ public class ExcValidity implements Executor {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		Settings s = Settings.getInstance();
-		Messages m = Messages.getInstance();
-		Player p = (Player)sender;
-		User user = User.get(p);
+		Settings settings = Settings.getInstance();
+		Messages messages = Messages.getInstance();
+		Player player = (Player)sender;
+		User user = User.get(player);
 		Guild guild = user.getGuild();
 		
 		if(!user.hasGuild()){
-			p.sendMessage(m.getMessage("validityHasNotGuild"));
+			player.sendMessage(messages.getMessage("validityHasNotGuild"));
 			return;
 		}
 		
 		if(!user.isOwner() && !user.isDeputy()){
-			p.sendMessage(m.getMessage("validityIsNotOwner"));
+			player.sendMessage(messages.getMessage("validityIsNotOwner"));
 			return;
 		}
 	
-		if(s.validityWhen != 0){
+		if(settings.validityWhen != 0){
 			long c = guild.getValidity();
 			long d = c - System.currentTimeMillis();
-			if(d > s.validityWhen){
-				p.sendMessage(m.getMessage("validityWhen")
-					.replace("{TIME}", TimeUtils.getDurationBreakdown(d))
-				);
+			if(d > settings.validityWhen){
+				player.sendMessage(messages.getMessage("validityWhen")
+					.replace("{TIME}", TimeUtils.getDurationBreakdown(d)));
 				return;
 			}
 		}
 		
-		List<ItemStack> itemsList = s.validityItems;
+		List<ItemStack> itemsList = settings.validityItems;
 		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
 		for(int i = 0; i < items.length; i++){
-			if(!p.getInventory().containsAtLeast(items[i], items[i].getAmount())){
-				String msg = m.getMessage("validityItems");
+			if(!player.getInventory().containsAtLeast(items[i], items[i].getAmount())){
+				String msg = messages.getMessage("validityItems");
 				if(msg.contains("{ITEM}")){
 					StringBuilder sb = new StringBuilder();
 					sb.append(items[i].getAmount());
@@ -72,11 +71,11 @@ public class ExcValidity implements Executor {
 					}
 					msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
 				}
-				p.sendMessage(msg);
+				player.sendMessage(msg);
 				return;
 			}
 		}
-		p.getInventory().removeItem(items);
+		player.getInventory().removeItem(items);
 		
 		long c = guild.getValidity();
 		if(c == 0) c = System.currentTimeMillis();
@@ -86,9 +85,8 @@ public class ExcValidity implements Executor {
 		DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 		Date v = new Date(c);
 		
-		p.sendMessage(m.getMessage("validityDone")
-			.replace("{DATE}", date.format(v))
-		);
+		player.sendMessage(messages.getMessage("validityDone")
+			.replace("{DATE}", date.format(v)));
 	}
 
 }

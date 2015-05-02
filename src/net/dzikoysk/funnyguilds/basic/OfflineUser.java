@@ -7,17 +7,16 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.minecraft.util.com.mojang.authlib.GameProfile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
 
 import com.google.common.base.Charsets;
+import com.mojang.authlib.GameProfile;
 
 @SerializableAs("Player")
 public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
@@ -36,12 +35,12 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 				this.profile = GameProfile.class.getConstructor(new Class<?>[]{ 
 					String.class, 
 					String.class 
-				}).newInstance(uuid.toString(), name);	
+				}).newInstance(this.uuid.toString(), name);	
 			else if(type == 2)
 				this.profile = GameProfile.class.getConstructor(new Class<?>[]{ 
 					UUID.class,
 					String.class 
-				}).newInstance(uuid, name);
+				}).newInstance(this.uuid, name);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,52 +50,59 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 		return this.profile;
 	}
 
+	@Override
 	public boolean isOnline() {
 		return getPlayer() != null;
 	}
 
+	@Override
 	public String getName() {
-		return name;
+		return this.name;
 	}
 	
-	public String getUniqueId() {
-		return uuid.toString();
+	@Override
+	public UUID getUniqueId() {
+		return this.uuid;
 	}
-	
-	public Server getServer() {
-		return Bukkit.getServer();
-	}
-	
+
+	@SuppressWarnings("deprecation")
 	public OfflinePlayer getReal(){
 		return Bukkit.getOfflinePlayer(getName());
 	}
 	
+	@Override
 	public boolean isOp() {
 		return getReal().isOp();
 	}
 	
+	@Override
 	public void setOp(boolean b) {
 		getReal().setOp(b);
 	}
 	
+	@Override
 	public boolean isBanned() {
 		if (getName() == null) return false;
 		return Bukkit.getServer().getBannedPlayers().contains(this);
 	}
 	
+	@Override
 	@SuppressWarnings("deprecation")
 	public void setBanned(boolean value) {
 		getReal().setBanned(value);
 	}
 	
+	@Override
 	public boolean isWhitelisted(){
 		return Bukkit.getWhitelistedPlayers().contains(this);
 	}
 	
+	@Override
 	public void setWhitelisted(boolean value) {
 		Bukkit.getWhitelistedPlayers().add(this);
 	}
 	
+	@Override
 	public Map<String, Object> serialize(){
 		Map<String, Object> result = new LinkedHashMap<>();
 		result.put("UUID", this.profile.getId().toString());
@@ -109,15 +115,18 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 		return new OfflineUser((String)args.get("name"));
 	}
 		
+	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "[UUID=" + this.profile.getId() + "]";
 	}
 		
+	@Override
 	public Player getPlayer() {
 		if(getName() == null) return null;
 		return Bukkit.getPlayer(getName());
 	}
 	
+	@Override
 	public boolean equals(Object obj) {
 		if(obj instanceof OfflinePlayer){
 			return ((OfflinePlayer) obj).getName().equalsIgnoreCase(this.getName());
@@ -125,28 +134,33 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 		return false;
 	}
 	
+	@Override
 	public int hashCode(){
 		int hash = 5;
 		hash = 97 * hash + (getUniqueId() != null ? getUniqueId().hashCode() : 0);
 		return hash;
 	}
 	
+	@Override
 	public long getFirstPlayed(){
 		Player player = getPlayer();
 		if (player != null) return player.getFirstPlayed();	
 		return 0L;
 	}
 	
+	@Override
 	public long getLastPlayed(){
 		Player player = getPlayer();
 		if (player != null) return player.getLastPlayed();	
 		return 0L;
 	}
 	
+	@Override
 	public boolean hasPlayedBefore(){
 		return this.getLastPlayed() != 0;
 	}
 	
+	@Override
 	public Location getBedSpawnLocation() {
 		return getReal().getBedSpawnLocation();
 	}
@@ -160,4 +174,5 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 			else FunnyGuilds.error("GameProfile constructor not found!");
 		}
 	}
+	
 }

@@ -9,4 +9,5 @@ public class ItemUtils {
 		if(is1 == null || is2 == null) return false;
 		return is1.getType().equals(is2.getType()) && is1.getDurability() == is2.getDurability();
 	}
+	
 }

@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.basic.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
-import net.dzikoysk.funnyguilds.data.flat.Flat;
 
 import org.bukkit.Location;
 
@@ -16,21 +15,19 @@ public class RegionUtils {
 	
 	public static Region get(String name){
 		if(name == null) return null;
-		for(Region region : regions)
+		for(Region region : regions) 
 			if(region != null && region.getName() != null && region.getName().equalsIgnoreCase(name)) 
 				return region;
 		return null;
 	}
 	
 	public static boolean isIn(Location loc){
-		for(Region region : regions) 
-			if(region.isIn(loc)) return true;
+		for(Region region : regions) if(region.isIn(loc)) return true;
 		return false;
 	}
 	
 	public static Region getAt(Location loc){
-		for(Region region : regions) 
-			if(region.isIn(loc)) return region;
+		for(Region region : regions) if(region.isIn(loc)) return region;
 		return null;
 	}
 	
@@ -49,22 +46,14 @@ public class RegionUtils {
 	}
 	
 	public static void delete(Region region){
-		if(Settings.getInstance().flat) Flat.getRegionFile(region).delete();
-		if(Settings.getInstance().mysql) new DatabaseRegion(region).delete();
+		// TODO
+		//if(Settings.getInstance().flat) Flat.getRegionFile(region).delete();
+		//if(Settings.getInstance().mysql) new DatabaseRegion(region).delete();
 		region.delete();
 	}
 	
-	public static List<Region> getRegions(){
+	public static Collection<Region> getRegions(){
 		return new ArrayList<Region>(regions);
-	}
-	
-	public static List<String> getNames(List<Region> lsg){
-		List<String> list = new ArrayList<>();
-		if(lsg == null) return list;
-		for(Region r : lsg){
-			if(r != null && r.getName() != null) list.add(r.getName());
-		}
-		return list;
 	}
 	
 	public static void addRegion(Region region){

@@ -9,11 +9,11 @@ import org.bukkit.command.CommandSender;
 public class ExcRanking implements Executor {
 
 	@Override
-	public void execute(CommandSender s, String[] args){
+	public void execute(CommandSender sender, String[] args){
 		for(String m : Messages.getInstance().getList("rankingList")){
 			String r = Parser.parseRank(m);
 			if(r != null) m = r;
-			s.sendMessage(m);
+			sender.sendMessage(m);
 		}
 	}
 }

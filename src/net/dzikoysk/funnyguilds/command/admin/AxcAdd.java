@@ -54,7 +54,7 @@ public class AxcAdd implements Executor {
 		guild.addMember(user);
 		user.setGuild(guild);
 		
-	    IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, offline);
+		IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, offline);
 				
 		if(offline.isOnline()) Bukkit.getPlayer(user.getName()).sendMessage(m.getMessage("joinToMember")
 			.replace("{GUILD}", guild.getName())

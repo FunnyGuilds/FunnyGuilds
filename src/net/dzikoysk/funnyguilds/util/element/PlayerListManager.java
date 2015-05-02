@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.util.element;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
 import net.dzikoysk.funnyguilds.util.reflect.transition.PacketPlayOutPlayerInfo;
 
@@ -21,9 +20,8 @@ public class PlayerListManager {
 	private static boolean patch;
 
 	public static void updatePlayers(){
-		for(Player player : Bukkit.getOnlinePlayers()){
+		for(Player player : Bukkit.getOnlinePlayers())
 			User.get(player).getPlayerList().send();
-		}
 	}
 	
 	public static void send(Player player) {
@@ -35,7 +33,7 @@ public class PlayerListManager {
 		String[] suffix = pl.getSuffix();
 		for(int i = 0; i < 60; i++){
 			if(scheme[i] == null){
-				Data.getPlayerListFile().delete();
+				//Data.getPlayerListFile().delete();
 				scheme = PlayerListScheme.uniqueFields();
 			}
 			String s = scheme[i];
@@ -49,7 +47,7 @@ public class PlayerListManager {
 			if(suffix[i] != null) team.setSuffix(suffix[i]);
 		}
 		if(!pl.getInit()){
-			Player[] ps = Bukkit.getOnlinePlayers();
+			Player[] ps = FunnyGuilds.getOnlinePlayers();
 			String[] ss = new String[ps.length];
 			for(int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
 			pl.init(true);
@@ -57,7 +55,7 @@ public class PlayerListManager {
 			PacketSender.sendPacket(player, packets(scheme, true));
 		}
 		if(patch){
-			Player[] ps = Bukkit.getOnlinePlayers();
+			Player[] ps = FunnyGuilds.getOnlinePlayers();
 			String[] ss = new String[ps.length];
 			for(int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
 			PacketSender.sendPacket(player, packets(ss, false));

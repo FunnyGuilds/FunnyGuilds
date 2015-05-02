@@ -51,7 +51,7 @@ public class BanUtils {
 	
 	public static String getBanMessage(User user){
 		DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-		Date ban = new Date(user.getBan());        
+		Date ban = new Date(user.getBan());		
 		String message = Messages.getInstance().getMessage("banMessage");
 		message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
 		message = StringUtils.replace(message, "{DATE}", date.format(ban));

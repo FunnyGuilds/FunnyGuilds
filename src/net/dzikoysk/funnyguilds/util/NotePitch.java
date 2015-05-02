@@ -5,6 +5,7 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public enum NotePitch {
+	
 	NOTE_1C(1, Tone.C, 0.5F), 
 	NOTE_1D(1, Tone.D, 0.53F), 
 	NOTE_1E(1, Tone.E, 0.56F), 
@@ -34,23 +35,40 @@ public enum NotePitch {
 	NOTE_4E(4, Tone.E, 1.88F), 
 	NOTE_4F(4, Tone.F, 2.0F);
 
-	public int octave;
-	public Tone tone;
-	public float pitch;
+	private final int octave;
+	private final Tone tone;
+	private final float pitch;
 
 	private NotePitch(int octave, Tone tone, float pitch) { 
 		this.octave = octave;
 		this.tone = tone;
 		this.pitch = pitch;
 	}
-
-	public static float getPitch(int octave, Tone tone){
+	
+	public int getOctave(){
+		return this.octave;
+	}
+	
+	public Tone getTone(){
+		return this.tone;
+	}
+	
+	public float getPitch(){
+		return this.pitch;
+	}
+	
+	public static NotePitch getNote(int octave, Tone tone){
 		for (NotePitch note : values())
-			if (note.octave == octave && note.tone == tone) return note.pitch;
-		return 0.0F;
+			if(note.octave == octave && note.tone == tone) return note;
+		return getNote(3, Tone.C);
+	}
+	
+	public static void play(Player player, NotePitch note){
+		player.playSound(player.getEyeLocation(), Sound.NOTE_PIANO, 1, note.getPitch());
 	}
 	
 	public static void play(Player player, int octave, Tone tone){
-		player.playSound(player.getEyeLocation(), Sound.NOTE_PIANO, 1, NotePitch.getPitch(octave, tone));
+		play(player, getNote(octave, tone));
 	}
+	
 }

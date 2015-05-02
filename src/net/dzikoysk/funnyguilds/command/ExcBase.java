@@ -20,9 +20,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class ExcBase implements Executor {
 	
+	@Override
 	public void execute(CommandSender s, String[] args){
-	    
-	    final Messages m = Messages.getInstance();
+		
+		final Messages m = Messages.getInstance();
 		final Player p = (Player)s;
 		final User user = User.get(p);
 		
@@ -82,6 +83,7 @@ public class ExcBase implements Executor {
 			Location before = p.getLocation();
 			Player player = p;
 			int i = 0;
+			@Override
 			public void run(){
 				i++;
 				if(!LocationUtils.equals(player.getLocation(), before)){

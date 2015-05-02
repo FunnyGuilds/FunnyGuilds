@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import java.util.List;
+import java.util.Collection;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
@@ -24,11 +24,12 @@ public class AxcMove implements Executor {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		Messages m = Messages.getInstance();
+		Settings settings = Settings.getInstance();
+		Messages messages = Messages.getInstance();
 		Player player = (Player) sender;
 		
 		if(!player.hasPermission("funnyguilds.admin")){
-			player.sendMessage(m.getMessage("permission"));
+			player.sendMessage(messages.getMessage("permission"));
 			return;
 		}
 		
@@ -43,17 +44,15 @@ public class AxcMove implements Executor {
 			return;
 		}
 		
-		Settings s = Settings.getInstance();
 		Location loc = player.getLocation();
-		if(s.createCenterY != 0) loc.setY(s.createCenterY);
+		if(settings.createCenterY != 0) loc.setY(settings.createCenterY);
 		
-		int d = s.regionSize + s.createDistance;
-		if(s.enlargeItems != null) d = s.enlargeItems.size()*s.enlargeSize + d;
+		int d = settings.regionSize + settings.createDistance;
+		if(settings.enlargeItems != null) d = settings.enlargeItems.size()*settings.enlargeSize + d;
 		
 		if(d > player.getWorld().getSpawnLocation().distance(loc)){
-			player.sendMessage(m.getMessage("createSpawn")
-				.replace("{DISTANCE}", Integer.toString(d))
-			);
+			player.sendMessage(messages.getMessage("createSpawn")
+				.replace("{DISTANCE}", Integer.toString(d)));
 			return;
 		}
 		if(RegionUtils.isNear(loc)){
@@ -62,25 +61,26 @@ public class AxcMove implements Executor {
 		}
 		
 		Guild guild = GuildUtils.byTag(tag);
-		Region region = RegionUtils.get(guild.getRegion());
-		if(region == null) region = new Region(guild, loc, s.regionSize);
+		Region region = guild.getRegion();
+		if(region == null) region = new Region(guild, loc, settings.regionSize);
 		else {
-			if(s.createStringMaterial.equalsIgnoreCase("ender crystal")){
-				EntityUtil.despawn(guild);
-			} else {
+			if(settings.createStringMaterial.equalsIgnoreCase("ender crystal")) EntityUtil.despawn(guild);
+			else {
 				Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
 				if(block.getLocation().getBlockY() > 1) block.setType(Material.AIR);
 			}
 			region.setCenter(loc);
 		}
-		if(s.createCenterSphere){
-			List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
+		
+		if(settings.createCenterSphere){
+			Collection<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
 			for(Location l : sphere)
 				if(l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.AIR);
 		}
-		if(s.createMaterial != null && s.createMaterial != Material.AIR)
-			loc.getBlock().getRelative(BlockFace.DOWN).setType(s.createMaterial);
-		else if(s.createStringMaterial.equalsIgnoreCase("ender crystal"))
+		
+		if(settings.createMaterial != null && settings.createMaterial != Material.AIR)
+			loc.getBlock().getRelative(BlockFace.DOWN).setType(settings.createMaterial);
+		else if(settings.createStringMaterial.equalsIgnoreCase("ender crystal"))
 			EntityUtil.spawn(guild);
 		
 		player.sendMessage(StringUtils.colored("&7Przeniesiono teren gildii &a" + guild.getName() + "&7!"));

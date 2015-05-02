@@ -14,24 +14,23 @@ public class ExcPlayer implements Executor {
 	
 	@Override
 	public void execute(CommandSender s, String[] args){
-	    
-	    Messages msg = Messages.getInstance();
-		Player p = (Player) s;
-		String name = p.getName();
+		Messages messages = Messages.getInstance();
+		Player player = (Player) s;
+		User user = User.get(player);
 		
+		String name = user.getName();
 		if(args.length > 0) name = args[0];
 		if(!UserUtils.playedBefore(name)){
-			s.sendMessage(msg.getMessage("playerInfoExists"));
+			s.sendMessage(messages.getMessage("playerInfoExists"));
 			return;
 		}
 		
-		User user = User.get(name);
 		if(user.getUUID() == null){
-			s.sendMessage(msg.getMessage("playerInfoExists"));
+			s.sendMessage(messages.getMessage("playerInfoExists"));
 			return;
 		}
 		
-		for(String m : msg.getList("playerInfoList")){
+		for(String m : messages.getList("playerInfoList")){
 			if(user.hasGuild()){
 				m = StringUtils.replace(m, "{GUILD}", user.getGuild().getName());
 				m = StringUtils.replace(m, "{TAG}", user.getGuild().getTag());

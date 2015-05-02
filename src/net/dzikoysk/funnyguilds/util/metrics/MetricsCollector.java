@@ -26,19 +26,19 @@ public class MetricsCollector implements Runnable {
 	public void run(){
 		Metrics metrics = getMetrics();
 		Metrics.Graph global = metrics.createGraph("Guilds and Users");
-	    global.addPlotter(new Metrics.Plotter("Guilds"){
+		global.addPlotter(new Metrics.Plotter("Guilds"){
 			@Override
 			public int getValue() {
 				return GuildUtils.getGuilds().size();
 			}
-	    });
-	    global.addPlotter(new Metrics.Plotter("Users"){
+		});
+		global.addPlotter(new Metrics.Plotter("Users"){
 			@Override
 			public int getValue() {
 				return UserUtils.getUsers().size();
 			}
-	    });
-	    metrics.start();
+		});
+		metrics.start();
 	}
 	
 	public static Metrics getMetrics(){

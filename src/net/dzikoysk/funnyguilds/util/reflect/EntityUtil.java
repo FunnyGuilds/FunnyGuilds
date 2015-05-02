@@ -2,11 +2,10 @@ package net.dzikoysk.funnyguilds.util.reflect;
 
 import java.util.HashMap;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -15,9 +14,9 @@ public class EntityUtil {
 	private static Class<?> entityClass = Reflections.getCraftClass("Entity");
 	private static Class<?> enderCrystalClass = Reflections.getCraftClass("EntityEnderCrystal");
 	private static Class<?> spawnEntityClass = Reflections.getCraftClass("PacketPlayOutSpawnEntity");
-    private static Class<?> despawnEntityClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-    
-    public static HashMap<Guild, Integer> map = new HashMap<>();
+	private static Class<?> despawnEntityClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
+	
+	public static HashMap<Guild, Integer> map = new HashMap<>();
 	private static HashMap<Integer, Object> ids = new HashMap<>();
 	
 	private static int spawnPacket(Location loc) throws Exception {
@@ -39,13 +38,13 @@ public class EntityUtil {
 		try {
 			Object o = null;
 			if(!map.containsKey(guild)){
-				Location loc = Region.get(guild.getRegion()).getCenter();
+				Location loc = guild.getRegion().getCenter();
 				if(loc == null) return;
 				int id = spawnPacket(loc);
 				o = ids.get(id);
 				map.put(guild, id);
 			} else o = ids.get(map.get(guild));
-			PacketSender.sendPacket(Bukkit.getOnlinePlayers(), o);
+			PacketSender.sendPacket(FunnyGuilds.getOnlinePlayers(), o);
 		} catch (Exception e){
 			e.printStackTrace();
 		}
@@ -56,7 +55,7 @@ public class EntityUtil {
 			try {
 				Object o = null;
 				if(!map.containsKey(guild)){
-					Location loc = Region.get(guild.getRegion()).getCenter();
+					Location loc = guild.getRegion().getCenter();
 					if(loc == null) continue;
 					int id = spawnPacket(loc);
 					o = ids.get(id);
@@ -74,7 +73,7 @@ public class EntityUtil {
 			ids.remove(id);
 			map.remove(guild);
 			Object o = despawnPacket(id);
-			PacketSender.sendPacket(Bukkit.getOnlinePlayers(), o);
+			PacketSender.sendPacket(FunnyGuilds.getOnlinePlayers(), o);
 		} catch (Exception e){
 			e.printStackTrace();
 		}
@@ -100,7 +99,7 @@ public class EntityUtil {
 				ids.remove(id);
 				map.remove(guild);
 				Object o = despawnPacket(id);
-				PacketSender.sendPacket(Bukkit.getOnlinePlayers(), o);
+				PacketSender.sendPacket(FunnyGuilds.getOnlinePlayers(), o);
 			} catch (Exception e){
 				e.printStackTrace();
 			}

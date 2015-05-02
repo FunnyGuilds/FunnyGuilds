@@ -15,49 +15,49 @@ public class ExcLeader implements Executor {
 	
 	@Override
 	public void execute(CommandSender s, String[] args){
-		Messages m = Messages.getInstance();
-		Player p = (Player) s;
-		User owner = User.get(p);
+		Messages messages = Messages.getInstance();
+		Player player = (Player) s;
+		User owner = User.get(player);
 		
 		if(!owner.hasGuild()){
-			p.sendMessage(m.getMessage("leaderHasNotGuild"));
+			player.sendMessage(messages.getMessage("leaderHasNotGuild"));
 			return;
 		}
 		
 		if(!owner.isOwner()){
-			p.sendMessage(m.getMessage("leaderIsNotOwner"));
+			player.sendMessage(messages.getMessage("leaderIsNotOwner"));
 			return;
 		}
 		
 		if(args.length < 1){
-			p.sendMessage(m.getMessage("leaderPlayer"));
+			player.sendMessage(messages.getMessage("leaderPlayer"));
 			return;
 		}
 		
 		String name = args[0];
 		if(!UserUtils.playedBefore(name)){
-			p.sendMessage(m.getMessage("leaderPlayedBefore"));
+			player.sendMessage(messages.getMessage("leaderPlayedBefore"));
 			return;
 		}
 		
 		User user = User.get(name);
+		
 		if(owner.equals(user)){
-			p.sendMessage(StringUtils.colored("&cNie mozesz sobie oddac zalozyciela!"));
+			player.sendMessage(StringUtils.colored("&cNie mozesz sobie oddac zalozyciela!"));
 			return;
 		}
 		
 		Guild guild = owner.getGuild();
 		
 		if(!guild.getMembers().contains(user)){
-			p.sendMessage(m.getMessage("leaderIsNotMember"));
+			player.sendMessage(messages.getMessage("leaderIsNotMember"));
 			return;
 		}
 		
 		guild.setOwner(user);
+		player.sendMessage(messages.getMessage("leaderSet"));
 		
-		p.sendMessage(m.getMessage("leaderSet"));
-		
-		Player o = Bukkit.getPlayer(user.getName());
-		if(o != null) o.sendMessage(m.getMessage("leaderOwner"));
+		Player leader = Bukkit.getPlayer(user.getName());
+		if(leader != null) leader.sendMessage(messages.getMessage("leaderOwner"));
 	}
 }

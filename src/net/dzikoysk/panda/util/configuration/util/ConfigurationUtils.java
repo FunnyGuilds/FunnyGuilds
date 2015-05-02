@@ -9,27 +9,27 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import net.minecraft.util.com.google.common.base.Charsets;
-import net.minecraft.util.com.google.common.io.Files;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 public class ConfigurationUtils {
 	
 	public static String getContent(File file){
 		StringBuilder sb = new StringBuilder();
-	    try{
-	    	if(!file.exists()){
-	    		file.getParentFile().mkdirs();
+		try{
+			if(!file.exists()){
+				file.getParentFile().mkdirs();
 				file.createNewFile();
-	    	}
-	    	List<String> list = Files.readLines(file, Charsets.UTF_8);
-	    	for(String s : list){
-	    		sb.append(s);
-	    		sb.append(System.lineSeparator());
-	    	}
-	    } catch (IOException e) {
-	    	e.printStackTrace();
+			}
+			List<String> list = Files.readLines(file, Charsets.UTF_8);
+			for(String s : list){
+				sb.append(s);
+				sb.append(System.lineSeparator());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-	    return sb.toString();
+		return sb.toString();
 	}
 
 	public static String[] getLines(File file){
@@ -44,24 +44,24 @@ public class ConfigurationUtils {
 	}
 	
 	public static int countLines(String filename) throws IOException {
-	    InputStream is = new BufferedInputStream(new FileInputStream(filename));
-	    try {
-	        byte[] c = new byte[1024];
-	        int count = 0;
-	        int readChars = 0;
-	        boolean empty = true;
-	        while ((readChars = is.read(c)) != -1) {
-	            empty = false;
-	            for (int i = 0; i < readChars; ++i) {
-	                if (c[i] == '\n') {
-	                    ++count;
-	                }
-	            }
-	        }
-	        return (count == 0 && !empty) ? 1 : count;
-	    } finally {
-	        is.close();
-	    }
+		InputStream is = new BufferedInputStream(new FileInputStream(filename));
+		try {
+			byte[] c = new byte[1024];
+			int count = 0;
+			int readChars = 0;
+			boolean empty = true;
+			while ((readChars = is.read(c)) != -1) {
+				empty = false;
+				for (int i = 0; i < readChars; ++i) {
+					if (c[i] == '\n') {
+						++count;
+					}
+				}
+			}
+			return (count == 0 && !empty) ? 1 : count;
+		} finally {
+			is.close();
+		}
 	}
 	
 	public static String getPath(Stack<String> stack){
@@ -90,4 +90,5 @@ public class ConfigurationUtils {
 		 }
 		 return count;
 	}
+	
 }

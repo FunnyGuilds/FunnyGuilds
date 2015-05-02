@@ -138,9 +138,8 @@ public class Menu {
 	}
 	
 	public int getFirstEmpty(){
-		for(int i = 1; i < this.row*9 + 1; i++){
+		for(int i = 1; i < this.row*9 + 1; i++)
 			if(!this.item.containsKey(i)) return i;
-		}
 		return 0;
 	}
 }

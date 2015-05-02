@@ -28,37 +28,37 @@ public class Rank implements Comparable<Rank> {
 	public void removePoints(int i){
 		this.points -= i;
 		if(this.points < 1) this.points = 0;
-		this.basic.changes();
+		this.basic.passVariable("rank");
 	}
 	
 	public void addPoints(int i){
 		this.points += i;
-		this.basic.changes();
+		this.basic.passVariable("rank");
 	}
 	
 	public void addKill(){
 		this.kills += 1;
-		this.basic.changes();
+		this.basic.passVariable("rank");
 	}
 	
 	public void addDeath(){
 		this.deaths += 1;
-		this.basic.changes();
+		this.basic.passVariable("rank");
 	}
 	
 	public void setPoints(int i){
 		this.points = i;
-		this.basic.changes();
+		this.basic.passVariable("rank");
 	}
 	
 	public void setKills(int i){
 		this.kills = i;
-		this.basic.changes();
+		this.basic.passVariable("rank");
 	}
 	
 	public void setDeaths(int i){
 		this.deaths = i;
-		this.basic.changes();
+		this.basic.passVariable("rank");
 	}
 	
 	public int getPoints(){
@@ -72,7 +72,7 @@ public class Rank implements Comparable<Rank> {
 			double calc = points / size;
 			if(calc != this.points){
 				this.points = (int) calc;
-				this.basic.changes();
+				this.basic.passVariable("rank");
 			}
 			return this.points;
 		}
@@ -128,8 +128,7 @@ public class Rank implements Comparable<Rank> {
 			if(idns == null) return -1;
 			if(rank.getIDNS() == null) return 1;
 			i = idns.compareTo(rank.getIDNS());
-		}
-		return i;
+		} return i;
 	}
 
 }

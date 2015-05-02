@@ -14,7 +14,7 @@ import org.bukkit.ChatColor;
 public class Messages {
 	
 	private static Messages instance;
-	private static String version = "3.0 Christmas";
+	private static String version = "4.0";
 	private static File messages =  new File(FunnyGuilds.getInstance().getDataFolder(), "messages.yml");
 	
 	private HashMap<String, String> single = new HashMap<>();

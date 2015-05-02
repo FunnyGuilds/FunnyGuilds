@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.system.security;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,17 +12,11 @@ import org.bukkit.entity.Player;
 public class SecuritySystem {
 
 	private static SecuritySystem instance;
-	private List<User> blocked;
+	private final Collection<User> blocked;
 	
 	public SecuritySystem(){
 		instance = this;
-		blocked = new ArrayList<>();
-	}
-
-	public boolean checkPlayer(Player player, Object... values){
-		for(SecurityType type : SecurityType.values())
-			if(checkPlayer(player, type, values)) return true;
-		return false;
+		this.blocked = new ArrayList<>();
 	}
 	
 	public boolean checkPlayer(Player player, SecurityType type, Object... values){
@@ -32,7 +25,7 @@ public class SecuritySystem {
 		case FREECAM:
 			Guild guild = null;
 			for(int i = 0; i < values.length; i++) if(values[i] instanceof Guild) guild = (Guild) values[i];
-			int dis = (int) RegionUtils.get(guild.getRegion()).getCenter().distance(player.getLocation());
+			int dis = (int) guild.getRegion().getCenter().distance(player.getLocation());
 			if(dis < 6) return false;
 			for(Player w : Bukkit.getOnlinePlayers()) if(w.isOp()){
 				w.sendMessage(SecurityUtils.getBustedMessage(player.getName(), "FreeCam"));
@@ -45,6 +38,12 @@ public class SecuritySystem {
 		default:
 			break;
 		}
+		return false;
+	}
+	
+	public boolean checkPlayer(Player player, Object... values){
+		for(SecurityType type : SecurityType.values())
+			if(checkPlayer(player, type, values)) return true;
 		return false;
 	}
 	

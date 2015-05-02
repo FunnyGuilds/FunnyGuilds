@@ -9,26 +9,19 @@ import net.dzikoysk.panda.core.syntax.Section;
 import net.dzikoysk.panda.core.util.SectionType;
 import net.dzikoysk.panda.core.util.SyntaxElement;
 
-@SuppressWarnings("unused")
 public class PandaParser {
 	
 	private Stack<SectionType> types = new Stack<>(); // section types
-	private List<Section> sections = new ArrayList<>(); // main sections
 	private Stack<Section> parents = new Stack<>(); // parent sections
 	private List<SyntaxElement> elements = new ArrayList<>(); // sections, methods
 	private Stack<Character> operators = new Stack<>(); // operators
 	private StringBuilder node = new StringBuilder(); // node
-	private boolean whitespace = false; // whitespace
 	private Section current = null; // current section
-	private int line = 0; // current line
-	private int position = 0; // current position
-	
 	public PandaParser(String code){
 		System.out.println(code);
 		code = this.patchCode(code);
 		System.out.println(code);
 		for(char c : code.toCharArray()){
-			position++;
 			switch(c){
 				case '{': { 
 					this.openSection();
@@ -48,7 +41,6 @@ public class PandaParser {
 				}
 				case '\n':
 				case '\r':{
-					line++;
 					break;
 				}
 				default: { 

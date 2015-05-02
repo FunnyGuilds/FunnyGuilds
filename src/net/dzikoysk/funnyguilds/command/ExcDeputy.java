@@ -15,55 +15,54 @@ public class ExcDeputy implements Executor {
 	
 	@Override
 	public void execute(CommandSender s, String[] args){
-		
-		Messages m = Messages.getInstance();
-		Player p = (Player) s;
-		User owner = User.get(p);
+		Messages messages = Messages.getInstance();
+		Player player = (Player) s;
+		User owner = User.get(player);
 		
 		if(!owner.hasGuild()){
-			p.sendMessage(m.getMessage("deputyHasNotGuild"));
+			player.sendMessage(messages.getMessage("deputyHasNotGuild"));
 			return;
 		}
 		
 		if(!owner.isOwner()){
-			p.sendMessage(m.getMessage("deputyIsNotOwner"));
+			player.sendMessage(messages.getMessage("deputyIsNotOwner"));
 			return;
 		}
 		
 		if(args.length < 1){
-			p.sendMessage(m.getMessage("deputyPlayer"));
+			player.sendMessage(messages.getMessage("deputyPlayer"));
 			return;
 		}
 		
 		String name = args[0];
 		if(!UserUtils.playedBefore(name)){
-			p.sendMessage(m.getMessage("deputyPlayedBefore"));
+			player.sendMessage(messages.getMessage("deputyPlayedBefore"));
 			return;
 		}
 		
 		User user = User.get(name);
 		if(owner.equals(user)){
-			p.sendMessage(StringUtils.colored("&cNie mozesz mianowac siebie zastepca!"));
+			player.sendMessage(StringUtils.colored("&cNie mozesz mianowac siebie zastepca!"));
 			return;
 		}
 		
 		Guild guild = owner.getGuild();
 		
 		if(!guild.getMembers().contains(user)){
-			p.sendMessage(m.getMessage("deputyIsNotMember"));
+			player.sendMessage(messages.getMessage("deputyIsNotMember"));
 			return;
 		}
 		
 		if(user.isDeputy()){
 			guild.setDeputy(null);
-			p.sendMessage(m.getMessage("deputyRemove"));
+			player.sendMessage(messages.getMessage("deputyRemove"));
 			Player o = Bukkit.getPlayer(user.getName());
-			if(o != null) o.sendMessage(m.getMessage("deputyMember"));
-		}else{
+			if(o != null) o.sendMessage(messages.getMessage("deputyMember"));
+		} else {
 			guild.setDeputy(user);
-			p.sendMessage(m.getMessage("deputySet"));
+			player.sendMessage(messages.getMessage("deputySet"));
 			Player o = Bukkit.getPlayer(user.getName());
-			if(o != null) o.sendMessage(m.getMessage("deputyOwner"));
+			if(o != null) o.sendMessage(messages.getMessage("deputyOwner"));
 		}
 	}
 }

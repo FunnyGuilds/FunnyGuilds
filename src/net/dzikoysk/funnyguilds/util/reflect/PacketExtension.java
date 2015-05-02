@@ -1,18 +1,19 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import net.dzikoysk.funnyguilds.event.EventCaller;
+import net.dzikoysk.funnyguilds.event.net.PacketReceiveEvent;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
-import net.dzikoysk.funnyguilds.util.reflect.event.PacketReceiveEvent;
-import net.minecraft.util.io.netty.channel.Channel;
-import net.minecraft.util.io.netty.channel.ChannelDuplexHandler;
-import net.minecraft.util.io.netty.channel.ChannelHandler;
-import net.minecraft.util.io.netty.channel.ChannelHandlerContext;
-import net.minecraft.util.io.netty.channel.ChannelPipeline;
-import net.minecraft.util.io.netty.channel.ChannelPromise;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 public class PacketExtension {
@@ -55,8 +56,7 @@ public class PacketExtension {
 				public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 					try {
 						if(msg == null) return;
-						PacketReceiveEvent event = new PacketReceiveEvent(msg, p);
-						Bukkit.getPluginManager().callEvent(event);
+						PacketReceiveEvent event = EventCaller.callEvent(new PacketReceiveEvent(msg, p));
 						if (event.isCancelled() || event.getPacket() == null) return;
 						super.channelRead(ctx, event.getPacket());
 					} catch (Exception e) {

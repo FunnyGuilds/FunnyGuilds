@@ -13,7 +13,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 public class Dummy {
 	
-	private static String name = "points";
+	private static final String NAME = "points";
 	private final User user;
 	
 	public Dummy(User user){
@@ -21,11 +21,12 @@ public class Dummy {
 		this.initialize();
 	}
 
+	@SuppressWarnings("deprecation")
 	public void updateScore(User user){
 		if(!Settings.getInstance().dummyEnable) return;
 		Scoreboard scoreboard = this.user.getScoreboard();
-		Objective objective = scoreboard.getObjective(name);
-		if(objective == null || !objective.getName().equals(name)) initialize();
+		Objective objective = scoreboard.getObjective(NAME);
+		if(objective == null || !objective.getName().equals(NAME)) initialize();
 		else {
 			OfflineUser offline = user.getOfflineUser();
 			objective.getScore(offline).setScore(user.getRank().getPoints());
@@ -35,14 +36,15 @@ public class Dummy {
 	private void initialize(){
 		if(!Settings.getInstance().dummyEnable) return;
 		Scoreboard scoreboard = this.user.getScoreboard();
-		Objective objective = scoreboard.getObjective(name);
-		if(objective == null || !objective.getName().equals(name)){
-			objective = scoreboard.registerNewObjective(name, "dummy");
+		Objective objective = scoreboard.getObjective(NAME);
+		if(objective == null || !objective.getName().equals(NAME)){
+			objective = scoreboard.registerNewObjective(NAME, "dummy");
 			objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
 			objective.setDisplayName(Settings.getInstance().dummySuffix);
 		}
 		for(Player player : Bukkit.getOnlinePlayers()){
 			User user = User.get(player);
+			@SuppressWarnings("deprecation")
 			Score score = objective.getScore(user.getOfflineUser());
 			score.setScore(user.getRank().getPoints());
 		}

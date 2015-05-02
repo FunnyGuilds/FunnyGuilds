@@ -17,8 +17,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class Settings {
 	
-	private static final File SETTINGS =  new File(FunnyGuilds.getInstance().getDataFolder(), "config.yml");
-	private static final String VERSION = "3.5 NewYear";
+	private static final File SETTINGS =  new File(FunnyGuilds.getFolder(), "config.yml");
+	private static final String VERSION = "4.0";
 	
 	private static Settings instance;
 	private PandaConfiguration pc;
@@ -173,10 +173,9 @@ public class Settings {
 	public String mysqlPassword;
 	
 	public Settings(){
-		instance = this;
 		Manager.loadDefaultFiles(new String[] { "config.yml" });
-		this.update();
-		this.load();
+		update();
+		load();
 	}
 	
 	private boolean update(){
@@ -434,7 +433,7 @@ public class Settings {
 	}
 	
 	public static Settings getInstance(){
-		if(instance != null) return instance;
-		return new Settings();
+		if(instance == null) instance = new Settings();
+		return instance;
 	}
 }

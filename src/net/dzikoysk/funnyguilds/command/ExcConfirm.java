@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
+import net.dzikoysk.funnyguilds.event.EventCaller;
+import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,28 +14,31 @@ public class ExcConfirm implements Executor {
 	
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		Messages m = Messages.getInstance();
-		Player p = (Player) sender;
-		User lp = User.get(p);
-
-		if(!lp.hasGuild()){
-			p.sendMessage(m.getMessage("deleteHasNotGuild"));
+		Messages messages = Messages.getInstance();
+		Player player = (Player) sender;
+		User user = User.get(player);
+		
+		if(!user.hasGuild()){
+			player.sendMessage(messages.getMessage("deleteHasNotGuild"));
 			return;
 		}
 
-		if(!lp.isOwner()){
-			p.sendMessage(m.getMessage("deleteIsNotOwner"));
+		if(!user.isOwner()){
+			player.sendMessage(messages.getMessage("deleteIsNotOwner"));
 			return;
 		}
-
+		
+		Guild guild = user.getGuild();
+		String name = guild.getName();
+		String tag = guild.getTag();
+		
+		/*
 		if(!ConfirmationList.contains(lp.getUUID())){
 			p.sendMessage(m.getMessage("deleteToConfirm"));
 			return;
 		}
 
 		ConfirmationList.remove(lp.getUUID());
-		String name = lp.getGuild().getName();
-		String tag = lp.getGuild().getTag();
 		GuildUtils.deleteGuild(lp.getGuild());
 
 		p.sendMessage(m.getMessage("deleteSuccessful")
@@ -49,5 +52,8 @@ public class ExcConfirm implements Executor {
 			.replace("{GUILD}", name)
 			.replace("{TAG}", tag)
 		);
+		*/
+		
+		EventCaller.callEvent(new GuildDeleteEvent(player, name, tag));
 	}
 }

@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds;
 
+import java.io.File;
 import java.io.InputStream;
+import java.util.Collection;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -8,25 +10,24 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.Commands;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.listener.EntityDamage;
-import net.dzikoysk.funnyguilds.listener.EntityInteract;
-import net.dzikoysk.funnyguilds.listener.PacketReceive;
-import net.dzikoysk.funnyguilds.listener.PlayerChat;
-import net.dzikoysk.funnyguilds.listener.PlayerDeath;
-import net.dzikoysk.funnyguilds.listener.PlayerJoin;
-import net.dzikoysk.funnyguilds.listener.PlayerLogin;
-import net.dzikoysk.funnyguilds.listener.PlayerQuit;
-import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
-import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
-import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
-import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
-import net.dzikoysk.funnyguilds.listener.region.BucketAction;
-import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
-import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
-import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
-import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
+import net.dzikoysk.funnyguilds.listener.AsyncPlayerChatListener;
+import net.dzikoysk.funnyguilds.listener.EntityDamageListener;
+import net.dzikoysk.funnyguilds.listener.PacketReceiveListener;
+import net.dzikoysk.funnyguilds.listener.PlayerDeathListener;
+import net.dzikoysk.funnyguilds.listener.PlayerInteractEntityListener;
+import net.dzikoysk.funnyguilds.listener.PlayerJoinListener;
+import net.dzikoysk.funnyguilds.listener.PlayerLoginListener;
+import net.dzikoysk.funnyguilds.listener.PlayerQuitListener;
+import net.dzikoysk.funnyguilds.listener.region.BlockBreakListener;
+import net.dzikoysk.funnyguilds.listener.region.BlockIgniteListener;
+import net.dzikoysk.funnyguilds.listener.region.BlockPhysicsListener;
+import net.dzikoysk.funnyguilds.listener.region.BlockPlaceListener;
+import net.dzikoysk.funnyguilds.listener.region.BucketActionListener;
+import net.dzikoysk.funnyguilds.listener.region.EntityExplodeListener;
+import net.dzikoysk.funnyguilds.listener.region.PlayerCommandListener;
+import net.dzikoysk.funnyguilds.listener.region.PlayerInteractListener;
+import net.dzikoysk.funnyguilds.listener.region.PlayerMoveListener;
 import net.dzikoysk.funnyguilds.script.ScriptManager;
-import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -60,9 +61,6 @@ public class FunnyGuilds extends JavaPlugin {
 		new Reloader().init();
 		new DescriptionChanger(getDescription()).name(Settings.getInstance().pluginName);
 		new Commands().register();
-		
-		EventManager em = EventManager.getEventManager();
-		em.load();
 	}
 	
 	@Override
@@ -74,31 +72,28 @@ public class FunnyGuilds extends JavaPlugin {
 		new Ticking().start();
 		new MetricsCollector().start();
 		new ScriptManager().start();
-		
-		EventManager em = EventManager.getEventManager();
-		em.enable();
 
 		PluginManager pm = Bukkit.getPluginManager();
-		pm.registerEvents(new PacketReceive(), this);
+		pm.registerEvents(new PacketReceiveListener(), this);
 		
-		pm.registerEvents(new EntityDamage(), this);
-		pm.registerEvents(new EntityInteract(), this);
-		pm.registerEvents(new PlayerChat(), this);
-		pm.registerEvents(new PlayerDeath(), this);
-		pm.registerEvents(new PlayerJoin(), this);
-		pm.registerEvents(new PlayerLogin(), this);
-		pm.registerEvents(new PlayerQuit(), this);
+		pm.registerEvents(new EntityDamageListener(), this);
+		pm.registerEvents(new PlayerInteractEntityListener(), this);
+		pm.registerEvents(new AsyncPlayerChatListener(), this);
+		pm.registerEvents(new PlayerDeathListener(), this);
+		pm.registerEvents(new PlayerJoinListener(), this);
+		pm.registerEvents(new PlayerLoginListener(), this);
+		pm.registerEvents(new PlayerQuitListener(), this);
 		
-		pm.registerEvents(new BlockBreak(), this);
-		pm.registerEvents(new BlockIgnite(), this);
-		pm.registerEvents(new BlockPlace(), this);
-		pm.registerEvents(new BucketAction(), this);
-		pm.registerEvents(new EntityExplode(), this);
-		pm.registerEvents(new PlayerCommand(), this);
-		pm.registerEvents(new PlayerInteract(), this);
+		pm.registerEvents(new BlockBreakListener(), this);
+		pm.registerEvents(new BlockIgniteListener(), this);
+		pm.registerEvents(new BlockPlaceListener(), this);
+		pm.registerEvents(new BucketActionListener(), this);
+		pm.registerEvents(new EntityExplodeListener(), this);
+		pm.registerEvents(new PlayerCommandListener(), this);
+		pm.registerEvents(new PlayerInteractListener(), this);
 		
-		if(Settings.getInstance().eventMove) pm.registerEvents(new PlayerMove(), this);
-		if(Settings.getInstance().eventPhysics) pm.registerEvents(new BlockPhysics(), this);
+		if(Settings.getInstance().eventMove) pm.registerEvents(new PlayerMoveListener(), this);
+		if(Settings.getInstance().eventPhysics) pm.registerEvents(new BlockPhysicsListener(), this);
 		
 		patch();
 		update();
@@ -111,7 +106,6 @@ public class FunnyGuilds extends JavaPlugin {
 		
 		EntityUtil.despawn();
 		PacketExtension.unregisterFunnyGuildsChannel();
-		EventManager.getEventManager().disable();
 		
 		AsynchronouslyRepeater.getInstance().stop();
 		Manager.getInstance().stop();
@@ -158,6 +152,12 @@ public class FunnyGuilds extends JavaPlugin {
 		}
 	}
 	
+	public static Player[] getOnlinePlayers(){
+		Collection<? extends Player> collection = Bukkit.getOnlinePlayers();
+		Player[] array = new Player[collection.size()];
+		return collection.toArray(array);
+	}
+	
 	public static void update(String content){
 		Bukkit.getLogger().info("[FunnyGuilds][Updater] > " + content);
 	}
@@ -186,24 +186,24 @@ public class FunnyGuilds extends JavaPlugin {
 	public static boolean exception(String cause, StackTraceElement[] ste){
 		error("");
 		error("[FunnyGuilds] Severe error:");
-	    error("");
-	    error("Server Information:");
-	    error("  FunnyGuilds: " + getVersion());
-	    error("  Bukkit: " + Bukkit.getBukkitVersion());
-	    error("  Java: " + System.getProperty("java.version"));
-	    error("  Thread: " + Thread.currentThread());
-	    error("  Running CraftBukkit: " + Bukkit.getServer().getClass().getName().equals("org.bukkit.craftbukkit.CraftServer"));
-	    error("");
-	    if (cause == null || ste == null || ste.length < 1) {
-	    	error("Stack trace: no/empty exception given, dumping current stack trace instead!");
-	    	return true;
-	    } else error("Stack trace: ");
-        error("Caused by: " + cause);
-        for (StackTraceElement st : ste) error("    at " + st.toString());
-        error("");
-	    error("End of Error.");
-	    error("");
-	    return false;
+		error("");
+		error("Server Information:");
+		error("  FunnyGuilds: " + getVersion());
+		error("  Bukkit: " + Bukkit.getBukkitVersion());
+		error("  Java: " + System.getProperty("java.version"));
+		error("  Thread: " + Thread.currentThread());
+		error("  Running CraftBukkit: " + Bukkit.getServer().getClass().getName().equals("org.bukkit.craftbukkit.CraftServer"));
+		error("");
+		if (cause == null || ste == null || ste.length < 1) {
+			error("Stack trace: no/empty exception given, dumping current stack trace instead!");
+			return true;
+		} else error("Stack trace: ");
+		error("Caused by: " + cause);
+		for (StackTraceElement st : ste) error("	at " + st.toString());
+		error("");
+		error("End of Error.");
+		error("");
+		return false;
 	}
 	
 	@Override
@@ -213,6 +213,10 @@ public class FunnyGuilds extends JavaPlugin {
 	
 	public boolean isDisabling(){
 		return disabling;
+	}
+	
+	public static File getFolder(){
+		return funnyguilds.getDataFolder();
 	}
 	
 	public static Thread getThread(){

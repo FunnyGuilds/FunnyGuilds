@@ -35,7 +35,7 @@ public class Ticking implements Runnable {
 		double avg = 0.0D;
 		for (Double f : history) if(f != null) avg += f.doubleValue();
 		df.setRoundingMode(RoundingMode.HALF_UP);
-	    result = df.format((avg / history.size()));
+		result = df.format((avg / history.size()));
 	}
 	
 	public static String getTPS() { 
