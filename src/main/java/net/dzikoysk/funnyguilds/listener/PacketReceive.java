@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.lang.reflect.Field;
 import java.util.Map.Entry;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
@@ -24,7 +25,8 @@ public class PacketReceive implements Listener {
 			final Player player = event.getPlayer();
 			int id = Reflections.getPrivateField(packet.getClass(), "a").getInt(packet);
 			Object actionEnum = Reflections.getPrivateField(packet.getClass(), "action").get(packet);
-			int action = Reflections.getPrivateField(actionEnum.getClass(), "d").getInt(actionEnum);
+			//int action = Reflections.getPrivateField(actionEnum.getClass(), "d").getInt(actionEnum);
+			int action = this.getActionInt(actionEnum);
 			for(final Entry<Guild, Integer> entry : EntityUtil.map.entrySet()){
 				if(!entry.getValue().equals(id)) continue;
 				Guild guild = entry.getKey();
@@ -35,6 +37,15 @@ public class PacketReceive implements Listener {
 		} catch (Exception e){
 			e.printStackTrace();
 		}
+	}
+	
+	private int getActionInt(Object actionEnum) throws IllegalArgumentException, IllegalAccessException {
+		for(Field field : actionEnum.getClass().getDeclaredFields()){
+			if(field.getName().equals("ATTACK") && field.get(actionEnum).equals(actionEnum)){
+				return 1;
+			}
+		}
+		return 0;
 	}
 	
 }
