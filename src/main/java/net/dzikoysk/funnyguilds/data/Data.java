@@ -42,7 +42,7 @@ public class Data {
 		File file = new File(folder, "funnyguilds.dat");
 		PandaConfiguration pc = new PandaConfiguration(file);
 		if(todo == DO.SAVE){
-			pc.set("played-before", Bukkit.getOnlinePlayers().length);
+			pc.set("played-before", Bukkit.getOnlinePlayers().size());
 			pc.set("reload-count", Reloader.getReloadCount());
 			pc.save();
 		}

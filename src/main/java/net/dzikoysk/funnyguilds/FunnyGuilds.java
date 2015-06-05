@@ -102,8 +102,9 @@ public class FunnyGuilds extends JavaPlugin {
 		
 		patch();
 		update();
-		info("~ Created by & © Dzikoysk ~");
-	} 
+                char copyright = '\u00A9'; // Â©
+		info("~ Created by & " + Character.toString(copyright) + " Dzikoysk ~");
+	}
 	
 	@Override
 	public void onDisable(){

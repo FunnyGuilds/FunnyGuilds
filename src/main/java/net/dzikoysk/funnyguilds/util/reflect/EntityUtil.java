@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
@@ -62,7 +63,7 @@ public class EntityUtil {
 					o = ids.get(id);
 					map.put(guild, id);
 				} else o = ids.get(map.get(guild));
-				PacketSender.sendPacket(players, o);
+				PacketSender.sendPacket(Arrays.asList(players), o);
 			} catch (Exception e){
 				e.printStackTrace();
 			}
@@ -87,7 +88,7 @@ public class EntityUtil {
 				ids.remove(id);
 				map.remove(guild);
 				Object o = despawnPacket(id);
-				PacketSender.sendPacket(players, o);
+				PacketSender.sendPacket(Arrays.asList(players), o);
 			} catch (Exception e){
 				e.printStackTrace();
 			}

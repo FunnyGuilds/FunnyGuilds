@@ -74,7 +74,7 @@ public class PlayerList {
 				s = StringUtils.replace(s, "{GUILD}", "Brak");
 				s = StringUtils.replace(s, "{TAG}", "Brak");
 			}
-			s = StringUtils.replace(s, "{ONLINE}", Integer.toString(Bukkit.getOnlinePlayers().length));
+			s = StringUtils.replace(s, "{ONLINE}", Integer.toString(Bukkit.getOnlinePlayers().size()));
 			s = StringUtils.replace(s, "{PLAYER}", user.getName());
 			s = StringUtils.replace(s, "{TPS}", Ticking.getTPS());
 			s = StringUtils.replace(s, "{PING}", Integer.toString(user.getPing()));

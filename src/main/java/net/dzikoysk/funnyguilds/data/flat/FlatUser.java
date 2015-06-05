@@ -47,7 +47,7 @@ public class FlatUser {
 		pc = null;
 		
 		if(name == null) return null;
-		if(id == null) id = new OfflineUser(name).getUniqueId();
+		if(id == null) id = new OfflineUser(name).getUniqueId().toString();
 		
 		Object[] values = new Object[7];
 		values[0] = id;

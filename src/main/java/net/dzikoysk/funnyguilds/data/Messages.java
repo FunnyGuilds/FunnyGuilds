@@ -34,8 +34,8 @@ public class Messages {
 				if(list == null) continue;
 				for(int i = 0; i < list.size(); i++){
 					list.set(i, ChatColor.translateAlternateColorCodes('&', list.get(i))
-						.replace("Ä", "")
-						.replace("Â", "")
+						.replace("Ã„", "")
+						.replace("Ã„", "")
 					);
 				}
 				multiple.put(key, list);
@@ -43,8 +43,8 @@ public class Messages {
 			}
 			String message = ChatColor.translateAlternateColorCodes('&', pc.getString(key));
 			single.put(key, message
-				.replace("Ä", "")
-				.replace("Â", "")
+				.replace("Ã„", "")
+				.replace("Ã„", "")
 			);
 		}
 	}

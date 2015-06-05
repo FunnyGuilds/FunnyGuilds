@@ -9,8 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
-import net.minecraft.util.com.google.common.base.Charsets;
-import net.minecraft.util.com.google.common.io.Files;
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
 
 public class ConfigurationUtils {
 	

@@ -5,12 +5,12 @@ import java.lang.reflect.Method;
 
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
 import net.dzikoysk.funnyguilds.util.reflect.event.PacketReceiveEvent;
-import net.minecraft.util.io.netty.channel.Channel;
-import net.minecraft.util.io.netty.channel.ChannelDuplexHandler;
-import net.minecraft.util.io.netty.channel.ChannelHandler;
-import net.minecraft.util.io.netty.channel.ChannelHandlerContext;
-import net.minecraft.util.io.netty.channel.ChannelPipeline;
-import net.minecraft.util.io.netty.channel.ChannelPromise;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.ChannelPromise;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

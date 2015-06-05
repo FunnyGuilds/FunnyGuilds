@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.minecraft.util.com.mojang.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -59,8 +59,8 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 		return name;
 	}
 	
-	public String getUniqueId() {
-		return uuid.toString();
+	public UUID getUniqueId() {
+		return uuid;
 	}
 	
 	public Server getServer() {

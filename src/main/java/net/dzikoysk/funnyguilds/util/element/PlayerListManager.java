@@ -49,17 +49,17 @@ public class PlayerListManager {
 			if(suffix[i] != null) team.setSuffix(suffix[i]);
 		}
 		if(!pl.getInit()){
-			Player[] ps = Bukkit.getOnlinePlayers();
+			Object[] ps = Bukkit.getOnlinePlayers().toArray();
 			String[] ss = new String[ps.length];
-			for(int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
+			for(int i = 0; i < ps.length; i++) ss[i] = ((Player)ps[i]).getPlayerListName();
 			pl.init(true);
 			PacketSender.sendPacket(player, packets(ss, false));
 			PacketSender.sendPacket(player, packets(scheme, true));
 		}
 		if(patch){
-			Player[] ps = Bukkit.getOnlinePlayers();
+			Object[] ps = Bukkit.getOnlinePlayers().toArray();
 			String[] ss = new String[ps.length];
-			for(int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
+			for(int i = 0; i < ps.length; i++) ss[i] = ((Player)ps[i]).getPlayerListName();
 			PacketSender.sendPacket(player, packets(ss, false));
 		}
 		try {
