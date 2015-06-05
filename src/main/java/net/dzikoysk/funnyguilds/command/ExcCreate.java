@@ -19,6 +19,7 @@ import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -118,7 +119,7 @@ public class ExcCreate implements Executor {
 		if(p.hasPermission("funnyguilds.vip")) itemsList = c.createItemsVip;
 		else itemsList = c.createItems;
 		ItemStack[] items = itemsList.toArray(new ItemStack[0]); 
-		if(!u.getBypass()){
+		if(!u.getBypass() && p.getGameMode() != GameMode.CREATIVE){
 			for(int i = 0; i < items.length; i++){
 				if(p.getInventory().containsAtLeast(items[i], items[i].getAmount())) continue;
 				String msg = m.getMessage("createItems");
