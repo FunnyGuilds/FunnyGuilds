@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.Gówno;
 import net.dzikoysk.funnyguilds.listener.PacketReceive;
 import net.dzikoysk.funnyguilds.listener.PlayerChat;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
@@ -96,6 +97,9 @@ public class FunnyGuilds extends JavaPlugin {
 		pm.registerEvents(new EntityExplode(), this);
 		pm.registerEvents(new PlayerCommand(), this);
 		pm.registerEvents(new PlayerInteract(), this);
+		
+		// Skript!
+		pm.registerEvents(new Gówno(), this);
 		
 		if(Settings.getInstance().eventMove) pm.registerEvents(new PlayerMove(), this);
 		if(Settings.getInstance().eventPhysics) pm.registerEvents(new BlockPhysics(), this);
