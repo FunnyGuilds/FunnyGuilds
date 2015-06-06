@@ -9,7 +9,7 @@ import java.util.Random;
 public class PlayerListScheme {
 	
 	private static final String[] colorsCode = new String[] { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-	private static String[] scheme = new String[60];
+	private static String[] scheme = new String[80];
 	private static List<Integer> edit = new ArrayList<>();
 	
 	public PlayerListScheme(String[] ss){
@@ -19,7 +19,7 @@ public class PlayerListScheme {
 	
 	private void update(){
 		edit.clear();
-		for(int i = 0; i < 60; i++)
+		for(int i = 0; i < 80; i++)
 			if(scheme[i] != null && scheme[i].contains("{") && scheme[i].contains("}"))
 				edit.add(i);
 	}
@@ -29,7 +29,7 @@ public class PlayerListScheme {
 		Random random = new Random();
 		StringBuilder sb = new StringBuilder();
 		sb.append(".r");
-		for(int i = 0; i < 60; i++){
+		for(int i = 0; i < 80; i++){
 			while(fields.contains(sb.toString())){
 				sb.setLength(0);
 				for(int x = 0; x < 3; x++){
@@ -41,7 +41,7 @@ public class PlayerListScheme {
 			fields.add(sb.toString());
 		}
 		Collections.sort(fields);
-		return fields.toArray(new String[60]);
+		return fields.toArray(new String[80]);
 	}
 	
 	public static String[] getScheme(){

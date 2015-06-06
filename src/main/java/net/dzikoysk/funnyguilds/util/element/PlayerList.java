@@ -30,7 +30,7 @@ public class PlayerList {
 	private void split(){
 		this.prefix = new String[60];
 		this.suffix = new String[60];
-		for(int i = 0; i < 60; i++){
+		for(int i = 0; i < 80; i++){
 			String s = ss[i];
 			if(s == null || s.isEmpty()) continue;
 			if(s.length() <= 16) prefix[i] = s;

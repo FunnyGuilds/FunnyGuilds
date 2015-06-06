@@ -1,8 +1,12 @@
 package net.dzikoysk.funnyguilds.util.reflect.transition;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
+import com.mojang.authlib.GameProfile;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import net.minecraft.server.v1_8_R1.ChatSerializer;
+import net.minecraft.server.v1_8_R1.EnumGamemode;
+import net.minecraft.server.v1_8_R1.EnumPlayerInfoAction;
+import net.minecraft.server.v1_8_R1.PlayerInfoData;
 
 public class PacketPlayOutPlayerInfo {
 	
@@ -19,7 +23,13 @@ public class PacketPlayOutPlayerInfo {
 	}
 
 	public static Object getPacket(String s, boolean b, int i){
-		try {
+		net.minecraft.server.v1_8_R1.PacketPlayOutPlayerInfo packet = new net.minecraft.server.v1_8_R1.PacketPlayOutPlayerInfo();
+        packet.a = EnumPlayerInfoAction.ADD_PLAYER;
+		PlayerInfoData info = new PlayerInfoData(packet, new GameProfile(UUID.randomUUID(), s),
+                    i, EnumGamemode.CREATIVE, ChatSerializer.a(s));
+        packet.b.add(info);
+		return packet;
+		/*try {
 			if(type == 0){
 				return packetClass.getConstructor(typesClass).newInstance(s, b, i);
 			} else if(type == 1){
@@ -35,7 +45,7 @@ public class PacketPlayOutPlayerInfo {
 		} catch (Exception e){
 			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
 		}
-		return null;
+		return null;*/
 	}
 
 }
