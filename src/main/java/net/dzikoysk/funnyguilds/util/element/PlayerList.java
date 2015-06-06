@@ -22,14 +22,14 @@ public class PlayerList {
 	public PlayerList(User user){
 		this.user = user;
 		this.ss = PlayerListScheme.getScheme();
-		this.prefix = new String[60];
-		this.suffix = new String[60];
+		this.prefix = new String[80];
+		this.suffix = new String[80];
 		user.setPlayerList(this);
 	}
 
 	private void split(){
-		this.prefix = new String[60];
-		this.suffix = new String[60];
+		this.prefix = new String[80];
+		this.suffix = new String[80];
 		for(int i = 0; i < 80; i++){
 			String s = ss[i];
 			if(s == null || s.isEmpty()) continue;
