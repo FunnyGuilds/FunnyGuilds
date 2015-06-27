@@ -8,6 +8,7 @@ import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.element.PlayerList;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
 import net.dzikoysk.panda.util.configuration.PandaConfiguration;
@@ -335,11 +336,11 @@ public class Settings {
 		this.explodeMaterials = map;
 
 // PlayerList Section
-		String[] ss = new String[60];
+		String[] ss = new String[PlayerList.SIZE];
 		for(String path : pc.getSectionKeys("player-list")){
 			try {
 				int i = Integer.parseInt(path);
-				if(i > 60) continue;
+				if(i > PlayerList.SIZE) continue;
 				String s = pc.getString("player-list." + path);
 				if(s != null) s =  StringUtils.colored(s);
 				ss[i-1] = s;

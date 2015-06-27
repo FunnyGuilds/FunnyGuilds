@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 public class PlayerList {
 
+	public static final int SIZE = 80; // size of the tablist
 	private final User user;
 	private boolean init;
 	private String[] ss;
@@ -22,15 +23,15 @@ public class PlayerList {
 	public PlayerList(User user){
 		this.user = user;
 		this.ss = PlayerListScheme.getScheme();
-		this.prefix = new String[80];
-		this.suffix = new String[80];
+		this.prefix = new String[SIZE];
+		this.suffix = new String[SIZE];
 		user.setPlayerList(this);
 	}
 
 	private void split(){
-		this.prefix = new String[80];
-		this.suffix = new String[80];
-		for(int i = 0; i < 80; i++){
+		this.prefix = new String[SIZE];
+		this.suffix = new String[SIZE];
+		for(int i = 0; i < SIZE; i++){
 			String s = ss[i];
 			if(s == null || s.isEmpty()) continue;
 			if(s.length() <= 16) prefix[i] = s;

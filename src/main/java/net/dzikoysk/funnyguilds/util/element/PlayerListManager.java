@@ -15,7 +15,7 @@ import org.bukkit.scoreboard.Team;
 
 public class PlayerListManager {
 	
-	private static String[] scheme  = new String[80];
+	private static String[] scheme  = new String[PlayerList.SIZE];
 	private static boolean enable;
 	private static int ping;
 	private static boolean patch;
@@ -33,7 +33,7 @@ public class PlayerListManager {
 		PlayerList pl = user.getPlayerList();
 		String[] prefix = pl.getPrefix();
 		String[] suffix = pl.getSuffix();
-		for(int i = 0; i < 80; i++){
+		for(int i = 0; i < PlayerList.SIZE; i++){
 			if(scheme[i] == null){
 				Data.getPlayerListFile().delete();
 				scheme = PlayerListScheme.uniqueFields();
