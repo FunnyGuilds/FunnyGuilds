@@ -349,7 +349,8 @@ public class Settings {
 			}
 		}
 		new PlayerListScheme(ss);
-		this.playerlistEnable = pc.getBoolean("player-list-enable");
+		//this.playerlistEnable = pc.getBoolean("player-list-enable");
+		this.playerlistEnable = false; // disable this option
 		this.playerlistInterval = pc.getInt("player-list-interval");
 		this.playerlistPing = pc.getInt("player-list-ping");
 		this.playerlistPatch = pc.getBoolean("player-list-patch");
