@@ -20,6 +20,7 @@ public class ScriptManager {
 			if(file.isDirectory()) continue;
 			//if(file.getName().endsWith(".reflect"))
 				//reflects.add(new PandaReflection(file));
+
 		}
 		run();
 	}
