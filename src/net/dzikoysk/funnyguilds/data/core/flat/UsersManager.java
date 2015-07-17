@@ -1,8 +1,5 @@
 package net.dzikoysk.funnyguilds.data.core.flat;
 
-import java.io.File;
-import java.util.UUID;
-
 import net.dzikoysk.funnyguilds.basic.Basic;
 import net.dzikoysk.funnyguilds.basic.Rank;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -11,9 +8,12 @@ import net.dzikoysk.funnyguilds.data.core.Data;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.panda.util.configuration.PandaConfiguration;
 
+import java.io.File;
+import java.util.UUID;
+
 public class UsersManager implements Data {
 
-	private static final File USERS = FlatUtils.USERS;
+	private static final File USERS = Flat.USERS;
 	private boolean buffer;
 	
 	public UsersManager(){

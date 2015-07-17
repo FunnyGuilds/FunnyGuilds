@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.util;
 
-import java.io.File;
-
-import net.dzikoysk.funnyguilds.data.core.flat.FlatUtils;
+import net.dzikoysk.funnyguilds.data.core.flat.Flat;
 import net.dzikoysk.panda.util.configuration.PandaConfiguration;
-
 import org.bukkit.Bukkit;
+
+import java.io.File;
 
 public class Reloader {
 	
@@ -16,7 +15,7 @@ public class Reloader {
 	private static boolean reloaded;
 	
 	public void init(){
-		PandaConfiguration pc = new PandaConfiguration(new File(FlatUtils.DATA, "funnyguilds.dat"));
+		PandaConfiguration pc = new PandaConfiguration(new File(Flat.DATA, "funnyguilds.dat"));
 		before = pc.getInt("played-before");
 		actual = Bukkit.getOnlinePlayers().size();
 		reloaded = before == actual;
