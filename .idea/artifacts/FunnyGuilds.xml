@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="FunnyGuilds">
+    <output-path>H:/Result/Plugins/FunnyGuilds</output-path>
+    <root id="archive" name="FunnyGuilds.jar">
+      <element id="module-output" name="FunnyGuilds" />
+      <element id="module-output" name="Panda" />
+    </root>
+  </artifact>
+</component>

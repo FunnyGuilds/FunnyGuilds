@@ -1,20 +1,15 @@
 package net.dzikoysk.funnyguilds.script;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.dzikoysk.funnyguilds.util.IOUtils;
-import net.dzikoysk.panda.util.reflect.PandaReflection;
+
+import java.io.File;
 
 public class ScriptManager {
 
 	private static ScriptManager instance;
-	private List<PandaReflection> reflects;
-	
+
 	public ScriptManager(){
 		instance = this;
-		reflects = new ArrayList<>();
 	}
 	
 	public void start(){
@@ -23,15 +18,14 @@ public class ScriptManager {
 		if(files == null) return;
 		for(File file : files){
 			if(file.isDirectory()) continue;
-			if(file.getName().endsWith(".reflect"))
-				reflects.add(new PandaReflection(file));
+			//if(file.getName().endsWith(".reflect"))
+				//reflects.add(new PandaReflection(file));
 		}
 		run();
 	}
 	
 	public void run(){
-		for(PandaReflection reflect : reflects)
-			reflect.getWorker().run();
+
 	}
 	
 	public static ScriptManager getInstance(){

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/FunnyGuilds.iml" filepath="$PROJECT_DIR$/FunnyGuilds.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../Floobits/Panda/Panda.iml" filepath="$PROJECT_DIR$/../../Floobits/Panda/Panda.iml" />
+    </modules>
+  </component>
+</project>
