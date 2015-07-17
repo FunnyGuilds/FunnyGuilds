@@ -3,6 +3,7 @@ main: net.dzikoysk.funnyguilds.FunnyGuilds
 version: 3.9.9.1 Cleaned
 author: Dzikoysk
 website: http://www.dzikoysk.net/
+loadbefore: [WorldEdit]
 permissions:
     funnyguilds.*:
         default: op
