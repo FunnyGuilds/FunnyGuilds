@@ -3,23 +3,22 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ExcJoin implements Executor {
-	
-	@Override
-	public void execute(CommandSender sender, String[] args){
-		Messages messages = Messages.getInstance();
-		Player player = (Player) sender;
-		User user = User.get(player);
-		
-		if(user.hasGuild()){
-			player.sendMessage(messages.getMessage("joinHasGuild"));
-			return;
-		}
-		/*	TODO	
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        Messages messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
+
+        if (user.hasGuild()) {
+            player.sendMessage(messages.getMessage("joinHasGuild"));
+            return;
+        }
+        /*	TODO
 		if(InvitationsList.get(user, 0).getLS().isEmpty()){
 			player.sendMessage(messages.getMessage("joinHasNotInvitation"));
 			return;
@@ -100,5 +99,5 @@ public class ExcJoin implements Executor {
 			.replace("{GUILD}", guild.getName())
 			.replace("{TAG}", tag));
 		*/
-	}
+    }
 }

@@ -5,23 +5,24 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 
 public class ValiditySystem {
 
-	private static ValiditySystem instance;
-	
-	public ValiditySystem(){
-		instance = this;
-	}
-	
-	public void run(){
-		for(Guild guild : GuildUtils.getGuilds()){
-			if(!guild.isValid()){
-				ValidityUtils.broadcast(guild);
-				GuildUtils.deleteGuild(guild);
-			}
-		}
-	}
-	
-	public static ValiditySystem getInstance(){
-		if(instance == null) new ValiditySystem();
-		return instance;
-	}
+    private static ValiditySystem instance;
+
+    public ValiditySystem() {
+        instance = this;
+    }
+
+    public static ValiditySystem getInstance() {
+        if (instance == null)
+            new ValiditySystem();
+        return instance;
+    }
+
+    public void run() {
+        for (Guild guild : GuildUtils.getGuilds()) {
+            if (!guild.isValid()) {
+                ValidityUtils.broadcast(guild);
+                GuildUtils.deleteGuild(guild);
+            }
+        }
+    }
 }

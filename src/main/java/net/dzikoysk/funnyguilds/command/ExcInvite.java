@@ -7,49 +7,48 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ExcInvite implements Executor {
-	
-	@Override
-	public void execute(CommandSender sender, String[] args){
-		Messages messages = Messages.getInstance();
-		Player player = (Player) sender;
-		User user = User.get(player);
-		
-		if(!user.hasGuild()){
-			player.sendMessage(messages.getMessage("inviteHasNotGuild"));
-			return;
-		}
-		
-		if(!user.isOwner() && !user.isDeputy()){
-			player.sendMessage(messages.getMessage("inviteIsNotOwner"));
-			return;
-		}
-		
-		if(args.length < 1){
-			player.sendMessage(messages.getMessage("invitePlayer"));
-			return;
-		}
-		
-		Guild guild = user.getGuild();
-		
-		if(guild.getMembers().size() >= Settings.getInstance().inviteMembers){
-			player.sendMessage(messages.getMessage("inviteAmount")
-				.replace("{AMOUNT}", Integer.toString(Settings.getInstance().inviteMembers)));
-			return;
-		}
-		
-		if(!UserUtils.playedBefore(args[0])){
-			player.sendMessage(StringUtils.colored("&cTen gracz nie byl nigdy na serwerze!"));
-			return;
-		}
-		// TODO
-		//OfflinePlayer invitedOffline = Bukkit.getOfflinePlayer(args[0]);
-		//User invitedUser = User.get(args[0]);
-		/*
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        Messages messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
+
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.getMessage("inviteHasNotGuild"));
+            return;
+        }
+
+        if (!user.isOwner() && !user.isDeputy()) {
+            player.sendMessage(messages.getMessage("inviteIsNotOwner"));
+            return;
+        }
+
+        if (args.length < 1) {
+            player.sendMessage(messages.getMessage("invitePlayer"));
+            return;
+        }
+
+        Guild guild = user.getGuild();
+
+        if (guild.getMembers().size() >= Settings.getInstance().inviteMembers) {
+            player.sendMessage(messages.getMessage("inviteAmount")
+                    .replace("{AMOUNT}", Integer.toString(Settings.getInstance().inviteMembers)));
+            return;
+        }
+
+        if (!UserUtils.playedBefore(args[0])) {
+            player.sendMessage(StringUtils.colored("&cTen gracz nie byl nigdy na serwerze!"));
+            return;
+        }
+        // TODO
+        //OfflinePlayer invitedOffline = Bukkit.getOfflinePlayer(args[0]);
+        //User invitedUser = User.get(args[0]);
+        /*
 		if(InvitationsList.get(invitedUser, 0).contains(guild.getTag())){
 			InvitationsList.get(invitedUser, 0).remove(guild.getTag());
 			player.sendMessage(messages.getMessage("inviteCancelled"));
@@ -85,5 +84,5 @@ public class ExcInvite implements Executor {
 			.replace("{GUILD}", guild.getName())
 			.replace("{TAG}", guild.getTag()));
 //		*/
-	}
+    }
 }
