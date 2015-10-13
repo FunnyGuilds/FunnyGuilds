@@ -22,7 +22,7 @@ public class ScriptManager {
 		for(File file : files){
 			if(file.isDirectory()) continue;
 			if(file.getName().endsWith(".pp")){
-				PandaScript ps = PandaLoader.load(file);
+				PandaScript ps = PandaLoader.loadSimpleScript(file);
 				Panda.getInstance().addScript(ps);
 			}
 		}
@@ -30,7 +30,7 @@ public class ScriptManager {
 	}
 	
 	public void run(){
-		Panda.getInstance().runDefault();
+		Panda.getInstance().reload();
 	}
 	
 	public static ScriptManager getInstance(){
