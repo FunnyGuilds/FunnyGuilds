@@ -38,15 +38,32 @@ public enum Table {
     ),
 
     GUILDS("guilds",
-            ""
+            "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "`tag` VARCHAR(30) UNIQUE NOT NULL",
+            "`desc` TEXT NULL",
+            "`lives` SMALLINT NOT NULL",
+            "`friendly_fire` BOOL DEFAULT false",
+            "`born` DATETIME NOT NULL",
+            "`validated` BOOL DEFAULT false",
+            "`owner_id` INT UNIQUE NOT NULL" // #USERS
     ),
 
     LOCKS("guilds_locks",
-            ""
+            "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "`guild_id` INT NOT NULL", // #GUILDS
+            "`reason` TEXT NULL",
+            "`assigned` DATETIME NOT NULL",
+            "`expires` DATETIME NULL"
     ),
 
     REGIONS("guilds_regions",
-            ""
+            "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "`region_name` VARCHAR(30) NULL",
+            "`guild_id` INT NOT NULL",
+            "`center_x` INT NOT NULL",
+            "`center_z` INT NOT NULL",
+            "`size` INT NOT NULL",
+            "`world` CHAR(36) NULL"
     ),
 
     HOMES("guilds_homes",
@@ -69,10 +86,6 @@ public enum Table {
     private Table(String name, String... schema) {
         this.name = name;
         this.schema = schema;
-    }
-
-    public String getCreationSQLQuery() {
-        return "CREATE TABLE IF NOT EXISTS " + this.getName() + " (" + getSchemaString(this) + ");";
     }
 
     public String getId() {

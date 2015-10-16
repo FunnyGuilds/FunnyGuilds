@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.ndb.query;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.ndb.Callback;
+import net.dzikoysk.funnyguilds.ndb.DatabaseThread;
 
 public abstract class DatabaseQuery {
 
@@ -23,6 +24,10 @@ public abstract class DatabaseQuery {
     public DatabaseQuery(Callback callback, String query) {
         this.callback = callback;
         this.query = query;
+    }
+
+    public void execute() {
+        DatabaseThread.registerQuery(this);
     }
 
     public Callback getCallback() {
