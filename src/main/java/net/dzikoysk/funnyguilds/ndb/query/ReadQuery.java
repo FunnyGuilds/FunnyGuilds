@@ -6,20 +6,12 @@ import net.dzikoysk.funnyguilds.ndb.Callback;
 
 public class ReadQuery extends DatabaseQuery {
 
-    private final Callback callback;
-
-    public ReadQuery(String query, Callback callback) {
-        super(query);
-
-        this.callback = callback;
+    public ReadQuery(Callback callback, String query) {
+        super(callback, query);
     }
 
     @Override
     public PreparedStatement prepare(PreparedStatement statement) throws SQLException {
         return statement;
-    }
-
-    public Callback getCallback() {
-        return this.callback;
     }
 }
