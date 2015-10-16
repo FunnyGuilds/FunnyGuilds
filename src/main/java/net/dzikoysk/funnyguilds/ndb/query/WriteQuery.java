@@ -13,5 +13,4 @@ public class WriteQuery extends DatabaseQuery {
     public PreparedStatement prepare(PreparedStatement statement) throws SQLException {
         return statement;
     }
-
 }

@@ -20,5 +20,4 @@ public interface IDatabase {
     public void read(ReadQuery query);
 
     public void write(WriteQuery query);
-
 }

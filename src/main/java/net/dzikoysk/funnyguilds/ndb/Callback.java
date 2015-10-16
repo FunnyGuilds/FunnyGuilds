@@ -6,5 +6,4 @@ import java.sql.SQLException;
 public interface Callback {
 
     public void callback(ResultSet result) throws SQLException;
-
 }

@@ -21,9 +21,8 @@ public class DatabaseThread extends Thread {
     public void run() {
         while (true) {
             synchronized (this.queries) {
-                for (int i = 0; i < this.queries.size(); i++) {
+                for (int i = 0; i < this.queries.size(); i++)
                     this.handleQuery(this.queries.get(i));
-                }
             }
         }
     }
@@ -31,11 +30,10 @@ public class DatabaseThread extends Thread {
     private void handleQuery(DatabaseQuery query) {
         Database database = null; // TODO
 
-        if (query instanceof ReadQuery) {
+        if (query instanceof ReadQuery)
             database.read((ReadQuery)query);
-        } else if (query instanceof WriteQuery) {
+        else if (query instanceof WriteQuery)
             database.write((WriteQuery)query);
-        }
 
         this.queries.remove(query);
     }
@@ -47,5 +45,4 @@ public class DatabaseThread extends Thread {
     public static List<DatabaseQuery> getQueries() {
         return instance.queries;
     }
-
 }

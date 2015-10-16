@@ -8,5 +8,4 @@ public class DefinedReadQuery extends ReadQuery {
     public DefinedReadQuery(Callback callback) {
         super(null, callback);
     }
-
 }

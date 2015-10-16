@@ -47,9 +47,8 @@ public class SQLiteDatabase extends Database {
 
     @Override
     public void openConnection() throws SQLException {
-        if (this.connection != null) {
+        if (this.connection != null)
             throw new RuntimeException("Cannot redefine the driver");
-        }
 
         try {
             Class.forName(this.getDriver());
@@ -67,9 +66,8 @@ public class SQLiteDatabase extends Database {
             ResultSet result = query.prepare(statement).executeQuery();
             query.getCallback().callback(result);
 
-            if (result != null) {
+            if (result != null)
                 result.close();
-            }
         } catch (SQLException ex) {
             FunnyGuilds.exception("Could not execute the SQL query: " + ex.getLocalizedMessage(), ex.getStackTrace());
         } finally {
@@ -105,5 +103,4 @@ public class SQLiteDatabase extends Database {
     public File getDatabaseFile() {
         return this.file;
     }
-
 }

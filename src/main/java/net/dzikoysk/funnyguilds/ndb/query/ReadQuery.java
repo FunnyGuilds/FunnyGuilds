@@ -22,5 +22,4 @@ public class ReadQuery extends DatabaseQuery {
     public Callback getCallback() {
         return this.callback;
     }
-
 }

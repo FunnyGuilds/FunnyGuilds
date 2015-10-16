@@ -27,5 +27,4 @@ public abstract class DatabaseQuery {
     public void setQuery(String query) {
         this.query = query;
     }
-
 }

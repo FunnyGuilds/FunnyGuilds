@@ -21,5 +21,4 @@ public abstract class Database implements IDatabase {
     public String getPassword() {
         return this.password;
     }
-
 }
