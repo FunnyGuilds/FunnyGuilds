@@ -37,6 +37,11 @@ public enum Table {
             "`conquest_id` INT NULL" // #CONQUESTS
     ),
 
+    /**
+     * Zapis wszystkich gildii, jakie istnieją na serwerze. Zawiera unikalny dla
+     * niej tag, opis, ilość żyć, sojusz graczy w gildii, czas stworzenie,
+     * poprawność i ID lidera (#USERS).
+     */
     GUILDS("guilds",
             "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
             "`tag` VARCHAR(30) UNIQUE NOT NULL",
@@ -48,6 +53,9 @@ public enum Table {
             "`owner_id` INT UNIQUE NOT NULL" // #USERS
     ),
 
+    /**
+     * 
+     */
     LOCKS("guilds_locks",
             "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
             "`guild_id` INT NOT NULL", // #GUILDS
@@ -56,26 +64,55 @@ public enum Table {
             "`expires` DATETIME NULL"
     ),
 
+    /**
+     * 
+     */
     REGIONS("guilds_regions",
             "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
             "`region_name` VARCHAR(30) NULL",
-            "`guild_id` INT NOT NULL",
+            "`guild_id` INT NOT NULL", // #GUILDS
             "`center_x` INT NOT NULL",
             "`center_z` INT NOT NULL",
             "`size` INT NOT NULL",
             "`world` CHAR(36) NULL"
     ),
 
+    /**
+     * 
+     */
     HOMES("guilds_homes",
-            ""
+            "`guild_id` INT NOT NULL PRIMARY KEY", // #GUILDS
+            "`home_name` VARCHAR(30) NULL",
+            "`home_x` DOUBLE NOT NULL",
+            "`home_y` DOUBLE NOT NULL",
+            "`home_z` DOUBLE NOT NULL",
+            "`home_yaw` SMALLINT DEFAULT 0",
+            "`home_pitch` TINYINT DEFAULT 0",
+            "`world` CHAR(36) NULL"
     ),
 
+    /**
+     * 
+     */
     RELATIONS("guilds_relations",
-            ""
+            "`applicant_id` INT NOT NULL", // #GUILDS
+            "`receiver_id` INT NOT NULL", // #GUILDS
+            "`relation` BOOL",
+            "`assigned` DATETIME NOT NULL",
+            "`expires` DATETIME NULL",
+            "PRIMARY KEY (`applicant_id`, `receiver_id`)"
     ),
 
+    /**
+     * 
+     */
     CONQUESTS("guilds_conquests",
-            ""
+            "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "`attacker_id` INT NOT NULL", // #GUILDS
+            "`defender_id` INT NOT NULL", // #GUILDS
+            "`date_start` DATETIME NOT NULL",
+            "`date_end` DATETIME NULL",
+            "`progress` INT DEFAULT 0"
     ),
 
     ;
