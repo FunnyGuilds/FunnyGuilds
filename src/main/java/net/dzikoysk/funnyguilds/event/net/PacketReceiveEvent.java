@@ -7,46 +7,46 @@ import org.bukkit.event.HandlerList;
 
 public class PacketReceiveEvent extends Event implements Cancellable {
 
-	private static final HandlerList handlers = new HandlerList();
-	private final Player player;
-	private Object packet;
-	private boolean cancelled;
+    private static final HandlerList handlers = new HandlerList();
+    private final Player player;
+    private Object packet;
+    private boolean cancelled;
 
-	public PacketReceiveEvent(Object packet, Player player) {
-		this.packet = packet;
-		this.player = player;
-		this.cancelled = false;
-	}
+    public PacketReceiveEvent(Object packet, Player player) {
+        this.packet = packet;
+        this.player = player;
+        this.cancelled = false;
+    }
 
-	public Object getPacket(){
-		return packet;
-	}
-	
-	public Player getPlayer(){
-		return player;
-	}
-	
-	public String getPacketName() {
-		return this.packet.getClass().getSimpleName();
-	}
-	
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
+    public Object getPacket() {
+        return packet;
+    }
 
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	@Override
-	public boolean isCancelled() {
-		return cancelled;
-	}
+    public String getPacketName() {
+        return this.packet.getClass().getSimpleName();
+    }
 
-	@Override
-	public void setCancelled(boolean b) {
-		cancelled = b;
-	}
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlers;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean b) {
+        cancelled = b;
+    }
 
 }

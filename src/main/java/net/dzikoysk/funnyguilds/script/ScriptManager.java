@@ -10,33 +10,33 @@ import java.io.File;
 
 public class ScriptManager {
 
-	private static ScriptManager instance;
+    private static ScriptManager instance;
 
-	public ScriptManager(){
-		instance = this;
-	}
-	
-	public void start(){
-		File home = IOUtils.getFile("plugins/FunnyGuilds/scripts", true);
-		File[] files = home.listFiles();
-		if(files == null) return;
-		for(File file : files){
-			if(file.isDirectory()) continue;
-			if(file.getName().endsWith(".pp")){
-				PandaScript ps = PandaLoader.loadSingleScript(file);
-				Panda.getInstance().addScript(ps);
-			}
-		}
-		run();
-	}
-	
-	public void run(){
-		Panda.getInstance().callAll(MethodBlock.class, "main");
-	}
-	
-	public static ScriptManager getInstance(){
-		if(instance == null) new ScriptManager();
-		return instance;
-	}
-	
+    public ScriptManager() {
+        instance = this;
+    }
+
+    public void start() {
+        File home = IOUtils.getFile("plugins/FunnyGuilds/scripts", true);
+        File[] files = home.listFiles();
+        if (files == null) return;
+        for (File file : files) {
+            if (file.isDirectory()) continue;
+            if (file.getName().endsWith(".pp")) {
+                PandaScript ps = PandaLoader.loadSingleScript(file);
+                Panda.getInstance().addScript(ps);
+            }
+        }
+        run();
+    }
+
+    public void run() {
+        Panda.getInstance().callAll(MethodBlock.class, "main");
+    }
+
+    public static ScriptManager getInstance() {
+        if (instance == null) new ScriptManager();
+        return instance;
+    }
+
 }

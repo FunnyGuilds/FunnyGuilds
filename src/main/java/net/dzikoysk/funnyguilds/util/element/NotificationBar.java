@@ -1,327 +1,314 @@
 package net.dzikoysk.funnyguilds.util.element;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+
 public class NotificationBar {
 
-	private static PlayerMap<FakeDragon> bars = new PlayerMap<FakeDragon>();
-	
-	public static void set(final Player player, String text, float percent, int time) {
+    private static PlayerMap<FakeDragon> bars = new PlayerMap<FakeDragon>();
 
-		remove(player);
-		FakeDragon dragon = bars.containsKey(player) ? bars.get(player) : null;
+    public static void set(final Player player, String text, float percent, int time) {
 
-		if(text.length() > 64) text = text.substring(0, 63);
-		if(percent > 1.0f) percent = 1.0f;
-		if(percent < 0.05f) percent = 0.05f;
+        remove(player);
+        FakeDragon dragon = bars.containsKey(player) ? bars.get(player) : null;
 
-		if (text.isEmpty() && dragon != null) remove(player);
+        if (text.length() > 64) text = text.substring(0, 63);
+        if (percent > 1.0f) percent = 1.0f;
+        if (percent < 0.05f) percent = 0.05f;
 
-		if (dragon == null) {
-			dragon = new FakeDragon(player.getLocation().add(0, -200, 0), text, percent);
-			sendPacket(player, dragon.getSpawnPacket());
-			bars.put(player, dragon);
-		}
-		
-		else {
-			dragon.setName(text);
-			dragon.setHealth(percent);
-			sendPacket(player, dragon.getMetaPacket(dragon.getWatcher()));
-			sendPacket(player, dragon.getTeleportPacket(player.getLocation().add(0, -200, 0)));
-		}
-		
-		Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), new Runnable(){
-			@Override
-			public void run(){
-				NotificationBar.remove(player);
-			}
-		}, time*20);
-	}
-	
-	public static void remove(Player player){
-		if(has(player)){
-			sendPacket(player, bars.get(player).getDestroyPacket());
-			bars.remove(player);
-		}
-	}
-	
-	public static boolean has(Player player){
-		return bars.containsKey(player) && bars.get(player) != null;
-	}
+        if (text.isEmpty() && dragon != null) remove(player);
 
-	private static void sendPacket(Player player, Object packet) {
-		try {
-			Object nmsPlayer = Reflections.getHandle(player);
-			Field connectionField = nmsPlayer.getClass().getField("playerConnection");
-			Object connection = connectionField.get(nmsPlayer);
-			Method sendPacket = Reflections.getMethod(connection.getClass(), "sendPacket");
-			sendPacket.invoke(connection, packet);
-		}
-		catch (Exception e) {
-			if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-		}
-	}
+        if (dragon == null) {
+            dragon = new FakeDragon(player.getLocation().add(0, -200, 0), text, percent);
+            sendPacket(player, dragon.getSpawnPacket());
+            bars.put(player, dragon);
+        } else {
+            dragon.setName(text);
+            dragon.setHealth(percent);
+            sendPacket(player, dragon.getMetaPacket(dragon.getWatcher()));
+            sendPacket(player, dragon.getTeleportPacket(player.getLocation().add(0, -200, 0)));
+        }
 
-	private static class FakeDragon {
+        Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                NotificationBar.remove(player);
+            }
+        }, time * 20);
+    }
 
-		private static final int MAX_HEALTH = 200;
-		private int			  id;
-		private int			  x;
-		private int			  y;
-		private int			  z;
-		private int			  pitch	  = 0;
-		private int			  yaw		= 0;
-		private byte			 xvel	   = 0;
-		private byte			 yvel	   = 0;
-		private byte			 zvel	   = 0;
-		private float			health;
-		private boolean		  visible	= false;
-		private String		   name;
-		private Object		   world;
+    public static void remove(Player player) {
+        if (has(player)) {
+            sendPacket(player, bars.get(player).getDestroyPacket());
+            bars.remove(player);
+        }
+    }
 
-		private Object		   dragon;
+    public static boolean has(Player player) {
+        return bars.containsKey(player) && bars.get(player) != null;
+    }
 
-		public FakeDragon(Location loc, String name, float percent) {
-			this.name = name;
-			this.x = loc.getBlockX();
-			this.y = loc.getBlockY();
-			this.z = loc.getBlockZ();
-			this.health = percent * MAX_HEALTH;
-			this.world = Reflections.getHandle(loc.getWorld());
-		}
+    private static void sendPacket(Player player, Object packet) {
+        try {
+            Object nmsPlayer = Reflections.getHandle(player);
+            Field connectionField = nmsPlayer.getClass().getField("playerConnection");
+            Object connection = connectionField.get(nmsPlayer);
+            Method sendPacket = Reflections.getMethod(connection.getClass(), "sendPacket");
+            sendPacket.invoke(connection, packet);
+        } catch (Exception e) {
+            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+        }
+    }
 
-		public void setHealth(float percent) {
-			this.health = percent / MAX_HEALTH;
-		}
+    private static class FakeDragon {
 
-		public void setName(String name) {
-			this.name = name;
-		}
+        private static final int MAX_HEALTH = 200;
+        private int id;
+        private int x;
+        private int y;
+        private int z;
+        private int pitch = 0;
+        private int yaw = 0;
+        private byte xvel = 0;
+        private byte yvel = 0;
+        private byte zvel = 0;
+        private float health;
+        private boolean visible = false;
+        private String name;
+        private Object world;
 
-		public Object getSpawnPacket() {
-			Class<?> Entity = Reflections.getCraftClass("Entity");
-			Class<?> EntityLiving = Reflections.getCraftClass("EntityLiving");
-			Class<?> EntityEnderDragon = Reflections.getCraftClass("EntityEnderDragon");
+        private Object dragon;
 
-			try{
-				dragon = EntityEnderDragon.getConstructor(Reflections.getCraftClass("World")).newInstance(world);
+        public FakeDragon(Location loc, String name, float percent) {
+            this.name = name;
+            this.x = loc.getBlockX();
+            this.y = loc.getBlockY();
+            this.z = loc.getBlockZ();
+            this.health = percent * MAX_HEALTH;
+            this.world = Reflections.getHandle(loc.getWorld());
+        }
 
-				Reflections.getMethod(EntityEnderDragon, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
-				Reflections.getMethod(EntityEnderDragon, "setInvisible", boolean.class).invoke(dragon, visible);
-				Reflections.getMethod(EntityEnderDragon, "setCustomName", String.class ).invoke(dragon, name);
-				Reflections.getMethod(EntityEnderDragon, "setHealth", float.class).invoke(dragon, health);
+        public void setHealth(float percent) {
+            this.health = percent / MAX_HEALTH;
+        }
 
-				Reflections.getField(Entity, "motX").set(dragon, xvel);
-				Reflections.getField(Entity, "motY").set(dragon, yvel);
-				Reflections.getField(Entity, "motZ").set(dragon, zvel);
+        public void setName(String name) {
+            this.name = name;
+        }
 
-				this.id = (Integer) Reflections.getMethod(EntityEnderDragon, "getId").invoke(dragon);
+        public Object getSpawnPacket() {
+            Class<?> Entity = Reflections.getCraftClass("Entity");
+            Class<?> EntityLiving = Reflections.getCraftClass("EntityLiving");
+            Class<?> EntityEnderDragon = Reflections.getCraftClass("EntityEnderDragon");
 
-				Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
-				return packetClass.getConstructor(new Class<?>[]{ EntityLiving }).newInstance(dragon);
-			}
-			catch(Exception e){
-				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-				return null;
-			}
-		}
+            try {
+                dragon = EntityEnderDragon.getConstructor(Reflections.getCraftClass("World")).newInstance(world);
 
-		public Object getDestroyPacket(){
-			try{
-				Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-				return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
-			}
-			catch(Exception e){
-				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-				return null;
-			}
-		}
+                Reflections.getMethod(EntityEnderDragon, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
+                Reflections.getMethod(EntityEnderDragon, "setInvisible", boolean.class).invoke(dragon, visible);
+                Reflections.getMethod(EntityEnderDragon, "setCustomName", String.class).invoke(dragon, name);
+                Reflections.getMethod(EntityEnderDragon, "setHealth", float.class).invoke(dragon, health);
 
-		public Object getMetaPacket(Object watcher){
-			try{
-				Class<?> watcherClass = Reflections.getCraftClass("DataWatcher");
-				Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
-				return packetClass.getConstructor(new Class<?>[] { int.class, watcherClass, boolean.class }).newInstance(id, watcher, true);
-			}
-			catch(Exception e){
-				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-				return null;
-			}
-		}
+                Reflections.getField(Entity, "motX").set(dragon, xvel);
+                Reflections.getField(Entity, "motY").set(dragon, yvel);
+                Reflections.getField(Entity, "motZ").set(dragon, zvel);
 
-		public Object getTeleportPacket(Location loc){
-			try{
-				Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityTeleport");
-				return packetClass.getConstructor(new Class<?>[] { int.class, int.class, int.class, int.class, byte.class, byte.class }).newInstance(
-						this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
-			}
-			catch(Exception e){
-				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-				return null;
-			}
-		}
+                this.id = (Integer) Reflections.getMethod(EntityEnderDragon, "getId").invoke(dragon);
 
-		public Object getWatcher(){
-			Class<?> Entity = Reflections.getCraftClass("Entity");
-			Class<?> DataWatcher = Reflections.getCraftClass("DataWatcher");
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
+                return packetClass.getConstructor(new Class<?>[]{EntityLiving}).newInstance(dragon);
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                return null;
+            }
+        }
 
-			try{
-				Object watcher = DataWatcher.getConstructor(new Class<?>[] { Entity }).newInstance(dragon);
-				Method a = Reflections.getMethod(DataWatcher, "a", new Class<?>[] { int.class, Object.class });
+        public Object getDestroyPacket() {
+            try {
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
+                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                return null;
+            }
+        }
 
-				a.invoke(watcher, 0, visible ? (byte) 0 : (byte) 0x20);
-				a.invoke(watcher, 6, (Float) health);
-				a.invoke(watcher, 7, (Integer) 0);
-				a.invoke(watcher, 8, (Byte) (byte) 0);
-				a.invoke(watcher, 10, name);
-				a.invoke(watcher, 11, (Byte) (byte) 1);
-				return watcher;
-			}
-			catch(Exception e){
-				if(FunnyGuilds.exception(e.getCause())) e.printStackTrace();
-				return null;
-			}
-		}
+        public Object getMetaPacket(Object watcher) {
+            try {
+                Class<?> watcherClass = Reflections.getCraftClass("DataWatcher");
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
+                return packetClass.getConstructor(new Class<?>[]{int.class, watcherClass, boolean.class}).newInstance(id, watcher, true);
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                return null;
+            }
+        }
 
-	}
+        public Object getTeleportPacket(Location loc) {
+            try {
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityTeleport");
+                return packetClass.getConstructor(new Class<?>[]{int.class, int.class, int.class, int.class, byte.class, byte.class}).newInstance(
+                        this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                return null;
+            }
+        }
 
-	private static class PlayerMap<V> implements Map<Player, V>{
+        public Object getWatcher() {
+            Class<?> Entity = Reflections.getCraftClass("Entity");
+            Class<?> DataWatcher = Reflections.getCraftClass("DataWatcher");
 
-		private final V defaultValue;
-		private final Map<String, V> contents;
+            try {
+                Object watcher = DataWatcher.getConstructor(new Class<?>[]{Entity}).newInstance(dragon);
+                Method a = Reflections.getMethod(DataWatcher, "a", new Class<?>[]{int.class, Object.class});
 
-		public PlayerMap(){
-			contents = new HashMap<String, V>();
-			defaultValue = null;
-		}
+                a.invoke(watcher, 0, visible ? (byte) 0 : (byte) 0x20);
+                a.invoke(watcher, 6, (Float) health);
+                a.invoke(watcher, 7, (Integer) 0);
+                a.invoke(watcher, 8, (Byte) (byte) 0);
+                a.invoke(watcher, 10, name);
+                a.invoke(watcher, 11, (Byte) (byte) 1);
+                return watcher;
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                return null;
+            }
+        }
 
-		@Override
-		public void clear() {
-			contents.clear();
-		}
+    }
 
-		@Override
-		public boolean containsKey(Object key) {
-			if(key instanceof Player)
-				return contents.containsKey(((Player) key).getName());
-			if(key instanceof String)
-				return contents.containsKey(key);
-			return false;
-		}
+    private static class PlayerMap<V> implements Map<Player, V> {
 
-		@Override
-		public boolean containsValue(Object value){
-			return contents.containsValue(value);
-		}
+        private final V defaultValue;
+        private final Map<String, V> contents;
 
-		@Override
-		public Set<Entry<Player, V>> entrySet() {
-			Set<Entry<Player, V>> toReturn = new HashSet<Entry<Player, V>>();
-			for(String name : contents.keySet())
-				toReturn.add(new PlayerEntry(Bukkit.getPlayer(name), contents.get(name)));
-			return toReturn;
-		}
+        public PlayerMap() {
+            contents = new HashMap<String, V>();
+            defaultValue = null;
+        }
 
-		@Override
-		public V get(Object key) {
-			V result = null;
-			if(key instanceof Player)
-				result = contents.get(((Player) key).getName());
-			if(key instanceof String)
-				result = contents.get(key);
-			return (result == null) ? defaultValue : result;
-		}
+        @Override
+        public void clear() {
+            contents.clear();
+        }
 
-		@Override
-		public boolean isEmpty(){
-			return contents.isEmpty();
-		}
+        @Override
+        public boolean containsKey(Object key) {
+            if (key instanceof Player)
+                return contents.containsKey(((Player) key).getName());
+            if (key instanceof String)
+                return contents.containsKey(key);
+            return false;
+        }
 
-		@Override
-		public Set<Player> keySet(){
-			Set<Player> toReturn = new HashSet<Player>();
-			for(String name : contents.keySet())
-				toReturn.add(Bukkit.getPlayer(name));
-			return toReturn;
-		}
+        @Override
+        public boolean containsValue(Object value) {
+            return contents.containsValue(value);
+        }
 
-		@Override
-		public V put(Player key, V value) {
-			if(key == null)
-				return null;
-			return contents.put(key.getName(), value);
-		}
+        @Override
+        public Set<Entry<Player, V>> entrySet() {
+            Set<Entry<Player, V>> toReturn = new HashSet<Entry<Player, V>>();
+            for (String name : contents.keySet())
+                toReturn.add(new PlayerEntry(Bukkit.getPlayer(name), contents.get(name)));
+            return toReturn;
+        }
 
-		@Override
-		public void putAll(Map<? extends Player, ? extends V> map) {
-			for(Entry<? extends Player, ? extends V> entry : map.entrySet())
-				put(entry.getKey(), entry.getValue());
-		}
+        @Override
+        public V get(Object key) {
+            V result = null;
+            if (key instanceof Player)
+                result = contents.get(((Player) key).getName());
+            if (key instanceof String)
+                result = contents.get(key);
+            return (result == null) ? defaultValue : result;
+        }
 
-		@Override
-		public V remove(Object key) {
-			if(key instanceof Player)
-				return contents.remove(((Player) key).getName());
-			if(key instanceof String)
-				return contents.remove(key);
-			return null;
-		}
+        @Override
+        public boolean isEmpty() {
+            return contents.isEmpty();
+        }
 
-		@Override
-		public int size() {
-			return contents.size();
-		}
+        @Override
+        public Set<Player> keySet() {
+            Set<Player> toReturn = new HashSet<Player>();
+            for (String name : contents.keySet())
+                toReturn.add(Bukkit.getPlayer(name));
+            return toReturn;
+        }
 
-		@Override
-		public Collection<V> values() {
-			return contents.values();
-		}
+        @Override
+        public V put(Player key, V value) {
+            if (key == null)
+                return null;
+            return contents.put(key.getName(), value);
+        }
 
-		@Override
-		public String toString(){
-			return contents.toString();
-		}
+        @Override
+        public void putAll(Map<? extends Player, ? extends V> map) {
+            for (Entry<? extends Player, ? extends V> entry : map.entrySet())
+                put(entry.getKey(), entry.getValue());
+        }
 
-		public class PlayerEntry implements Map.Entry<Player, V>{
+        @Override
+        public V remove(Object key) {
+            if (key instanceof Player)
+                return contents.remove(((Player) key).getName());
+            if (key instanceof String)
+                return contents.remove(key);
+            return null;
+        }
 
-			private Player key;
-			private V value;
+        @Override
+        public int size() {
+            return contents.size();
+        }
 
-			public PlayerEntry(Player key, V value){
-				this.key = key;
-				this.value = value;
-			}
+        @Override
+        public Collection<V> values() {
+            return contents.values();
+        }
 
-			@Override
-			public Player getKey() {
-				return key;
-			}
+        @Override
+        public String toString() {
+            return contents.toString();
+        }
 
-			@Override
-			public V getValue() {
-				return value;
-			}
+        public class PlayerEntry implements Map.Entry<Player, V> {
 
-			@Override
-			public V setValue(V value) {
-				V toReturn = this.value;
-				this.value = value;
-				return toReturn;
-			}
+            private Player key;
+            private V value;
 
-		}
-	}
+            public PlayerEntry(Player key, V value) {
+                this.key = key;
+                this.value = value;
+            }
+
+            @Override
+            public Player getKey() {
+                return key;
+            }
+
+            @Override
+            public V getValue() {
+                return value;
+            }
+
+            @Override
+            public V setValue(V value) {
+                V toReturn = this.value;
+                this.value = value;
+                return toReturn;
+            }
+
+        }
+    }
 }

@@ -3,29 +3,28 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ExcAlly implements Executor {
-	
-	@Override
-	public void execute(CommandSender s, String[] args){
-		Messages messages = Messages.getInstance();
-		Player player = (Player) s;
-		User user = User.get(player);
-		//Guild guild = user.getGuild();
-		
-		if(!user.hasGuild()){
-			player.sendMessage(messages.getMessage("allyHasNotGuild"));
-			return;
-		}
-		
-		if(!user.isOwner()){
-			player.sendMessage(messages.getMessage("allyIsNotOwner"));
-			return;
-		}
-		/*
+
+    @Override
+    public void execute(CommandSender s, String[] args) {
+        Messages messages = Messages.getInstance();
+        Player player = (Player) s;
+        User user = User.get(player);
+        //Guild guild = user.getGuild();
+
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.getMessage("allyHasNotGuild"));
+            return;
+        }
+
+        if (!user.isOwner()) {
+            player.sendMessage(messages.getMessage("allyIsNotOwner"));
+            return;
+        }
+        /*
 		if(args.length < 1){
 			if(InvitationsList.get(guild, 1).getLS().isEmpty()){
 				player.sendMessage(messages.getMessage("allyHasNotInvitation"));
@@ -105,5 +104,5 @@ public class ExcAlly implements Executor {
 			.replace("{GUILD}", guild.getName()));
 		return;
 		*/
-	}
+    }
 }
