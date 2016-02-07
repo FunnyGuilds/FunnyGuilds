@@ -1,20 +1,13 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
+import io.netty.channel.*;
 import net.dzikoysk.funnyguilds.event.EventCaller;
 import net.dzikoysk.funnyguilds.event.net.PacketReceiveEvent;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
-
 import org.bukkit.entity.Player;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class PacketExtension {
 

@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.data.core.Data;
 import net.dzikoysk.funnyguilds.util.IOUtils;
-import net.dzikoysk.panda.util.configuration.PandaConfiguration;
+import org.panda_lang.panda.util.configuration.PandaConfiguration;
 
 import java.io.File;
 import java.util.UUID;

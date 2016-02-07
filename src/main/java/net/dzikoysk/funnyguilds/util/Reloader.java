@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.util;
 
 import net.dzikoysk.funnyguilds.data.core.flat.Flat;
-import net.dzikoysk.panda.util.configuration.PandaConfiguration;
 import org.bukkit.Bukkit;
+import org.panda_lang.panda.util.configuration.PandaConfiguration;
 
 import java.io.File;
 

@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.script;
 
 import net.dzikoysk.funnyguilds.util.IOUtils;
-import net.dzikoysk.panda.Panda;
-import net.dzikoysk.panda.PandaLoader;
-import net.dzikoysk.panda.PandaScript;
+import org.panda_lang.panda.Panda;
+import org.panda_lang.panda.PandaLoader;
+import org.panda_lang.panda.PandaScript;
+import org.panda_lang.panda.core.syntax.block.MethodBlock;
 
 import java.io.File;
 
@@ -22,7 +23,7 @@ public class ScriptManager {
 		for(File file : files){
 			if(file.isDirectory()) continue;
 			if(file.getName().endsWith(".pp")){
-				PandaScript ps = PandaLoader.load(file);
+				PandaScript ps = PandaLoader.loadSingleScript(file);
 				Panda.getInstance().addScript(ps);
 			}
 		}
@@ -30,7 +31,7 @@ public class ScriptManager {
 	}
 	
 	public void run(){
-		Panda.getInstance().runDefault();
+		Panda.getInstance().callAll(MethodBlock.class, "main");
 	}
 	
 	public static ScriptManager getInstance(){
