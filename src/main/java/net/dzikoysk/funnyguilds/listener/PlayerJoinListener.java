@@ -31,8 +31,9 @@ public class PlayerJoinListener implements Listener {
             @Override
             public void run() {
                 PacketExtension.registerPlayer(player);
-                if (Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal"))
+                if (Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")) {
                     EntityUtil.spawn(player);
+                }
                 Version.check(player);
             }
         }, 40L);

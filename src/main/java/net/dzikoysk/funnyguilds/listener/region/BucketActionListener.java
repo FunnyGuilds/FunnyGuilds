@@ -10,12 +10,16 @@ public class BucketActionListener implements Listener {
 
     @EventHandler
     public void onFill(PlayerBucketFillEvent e) {
-        if (ProtectionSystem.build(e.getPlayer(), e.getBlockClicked().getLocation())) e.setCancelled(true);
+        if (ProtectionSystem.build(e.getPlayer(), e.getBlockClicked().getLocation())) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onEmpty(PlayerBucketEmptyEvent e) {
-        if (ProtectionSystem.build(e.getPlayer(), e.getBlockClicked().getLocation())) e.setCancelled(true);
+        if (ProtectionSystem.build(e.getPlayer(), e.getBlockClicked().getLocation())) {
+            e.setCancelled(true);
+        }
     }
 
 }

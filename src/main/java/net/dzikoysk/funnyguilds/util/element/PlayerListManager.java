@@ -19,12 +19,15 @@ public class PlayerListManager {
     private static boolean patch;
 
     public static void updatePlayers() {
-        for (Player player : Bukkit.getOnlinePlayers())
+        for (Player player : Bukkit.getOnlinePlayers()) {
             User.get(player).getPlayerList().send();
+        }
     }
 
     public static void send(Player player) {
-        if (!enable) return;
+        if (!enable) {
+            return;
+        }
         User user = User.get(player);
         Scoreboard sb = user.getScoreboard();
         PlayerList pl = user.getPlayerList();
@@ -36,19 +39,27 @@ public class PlayerListManager {
                 scheme = PlayerListScheme.uniqueFields();
             }
             String s = scheme[i];
-            if (s == null) continue;
+            if (s == null) {
+                continue;
+            }
             Team team = sb.getTeam(s);
             if (team == null) {
                 team = sb.registerNewTeam(s);
                 team.addPlayer(new OfflineUser(s));
             }
-            if (prefix[i] != null) team.setPrefix(prefix[i]);
-            if (suffix[i] != null) team.setSuffix(suffix[i]);
+            if (prefix[i] != null) {
+                team.setPrefix(prefix[i]);
+            }
+            if (suffix[i] != null) {
+                team.setSuffix(suffix[i]);
+            }
         }
         if (!pl.getInit()) {
             Player[] ps = FunnyGuilds.getOnlinePlayers();
             String[] ss = new String[ps.length];
-            for (int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
+            for (int i = 0; i < ps.length; i++) {
+                ss[i] = ps[i].getPlayerListName();
+            }
             pl.init(true);
             PacketSender.sendPacket(player, packets(ss, false));
             PacketSender.sendPacket(player, packets(scheme, true));
@@ -56,7 +67,9 @@ public class PlayerListManager {
         if (patch) {
             Player[] ps = FunnyGuilds.getOnlinePlayers();
             String[] ss = new String[ps.length];
-            for (int i = 0; i < ps.length; i++) ss[i] = ps[i].getPlayerListName();
+            for (int i = 0; i < ps.length; i++) {
+                ss[i] = ps[i].getPlayerListName();
+            }
             PacketSender.sendPacket(player, packets(ss, false));
         }
         try {
@@ -69,14 +82,19 @@ public class PlayerListManager {
 
     private static Object[] packets(String[] ss, boolean b) {
         Object[] packets = new Object[ss.length];
-        for (int i = 0; i < ss.length; i++) packets[i] = PacketPlayOutPlayerInfo.getPacket(ss[i], b, ping);
+        for (int i = 0; i < ss.length; i++) {
+            packets[i] = PacketPlayOutPlayerInfo.getPacket(ss[i], b, ping);
+        }
         return packets;
     }
 
     public static void scheme(String[] ss) {
         String[] clone = ss.clone();
-        for (int i = 0; i < clone.length; i++)
-            if (clone[i] != null) clone[i] = ChatColor.translateAlternateColorCodes('.', clone[i]);
+        for (int i = 0; i < clone.length; i++) {
+            if (clone[i] != null) {
+                clone[i] = ChatColor.translateAlternateColorCodes('.', clone[i]);
+            }
+        }
         scheme = clone;
     }
 

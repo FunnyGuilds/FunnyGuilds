@@ -44,10 +44,14 @@ public class AxcMove implements Executor {
         }
 
         Location loc = player.getLocation();
-        if (settings.createCenterY != 0) loc.setY(settings.createCenterY);
+        if (settings.createCenterY != 0) {
+            loc.setY(settings.createCenterY);
+        }
 
         int d = settings.regionSize + settings.createDistance;
-        if (settings.enlargeItems != null) d = settings.enlargeItems.size() * settings.enlargeSize + d;
+        if (settings.enlargeItems != null) {
+            d = settings.enlargeItems.size() * settings.enlargeSize + d;
+        }
 
         if (d > player.getWorld().getSpawnLocation().distance(loc)) {
             player.sendMessage(messages.getMessage("createSpawn")
@@ -61,29 +65,39 @@ public class AxcMove implements Executor {
 
         Guild guild = GuildUtils.byTag(tag);
         Region region = guild.getRegion();
-        if (region == null) region = new Region(guild, loc, settings.regionSize);
+        if (region == null) {
+            region = new Region(guild, loc, settings.regionSize);
+        }
         else {
-            if (settings.createStringMaterial.equalsIgnoreCase("ender crystal")) EntityUtil.despawn(guild);
+            if (settings.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                EntityUtil.despawn(guild);
+            }
             else {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-                if (block.getLocation().getBlockY() > 1) block.setType(Material.AIR);
+                if (block.getLocation().getBlockY() > 1) {
+                    block.setType(Material.AIR);
+                }
             }
             region.setCenter(loc);
         }
 
         if (settings.createCenterSphere) {
             Collection<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
-            for (Location l : sphere)
-                if (l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.AIR);
+            for (Location l : sphere) {
+                if (l.getBlock().getType() != Material.BEDROCK) {
+                    l.getBlock().setType(Material.AIR);
+                }
+            }
         }
 
-        if (settings.createMaterial != null && settings.createMaterial != Material.AIR)
+        if (settings.createMaterial != null && settings.createMaterial != Material.AIR) {
             loc.getBlock().getRelative(BlockFace.DOWN).setType(settings.createMaterial);
-        else if (settings.createStringMaterial.equalsIgnoreCase("ender crystal"))
+        }
+        else if (settings.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
+        }
 
         player.sendMessage(StringUtils.colored("&7Przeniesiono teren gildii &a" + guild.getName() + "&7!"));
-        return;
     }
 
 }

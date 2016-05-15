@@ -53,7 +53,9 @@ public class Commands {
     }
 
     public static Commands getInstance() {
-        if (instance == null) instance = new Commands();
+        if (instance == null) {
+            instance = new Commands();
+        }
         return instance;
     }
 

@@ -12,11 +12,15 @@ public class DescriptionChanger {
     }
 
     public void name(String s) {
-        if (s == null || s.isEmpty()) return;
+        if (s == null || s.isEmpty()) {
+            return;
+        }
         try {
             Reflections.getPrivateField(desc.getClass(), "name").set(desc, s);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
         }
     }
 }

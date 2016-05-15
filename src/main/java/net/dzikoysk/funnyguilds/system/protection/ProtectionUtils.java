@@ -6,8 +6,7 @@ import org.bukkit.event.block.Action;
 public class ProtectionUtils {
 
     public static boolean action(Action action, Block block) {
-        if (action == Action.RIGHT_CLICK_BLOCK) return checkBlock(block);
-        return false;
+        return action == Action.RIGHT_CLICK_BLOCK && checkBlock(block);
     }
 
     private static boolean checkBlock(Block block) {

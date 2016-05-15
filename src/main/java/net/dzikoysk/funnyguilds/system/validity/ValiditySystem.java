@@ -21,7 +21,9 @@ public class ValiditySystem {
     }
 
     public static ValiditySystem getInstance() {
-        if (instance == null) new ValiditySystem();
+        if (instance == null) {
+            new ValiditySystem();
+        }
         return instance;
     }
 }

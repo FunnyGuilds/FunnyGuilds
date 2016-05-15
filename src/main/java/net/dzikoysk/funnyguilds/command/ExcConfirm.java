@@ -32,7 +32,7 @@ public class ExcConfirm implements Executor {
         String tag = guild.getTag();
 
 		/*
-		if(!ConfirmationList.contains(lp.getUUID())){
+        if(!ConfirmationList.contains(lp.getUUID())){
 			p.sendMessage(m.getMessage("deleteToConfirm"));
 			return;
 		}

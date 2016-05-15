@@ -26,12 +26,16 @@ public class PacketSender {
                 Object con = handle.getClass().getField("playerConnection").get(handle);
                 Method method = con.getClass().getMethod("sendPacket", packetClass);
                 for (Object o : os) {
-                    if (o == null) continue;
+                    if (o == null) {
+                        continue;
+                    }
                     method.invoke(con, o);
                 }
             }
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
         }
     }
 

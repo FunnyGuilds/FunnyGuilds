@@ -20,6 +20,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
 import java.lang.reflect.Field;
+import java.util.Objects;
 import java.util.UUID;
 
 public class User implements Basic {
@@ -58,69 +59,6 @@ public class User implements Basic {
         this(new OfflineUser(name));
     }
 
-    public void setName(String name) {
-        this.name = name;
-        this.passVariable("name");
-    }
-
-    public void setGuild(Guild guild) {
-        this.guild = guild;
-        this.passVariable("guild");
-    }
-
-    public void setRank(Rank r) {
-        this.rank = r;
-        this.passVariable("rank");
-    }
-
-    public void setBan(long l) {
-        this.ban = l;
-        this.passVariable("ban");
-    }
-
-    public void setReason(String s) {
-        this.reason = s;
-        this.passVariable("reason");
-    }
-
-    public void setLastVictim(User user) {
-        this.lastVictim = user;
-        this.lastVictimTime = System.currentTimeMillis();
-    }
-
-    public void setLastAttacker(User user) {
-        this.lastAttacker = user;
-        this.lastAttackerTime = System.currentTimeMillis();
-    }
-
-    public void setScoreboard(Scoreboard sb) {
-        this.scoreboard = sb;
-    }
-
-    public void setIndividualPrefix(IndividualPrefix prefix) {
-        this.prefix = prefix;
-    }
-
-    public void setPlayerList(PlayerList pl) {
-        this.list = pl;
-    }
-
-    public void setDummy(Dummy dummy) {
-        this.dummy = dummy;
-    }
-
-    public void setEnter(boolean b) {
-        this.enter = b;
-    }
-
-    public void setNotificationTime(long time) {
-        this.notification = time;
-    }
-
-    public void setTeleportation(BukkitTask task) {
-        this.teleportation = task;
-    }
-
     public void removeGuild() {
         this.guild = null;
         IndependentThread.action(ActionType.RANK_UPDATE_USER, this);
@@ -140,7 +78,9 @@ public class User implements Basic {
     }
 
     public boolean isOnline() {
-        if (this.name == null) return false;
+        if (this.name == null) {
+            return false;
+        }
         Player player = Bukkit.getPlayer(this.name);
         return player != null && player.isOnline();
     }
@@ -158,60 +98,129 @@ public class User implements Basic {
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+        this.passVariable("name");
+    }
+
     public Guild getGuild() {
         return this.guild;
     }
 
+    public void setGuild(Guild guild) {
+        this.guild = guild;
+        this.passVariable("guild");
+    }
+
     public synchronized Scoreboard getScoreboard() {
-        if (this.scoreboard == null) this.scoreboard = ScoreboardStack.pull();
+        if (this.scoreboard == null) {
+            this.scoreboard = ScoreboardStack.pull();
+        }
         return this.scoreboard;
     }
 
+    public void setScoreboard(Scoreboard sb) {
+        this.scoreboard = sb;
+    }
+
     public IndividualPrefix getIndividualPrefix() {
-        if (this.prefix == null) new IndividualPrefix(this);
+        if (this.prefix == null) {
+            new IndividualPrefix(this);
+        }
         return this.prefix;
     }
 
+    public void setIndividualPrefix(IndividualPrefix prefix) {
+        this.prefix = prefix;
+    }
+
     public PlayerList getPlayerList() {
-        if (this.list == null) new PlayerList(this);
+        if (this.list == null) {
+            new PlayerList(this);
+        }
         return this.list;
     }
 
+    public void setPlayerList(PlayerList pl) {
+        this.list = pl;
+    }
+
     public Dummy getDummy() {
-        if (this.dummy == null) this.dummy = new Dummy(this);
+        if (this.dummy == null) {
+            this.dummy = new Dummy(this);
+        }
         return this.dummy;
     }
 
+    public void setDummy(Dummy dummy) {
+        this.dummy = dummy;
+    }
+
     public Rank getRank() {
-        if (this.rank != null) return this.rank;
+        if (this.rank != null) {
+            return this.rank;
+        }
         this.rank = new Rank(this);
         RankManager.getInstance().update(this);
         this.passVariable("rank");
         return this.rank;
     }
 
+    public void setRank(Rank r) {
+        this.rank = r;
+        this.passVariable("rank");
+    }
+
     public long getBan() {
         return this.ban;
+    }
+
+    public void setBan(long l) {
+        this.ban = l;
+        this.passVariable("ban");
     }
 
     public String getReason() {
         return this.reason != null ? ChatColor.translateAlternateColorCodes('&', this.reason) : "";
     }
 
+    public void setReason(String s) {
+        this.reason = s;
+        this.passVariable("reason");
+    }
+
     public long getNotificationTime() {
         return this.notification;
+    }
+
+    public void setNotificationTime(long time) {
+        this.notification = time;
     }
 
     public boolean getEnter() {
         return this.enter;
     }
 
+    public void setEnter(boolean b) {
+        this.enter = b;
+    }
+
     public User getLastVictim() {
         return this.lastVictim;
     }
 
+    public void setLastVictim(User user) {
+        this.lastVictim = user;
+        this.lastVictimTime = System.currentTimeMillis();
+    }
+
     public User getLastAttacker() {
         return this.lastAttacker;
+    }
+
+    public void setLastAttacker(User user) {
+        this.lastAttacker = user;
+        this.lastAttackerTime = System.currentTimeMillis();
     }
 
     public long getLastVictimTime() {
@@ -226,6 +235,10 @@ public class User implements Basic {
         return this.teleportation;
     }
 
+    public void setTeleportation(BukkitTask task) {
+        this.teleportation = task;
+    }
+
     public Player getPlayer() {
         return this.name != null ? Bukkit.getPlayer(this.name) : null;
     }
@@ -237,30 +250,46 @@ public class User implements Basic {
     public int getPing() {
         int ping = 0;
         Player p = getPlayer();
-        if (p == null) return ping;
+        if (p == null) {
+            return ping;
+        }
         try {
             Class<?> craftPlayer = Reflections.getBukkitClass("entity.CraftPlayer");
             Object cp = craftPlayer.cast(p);
             Object handle = craftPlayer.getMethod("getHandle").invoke(cp);
             ping = (int) handle.getClass().getField("ping").get(handle);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
         }
         return ping;
     }
 
     public static User get(UUID uuid) {
-        for (User u : UserUtils.getUsers()) if (uuid.equals(u.getUUID())) return u;
+        for (User u : UserUtils.getUsers()) {
+            if (uuid.equals(u.getUUID())) {
+                return u;
+            }
+        }
         return new User(uuid);
     }
 
     public static User get(String name) {
-        for (User u : UserUtils.getUsers()) if (u.getName().equalsIgnoreCase(name)) return u;
+        for (User u : UserUtils.getUsers()) {
+            if (u.getName().equalsIgnoreCase(name)) {
+                return u;
+            }
+        }
         return new User(name);
     }
 
     public static User get(OfflinePlayer player) {
-        for (User u : UserUtils.getUsers()) if (u.getName().equalsIgnoreCase(player.getName())) return u;
+        for (User u : UserUtils.getUsers()) {
+            if (u.getName().equalsIgnoreCase(player.getName())) {
+                return u;
+            }
+        }
         return new User(player.getName());
     }
 
@@ -300,12 +329,14 @@ public class User implements Basic {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o.getClass() != this.getClass()) return false;
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != this.getClass()) {
+            return false;
+        }
         User u = (User) o;
-        if (u.getUUID() != this.uuid) return false;
-        if (u.getName() != this.name) return false;
-        return true;
+        return u.getUUID() == this.uuid && Objects.equals(u.getName(), this.name);
     }
 
     @Override

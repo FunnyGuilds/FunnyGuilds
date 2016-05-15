@@ -24,7 +24,9 @@ public class BasicList<T> {
     }
 
     public boolean add(Basic basic) {
-        if (this.contains(basic)) return false;
+        if (this.contains(basic)) {
+            return false;
+        }
         return this.collection.add(basic);
     }
 

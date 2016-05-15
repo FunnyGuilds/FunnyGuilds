@@ -22,7 +22,9 @@ public class WarSystem {
             return;
         }
         Guild attacker = user.getGuild();
-        if (attacker.equals(guild)) return;
+        if (attacker.equals(guild)) {
+            return;
+        }
         if (attacker.getAllies().contains(guild)) {
             WarUtils.message(player, 1);
             return;
@@ -33,15 +35,21 @@ public class WarSystem {
         }
         guild.setAttacked(System.currentTimeMillis());
         guild.removeLive();
-        if (guild.getLives() < 1) conquer(attacker, guild);
+        if (guild.getLives() < 1) {
+            conquer(attacker, guild);
+        }
         else {
             for (User u : attacker.getMembers()) {
                 Player p = Bukkit.getPlayer(u.getName());
-                if (p != null) WarUtils.message(p, 3, guild);
+                if (p != null) {
+                    WarUtils.message(p, 3, guild);
+                }
             }
             for (User u : guild.getMembers()) {
                 Player p = Bukkit.getPlayer(u.getName());
-                if (p != null) WarUtils.message(p, 4, attacker);
+                if (p != null) {
+                    WarUtils.message(p, 4, attacker);
+                }
             }
         }
     }
@@ -50,12 +58,16 @@ public class WarSystem {
         String message = WarUtils.getWinMessage(conqueror, loser);
         for (User user : conqueror.getMembers()) {
             Player player = Bukkit.getPlayer(user.getName());
-            if (player != null) player.sendMessage(message);
+            if (player != null) {
+                player.sendMessage(message);
+            }
         }
         message = WarUtils.getLoseMessage(conqueror, loser);
         for (User user : loser.getMembers()) {
             Player player = Bukkit.getPlayer(user.getName());
-            if (player != null) player.sendMessage(message);
+            if (player != null) {
+                player.sendMessage(message);
+            }
         }
 
         GuildUtils.deleteGuild(loser);
@@ -66,7 +78,9 @@ public class WarSystem {
     }
 
     public static WarSystem getInstance() {
-        if (instance == null) new WarSystem();
+        if (instance == null) {
+            new WarSystem();
+        }
         return instance;
     }
 }

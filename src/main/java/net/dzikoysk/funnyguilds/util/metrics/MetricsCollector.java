@@ -13,7 +13,9 @@ public class MetricsCollector implements Runnable {
         try {
             metrics = new Metrics(FunnyGuilds.getInstance());
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -41,7 +43,9 @@ public class MetricsCollector implements Runnable {
     }
 
     public static Metrics getMetrics() {
-        if (metrics == null) new MetricsCollector();
+        if (metrics == null) {
+            new MetricsCollector();
+        }
         return metrics;
     }
 }

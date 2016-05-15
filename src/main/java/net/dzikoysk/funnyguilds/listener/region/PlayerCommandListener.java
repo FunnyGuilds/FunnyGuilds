@@ -16,10 +16,14 @@ public class PlayerCommandListener implements Listener {
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
-        if (player.hasPermission("funnyguilds.admin")) return;
+        if (player.hasPermission("funnyguilds.admin")) {
+            return;
+        }
 
         String[] splited = event.getMessage().split("\\s+");
-        if (splited.length == 0) return;
+        if (splited.length == 0) {
+            return;
+        }
         String command = splited[0];
         for (String s : Settings.getInstance().regionCommands) {
             if (("/" + s).equalsIgnoreCase(command)) {
@@ -27,14 +31,20 @@ public class PlayerCommandListener implements Listener {
                 break;
             }
         }
-        if (command != null) return;
+        if (command != null) {
+            return;
+        }
 
         Region region = RegionUtils.getAt(player.getLocation());
-        if (region == null) return;
+        if (region == null) {
+            return;
+        }
 
         Guild guild = region.getGuild();
         User user = User.get(player);
-        if (guild.getMembers().contains(user)) return;
+        if (guild.getMembers().contains(user)) {
+            return;
+        }
 
         event.setCancelled(true);
         player.sendMessage(Messages.getInstance().getMessage("regionCommand"));

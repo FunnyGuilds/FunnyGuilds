@@ -49,7 +49,7 @@ public class ExcInvite implements Executor {
         //OfflinePlayer invitedOffline = Bukkit.getOfflinePlayer(args[0]);
         //User invitedUser = User.get(args[0]);
         /*
-		if(InvitationsList.get(invitedUser, 0).contains(guild.getTag())){
+        if(InvitationsList.get(invitedUser, 0).contains(guild.getTag())){
 			InvitationsList.get(invitedUser, 0).remove(guild.getTag());
 			player.sendMessage(messages.getMessage("inviteCancelled"));
 			if(invitedOffline == null || !invitedOffline.isOnline()){

@@ -19,18 +19,33 @@ public class SecuritySystem {
     }
 
     public boolean checkPlayer(Player player, SecurityType type, Object... values) {
-        if (isBanned(User.get(player))) return true;
+        if (isBanned(User.get(player))) {
+            return true;
+        }
         switch (type) {
             case FREECAM:
                 Guild guild = null;
-                for (int i = 0; i < values.length; i++) if (values[i] instanceof Guild) guild = (Guild) values[i];
-                int dis = (int) guild.getRegion().getCenter().distance(player.getLocation());
-                if (dis < 6) return false;
-                for (Player w : Bukkit.getOnlinePlayers())
+                for (Object value : values) {
+                    if (value instanceof Guild) {
+                        guild = (Guild) value;
+                    }
+                }
+
+                int dis = 0;
+                if (guild != null) {
+                    dis = (int) guild.getRegion().getCenter().distance(player.getLocation());
+                }
+
+                if (dis < 6) {
+                    return false;
+                }
+
+                for (Player w : Bukkit.getOnlinePlayers()) {
                     if (w.isOp()) {
                         w.sendMessage(SecurityUtils.getBustedMessage(player.getName(), "FreeCam"));
                         w.sendMessage(SecurityUtils.getNoteMessage("Zaatakowal krysztal z odleglosci &c" + dis + " kratek"));
                     }
+                }
                 blocked.add(User.get(player));
                 return true;
             case EVERYTHING:
@@ -42,8 +57,11 @@ public class SecuritySystem {
     }
 
     public boolean checkPlayer(Player player, Object... values) {
-        for (SecurityType type : SecurityType.values())
-            if (checkPlayer(player, type, values)) return true;
+        for (SecurityType type : SecurityType.values()) {
+            if (checkPlayer(player, type, values)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -52,7 +70,9 @@ public class SecuritySystem {
     }
 
     public static SecuritySystem getSecurity() {
-        if (instance == null) new SecuritySystem();
+        if (instance == null) {
+            new SecuritySystem();
+        }
         return instance;
     }
 }

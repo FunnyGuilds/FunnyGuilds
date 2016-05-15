@@ -35,31 +35,43 @@ public class ExcFunnyGuilds implements Executor {
                 s.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
                 thread.start();
                 return;
-            } else if (args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")) {
-                if (s instanceof Player) Version.check((Player) s);
-                else FunnyGuilds.info("Console can not use this command");
+            }
+            else if (args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")) {
+                if (s instanceof Player) {
+                    Version.check((Player) s);
+                }
+                else {
+                    FunnyGuilds.info("Console can not use this command");
+                }
                 return;
-            } else if (args[0].equalsIgnoreCase("save-all")) {
+            }
+            else if (args[0].equalsIgnoreCase("save-all")) {
                 if (s instanceof Player && !s.hasPermission("funnyguilds.admin")) {
                     s.sendMessage(Messages.getInstance().getMessage("permission"));
                     return;
                 }
                 s.sendMessage(ChatColor.GRAY + "Zapisywanie...");
                 long l = System.currentTimeMillis();
-                if (Settings.getInstance().flat)
+                if (Settings.getInstance().flat) {
                     try {
                         //Flat.getInstance().save(true);
                     } catch (Exception e) {
                         FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
-                        if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                        if (FunnyGuilds.exception(e.getCause())) {
+                            e.printStackTrace();
+                        }
                     }
-                if (Settings.getInstance().mysql)
+                }
+                if (Settings.getInstance().mysql) {
                     try {
                         //DatabaseBasic.getInstance().save(true);
                     } catch (Exception e) {
                         FunnyGuilds.error("An error occurred while saving data to database! Caused by: Exception");
-                        if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                        if (FunnyGuilds.exception(e.getCause())) {
+                            e.printStackTrace();
+                        }
                     }
+                }
                 //Data.getInstance().save();
                 s.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA +
                         (System.currentTimeMillis() - l) / 1000F + "s" + ChatColor.GRAY + ")!");

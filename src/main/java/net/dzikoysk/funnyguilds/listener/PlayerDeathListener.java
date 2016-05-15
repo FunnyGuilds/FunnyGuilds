@@ -24,7 +24,9 @@ public class PlayerDeathListener implements Listener {
         User victim = User.get(v);
         victim.getRank().addDeath();
 
-        if (a == null) return;
+        if (a == null) {
+            return;
+        }
         User attacker = User.get(a);
 
         if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
@@ -34,7 +36,8 @@ public class PlayerDeathListener implements Listener {
                 changeMessage(event, attacker, victim, 0, 0);
                 return;
             }
-        } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
+        }
+        else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
             if (victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()) {
                 v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
                 a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
@@ -54,9 +57,12 @@ public class PlayerDeathListener implements Listener {
         attacker.setLastVictim(victim);
 
         if (Settings.getInstance().mysql) {
-            if (victim.hasGuild()) IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
-            if (attacker.hasGuild())
+            if (victim.hasGuild()) {
+                IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
+            }
+            if (attacker.hasGuild()) {
                 IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, attacker.getGuild());
+            }
             IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
             IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
         }
@@ -76,10 +82,14 @@ public class PlayerDeathListener implements Listener {
         death = StringUtils.replace(death, "{+}", Integer.toString(pointsA));
         death = StringUtils.replace(death, "{-}", Integer.toString(pointsV));
         death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
-        if (victim.hasGuild()) death = StringUtils.replace(death, "{VTAG}",
-                StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
-        if (attacker.hasGuild()) death = StringUtils.replace(death, "{ATAG}",
-                StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", attacker.getGuild().getTag()));
+        if (victim.hasGuild()) {
+            death = StringUtils.replace(death, "{VTAG}",
+                    StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
+        }
+        if (attacker.hasGuild()) {
+            death = StringUtils.replace(death, "{ATAG}",
+                    StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", attacker.getGuild().getTag()));
+        }
         death = StringUtils.replace(death, "{VTAG}", "");
         death = StringUtils.replace(death, "{ATAG}", "");
         event.setDeathMessage(death);

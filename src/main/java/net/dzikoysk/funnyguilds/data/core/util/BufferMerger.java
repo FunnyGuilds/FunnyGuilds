@@ -3,20 +3,24 @@ package net.dzikoysk.funnyguilds.data.core.util;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BufforMerger<T> {
+public class BufferMerger<T> {
 
-    private final List<BufforPart<T>> parts;
+    private final List<BufferPart<T>> parts;
 
-    public BufforMerger(int i) {
-        if (i < 16) i = 16;
+    public BufferMerger(int i) {
+        if (i < 16) {
+            i = 16;
+        }
         this.parts = new ArrayList<>(i);
     }
 
     public void add(T object, String... fields) {
         int i = this.parts.indexOf(object);
-        if (i < 0) this.parts.add(new BufforPart<T>(object, fields));
+        if (i < 0) {
+            this.parts.add(new BufferPart<>(object, fields));
+        }
         else {
-            BufforPart<T> part = this.parts.get(i);
+            BufferPart<T> part = this.parts.get(i);
             part.add(fields);
         }
     }

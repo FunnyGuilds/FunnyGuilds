@@ -19,7 +19,7 @@ public class ExcJoin implements Executor {
             return;
         }
         /*	TODO
-		if(InvitationsList.get(user, 0).getLS().isEmpty()){
+        if(InvitationsList.get(user, 0).getLS().isEmpty()){
 			player.sendMessage(messages.getMessage("joinHasNotInvitation"));
 			return;
 		}

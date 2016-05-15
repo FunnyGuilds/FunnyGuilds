@@ -49,9 +49,11 @@ public class AxcDelete implements Executor {
         );
 
         Player owner = Bukkit.getPlayer(o.getName());
-        if (owner != null) owner.sendMessage(
-                ChatColor.RED + "Twoja gildia zostala rozwiazana przez " + ChatColor.GRAY + player.getDisplayName()
-        );
+        if (owner != null) {
+            owner.sendMessage(
+                    ChatColor.RED + "Twoja gildia zostala rozwiazana przez " + ChatColor.GRAY + player.getDisplayName()
+            );
+        }
 
         Bukkit.getServer().broadcastMessage(m.getMessage("broadcastDelete")
                 .replace("{PLAYER}", player.getDisplayName())

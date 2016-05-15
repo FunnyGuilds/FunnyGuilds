@@ -77,7 +77,9 @@ public class ExcValidity implements Executor {
         player.getInventory().removeItem(items);
 
         long c = guild.getValidity();
-        if (c == 0) c = System.currentTimeMillis();
+        if (c == 0) {
+            c = System.currentTimeMillis();
+        }
         c += Settings.getInstance().validityTime;
         guild.setValidity(c);
 

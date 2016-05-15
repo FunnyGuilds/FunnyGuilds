@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
-import net.dzikoysk.funnyguilds.script.ScriptManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -55,7 +54,6 @@ public class FunnyGuilds extends JavaPlugin {
         new AsynchronouslyRepeater().start();
         new Ticking().start();
         new MetricsCollector().start();
-        new ScriptManager().start();
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PacketReceiveListener(), this);
@@ -76,12 +74,16 @@ public class FunnyGuilds extends JavaPlugin {
         pm.registerEvents(new PlayerCommandListener(), this);
         pm.registerEvents(new PlayerInteractListener(), this);
 
-        if (Settings.getInstance().eventMove) pm.registerEvents(new PlayerMoveListener(), this);
-        if (Settings.getInstance().eventPhysics) pm.registerEvents(new BlockPhysicsListener(), this);
+        if (Settings.getInstance().eventMove) {
+            pm.registerEvents(new PlayerMoveListener(), this);
+        }
+        if (Settings.getInstance().eventPhysics) {
+            pm.registerEvents(new BlockPhysicsListener(), this);
+        }
 
         patch();
         update();
-        info("~ Created by & � Dzikoysk ~");
+        info("~ Created by & \u2764 Dzikoysk ~");
     }
 
     @Override
@@ -103,11 +105,15 @@ public class FunnyGuilds extends JavaPlugin {
             @Override
             public void run() {
                 String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
-                if (latest == null || latest.isEmpty()) update("Failed to check the new version of FunnyGuilds.");
-                else if (latest.equalsIgnoreCase(getVersion())) update("You have a current version of FunnyGuilds.");
+                if (latest == null || latest.isEmpty()) {
+                    update("Failed to check the new version of FunnyGuilds.");
+                }
+                else if (latest.equalsIgnoreCase(getVersion())) {
+                    update("You have a current version of FunnyGuilds.");
+                }
                 else {
                     update("");
-                    update("Available is new version of FunnyGuilds!");
+                    update("New version of FunnyGuilds is available!");
                     update("Current: " + getVersion());
                     update("Latest: " + latest);
                     update("");
@@ -163,8 +169,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static boolean exception(Throwable cause) {
-        if (cause == null) return true;
-        return exception(cause.getMessage(), cause.getStackTrace());
+        return cause == null || exception(cause.getMessage(), cause.getStackTrace());
     }
 
     public static boolean exception(String cause, StackTraceElement[] ste) {
@@ -181,9 +186,14 @@ public class FunnyGuilds extends JavaPlugin {
         if (cause == null || ste == null || ste.length < 1) {
             error("Stack trace: no/empty exception given, dumping current stack trace instead!");
             return true;
-        } else error("Stack trace: ");
+        }
+        else {
+            error("Stack trace: ");
+        }
         error("Caused by: " + cause);
-        for (StackTraceElement st : ste) error("	at " + st.toString());
+        for (StackTraceElement st : ste) {
+            error("	at " + st.toString());
+        }
         error("");
         error("End of Error.");
         error("");
@@ -212,7 +222,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static FunnyGuilds getInstance() {
-        if (funnyguilds == null) return new FunnyGuilds();
         return funnyguilds;
     }
+
 }

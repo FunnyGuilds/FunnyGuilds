@@ -51,15 +51,19 @@ public class AxcKick implements Executor {
         guild.removeMember(user);
         user.removeGuild();
 
-        if (p != null) IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
+        if (p != null) {
+            IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
+        }
 
         player.sendMessage(m.getMessage("kickToOwner")
                 .replace("{PLAYER}", user.getName())
         );
 
-        if (p != null) p.sendMessage(m.getMessage("kickToPlayer")
-                .replace("{GUILD}", guild.getName())
-        );
+        if (p != null) {
+            p.sendMessage(m.getMessage("kickToPlayer")
+                    .replace("{GUILD}", guild.getName())
+            );
+        }
 
         Bukkit.broadcastMessage(
                 m.getMessage("broadcastKick")

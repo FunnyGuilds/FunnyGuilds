@@ -43,16 +43,22 @@ public class PacketExtension {
             ChannelHandler handler = new ChannelDuplexHandler() {
                 @Override
                 public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-                    if (msg == null) return;
+                    if (msg == null) {
+                        return;
+                    }
                     super.write(ctx, msg, promise);
                 }
 
                 @Override
                 public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                     try {
-                        if (msg == null) return;
+                        if (msg == null) {
+                            return;
+                        }
                         PacketReceiveEvent event = EventCaller.callEvent(new PacketReceiveEvent(msg, p));
-                        if (event.isCancelled() || event.getPacket() == null) return;
+                        if (event.isCancelled() || event.getPacket() == null) {
+                            return;
+                        }
                         super.channelRead(ctx, event.getPacket());
                     } catch (Exception e) {
                         super.channelRead(ctx, msg);
@@ -61,8 +67,12 @@ public class PacketExtension {
             };
             ChannelPipeline cp = c.pipeline();
             if (cp.names().contains("packet_handler")) {
-                if (cp.names().contains("FunnyGuilds")) cp.replace("FunnyGuilds", "FunnyGuilds", handler);
-                else cp.addBefore("packet_handler", "FunnyGuilds", handler);
+                if (cp.names().contains("FunnyGuilds")) {
+                    cp.replace("FunnyGuilds", "FunnyGuilds", handler);
+                }
+                else {
+                    cp.addBefore("packet_handler", "FunnyGuilds", handler);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

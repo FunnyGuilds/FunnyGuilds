@@ -13,9 +13,11 @@ public class FightUtils {
     }
 
     public boolean check(User user) {
-        if (map.containsKey(user))
-            if (map.get(user) > System.currentTimeMillis())
+        if (map.containsKey(user)) {
+            if (map.get(user) > System.currentTimeMillis()) {
                 return true;
+            }
+        }
         return false;
     }
 }

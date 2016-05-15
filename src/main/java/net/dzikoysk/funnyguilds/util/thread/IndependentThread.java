@@ -8,8 +8,8 @@ import java.util.List;
 public class IndependentThread extends Thread {
 
     private static IndependentThread instance;
-    private List<Action> actions = new ArrayList<>();
     private static List<Action> temp = new ArrayList<>();
+    private List<Action> actions = new ArrayList<>();
     private Object locker = new Object();
 
     public IndependentThread() {
@@ -21,15 +21,19 @@ public class IndependentThread extends Thread {
 
     @Override
     public void run() {
-        while (true) try {
-            List<Action> currently = new ArrayList<Action>(actions);
-            actions.clear();
-            execute(currently);
-            synchronized (locker) {
-                locker.wait();
+        while (true) {
+            try {
+                List<Action> currently = new ArrayList<Action>(actions);
+                actions.clear();
+                execute(currently);
+                synchronized (locker) {
+                    locker.wait();
+                }
+            } catch (InterruptedException e) {
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
             }
-        } catch (InterruptedException e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
         }
     }
 
@@ -38,7 +42,9 @@ public class IndependentThread extends Thread {
             try {
                 action.execute();
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
                 continue;
             }
         }
@@ -46,8 +52,16 @@ public class IndependentThread extends Thread {
 
     public static void action(Action... actions) {
         IndependentThread it = getInstance();
-        for (Action action : temp) if (!it.actions.contains(action)) it.actions.add(action);
-        for (Action action : actions) if (!it.actions.contains(action)) it.actions.add(action);
+        for (Action action : temp) {
+            if (!it.actions.contains(action)) {
+                it.actions.add(action);
+            }
+        }
+        for (Action action : actions) {
+            if (!it.actions.contains(action)) {
+                it.actions.add(action);
+            }
+        }
         temp.clear();
         synchronized (getInstance().locker) {
             getInstance().locker.notify();
@@ -64,16 +78,22 @@ public class IndependentThread extends Thread {
 
     public static void actions(ActionType type) {
         Action action = new Action(type);
-        if (!temp.contains(action)) temp.add(action);
+        if (!temp.contains(action)) {
+            temp.add(action);
+        }
     }
 
     public static void actions(ActionType type, Object... values) {
         Action action = new Action(type, values);
-        if (!temp.contains(action)) temp.add(action);
+        if (!temp.contains(action)) {
+            temp.add(action);
+        }
     }
 
     public static IndependentThread getInstance() {
-        if (instance == null) new IndependentThread().start();
+        if (instance == null) {
+            new IndependentThread().start();
+        }
         return instance;
     }
 }

@@ -51,9 +51,11 @@ public class ExcEnlarge implements Executor {
                 .replace("{SIZE}", Integer.toString(region.getSize()))
                 .replace("{LEVEL}", Integer.toString(region.getEnlarge()));
 
-        for (User member : user.getGuild().getMembers())
-            if (member.isOnline()) member.getPlayer().sendMessage(tm);
-        return;
+        for (User member : user.getGuild().getMembers()) {
+            if (member.isOnline()) {
+                member.getPlayer().sendMessage(tm);
+            }
+        }
     }
 
 }

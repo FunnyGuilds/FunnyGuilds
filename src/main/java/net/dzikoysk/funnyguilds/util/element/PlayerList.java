@@ -31,22 +31,39 @@ public class PlayerList {
         this.suffix = new String[60];
         for (int i = 0; i < 60; i++) {
             String s = ss[i];
-            if (s == null || s.isEmpty()) continue;
-            if (s.length() <= 16) prefix[i] = s;
+            if (s == null || s.isEmpty()) {
+                continue;
+            }
+            if (s.length() <= 16) {
+                prefix[i] = s;
+            }
             else {
                 String px = s.substring(0, 16);
-                if (px.charAt(15) == '\u00A7') px = s.substring(0, 15);
+                if (px.charAt(15) == '\u00A7') {
+                    px = s.substring(0, 15);
+                }
                 String color = ChatColor.getLastColors(px);
-                if (color == null || color.isEmpty()) color = "\u00A7f";
+                if (color == null || color.isEmpty()) {
+                    color = "\u00A7f";
+                }
                 String sx = color;
                 if (px.length() == 15) {
                     int l = s.length();
-                    if (l < 32) sx += s.substring(15, s.length());
-                    else sx += s.substring(15, 32);
-                } else {
+                    if (l < 32) {
+                        sx += s.substring(15, s.length());
+                    }
+                    else {
+                        sx += s.substring(15, 32);
+                    }
+                }
+                else {
                     int l = s.length();
-                    if (l < 32) sx += s.substring(16, s.length());
-                    else sx += s.substring(16, 32);
+                    if (l < 32) {
+                        sx += s.substring(16, s.length());
+                    }
+                    else {
+                        sx += s.substring(16, 32);
+                    }
                 }
                 prefix[i] = px;
                 suffix[i] = sx;
@@ -61,15 +78,26 @@ public class PlayerList {
         int minute = now.get(Calendar.MINUTE);
         for (int i : PlayerListScheme.getEdit()) {
             String s = ss[i];
-            if (s == null || s.isEmpty()) continue;
-            if (second < 10) s = StringUtils.replace(s, "{SECOND}", '0' + Integer.toString(second));
-            else s = StringUtils.replace(s, "{SECOND}", Integer.toString(second));
-            if (minute < 10) s = StringUtils.replace(s, "{MINUTE}", '0' + Integer.toString(minute));
-            else s = StringUtils.replace(s, "{MINUTE}", Integer.toString(minute));
+            if (s == null || s.isEmpty()) {
+                continue;
+            }
+            if (second < 10) {
+                s = StringUtils.replace(s, "{SECOND}", '0' + Integer.toString(second));
+            }
+            else {
+                s = StringUtils.replace(s, "{SECOND}", Integer.toString(second));
+            }
+            if (minute < 10) {
+                s = StringUtils.replace(s, "{MINUTE}", '0' + Integer.toString(minute));
+            }
+            else {
+                s = StringUtils.replace(s, "{MINUTE}", Integer.toString(minute));
+            }
             if (user.hasGuild()) {
                 s = StringUtils.replace(s, "{GUILD}", user.getGuild().getName());
                 s = StringUtils.replace(s, "{TAG}", user.getGuild().getTag());
-            } else {
+            }
+            else {
                 s = StringUtils.replace(s, "{GUILD}", "Brak");
                 s = StringUtils.replace(s, "{TAG}", "Brak");
             }
@@ -82,7 +110,9 @@ public class PlayerList {
             s = StringUtils.replace(s, "{DEATHS}", Integer.toString(user.getRank().getDeaths()));
             s = StringUtils.replace(s, "{HOUR}", Integer.toString(now.get(Calendar.HOUR_OF_DAY)));
             String r = Parser.parseRank(s);
-            if (r != null) s = r;
+            if (r != null) {
+                s = r;
+            }
             prefix[i] = "";
             suffix[i] = "";
             ss[i] = s;
@@ -91,7 +121,9 @@ public class PlayerList {
 
     public void send() {
         Player player = Bukkit.getPlayer(user.getName());
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
         update();
         split();
         PlayerListManager.send(player);

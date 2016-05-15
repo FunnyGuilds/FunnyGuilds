@@ -101,11 +101,19 @@ public class Action {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (this.getClass() != o.getClass()) return false;
+        if (o == null) {
+            return false;
+        }
+        if (this.getClass() != o.getClass()) {
+            return false;
+        }
         Action a = (Action) o;
-        if (action != a.getActionType()) return false;
-        if (values == null && a.getValues() == null) return true;
+        if (action != a.getActionType()) {
+            return false;
+        }
+        if (values == null && a.getValues() == null) {
+            return true;
+        }
         return false;
     }
 

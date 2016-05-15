@@ -61,7 +61,9 @@ public class DataCore {
     }
 
     public static DataCore getInstance() {
-        if (instance == null) instance = new DataCore(DataType.FLAT);
+        if (instance == null) {
+            instance = new DataCore(DataType.FLAT);
+        }
         return instance;
     }
 

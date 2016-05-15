@@ -10,12 +10,11 @@ import java.util.HashMap;
 
 public class EntityUtil {
 
+    public static HashMap<Guild, Integer> map = new HashMap<>();
     private static Class<?> entityClass = Reflections.getCraftClass("Entity");
     private static Class<?> enderCrystalClass = Reflections.getCraftClass("EntityEnderCrystal");
     private static Class<?> spawnEntityClass = Reflections.getCraftClass("PacketPlayOutSpawnEntity");
     private static Class<?> despawnEntityClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-
-    public static HashMap<Guild, Integer> map = new HashMap<>();
     private static HashMap<Integer, Object> ids = new HashMap<>();
 
     private static int spawnPacket(Location loc) throws Exception {
@@ -29,20 +28,24 @@ public class EntityUtil {
     }
 
     private static Object despawnPacket(int id) throws Exception {
-        Object packet = despawnEntityClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
-        return packet;
+        return despawnEntityClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
     }
 
     public static void spawn(Guild guild) {
         try {
-            Object o = null;
+            Object o;
             if (!map.containsKey(guild)) {
                 Location loc = guild.getRegion().getCenter();
-                if (loc == null) return;
+                if (loc == null) {
+                    return;
+                }
                 int id = spawnPacket(loc);
                 o = ids.get(id);
                 map.put(guild, id);
-            } else o = ids.get(map.get(guild));
+            }
+            else {
+                o = ids.get(map.get(guild));
+            }
             PacketSender.sendPacket(FunnyGuilds.getOnlinePlayers(), o);
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,20 +53,26 @@ public class EntityUtil {
     }
 
     public static void spawn(Player... players) {
-        for (Guild guild : GuildUtils.getGuilds())
+        for (Guild guild : GuildUtils.getGuilds()) {
             try {
-                Object o = null;
+                Object o;
                 if (!map.containsKey(guild)) {
                     Location loc = guild.getRegion().getCenter();
-                    if (loc == null) continue;
+                    if (loc == null) {
+                        continue;
+                    }
                     int id = spawnPacket(loc);
                     o = ids.get(id);
                     map.put(guild, id);
-                } else o = ids.get(map.get(guild));
+                }
+                else {
+                    o = ids.get(map.get(guild));
+                }
                 PacketSender.sendPacket(players, o);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
     }
 
     public static void despawn(Guild guild) {
@@ -79,7 +88,7 @@ public class EntityUtil {
     }
 
     public static void despawn(Player... players) {
-        for (Guild guild : GuildUtils.getGuilds())
+        for (Guild guild : GuildUtils.getGuilds()) {
             try {
                 int id = map.get(guild);
                 ids.remove(id);
@@ -89,10 +98,11 @@ public class EntityUtil {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
     }
 
     public static void despawn() {
-        for (Guild guild : GuildUtils.getGuilds())
+        for (Guild guild : GuildUtils.getGuilds()) {
             try {
                 int id = map.get(guild);
                 ids.remove(id);
@@ -102,5 +112,6 @@ public class EntityUtil {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
     }
 }

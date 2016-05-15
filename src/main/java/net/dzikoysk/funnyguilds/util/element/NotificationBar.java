@@ -12,24 +12,33 @@ import java.util.*;
 
 public class NotificationBar {
 
-    private static PlayerMap<FakeDragon> bars = new PlayerMap<FakeDragon>();
+    private static PlayerMap<FakeDragon> bars = new PlayerMap<>();
 
     public static void set(final Player player, String text, float percent, int time) {
 
         remove(player);
         FakeDragon dragon = bars.containsKey(player) ? bars.get(player) : null;
 
-        if (text.length() > 64) text = text.substring(0, 63);
-        if (percent > 1.0f) percent = 1.0f;
-        if (percent < 0.05f) percent = 0.05f;
+        if (text.length() > 64) {
+            text = text.substring(0, 63);
+        }
+        if (percent > 1.0f) {
+            percent = 1.0f;
+        }
+        if (percent < 0.05f) {
+            percent = 0.05f;
+        }
 
-        if (text.isEmpty() && dragon != null) remove(player);
+        if (text.isEmpty() && dragon != null) {
+            remove(player);
+        }
 
         if (dragon == null) {
             dragon = new FakeDragon(player.getLocation().add(0, -200, 0), text, percent);
             sendPacket(player, dragon.getSpawnPacket());
             bars.put(player, dragon);
-        } else {
+        }
+        else {
             dragon.setName(text);
             dragon.setHealth(percent);
             sendPacket(player, dragon.getMetaPacket(dragon.getWatcher()));
@@ -63,7 +72,9 @@ public class NotificationBar {
             Method sendPacket = Reflections.getMethod(connection.getClass(), "sendPacket");
             sendPacket.invoke(connection, packet);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -125,7 +136,9 @@ public class NotificationBar {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
                 return packetClass.getConstructor(new Class<?>[]{EntityLiving}).newInstance(dragon);
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         }
@@ -133,9 +146,11 @@ public class NotificationBar {
         public Object getDestroyPacket() {
             try {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
+                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{ id });
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         }
@@ -146,7 +161,9 @@ public class NotificationBar {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
                 return packetClass.getConstructor(new Class<?>[]{int.class, watcherClass, boolean.class}).newInstance(id, watcher, true);
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         }
@@ -157,7 +174,9 @@ public class NotificationBar {
                 return packetClass.getConstructor(new Class<?>[]{int.class, int.class, int.class, int.class, byte.class, byte.class}).newInstance(
                         this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         }
@@ -178,7 +197,9 @@ public class NotificationBar {
                 a.invoke(watcher, 11, (Byte) (byte) 1);
                 return watcher;
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
                 return null;
             }
         }
@@ -202,10 +223,12 @@ public class NotificationBar {
 
         @Override
         public boolean containsKey(Object key) {
-            if (key instanceof Player)
+            if (key instanceof Player) {
                 return contents.containsKey(((Player) key).getName());
-            if (key instanceof String)
+            }
+            if (key instanceof String) {
                 return contents.containsKey(key);
+            }
             return false;
         }
 
@@ -217,18 +240,21 @@ public class NotificationBar {
         @Override
         public Set<Entry<Player, V>> entrySet() {
             Set<Entry<Player, V>> toReturn = new HashSet<Entry<Player, V>>();
-            for (String name : contents.keySet())
+            for (String name : contents.keySet()) {
                 toReturn.add(new PlayerEntry(Bukkit.getPlayer(name), contents.get(name)));
+            }
             return toReturn;
         }
 
         @Override
         public V get(Object key) {
             V result = null;
-            if (key instanceof Player)
+            if (key instanceof Player) {
                 result = contents.get(((Player) key).getName());
-            if (key instanceof String)
+            }
+            if (key instanceof String) {
                 result = contents.get(key);
+            }
             return (result == null) ? defaultValue : result;
         }
 
@@ -240,30 +266,35 @@ public class NotificationBar {
         @Override
         public Set<Player> keySet() {
             Set<Player> toReturn = new HashSet<Player>();
-            for (String name : contents.keySet())
+            for (String name : contents.keySet()) {
                 toReturn.add(Bukkit.getPlayer(name));
+            }
             return toReturn;
         }
 
         @Override
         public V put(Player key, V value) {
-            if (key == null)
+            if (key == null) {
                 return null;
+            }
             return contents.put(key.getName(), value);
         }
 
         @Override
         public void putAll(Map<? extends Player, ? extends V> map) {
-            for (Entry<? extends Player, ? extends V> entry : map.entrySet())
+            for (Entry<? extends Player, ? extends V> entry : map.entrySet()) {
                 put(entry.getKey(), entry.getValue());
+            }
         }
 
         @Override
         public V remove(Object key) {
-            if (key instanceof Player)
+            if (key instanceof Player) {
                 return contents.remove(((Player) key).getName());
-            if (key instanceof String)
+            }
+            if (key instanceof String) {
                 return contents.remove(key);
+            }
             return null;
         }
 

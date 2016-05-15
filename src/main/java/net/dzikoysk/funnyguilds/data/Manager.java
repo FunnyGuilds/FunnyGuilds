@@ -23,26 +23,36 @@ public class Manager {
     }
 
     public void save() {
-        if (Settings.getInstance().flat)
+        if (Settings.getInstance().flat) {
             try {
                 //Flat.getInstance().save(false);
             } catch (Exception e) {
                 FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
             }
-        if (Settings.getInstance().mysql)
+        }
+        if (Settings.getInstance().mysql) {
             try {
                 //DatabaseBasic.getInstance().save(false);
             } catch (Exception e) {
                 FunnyGuilds.error("An error occurred while saving data to database! Caused by: Exception");
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
             }
+        }
         //Data.getInstance().save();
     }
 
     public void start() {
-        if (FunnyGuilds.getInstance().isDisabling()) return;
-        if (this.task != null) return;
+        if (FunnyGuilds.getInstance().isDisabling()) {
+            return;
+        }
+        if (this.task != null) {
+            return;
+        }
         this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
             @Override
             public void run() {
@@ -61,12 +71,16 @@ public class Manager {
     public static void loadDefaultFiles(String[] files) {
         for (String file : files) {
             File cfg = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + file);
-            if (!cfg.exists()) FunnyGuilds.getInstance().saveResource(file, true);
+            if (!cfg.exists()) {
+                FunnyGuilds.getInstance().saveResource(file, true);
+            }
         }
     }
 
     public static Manager getInstance() {
-        if (instance != null) return instance;
+        if (instance != null) {
+            return instance;
+        }
         new Manager().start();
         return instance;
     }

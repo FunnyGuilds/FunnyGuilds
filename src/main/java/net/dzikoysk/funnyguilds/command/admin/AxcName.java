@@ -24,7 +24,8 @@ public class AxcName implements Executor {
         if (args.length < 1) {
             player.sendMessage(StringUtils.colored("&cPodaj tag gildii!"));
             return;
-        } else if (args.length < 2) {
+        }
+        else if (args.length < 2) {
             player.sendMessage(StringUtils.colored("&cPodaj nowa nazwe!"));
             return;
         }
@@ -43,7 +44,7 @@ public class AxcName implements Executor {
 
         Manager.getInstance().stop();
         /*if(settings.flat){
-			Flat.getGuildFile(guild).delete();
+            Flat.getGuildFile(guild).delete();
 			Flat.getRegionFile(region).delete();
 		}
 		if(settings.mysql){
@@ -54,7 +55,6 @@ public class AxcName implements Executor {
         Manager.getInstance().start();
 
         player.sendMessage(StringUtils.colored("&7Zmieniono nazwe gildii na &b" + guild.getName() + "&7!"));
-        return;
     }
 
 }

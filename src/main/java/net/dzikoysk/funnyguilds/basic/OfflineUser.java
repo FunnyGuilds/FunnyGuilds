@@ -29,16 +29,18 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         this.uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8));
         this.init();
         try {
-            if (type == 1)
+            if (type == 1) {
                 this.profile = GameProfile.class.getConstructor(new Class<?>[]{
                         String.class,
                         String.class
                 }).newInstance(this.uuid.toString(), name);
-            else if (type == 2)
+            }
+            else if (type == 2) {
                 this.profile = GameProfile.class.getConstructor(new Class<?>[]{
                         UUID.class,
                         String.class
                 }).newInstance(this.uuid, name);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,8 +82,7 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 
     @Override
     public boolean isBanned() {
-        if (getName() == null) return false;
-        return Bukkit.getServer().getBannedPlayers().contains(this);
+        return getName() != null && Bukkit.getServer().getBannedPlayers().contains(this);
     }
 
     @Override
@@ -109,7 +110,9 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
     }
 
     public static OfflinePlayer deserialize(Map<String, Object> args) {
-        if (args.get("name") == null) return null;
+        if (args.get("name") == null) {
+            return null;
+        }
         return new OfflineUser((String) args.get("name"));
     }
 
@@ -120,16 +123,15 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 
     @Override
     public Player getPlayer() {
-        if (getName() == null) return null;
+        if (getName() == null) {
+            return null;
+        }
         return Bukkit.getPlayer(getName());
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof OfflinePlayer) {
-            return ((OfflinePlayer) obj).getName().equalsIgnoreCase(this.getName());
-        }
-        return false;
+        return obj instanceof OfflinePlayer && ((OfflinePlayer) obj).getName().equalsIgnoreCase(this.getName());
     }
 
     @Override
@@ -142,14 +144,18 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
     @Override
     public long getFirstPlayed() {
         Player player = getPlayer();
-        if (player != null) return player.getFirstPlayed();
+        if (player != null) {
+            return player.getFirstPlayed();
+        }
         return 0L;
     }
 
     @Override
     public long getLastPlayed() {
         Player player = getPlayer();
-        if (player != null) return player.getLastPlayed();
+        if (player != null) {
+            return player.getLastPlayed();
+        }
         return 0L;
     }
 
@@ -165,11 +171,19 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 
     @SuppressWarnings("rawtypes")
     private void init() {
-        if (type != 0) return;
+        if (type != 0) {
+            return;
+        }
         for (Constructor c : GameProfile.class.getConstructors()) {
-            if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{String.class, String.class})) type = 1;
-            else if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{UUID.class, String.class})) type = 2;
-            else FunnyGuilds.error("GameProfile constructor not found!");
+            if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{String.class, String.class})) {
+                type = 1;
+            }
+            else if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{UUID.class, String.class})) {
+                type = 2;
+            }
+            else {
+                FunnyGuilds.error("GameProfile constructor not found!");
+            }
         }
     }
 

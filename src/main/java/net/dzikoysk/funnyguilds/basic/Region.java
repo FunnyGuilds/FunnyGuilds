@@ -34,15 +34,24 @@ public class Region implements Basic {
     }
 
     public static Region get(String name) {
-        for (Region region : RegionUtils.getRegions())
-            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) return region;
+        for (Region region : RegionUtils.getRegions()) {
+            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
+                return region;
+            }
+        }
         return null;
     }
 
     public void update() {
-        if (this.center == null) return;
-        if (this.size < 1) return;
-        if (this.world == null) this.world = Bukkit.getWorlds().get(0);
+        if (this.center == null) {
+            return;
+        }
+        if (this.size < 1) {
+            return;
+        }
+        if (this.world == null) {
+            this.world = Bukkit.getWorlds().get(0);
+        }
         if (this.world != null) {
             int lx = this.center.getBlockX() + this.size;
             int lz = this.center.getBlockZ() + this.size;
@@ -58,38 +67,6 @@ public class Region implements Basic {
         }
     }
 
-    public void setCenter(Location loc) {
-        this.center = loc;
-        this.world = loc.getWorld();
-        this.update();
-        this.passVariable("center");
-    }
-
-    public void setSize(int i) {
-        this.size = i;
-        this.update();
-        this.passVariable("size");
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
-        this.update();
-        this.passVariable("world");
-    }
-
-    public void setEnlarge(int i) {
-        this.enlarge = i;
-        this.passVariable("enlarge");
-    }
-
-    public void setL(Location loc) {
-        this.l = loc;
-    }
-
-    public void setP(Location loc) {
-        this.p = loc;
-    }
-
     public void delete() {
         RegionUtils.removeRegion(this);
         this.world = null;
@@ -100,12 +77,19 @@ public class Region implements Basic {
 
     public boolean isIn(Location loc) {
         this.update();
-        if (loc == null || l == null || p == null) return false;
-        if (!center.getWorld().equals(loc.getWorld())) return false;
-        if (loc.getBlockX() > getLowerX() && loc.getBlockX() < getUpperX())
-            if (loc.getBlockY() > getLowerY() && loc.getBlockY() < getUpperY())
-                if (loc.getBlockZ() > getLowerZ() && loc.getBlockZ() < getUpperZ())
+        if (loc == null || l == null || p == null) {
+            return false;
+        }
+        if (!center.getWorld().equals(loc.getWorld())) {
+            return false;
+        }
+        if (loc.getBlockX() > getLowerX() && loc.getBlockX() < getUpperX()) {
+            if (loc.getBlockY() > getLowerY() && loc.getBlockY() < getUpperY()) {
+                if (loc.getBlockZ() > getLowerZ() && loc.getBlockZ() < getUpperZ()) {
                     return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -122,24 +106,56 @@ public class Region implements Basic {
         return this.center;
     }
 
+    public void setCenter(Location loc) {
+        this.center = loc;
+        this.world = loc.getWorld();
+        this.update();
+        this.passVariable("center");
+    }
+
     public int getSize() {
         return this.size;
+    }
+
+    public void setSize(int i) {
+        this.size = i;
+        this.update();
+        this.passVariable("size");
     }
 
     public World getWorld() {
         return this.world;
     }
 
+    public void setWorld(World world) {
+        this.world = world;
+        this.update();
+        this.passVariable("world");
+    }
+
     public Location getL() {
         return this.l;
+    }
+
+    public void setL(Location loc) {
+        this.l = loc;
     }
 
     public Location getP() {
         return this.p;
     }
 
+    public void setP(Location loc) {
+        this.p = loc;
+    }
+
     public int getEnlarge() {
         return this.enlarge;
+    }
+
+    public void setEnlarge(int i) {
+        this.enlarge = i;
+        this.passVariable("enlarge");
     }
 
     public int getUpperX() {

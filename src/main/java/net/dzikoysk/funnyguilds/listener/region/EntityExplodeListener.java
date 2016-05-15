@@ -35,31 +35,46 @@ public class EntityExplodeListener implements Listener {
         Map<Material, Double> materials = s.explodeMaterials;
         for (Location l : sphere) {
             Material material = l.getBlock().getType();
-            if (!materials.containsKey(material)) continue;
+            if (!materials.containsKey(material)) {
+                continue;
+            }
             if (material == Material.WATER || material == Material.LAVA) {
-                if (RandomizationUtils.chance(materials.get(material))) l.getBlock().setType(Material.AIR);
-            } else {
-                if (RandomizationUtils.chance(materials.get(material))) l.getBlock().breakNaturally();
+                if (RandomizationUtils.chance(materials.get(material))) {
+                    l.getBlock().setType(Material.AIR);
+                }
+            }
+            else {
+                if (RandomizationUtils.chance(materials.get(material))) {
+                    l.getBlock().breakNaturally();
+                }
             }
         }
 
-        if (!RegionUtils.isIn(loc)) return;
+        if (!RegionUtils.isIn(loc)) {
+            return;
+        }
         Region region = RegionUtils.getAt(loc);
 
         Location protect = region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
 
         Iterator<Block> it = destroyed.iterator();
         while (it.hasNext()) {
-            if (it.next().getLocation().equals(protect)) it.remove();
+            if (it.next().getLocation().equals(protect)) {
+                it.remove();
+            }
         }
 
         Guild guild = region.getGuild();
-        if (!guild.canBuild()) return;
+        if (!guild.canBuild()) {
+            return;
+        }
         guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode * 1000L);
         for (User user : guild.getMembers()) {
             Player player = Bukkit.getPlayer(user.getName());
-            if (player != null) player.sendMessage(Messages.getInstance().getMessage("regionExplode")
-                    .replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));
+            if (player != null) {
+                player.sendMessage(Messages.getInstance().getMessage("regionExplode")
+                        .replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));
+            }
         }
     }
 

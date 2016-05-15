@@ -56,12 +56,17 @@ public class ExcDeputy implements Executor {
             guild.setDeputy(null);
             player.sendMessage(messages.getMessage("deputyRemove"));
             Player o = Bukkit.getPlayer(user.getName());
-            if (o != null) o.sendMessage(messages.getMessage("deputyMember"));
-        } else {
+            if (o != null) {
+                o.sendMessage(messages.getMessage("deputyMember"));
+            }
+        }
+        else {
             guild.setDeputy(user);
             player.sendMessage(messages.getMessage("deputySet"));
             Player o = Bukkit.getPlayer(user.getName());
-            if (o != null) o.sendMessage(messages.getMessage("deputyOwner"));
+            if (o != null) {
+                o.sendMessage(messages.getMessage("deputyOwner"));
+            }
         }
     }
 }

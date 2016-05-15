@@ -18,7 +18,9 @@ public class Rank implements Comparable<Rank> {
         this.basic = basic;
         this.type = basic.getType();
         this.idns = basic.getName();
-        if (this.type == BasicType.GUILD) this.guild = (Guild) basic;
+        if (this.type == BasicType.GUILD) {
+            this.guild = (Guild) basic;
+        }
         else if (this.type == BasicType.USER) {
             this.user = (User) basic;
             this.points = Settings.getInstance().rankStart;
@@ -27,7 +29,9 @@ public class Rank implements Comparable<Rank> {
 
     public void removePoints(int i) {
         this.points -= i;
-        if (this.points < 1) this.points = 0;
+        if (this.points < 1) {
+            this.points = 0;
+        }
         this.basic.passVariable("rank");
     }
 
@@ -46,29 +50,19 @@ public class Rank implements Comparable<Rank> {
         this.basic.passVariable("rank");
     }
 
-    public void setPoints(int i) {
-        this.points = i;
-        this.basic.passVariable("rank");
-    }
-
-    public void setKills(int i) {
-        this.kills = i;
-        this.basic.passVariable("rank");
-    }
-
-    public void setDeaths(int i) {
-        this.deaths = i;
-        this.basic.passVariable("rank");
-    }
-
     public int getPoints() {
-        if (this.type == BasicType.USER) return this.points;
+        if (this.type == BasicType.USER) {
+            return this.points;
+        }
         else {
             double points = 0;
             int size = guild.getMembers().size();
-            if (size == 0) return 0;
-            for (User user : guild.getMembers())
+            if (size == 0) {
+                return 0;
+            }
+            for (User user : guild.getMembers()) {
                 points += user.getRank().getPoints();
+            }
             double calc = points / size;
             if (calc != this.points) {
                 this.points = (int) calc;
@@ -78,12 +72,27 @@ public class Rank implements Comparable<Rank> {
         }
     }
 
+    public void setPoints(int i) {
+        this.points = i;
+        this.basic.passVariable("rank");
+    }
+
     public int getKills() {
         return this.kills;
     }
 
+    public void setKills(int i) {
+        this.kills = i;
+        this.basic.passVariable("rank");
+    }
+
     public int getDeaths() {
         return this.deaths;
+    }
+
+    public void setDeaths(int i) {
+        this.deaths = i;
+        this.basic.passVariable("rank");
     }
 
     public String getIDNS() {
@@ -108,12 +117,14 @@ public class Rank implements Comparable<Rank> {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null) return false;
-        if (o.getClass() != this.getClass()) return false;
+        if (o == null) {
+            return false;
+        }
+        if (o.getClass() != this.getClass()) {
+            return false;
+        }
         Rank rank = (Rank) o;
-        if (rank.getType() != type) return false;
-        if (!rank.getIDNS().equalsIgnoreCase(idns)) return false;
-        return true;
+        return rank.getType() == type && rank.getIDNS().equalsIgnoreCase(idns);
     }
 
     @Override
@@ -125,8 +136,12 @@ public class Rank implements Comparable<Rank> {
     public int compareTo(Rank rank) {
         int i = Integer.compare(rank.getPoints(), getPoints());
         if (i == 0) {
-            if (idns == null) return -1;
-            if (rank.getIDNS() == null) return 1;
+            if (idns == null) {
+                return -1;
+            }
+            if (rank.getIDNS() == null) {
+                return 1;
+            }
             i = idns.compareTo(rank.getIDNS());
         }
         return i;

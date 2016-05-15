@@ -24,10 +24,14 @@ public class ExcInfo implements Executor {
         Messages messages = Messages.getInstance();
 
         String tag = null;
-        if (args.length > 0) tag = args[0];
+        if (args.length > 0) {
+            tag = args[0];
+        }
         else if (sender instanceof Player) {
             User user = User.get((Player) sender);
-            if (user.hasGuild()) tag = user.getGuild().getTag();
+            if (user.hasGuild()) {
+                tag = user.getGuild().getTag();
+            }
         }
 
         if (tag == null || tag.isEmpty()) {
@@ -59,9 +63,12 @@ public class ExcInfo implements Executor {
             m = StringUtils.replace(m, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(guild)));
             m = StringUtils.replace(m, "{VALIDITY}", date.format(v));
             m = StringUtils.replace(m, "{LIVES}", Integer.toString(guild.getLives()));
-            if (guild.getAllies().size() > 0)
+            if (guild.getAllies().size() > 0) {
                 m = StringUtils.replace(m, "{ALLIES}", StringUtils.toString(BasicUtils.getNames(guild.getAllies()), true));
-            else m = StringUtils.replace(m, "{ALLIES}", "Brak");
+            }
+            else {
+                m = StringUtils.replace(m, "{ALLIES}", "Brak");
+            }
             if (m.contains("<online>")) {
                 String color = ChatColor.getLastColors(m.split("<online>")[0]);
                 m = StringUtils.replace(m, "<online>", ChatColor.GREEN + "");
@@ -69,8 +76,6 @@ public class ExcInfo implements Executor {
             }
             sender.sendMessage(m);
         }
-        return;
-
     }
 
 }

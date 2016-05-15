@@ -29,12 +29,17 @@ public class Parser {
         Material material = Material.getMaterial(type);
         ItemStack itemstack = null;
         if (material == null) {
-            if (type.equalsIgnoreCase("Enchanted_Golden_Apple")) itemstack = new ItemStack(322, 1);
+            if (type.equalsIgnoreCase("Enchanted_Golden_Apple")) {
+                itemstack = new ItemStack(322, 1);
+            }
             else {
                 FunnyGuilds.parser("Unknown item: " + string);
                 return new ItemStack(Material.AIR);
             }
-        } else itemstack = new ItemStack(material);
+        }
+        else {
+            itemstack = new ItemStack(material);
+        }
         itemstack.setAmount(amount);
         return itemstack;
     }
@@ -49,25 +54,34 @@ public class Parser {
         m = m.replaceAll(" ", "_");
         Material material = Material.getMaterial(m);
         if (material == null) {
-            if (!string.equalsIgnoreCase("ender crystal"))
+            if (!string.equalsIgnoreCase("ender crystal")) {
                 FunnyGuilds.parser("Unknown material: " + string);
+            }
             return Material.AIR;
         }
         return material;
     }
 
     public static Location parseLocation(String string) {
-        if (string == null) return null;
+        if (string == null) {
+            return null;
+        }
         String[] shs = string.split(",");
-        if (shs.length < 4) return null;
+        if (shs.length < 4) {
+            return null;
+        }
         World world = Bukkit.getWorld(shs[0]);
-        if (world == null) world = Bukkit.getWorlds().get(0);
+        if (world == null) {
+            world = Bukkit.getWorlds().get(0);
+        }
         Location loc = new Location(world, Integer.valueOf(shs[1]), Integer.valueOf(shs[2]), Integer.valueOf(shs[3]));
         return loc;
     }
 
     public static long parseTime(String string) {
-        if (string == null || string.isEmpty()) return 0;
+        if (string == null || string.isEmpty()) {
+            return 0;
+        }
 
         Stack<Character> type = new Stack<>();
         StringBuilder value = new StringBuilder();
@@ -119,7 +133,9 @@ public class Parser {
     }
 
     public static String parseRank(String string) {
-        if (!string.contains("TOP-")) return null;
+        if (!string.contains("TOP-")) {
+            return null;
+        }
         StringBuilder sb = new StringBuilder();
         boolean open = false;
         boolean start = false;
@@ -136,28 +152,41 @@ public class Parser {
                     end = true;
                     break;
                 default:
-                    if (open && start) sb.append(c);
+                    if (open && start) {
+                        sb.append(c);
+                    }
             }
-            if (end) break;
+            if (end) {
+                break;
+            }
         }
         try {
             int i = Integer.valueOf(sb.toString());
             if (string.contains("GTOP")) {
                 Guild guild = RankManager.getInstance().getGuild(i);
-                if (guild != null) return StringUtils
-                        .replace(string, "{GTOP-" + Integer.toString(i) + '}',
-                                guild.getTag() + " " +
-                                        StringUtils.replace(Settings.getInstance().playerlistPoints,
-                                                "{POINTS}", Integer.toString(guild.getRank().getPoints()))
-                        );
-                else return StringUtils
-                        .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
-            } else if (string.contains("PTOP")) {
+                if (guild != null) {
+                    return StringUtils
+                            .replace(string, "{GTOP-" + Integer.toString(i) + '}',
+                                    guild.getTag() + " " +
+                                            StringUtils.replace(Settings.getInstance().playerlistPoints,
+                                                    "{POINTS}", Integer.toString(guild.getRank().getPoints()))
+                            );
+                }
+                else {
+                    return StringUtils
+                            .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
+                }
+            }
+            else if (string.contains("PTOP")) {
                 User user = RankManager.getInstance().getUser(i);
-                if (user != null) return StringUtils
-                        .replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
-                else return StringUtils
-                        .replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
+                if (user != null) {
+                    return StringUtils
+                            .replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
+                }
+                else {
+                    return StringUtils
+                            .replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
+                }
             }
         } catch (NumberFormatException e) {
             FunnyGuilds.parser("Unknown number: " + sb.toString());

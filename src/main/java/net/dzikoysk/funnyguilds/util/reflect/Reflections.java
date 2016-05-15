@@ -16,7 +16,9 @@ public class Reflections {
         try {
             c = Class.forName(className);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
         }
         return c;
     }
@@ -27,7 +29,9 @@ public class Reflections {
         try {
             c = Class.forName(className);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
         }
         return c;
     }
@@ -36,7 +40,9 @@ public class Reflections {
         try {
             return getMethod(entity.getClass(), "getHandle").invoke(entity);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
             return null;
         }
     }
@@ -45,7 +51,9 @@ public class Reflections {
         try {
             return getMethod(world.getClass(), "getHandle").invoke(world);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
             return null;
         }
     }
@@ -54,7 +62,9 @@ public class Reflections {
         try {
             return cl.getDeclaredField(field_name);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
             return null;
         }
     }
@@ -96,8 +106,9 @@ public class Reflections {
             }
         }
 
-        if (target.getSuperclass() != null)
+        if (target.getSuperclass() != null) {
             return getField(target.getSuperclass(), name, fieldType, index);
+        }
         throw new IllegalArgumentException("Cannot find field with type " + fieldType);
     }
 
@@ -107,57 +118,64 @@ public class Reflections {
             field.setAccessible(true);
             return field;
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
             return null;
         }
     }
 
     public static Method getMethod(Class<?> cl, String method, Class<?>... args) {
-        for (Method m : cl.getMethods())
-            if (m.getName().equals(method) && classListEqual(args, m.getParameterTypes()))
+        for (Method m : cl.getMethods()) {
+            if (m.getName().equals(method) && classListEqual(args, m.getParameterTypes())) {
                 return m;
+            }
+        }
         return null;
     }
 
     public static Method getMethod(Class<?> cl, String method) {
-        for (Method m : cl.getMethods())
-            if (m.getName().equals(method))
+        for (Method m : cl.getMethods()) {
+            if (m.getName().equals(method)) {
                 return m;
+            }
+        }
         return null;
     }
 
     public static boolean classListEqual(Class<?>[] l1, Class<?>[] l2) {
         boolean equal = true;
-        if (l1.length != l2.length)
+        if (l1.length != l2.length) {
             return false;
-        for (int i = 0; i < l1.length; i++)
+        }
+        for (int i = 0; i < l1.length; i++) {
             if (l1[i] != l2[i]) {
                 equal = false;
                 break;
             }
+        }
         return equal;
     }
 
     public static String getVersion() {
         String name = Bukkit.getServer().getClass().getPackage().getName();
-        String version = name.substring(name.lastIndexOf('.') + 1) + ".";
-        return version;
+        return name.substring(name.lastIndexOf('.') + 1) + ".";
     }
 
     public interface ConstructorInvoker {
-        public Object invoke(Object... arguments);
+        Object invoke(Object... arguments);
     }
 
     public interface MethodInvoker {
-        public Object invoke(Object target, Object... arguments);
+        Object invoke(Object target, Object... arguments);
     }
 
     public interface FieldAccessor<T> {
-        public T get(Object target);
+        T get(Object target);
 
-        public void set(Object target, Object value);
+        void set(Object target, Object value);
 
-        public boolean hasField(Object target);
+        boolean hasField(Object target);
     }
 
 }

@@ -25,7 +25,7 @@ public class ExcAlly implements Executor {
             return;
         }
         /*
-		if(args.length < 1){
+        if(args.length < 1){
 			if(InvitationsList.get(guild, 1).getLS().isEmpty()){
 				player.sendMessage(messages.getMessage("allyHasNotInvitation"));
 				return;

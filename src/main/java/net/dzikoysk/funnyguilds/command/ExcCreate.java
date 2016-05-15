@@ -46,10 +46,12 @@ public class ExcCreate implements Executor {
             if (args.length == 0) {
                 player.sendMessage(messages.getMessage("createTag"));
                 return;
-            } else if (args.length == 1) {
+            }
+            else if (args.length == 1) {
                 player.sendMessage(messages.getMessage("createName"));
                 return;
-            } else if (args.length > 2) {
+            }
+            else if (args.length > 2) {
                 player.sendMessage(messages.getMessage("createMore"));
                 return;
             }
@@ -105,31 +107,42 @@ public class ExcCreate implements Executor {
         Location loc = player.getLocation();
         loc = loc.getBlock().getLocation();
 
-        if (settings.createCenterY != 0) loc.setY(settings.createCenterY);
+        if (settings.createCenterY != 0) {
+            loc.setY(settings.createCenterY);
+        }
         int d = settings.regionSize + settings.createDistance;
-        if (settings.enlargeItems != null) d += settings.enlargeItems.size() * settings.enlargeSize;
+        if (settings.enlargeItems != null) {
+            d += settings.enlargeItems.size() * settings.enlargeSize;
+        }
         if (d > player.getWorld().getSpawnLocation().distance(loc)) {
             player.sendMessage(messages.getMessage("createSpawn")
                     .replace("{DISTANCE}", Integer.toString(d)));
             return;
         }
 
-        List<ItemStack> itemsList = null;
-        if (player.hasPermission("funnyguilds.vip")) itemsList = settings.createItemsVip;
-        else itemsList = settings.createItems;
+        List<ItemStack> itemsList;
+        if (player.hasPermission("funnyguilds.vip")) {
+            itemsList = settings.createItemsVip;
+        }
+        else {
+            itemsList = settings.createItems;
+        }
+
         ItemStack[] items = itemsList.toArray(new ItemStack[0]);
-        for (int i = 0; i < items.length; i++) {
-            if (player.getInventory().containsAtLeast(items[i], items[i].getAmount())) continue;
+        for (ItemStack item : items) {
+            if (player.getInventory().containsAtLeast(item, item.getAmount())) {
+                continue;
+            }
             String msg = messages.getMessage("createItems");
             if (msg.contains("{ITEM}")) {
                 StringBuilder sb = new StringBuilder();
-                sb.append(items[i].getAmount());
+                sb.append(item.getAmount());
                 sb.append(" ");
-                sb.append(items[i].getType().toString().toLowerCase());
+                sb.append(item.getType().toString().toLowerCase());
                 msg = msg.replace("{ITEM}", sb.toString());
             }
             if (msg.contains("{ITEMS}")) {
-                ArrayList<String> list = new ArrayList<String>();
+                ArrayList<String> list = new ArrayList<>();
                 for (ItemStack it : itemsList) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(it.getAmount());
@@ -149,7 +162,9 @@ public class ExcCreate implements Executor {
         }
 
         GuildPreCreateEvent event = EventCaller.callEvent(new GuildPreCreateEvent(player, name, tag));
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) {
+            return;
+        }
 
         player.getInventory().removeItem(items);
         Manager.getInstance().stop();
@@ -168,16 +183,24 @@ public class ExcCreate implements Executor {
         user.setGuild(guild);
 
         if (settings.createCenterSphere) {
-            for (Location l : SpaceUtils.sphere(loc, 4, 4, false, true, 0))
-                if (l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.AIR);
-            for (Location l : SpaceUtils.sphere(loc, 4, 4, true, true, 0))
-                if (l.getBlock().getType() != Material.BEDROCK) l.getBlock().setType(Material.OBSIDIAN);
+            for (Location l : SpaceUtils.sphere(loc, 4, 4, false, true, 0)) {
+                if (l.getBlock().getType() != Material.BEDROCK) {
+                    l.getBlock().setType(Material.AIR);
+                }
+            }
+            for (Location l : SpaceUtils.sphere(loc, 4, 4, true, true, 0)) {
+                if (l.getBlock().getType() != Material.BEDROCK) {
+                    l.getBlock().setType(Material.OBSIDIAN);
+                }
+            }
         }
 
-        if (settings.createMaterial != null && settings.createMaterial != Material.AIR)
+        if (settings.createMaterial != null && settings.createMaterial != Material.AIR) {
             loc.getBlock().getRelative(BlockFace.DOWN).setType(settings.createMaterial);
-        else if (settings.createStringMaterial.equalsIgnoreCase("ender crystal"))
+        }
+        else if (settings.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
+        }
         player.teleport(loc);
 
         Manager.getInstance().start();
@@ -196,7 +219,6 @@ public class ExcCreate implements Executor {
                 .replace("{TAG}", tag));
 
         EventCaller.callEvent(new GuildCreateEvent(guild));
-        return;
     }
 
 }

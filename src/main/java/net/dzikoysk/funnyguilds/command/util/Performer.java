@@ -19,13 +19,14 @@ public class Performer extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        if (this.caller == null) return false;
-        return this.caller.onCommand(sender, this, commandLabel, args);
+        return this.caller != null && this.caller.onCommand(sender, this, commandLabel, args);
     }
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
-        if (this.caller == null) return null;
+        if (this.caller == null) {
+            return null;
+        }
         return caller.onTabComplete(sender, this, alias, args);
     }
 }

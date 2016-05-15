@@ -15,9 +15,11 @@ public class PlayerListScheme {
 
     private void update() {
         edit.clear();
-        for (int i = 0; i < 60; i++)
-            if (scheme[i] != null && scheme[i].contains("{") && scheme[i].contains("}"))
+        for (int i = 0; i < 60; i++) {
+            if (scheme[i] != null && scheme[i].contains("{") && scheme[i].contains("}")) {
                 edit.add(i);
+            }
+        }
     }
 
     public static String[] uniqueFields() {

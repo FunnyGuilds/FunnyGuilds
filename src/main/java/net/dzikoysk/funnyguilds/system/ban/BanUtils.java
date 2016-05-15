@@ -42,7 +42,9 @@ public class BanUtils {
     }
 
     public static boolean check(User user) {
-        if (System.currentTimeMillis() < user.getBan()) return true;
+        if (System.currentTimeMillis() < user.getBan()) {
+            return true;
+        }
         user.setBan(0);
         user.setReason(null);
         return false;

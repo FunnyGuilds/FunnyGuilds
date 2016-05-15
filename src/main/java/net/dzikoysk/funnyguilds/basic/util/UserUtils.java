@@ -8,33 +8,47 @@ import java.util.Collection;
 
 public class UserUtils {
 
-    private static final Collection<User> users = new ArrayList<User>();
+    private static final Collection<User> users = new ArrayList<>();
 
     public static boolean playedBefore(String s) {
-        for (User u : users) if (u.getName() != null && u.getName().equalsIgnoreCase(s)) return true;
+        for (User u : users) {
+            if (u.getName() != null && u.getName().equalsIgnoreCase(s)) {
+                return true;
+            }
+        }
         return false;
     }
 
     public static void removeGuild(Collection<User> users) {
-        for (User u : users) u.removeGuild();
+        for (User u : users) {
+            u.removeGuild();
+        }
     }
 
     public static void setGuild(Collection<User> users, Guild guild) {
-        for (User u : users) u.setGuild(guild);
+        for (User u : users) {
+            u.setGuild(guild);
+        }
     }
 
     public static Collection<String> getOnlineNames(Collection<User> users) {
         Collection<String> list = new ArrayList<>();
         for (User u : users) {
-            if (u.isOnline()) list.add("<online>" + u.getName() + "</online>");
-            else list.add(u.getName());
+            if (u.isOnline()) {
+                list.add("<online>" + u.getName() + "</online>");
+            }
+            else {
+                list.add(u.getName());
+            }
         }
         return list;
     }
 
     public static Collection<User> getUsers(Collection<String> names) {
         Collection<User> list = new ArrayList<>();
-        for (String s : names) list.add(User.get(s));
+        for (String s : names) {
+            list.add(User.get(s));
+        }
         return list;
     }
 
@@ -47,6 +61,6 @@ public class UserUtils {
     }
 
     public static Collection<User> getUsers() {
-        return new ArrayList<User>(users);
+        return new ArrayList<>(users);
     }
 }

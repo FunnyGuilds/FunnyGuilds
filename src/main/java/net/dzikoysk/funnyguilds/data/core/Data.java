@@ -4,14 +4,14 @@ import net.dzikoysk.funnyguilds.basic.Basic;
 
 public interface Data {
 
-    public void load();
+    void load();
 
-    public void save(Basic basic, String... fields);
+    void save(Basic basic, String... fields);
 
-    public void openBuffer();
+    void openBuffer();
 
-    public void closeBuffer();
+    void closeBuffer();
 
-    public boolean isOpened();
+    boolean isOpened();
 
 }

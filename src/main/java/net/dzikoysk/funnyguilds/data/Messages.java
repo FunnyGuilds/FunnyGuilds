@@ -30,7 +30,9 @@ public class Messages {
         for (String key : pc.getKeys(true)) {
             if (key.toLowerCase().contains("list")) {
                 List<String> list = pc.getStringList(key);
-                if (list == null) continue;
+                if (list == null) {
+                    continue;
+                }
                 for (int i = 0; i < list.size(); i++) {
                     list.set(i, ChatColor.translateAlternateColorCodes('&', list.get(i))
                             .replace("�", "")
@@ -51,7 +53,9 @@ public class Messages {
     private Yamler loadConfiguration() {
         Yamler pc = new Yamler(messages);
         String version = pc.getString("version");
-        if (version != null && version.equals(Messages.version)) return pc;
+        if (version != null && version.equals(Messages.version)) {
+            return pc;
+        }
         FunnyGuilds.info("Updating the plugin messages ...");
         messages.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "messages.old"));
         Manager.loadDefaultFiles(new String[]{"messages.yml"});
@@ -62,19 +66,29 @@ public class Messages {
 
     public String getMessage(String key) {
         String s = single.get(key);
-        if (s == null) return StringUtils.colored("&cMessage '" + key + "' not found");
-        else return s;
+        if (s == null) {
+            return StringUtils.colored("&cMessage '" + key + "' not found");
+        }
+        else {
+            return s;
+        }
     }
 
     public List<String> getList(String key) {
         List<String> list = multiple.get(key);
-        if (list == null) list = new ArrayList<>();
-        if (list.isEmpty()) list.add(StringUtils.colored("&cMessage '" + key + "' not found"));
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        if (list.isEmpty()) {
+            list.add(StringUtils.colored("&cMessage '" + key + "' not found"));
+        }
         return list;
     }
 
     public static Messages getInstance() {
-        if (instance != null) return instance;
+        if (instance != null) {
+            return instance;
+        }
         return new Messages();
     }
 

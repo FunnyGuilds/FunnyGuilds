@@ -22,10 +22,14 @@ public class Dummy {
 
     @SuppressWarnings("deprecation")
     public void updateScore(User user) {
-        if (!Settings.getInstance().dummyEnable) return;
+        if (!Settings.getInstance().dummyEnable) {
+            return;
+        }
         Scoreboard scoreboard = this.user.getScoreboard();
         Objective objective = scoreboard.getObjective(NAME);
-        if (objective == null || !objective.getName().equals(NAME)) initialize();
+        if (objective == null || !objective.getName().equals(NAME)) {
+            initialize();
+        }
         else {
             OfflineUser offline = user.getOfflineUser();
             objective.getScore(offline).setScore(user.getRank().getPoints());
@@ -33,7 +37,9 @@ public class Dummy {
     }
 
     private void initialize() {
-        if (!Settings.getInstance().dummyEnable) return;
+        if (!Settings.getInstance().dummyEnable) {
+            return;
+        }
         Scoreboard scoreboard = this.user.getScoreboard();
         Objective objective = scoreboard.getObjective(NAME);
         if (objective == null || !objective.getName().equals(NAME)) {

@@ -17,7 +17,9 @@ public class ProtectionSystem {
 
     public static boolean center(Location loc) {
         Region region = RegionUtils.getAt(loc);
-        if (region == null) return false;
+        if (region == null) {
+            return false;
+        }
         if (region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
                 .equals(loc.getBlock().getLocation().toVector())) {
             return true;
@@ -26,12 +28,20 @@ public class ProtectionSystem {
     }
 
     public static boolean build(Player player, Location location, boolean build) {
-        if (player == null || location == null) return false;
-        if (player.hasPermission("funnyguilds.admin.build")) return false;
+        if (player == null || location == null) {
+            return false;
+        }
+        if (player.hasPermission("funnyguilds.admin.build")) {
+            return false;
+        }
         Region region = RegionUtils.getAt(location);
-        if (region == null) return false;
+        if (region == null) {
+            return false;
+        }
         Guild guild = region.getGuild();
-        if (guild == null || guild.getName() == null) return false;
+        if (guild == null || guild.getName() == null) {
+            return false;
+        }
         User user = User.get(player);
         if (guild.getMembers().contains(user)) {
             if (build && !guild.canBuild()) {
@@ -39,9 +49,12 @@ public class ProtectionSystem {
                         Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))
                 ));
                 return true;
-            } else if (location.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
+            }
+            else if (location.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
                 Material m = Settings.getInstance().createMaterial;
-                if (m != null && m != Material.AIR) return true;
+                if (m != null && m != Material.AIR) {
+                    return true;
+                }
             }
             return false;
         }

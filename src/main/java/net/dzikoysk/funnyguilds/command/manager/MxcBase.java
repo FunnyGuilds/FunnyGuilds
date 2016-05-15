@@ -43,7 +43,9 @@ public class MxcBase implements Executor {
         if (guild.getHome().getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
             for (int i = guild.getHome().getBlockY(); i > 0; i--) {
                 guild.getHome().setY(i);
-                if (guild.getHome().getBlock().getType() != Material.AIR) break;
+                if (guild.getHome().getBlock().getType() != Material.AIR) {
+                    break;
+                }
             }
         }
 

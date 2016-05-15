@@ -19,12 +19,16 @@ public class Reloader {
         before = pc.getInt("played-before");
         actual = Bukkit.getOnlinePlayers().size();
         reloaded = before == actual;
-        if (reloaded) reloadCount = pc.getInt("reload-count") + 1;
+        if (reloaded) {
+            reloadCount = pc.getInt("reload-count") + 1;
+        }
         init = true;
     }
 
     public static boolean wasReloaded() {
-        if (!init) new Reloader().init();
+        if (!init) {
+            new Reloader().init();
+        }
         return reloaded;
     }
 

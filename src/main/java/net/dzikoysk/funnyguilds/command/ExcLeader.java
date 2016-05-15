@@ -57,6 +57,8 @@ public class ExcLeader implements Executor {
         player.sendMessage(messages.getMessage("leaderSet"));
 
         Player leader = Bukkit.getPlayer(user.getName());
-        if (leader != null) leader.sendMessage(messages.getMessage("leaderOwner"));
+        if (leader != null) {
+            leader.sendMessage(messages.getMessage("leaderOwner"));
+        }
     }
 }

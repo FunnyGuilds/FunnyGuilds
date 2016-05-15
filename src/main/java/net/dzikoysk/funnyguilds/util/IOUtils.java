@@ -13,10 +13,16 @@ public class IOUtils {
         if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
-                if (folder) file.mkdir();
-                else file.createNewFile();
+                if (folder) {
+                    file.mkdir();
+                }
+                else {
+                    file.createNewFile();
+                }
             } catch (IOException e) {
-                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
             }
         }
         return file;
@@ -51,23 +57,35 @@ public class IOUtils {
     }
 
     public static void delete(File f) {
-        if (!f.exists()) return;
-        if (f.isDirectory())
-            for (File c : f.listFiles()) delete(c);
-        if (!f.delete())
+        if (f == null || !f.exists()) {
+            return;
+        }
+        if (f.isDirectory()) {
+            File[] files = f.listFiles();
+            if (files == null) {
+                return;
+            }
+
+            for (File c : files) {
+                delete(c);
+            }
+        }
+        if (!f.delete()) {
             try {
                 throw new FileNotFoundException("Failed to delete file: " + f);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+        }
     }
 
     public static String toString(InputStream in, String encoding) throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[8192];
         int len = 0;
-        while ((len = in.read(buf)) != -1)
+        while ((len = in.read(buf)) != -1) {
             baos.write(buf, 0, len);
+        }
         in.close();
         return new String(baos.toByteArray(), encoding);
     }

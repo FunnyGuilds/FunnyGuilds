@@ -20,9 +20,7 @@ public class Settings {
     private static final String VERSION = "4.0";
 
     private static Settings instance;
-    private PandaConfiguration pc;
     public String pluginName;
-
     public int createNameLength;
     public int createNameMinLength;
     public int createTagLength;
@@ -34,7 +32,6 @@ public class Settings {
     public String createStringMaterial;
     public int createCenterY;
     public boolean createCenterSphere;
-
     public int regionSize;
     public int regionMaxSize;
     public int regionMinDistance;
@@ -42,65 +39,50 @@ public class Settings {
     public int regionNotificationCooldown;
     public int regionExplode;
     public List<String> regionCommands;
-
     public boolean eventMove;
     public boolean eventPhysics;
-
     public boolean enlargeEnable;
     public int enlargeSize;
     public List<ItemStack> enlargeItems;
-
     public int warLives;
     public long warProtection;
     public long warWait;
-
     public long validityStart;
     public long validityTime;
     public long validityWhen;
     public List<ItemStack> validityItems;
-
     public int inviteMembers;
     public List<ItemStack> joinItems;
     public boolean infoPlayerSneaking;
-
     public String prefixOur;
     public String prefixAllies;
     public String prefixEnemies;
     public String prefixOther;
-
     public boolean dummyEnable;
     public String dummySuffix;
-
     public String chatGuild;
     public String chatRank;
     public String chatPoints;
-
     public String chatPriv;
     public String chatAlly;
     public String chatGlobal;
     public String chatPrivDesign;
     public String chatAllyDesign;
     public String chatGlobalDesign;
-
     public int rankStart;
     public double rankPercent;
-
     public boolean damageGuild;
     public boolean damageAlly;
-
     public boolean baseEnable;
     public int baseDelay;
     public List<ItemStack> baseItems;
-
     public int explodeRadius;
     public HashMap<Material, Double> explodeMaterials;
-
     public boolean playerlistEnable;
     public int playerlistInterval;
     public int playerlistPing;
     public boolean playerlistPatch;
     public String playerlistPoints;
-
     public String excCreate;
     public String excDelete;
     public String excConfirm;
@@ -120,10 +102,8 @@ public class Settings {
     public String excLeader;
     public String excDeputy;
     public String excRanking;
-
     public String mxcBase;
     public String mxcPvP;
-
     public List<String> excCreateAliases;
     public List<String> excDeleteAliases;
     public List<String> excConfirmAliases;
@@ -143,10 +123,8 @@ public class Settings {
     public List<String> excLeaderAliases;
     public List<String> excDeputyAliases;
     public List<String> excRankingAliases;
-
     public List<String> mxcBaseAliases;
     public List<String> mxcPvPAliases;
-
     public String axcMain;
     public String axcAdd;
     public String axcDelete;
@@ -161,7 +139,6 @@ public class Settings {
     public String axcMove;
     public String axcValidity;
     public String axcName;
-
     public int dataInterval;
     public boolean flat;
     public boolean mysql;
@@ -170,6 +147,7 @@ public class Settings {
     public String mysqlDatabase;
     public String mysqlUser;
     public String mysqlPassword;
+    private PandaConfiguration pc;
 
     public Settings() {
         Manager.loadDefaultFiles(new String[]{"config.yml"});
@@ -180,7 +158,9 @@ public class Settings {
     private boolean update() {
         this.pc = new PandaConfiguration(SETTINGS);
         String version = pc.getString("version");
-        if (version != null && version.equals(Settings.VERSION)) return true;
+        if (version != null && version.equals(Settings.VERSION)) {
+            return true;
+        }
         FunnyGuilds.info("Updating the plugin settings ...");
         SETTINGS.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "config.old"));
         Manager.loadDefaultFiles(new String[]{"config.yml"});
@@ -194,7 +174,9 @@ public class Settings {
 // Plugin Section
         this.pluginName = "FunnyGuilds";
         String name = pc.getString("plugin-name");
-        if (name != null && !name.isEmpty()) this.pluginName = name;
+        if (name != null && !name.isEmpty()) {
+            this.pluginName = name;
+        }
 
 // Create Section
         this.createNameLength = pc.getInt("name-length");
@@ -203,19 +185,25 @@ public class Settings {
         this.createTagMinLength = pc.getInt("tag-min-length");
 
         List<String> list = pc.getStringList("items");
-        List<ItemStack> items = new ArrayList<ItemStack>();
+        List<ItemStack> items = new ArrayList<>();
         for (String item : list) {
-            if (item == null) continue;
+            if (item == null) {
+                continue;
+            }
             ItemStack itemstack = Parser.parseItem(item);
-            if (itemstack != null) items.add(itemstack);
+            if (itemstack != null) {
+                items.add(itemstack);
+            }
         }
         this.createItems = items;
 
         list = pc.getStringList("items-vip");
-        items = new ArrayList<ItemStack>();
+        items = new ArrayList<>();
         for (String item : list) {
             ItemStack itemstack = Parser.parseItem(item);
-            if (itemstack != null) items.add(itemstack);
+            if (itemstack != null) {
+                items.add(itemstack);
+            }
         }
         this.createItemsVip = items;
         this.createDistance = pc.getInt("create-distance");
@@ -233,8 +221,9 @@ public class Settings {
         this.regionCommands = pc.getStringList("region-commands");
 
 // Event Section
-        if (this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG)
+        if (this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG) {
             this.eventPhysics = true;
+        }
         this.eventMove = pc.getBoolean("event-move");
 
 // Enlarge Section
@@ -243,10 +232,12 @@ public class Settings {
             this.enlargeSize = pc.getInt("enlarge-size");
 
             list = pc.getStringList("enlarge-items");
-            items = new ArrayList<ItemStack>();
+            items = new ArrayList<>();
             for (String item : list) {
                 ItemStack itemstack = Parser.parseItem(item);
-                if (itemstack != null) items.add(itemstack);
+                if (itemstack != null) {
+                    items.add(itemstack);
+                }
             }
             this.enlargeItems = items;
         }
@@ -261,20 +252,24 @@ public class Settings {
         this.validityTime = Parser.parseTime(pc.getString("validity-time"));
         this.validityWhen = Parser.parseTime(pc.getString("validity-when"));
         list = pc.getStringList("validity-items");
-        items = new ArrayList<ItemStack>();
+        items = new ArrayList<>();
         for (String item : list) {
             ItemStack itemstack = Parser.parseItem(item);
-            if (itemstack != null) items.add(itemstack);
+            if (itemstack != null) {
+                items.add(itemstack);
+            }
         }
         this.validityItems = items;
 
 // Other Section
         this.inviteMembers = pc.getInt("max-members");
         this.infoPlayerSneaking = pc.getBoolean("info-player-sneaking");
-        items = new ArrayList<ItemStack>();
+        items = new ArrayList<>();
         for (String item : pc.getStringList("join-items")) {
             ItemStack itemstack = Parser.parseItem(item);
-            if (itemstack != null) items.add(itemstack);
+            if (itemstack != null) {
+                items.add(itemstack);
+            }
         }
         this.joinItems = items;
 
@@ -301,7 +296,9 @@ public class Settings {
 // Rank Section
         this.rankStart = pc.getInt("rank-start");
         this.rankPercent = pc.getDouble("rank-percent");
-        if (this.rankPercent == 0) this.rankPercent = 1.0;
+        if (this.rankPercent == 0) {
+            this.rankPercent = 1.0;
+        }
 
 // Damage Section
         this.damageGuild = pc.getBoolean("damage-guild");
@@ -311,10 +308,12 @@ public class Settings {
         this.baseEnable = pc.getBoolean("base-enable");
         if (this.baseEnable) {
             list = pc.getStringList("base-items");
-            items = new ArrayList<ItemStack>();
+            items = new ArrayList<>();
             for (String item : list) {
                 ItemStack itemstack = Parser.parseItem(item);
-                if (itemstack != null) items.add(itemstack);
+                if (itemstack != null) {
+                    items.add(itemstack);
+                }
             }
             this.baseItems = items;
             this.baseDelay = pc.getInt("base-delay");
@@ -325,9 +324,13 @@ public class Settings {
         HashMap<Material, Double> map = new HashMap<>();
         for (String path : pc.getSectionKeys("explode-materials")) {
             Material material = Parser.parseMaterial(path);
-            if (material == null || material == Material.AIR) continue;
+            if (material == null || material == Material.AIR) {
+                continue;
+            }
             double chance = pc.getDouble("explode-materials." + path);
-            if (chance == 0) continue;
+            if (chance == 0) {
+                continue;
+            }
             map.put(material, chance);
         }
         this.explodeMaterials = map;
@@ -337,9 +340,13 @@ public class Settings {
         for (String path : pc.getSectionKeys("player-list")) {
             try {
                 int i = Integer.parseInt(path);
-                if (i > 60) continue;
+                if (i > 60) {
+                    continue;
+                }
                 String s = pc.getString("player-list." + path);
-                if (s != null) s = StringUtils.colored(s);
+                if (s != null) {
+                    s = StringUtils.colored(s);
+                }
                 ss[i - 1] = s;
             } catch (NumberFormatException e) {
                 FunnyGuilds.parser("[Settings] Unknown number: " + path);
@@ -432,7 +439,9 @@ public class Settings {
     }
 
     public static Settings getInstance() {
-        if (instance == null) instance = new Settings();
+        if (instance == null) {
+            instance = new Settings();
+        }
         return instance;
     }
 }

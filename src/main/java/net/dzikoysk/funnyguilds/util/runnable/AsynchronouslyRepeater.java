@@ -30,7 +30,9 @@ public class AsynchronouslyRepeater implements Runnable {
     }
 
     public void start() {
-        if (this.repeater != null) return;
+        if (this.repeater != null) {
+            return;
+        }
         this.repeater = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), this, 100, 20);
     }
 
@@ -41,18 +43,28 @@ public class AsynchronouslyRepeater implements Runnable {
         validity_system++;
         funnyguilds_stats++;
 
-        if (player_list == player_list_time) playerList();
-        if (validity_system >= 10) validitySystem();
-        if (ban_system >= 7) banSystem();
-        if (funnyguilds_stats >= 10) funnyguildsStats();
+        if (player_list == player_list_time) {
+            playerList();
+        }
+        if (validity_system >= 10) {
+            validitySystem();
+        }
+        if (ban_system >= 7) {
+            banSystem();
+        }
+        if (funnyguilds_stats >= 10) {
+            funnyguildsStats();
+        }
     }
 
     private void playerList() {
         if (Settings.getInstance().playerlistEnable) {
             IndependentThread.action(ActionType.PLAYERLIST_GLOBAL_UPDATE);
-            if (Settings.getInstance().playerlistPatch)
-                for (Player p : Bukkit.getOnlinePlayers())
+            if (Settings.getInstance().playerlistPatch) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
                     PacketSender.sendPacket(p, PacketPlayOutPlayerInfo.getPacket(p.getPlayerListName(), false, 0));
+                }
+            }
         }
         player_list = 0;
     }
@@ -84,7 +96,9 @@ public class AsynchronouslyRepeater implements Runnable {
     }
 
     public static AsynchronouslyRepeater getInstance() {
-        if (instance == null) new AsynchronouslyRepeater();
+        if (instance == null) {
+            new AsynchronouslyRepeater();
+        }
         return instance;
     }
 

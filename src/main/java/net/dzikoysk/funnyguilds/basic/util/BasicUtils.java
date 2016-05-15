@@ -34,13 +34,21 @@ public class BasicUtils {
             RegionUtils.delete(region);
             i++;
         }
-        if (i > 0) FunnyGuilds.warning("Repaired conflicts: " + i);
+        if (i > 0) {
+            FunnyGuilds.warning("Repaired conflicts: " + i);
+        }
     }
 
     public static Collection<String> getNames(Collection<? extends Basic> collection) {
-        if (collection == null || collection.isEmpty()) return new ArrayList<>(0);
+        if (collection == null || collection.isEmpty()) {
+            return new ArrayList<>(0);
+        }
         Collection<String> list = new ArrayList<>(collection.size());
-        for (Basic basic : collection) if (basic != null && basic.getName() != null) list.add(basic.getName());
+        for (Basic basic : collection) {
+            if (basic != null && basic.getName() != null) {
+                list.add(basic.getName());
+            }
+        }
         return list;
     }
 

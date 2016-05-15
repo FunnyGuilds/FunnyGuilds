@@ -70,7 +70,9 @@ public class Flat implements Data {
     }
 
     public static Flat getInstance() {
-        if (instance == null) instance = new Flat();
+        if (instance == null) {
+            instance = new Flat();
+        }
         return instance;
     }
 

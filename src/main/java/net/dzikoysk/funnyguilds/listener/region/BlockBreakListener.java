@@ -9,7 +9,9 @@ public class BlockBreakListener implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
-        if (ProtectionSystem.build(e.getPlayer(), e.getBlock().getLocation())) e.setCancelled(true);
+        if (ProtectionSystem.build(e.getPlayer(), e.getBlock().getLocation())) {
+            e.setCancelled(true);
+        }
     }
 
 }

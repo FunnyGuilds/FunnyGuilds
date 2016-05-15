@@ -12,7 +12,9 @@ public class PacketPlayOutPlayerInfo {
 
     static {
         try {
-            if (packetClass.getConstructor(typesClass) == null) type = 1;
+            if (packetClass.getConstructor(typesClass) == null) {
+                type = 1;
+            }
         } catch (Exception e) {
             type = 1;
         }
@@ -22,18 +24,23 @@ public class PacketPlayOutPlayerInfo {
         try {
             if (type == 0) {
                 return packetClass.getConstructor(typesClass).newInstance(s, b, i);
-            } else if (type == 1) {
+            }
+            else if (type == 1) {
                 Class<?> clazz = Reflections.getCraftClass("PacketPlayOutPlayerInfo");
                 Object packet = packetClass.getConstructor().newInstance();
                 Reflections.getPrivateField(clazz, "username").set(packet, s);
                 Reflections.getPrivateField(clazz, "gamemode").set(packet, 1);
                 Reflections.getPrivateField(clazz, "ping").set(packet, i);
                 Reflections.getPrivateField(clazz, "player").set(packet, new OfflineUser(s).getProfile());
-                if (!b) Reflections.getPrivateField(clazz, "action").set(packet, 4);
+                if (!b) {
+                    Reflections.getPrivateField(clazz, "action").set(packet, 4);
+                }
                 return packet;
             }
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

@@ -22,24 +22,27 @@ public class AsyncPlayerChatListener implements Listener {
         if (user.hasGuild()) {
             Guild guild = user.getGuild();
             String message = event.getMessage();
-            if (chat(event, message, c, player, guild)) return;
+            if (chat(event, message, c, player, guild)) {
+                return;
+            }
         }
         String format = event.getFormat();
         format = StringUtils.replace(format, "{RANK}", StringUtils
                 .replace(c.chatRank, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user))));
         format = StringUtils.replace(format, "{POINTS}", StringUtils
                 .replace(c.chatPoints, "{POINTS}", Integer.toString(user.getRank().getPoints())));
-        if (user.hasGuild()) format = StringUtils.replace(format, "{TAG}", StringUtils
-                .replace(c.chatGuild, "{TAG}", user.getGuild().getTag()));
-        else format = StringUtils.replace(format, "{TAG}", "");
+        if (user.hasGuild()) {
+            format = StringUtils.replace(format, "{TAG}", StringUtils
+                    .replace(c.chatGuild, "{TAG}", user.getGuild().getTag()));
+        }
+        else {
+            format = StringUtils.replace(format, "{TAG}", "");
+        }
         event.setFormat(format);
     }
 
     private boolean chat(AsyncPlayerChatEvent event, String message, Settings c, Player player, Guild guild) {
-        if (global(event, message, c, player, guild)) return true;
-        if (ally(event, message, c, player, guild)) return true;
-        if (priv(event, message, c, player, guild)) return true;
-        return false;
+        return global(event, message, c, player, guild) || ally(event, message, c, player, guild) || priv(event, message, c, player, guild);
     }
 
     private boolean priv(AsyncPlayerChatEvent event, String message, Settings c, Player player, Guild guild) {
@@ -52,7 +55,9 @@ public class AsyncPlayerChatListener implements Listener {
             format = StringUtils.replace(format, "{MESSAGE}", event.getMessage().substring(length));
             for (User u : guild.getMembers()) {
                 Player p = Bukkit.getPlayer(u.getName());
-                if (p != null) p.sendMessage(format);
+                if (p != null) {
+                    p.sendMessage(format);
+                }
             }
             event.setCancelled(true);
             return true;
@@ -70,12 +75,16 @@ public class AsyncPlayerChatListener implements Listener {
             format = StringUtils.replace(format, "{MESSAGE}", event.getMessage().substring(length));
             for (User u : guild.getMembers()) {
                 Player p = Bukkit.getPlayer(u.getName());
-                if (p != null) p.sendMessage(format);
+                if (p != null) {
+                    p.sendMessage(format);
+                }
             }
             for (Guild g : guild.getAllies()) {
                 for (User u : g.getMembers()) {
                     Player p = Bukkit.getPlayer(u.getName());
-                    if (p != null) p.sendMessage(format);
+                    if (p != null) {
+                        p.sendMessage(format);
+                    }
                 }
             }
             event.setCancelled(true);
@@ -95,7 +104,9 @@ public class AsyncPlayerChatListener implements Listener {
             for (Guild g : GuildUtils.getGuilds()) {
                 for (User u : g.getMembers()) {
                     Player p = Bukkit.getPlayer(u.getName());
-                    if (p != null) p.sendMessage(format);
+                    if (p != null) {
+                        p.sendMessage(format);
+                    }
                 }
             }
             event.setCancelled(true);

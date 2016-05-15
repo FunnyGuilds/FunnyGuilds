@@ -59,15 +59,19 @@ public class ExcKick implements Executor {
         guild.removeMember(kickedUser);
         kickedUser.removeGuild();
 
-        if (kickedOffline.isOnline()) IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
+        if (kickedOffline.isOnline()) {
+            IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
+        }
 
         player.sendMessage(
                 messages.getMessage("kickToOwner")
                         .replace("{PLAYER}", kickedUser.getName()));
 
         Player kickedPlayer = Bukkit.getPlayer(kickedUser.getName());
-        if (kickedPlayer != null) kickedPlayer.sendMessage(messages.getMessage("kickToPlayer")
-                .replace("{GUILD}", guild.getName()));
+        if (kickedPlayer != null) {
+            kickedPlayer.sendMessage(messages.getMessage("kickToPlayer")
+                    .replace("{GUILD}", guild.getName()));
+        }
 
         Bukkit.broadcastMessage(messages.getMessage("broadcastKick")
                 .replace("{PLAYER}", kickedUser.getName())

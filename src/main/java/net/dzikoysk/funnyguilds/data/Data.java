@@ -8,7 +8,9 @@ public class Data {
     }
 
     public static Data getInstance() {
-        if (instance != null) return instance;
+        if (instance != null) {
+            return instance;
+        }
         return new Data();
     }
 

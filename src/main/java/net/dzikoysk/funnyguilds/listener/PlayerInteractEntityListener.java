@@ -20,18 +20,25 @@ public class PlayerInteractEntityListener implements Listener {
     public void onInteract(PlayerInteractEntityEvent event) {
         Entity entity = event.getRightClicked();
         if (entity instanceof Player) {
-            if (Settings.getInstance().infoPlayerSneaking && !event.getPlayer().isSneaking()) return;
+            if (Settings.getInstance().infoPlayerSneaking && !event.getPlayer().isSneaking()) {
+                return;
+            }
             Player clicked = (Player) entity;
             new ExcPlayer().execute(event.getPlayer(), new String[]{clicked.getName()});
-        } else if (entity instanceof EnderCrystal) {
+        }
+        else if (entity instanceof EnderCrystal) {
             EnderCrystal ec = (EnderCrystal) entity;
             Region region = RegionUtils.getAt(ec.getLocation());
-            if (region == null) return;
+            if (region == null) {
+                return;
+            }
             event.setCancelled(true);
             if (region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
                     .equals(ec.getLocation().getBlock().getLocation().toVector())) {
                 Guild guild = region.getGuild();
-                if (guild == null) return;
+                if (guild == null) {
+                    return;
+                }
                 new ExcInfo().execute(event.getPlayer(), new String[]{guild.getTag()});
             }
         }

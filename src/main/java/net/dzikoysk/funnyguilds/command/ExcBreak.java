@@ -45,9 +45,10 @@ public class ExcBreak implements Executor {
             List<String> list = messages.getList("breakAlliesList");
             String[] msgs = list.toArray(new String[list.size()]);
             String iss = StringUtils.toString(BasicUtils.getNames(guild.getAllies()), true);
-            for (int i = 0; i < msgs.length; i++)
+            for (int i = 0; i < msgs.length; i++) {
                 player.sendMessage(msgs[i]
                         .replace("{GUILDS}", iss));
+            }
             return;
         }
 
@@ -71,18 +72,22 @@ public class ExcBreak implements Executor {
         guild.removeAlly(tb);
         tb.removeAlly(guild);
 
-        for (User u : guild.getMembers())
+        for (User u : guild.getMembers()) {
             IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, tb);
-        for (User u : tb.getMembers())
+        }
+        for (User u : tb.getMembers()) {
             IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, guild);
+        }
 
         player.sendMessage(messages.getMessage("breakDone")
                 .replace("{GUILD}", tb.getName())
                 .replace("{TAG}", tb.getTag()));
 
         OfflineUser offline = tb.getOwner().getOfflineUser();
-        if (offline.isOnline()) offline.getPlayer().sendMessage(messages.getMessage("allyIDone")
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag()));
+        if (offline.isOnline()) {
+            offline.getPlayer().sendMessage(messages.getMessage("allyIDone")
+                    .replace("{GUILD}", guild.getName())
+                    .replace("{TAG}", guild.getTag()));
+        }
     }
 }

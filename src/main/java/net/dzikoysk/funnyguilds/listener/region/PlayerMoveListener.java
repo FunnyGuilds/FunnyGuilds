@@ -26,8 +26,12 @@ public class PlayerMoveListener implements Listener {
         Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
             @Override
             public void run() {
-                if (from == null || to == null) return;
-                if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) return;
+                if (from == null || to == null) {
+                    return;
+                }
+                if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) {
+                    return;
+                }
 
                 Messages m = Messages.getInstance();
                 User user = User.get(player);
@@ -44,9 +48,12 @@ public class PlayerMoveListener implements Listener {
                                 .replace("{TAG}", guild.getTag())
                         );
                     }
-                } else if (!user.getEnter() && region != null) {
+                }
+                else if (!user.getEnter() && region != null) {
                     Guild guild = region.getGuild();
-                    if (guild == null || guild.getName() == null) return;
+                    if (guild == null || guild.getName() == null) {
+                        return;
+                    }
                     user.setEnter(true);
 
                     if (guild.getMembers().contains(user)) {
@@ -61,9 +68,12 @@ public class PlayerMoveListener implements Listener {
                             .replace("{TAG}", guild.getTag())
                     );
 
-                    if (player.hasPermission("funnyguilds.admin.notification")) return;
-                    if (user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime())
+                    if (player.hasPermission("funnyguilds.admin.notification")) {
                         return;
+                    }
+                    if (user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime()) {
+                        return;
+                    }
 
                     NotificationBar.set(player, m.getMessage("notificationOther")
                                     .replace("{GUILD}", guild.getName())
@@ -71,9 +81,13 @@ public class PlayerMoveListener implements Listener {
                             , 1, Settings.getInstance().regionNotificationTime);
 
                     for (User u : guild.getMembers()) {
-                        if (u.getName() == null) continue;
+                        if (u.getName() == null) {
+                            continue;
+                        }
                         Player member = Bukkit.getPlayer(u.getName());
-                        if (member == null) continue;
+                        if (member == null) {
+                            continue;
+                        }
                         NotificationBar.set(member, m.getMessage("notificationMember")
                                         .replace("{PLAYER}", player.getName())
                                 , 1, Settings.getInstance().regionNotificationTime);

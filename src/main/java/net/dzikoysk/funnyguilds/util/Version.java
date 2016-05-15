@@ -28,7 +28,9 @@ public class Version {
                                 NotePitch.play(player, 4, Tone.C);
                                 Thread.sleep(interval);
                             } catch (Exception e) {
-                                if (FunnyGuilds.exception(e.getCause())) e.printStackTrace();
+                                if (FunnyGuilds.exception(e.getCause())) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         NotePitch.play(player, 3, Tone.G);

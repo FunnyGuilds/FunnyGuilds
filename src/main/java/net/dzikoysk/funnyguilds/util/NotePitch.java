@@ -39,7 +39,7 @@ public enum NotePitch {
     private final Tone tone;
     private final float pitch;
 
-    private NotePitch(int octave, Tone tone, float pitch) {
+    NotePitch(int octave, Tone tone, float pitch) {
         this.octave = octave;
         this.tone = tone;
         this.pitch = pitch;
@@ -58,13 +58,16 @@ public enum NotePitch {
     }
 
     public static NotePitch getNote(int octave, Tone tone) {
-        for (NotePitch note : values())
-            if (note.octave == octave && note.tone == tone) return note;
+        for (NotePitch note : values()) {
+            if (note.octave == octave && note.tone == tone) {
+                return note;
+            }
+        }
         return getNote(3, Tone.C);
     }
 
     public static void play(Player player, NotePitch note) {
-        player.playSound(player.getEyeLocation(), Sound.NOTE_PIANO, 1, note.getPitch());
+        player.playSound(player.getEyeLocation(), Sound.BLOCK_NOTE_PLING, 1, note.getPitch());
     }
 
     public static void play(Player player, int octave, Tone tone) {

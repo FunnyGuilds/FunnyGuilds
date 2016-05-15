@@ -23,8 +23,9 @@ public class ThreadMonitor implements Runnable {
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             if (tmxb.getThreadCpuTime(t.getId()) > 0) {
                 long l = (tmxb.getThreadCpuTime(t.getId()) * 100L) / full;
-                if (l > 0.0)
+                if (l > 0.0) {
                     FunnyGuilds.info(t.getName() + ": " + l + "%");
+                }
             }
         }
         FunnyGuilds.info("================================");

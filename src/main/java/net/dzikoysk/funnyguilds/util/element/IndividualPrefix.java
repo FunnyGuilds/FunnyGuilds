@@ -22,29 +22,39 @@ public class IndividualPrefix {
     }
 
     protected void addPlayer(OfflinePlayer player) {
-        if (player == null) return;
+        if (player == null) {
+            return;
+        }
         User user = User.get(player);
-        if (!user.hasGuild()) return;
+        if (!user.hasGuild()) {
+            return;
+        }
         Scoreboard scoreboard = this.getUser().getScoreboard();
         Team team = scoreboard.getPlayerTeam(player);
-        if (team != null) team.removePlayer(player);
+        if (team != null) {
+            team.removePlayer(player);
+        }
         team = scoreboard.getTeam(user.getGuild().getTag());
         if (team == null) {
             addGuild(user.getGuild());
             team = scoreboard.getTeam(user.getGuild().getTag());
         }
-        if (this.getUser().hasGuild())
-            if (this.getUser().equals(user) || this.getUser().getGuild().getMembers().contains(user))
+        if (this.getUser().hasGuild()) {
+            if (this.getUser().equals(user) || this.getUser().getGuild().getMembers().contains(user)) {
                 team.setPrefix(replace(
                         Settings.getInstance().prefixOur,
                         "{TAG}",
                         user.getGuild().getTag()
                 ));
+            }
+        }
         team.addPlayer(player);
     }
 
     public void addGuild(Guild to) {
-        if (to == null) return;
+        if (to == null) {
+            return;
+        }
         Scoreboard scoreboard = getUser().getScoreboard();
         Guild guild = getUser().getGuild();
         if (guild != null) {
@@ -53,23 +63,38 @@ public class IndividualPrefix {
                 return;
             }
             Team team = scoreboard.getTeam(to.getTag());
-            if (team == null) team = scoreboard.registerNewTeam(to.getTag());
+            if (team == null) {
+                team = scoreboard.registerNewTeam(to.getTag());
+            }
             for (User u : to.getMembers()) {
                 OfflineUser player = new OfflineUser(u.getName());
-                if (!team.hasPlayer(player)) team.addPlayer(player);
+                if (!team.hasPlayer(player)) {
+                    team.addPlayer(player);
+                }
             }
             String prefix = Settings.getInstance().prefixOther;
-            if (guild.getAllies().contains(to)) prefix = Settings.getInstance().prefixAllies;
-            if (guild.getEnemies().contains(to)) prefix = Settings.getInstance().prefixEnemies;
+            if (guild.getAllies().contains(to)) {
+                prefix = Settings.getInstance().prefixAllies;
+            }
+            if (guild.getEnemies().contains(to)) {
+                prefix = Settings.getInstance().prefixEnemies;
+            }
             prefix = prefix.replace("{TAG}", to.getTag());
-            if (prefix.length() > 16) prefix = prefix.substring(0, 16);
+            if (prefix.length() > 16) {
+                prefix = prefix.substring(0, 16);
+            }
             team.setPrefix(prefix);
-        } else {
+        }
+        else {
             Team team = scoreboard.getTeam(to.getTag());
-            if (team == null) team = scoreboard.registerNewTeam(to.getTag());
+            if (team == null) {
+                team = scoreboard.registerNewTeam(to.getTag());
+            }
             for (User u : to.getMembers()) {
                 OfflineUser player = new OfflineUser(u.getName());
-                if (!team.hasPlayer(player)) team.addPlayer(player);
+                if (!team.hasPlayer(player)) {
+                    team.addPlayer(player);
+                }
             }
             team.setPrefix(replace(
                     Settings.getInstance().prefixOther,
@@ -80,7 +105,9 @@ public class IndividualPrefix {
     }
 
     protected void removePlayer(OfflinePlayer op) {
-        if (op == null) return;
+        if (op == null) {
+            return;
+        }
         Team team = getUser().getScoreboard().getPlayerTeam(op);
         if (team != null) {
             team.removePlayer(op);
@@ -95,13 +122,19 @@ public class IndividualPrefix {
     }
 
     protected void removeGuild(Guild guild) {
-        if (guild == null || guild.getTag() == null || guild.getTag().isEmpty()) return;
+        if (guild == null || guild.getTag() == null || guild.getTag().isEmpty()) {
+            return;
+        }
         Team team = getUser().getScoreboard().getTeam(guild.getTag());
-        if (team != null) team.unregister();
+        if (team != null) {
+            team.unregister();
+        }
     }
 
     private void initialize() {
-        if (getUser() == null) return;
+        if (getUser() == null) {
+            return;
+        }
         List<Guild> guilds = GuildUtils.getGuilds();
         Scoreboard scoreboard = getUser().getScoreboard();
         Guild guild = getUser().getGuild();
@@ -113,36 +146,65 @@ public class IndividualPrefix {
             String enemy = config.prefixEnemies;
             String other = config.prefixOther;
             Team team = scoreboard.getTeam(guild.getTag());
-            if (team == null) team = scoreboard.registerNewTeam(guild.getTag());
+            if (team == null) {
+                team = scoreboard.registerNewTeam(guild.getTag());
+            }
             for (User u : guild.getMembers()) {
-                if (u.getName() == null) continue;
+                if (u.getName() == null) {
+                    continue;
+                }
                 OfflineUser player = new OfflineUser(u.getName());
-                if (!team.hasPlayer(player)) team.addPlayer(player);
+                if (!team.hasPlayer(player)) {
+                    team.addPlayer(player);
+                }
             }
             team.setPrefix(replace(our, "{TAG}", guild.getTag()));
             for (Guild one : guilds) {
-                if (one == null || one.getTag() == null) continue;
-                team = scoreboard.getTeam(one.getTag());
-                if (team == null) team = scoreboard.registerNewTeam(one.getTag());
-                for (User u : one.getMembers()) {
-                    if (u.getName() == null) continue;
-                    OfflineUser player = new OfflineUser(u.getName());
-                    if (!team.hasPlayer(player)) team.addPlayer(player);
+                if (one == null || one.getTag() == null) {
+                    continue;
                 }
-                if (guild.getAllies().contains(one)) team.setPrefix(replace(ally, "{TAG}", one.getTag()));
-                else if (guild.getEnemies().contains(one)) team.setPrefix(replace(enemy, "{TAG}", one.getTag()));
-                else team.setPrefix(replace(other, "{TAG}", one.getTag()));
+                team = scoreboard.getTeam(one.getTag());
+                if (team == null) {
+                    team = scoreboard.registerNewTeam(one.getTag());
+                }
+                for (User u : one.getMembers()) {
+                    if (u.getName() == null) {
+                        continue;
+                    }
+                    OfflineUser player = new OfflineUser(u.getName());
+                    if (!team.hasPlayer(player)) {
+                        team.addPlayer(player);
+                    }
+                }
+                if (guild.getAllies().contains(one)) {
+                    team.setPrefix(replace(ally, "{TAG}", one.getTag()));
+                }
+                else if (guild.getEnemies().contains(one)) {
+                    team.setPrefix(replace(enemy, "{TAG}", one.getTag()));
+                }
+                else {
+                    team.setPrefix(replace(other, "{TAG}", one.getTag()));
+                }
             }
-        } else {
+        }
+        else {
             String other = Settings.getInstance().prefixOther;
             for (Guild one : guilds) {
-                if (one == null || one.getTag() == null) continue;
+                if (one == null || one.getTag() == null) {
+                    continue;
+                }
                 Team team = scoreboard.getTeam(one.getTag());
-                if (team == null) team = scoreboard.registerNewTeam(one.getTag());
+                if (team == null) {
+                    team = scoreboard.registerNewTeam(one.getTag());
+                }
                 for (User u : one.getMembers()) {
-                    if (u.getName() == null) continue;
+                    if (u.getName() == null) {
+                        continue;
+                    }
                     OfflineUser player = new OfflineUser(u.getName());
-                    if (!team.hasPlayer(player)) team.addPlayer(player);
+                    if (!team.hasPlayer(player)) {
+                        team.addPlayer(player);
+                    }
                 }
                 team.setPrefix(replace(other, "{TAG}", one.getTag()));
             }
@@ -151,7 +213,9 @@ public class IndividualPrefix {
 
     private String replace(String f, String r, String t) {
         String s = f.replace(r, t);
-        if (s.length() > 16) s = s.substring(0, 16);
+        if (s.length() > 16) {
+            s = s.substring(0, 16);
+        }
         return s;
     }
 

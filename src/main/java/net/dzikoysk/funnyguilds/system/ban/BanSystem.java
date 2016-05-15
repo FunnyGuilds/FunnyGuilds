@@ -18,7 +18,9 @@ public class BanSystem {
     }
 
     public static BanSystem getInstance() {
-        if (instance == null) new BanSystem();
+        if (instance == null) {
+            new BanSystem();
+        }
         return instance;
     }
 }

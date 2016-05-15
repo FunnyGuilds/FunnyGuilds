@@ -11,7 +11,9 @@ public class ExcRanking implements Executor {
     public void execute(CommandSender sender, String[] args) {
         for (String m : Messages.getInstance().getList("rankingList")) {
             String r = Parser.parseRank(m);
-            if (r != null) m = r;
+            if (r != null) {
+                m = r;
+            }
             sender.sendMessage(m);
         }
     }
