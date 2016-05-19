@@ -9,8 +9,8 @@ public class IndependentThread extends Thread {
 
     private static IndependentThread instance;
     private static List<Action> temp = new ArrayList<>();
+    private final Object locker = new Object();
     private List<Action> actions = new ArrayList<>();
-    private Object locker = new Object();
 
     public IndependentThread() {
         instance = this;
@@ -45,7 +45,6 @@ public class IndependentThread extends Thread {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
                 }
-                continue;
             }
         }
     }
@@ -96,4 +95,5 @@ public class IndependentThread extends Thread {
         }
         return instance;
     }
+
 }

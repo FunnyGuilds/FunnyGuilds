@@ -29,45 +29,47 @@ public class PlayerList {
     private void split() {
         this.prefix = new String[60];
         this.suffix = new String[60];
+
         for (int i = 0; i < 60; i++) {
             String s = ss[i];
+
             if (s == null || s.isEmpty()) {
                 continue;
             }
             if (s.length() <= 16) {
                 prefix[i] = s;
+                return;
             }
-            else {
-                String px = s.substring(0, 16);
-                if (px.charAt(15) == '\u00A7') {
-                    px = s.substring(0, 15);
-                }
-                String color = ChatColor.getLastColors(px);
-                if (color == null || color.isEmpty()) {
-                    color = "\u00A7f";
-                }
-                String sx = color;
-                if (px.length() == 15) {
-                    int l = s.length();
-                    if (l < 32) {
-                        sx += s.substring(15, s.length());
-                    }
-                    else {
-                        sx += s.substring(15, 32);
-                    }
+
+            String px = s.substring(0, 16);
+            if (px.charAt(15) == '\u00A7') {
+                px = s.substring(0, 15);
+            }
+            String color = ChatColor.getLastColors(px);
+            if (color == null || color.isEmpty()) {
+                color = "\u00A7f";
+            }
+            String sx = color;
+            if (px.length() == 15) {
+                int l = s.length();
+                if (l < 32) {
+                    sx += s.substring(15, s.length());
                 }
                 else {
-                    int l = s.length();
-                    if (l < 32) {
-                        sx += s.substring(16, s.length());
-                    }
-                    else {
-                        sx += s.substring(16, 32);
-                    }
+                    sx += s.substring(15, 32);
                 }
-                prefix[i] = px;
-                suffix[i] = sx;
             }
+            else {
+                int l = s.length();
+                if (l < 32) {
+                    sx += s.substring(16, s.length());
+                }
+                else {
+                    sx += s.substring(16, 32);
+                }
+            }
+            prefix[i] = px;
+            suffix[i] = sx;
         }
     }
 
@@ -76,8 +78,10 @@ public class PlayerList {
         Calendar now = Calendar.getInstance();
         int second = now.get(Calendar.SECOND);
         int minute = now.get(Calendar.MINUTE);
+
         for (int i : PlayerListScheme.getEdit()) {
             String s = ss[i];
+
             if (s == null || s.isEmpty()) {
                 continue;
             }
@@ -124,6 +128,7 @@ public class PlayerList {
         if (player == null) {
             return;
         }
+
         update();
         split();
         PlayerListManager.send(player);
@@ -144,4 +149,5 @@ public class PlayerList {
     public boolean getInit() {
         return init;
     }
+
 }

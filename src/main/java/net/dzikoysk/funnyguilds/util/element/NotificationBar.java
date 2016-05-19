@@ -146,7 +146,7 @@ public class NotificationBar {
         public Object getDestroyPacket() {
             try {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{ id });
+                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();

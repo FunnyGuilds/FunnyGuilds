@@ -28,20 +28,24 @@ public class PlayerListManager {
         if (!enable) {
             return;
         }
+
         User user = User.get(player);
         Scoreboard sb = user.getScoreboard();
         PlayerList pl = user.getPlayerList();
         String[] prefix = pl.getPrefix();
         String[] suffix = pl.getSuffix();
+
         for (int i = 0; i < 60; i++) {
             if (scheme[i] == null) {
                 //Data.getPlayerListFile().delete();
                 scheme = PlayerListScheme.uniqueFields();
             }
+
             String s = scheme[i];
             if (s == null) {
                 continue;
             }
+
             Team team = sb.getTeam(s);
             if (team == null) {
                 team = sb.registerNewTeam(s);
@@ -57,9 +61,11 @@ public class PlayerListManager {
         if (!pl.getInit()) {
             Player[] ps = FunnyGuilds.getOnlinePlayers();
             String[] ss = new String[ps.length];
+
             for (int i = 0; i < ps.length; i++) {
                 ss[i] = ps[i].getPlayerListName();
             }
+
             pl.init(true);
             PacketSender.sendPacket(player, packets(ss, false));
             PacketSender.sendPacket(player, packets(scheme, true));
@@ -67,11 +73,14 @@ public class PlayerListManager {
         if (patch) {
             Player[] ps = FunnyGuilds.getOnlinePlayers();
             String[] ss = new String[ps.length];
+
             for (int i = 0; i < ps.length; i++) {
                 ss[i] = ps[i].getPlayerListName();
             }
+
             PacketSender.sendPacket(player, packets(ss, false));
         }
+
         try {
             player.setScoreboard(sb);
         } catch (IllegalStateException e) {
@@ -113,4 +122,5 @@ public class PlayerListManager {
     public static void patch(boolean p) {
         patch = p;
     }
+
 }

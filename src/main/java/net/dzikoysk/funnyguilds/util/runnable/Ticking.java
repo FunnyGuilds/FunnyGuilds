@@ -15,7 +15,7 @@ public class Ticking implements Runnable {
     private transient long lastPoll = System.nanoTime();
 
     public Ticking() {
-        history.add(Double.valueOf(20.0D));
+        history.add(20.0D);
     }
 
     public void start() {
@@ -34,13 +34,13 @@ public class Ticking implements Runnable {
         }
         double tps = 50000000.0D / timeSpent;
         if (tps <= 21.0D) {
-            history.add(Double.valueOf(tps));
+            history.add(tps);
         }
         this.lastPoll = startTime;
         double avg = 0.0D;
         for (Double f : history) {
             if (f != null) {
-                avg += f.doubleValue();
+                avg += f;
             }
         }
         df.setRoundingMode(RoundingMode.HALF_UP);

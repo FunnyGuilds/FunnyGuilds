@@ -169,7 +169,6 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return getReal().getBedSpawnLocation();
     }
 
-    @SuppressWarnings("rawtypes")
     private void init() {
         if (type != 0) {
             return;

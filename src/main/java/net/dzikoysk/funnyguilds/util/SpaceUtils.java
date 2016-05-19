@@ -8,7 +8,7 @@ import java.util.Collection;
 public class SpaceUtils {
 
     public static Collection<Location> sphere(Location loc, int radius, int height, boolean hollow, boolean sphere, int plusY) {
-        Collection<Location> circleblocks = new ArrayList<Location>();
+        Collection<Location> sphereBlocks = new ArrayList<>();
         int cx = loc.getBlockX();
         int cy = loc.getBlockY();
         int cz = loc.getBlockZ();
@@ -20,13 +20,13 @@ public class SpaceUtils {
 
                     if (dist < radius * radius && !(hollow && dist < (radius - 1) * (radius - 1))) {
                         Location l = new Location(loc.getWorld(), x, y + plusY, z);
-                        circleblocks.add(l);
+                        sphereBlocks.add(l);
                     }
                 }
             }
         }
 
-        return circleblocks;
+        return sphereBlocks;
     }
 
 }

@@ -17,13 +17,8 @@ public class Parser {
 
     @SuppressWarnings("deprecation")
     public static ItemStack parseItem(String string) {
-        String item = string;
-        Integer amount = Integer.parseInt(item.substring(0, item.indexOf(' ')));
-        String type = item.substring(item.indexOf(' ') + 1);
-        if (type == null) {
-            type = item;
-            amount = 1;
-        }
+        Integer amount = Integer.parseInt(string.substring(0, string.indexOf(' ')));
+        String type = string.substring(string.indexOf(' ') + 1);
         type = type.toUpperCase();
         type = type.replace(" ", "_");
         Material material = Material.getMaterial(type);
@@ -74,8 +69,7 @@ public class Parser {
         if (world == null) {
             world = Bukkit.getWorlds().get(0);
         }
-        Location loc = new Location(world, Integer.valueOf(shs[1]), Integer.valueOf(shs[2]), Integer.valueOf(shs[3]));
-        return loc;
+        return new Location(world, Integer.valueOf(shs[1]), Integer.valueOf(shs[2]), Integer.valueOf(shs[3]));
     }
 
     public static long parseTime(String string) {
@@ -99,27 +93,25 @@ public class Parser {
                         type.push(c);
                         calc = true;
                     }
-                    if (calc) {
-                        try {
-                            long i = Integer.valueOf(value.toString());
-                            switch (type.pop()) {
-                                case 'd':
-                                    time += i * 86400000L;
-                                    break;
-                                case 'h':
-                                    time += i * 3600000L;
-                                    break;
-                                case 'm':
-                                    time += i * 60000L;
-                                    break;
-                                case 's':
-                                    time += i * 1000L;
-                                    break;
-                            }
-                        } catch (NumberFormatException e) {
-                            FunnyGuilds.parser("Unknown number: " + value.toString());
-                            return time;
+                    try {
+                        long i = Integer.valueOf(value.toString());
+                        switch (type.pop()) {
+                            case 'd':
+                                time += i * 86400000L;
+                                break;
+                            case 'h':
+                                time += i * 3600000L;
+                                break;
+                            case 'm':
+                                time += i * 60000L;
+                                break;
+                            case 's':
+                                time += i * 1000L;
+                                break;
                         }
+                    } catch (NumberFormatException e) {
+                        FunnyGuilds.parser("Unknown number: " + value.toString());
+                        return time;
                     }
                     type.push(c);
                     calc = true;
