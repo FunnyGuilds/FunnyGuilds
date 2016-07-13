@@ -107,8 +107,6 @@ validity-items:
 
 # Ranking od ktorego rozpoczyna gracz
 rank-start: 1000
-# Jaki procent punktow zabitego ma przyznawac zabojcy
-rank-percent: 2.0
 # Czy trzeba kucac, zeby przy klikniecu prawym na gracza wyswietlilo informacje o nim
 info-player-sneaking: true
 
@@ -196,7 +194,7 @@ player-list:
   36: '&73. &b{PTOP-3}'
 
 # Tablista wlaczona
-player-list-enable: true
+player-list-enable: false
 # Co ile sekund ma odswiezac liste graczy
 player-list-interval: 1
 # Ping wyswietlany na tab
