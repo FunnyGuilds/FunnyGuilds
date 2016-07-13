@@ -28,6 +28,7 @@ public class PlayerDeathListener implements Listener {
             return;
         }
         User attacker = User.get(a);
+        attacker.getRank().addKill();
 
         if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
             if (attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()) {
@@ -46,15 +47,29 @@ public class PlayerDeathListener implements Listener {
             }
         }
 
-        Double d = victim.getRank().getPoints() * (Settings.getInstance().rankPercent / 100);
-        int points = d.intValue();
+        int wOldPoints = attacker.getRank().getPoints();
+        int wKFactor = getKFactor(wOldPoints);
 
-        victim.getRank().removePoints(points);
-        victim.setLastAttacker(attacker);
+        int lOldPoints = victim.getRank().getPoints();
+        int lKFactor = getKFactor(lOldPoints);
 
-        attacker.getRank().addKill();
-        attacker.getRank().addPoints(points);
-        attacker.setLastVictim(victim);
+        double w = Math.pow(10, wOldPoints / 400);
+        double l = Math.pow(10, lOldPoints / 400);
+
+        double ew = w / (w + l);
+        double el = l / (w + l);
+
+        int ws = 1;
+        int ls = 0;
+
+        double wNewPoints = wOldPoints + wKFactor * (ws - ew);
+        double lNewPoints = lOldPoints + wKFactor * (ls - el);
+
+        attacker.getRank().setPoints((int) wNewPoints);
+        victim.getRank().setPoints((int) lNewPoints);
+
+        int wDiff = (int) (wOldPoints - wNewPoints);
+        int lDiff = (int) (lOldPoints - lNewPoints);
 
         if (Settings.getInstance().mysql) {
             if (victim.hasGuild()) {
@@ -72,7 +87,19 @@ public class PlayerDeathListener implements Listener {
         IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
         IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
 
-        changeMessage(event, attacker, victim, points, points);
+        changeMessage(event, attacker, victim, wDiff, lDiff);
+    }
+
+    private int getKFactor(int wOldPoints) {
+        int wKFactor = 30;
+        if (wOldPoints < 2000) {
+            wKFactor = 30;
+        } else if (wOldPoints >= 2000 && wOldPoints <= 2400) {
+            wKFactor = 130 - ((wOldPoints) / 20);
+        } else if (wOldPoints > 2400) {
+            wKFactor = 10;
+        }
+        return wKFactor;
     }
 
     private void changeMessage(PlayerDeathEvent event, User attacker, User victim, int pointsA, int pointsV) {
@@ -102,4 +129,5 @@ public class PlayerDeathListener implements Listener {
     public static long getVictimCooldown() {
         return victimCooldown;
     }
+
 }

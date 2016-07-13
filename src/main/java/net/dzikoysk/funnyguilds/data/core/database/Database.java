@@ -27,7 +27,6 @@ public class Database implements Data {
 
     @Override
     public boolean isOpened() {
-        // TODO Auto-generated method stub
         return false;
     }
 

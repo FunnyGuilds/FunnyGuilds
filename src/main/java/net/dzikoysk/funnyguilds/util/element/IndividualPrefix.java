@@ -11,6 +11,7 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.List;
 
+@SuppressWarnings("deprecated")
 public class IndividualPrefix {
 
     private final User user;
