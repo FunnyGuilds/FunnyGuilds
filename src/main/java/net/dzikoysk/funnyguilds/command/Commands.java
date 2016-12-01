@@ -10,6 +10,10 @@ public class Commands {
 
     private static Commands instance;
 
+    public Commands() {
+        instance = this;
+    }
+
     public void register() {
         Settings s = Settings.getInstance();
         new ExecutorCaller(new ExcFunnyGuilds(), "funnyguilds", null, null);
@@ -54,9 +58,8 @@ public class Commands {
 
     public static Commands getInstance() {
         if (instance == null) {
-            instance = new Commands();
+            return new Commands();
         }
         return instance;
     }
-
 }

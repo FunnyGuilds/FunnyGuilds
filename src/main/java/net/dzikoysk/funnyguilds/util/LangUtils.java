@@ -3,11 +3,17 @@ package net.dzikoysk.funnyguilds.util;
 public class LangUtils {
 
     public static String get(boolean b) {
-        return b ? "Tak" : "Nie";
+        if (b) {
+            return "Tak";
+        }
+        return "Nie";
     }
 
     public static String get(String s) {
-        return s == null ? "Brak" : s;
+        if (s == null) {
+            return "Brak";
+        }
+        return s;
     }
 
 }

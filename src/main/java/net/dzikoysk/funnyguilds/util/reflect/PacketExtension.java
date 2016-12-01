@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import io.netty.channel.*;
-import net.dzikoysk.funnyguilds.event.EventCaller;
-import net.dzikoysk.funnyguilds.event.net.PacketReceiveEvent;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
+import net.dzikoysk.funnyguilds.util.reflect.event.PacketReceiveEvent;
+import net.minecraft.util.io.netty.channel.*;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -55,7 +55,8 @@ public class PacketExtension {
                         if (msg == null) {
                             return;
                         }
-                        PacketReceiveEvent event = EventCaller.callEvent(new PacketReceiveEvent(msg, p));
+                        PacketReceiveEvent event = new PacketReceiveEvent(msg, p);
+                        Bukkit.getPluginManager().callEvent(event);
                         if (event.isCancelled() || event.getPacket() == null) {
                             return;
                         }

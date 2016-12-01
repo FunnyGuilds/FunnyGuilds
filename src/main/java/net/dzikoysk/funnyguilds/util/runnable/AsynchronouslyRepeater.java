@@ -18,15 +18,15 @@ public class AsynchronouslyRepeater implements Runnable {
     private static AsynchronouslyRepeater instance;
     private volatile BukkitTask repeater;
 
-    private int playerList;
-    private int banSystem;
-    private int validitySystem;
-    private int funnyguildsStats;
-    private int playerListTime;
+    private int player_list;
+    private int ban_system;
+    private int validity_system;
+    private int funnyguilds_stats;
+    private int player_list_time;
 
     public AsynchronouslyRepeater() {
         instance = this;
-        playerListTime = Settings.getInstance().playerlistInterval;
+        player_list_time = Settings.getInstance().playerlistInterval;
     }
 
     public void start() {
@@ -38,21 +38,21 @@ public class AsynchronouslyRepeater implements Runnable {
 
     @Override
     public void run() {
-        playerList++;
-        banSystem++;
-        validitySystem++;
-        funnyguildsStats++;
+        player_list++;
+        ban_system++;
+        validity_system++;
+        funnyguilds_stats++;
 
-        if (playerList == playerListTime) {
+        if (player_list == player_list_time) {
             playerList();
         }
-        if (validitySystem >= 10) {
+        if (validity_system >= 10) {
             validitySystem();
         }
-        if (banSystem >= 7) {
+        if (ban_system >= 7) {
             banSystem();
         }
-        if (funnyguildsStats >= 10) {
+        if (funnyguilds_stats >= 10) {
             funnyguildsStats();
         }
     }
@@ -66,26 +66,26 @@ public class AsynchronouslyRepeater implements Runnable {
                 }
             }
         }
-        playerList = 0;
+        player_list = 0;
     }
 
     private void validitySystem() {
         ValiditySystem.getInstance().run();
-        validitySystem = 0;
+        validity_system = 0;
     }
 
     private void banSystem() {
         BanSystem.getInstance().run();
-        banSystem = 0;
+        ban_system = 0;
     }
 
     private void funnyguildsStats() {
         MetricsCollector.getMetrics();
-        funnyguildsStats = 0;
+        funnyguilds_stats = 0;
     }
 
     public void reload() {
-        playerListTime = Settings.getInstance().playerlistInterval;
+        player_list_time = Settings.getInstance().playerlistInterval;
     }
 
     public void stop() {

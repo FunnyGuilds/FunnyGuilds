@@ -15,7 +15,10 @@ public class Performer extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
-        return this.caller != null && this.caller.onCommand(sender, this, commandLabel, args);
+        if (this.caller == null) {
+            return false;
+        }
+        return this.caller.onCommand(sender, this, commandLabel, args);
     }
 
     @Override

@@ -2,17 +2,18 @@ package net.dzikoysk.funnyguilds.basic.util;
 
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
+import net.dzikoysk.funnyguilds.data.flat.Flat;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class RegionUtils {
 
     public static List<Region> regions = new ArrayList<>();
 
-    public static Collection<Region> getRegions() {
+    public static List<Region> getRegions() {
         return new ArrayList<Region>(regions);
     }
 
@@ -69,10 +70,26 @@ public class RegionUtils {
     }
 
     public static void delete(Region region) {
-        // TODO
-        //if(Settings.getInstance().flat) Flat.getRegionFile(region).delete();
-        //if(Settings.getInstance().mysql) new DatabaseRegion(region).delete();
+        if (Settings.getInstance().flat) {
+            Flat.getRegionFile(region).delete();
+        }
+        if (Settings.getInstance().mysql) {
+            new DatabaseRegion(region).delete();
+        }
         region.delete();
+    }
+
+    public static List<String> getNames(List<Region> lsg) {
+        List<String> list = new ArrayList<>();
+        if (lsg == null) {
+            return list;
+        }
+        for (Region r : lsg) {
+            if (r != null && r.getName() != null) {
+                list.add(r.getName());
+            }
+        }
+        return list;
     }
 
     public static void addRegion(Region region) {

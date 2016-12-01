@@ -5,6 +5,8 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -12,50 +14,55 @@ import org.bukkit.inventory.ItemStack;
 public class ExcEnlarge implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        Settings settings = Settings.getInstance();
-        Messages messages = Messages.getInstance();
-        Player player = (Player) sender;
-        User user = User.get(player);
+    public void execute(CommandSender s, String[] args) {
+        Messages m = Messages.getInstance();
+        Player p = (Player) s;
+        User lp = User.get(p);
 
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.getMessage("enlargeHasNotGuild"));
+        if (!lp.hasGuild()) {
+            p.sendMessage(m.getMessage("enlargeHasNotGuild"));
             return;
         }
 
-        if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.getMessage("enlargeIsNotOwner"));
+        if (!lp.isOwner() && !lp.isDeputy()) {
+            p.sendMessage(m.getMessage("enlargeIsNotOwner"));
             return;
         }
 
-        Region region = user.getGuild().getRegion();
+        Region region = Region.get(lp.getGuild().getRegion());
         int enlarge = region.getEnlarge();
 
-        if (enlarge > settings.enlargeItems.size() - 1) {
-            player.sendMessage(messages.getMessage("enlargeMaxSize"));
+        Settings c = Settings.getInstance();
+
+        if (enlarge > c.enlargeItems.size() - 1) {
+            p.sendMessage(m.getMessage("enlargeMaxSize"));
             return;
         }
 
-        ItemStack need = settings.enlargeItems.get(enlarge);
-        if (!player.getInventory().containsAtLeast(need, need.getAmount())) {
-            player.sendMessage(messages.getMessage("enlargeItem")
-                    .replace("{ITEM}", need.getAmount() + " " + need.getType().name().toLowerCase()));
+        ItemStack need = c.enlargeItems.get(enlarge);
+        if (!p.getInventory().containsAtLeast(need, need.getAmount())) {
+            p.sendMessage(
+                    m.getMessage("enlargeItem")
+                            .replace("{ITEM}", need.getAmount() + " " + need.getType().name().toLowerCase())
+            );
             return;
         }
 
-        player.getInventory().removeItem(need);
+        p.getInventory().removeItem(need);
         region.setEnlarge(enlarge + 1);
-        region.setSize(region.getSize() + settings.enlargeSize);
+        region.setSize(region.getSize() + c.enlargeSize);
 
-        String tm = messages.getMessage("enlargeDone")
-                .replace("{SIZE}", Integer.toString(region.getSize()))
-                .replace("{LEVEL}", Integer.toString(region.getEnlarge()));
+        String tm = m.getMessage("enlargeDone")
+                .replace("{SIZE}", region.getSize() + "")
+                .replace("{LEVEL}", region.getEnlarge() + "");
 
-        for (User member : user.getGuild().getMembers()) {
-            if (member.isOnline()) {
-                member.getPlayer().sendMessage(tm);
+        for (User user : lp.getGuild().getMembers()) {
+            OfflinePlayer of = Bukkit.getOfflinePlayer(user.getName());
+            if (of.isOnline()) {
+                of.getPlayer().sendMessage(tm);
             }
         }
+        return;
     }
 
 }

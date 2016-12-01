@@ -19,7 +19,6 @@ import java.util.List;
 
 public class ExcBase implements Executor {
 
-    @Override
     public void execute(CommandSender s, String[] args) {
 
         final Messages m = Messages.getInstance();
@@ -83,7 +82,6 @@ public class ExcBase implements Executor {
             Player player = p;
             int i = 0;
 
-            @Override
             public void run() {
                 i++;
                 if (!LocationUtils.equals(player.getLocation(), before)) {

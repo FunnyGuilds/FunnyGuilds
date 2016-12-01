@@ -14,58 +14,59 @@ public class ExcDeputy implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-        Messages messages = Messages.getInstance();
-        Player player = (Player) s;
-        User owner = User.get(player);
+
+        Messages m = Messages.getInstance();
+        Player p = (Player) s;
+        User owner = User.get(p);
 
         if (!owner.hasGuild()) {
-            player.sendMessage(messages.getMessage("deputyHasNotGuild"));
+            p.sendMessage(m.getMessage("deputyHasNotGuild"));
             return;
         }
 
         if (!owner.isOwner()) {
-            player.sendMessage(messages.getMessage("deputyIsNotOwner"));
+            p.sendMessage(m.getMessage("deputyIsNotOwner"));
             return;
         }
 
         if (args.length < 1) {
-            player.sendMessage(messages.getMessage("deputyPlayer"));
+            p.sendMessage(m.getMessage("deputyPlayer"));
             return;
         }
 
         String name = args[0];
         if (!UserUtils.playedBefore(name)) {
-            player.sendMessage(messages.getMessage("deputyPlayedBefore"));
+            p.sendMessage(m.getMessage("deputyPlayedBefore"));
             return;
         }
 
         User user = User.get(name);
         if (owner.equals(user)) {
-            player.sendMessage(StringUtils.colored("&cNie mozesz mianowac siebie zastepca!"));
+            p.sendMessage(StringUtils.colored("&cNie mozesz mianowac siebie zastepca!"));
             return;
         }
 
         Guild guild = owner.getGuild();
 
         if (!guild.getMembers().contains(user)) {
-            player.sendMessage(messages.getMessage("deputyIsNotMember"));
+            p.sendMessage(m.getMessage("deputyIsNotMember"));
             return;
         }
 
         if (user.isDeputy()) {
             guild.setDeputy(null);
-            player.sendMessage(messages.getMessage("deputyRemove"));
+            p.sendMessage(m.getMessage("deputyRemove"));
             Player o = Bukkit.getPlayer(user.getName());
             if (o != null) {
-                o.sendMessage(messages.getMessage("deputyMember"));
+                o.sendMessage(m.getMessage("deputyMember"));
             }
         }
         else {
             guild.setDeputy(user);
-            player.sendMessage(messages.getMessage("deputySet"));
+            p.sendMessage(m.getMessage("deputySet"));
             Player o = Bukkit.getPlayer(user.getName());
             if (o != null) {
-                o.sendMessage(messages.getMessage("deputyOwner"));
+                o.sendMessage(m.getMessage("deputyOwner"));
             }
         }
     }

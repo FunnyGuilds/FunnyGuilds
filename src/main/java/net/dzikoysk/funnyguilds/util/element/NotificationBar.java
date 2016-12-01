@@ -12,7 +12,7 @@ import java.util.*;
 
 public class NotificationBar {
 
-    private static PlayerMap<FakeDragon> bars = new PlayerMap<>();
+    private static PlayerMap<FakeDragon> bars = new PlayerMap<FakeDragon>();
 
     public static void remove(Player player) {
         if (has(player)) {
@@ -45,6 +45,7 @@ public class NotificationBar {
             sendPacket(player, dragon.getSpawnPacket());
             bars.put(player, dragon);
         }
+
         else {
             dragon.setName(text);
             dragon.setHealth(percent);
@@ -216,12 +217,10 @@ public class NotificationBar {
             defaultValue = null;
         }
 
-        @Override
         public void clear() {
             contents.clear();
         }
 
-        @Override
         public boolean containsKey(Object key) {
             if (key instanceof Player) {
                 return contents.containsKey(((Player) key).getName());
@@ -232,12 +231,10 @@ public class NotificationBar {
             return false;
         }
 
-        @Override
         public boolean containsValue(Object value) {
             return contents.containsValue(value);
         }
 
-        @Override
         public Set<Entry<Player, V>> entrySet() {
             Set<Entry<Player, V>> toReturn = new HashSet<Entry<Player, V>>();
             for (String name : contents.keySet()) {
@@ -246,7 +243,6 @@ public class NotificationBar {
             return toReturn;
         }
 
-        @Override
         public V get(Object key) {
             V result = null;
             if (key instanceof Player) {
@@ -258,7 +254,6 @@ public class NotificationBar {
             return (result == null) ? defaultValue : result;
         }
 
-        @Override
         public Set<Player> keySet() {
             Set<Player> toReturn = new HashSet<Player>();
             for (String name : contents.keySet()) {
@@ -267,7 +262,6 @@ public class NotificationBar {
             return toReturn;
         }
 
-        @Override
         public V put(Player key, V value) {
             if (key == null) {
                 return null;
@@ -275,24 +269,20 @@ public class NotificationBar {
             return contents.put(key.getName(), value);
         }
 
-        @Override
         public void putAll(Map<? extends Player, ? extends V> map) {
             for (Entry<? extends Player, ? extends V> entry : map.entrySet()) {
                 put(entry.getKey(), entry.getValue());
             }
         }
 
-        @Override
         public int size() {
             return contents.size();
         }
 
-        @Override
         public Collection<V> values() {
             return contents.values();
         }
 
-        @Override
         public V remove(Object key) {
             if (key instanceof Player) {
                 return contents.remove(((Player) key).getName());
@@ -303,12 +293,10 @@ public class NotificationBar {
             return null;
         }
 
-        @Override
         public boolean isEmpty() {
             return contents.isEmpty();
         }
 
-        @Override
         public String toString() {
             return contents.toString();
         }
@@ -323,19 +311,16 @@ public class NotificationBar {
                 this.value = value;
             }
 
-            @Override
             public V setValue(V value) {
                 V toReturn = this.value;
                 this.value = value;
                 return toReturn;
             }
 
-            @Override
             public Player getKey() {
                 return key;
             }
 
-            @Override
             public V getValue() {
                 return value;
             }

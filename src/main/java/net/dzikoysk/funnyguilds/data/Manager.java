@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
+import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
@@ -17,15 +19,19 @@ public class Manager {
         instance = this;
         Messages.getInstance();
         Settings.getInstance();
-        //if(Settings.getInstance().mysql) DatabaseBasic.getInstance().load();
-        //else Flat.getInstance().load();
+        if (Settings.getInstance().mysql) {
+            DatabaseBasic.getInstance().load();
+        }
+        else {
+            Flat.getInstance().load();
+        }
         Data.getInstance();
     }
 
     public void save() {
         if (Settings.getInstance().flat) {
             try {
-                //Flat.getInstance().save(false);
+                Flat.getInstance().save(false);
             } catch (Exception e) {
                 FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
                 if (FunnyGuilds.exception(e.getCause())) {
@@ -35,7 +41,7 @@ public class Manager {
         }
         if (Settings.getInstance().mysql) {
             try {
-                //DatabaseBasic.getInstance().save(false);
+                DatabaseBasic.getInstance().save(false);
             } catch (Exception e) {
                 FunnyGuilds.error("An error occurred while saving data to database! Caused by: Exception");
                 if (FunnyGuilds.exception(e.getCause())) {
@@ -43,7 +49,7 @@ public class Manager {
                 }
             }
         }
-        //Data.getInstance().save();
+        Data.getInstance().save();
     }
 
     public void start() {
@@ -54,7 +60,6 @@ public class Manager {
             return;
         }
         this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
-            @Override
             public void run() {
                 IndependentThread.action(ActionType.SAVE_DATA);
             }

@@ -32,22 +32,22 @@ public class Rank implements Comparable<Rank> {
         if (this.points < 1) {
             this.points = 0;
         }
-        this.basic.passVariable("rank");
+        this.basic.changes();
     }
 
     public void addPoints(int i) {
         this.points += i;
-        this.basic.passVariable("rank");
+        this.basic.changes();
     }
 
     public void addKill() {
         this.kills += 1;
-        this.basic.passVariable("rank");
+        this.basic.changes();
     }
 
     public void addDeath() {
         this.deaths += 1;
-        this.basic.passVariable("rank");
+        this.basic.changes();
     }
 
     @Override
@@ -67,17 +67,17 @@ public class Rank implements Comparable<Rank> {
 
     public void setPoints(int i) {
         this.points = i;
-        this.basic.passVariable("rank");
+        this.basic.changes();
     }
 
     public void setKills(int i) {
         this.kills = i;
-        this.basic.passVariable("rank");
+        this.basic.changes();
     }
 
     public void setDeaths(int i) {
         this.deaths = i;
-        this.basic.passVariable("rank");
+        this.basic.changes();
     }
 
     public int getPoints() {
@@ -96,7 +96,7 @@ public class Rank implements Comparable<Rank> {
             double calc = points / size;
             if (calc != this.points) {
                 this.points = (int) calc;
-                this.basic.passVariable("rank");
+                this.basic.changes();
             }
             return this.points;
         }
@@ -139,7 +139,13 @@ public class Rank implements Comparable<Rank> {
             return false;
         }
         Rank rank = (Rank) o;
-        return rank.getType() == type && rank.getIDNS().equalsIgnoreCase(idns);
+        if (rank.getType() != type) {
+            return false;
+        }
+        if (!rank.getIDNS().equalsIgnoreCase(idns)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

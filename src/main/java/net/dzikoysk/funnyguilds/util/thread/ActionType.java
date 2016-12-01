@@ -24,5 +24,4 @@ public enum ActionType {
     DUMMY_UPDATE_USER,
     DUMMY_GLOBAL_UPDATE,
     DUMMY_GLOBAL_UPDATE_USER;
-
 }

@@ -14,69 +14,75 @@ import org.bukkit.entity.Player;
 public class ExcKick implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        Messages messages = Messages.getInstance();
-        Player player = (Player) sender;
-        User user = User.get(player);
+    public void execute(CommandSender s, String[] args) {
 
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.getMessage("kickHasNotGuild"));
+        Messages m = Messages.getInstance();
+
+        Player p = (Player) s;
+        User u = User.get(p);
+
+        if (!u.hasGuild()) {
+            p.sendMessage(m.getMessage("kickHasNotGuild"));
             return;
         }
 
-        if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.getMessage("kickIsNotOwner"));
+        if (!u.isOwner() && !u.isDeputy()) {
+            p.sendMessage(m.getMessage("kickIsNotOwner"));
             return;
         }
 
         if (args.length < 1) {
-            player.sendMessage(messages.getMessage("kickPlayer"));
+            p.sendMessage(m.getMessage("kickPlayer"));
             return;
         }
 
-        User kickedUser = User.get(args[0]);
-        OfflineUser kickedOffline = kickedUser.getOfflineUser();
+        User uk = User.get(args[0]);
+        OfflineUser up = uk.getOfflineUser();
 
-        if (!kickedUser.hasGuild()) {
-            player.sendMessage(messages.getMessage("kickToHasNotGuild"));
+        if (!uk.hasGuild()) {
+            p.sendMessage(m.getMessage("kickToHasNotGuild"));
             return;
         }
 
-        if (!user.getGuild().equals(kickedUser.getGuild())) {
-            player.sendMessage(messages.getMessage("kickOtherGuild"));
+        if (!u.getGuild().equals(uk.getGuild())) {
+            p.sendMessage(m.getMessage("kickOtherGuild"));
             return;
         }
 
-        if (kickedUser.isOwner()) {
-            player.sendMessage(messages.getMessage("kickOwner"));
+        if (uk.isOwner()) {
+            p.sendMessage(m.getMessage("kickOwner"));
             return;
         }
 
-        Guild guild = user.getGuild();
+        Guild guild = u.getGuild();
 
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, kickedOffline);
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, up);
 
-        guild.removeMember(kickedUser);
-        kickedUser.removeGuild();
+        guild.removeMember(uk);
+        uk.removeGuild();
 
-        if (kickedOffline.isOnline()) {
-            IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
+        if (up.isOnline()) {
+            IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, p);
         }
 
-        player.sendMessage(
-                messages.getMessage("kickToOwner")
-                        .replace("{PLAYER}", kickedUser.getName()));
+        p.sendMessage(
+                m.getMessage("kickToOwner")
+                        .replace("{PLAYER}", uk.getName())
+        );
 
-        Player kickedPlayer = Bukkit.getPlayer(kickedUser.getName());
-        if (kickedPlayer != null) {
-            kickedPlayer.sendMessage(messages.getMessage("kickToPlayer")
-                    .replace("{GUILD}", guild.getName()));
+        Player pk = Bukkit.getPlayer(uk.getName());
+        if (pk != null) {
+            pk.sendMessage(m.getMessage("kickToPlayer")
+                    .replace("{GUILD}", guild.getName())
+            );
         }
 
-        Bukkit.broadcastMessage(messages.getMessage("broadcastKick")
-                .replace("{PLAYER}", kickedUser.getName())
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag()));
+        Bukkit.broadcastMessage(
+                m.getMessage("broadcastKick")
+                        .replace("{PLAYER}", uk.getName())
+                        .replace("{GUILD}", guild.getName())
+                        .replace("{TAG}", guild.getTag())
+        );
     }
 
 }

@@ -5,6 +5,8 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
+import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -14,7 +16,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 public class GuildUtils {
@@ -22,46 +23,56 @@ public class GuildUtils {
     private static List<Guild> guilds = new ArrayList<>();
 
     public static List<Guild> getGuilds() {
-        return new ArrayList<>(guilds);
+        return new ArrayList<Guild>(guilds);
     }
 
     public static void deleteGuild(final Guild guild) {
-        Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (guild == null) {
-                    return;
-                }
-                Manager.getInstance().stop();
-                final Region region = guild.getRegion();
-                if (region != null) {
-                    if (Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")) {
-                        EntityUtil.despawn(guild);
-                    }
-                    else if (Settings.getInstance().createMaterial != Material.AIR) {
+        if (guild == null) {
+            return;
+        }
+        Manager.getInstance().stop();
+        guild.delete();
+        final Region region = RegionUtils.get(guild.getRegion());
+        if (region != null) {
+            if (Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                EntityUtil.despawn(guild);
+            }
+            else if (Settings.getInstance().createMaterial != Material.AIR) {
+                Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable() {
+                    @Override
+                    public void run() {
                         Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                         if (block.getLocation().getBlockY() > 1) {
                             block.setType(Material.AIR);
                         }
                     }
-                }
-                IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_GUILD, guild);
-                UserUtils.removeGuild(guild.getMembers());
-                RankManager.getInstance().remove(guild);
-                RegionUtils.delete(guild.getRegion());
-                for (Guild g : guild.getAllies()) {
-                    g.removeAlly(guild);
-                }
-                for (Guild g : guild.getEnemies()) {
-                    g.removeEnemy(guild);
-                }
-                // TODO
-                //if(Settings.getInstance().flat) Flat.getGuildFile(guild).delete();
-                //if(Settings.getInstance().mysql) new DatabaseGuild(guild).delete();
-                guild.delete();
-                Manager.getInstance().start();
+                });
             }
-        });
+        }
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_GUILD, guild);
+        for (String name : guild.getRegions()) {
+            Region r = RegionUtils.get(name);
+            if (r != null) {
+                RegionUtils.delete(r);
+            }
+        }
+        UserUtils.removeGuild(guild.getMembers());
+        RankManager.getInstance().remove(guild);
+        RegionUtils.delete(Region.get(guild.getRegion()));
+        for (Guild g : guild.getAllies()) {
+            g.removeAlly(guild);
+        }
+        for (Guild g : guild.getEnemies()) {
+            g.removeEnemy(guild);
+        }
+        if (Settings.getInstance().flat) {
+            Flat.getGuildFile(guild).delete();
+        }
+        if (Settings.getInstance().mysql) {
+            new DatabaseGuild(guild).delete();
+        }
+        guild.delete();
+        Manager.getInstance().start();
     }
 
     public static Guild get(String name) {
@@ -100,25 +111,41 @@ public class GuildUtils {
         return false;
     }
 
-    public static Collection<String> getTags(Collection<Guild> c) {
-        if (c == null) {
-            return new ArrayList<>(0);
+    public static List<String> getNames(List<Guild> lsg) {
+        List<String> list = new ArrayList<>();
+        if (lsg == null) {
+            return list;
         }
-        Collection<String> list = new ArrayList<>(c.size());
-        for (Guild guild : c) {
-            if (guild.getTag() != null) {
-                list.add(guild.getTag());
+        for (Guild g : lsg) {
+            if (g == null) {
+                continue;
+            }
+            if (g.getName() != null) {
+                list.add(g.getName());
             }
         }
         return list;
     }
 
-    public static Collection<Guild> getGuilds(Collection<String> c) {
-        if (c == null) {
-            return new ArrayList<>(0);
+    public static List<String> getTags(List<Guild> lsg) {
+        if (lsg == null) {
+            return null;
         }
-        List<Guild> list = new ArrayList<>(0);
-        for (String s : c) {
+        List<String> list = new ArrayList<>();
+        for (Guild g : lsg) {
+            if (g.getName() != null) {
+                list.add(g.getTag());
+            }
+        }
+        return list;
+    }
+
+    public static List<Guild> getGuilds(List<String> names) {
+        if (names == null) {
+            return null;
+        }
+        List<Guild> list = new ArrayList<>();
+        for (String s : names) {
             if (get(s) != null) {
                 list.add(get(s));
             }

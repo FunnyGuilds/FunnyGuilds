@@ -17,18 +17,17 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
+import java.util.List;
 
 public class AxcMove implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Settings settings = Settings.getInstance();
-        Messages messages = Messages.getInstance();
+        Messages m = Messages.getInstance();
         Player player = (Player) sender;
 
         if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(messages.getMessage("permission"));
+            player.sendMessage(m.getMessage("permission"));
             return;
         }
 
@@ -43,19 +42,21 @@ public class AxcMove implements Executor {
             return;
         }
 
+        Settings s = Settings.getInstance();
         Location loc = player.getLocation();
-        if (settings.createCenterY != 0) {
-            loc.setY(settings.createCenterY);
+        if (s.createCenterY != 0) {
+            loc.setY(s.createCenterY);
         }
 
-        int d = settings.regionSize + settings.createDistance;
-        if (settings.enlargeItems != null) {
-            d = settings.enlargeItems.size() * settings.enlargeSize + d;
+        int d = s.regionSize + s.createDistance;
+        if (s.enlargeItems != null) {
+            d = s.enlargeItems.size() * s.enlargeSize + d;
         }
 
         if (d > player.getWorld().getSpawnLocation().distance(loc)) {
-            player.sendMessage(messages.getMessage("createSpawn")
-                    .replace("{DISTANCE}", Integer.toString(d)));
+            player.sendMessage(m.getMessage("createSpawn")
+                    .replace("{DISTANCE}", Integer.toString(d))
+            );
             return;
         }
         if (RegionUtils.isNear(loc)) {
@@ -64,12 +65,12 @@ public class AxcMove implements Executor {
         }
 
         Guild guild = GuildUtils.byTag(tag);
-        Region region = guild.getRegion();
+        Region region = RegionUtils.get(guild.getRegion());
         if (region == null) {
-            region = new Region(guild, loc, settings.regionSize);
+            region = new Region(guild, loc, s.regionSize);
         }
         else {
-            if (settings.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+            if (s.createStringMaterial.equalsIgnoreCase("ender crystal")) {
                 EntityUtil.despawn(guild);
             }
             else {
@@ -80,24 +81,23 @@ public class AxcMove implements Executor {
             }
             region.setCenter(loc);
         }
-
-        if (settings.createCenterSphere) {
-            Collection<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
+        if (s.createCenterSphere) {
+            List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
             for (Location l : sphere) {
                 if (l.getBlock().getType() != Material.BEDROCK) {
                     l.getBlock().setType(Material.AIR);
                 }
             }
         }
-
-        if (settings.createMaterial != null && settings.createMaterial != Material.AIR) {
-            loc.getBlock().getRelative(BlockFace.DOWN).setType(settings.createMaterial);
+        if (s.createMaterial != null && s.createMaterial != Material.AIR) {
+            loc.getBlock().getRelative(BlockFace.DOWN).setType(s.createMaterial);
         }
-        else if (settings.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        else if (s.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
 
         player.sendMessage(StringUtils.colored("&7Przeniesiono teren gildii &a" + guild.getName() + "&7!"));
+        return;
     }
 
 }

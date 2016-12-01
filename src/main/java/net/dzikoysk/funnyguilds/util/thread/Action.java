@@ -5,6 +5,8 @@ import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Manager;
+import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
+import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
 import net.dzikoysk.funnyguilds.util.element.DummyManager;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
@@ -38,10 +40,10 @@ public class Action {
                 Manager.getInstance().save();
                 break;
             case MYSQL_UPDATE_USER_POINTS:
-                //new DatabaseUser((User) values[0]).updatePoints();
+                new DatabaseUser((User) values[0]).updatePoints();
                 break;
             case MYSQL_UPDATE_GUILD_POINTS:
-                //new DatabaseGuild((Guild) values[0]).updatePoints();
+                new DatabaseGuild((Guild) values[0]).updatePoints();
                 break;
             case DUMMY_GLOBAL_UPDATE:
                 DummyManager.updatePlayers();

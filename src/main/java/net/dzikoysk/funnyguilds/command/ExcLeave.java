@@ -14,33 +14,38 @@ public class ExcLeave implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-        Messages messages = Messages.getInstance();
-        Player player = (Player) s;
-        User user = User.get(player);
 
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.getMessage("leaveHasNotGuild"));
+        Messages m = Messages.getInstance();
+        Player p = (Player) s;
+        User u = User.get(p);
+
+        if (!u.hasGuild()) {
+            p.sendMessage(m.getMessage("leaveHasNotGuild"));
             return;
         }
 
-        if (user.isOwner()) {
-            player.sendMessage(messages.getMessage("leaveIsOwner"));
+        if (u.isOwner()) {
+            p.sendMessage(m.getMessage("leaveIsOwner"));
             return;
         }
 
-        Guild guild = user.getGuild();
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, user.getOfflineUser());
-        guild.removeMember(user);
-        user.removeGuild();
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
+        Guild guild = u.getGuild();
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, u.getOfflineUser());
+        guild.removeMember(u);
+        u.removeGuild();
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, p);
 
-        player.sendMessage(messages.getMessage("leaveToUser")
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag()));
+        p.sendMessage(
+                m.getMessage("leaveToUser")
+                        .replace("{GUILD}", guild.getName())
+                        .replace("{TAG}", guild.getTag())
+        );
 
-        Bukkit.broadcastMessage(messages.getMessage("broadcastLeave")
-                .replace("{PLAYER}", user.getName())
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag()));
+        Bukkit.broadcastMessage(
+                m.getMessage("broadcastLeave")
+                        .replace("{PLAYER}", u.getName())
+                        .replace("{GUILD}", guild.getName())
+                        .replace("{TAG}", guild.getTag())
+        );
     }
 }

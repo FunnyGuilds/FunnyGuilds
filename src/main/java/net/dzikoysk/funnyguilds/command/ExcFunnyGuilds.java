@@ -2,9 +2,12 @@ package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
+import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.Version;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -54,7 +57,7 @@ public class ExcFunnyGuilds implements Executor {
                 long l = System.currentTimeMillis();
                 if (Settings.getInstance().flat) {
                     try {
-                        //Flat.getInstance().save(true);
+                        Flat.getInstance().save(true);
                     } catch (Exception e) {
                         FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
                         if (FunnyGuilds.exception(e.getCause())) {
@@ -64,7 +67,7 @@ public class ExcFunnyGuilds implements Executor {
                 }
                 if (Settings.getInstance().mysql) {
                     try {
-                        //DatabaseBasic.getInstance().save(true);
+                        DatabaseBasic.getInstance().save(true);
                     } catch (Exception e) {
                         FunnyGuilds.error("An error occurred while saving data to database! Caused by: Exception");
                         if (FunnyGuilds.exception(e.getCause())) {
@@ -72,7 +75,7 @@ public class ExcFunnyGuilds implements Executor {
                         }
                     }
                 }
-                //Data.getInstance().save();
+                Data.getInstance().save();
                 s.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA +
                         (System.currentTimeMillis() - l) / 1000F + "s" + ChatColor.GRAY + ")!");
                 return;

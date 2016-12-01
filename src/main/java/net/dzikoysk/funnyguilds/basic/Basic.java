@@ -4,14 +4,12 @@ import net.dzikoysk.funnyguilds.basic.util.BasicType;
 
 public interface Basic {
 
-    void passVariable(String... field);
+    public void changes();
 
-    Object getVariable(String field) throws Exception;
+    public boolean changed();
 
-    <T> T getVariable(String field, Class<T> clazz) throws Exception;
+    public BasicType getType();
 
-    BasicType getType();
-
-    String getName();
+    public String getName();
 
 }

@@ -5,9 +5,9 @@ import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
+import net.dzikoysk.panda.util.configuration.PandaConfiguration;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.panda_lang.panda.util.configuration.PandaConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,11 +16,13 @@ import java.util.List;
 
 public class Settings {
 
-    private static final File SETTINGS = new File(FunnyGuilds.getFolder(), "config.yml");
-    private static final String VERSION = "4.0";
+    private static final File SETTINGS = new File(FunnyGuilds.getInstance().getDataFolder(), "config.yml");
+    private static final String VERSION = "3.5 NewYear";
 
     private static Settings instance;
+    private PandaConfiguration pc;
     public String pluginName;
+
     public int createNameLength;
     public int createNameMinLength;
     public int createTagLength;
@@ -32,6 +34,7 @@ public class Settings {
     public String createStringMaterial;
     public int createCenterY;
     public boolean createCenterSphere;
+
     public int regionSize;
     public int regionMaxSize;
     public int regionMinDistance;
@@ -39,50 +42,65 @@ public class Settings {
     public int regionNotificationCooldown;
     public int regionExplode;
     public List<String> regionCommands;
+
     public boolean eventMove;
     public boolean eventPhysics;
+
     public boolean enlargeEnable;
     public int enlargeSize;
     public List<ItemStack> enlargeItems;
+
     public int warLives;
     public long warProtection;
     public long warWait;
+
     public long validityStart;
     public long validityTime;
     public long validityWhen;
     public List<ItemStack> validityItems;
+
     public int inviteMembers;
     public List<ItemStack> joinItems;
     public boolean infoPlayerSneaking;
+
     public String prefixOur;
     public String prefixAllies;
     public String prefixEnemies;
     public String prefixOther;
+
     public boolean dummyEnable;
     public String dummySuffix;
+
     public String chatGuild;
     public String chatRank;
     public String chatPoints;
+
     public String chatPriv;
     public String chatAlly;
     public String chatGlobal;
     public String chatPrivDesign;
     public String chatAllyDesign;
     public String chatGlobalDesign;
+
     public int rankStart;
     public double rankPercent;
+
     public boolean damageGuild;
     public boolean damageAlly;
+
     public boolean baseEnable;
     public int baseDelay;
     public List<ItemStack> baseItems;
+
     public int explodeRadius;
     public HashMap<Material, Double> explodeMaterials;
+
     public boolean playerlistEnable;
     public int playerlistInterval;
     public int playerlistPing;
     public boolean playerlistPatch;
     public String playerlistPoints;
+
     public String excCreate;
     public String excDelete;
     public String excConfirm;
@@ -102,8 +120,10 @@ public class Settings {
     public String excLeader;
     public String excDeputy;
     public String excRanking;
+
     public String mxcBase;
     public String mxcPvP;
+
     public List<String> excCreateAliases;
     public List<String> excDeleteAliases;
     public List<String> excConfirmAliases;
@@ -123,8 +143,10 @@ public class Settings {
     public List<String> excLeaderAliases;
     public List<String> excDeputyAliases;
     public List<String> excRankingAliases;
+
     public List<String> mxcBaseAliases;
     public List<String> mxcPvPAliases;
+
     public String axcMain;
     public String axcAdd;
     public String axcDelete;
@@ -139,6 +161,7 @@ public class Settings {
     public String axcMove;
     public String axcValidity;
     public String axcName;
+
     public int dataInterval;
     public boolean flat;
     public boolean mysql;
@@ -147,12 +170,12 @@ public class Settings {
     public String mysqlDatabase;
     public String mysqlUser;
     public String mysqlPassword;
-    private PandaConfiguration pc;
 
     public Settings() {
+        instance = this;
         Manager.loadDefaultFiles(new String[]{ "config.yml" });
-        update();
-        load();
+        this.update();
+        this.load();
     }
 
     private boolean update() {
@@ -185,7 +208,7 @@ public class Settings {
         this.createTagMinLength = pc.getInt("tag-min-length");
 
         List<String> list = pc.getStringList("items");
-        List<ItemStack> items = new ArrayList<>();
+        List<ItemStack> items = new ArrayList<ItemStack>();
         for (String item : list) {
             if (item == null) {
                 continue;
@@ -198,7 +221,7 @@ public class Settings {
         this.createItems = items;
 
         list = pc.getStringList("items-vip");
-        items = new ArrayList<>();
+        items = new ArrayList<ItemStack>();
         for (String item : list) {
             ItemStack itemstack = Parser.parseItem(item);
             if (itemstack != null) {
@@ -232,7 +255,7 @@ public class Settings {
             this.enlargeSize = pc.getInt("enlarge-size");
 
             list = pc.getStringList("enlarge-items");
-            items = new ArrayList<>();
+            items = new ArrayList<ItemStack>();
             for (String item : list) {
                 ItemStack itemstack = Parser.parseItem(item);
                 if (itemstack != null) {
@@ -252,7 +275,7 @@ public class Settings {
         this.validityTime = Parser.parseTime(pc.getString("validity-time"));
         this.validityWhen = Parser.parseTime(pc.getString("validity-when"));
         list = pc.getStringList("validity-items");
-        items = new ArrayList<>();
+        items = new ArrayList<ItemStack>();
         for (String item : list) {
             ItemStack itemstack = Parser.parseItem(item);
             if (itemstack != null) {
@@ -264,7 +287,7 @@ public class Settings {
 // Other Section
         this.inviteMembers = pc.getInt("max-members");
         this.infoPlayerSneaking = pc.getBoolean("info-player-sneaking");
-        items = new ArrayList<>();
+        items = new ArrayList<ItemStack>();
         for (String item : pc.getStringList("join-items")) {
             ItemStack itemstack = Parser.parseItem(item);
             if (itemstack != null) {
@@ -308,7 +331,7 @@ public class Settings {
         this.baseEnable = pc.getBoolean("base-enable");
         if (this.baseEnable) {
             list = pc.getStringList("base-items");
-            items = new ArrayList<>();
+            items = new ArrayList<ItemStack>();
             for (String item : list) {
                 ItemStack itemstack = Parser.parseItem(item);
                 if (itemstack != null) {
@@ -439,9 +462,9 @@ public class Settings {
     }
 
     public static Settings getInstance() {
-        if (instance == null) {
-            instance = new Settings();
+        if (instance != null) {
+            return instance;
         }
-        return instance;
+        return new Settings();
     }
 }

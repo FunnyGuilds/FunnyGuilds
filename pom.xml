@@ -2,6 +2,7 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
     <version>4.0</version>
@@ -25,9 +26,9 @@
             <version>1.11.3</version>
         </dependency>
         <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.9.4-R0.1-SNAPSHOT</version>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <version>1.7.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -37,6 +38,10 @@
             <id>panda-repo</id>
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/</url>
+        </repository>
+        <repository>
+            <id>craftbukkit-temp-repo</id>
+            <url>http://repo.mikeprimm.com</url>
         </repository>
         <repository>
             <id>spigot-repo</id>

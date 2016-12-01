@@ -14,51 +14,51 @@ public class ExcLeader implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-        Messages messages = Messages.getInstance();
-        Player player = (Player) s;
-        User owner = User.get(player);
+        Messages m = Messages.getInstance();
+        Player p = (Player) s;
+        User owner = User.get(p);
 
         if (!owner.hasGuild()) {
-            player.sendMessage(messages.getMessage("leaderHasNotGuild"));
+            p.sendMessage(m.getMessage("leaderHasNotGuild"));
             return;
         }
 
         if (!owner.isOwner()) {
-            player.sendMessage(messages.getMessage("leaderIsNotOwner"));
+            p.sendMessage(m.getMessage("leaderIsNotOwner"));
             return;
         }
 
         if (args.length < 1) {
-            player.sendMessage(messages.getMessage("leaderPlayer"));
+            p.sendMessage(m.getMessage("leaderPlayer"));
             return;
         }
 
         String name = args[0];
         if (!UserUtils.playedBefore(name)) {
-            player.sendMessage(messages.getMessage("leaderPlayedBefore"));
+            p.sendMessage(m.getMessage("leaderPlayedBefore"));
             return;
         }
 
         User user = User.get(name);
-
         if (owner.equals(user)) {
-            player.sendMessage(StringUtils.colored("&cNie mozesz sobie oddac zalozyciela!"));
+            p.sendMessage(StringUtils.colored("&cNie mozesz sobie oddac zalozyciela!"));
             return;
         }
 
         Guild guild = owner.getGuild();
 
         if (!guild.getMembers().contains(user)) {
-            player.sendMessage(messages.getMessage("leaderIsNotMember"));
+            p.sendMessage(m.getMessage("leaderIsNotMember"));
             return;
         }
 
         guild.setOwner(user);
-        player.sendMessage(messages.getMessage("leaderSet"));
 
-        Player leader = Bukkit.getPlayer(user.getName());
-        if (leader != null) {
-            leader.sendMessage(messages.getMessage("leaderOwner"));
+        p.sendMessage(m.getMessage("leaderSet"));
+
+        Player o = Bukkit.getPlayer(user.getName());
+        if (o != null) {
+            o.sendMessage(m.getMessage("leaderOwner"));
         }
     }
 }

@@ -9,9 +9,6 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.event.EventCaller;
-import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
-import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -32,157 +29,163 @@ public class ExcCreate implements Executor {
 
     @Override
     public void execute(final CommandSender s, String[] args) {
-        Messages messages = Messages.getInstance();
-        Settings settings = Settings.getInstance();
-        Player player = (Player) s;
-        User user = User.get(player);
+        Messages m = Messages.getInstance();
+        Player p = (Player) s;
+        User u = User.get(p);
 
-        if (user.hasGuild()) {
-            player.sendMessage(messages.getMessage("createHasGuild"));
+        if (u.hasGuild()) {
+            p.sendMessage(m.getMessage("createHasGuild"));
             return;
         }
 
         if (!(args.length == 2)) {
             if (args.length == 0) {
-                player.sendMessage(messages.getMessage("createTag"));
+                p.sendMessage(m.getMessage("createTag"));
                 return;
             }
             else if (args.length == 1) {
-                player.sendMessage(messages.getMessage("createName"));
+                p.sendMessage(m.getMessage("createName"));
                 return;
             }
             else if (args.length > 2) {
-                player.sendMessage(messages.getMessage("createMore"));
+                p.sendMessage(m.getMessage("createMore"));
                 return;
             }
         }
+
+        Settings c = Settings.getInstance();
 
         String tag = args[0];
         String name = args[1];
 
-        if (tag.length() > settings.createTagLength) {
-            player.sendMessage(messages.getMessage("createTagLength")
-                    .replace("{LENGTH}", Integer.toString(settings.createTagLength)));
+        if (tag.length() > c.createTagLength) {
+            p.sendMessage(m.getMessage("createTagLength")
+                    .replace("{LENGTH}", Integer.toString(c.createTagLength)));
             return;
         }
 
-        if (tag.length() < settings.createTagMinLength) {
-            player.sendMessage(messages.getMessage("createTagMinLength")
-                    .replace("{LENGTH}", Integer.toString(settings.createTagMinLength)));
+        if (tag.length() < c.createTagMinLength) {
+            p.sendMessage(m.getMessage("createTagMinLength")
+                    .replace("{LENGTH}", Integer.toString(c.createTagMinLength)));
             return;
         }
 
-        if (name.length() > settings.createNameLength) {
-            player.sendMessage(messages.getMessage("createNameLength")
-                    .replace("{LENGTH}", Integer.toString(settings.createNameLength)));
+        if (name.length() > c.createNameLength) {
+            p.sendMessage(m.getMessage("createNameLength")
+                    .replace("{LENGTH}", Integer.toString(c.createNameLength))
+            );
             return;
         }
 
-        if (name.length() < settings.createNameMinLength) {
-            player.sendMessage(messages.getMessage("createNameMinLength")
-                    .replace("{LENGTH}", Integer.toString(settings.createNameMinLength)));
+        if (name.length() < c.createNameMinLength) {
+            p.sendMessage(m.getMessage("createNameMinLength")
+                    .replace("{LENGTH}", Integer.toString(c.createNameMinLength))
+            );
             return;
         }
 
         if (!tag.matches("[a-zA-Z]+")) {
-            player.sendMessage(messages.getMessage("createOLTag"));
+            p.sendMessage(m.getMessage("createOLTag"));
             return;
         }
 
         if (!name.matches("[a-zA-Z]+")) {
-            player.sendMessage(messages.getMessage("createOLName"));
+            p.sendMessage(m.getMessage("createOLName"));
             return;
         }
 
         if (GuildUtils.isExists(name)) {
-            player.sendMessage(messages.getMessage("createNameExists"));
+            p.sendMessage(m.getMessage("createNameExists"));
             return;
         }
 
         if (GuildUtils.tagExists(tag)) {
-            player.sendMessage(messages.getMessage("createTagExists"));
+            p.sendMessage(m.getMessage("createTagExists"));
             return;
         }
 
-        Location loc = player.getLocation();
+        Location loc = p.getLocation();
         loc = loc.getBlock().getLocation();
 
-        if (settings.createCenterY != 0) {
-            loc.setY(settings.createCenterY);
+        if (c.createCenterY != 0) {
+            loc.setY(c.createCenterY);
         }
-        int d = settings.regionSize + settings.createDistance;
-        if (settings.enlargeItems != null) {
-            d += settings.enlargeItems.size() * settings.enlargeSize;
+        int d = c.regionSize + c.createDistance;
+        if (c.enlargeItems != null) {
+            d += c.enlargeItems.size() * c.enlargeSize;
         }
-        if (d > player.getWorld().getSpawnLocation().distance(loc)) {
-            player.sendMessage(messages.getMessage("createSpawn")
-                    .replace("{DISTANCE}", Integer.toString(d)));
+        if (d > p.getWorld().getSpawnLocation().distance(loc)) {
+            p.sendMessage(m.getMessage("createSpawn").replace("{DISTANCE}", Integer.toString(d)));
             return;
         }
 
-        List<ItemStack> itemsList;
-        if (player.hasPermission("funnyguilds.vip")) {
-            itemsList = settings.createItemsVip;
+        List<ItemStack> itemsList = null;
+        if (p.hasPermission("funnyguilds.vip")) {
+            itemsList = c.createItemsVip;
         }
         else {
-            itemsList = settings.createItems;
+            itemsList = c.createItems;
         }
-
         ItemStack[] items = itemsList.toArray(new ItemStack[0]);
-        for (ItemStack item : items) {
-            if (player.getInventory().containsAtLeast(item, item.getAmount())) {
-                continue;
-            }
-            String msg = messages.getMessage("createItems");
-            if (msg.contains("{ITEM}")) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(item.getAmount());
-                sb.append(" ");
-                sb.append(item.getType().toString().toLowerCase());
-                msg = msg.replace("{ITEM}", sb.toString());
-            }
-            if (msg.contains("{ITEMS}")) {
-                ArrayList<String> list = new ArrayList<>();
-                for (ItemStack it : itemsList) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(it.getAmount());
-                    sb.append(" ");
-                    sb.append(it.getType().toString().toLowerCase());
-                    list.add(sb.toString());
+        if (!u.getBypass()) {
+            for (int i = 0; i < items.length; i++) {
+                if (p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
+                    continue;
                 }
-                msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
+                String msg = m.getMessage("createItems");
+                if (msg.contains("{ITEM}")) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(items[i].getAmount());
+                    sb.append(" ");
+                    sb.append(items[i].getType().toString().toLowerCase());
+                    msg = msg.replace("{ITEM}", sb.toString());
+                }
+                if (msg.contains("{ITEMS}")) {
+                    ArrayList<String> list = new ArrayList<String>();
+                    for (ItemStack it : itemsList) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(it.getAmount());
+                        sb.append(" ");
+                        sb.append(it.getType().toString().toLowerCase());
+                        list.add(sb.toString());
+                    }
+                    msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
+                }
+                p.sendMessage(msg);
+                return;
             }
-            player.sendMessage(msg);
-            return;
         }
 
         if (RegionUtils.isNear(loc)) {
-            player.sendMessage(messages.getMessage("createIsNear"));
+            p.sendMessage(m.getMessage("createIsNear"));
             return;
         }
 
-        GuildPreCreateEvent event = EventCaller.callEvent(new GuildPreCreateEvent(player, name, tag));
-        if (event.isCancelled()) {
-            return;
+        if (u.getBypass()) {
+            u.setBypass(false);
+        }
+        else {
+            p.getInventory().removeItem(items);
         }
 
-        player.getInventory().removeItem(items);
         Manager.getInstance().stop();
 
-        Guild guild = Guild.get(name);
+        Guild guild = new Guild(name);
         guild.setTag(tag);
-        guild.setOwner(user);
-        guild.setLives(settings.warLives);
+        guild.setOwner(u);
+        guild.setLives(c.warLives);
         guild.setBorn(System.currentTimeMillis());
-        guild.setValidity(System.currentTimeMillis() + settings.validityStart);
-        guild.setAttacked(System.currentTimeMillis() - settings.warWait + settings.warProtection);
-        guild.setPvP(settings.damageGuild);
+        guild.setValidity(System.currentTimeMillis() + c.validityStart);
+        guild.setAttacked(System.currentTimeMillis() - c.warWait + c.warProtection);
+        guild.setPvP(c.damageGuild);
 
-        Region region = new Region(guild, loc, settings.regionSize);
-        guild.setRegion(region);
-        user.setGuild(guild);
+        Region region = new Region(guild, loc, c.regionSize);
+        guild.setRegion(region.getName());
+        guild.addRegion(region.getName());
 
-        if (settings.createCenterSphere) {
+        u.setGuild(guild);
+
+        if (c.createCenterSphere) {
             for (Location l : SpaceUtils.sphere(loc, 4, 4, false, true, 0)) {
                 if (l.getBlock().getType() != Material.BEDROCK) {
                     l.getBlock().setType(Material.AIR);
@@ -195,30 +198,35 @@ public class ExcCreate implements Executor {
             }
         }
 
-        if (settings.createMaterial != null && settings.createMaterial != Material.AIR) {
-            loc.getBlock().getRelative(BlockFace.DOWN).setType(settings.createMaterial);
+        if (c.createMaterial != null && c.createMaterial != Material.AIR) {
+            loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
         }
-        else if (settings.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
-        player.teleport(loc);
+
+        p.teleport(loc);
 
         Manager.getInstance().start();
+
         IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);
         IndependentThread.actions(ActionType.PREFIX_GLOBAL_ADD_GUILD, guild);
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, u.getOfflineUser());
 
-        player.sendMessage(messages.getMessage("createGuild")
-                .replace("{GUILD}", name)
-                .replace("{PLAYER}", player.getName())
-                .replace("{TAG}", tag));
+        p.sendMessage(
+                m.getMessage("createGuild")
+                        .replace("{GUILD}", name)
+                        .replace("{PLAYER}", p.getName())
+                        .replace("{TAG}", tag)
+        );
 
-        Bukkit.getServer().broadcastMessage(messages.getMessage("broadcastCreate")
-                .replace("{GUILD}", name)
-                .replace("{PLAYER}", player.getName())
-                .replace("{TAG}", tag));
-
-        EventCaller.callEvent(new GuildCreateEvent(guild));
+        Bukkit.getServer().broadcastMessage(
+                m.getMessage("broadcastCreate")
+                        .replace("{GUILD}", name)
+                        .replace("{PLAYER}", p.getName())
+                        .replace("{TAG}", tag)
+        );
+        return;
     }
 
 }

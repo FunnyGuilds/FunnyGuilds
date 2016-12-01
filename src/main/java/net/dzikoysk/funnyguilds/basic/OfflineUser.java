@@ -1,11 +1,12 @@
 package net.dzikoysk.funnyguilds.basic;
 
 import com.google.common.base.Charsets;
-import com.mojang.authlib.GameProfile;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.minecraft.util.com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.entity.Player;
@@ -33,20 +34,19 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
                 this.profile = GameProfile.class.getConstructor(new Class<?>[]{
                         String.class,
                         String.class
-                }).newInstance(this.uuid.toString(), name);
+                }).newInstance(uuid.toString(), name);
             }
             else if (type == 2) {
                 this.profile = GameProfile.class.getConstructor(new Class<?>[]{
                         UUID.class,
                         String.class
-                }).newInstance(this.uuid, name);
+                }).newInstance(uuid, name);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
     public Map<String, Object> serialize() {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("UUID", this.profile.getId().toString());
@@ -54,11 +54,11 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return result;
     }
 
-    @Override
     public boolean hasPlayedBefore() {
         return this.getLastPlayed() != 0;
     }
 
+    @SuppressWarnings("rawtypes")
     private void init() {
         if (type != 0) {
             return;
@@ -76,18 +76,15 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         }
     }
 
-    @Override
     public void setOp(boolean b) {
         getReal().setOp(b);
     }
 
-    @Override
     @SuppressWarnings("deprecation")
     public void setBanned(boolean value) {
         getReal().setBanned(value);
     }
 
-    @Override
     public void setWhitelisted(boolean value) {
         Bukkit.getWhitelistedPlayers().add(this);
     }
@@ -96,42 +93,41 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return this.profile;
     }
 
-    @Override
     public boolean isOnline() {
         return getPlayer() != null;
     }
 
-    @Override
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    @Override
-    public UUID getUniqueId() {
-        return this.uuid;
+    public String getUniqueId() {
+        return uuid.toString();
     }
 
-    @SuppressWarnings("deprecation")
+    public Server getServer() {
+        return Bukkit.getServer();
+    }
+
     public OfflinePlayer getReal() {
         return Bukkit.getOfflinePlayer(getName());
     }
 
-    @Override
     public boolean isOp() {
         return getReal().isOp();
     }
 
-    @Override
     public boolean isBanned() {
-        return getName() != null && Bukkit.getServer().getBannedPlayers().contains(this);
+        if (getName() == null) {
+            return false;
+        }
+        return Bukkit.getServer().getBannedPlayers().contains(this);
     }
 
-    @Override
     public boolean isWhitelisted() {
         return Bukkit.getWhitelistedPlayers().contains(this);
     }
 
-    @Override
     public Player getPlayer() {
         if (getName() == null) {
             return null;
@@ -139,7 +135,6 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return Bukkit.getPlayer(getName());
     }
 
-    @Override
     public long getFirstPlayed() {
         Player player = getPlayer();
         if (player != null) {
@@ -148,7 +143,6 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return 0L;
     }
 
-    @Override
     public long getLastPlayed() {
         Player player = getPlayer();
         if (player != null) {
@@ -157,24 +151,23 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return 0L;
     }
 
-    @Override
     public Location getBedSpawnLocation() {
         return getReal().getBedSpawnLocation();
     }
 
-    @Override
     public int hashCode() {
         int hash = 5;
         hash = 97 * hash + (getUniqueId() != null ? getUniqueId().hashCode() : 0);
         return hash;
     }
 
-    @Override
     public boolean equals(Object obj) {
-        return obj instanceof OfflinePlayer && ((OfflinePlayer) obj).getName().equalsIgnoreCase(this.getName());
+        if (obj instanceof OfflinePlayer) {
+            return ((OfflinePlayer) obj).getName().equalsIgnoreCase(this.getName());
+        }
+        return false;
     }
 
-    @Override
     public String toString() {
         return getClass().getSimpleName() + "[UUID=" + this.profile.getId() + "]";
     }
@@ -185,5 +178,4 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         }
         return new OfflineUser((String) args.get("name"));
     }
-
 }

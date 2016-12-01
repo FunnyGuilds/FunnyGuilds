@@ -3,12 +3,12 @@ package net.dzikoysk.funnyguilds.util;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class SpaceUtils {
 
-    public static Collection<Location> sphere(Location loc, int radius, int height, boolean hollow, boolean sphere, int plusY) {
-        Collection<Location> sphereBlocks = new ArrayList<>();
+    public static List<Location> sphere(Location loc, int radius, int height, boolean hollow, boolean sphere, int plusY) {
+        List<Location> circleblocks = new ArrayList<Location>();
         int cx = loc.getBlockX();
         int cy = loc.getBlockY();
         int cz = loc.getBlockZ();
@@ -20,13 +20,11 @@ public class SpaceUtils {
 
                     if (dist < radius * radius && !(hollow && dist < (radius - 1) * (radius - 1))) {
                         Location l = new Location(loc.getWorld(), x, y + plusY, z);
-                        sphereBlocks.add(l);
+                        circleblocks.add(l);
                     }
                 }
             }
         }
-
-        return sphereBlocks;
+        return circleblocks;
     }
-
 }

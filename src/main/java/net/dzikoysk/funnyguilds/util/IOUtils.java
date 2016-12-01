@@ -9,15 +9,15 @@ import java.util.concurrent.TimeoutException;
 
 public class IOUtils {
 
-    public static File initialize(File file, boolean folder) {
+    public static File initizalize(File file, boolean b) {
         if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
-                if (folder) {
-                    file.mkdir();
+                if (b) {
+                    file.createNewFile();
                 }
                 else {
-                    file.createNewFile();
+                    file.mkdir();
                 }
             } catch (IOException e) {
                 if (FunnyGuilds.exception(e.getCause())) {
@@ -33,14 +33,10 @@ public class IOUtils {
         try {
             URL url = new URL(s);
             URLConnection con = url.openConnection();
-            con.setRequestProperty("User-Agent", "Mozilla/5.0");
-
             InputStream in = con.getInputStream();
             String encoding = con.getContentEncoding();
             encoding = encoding == null ? "UTF-8" : encoding;
-
             body = IOUtils.toString(in, encoding);
-            in.close();
         } catch (TimeoutException e) {
             FunnyGuilds.info(e.getMessage());
         } catch (Exception e) {
@@ -50,26 +46,29 @@ public class IOUtils {
     }
 
     public static File getFile(String s, boolean folder) {
-        return initialize(new File(s), folder);
-    }
-
-    public static int countFiles(String s) {
-        File folder = new File(s);
-        File[] files = folder.listFiles();
-        return files == null ? 0 : files.length;
+        File file = new File(s);
+        try {
+            if (!file.exists()) {
+                if (folder) {
+                    file.mkdirs();
+                }
+                else {
+                    file.getParentFile().mkdirs();
+                    file.createNewFile();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 
     public static void delete(File f) {
-        if (f == null || !f.exists()) {
+        if (!f.exists()) {
             return;
         }
         if (f.isDirectory()) {
-            File[] files = f.listFiles();
-            if (files == null) {
-                return;
-            }
-
-            for (File c : files) {
+            for (File c : f.listFiles()) {
                 delete(c);
             }
         }
@@ -89,7 +88,6 @@ public class IOUtils {
         while ((len = in.read(buf)) != -1) {
             baos.write(buf, 0, len);
         }
-        in.close();
         return new String(baos.toByteArray(), encoding);
     }
 

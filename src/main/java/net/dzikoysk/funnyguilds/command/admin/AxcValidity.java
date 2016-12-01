@@ -65,6 +65,7 @@ public class AxcValidity implements Executor {
         Date v = new Date(c);
 
         player.sendMessage(StringUtils.colored("&7Przedluzono waznosc gildii &b" + guild.getName() + " &7do &b" + date.format(v) + "&7!"));
+        return;
     }
 
 }

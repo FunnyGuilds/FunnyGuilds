@@ -4,14 +4,14 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class UserUtils {
 
-    private static final Collection<User> users = new ArrayList<>();
+    private static List<User> users = new ArrayList<User>();
 
-    public static Collection<User> getUsers() {
-        return new ArrayList<>(users);
+    public static List<User> getUsers() {
+        return new ArrayList<User>(users);
     }
 
     public static boolean playedBefore(String s) {
@@ -23,20 +23,28 @@ public class UserUtils {
         return false;
     }
 
-    public static void removeGuild(Collection<User> users) {
+    public static void removeGuild(List<User> users) {
         for (User u : users) {
             u.removeGuild();
         }
     }
 
-    public static void setGuild(Collection<User> users, Guild guild) {
+    public static void setGuild(List<User> users, Guild guild) {
         for (User u : users) {
             u.setGuild(guild);
         }
     }
 
-    public static Collection<String> getOnlineNames(Collection<User> users) {
-        Collection<String> list = new ArrayList<>();
+    public static List<String> getNames(List<User> users) {
+        List<String> list = new ArrayList<>();
+        for (User u : users) {
+            list.add(u.getName());
+        }
+        return list;
+    }
+
+    public static List<String> getOnlineNames(List<User> users) {
+        List<String> list = new ArrayList<>();
         for (User u : users) {
             if (u.isOnline()) {
                 list.add("<online>" + u.getName() + "</online>");
@@ -48,8 +56,8 @@ public class UserUtils {
         return list;
     }
 
-    public static Collection<User> getUsers(Collection<String> names) {
-        Collection<User> list = new ArrayList<>();
+    public static List<User> getUsers(List<String> names) {
+        List<User> list = new ArrayList<>();
         for (String s : names) {
             list.add(User.get(s));
         }

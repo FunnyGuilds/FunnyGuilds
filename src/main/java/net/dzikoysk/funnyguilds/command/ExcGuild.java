@@ -7,10 +7,9 @@ import org.bukkit.command.CommandSender;
 public class ExcGuild implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender s, String[] args) {
         for (String line : Messages.getInstance().getList("helpList")) {
-            sender.sendMessage(line);
+            s.sendMessage(line);
         }
     }
-
 }

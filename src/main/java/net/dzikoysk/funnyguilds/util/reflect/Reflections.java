@@ -12,7 +12,8 @@ public class Reflections {
 
     public static String getVersion() {
         String name = Bukkit.getServer().getClass().getPackage().getName();
-        return name.substring(name.lastIndexOf('.') + 1) + ".";
+        String version = name.substring(name.lastIndexOf('.') + 1) + ".";
+        return version;
     }
 
     public static Class<?> getCraftClass(String name) {
@@ -163,19 +164,19 @@ public class Reflections {
     }
 
     public interface ConstructorInvoker {
-        Object invoke(Object... arguments);
+        public Object invoke(Object... arguments);
     }
 
     public interface MethodInvoker {
-        Object invoke(Object target, Object... arguments);
+        public Object invoke(Object target, Object... arguments);
     }
 
     public interface FieldAccessor<T> {
-        T get(Object target);
+        public T get(Object target);
 
-        void set(Object target, Object value);
+        public void set(Object target, Object value);
 
-        boolean hasField(Object target);
+        public boolean hasField(Object target);
     }
 
 }

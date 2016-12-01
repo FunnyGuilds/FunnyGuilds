@@ -40,7 +40,9 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         this.overriding = splited[0];
         if (splited.length > 1) {
             this.secondary = new String[splited.length - 1];
-            System.arraycopy(splited, 1, this.secondary, 0, splited.length - 1);
+            for (int i = 1; i < splited.length; i++) {
+                this.secondary[i - 1] = splited[i];
+            }
         }
         else {
             this.secondary = null;

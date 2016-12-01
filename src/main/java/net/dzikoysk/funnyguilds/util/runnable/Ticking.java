@@ -11,11 +11,11 @@ public class Ticking implements Runnable {
 
     private static DecimalFormat df = new DecimalFormat("#,###.##");
     private static String result = "20.0";
-    private final LinkedList<Double> history = new LinkedList<>();
     private transient long lastPoll = System.nanoTime();
+    private final LinkedList<Double> history = new LinkedList<>();
 
     public Ticking() {
-        history.add(20.0D);
+        history.add(Double.valueOf(20.0D));
     }
 
     public void start() {
@@ -34,13 +34,13 @@ public class Ticking implements Runnable {
         }
         double tps = 50000000.0D / timeSpent;
         if (tps <= 21.0D) {
-            history.add(tps);
+            history.add(Double.valueOf(tps));
         }
         this.lastPoll = startTime;
         double avg = 0.0D;
         for (Double f : history) {
             if (f != null) {
-                avg += f;
+                avg += f.doubleValue();
             }
         }
         df.setRoundingMode(RoundingMode.HALF_UP);

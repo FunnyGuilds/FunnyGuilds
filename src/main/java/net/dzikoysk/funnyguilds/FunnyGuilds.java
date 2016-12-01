@@ -8,6 +8,8 @@ import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
+import net.dzikoysk.funnyguilds.script.ScriptManager;
+import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -23,9 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.InputStream;
-import java.util.Collection;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -44,6 +44,9 @@ public class FunnyGuilds extends JavaPlugin {
         new Reloader().init();
         new DescriptionChanger(getDescription()).name(Settings.getInstance().pluginName);
         new Commands().register();
+
+        EventManager em = EventManager.getEventManager();
+        em.load();
     }
 
     @Override
@@ -54,36 +57,40 @@ public class FunnyGuilds extends JavaPlugin {
         new AsynchronouslyRepeater().start();
         new Ticking().start();
         new MetricsCollector().start();
+        new ScriptManager().start();
+
+        EventManager em = EventManager.getEventManager();
+        em.enable();
 
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new PacketReceiveListener(), this);
+        pm.registerEvents(new PacketReceive(), this);
 
-        pm.registerEvents(new EntityDamageListener(), this);
-        pm.registerEvents(new PlayerInteractEntityListener(), this);
-        pm.registerEvents(new AsyncPlayerChatListener(), this);
-        pm.registerEvents(new PlayerDeathListener(), this);
-        pm.registerEvents(new PlayerJoinListener(), this);
-        pm.registerEvents(new PlayerLoginListener(), this);
-        pm.registerEvents(new PlayerQuitListener(), this);
+        pm.registerEvents(new EntityDamage(), this);
+        pm.registerEvents(new EntityInteract(), this);
+        pm.registerEvents(new PlayerChat(), this);
+        pm.registerEvents(new PlayerDeath(), this);
+        pm.registerEvents(new PlayerJoin(), this);
+        pm.registerEvents(new PlayerLogin(), this);
+        pm.registerEvents(new PlayerQuit(), this);
 
-        pm.registerEvents(new BlockBreakListener(), this);
-        pm.registerEvents(new BlockIgniteListener(), this);
-        pm.registerEvents(new BlockPlaceListener(), this);
-        pm.registerEvents(new BucketActionListener(), this);
-        pm.registerEvents(new EntityExplodeListener(), this);
-        pm.registerEvents(new PlayerCommandListener(), this);
-        pm.registerEvents(new PlayerInteractListener(), this);
+        pm.registerEvents(new BlockBreak(), this);
+        pm.registerEvents(new BlockIgnite(), this);
+        pm.registerEvents(new BlockPlace(), this);
+        pm.registerEvents(new BucketAction(), this);
+        pm.registerEvents(new EntityExplode(), this);
+        pm.registerEvents(new PlayerCommand(), this);
+        pm.registerEvents(new PlayerInteract(), this);
 
         if (Settings.getInstance().eventMove) {
-            pm.registerEvents(new PlayerMoveListener(), this);
+            pm.registerEvents(new PlayerMove(), this);
         }
         if (Settings.getInstance().eventPhysics) {
-            pm.registerEvents(new BlockPhysicsListener(), this);
+            pm.registerEvents(new BlockPhysics(), this);
         }
 
         patch();
         update();
-        info("~ Created by & \u2764 Dzikoysk ~");
+        info("~ Created by & � Dzikoysk ~");
     }
 
     @Override
@@ -92,6 +99,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         EntityUtil.despawn();
         PacketExtension.unregisterFunnyGuildsChannel();
+        EventManager.getEventManager().disable();
 
         AsynchronouslyRepeater.getInstance().stop();
         Manager.getInstance().stop();
@@ -113,7 +121,7 @@ public class FunnyGuilds extends JavaPlugin {
                 }
                 else {
                     update("");
-                    update("New version of FunnyGuilds is available!");
+                    update("Available is new version of FunnyGuilds!");
                     update("Current: " + getVersion());
                     update("Latest: " + latest);
                     update("");
@@ -147,18 +155,8 @@ public class FunnyGuilds extends JavaPlugin {
         return super.getResource(s);
     }
 
-    public static Player[] getOnlinePlayers() {
-        Collection<? extends Player> collection = Bukkit.getOnlinePlayers();
-        Player[] array = new Player[collection.size()];
-        return collection.toArray(array);
-    }
-
     public boolean isDisabling() {
         return disabling;
-    }
-
-    public static File getFolder() {
-        return funnyguilds.getDataFolder();
     }
 
     public static Thread getThread() {
@@ -170,6 +168,9 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static FunnyGuilds getInstance() {
+        if (funnyguilds == null) {
+            return new FunnyGuilds();
+        }
         return funnyguilds;
     }
 
@@ -194,7 +195,10 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static boolean exception(Throwable cause) {
-        return cause == null || exception(cause.getMessage(), cause.getStackTrace());
+        if (cause == null) {
+            return true;
+        }
+        return exception(cause.getMessage(), cause.getStackTrace());
     }
 
     public static boolean exception(String cause, StackTraceElement[] ste) {
@@ -217,12 +221,11 @@ public class FunnyGuilds extends JavaPlugin {
         }
         error("Caused by: " + cause);
         for (StackTraceElement st : ste) {
-            error("	at " + st.toString());
+            error("    at " + st.toString());
         }
         error("");
         error("End of Error.");
         error("");
         return false;
     }
-
 }

@@ -2,11 +2,10 @@ package net.dzikoysk.funnyguilds.basic;
 
 import net.dzikoysk.funnyguilds.basic.util.*;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.core.DataCore;
 import org.bukkit.Location;
 
-import java.lang.reflect.Field;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class Guild implements Basic {
@@ -17,11 +16,13 @@ public class Guild implements Basic {
     private User owner;
     private User deputy;
     private Rank rank;
-    private Region region;
+    private String region;
     private Location home;
-    private BasicList<User> members;
-    private BasicList<Guild> allies;
-    private BasicList<Guild> enemies;
+    private List<User> members = new ArrayList<>();
+    private List<String> regions = new ArrayList<>();
+    private List<Guild> allies = new ArrayList<>();
+    private List<Guild> enemies = new ArrayList<>();
+    private Location endercrystal;
     private boolean pvp;
     private long born;
     private long validity;
@@ -29,24 +30,25 @@ public class Guild implements Basic {
     private long ban;
     private int lives;
     private long build;
+    private boolean changes;
 
     private Guild(UUID uuid) {
-        this.uuid = uuid;
         this.born = System.currentTimeMillis();
-        this.members = new BasicList<>();
-        this.allies = new BasicList<>();
-        this.enemies = new BasicList<>();
+        this.uuid = uuid;
+        this.changes = true;
         GuildUtils.addGuild(this);
     }
 
-    private Guild(String name) {
+    public Guild(String name) {
         this(UUID.randomUUID());
         this.name = name;
+        this.changes = true;
+        GuildUtils.addGuild(this);
     }
 
     public void addLive() {
         this.lives++;
-        this.passVariable("lives");
+        this.changes();
     }
 
     public void addMember(User user) {
@@ -55,49 +57,63 @@ public class Guild implements Basic {
         }
         this.members.add(user);
         this.updateRank();
-        this.passVariable("members");
+        this.changes();
+    }
+
+    public void addRegion(String s) {
+        if (this.regions.contains(s)) {
+            return;
+        }
+        this.regions.add(s);
+        this.changes();
     }
 
     public void addAlly(Guild guild) {
+        this.changes();
         if (this.allies.contains(guild)) {
             return;
         }
         this.allies.add(guild);
-        this.passVariable("allies");
     }
 
     public void addEnemy(Guild guild) {
+        this.changes();
         if (this.enemies.contains(guild)) {
             return;
         }
         this.enemies.add(guild);
-        this.passVariable("enemies");
     }
 
-    public void initUpdate() {
+    public void deserializationUpdate() {
         this.owner.setGuild(this);
-        UserUtils.setGuild(this.members.getCollection(), this);
+        UserUtils.setGuild(this.members, this);
+        for (String r : this.regions) {
+            Region region = RegionUtils.get(r);
+            if (region != null) {
+                region.setGuild(this);
+            }
+        }
     }
 
     public void removeLive() {
         this.lives--;
-        this.passVariable("lives");
+        this.changes();
     }
 
     public void removeMember(User user) {
         this.members.remove(user);
         this.updateRank();
-        this.passVariable("members");
+        this.changes();
     }
 
     public void removeAlly(Guild guild) {
         this.allies.remove(guild);
-        this.passVariable("allies");
+        this.changes();
     }
 
     public void removeEnemy(Guild guild) {
         this.enemies.remove(guild);
-        this.passVariable("enemies");
+        this.changes();
     }
 
     public void delete() {
@@ -105,92 +121,108 @@ public class Guild implements Basic {
     }
 
     public boolean canBuild() {
-        return this.build > System.currentTimeMillis();
+        if (this.build > System.currentTimeMillis()) {
+            return false;
+        }
+        this.build = 0;
+        this.changes();
+        return true;
     }
 
     public void updateRank() {
         this.getRank();
         RankManager.getInstance().update(this);
+        ;
     }
 
     @Override
-    public void passVariable(String... field) {
-        DataCore.getInstance().save(this, field);
+    public boolean changed() {
+        boolean c = changes;
+        if (c) {
+            this.changes = false;
+        }
+        return c;
     }
 
     @Override
-    public Object getVariable(String field) throws Exception {
-        Field f = this.getClass().getDeclaredField(field);
-        f.setAccessible(true);
-        return f.get(this);
+    public void changes() {
+        this.changes = true;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getVariable(String field, Class<T> clazz) throws Exception {
-        Field f = this.getClass().getDeclaredField(field);
-        f.setAccessible(true);
-        return (T) f.get(this);
-    }
-
-    @Variable(field = "uuid")
     public void setUUID(UUID uuid) {
         this.uuid = uuid;
+        this.changes();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        this.changes();
     }
 
     public void setTag(String tag) {
         this.tag = tag;
-        this.passVariable("tag");
+        this.changes();
     }
 
     public void setOwner(User user) {
         this.owner = user;
         this.addMember(user);
-        this.passVariable("owner", "members");
+        this.changes();
     }
 
     public void setDeputy(User user) {
         this.deputy = user;
-        this.passVariable("deputy");
+        this.changes();
     }
 
-    public void setRegion(Region region) {
-        this.region = region;
+    public void setRank(Rank rank) {
+        this.rank = rank;
+        this.changes();
+    }
+
+    public void setRegion(String s) {
+        this.region = s;
         if (this.home == null) {
+            Region region = Region.get(s);
             this.home = region.getCenter();
         }
-        this.passVariable("region", "home");
+        this.changes();
     }
 
     public void setHome(Location home) {
         this.home = home;
-        this.passVariable("home");
+        this.changes();
     }
 
-    public void setMembers(Collection<User> members) {
-        this.members = new BasicList<>(members);
+    public void setMembers(List<User> members) {
+        this.members = members;
         this.updateRank();
-        this.passVariable("members");
+        this.changes();
     }
 
-    public void setAllies(Collection<Guild> guilds) {
-        this.allies = new BasicList<>(guilds);
-        this.passVariable("allies");
+    public void setRegions(List<String> regions) {
+        this.regions = regions;
+        this.changes();
     }
 
-    public void setEnemies(Collection<Guild> guilds) {
-        this.enemies = new BasicList<>(guilds);
-        this.passVariable("enemies");
+    public void setAllies(List<Guild> guilds) {
+        this.allies = guilds;
+        this.changes();
+    }
+
+    public void setEnemies(List<Guild> guilds) {
+        this.enemies = guilds;
+        this.changes();
     }
 
     public void setPvP(boolean b) {
         this.pvp = b;
-        this.passVariable("pvp");
+        this.changes();
     }
 
     public void setBorn(long l) {
         this.born = l;
-        this.passVariable("born");
+        this.changes();
     }
 
     public void setValidity(long l) {
@@ -200,17 +232,22 @@ public class Guild implements Basic {
         else {
             this.validity = l;
         }
-        this.passVariable("validity");
+        this.changes();
     }
 
     public void setAttacked(long l) {
         this.attacked = l;
-        this.passVariable("attacked");
+        this.changes();
     }
 
     public void setLives(int i) {
         this.lives = i;
-        this.passVariable("lives");
+        this.changes();
+    }
+
+    public void setBuild(long time) {
+        this.build = time;
+        this.changes();
     }
 
     public void setBan(long l) {
@@ -220,38 +257,44 @@ public class Guild implements Basic {
         else {
             this.ban = 0;
         }
-        this.passVariable("ban");
+        this.changes();
     }
 
-    public void setBuild(long time) {
-        this.build = time;
-    }
-
-    public void setRank(Rank rank) {
-        this.rank = rank;
-        this.passVariable("rank");
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        this.passVariable("name");
+    public void setEnderCrystal(Location loc) {
+        this.endercrystal = loc;
     }
 
     public boolean isValid() {
-        if (this.validity != this.born && this.validity != 0) {
-            return this.validity > System.currentTimeMillis();
+        if (this.validity == this.born) {
+            this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            this.changes();
         }
-        this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
-        this.passVariable("validity");
-        return true;
+        if (this.validity == 0) {
+            this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            this.changes();
+        }
+        if (this.validity >= System.currentTimeMillis()) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isBanned() {
-        return this.ban > System.currentTimeMillis();
+        if (this.ban > System.currentTimeMillis()) {
+            return true;
+        }
+        this.ban = 0;
+        this.changes();
+        return false;
     }
 
     public UUID getUUID() {
         return this.uuid;
+    }
+
+    @Override
+    public String getName() {
+        return this.name;
     }
 
     public String getTag() {
@@ -266,7 +309,7 @@ public class Guild implements Basic {
         return this.deputy;
     }
 
-    public Region getRegion() {
+    public String getRegion() {
         return this.region;
     }
 
@@ -274,16 +317,20 @@ public class Guild implements Basic {
         return this.home;
     }
 
-    public Collection<User> getMembers() {
-        return this.members.getCollection();
+    public List<User> getMembers() {
+        return this.members;
     }
 
-    public Collection<Guild> getAllies() {
-        return this.allies.getCollection();
+    public List<String> getRegions() {
+        return this.regions;
     }
 
-    public Collection<Guild> getEnemies() {
-        return this.enemies.getCollection();
+    public List<Guild> getAllies() {
+        return this.allies;
+    }
+
+    public List<Guild> getEnemies() {
+        return this.enemies;
     }
 
     public boolean getPvP() {
@@ -320,13 +367,11 @@ public class Guild implements Basic {
         }
         this.rank = new Rank(this);
         RankManager.getInstance().update(this);
-        this.passVariable("rank");
         return this.rank;
     }
 
-    @Override
-    public String getName() {
-        return this.name;
+    public Location getEnderCrystal() {
+        return this.endercrystal;
     }
 
     @Override
@@ -351,12 +396,15 @@ public class Guild implements Basic {
             return false;
         }
         Guild guild = (Guild) o;
-        return guild.getName() != null && this.name != null && guild.getName().equalsIgnoreCase(this.name);
+        if (guild.getName() != null && this.name != null) {
+            return guild.getName().equalsIgnoreCase(this.name);
+        }
+        return false;
     }
 
     @Override
     public String toString() {
-        return this.name != null ? this.name : this.uuid.toString();
+        return this.name;
     }
 
     public static Guild get(UUID uuid) {
