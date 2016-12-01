@@ -21,7 +21,6 @@ buildNumber.properties
 
 # User-specific stuff:
 # .idea/workspace.xml
-# .idea/compiler.xml
 # .idea/tasks.xml
 # .idea/dictionaries
 
@@ -47,6 +46,7 @@ buildNumber.properties
 
 # IntelliJ
 /out/
+/bin/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/

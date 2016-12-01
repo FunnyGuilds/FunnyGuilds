@@ -133,11 +133,8 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void patch() {
         for (final Player player : Bukkit.getOnlinePlayers()) {
-            Bukkit.getScheduler().runTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    PacketExtension.registerPlayer(player);
-                }
+            Bukkit.getScheduler().runTask(this, () -> {
+                PacketExtension.registerPlayer(player);
             });
             User user = User.get(player);
             user.getScoreboard();
