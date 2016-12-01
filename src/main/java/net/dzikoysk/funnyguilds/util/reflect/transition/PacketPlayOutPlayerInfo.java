@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 public class PacketPlayOutPlayerInfo {
 
     private static final Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutPlayerInfo");
-    private static final Class<?>[] typesClass = new Class<?>[]{String.class, boolean.class, int.class};
+    private static final Class<?>[] typesClass = new Class<?>[]{ String.class, boolean.class, int.class };
     private static int type = 0;
 
     static {

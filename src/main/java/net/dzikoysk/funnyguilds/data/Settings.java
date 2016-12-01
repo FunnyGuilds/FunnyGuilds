@@ -150,7 +150,7 @@ public class Settings {
     private PandaConfiguration pc;
 
     public Settings() {
-        Manager.loadDefaultFiles(new String[]{"config.yml"});
+        Manager.loadDefaultFiles(new String[]{ "config.yml" });
         update();
         load();
     }
@@ -163,7 +163,7 @@ public class Settings {
         }
         FunnyGuilds.info("Updating the plugin settings ...");
         SETTINGS.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "config.old"));
-        Manager.loadDefaultFiles(new String[]{"config.yml"});
+        Manager.loadDefaultFiles(new String[]{ "config.yml" });
         pc = new PandaConfiguration(SETTINGS);
         FunnyGuilds.info("Successfully updated settings!");
         return true;

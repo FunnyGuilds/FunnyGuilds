@@ -36,16 +36,6 @@ public class RankManager {
         }
     }
 
-    public void remove(User user) {
-        this.users.remove(user.getRank());
-        Collections.sort(this.users);
-    }
-
-    public void remove(Guild guild) {
-        this.guilds.remove(guild.getRank());
-        Collections.sort(this.guilds);
-    }
-
     public int getPosition(User user) {
         return this.users.indexOf(user.getRank()) + 1;
     }
@@ -74,6 +64,16 @@ public class RankManager {
 
     public int guilds() {
         return this.guilds.size();
+    }
+
+    public void remove(User user) {
+        this.users.remove(user.getRank());
+        Collections.sort(this.users);
+    }
+
+    public void remove(Guild guild) {
+        this.guilds.remove(guild.getRank());
+        Collections.sort(this.guilds);
     }
 
     public static RankManager getInstance() {

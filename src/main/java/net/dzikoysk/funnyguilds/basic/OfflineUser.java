@@ -46,6 +46,52 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         }
     }
 
+    @Override
+    public Map<String, Object> serialize() {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("UUID", this.profile.getId().toString());
+        result.put("name", this.profile.getName());
+        return result;
+    }
+
+    @Override
+    public boolean hasPlayedBefore() {
+        return this.getLastPlayed() != 0;
+    }
+
+    private void init() {
+        if (type != 0) {
+            return;
+        }
+        for (Constructor c : GameProfile.class.getConstructors()) {
+            if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{ String.class, String.class })) {
+                type = 1;
+            }
+            else if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{ UUID.class, String.class })) {
+                type = 2;
+            }
+            else {
+                FunnyGuilds.error("GameProfile constructor not found!");
+            }
+        }
+    }
+
+    @Override
+    public void setOp(boolean b) {
+        getReal().setOp(b);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void setBanned(boolean value) {
+        getReal().setBanned(value);
+    }
+
+    @Override
+    public void setWhitelisted(boolean value) {
+        Bukkit.getWhitelistedPlayers().add(this);
+    }
+
     public GameProfile getProfile() {
         return this.profile;
     }
@@ -76,19 +122,8 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
     }
 
     @Override
-    public void setOp(boolean b) {
-        getReal().setOp(b);
-    }
-
-    @Override
     public boolean isBanned() {
         return getName() != null && Bukkit.getServer().getBannedPlayers().contains(this);
-    }
-
-    @Override
-    @SuppressWarnings("deprecation")
-    public void setBanned(boolean value) {
-        getReal().setBanned(value);
     }
 
     @Override
@@ -97,48 +132,11 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
     }
 
     @Override
-    public void setWhitelisted(boolean value) {
-        Bukkit.getWhitelistedPlayers().add(this);
-    }
-
-    @Override
-    public Map<String, Object> serialize() {
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put("UUID", this.profile.getId().toString());
-        result.put("name", this.profile.getName());
-        return result;
-    }
-
-    public static OfflinePlayer deserialize(Map<String, Object> args) {
-        if (args.get("name") == null) {
-            return null;
-        }
-        return new OfflineUser((String) args.get("name"));
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "[UUID=" + this.profile.getId() + "]";
-    }
-
-    @Override
     public Player getPlayer() {
         if (getName() == null) {
             return null;
         }
         return Bukkit.getPlayer(getName());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof OfflinePlayer && ((OfflinePlayer) obj).getName().equalsIgnoreCase(this.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + (getUniqueId() != null ? getUniqueId().hashCode() : 0);
-        return hash;
     }
 
     @Override
@@ -160,30 +158,32 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
     }
 
     @Override
-    public boolean hasPlayedBefore() {
-        return this.getLastPlayed() != 0;
-    }
-
-    @Override
     public Location getBedSpawnLocation() {
         return getReal().getBedSpawnLocation();
     }
 
-    private void init() {
-        if (type != 0) {
-            return;
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + (getUniqueId() != null ? getUniqueId().hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof OfflinePlayer && ((OfflinePlayer) obj).getName().equalsIgnoreCase(this.getName());
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "[UUID=" + this.profile.getId() + "]";
+    }
+
+    public static OfflinePlayer deserialize(Map<String, Object> args) {
+        if (args.get("name") == null) {
+            return null;
         }
-        for (Constructor c : GameProfile.class.getConstructors()) {
-            if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{String.class, String.class})) {
-                type = 1;
-            }
-            else if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{UUID.class, String.class})) {
-                type = 2;
-            }
-            else {
-                FunnyGuilds.error("GameProfile constructor not found!");
-            }
-        }
+        return new OfflineUser((String) args.get("name"));
     }
 
 }

@@ -9,6 +9,10 @@ import java.util.List;
 
 public class StringUtils {
 
+    public static List<String> getEmptyList() {
+        return new ArrayList<>();
+    }
+
     public static String replace(String text, String searchString, String replacement) {
         if (text == null || text.isEmpty() || searchString.isEmpty()) {
             return text;
@@ -73,10 +77,6 @@ public class StringUtils {
         }
         list = Arrays.asList(s.split(","));
         return list;
-    }
-
-    public static List<String> getEmptyList() {
-        return new ArrayList<>();
     }
 
 }

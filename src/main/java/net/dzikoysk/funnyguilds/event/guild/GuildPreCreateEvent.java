@@ -20,13 +20,13 @@ public class GuildPreCreateEvent extends Event implements Cancellable {
     }
 
     @Override
-    public boolean isCancelled() {
-        return this.cancelled;
+    public void setCancelled(boolean f) {
+        this.cancelled = f;
     }
 
     @Override
-    public void setCancelled(boolean f) {
-        this.cancelled = f;
+    public boolean isCancelled() {
+        return this.cancelled;
     }
 
     @Override

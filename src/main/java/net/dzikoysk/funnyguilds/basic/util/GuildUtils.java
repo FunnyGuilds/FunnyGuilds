@@ -21,6 +21,10 @@ public class GuildUtils {
 
     private static List<Guild> guilds = new ArrayList<>();
 
+    public static List<Guild> getGuilds() {
+        return new ArrayList<>(guilds);
+    }
+
     public static void deleteGuild(final Guild guild) {
         Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable() {
             @Override
@@ -59,7 +63,6 @@ public class GuildUtils {
             }
         });
     }
-
 
     public static Guild get(String name) {
         for (Guild guild : guilds) {
@@ -121,10 +124,6 @@ public class GuildUtils {
             }
         }
         return list;
-    }
-
-    public static List<Guild> getGuilds() {
-        return new ArrayList<>(guilds);
     }
 
     public static void addGuild(Guild guild) {

@@ -19,6 +19,11 @@ public class PacketSendEvent extends Event implements Cancellable {
         this.cancelled = false;
     }
 
+    @Override
+    public void setCancelled(boolean b) {
+        cancelled = b;
+    }
+
     public Player getPlayer() {
         return player;
     }
@@ -43,11 +48,6 @@ public class PacketSendEvent extends Event implements Cancellable {
     @Override
     public boolean isCancelled() {
         return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
     }
 
 }

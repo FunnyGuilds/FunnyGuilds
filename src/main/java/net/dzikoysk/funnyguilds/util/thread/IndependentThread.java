@@ -49,6 +49,13 @@ public class IndependentThread extends Thread {
         }
     }
 
+    public static IndependentThread getInstance() {
+        if (instance == null) {
+            new IndependentThread().start();
+        }
+        return instance;
+    }
+
     public static void action(Action... actions) {
         IndependentThread it = getInstance();
         for (Action action : temp) {
@@ -87,13 +94,6 @@ public class IndependentThread extends Thread {
         if (!temp.contains(action)) {
             temp.add(action);
         }
-    }
-
-    public static IndependentThread getInstance() {
-        if (instance == null) {
-            new IndependentThread().start();
-        }
-        return instance;
     }
 
 }

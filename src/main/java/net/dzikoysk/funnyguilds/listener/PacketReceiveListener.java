@@ -41,7 +41,7 @@ public class PacketReceiveListener implements Listener {
                     WarSystem.getInstance().attack(player, entry.getKey());
                 }
                 else {
-                    new ExcInfo().execute(player, new String[]{entry.getKey().getTag()});
+                    new ExcInfo().execute(player, new String[]{ entry.getKey().getTag() });
                 }
             }
         } catch (Exception e) {

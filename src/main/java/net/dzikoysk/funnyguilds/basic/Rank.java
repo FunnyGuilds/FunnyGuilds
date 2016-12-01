@@ -50,6 +50,36 @@ public class Rank implements Comparable<Rank> {
         this.basic.passVariable("rank");
     }
 
+    @Override
+    public int compareTo(Rank rank) {
+        int i = Integer.compare(rank.getPoints(), getPoints());
+        if (i == 0) {
+            if (idns == null) {
+                return -1;
+            }
+            if (rank.getIDNS() == null) {
+                return 1;
+            }
+            i = idns.compareTo(rank.getIDNS());
+        }
+        return i;
+    }
+
+    public void setPoints(int i) {
+        this.points = i;
+        this.basic.passVariable("rank");
+    }
+
+    public void setKills(int i) {
+        this.kills = i;
+        this.basic.passVariable("rank");
+    }
+
+    public void setDeaths(int i) {
+        this.deaths = i;
+        this.basic.passVariable("rank");
+    }
+
     public int getPoints() {
         if (this.type == BasicType.USER) {
             return this.points;
@@ -72,27 +102,12 @@ public class Rank implements Comparable<Rank> {
         }
     }
 
-    public void setPoints(int i) {
-        this.points = i;
-        this.basic.passVariable("rank");
-    }
-
     public int getKills() {
         return this.kills;
     }
 
-    public void setKills(int i) {
-        this.kills = i;
-        this.basic.passVariable("rank");
-    }
-
     public int getDeaths() {
         return this.deaths;
-    }
-
-    public void setDeaths(int i) {
-        this.deaths = i;
-        this.basic.passVariable("rank");
     }
 
     public String getIDNS() {
@@ -130,21 +145,6 @@ public class Rank implements Comparable<Rank> {
     @Override
     public String toString() {
         return Integer.toString(getPoints());
-    }
-
-    @Override
-    public int compareTo(Rank rank) {
-        int i = Integer.compare(rank.getPoints(), getPoints());
-        if (i == 0) {
-            if (idns == null) {
-                return -1;
-            }
-            if (rank.getIDNS() == null) {
-                return 1;
-            }
-            i = idns.compareTo(rank.getIDNS());
-        }
-        return i;
     }
 
 }

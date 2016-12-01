@@ -4,7 +4,7 @@ import java.util.*;
 
 public class PlayerListScheme {
 
-    private static final String[] colorsCode = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+    private static final String[] colorsCode = new String[]{ "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" };
     private static String[] scheme = new String[60];
     private static List<Integer> edit = new ArrayList<>();
 
@@ -20,6 +20,14 @@ public class PlayerListScheme {
                 edit.add(i);
             }
         }
+    }
+
+    public static String[] getScheme() {
+        return scheme.clone();
+    }
+
+    public static List<Integer> getEdit() {
+        return edit;
     }
 
     public static String[] uniqueFields() {
@@ -40,13 +48,5 @@ public class PlayerListScheme {
         }
         Collections.sort(fields);
         return fields.toArray(new String[60]);
-    }
-
-    public static String[] getScheme() {
-        return scheme.clone();
-    }
-
-    public static List<Integer> getEdit() {
-        return edit;
     }
 }

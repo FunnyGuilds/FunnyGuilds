@@ -10,6 +10,11 @@ import java.lang.reflect.Method;
 
 public class Reflections {
 
+    public static String getVersion() {
+        String name = Bukkit.getServer().getClass().getPackage().getName();
+        return name.substring(name.lastIndexOf('.') + 1) + ".";
+    }
+
     public static Class<?> getCraftClass(String name) {
         String className = "net.minecraft.server." + getVersion() + name;
         Class<?> c = null;
@@ -155,11 +160,6 @@ public class Reflections {
             }
         }
         return equal;
-    }
-
-    public static String getVersion() {
-        String name = Bukkit.getServer().getClass().getPackage().getName();
-        return name.substring(name.lastIndexOf('.') + 1) + ".";
     }
 
     public interface ConstructorInvoker {

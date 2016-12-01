@@ -69,6 +69,89 @@ public class User implements Basic {
         return this.guild != null;
     }
 
+    @Override
+    public void passVariable(String... field) {
+        DataCore.getInstance().save(this, field);
+    }
+
+    @Override
+    public Object getVariable(String field) throws Exception {
+        Field f = this.getClass().getDeclaredField(field);
+        f.setAccessible(true);
+        return f.get(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getVariable(String field, Class<T> clazz) throws Exception {
+        Field f = this.getClass().getDeclaredField(field);
+        f.setAccessible(true);
+        return (T) f.get(this);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        this.passVariable("name");
+    }
+
+    public void setGuild(Guild guild) {
+        this.guild = guild;
+        this.passVariable("guild");
+    }
+
+    public void setScoreboard(Scoreboard sb) {
+        this.scoreboard = sb;
+    }
+
+    public void setIndividualPrefix(IndividualPrefix prefix) {
+        this.prefix = prefix;
+    }
+
+    public void setPlayerList(PlayerList pl) {
+        this.list = pl;
+    }
+
+    public void setDummy(Dummy dummy) {
+        this.dummy = dummy;
+    }
+
+    public void setRank(Rank r) {
+        this.rank = r;
+        this.passVariable("rank");
+    }
+
+    public void setBan(long l) {
+        this.ban = l;
+        this.passVariable("ban");
+    }
+
+    public void setReason(String s) {
+        this.reason = s;
+        this.passVariable("reason");
+    }
+
+    public void setNotificationTime(long time) {
+        this.notification = time;
+    }
+
+    public void setEnter(boolean b) {
+        this.enter = b;
+    }
+
+    public void setLastVictim(User user) {
+        this.lastVictim = user;
+        this.lastVictimTime = System.currentTimeMillis();
+    }
+
+    public void setLastAttacker(User user) {
+        this.lastAttacker = user;
+        this.lastAttackerTime = System.currentTimeMillis();
+    }
+
+    public void setTeleportation(BukkitTask task) {
+        this.teleportation = task;
+    }
+
     public boolean isOwner() {
         return hasGuild() && this.guild.getOwner().equals(this);
     }
@@ -98,18 +181,8 @@ public class User implements Basic {
         return this.name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-        this.passVariable("name");
-    }
-
     public Guild getGuild() {
         return this.guild;
-    }
-
-    public void setGuild(Guild guild) {
-        this.guild = guild;
-        this.passVariable("guild");
     }
 
     public synchronized Scoreboard getScoreboard() {
@@ -119,19 +192,11 @@ public class User implements Basic {
         return this.scoreboard;
     }
 
-    public void setScoreboard(Scoreboard sb) {
-        this.scoreboard = sb;
-    }
-
     public IndividualPrefix getIndividualPrefix() {
         if (this.prefix == null) {
             new IndividualPrefix(this);
         }
         return this.prefix;
-    }
-
-    public void setIndividualPrefix(IndividualPrefix prefix) {
-        this.prefix = prefix;
     }
 
     public PlayerList getPlayerList() {
@@ -141,19 +206,11 @@ public class User implements Basic {
         return this.list;
     }
 
-    public void setPlayerList(PlayerList pl) {
-        this.list = pl;
-    }
-
     public Dummy getDummy() {
         if (this.dummy == null) {
             this.dummy = new Dummy(this);
         }
         return this.dummy;
-    }
-
-    public void setDummy(Dummy dummy) {
-        this.dummy = dummy;
     }
 
     public Rank getRank() {
@@ -166,61 +223,28 @@ public class User implements Basic {
         return this.rank;
     }
 
-    public void setRank(Rank r) {
-        this.rank = r;
-        this.passVariable("rank");
-    }
-
     public long getBan() {
         return this.ban;
-    }
-
-    public void setBan(long l) {
-        this.ban = l;
-        this.passVariable("ban");
     }
 
     public String getReason() {
         return this.reason != null ? ChatColor.translateAlternateColorCodes('&', this.reason) : "";
     }
 
-    public void setReason(String s) {
-        this.reason = s;
-        this.passVariable("reason");
-    }
-
     public long getNotificationTime() {
         return this.notification;
-    }
-
-    public void setNotificationTime(long time) {
-        this.notification = time;
     }
 
     public boolean getEnter() {
         return this.enter;
     }
 
-    public void setEnter(boolean b) {
-        this.enter = b;
-    }
-
     public User getLastVictim() {
         return this.lastVictim;
     }
 
-    public void setLastVictim(User user) {
-        this.lastVictim = user;
-        this.lastVictimTime = System.currentTimeMillis();
-    }
-
     public User getLastAttacker() {
         return this.lastAttacker;
-    }
-
-    public void setLastAttacker(User user) {
-        this.lastAttacker = user;
-        this.lastAttackerTime = System.currentTimeMillis();
     }
 
     public long getLastVictimTime() {
@@ -233,10 +257,6 @@ public class User implements Basic {
 
     public BukkitTask getTeleportation() {
         return this.teleportation;
-    }
-
-    public void setTeleportation(BukkitTask task) {
-        this.teleportation = task;
     }
 
     public Player getPlayer() {
@@ -264,53 +284,6 @@ public class User implements Basic {
             }
         }
         return ping;
-    }
-
-    public static User get(UUID uuid) {
-        for (User u : UserUtils.getUsers()) {
-            if (uuid.equals(u.getUUID())) {
-                return u;
-            }
-        }
-        return new User(uuid);
-    }
-
-    public static User get(String name) {
-        for (User u : UserUtils.getUsers()) {
-            if (u.getName().equalsIgnoreCase(name)) {
-                return u;
-            }
-        }
-        return new User(name);
-    }
-
-    public static User get(OfflinePlayer player) {
-        for (User u : UserUtils.getUsers()) {
-            if (u.getName().equalsIgnoreCase(player.getName())) {
-                return u;
-            }
-        }
-        return new User(player.getName());
-    }
-
-    @Override
-    public void passVariable(String... field) {
-        DataCore.getInstance().save(this, field);
-    }
-
-    @Override
-    public Object getVariable(String field) throws Exception {
-        Field f = this.getClass().getDeclaredField(field);
-        f.setAccessible(true);
-        return f.get(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getVariable(String field, Class<T> clazz) throws Exception {
-        Field f = this.getClass().getDeclaredField(field);
-        f.setAccessible(true);
-        return (T) f.get(this);
     }
 
     @Override
@@ -342,6 +315,33 @@ public class User implements Basic {
     @Override
     public String toString() {
         return this.name != null ? this.name : this.uuid.toString();
+    }
+
+    public static User get(UUID uuid) {
+        for (User u : UserUtils.getUsers()) {
+            if (uuid.equals(u.getUUID())) {
+                return u;
+            }
+        }
+        return new User(uuid);
+    }
+
+    public static User get(String name) {
+        for (User u : UserUtils.getUsers()) {
+            if (u.getName().equalsIgnoreCase(name)) {
+                return u;
+            }
+        }
+        return new User(name);
+    }
+
+    public static User get(OfflinePlayer player) {
+        for (User u : UserUtils.getUsers()) {
+            if (u.getName().equalsIgnoreCase(player.getName())) {
+                return u;
+            }
+        }
+        return new User(player.getName());
     }
 
 }

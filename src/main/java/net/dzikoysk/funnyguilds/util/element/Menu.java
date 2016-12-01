@@ -95,26 +95,6 @@ public class Menu {
         this.command.remove(i);
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getRow() {
-        return this.row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public Inventory getInventory() {
-        return this.inv;
-    }
-
     public ItemStack getItem(int i) {
         if (this.item.containsKey(i)) {
             return this.item.get(i);
@@ -148,6 +128,26 @@ public class Menu {
             return this.closed.get(i);
         }
         return true;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getRow() {
+        return this.row;
+    }
+
+    public Inventory getInventory() {
+        return this.inv;
     }
 
     public int getFirstEmpty() {

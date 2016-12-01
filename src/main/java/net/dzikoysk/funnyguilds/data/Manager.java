@@ -68,15 +68,6 @@ public class Manager {
         }
     }
 
-    public static void loadDefaultFiles(String[] files) {
-        for (String file : files) {
-            File cfg = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + file);
-            if (!cfg.exists()) {
-                FunnyGuilds.getInstance().saveResource(file, true);
-            }
-        }
-    }
-
     public static Manager getInstance() {
         if (instance != null) {
             return instance;
@@ -91,5 +82,14 @@ public class Manager {
 
     public Messages getMessages() {
         return Messages.getInstance();
+    }
+
+    public static void loadDefaultFiles(String[] files) {
+        for (String file : files) {
+            File cfg = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + file);
+            if (!cfg.exists()) {
+                FunnyGuilds.getInstance().saveResource(file, true);
+            }
+        }
     }
 }

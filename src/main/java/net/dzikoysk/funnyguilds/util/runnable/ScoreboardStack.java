@@ -42,18 +42,18 @@ public class ScoreboardStack implements Runnable {
         }
     }
 
+    public static ScoreboardStack getInstance() {
+        if (instance == null) {
+            new ScoreboardStack();
+        }
+        return instance;
+    }
+
     public static Scoreboard pull() {
         return stack.pop();
     }
 
     public static int size() {
         return stack.size();
-    }
-
-    public static ScoreboardStack getInstance() {
-        if (instance == null) {
-            new ScoreboardStack();
-        }
-        return instance;
     }
 }

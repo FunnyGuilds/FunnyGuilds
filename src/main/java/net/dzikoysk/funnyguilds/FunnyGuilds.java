@@ -142,10 +142,35 @@ public class FunnyGuilds extends JavaPlugin {
         }
     }
 
+    @Override
+    public InputStream getResource(String s) {
+        return super.getResource(s);
+    }
+
     public static Player[] getOnlinePlayers() {
         Collection<? extends Player> collection = Bukkit.getOnlinePlayers();
         Player[] array = new Player[collection.size()];
         return collection.toArray(array);
+    }
+
+    public boolean isDisabling() {
+        return disabling;
+    }
+
+    public static File getFolder() {
+        return funnyguilds.getDataFolder();
+    }
+
+    public static Thread getThread() {
+        return thread;
+    }
+
+    public static String getVersion() {
+        return funnyguilds.getDescription().getVersion();
+    }
+
+    public static FunnyGuilds getInstance() {
+        return funnyguilds;
     }
 
     public static void update(String content) {
@@ -198,31 +223,6 @@ public class FunnyGuilds extends JavaPlugin {
         error("End of Error.");
         error("");
         return false;
-    }
-
-    @Override
-    public InputStream getResource(String s) {
-        return super.getResource(s);
-    }
-
-    public boolean isDisabling() {
-        return disabling;
-    }
-
-    public static File getFolder() {
-        return funnyguilds.getDataFolder();
-    }
-
-    public static Thread getThread() {
-        return thread;
-    }
-
-    public static String getVersion() {
-        return funnyguilds.getDescription().getVersion();
-    }
-
-    public static FunnyGuilds getInstance() {
-        return funnyguilds;
     }
 
 }

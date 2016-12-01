@@ -18,6 +18,11 @@ public class PacketReceiveEvent extends Event implements Cancellable {
         this.cancelled = false;
     }
 
+    @Override
+    public void setCancelled(boolean b) {
+        cancelled = b;
+    }
+
     public Object getPacket() {
         return packet;
     }
@@ -42,11 +47,6 @@ public class PacketReceiveEvent extends Event implements Cancellable {
     @Override
     public boolean isCancelled() {
         return cancelled;
-    }
-
-    @Override
-    public void setCancelled(boolean b) {
-        cancelled = b;
     }
 
 }

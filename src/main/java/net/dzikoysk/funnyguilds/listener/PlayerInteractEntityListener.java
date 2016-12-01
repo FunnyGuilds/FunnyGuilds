@@ -24,7 +24,7 @@ public class PlayerInteractEntityListener implements Listener {
                 return;
             }
             Player clicked = (Player) entity;
-            new ExcPlayer().execute(event.getPlayer(), new String[]{clicked.getName()});
+            new ExcPlayer().execute(event.getPlayer(), new String[]{ clicked.getName() });
         }
         else if (entity instanceof EnderCrystal) {
             EnderCrystal ec = (EnderCrystal) entity;
@@ -39,7 +39,7 @@ public class PlayerInteractEntityListener implements Listener {
                 if (guild == null) {
                     return;
                 }
-                new ExcInfo().execute(event.getPlayer(), new String[]{guild.getTag()});
+                new ExcInfo().execute(event.getPlayer(), new String[]{ guild.getTag() });
             }
         }
     }

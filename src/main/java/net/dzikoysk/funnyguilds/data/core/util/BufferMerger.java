@@ -14,6 +14,10 @@ public class BufferMerger<T> {
         this.parts = new ArrayList<>(i);
     }
 
+    public void clear() {
+        this.parts.clear();
+    }
+
     public void add(T object, String... fields) {
         int i = this.parts.indexOf(object);
         if (i < 0) {
@@ -23,10 +27,6 @@ public class BufferMerger<T> {
             BufferPart<T> part = this.parts.get(i);
             part.add(fields);
         }
-    }
-
-    public void clear() {
-        this.parts.clear();
     }
 
 }

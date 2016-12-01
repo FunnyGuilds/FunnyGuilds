@@ -26,14 +26,6 @@ public class Action {
         this.values = values;
     }
 
-    public ActionType getActionType() {
-        return this.action;
-    }
-
-    public Object[] getValues() {
-        return this.values;
-    }
-
     public void execute() {
         switch (action) {
             case PLAYERLIST_SEND:
@@ -88,6 +80,14 @@ public class Action {
                 ((User) values[0]).getIndividualPrefix().addGuild((Guild) values[1]);
                 break;
         }
+    }
+
+    public ActionType getActionType() {
+        return this.action;
+    }
+
+    public Object[] getValues() {
+        return this.values;
     }
 
     @Override

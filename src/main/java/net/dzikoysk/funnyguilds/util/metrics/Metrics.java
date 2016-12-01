@@ -135,26 +135,6 @@ public class Metrics {
         }
     }
 
-    public boolean isOptOut() {
-        synchronized (optOutLock) {
-            try {
-                // Reload the metrics file
-                configuration.load(getConfigFile());
-            } catch (IOException ex) {
-                if (debug) {
-                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
-                }
-                return true;
-            } catch (InvalidConfigurationException ex) {
-                if (debug) {
-                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
-                }
-                return true;
-            }
-            return configuration.getBoolean("opt-out", false);
-        }
-    }
-
     public void enable() throws IOException {
         // This has to be synchronized or it can collide with the check in the task.
         synchronized (optOutLock) {
@@ -186,18 +166,6 @@ public class Metrics {
                 task = null;
             }
         }
-    }
-
-    public File getConfigFile() {
-        // I believe the easiest way to get the base folder (e.g craftbukkit set via -P) for plugins to use
-        // is to abuse the plugin object we already have
-        // plugin.getDataFolder() => base/plugins/PluginA/
-        // pluginsFolder => base/plugins/
-        // The base is not necessarily relative to the startup directory.
-        File pluginsFolder = plugin.getDataFolder().getParentFile();
-
-        // return => base/plugins/PluginMetrics/config.yml
-        return new File(new File(pluginsFolder, "PluginMetrics"), "config.yml");
     }
 
     private void postPlugin(final boolean isPing) throws IOException {
@@ -362,6 +330,47 @@ public class Metrics {
         }
     }
 
+    public boolean isOptOut() {
+        synchronized (optOutLock) {
+            try {
+                // Reload the metrics file
+                configuration.load(getConfigFile());
+            } catch (IOException ex) {
+                if (debug) {
+                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
+                }
+                return true;
+            } catch (InvalidConfigurationException ex) {
+                if (debug) {
+                    Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
+                }
+                return true;
+            }
+            return configuration.getBoolean("opt-out", false);
+        }
+    }
+
+    public File getConfigFile() {
+        // I believe the easiest way to get the base folder (e.g craftbukkit set via -P) for plugins to use
+        // is to abuse the plugin object we already have
+        // plugin.getDataFolder() => base/plugins/PluginA/
+        // pluginsFolder => base/plugins/
+        // The base is not necessarily relative to the startup directory.
+        File pluginsFolder = plugin.getDataFolder().getParentFile();
+
+        // return => base/plugins/PluginMetrics/config.yml
+        return new File(new File(pluginsFolder, "PluginMetrics"), "config.yml");
+    }
+
+    private boolean isMineshafterPresent() {
+        try {
+            Class.forName("mineshafter.MineServer");
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = null;
@@ -381,15 +390,6 @@ public class Metrics {
         }
 
         return baos.toByteArray();
-    }
-
-    private boolean isMineshafterPresent() {
-        try {
-            Class.forName("mineshafter.MineServer");
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     private static void appendJSONPair(StringBuilder json, String key, String value) throws UnsupportedEncodingException {
@@ -473,16 +473,19 @@ public class Metrics {
             this.name = name;
         }
 
-        public String getName() {
-            return name;
-        }
-
         public void addPlotter(final Plotter plotter) {
             plotters.add(plotter);
         }
 
         public void removePlotter(final Plotter plotter) {
             plotters.remove(plotter);
+        }
+
+        protected void onOptOut() {
+        }
+
+        public String getName() {
+            return name;
         }
 
         public Set<Plotter> getPlotters() {
@@ -503,9 +506,6 @@ public class Metrics {
             final Graph graph = (Graph) object;
             return graph.name.equals(name);
         }
-
-        protected void onOptOut() {
-        }
     }
 
     public static abstract class Plotter {
@@ -520,13 +520,13 @@ public class Metrics {
             this.name = name;
         }
 
+        public void reset() {
+        }
+
         public abstract int getValue();
 
         public String getColumnName() {
             return name;
-        }
-
-        public void reset() {
         }
 
         @Override

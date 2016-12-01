@@ -4,6 +4,10 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 
 public class SecurityUtils {
 
+    public static String getSecurityTag() {
+        return "&c!!!&4[FunnyGuilds]&c!!! ";
+    }
+
     public static String getBustedMessage(String name, String cheat) {
         return StringUtils.colored(
                 getSecurityTag() +
@@ -18,10 +22,6 @@ public class SecurityUtils {
                 getSecurityTag() +
                         "Notatka: &7" + note
         );
-    }
-
-    public static String getSecurityTag() {
-        return "&c!!!&4[FunnyGuilds]&c!!! ";
     }
 
 }

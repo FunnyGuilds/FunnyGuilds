@@ -21,7 +21,7 @@ public class Messages {
 
     public Messages() {
         instance = this;
-        Manager.loadDefaultFiles(new String[]{"messages.yml"});
+        Manager.loadDefaultFiles(new String[]{ "messages.yml" });
         Yamler pc = loadConfiguration();
         if (pc == null) {
             FunnyGuilds.error("[Messages] Messages.yml not loaded!");
@@ -58,7 +58,7 @@ public class Messages {
         }
         FunnyGuilds.info("Updating the plugin messages ...");
         messages.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "messages.old"));
-        Manager.loadDefaultFiles(new String[]{"messages.yml"});
+        Manager.loadDefaultFiles(new String[]{ "messages.yml" });
         pc = new Yamler(messages);
         FunnyGuilds.info("Successfully updated messages!");
         return pc;

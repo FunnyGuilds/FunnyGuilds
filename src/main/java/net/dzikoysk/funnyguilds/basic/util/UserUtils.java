@@ -10,6 +10,10 @@ public class UserUtils {
 
     private static final Collection<User> users = new ArrayList<>();
 
+    public static Collection<User> getUsers() {
+        return new ArrayList<>(users);
+    }
+
     public static boolean playedBefore(String s) {
         for (User u : users) {
             if (u.getName() != null && u.getName().equalsIgnoreCase(s)) {
@@ -58,9 +62,5 @@ public class UserUtils {
 
     public static void removeUser(User user) {
         users.remove(user);
-    }
-
-    public static Collection<User> getUsers() {
-        return new ArrayList<>(users);
     }
 }

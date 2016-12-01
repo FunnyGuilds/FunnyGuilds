@@ -13,10 +13,6 @@ public class Performer extends Command {
         super(command);
     }
 
-    public void setExecutor(ExecutorCaller caller) {
-        this.caller = caller;
-    }
-
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
         return this.caller != null && this.caller.onCommand(sender, this, commandLabel, args);
@@ -28,5 +24,9 @@ public class Performer extends Command {
             return null;
         }
         return caller.onTabComplete(sender, this, alias, args);
+    }
+
+    public void setExecutor(ExecutorCaller caller) {
+        this.caller = caller;
     }
 }

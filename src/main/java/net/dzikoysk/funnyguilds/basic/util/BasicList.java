@@ -23,34 +23,34 @@ public class BasicList<T> {
         this(16);
     }
 
-    public boolean add(Basic basic) {
-        return !this.contains(basic) && this.collection.add(basic);
-    }
-
     public boolean contains(Object o) {
         return this.collection.contains(o);
-    }
-
-    public boolean isEmpty() {
-        return this.collection.isEmpty();
-    }
-
-    public boolean remove(Object o) {
-        return this.collection.remove(o);
     }
 
     public int size() {
         return this.collection.size();
     }
 
-    @SuppressWarnings("unchecked")
-    public Collection<T> getCollection() {
-        return (Collection<T>) this.collection;
-    }
-
     public Basic[] toArray() {
         Basic[] array = new Basic[this.collection.size()];
         return this.collection.toArray(array);
+    }
+
+    public boolean add(Basic basic) {
+        return !this.contains(basic) && this.collection.add(basic);
+    }
+
+    public boolean remove(Object o) {
+        return this.collection.remove(o);
+    }
+
+    public boolean isEmpty() {
+        return this.collection.isEmpty();
+    }
+
+    @SuppressWarnings("unchecked")
+    public Collection<T> getCollection() {
+        return (Collection<T>) this.collection;
     }
 
     @Override

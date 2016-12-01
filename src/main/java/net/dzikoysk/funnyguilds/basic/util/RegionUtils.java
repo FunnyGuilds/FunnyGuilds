@@ -12,6 +12,10 @@ public class RegionUtils {
 
     public static List<Region> regions = new ArrayList<>();
 
+    public static Collection<Region> getRegions() {
+        return new ArrayList<Region>(regions);
+    }
+
     public static Region get(String name) {
         if (name == null) {
             return null;
@@ -69,10 +73,6 @@ public class RegionUtils {
         //if(Settings.getInstance().flat) Flat.getRegionFile(region).delete();
         //if(Settings.getInstance().mysql) new DatabaseRegion(region).delete();
         region.delete();
-    }
-
-    public static Collection<Region> getRegions() {
-        return new ArrayList<Region>(regions);
     }
 
     public static void addRegion(Region region) {

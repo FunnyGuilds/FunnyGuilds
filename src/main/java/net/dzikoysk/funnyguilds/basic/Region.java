@@ -33,15 +33,6 @@ public class Region implements Basic {
         this.guild = guild;
     }
 
-    public static Region get(String name) {
-        for (Region region : RegionUtils.getRegions()) {
-            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
-                return region;
-            }
-        }
-        return null;
-    }
-
     public void update() {
         if (this.center == null) {
             return;
@@ -94,6 +85,58 @@ public class Region implements Basic {
     }
 
     @Override
+    public void passVariable(String... field) {
+        DataCore.getInstance().save(this, field);
+    }
+
+    @Override
+    public Object getVariable(String field) throws Exception {
+        Field f = this.getClass().getDeclaredField(field);
+        f.setAccessible(true);
+        return f.get(this);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getVariable(String field, Class<T> clazz) throws Exception {
+        Field f = this.getClass().getDeclaredField(field);
+        f.setAccessible(true);
+        return (T) f.get(this);
+    }
+
+    public void setCenter(Location loc) {
+        this.center = loc;
+        this.world = loc.getWorld();
+        this.update();
+        this.passVariable("center");
+    }
+
+    public void setSize(int i) {
+        this.size = i;
+        this.update();
+        this.passVariable("size");
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+        this.update();
+        this.passVariable("world");
+    }
+
+    public void setL(Location loc) {
+        this.l = loc;
+    }
+
+    public void setP(Location loc) {
+        this.p = loc;
+    }
+
+    public void setEnlarge(int i) {
+        this.enlarge = i;
+        this.passVariable("enlarge");
+    }
+
+    @Override
     public String getName() {
         return this.guild != null ? this.guild.getName() : this.center.toString();
     }
@@ -106,56 +149,24 @@ public class Region implements Basic {
         return this.center;
     }
 
-    public void setCenter(Location loc) {
-        this.center = loc;
-        this.world = loc.getWorld();
-        this.update();
-        this.passVariable("center");
-    }
-
     public int getSize() {
         return this.size;
-    }
-
-    public void setSize(int i) {
-        this.size = i;
-        this.update();
-        this.passVariable("size");
     }
 
     public World getWorld() {
         return this.world;
     }
 
-    public void setWorld(World world) {
-        this.world = world;
-        this.update();
-        this.passVariable("world");
-    }
-
     public Location getL() {
         return this.l;
-    }
-
-    public void setL(Location loc) {
-        this.l = loc;
     }
 
     public Location getP() {
         return this.p;
     }
 
-    public void setP(Location loc) {
-        this.p = loc;
-    }
-
     public int getEnlarge() {
         return this.enlarge;
-    }
-
-    public void setEnlarge(int i) {
-        this.enlarge = i;
-        this.passVariable("enlarge");
     }
 
     public int getUpperX() {
@@ -195,26 +206,6 @@ public class Region implements Basic {
     }
 
     @Override
-    public void passVariable(String... field) {
-        DataCore.getInstance().save(this, field);
-    }
-
-    @Override
-    public Object getVariable(String field) throws Exception {
-        Field f = this.getClass().getDeclaredField(field);
-        f.setAccessible(true);
-        return f.get(this);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> T getVariable(String field, Class<T> clazz) throws Exception {
-        Field f = this.getClass().getDeclaredField(field);
-        f.setAccessible(true);
-        return (T) f.get(this);
-    }
-
-    @Override
     public BasicType getType() {
         return BasicType.REGION;
     }
@@ -222,6 +213,15 @@ public class Region implements Basic {
     @Override
     public String toString() {
         return this.guild != null ? this.guild.getName() : this.center.toString();
+    }
+
+    public static Region get(String name) {
+        for (Region region : RegionUtils.getRegions()) {
+            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
+                return region;
+            }
+        }
+        return null;
     }
 
 }

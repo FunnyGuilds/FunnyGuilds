@@ -14,6 +14,13 @@ public class NotificationBar {
 
     private static PlayerMap<FakeDragon> bars = new PlayerMap<>();
 
+    public static void remove(Player player) {
+        if (has(player)) {
+            sendPacket(player, bars.get(player).getDestroyPacket());
+            bars.remove(player);
+        }
+    }
+
     public static void set(final Player player, String text, float percent, int time) {
 
         remove(player);
@@ -51,13 +58,6 @@ public class NotificationBar {
                 NotificationBar.remove(player);
             }
         }, time * 20);
-    }
-
-    public static void remove(Player player) {
-        if (has(player)) {
-            sendPacket(player, bars.get(player).getDestroyPacket());
-            bars.remove(player);
-        }
     }
 
     public static boolean has(Player player) {
@@ -106,6 +106,32 @@ public class NotificationBar {
             this.world = Reflections.getHandle(loc.getWorld());
         }
 
+        public Object getMetaPacket(Object watcher) {
+            try {
+                Class<?> watcherClass = Reflections.getCraftClass("DataWatcher");
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
+                return packetClass.getConstructor(new Class<?>[]{ int.class, watcherClass, boolean.class }).newInstance(id, watcher, true);
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }
+
+        public Object getTeleportPacket(Location loc) {
+            try {
+                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityTeleport");
+                return packetClass.getConstructor(new Class<?>[]{ int.class, int.class, int.class, int.class, byte.class, byte.class }).newInstance(
+                        this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }
+
         public void setHealth(float percent) {
             this.health = percent / MAX_HEALTH;
         }
@@ -134,7 +160,7 @@ public class NotificationBar {
                 this.id = (Integer) Reflections.getMethod(EntityEnderDragon, "getId").invoke(dragon);
 
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
-                return packetClass.getConstructor(new Class<?>[]{EntityLiving}).newInstance(dragon);
+                return packetClass.getConstructor(new Class<?>[]{ EntityLiving }).newInstance(dragon);
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
@@ -146,33 +172,7 @@ public class NotificationBar {
         public Object getDestroyPacket() {
             try {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
-            } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }
-
-        public Object getMetaPacket(Object watcher) {
-            try {
-                Class<?> watcherClass = Reflections.getCraftClass("DataWatcher");
-                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
-                return packetClass.getConstructor(new Class<?>[]{int.class, watcherClass, boolean.class}).newInstance(id, watcher, true);
-            } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-        }
-
-        public Object getTeleportPacket(Location loc) {
-            try {
-                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityTeleport");
-                return packetClass.getConstructor(new Class<?>[]{int.class, int.class, int.class, int.class, byte.class, byte.class}).newInstance(
-                        this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
+                return packetClass.getConstructor(new Class<?>[]{ int[].class }).newInstance(new int[]{ id });
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
@@ -186,8 +186,8 @@ public class NotificationBar {
             Class<?> DataWatcher = Reflections.getCraftClass("DataWatcher");
 
             try {
-                Object watcher = DataWatcher.getConstructor(new Class<?>[]{Entity}).newInstance(dragon);
-                Method a = Reflections.getMethod(DataWatcher, "a", new Class<?>[]{int.class, Object.class});
+                Object watcher = DataWatcher.getConstructor(new Class<?>[]{ Entity }).newInstance(dragon);
+                Method a = Reflections.getMethod(DataWatcher, "a", new Class<?>[]{ int.class, Object.class });
 
                 a.invoke(watcher, 0, visible ? (byte) 0 : (byte) 0x20);
                 a.invoke(watcher, 6, (Float) health);
@@ -259,11 +259,6 @@ public class NotificationBar {
         }
 
         @Override
-        public boolean isEmpty() {
-            return contents.isEmpty();
-        }
-
-        @Override
         public Set<Player> keySet() {
             Set<Player> toReturn = new HashSet<Player>();
             for (String name : contents.keySet()) {
@@ -288,6 +283,16 @@ public class NotificationBar {
         }
 
         @Override
+        public int size() {
+            return contents.size();
+        }
+
+        @Override
+        public Collection<V> values() {
+            return contents.values();
+        }
+
+        @Override
         public V remove(Object key) {
             if (key instanceof Player) {
                 return contents.remove(((Player) key).getName());
@@ -299,13 +304,8 @@ public class NotificationBar {
         }
 
         @Override
-        public int size() {
-            return contents.size();
-        }
-
-        @Override
-        public Collection<V> values() {
-            return contents.values();
+        public boolean isEmpty() {
+            return contents.isEmpty();
         }
 
         @Override
@@ -324,6 +324,13 @@ public class NotificationBar {
             }
 
             @Override
+            public V setValue(V value) {
+                V toReturn = this.value;
+                this.value = value;
+                return toReturn;
+            }
+
+            @Override
             public Player getKey() {
                 return key;
             }
@@ -331,13 +338,6 @@ public class NotificationBar {
             @Override
             public V getValue() {
                 return value;
-            }
-
-            @Override
-            public V setValue(V value) {
-                V toReturn = this.value;
-                this.value = value;
-                return toReturn;
             }
 
         }

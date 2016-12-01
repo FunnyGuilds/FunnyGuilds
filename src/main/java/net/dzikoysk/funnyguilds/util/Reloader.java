@@ -25,15 +25,15 @@ public class Reloader {
         init = true;
     }
 
+    public static int getReloadCount() {
+        return reloadCount;
+    }
+
     public static boolean wasReloaded() {
         if (!init) {
             new Reloader().init();
         }
         return reloaded;
-    }
-
-    public static int getReloadCount() {
-        return reloadCount;
     }
 
 }

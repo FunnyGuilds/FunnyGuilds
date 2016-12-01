@@ -8,10 +8,6 @@ public class FightUtils {
 
     private static HashMap<User, Long> map = new HashMap<>();
 
-    public static void attacked(User victim) {
-        map.put(victim, System.currentTimeMillis());
-    }
-
     public boolean check(User user) {
         if (map.containsKey(user)) {
             if (map.get(user) > System.currentTimeMillis()) {
@@ -19,5 +15,9 @@ public class FightUtils {
             }
         }
         return false;
+    }
+
+    public static void attacked(User victim) {
+        map.put(victim, System.currentTimeMillis());
     }
 }
