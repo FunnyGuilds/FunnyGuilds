@@ -13,23 +13,28 @@ public class TimeUtils {
         if (days > 0) {
             millis -= TimeUnit.DAYS.toMillis(days);
         }
+
         long hours = TimeUnit.MILLISECONDS.toHours(millis);
         if (hours > 0) {
             millis -= TimeUnit.HOURS.toMillis(hours);
         }
+
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
         if (minutes > 0) {
             millis -= TimeUnit.MINUTES.toMillis(minutes);
         }
+
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
         if (seconds > 0) {
             millis -= TimeUnit.SECONDS.toMillis(seconds);
         }
 
         StringBuilder sb = new StringBuilder();
+
         if (days > 0) {
             sb.append(days);
             long i = days % 10;
+
             if (i == 1) {
                 sb.append(" dzien ");
             }
@@ -40,6 +45,7 @@ public class TimeUtils {
         if (hours > 0) {
             sb.append(hours);
             long i = hours % 10;
+
             if (i == 1) {
                 sb.append(" godzine ");
             }
@@ -53,6 +59,7 @@ public class TimeUtils {
         if (minutes > 0) {
             sb.append(minutes);
             long i = minutes % 10;
+
             if (i == 1) {
                 sb.append(" minute ");
             }
@@ -66,6 +73,7 @@ public class TimeUtils {
         if (seconds > 0) {
             sb.append(seconds);
             long i = seconds % 10;
+
             if (i == 1) {
                 sb.append("sekunde ");
             }
@@ -76,6 +84,7 @@ public class TimeUtils {
                 sb.append("sekund ");
             }
         }
+
         return (sb.toString());
     }
 

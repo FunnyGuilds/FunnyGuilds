@@ -158,17 +158,17 @@ public class Flat {
         switch (type) {
             case GUILD: {
                 File file = new File(GUILDS + File.separator + name + ".yml");
-                IOUtils.initizalize(file, true);
+                IOUtils.initialize(file, true);
                 return file;
             }
             case REGION: {
                 File file = new File(REGIONS + File.separator + name + ".yml");
-                IOUtils.initizalize(file, true);
+                IOUtils.initialize(file, true);
                 return file;
             }
             case USER: {
                 File file = new File(USERS + File.separator + name + ".yml");
-                IOUtils.initizalize(file, true);
+                IOUtils.initialize(file, true);
                 return file;
             }
             default:

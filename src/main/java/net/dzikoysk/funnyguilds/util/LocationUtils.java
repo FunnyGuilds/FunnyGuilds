@@ -11,4 +11,5 @@ public class LocationUtils {
     public static boolean equalsFlat(Location f, Location s) {
         return (f.getBlockX() == s.getBlockX() && f.getBlockZ() == s.getBlockZ());
     }
+
 }

@@ -5,11 +5,10 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.concurrent.TimeoutException;
 
 public class IOUtils {
 
-    public static File initizalize(File file, boolean b) {
+    public static File initialize(File file, boolean b) {
         if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
@@ -30,18 +29,23 @@ public class IOUtils {
 
     public static String getContent(String s) {
         String body = null;
+        InputStream in = null;
+
         try {
             URL url = new URL(s);
             URLConnection con = url.openConnection();
-            InputStream in = con.getInputStream();
+            con.setRequestProperty("User-Agent", "Mozilla/5.0");
+            in = con.getInputStream();
             String encoding = con.getContentEncoding();
             encoding = encoding == null ? "UTF-8" : encoding;
             body = IOUtils.toString(in, encoding);
-        } catch (TimeoutException e) {
-            FunnyGuilds.info(e.getMessage());
+            in.close();
         } catch (Exception e) {
-            FunnyGuilds.warning(e.getMessage());
+            e.printStackTrace();
+        } finally {
+            close(in);
         }
+
         return body;
     }
 
@@ -89,6 +93,18 @@ public class IOUtils {
             baos.write(buf, 0, len);
         }
         return new String(baos.toByteArray(), encoding);
+    }
+
+    public static void close(Closeable closeable) {
+        if (closeable == null) {
+            return;
+        }
+
+        try {
+            closeable.close();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
 }

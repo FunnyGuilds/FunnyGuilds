@@ -6,6 +6,6 @@ public enum BasicType {
     OFFLINE_USER,
     RANK,
     REGION,
-    USER;
+    USER
 
 }

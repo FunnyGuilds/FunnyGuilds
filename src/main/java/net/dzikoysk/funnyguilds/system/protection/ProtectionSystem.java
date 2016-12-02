@@ -20,11 +20,8 @@ public class ProtectionSystem {
         if (region == null) {
             return false;
         }
-        if (region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
-                .equals(loc.getBlock().getLocation().toVector())) {
-            return true;
-        }
-        return false;
+        return region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
+                .equals(loc.getBlock().getLocation().toVector());
     }
 
     public static boolean build(Player player, Location location, boolean build) {

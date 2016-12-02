@@ -16,10 +16,12 @@ public class Yamler extends YamlConfiguration {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
+
             super.load(file);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         this.file = file;
     }
 
@@ -30,6 +32,7 @@ public class Yamler extends YamlConfiguration {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
+
             super.save(file);
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,6 +45,7 @@ public class Yamler extends YamlConfiguration {
                 file.getParentFile().mkdirs();
                 file.createNewFile();
             }
+
             super.save(this.file);
         } catch (IOException e) {
             e.printStackTrace();

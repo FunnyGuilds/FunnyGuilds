@@ -15,4 +15,5 @@ public class ItemUtils {
 
         return is1.getType().equals(is2.getType()) && is1.getDurability() == is2.getDurability();
     }
+
 }

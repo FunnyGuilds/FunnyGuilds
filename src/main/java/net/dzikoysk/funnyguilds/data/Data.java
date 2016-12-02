@@ -9,8 +9,8 @@ import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
-import net.dzikoysk.panda.util.configuration.PandaConfiguration;
 import org.bukkit.Bukkit;
+import org.panda_lang.panda.util.configuration.PandaConfiguration;
 
 import java.io.File;
 import java.util.List;
@@ -21,6 +21,7 @@ public class Data {
     private static final File DATA = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data");
     private static Data instance;
     private static File folder;
+
     public Data() {
         folder = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "data");
         instance = this;
@@ -120,7 +121,7 @@ public class Data {
         return new File(folder, "playerlist.yml");
     }
 
-    public static final File getDataFolder() {
+    public static File getDataFolder() {
         return DATA;
     }
 
@@ -131,6 +132,6 @@ public class Data {
         return new Data();
     }
 
-    private static enum DO {SAVE, LOAD;}
+    private enum DO {SAVE, LOAD}
 
 }

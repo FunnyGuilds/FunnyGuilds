@@ -17,17 +17,14 @@ public class Parser {
 
     @SuppressWarnings("deprecation")
     public static ItemStack parseItem(String string) {
-        String item = string;
-        Integer amount = Integer.parseInt(item.substring(0, item.indexOf(' ')));
-        String type = item.substring(item.indexOf(' ') + 1);
-        if (type == null) {
-            type = item;
-            amount = 1;
-        }
+        Integer amount = Integer.parseInt(string.substring(0, string.indexOf(' ')));
+        String type = string.substring(string.indexOf(' ') + 1);
+
         type = type.toUpperCase();
         type = type.replaceAll(" ", "_");
         Material material = Material.getMaterial(type);
-        ItemStack itemstack = null;
+        ItemStack itemstack;
+
         if (material == null) {
             if (type.equalsIgnoreCase("Enchanted_Golden_Apple")) {
                 itemstack = new ItemStack(322, 1);
@@ -40,6 +37,7 @@ public class Parser {
         else {
             itemstack = new ItemStack(material);
         }
+
         itemstack.setAmount(amount);
         return itemstack;
     }
@@ -66,27 +64,34 @@ public class Parser {
         if (string == null) {
             return null;
         }
+
         String[] shs = string.split(",");
+
         if (shs.length < 4) {
             return null;
         }
+
         World world = Bukkit.getWorld(shs[0]);
+
         if (world == null) {
             world = Bukkit.getWorlds().get(0);
         }
-        Location loc = new Location(world, Integer.valueOf(shs[1]), Integer.valueOf(shs[2]), Integer.valueOf(shs[3]));
-        return loc;
+
+        return new Location(world, Integer.valueOf(shs[1]), Integer.valueOf(shs[2]), Integer.valueOf(shs[3]));
     }
 
     public static String parseRank(String string) {
         if (!string.contains("TOP-")) {
             return null;
         }
+
         StringBuilder sb = new StringBuilder();
         boolean open = false;
         boolean start = false;
+
         for (char c : string.toCharArray()) {
             boolean end = false;
+
             switch (c) {
                 case '{':
                     open = true;
@@ -102,14 +107,18 @@ public class Parser {
                         sb.append(c);
                     }
             }
+
             if (end) {
                 break;
             }
         }
+
         try {
             int i = Integer.valueOf(sb.toString());
+
             if (string.contains("GTOP")) {
                 Guild guild = RankManager.getInstance().getGuild(i);
+
                 if (guild != null) {
                     return StringUtils
                             .replace(string, "{GTOP-" + Integer.toString(i) + '}',
@@ -125,6 +134,7 @@ public class Parser {
             }
             else if (string.contains("PTOP")) {
                 User user = RankManager.getInstance().getUser(i);
+
                 if (user != null) {
                     return StringUtils
                             .replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
@@ -137,6 +147,7 @@ public class Parser {
         } catch (NumberFormatException e) {
             FunnyGuilds.parser("Unknown number: " + sb.toString());
         }
+
         return null;
     }
 
@@ -183,6 +194,7 @@ public class Parser {
                             return time;
                         }
                     }
+
                     type.push(c);
                     calc = true;
                     break;
@@ -191,6 +203,7 @@ public class Parser {
                     break;
             }
         }
+
         return time;
     }
 
@@ -198,6 +211,7 @@ public class Parser {
         if (loc == null) {
             return null;
         }
+
         StringBuilder sb = new StringBuilder();
         sb.append(loc.getWorld().getName());
         sb.append(",");
@@ -206,6 +220,8 @@ public class Parser {
         sb.append(loc.getBlockY());
         sb.append(",");
         sb.append(loc.getBlockZ());
+
         return sb.toString();
     }
+
 }

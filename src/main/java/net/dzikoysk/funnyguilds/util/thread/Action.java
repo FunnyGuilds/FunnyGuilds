@@ -113,10 +113,7 @@ public class Action {
         if (action != a.getActionType()) {
             return false;
         }
-        if (values == null && a.getValues() == null) {
-            return true;
-        }
-        return false;
+        return values == null && a.getValues() == null;
     }
 
 }

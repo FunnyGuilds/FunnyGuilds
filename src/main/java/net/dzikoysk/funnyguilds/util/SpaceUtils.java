@@ -8,7 +8,7 @@ import java.util.List;
 public class SpaceUtils {
 
     public static List<Location> sphere(Location loc, int radius, int height, boolean hollow, boolean sphere, int plusY) {
-        List<Location> circleblocks = new ArrayList<Location>();
+        List<Location> circleblocks = new ArrayList<>();
         int cx = loc.getBlockX();
         int cy = loc.getBlockY();
         int cz = loc.getBlockZ();
@@ -25,6 +25,7 @@ public class SpaceUtils {
                 }
             }
         }
+
         return circleblocks;
     }
 }

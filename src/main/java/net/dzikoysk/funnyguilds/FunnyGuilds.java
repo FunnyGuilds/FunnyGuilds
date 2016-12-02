@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
-import net.dzikoysk.funnyguilds.script.ScriptManager;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
@@ -57,7 +56,6 @@ public class FunnyGuilds extends JavaPlugin {
         new AsynchronouslyRepeater().start();
         new Ticking().start();
         new MetricsCollector().start();
-        new ScriptManager().start();
 
         EventManager em = EventManager.getEventManager();
         em.enable();
@@ -90,7 +88,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         patch();
         update();
-        info("~ Created by & � Dzikoysk ~");
+        info("~ Created by & \u2764 Dzikoysk ~");
     }
 
     @Override

@@ -74,10 +74,7 @@ public class User implements Basic {
     }
 
     public boolean hasGuild() {
-        if (this.guild == null) {
-            return false;
-        }
-        return true;
+        return this.guild != null;
     }
 
     @Override
@@ -165,10 +162,7 @@ public class User implements Basic {
         if (!hasGuild()) {
             return false;
         }
-        if (this.guild.getOwner().equals(this)) {
-            return true;
-        }
-        return false;
+        return this.guild.getOwner().equals(this);
     }
 
     public boolean isDeputy() {
@@ -178,10 +172,7 @@ public class User implements Basic {
         if (this.guild.getDeputy() == null) {
             return false;
         }
-        if (this.guild.getDeputy().equals(this)) {
-            return true;
-        }
-        return false;
+        return this.guild.getDeputy().equals(this);
     }
 
     public boolean isOnline() {
@@ -189,10 +180,7 @@ public class User implements Basic {
             return false;
         }
         Player player = Bukkit.getPlayer(this.name);
-        if (player != null && player.getName().equals(this.name) && player.isOnline()) {
-            return true;
-        }
-        return false;
+        return player != null && player.getName().equals(this.name) && player.isOnline();
     }
 
     public boolean isBanned() {
@@ -348,10 +336,7 @@ public class User implements Basic {
         if (u.getUUID() != this.uuid) {
             return false;
         }
-        if (u.getName() != this.name) {
-            return false;
-        }
-        return true;
+        return u.getName() == this.name;
     }
 
     @Override

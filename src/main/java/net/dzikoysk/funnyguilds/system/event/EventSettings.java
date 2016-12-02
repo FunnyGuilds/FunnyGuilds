@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.system.event;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Manager;
-import net.dzikoysk.panda.util.configuration.PandaConfiguration;
+import org.panda_lang.panda.util.configuration.PandaConfiguration;
 
 import java.io.File;
 

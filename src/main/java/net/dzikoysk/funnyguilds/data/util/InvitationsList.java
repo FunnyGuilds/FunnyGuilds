@@ -36,10 +36,7 @@ public class InvitationsList {
         if (ls == null) {
             ls = new ArrayList<String>();
         }
-        if (this.ls.contains(s.toLowerCase())) {
-            return true;
-        }
-        return false;
+        return this.ls.contains(s.toLowerCase());
     }
 
     public void add(String s) {

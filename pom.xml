@@ -5,7 +5,7 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.0</version>
+    <version>3.9.9.2</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -40,7 +40,7 @@
             <url>https://repo.panda-lang.org/</url>
         </repository>
         <repository>
-            <id>craftbukkit-temp-repo</id>
+            <id>bukkit-temp-repo</id>
             <url>http://repo.mikeprimm.com</url>
         </repository>
         <repository>

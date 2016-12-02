@@ -132,7 +132,6 @@ public class Guild implements Basic {
     public void updateRank() {
         this.getRank();
         RankManager.getInstance().update(this);
-        ;
     }
 
     @Override
@@ -273,10 +272,7 @@ public class Guild implements Basic {
             this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
             this.changes();
         }
-        if (this.validity >= System.currentTimeMillis()) {
-            return true;
-        }
-        return false;
+        return this.validity >= System.currentTimeMillis();
     }
 
     public boolean isBanned() {

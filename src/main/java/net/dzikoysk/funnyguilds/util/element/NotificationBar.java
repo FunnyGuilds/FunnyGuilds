@@ -188,14 +188,14 @@ public class NotificationBar {
 
             try {
                 Object watcher = DataWatcher.getConstructor(new Class<?>[]{ Entity }).newInstance(dragon);
-                Method a = Reflections.getMethod(DataWatcher, "a", new Class<?>[]{ int.class, Object.class });
+                Method a = Reflections.getMethod(DataWatcher, "a", int.class, Object.class);
 
                 a.invoke(watcher, 0, visible ? (byte) 0 : (byte) 0x20);
-                a.invoke(watcher, 6, (Float) health);
-                a.invoke(watcher, 7, (Integer) 0);
-                a.invoke(watcher, 8, (Byte) (byte) 0);
+                a.invoke(watcher, 6, health);
+                a.invoke(watcher, 7, 0);
+                a.invoke(watcher, 8, (byte) 0);
                 a.invoke(watcher, 10, name);
-                a.invoke(watcher, 11, (Byte) (byte) 1);
+                a.invoke(watcher, 11, (byte) 1);
                 return watcher;
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {

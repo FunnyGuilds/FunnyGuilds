@@ -142,10 +142,7 @@ public class Rank implements Comparable<Rank> {
         if (rank.getType() != type) {
             return false;
         }
-        if (!rank.getIDNS().equalsIgnoreCase(idns)) {
-            return false;
-        }
-        return true;
+        return rank.getIDNS().equalsIgnoreCase(idns);
     }
 
     @Override

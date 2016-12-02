@@ -48,10 +48,7 @@ public class PlayerChat implements Listener {
         if (ally(event, message, c, player, guild)) {
             return true;
         }
-        if (priv(event, message, c, player, guild)) {
-            return true;
-        }
-        return false;
+        return priv(event, message, c, player, guild);
     }
 
     private boolean priv(AsyncPlayerChatEvent event, String message, Settings c, Player player, Guild guild) {

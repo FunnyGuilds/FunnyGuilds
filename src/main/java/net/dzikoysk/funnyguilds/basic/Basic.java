@@ -4,12 +4,12 @@ import net.dzikoysk.funnyguilds.basic.util.BasicType;
 
 public interface Basic {
 
-    public void changes();
+    void changes();
 
-    public boolean changed();
+    boolean changed();
 
-    public BasicType getType();
+    BasicType getType();
 
-    public String getName();
+    String getName();
 
 }

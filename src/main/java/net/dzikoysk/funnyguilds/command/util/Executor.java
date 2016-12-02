@@ -4,6 +4,6 @@ import org.bukkit.command.CommandSender;
 
 public interface Executor {
 
-    public void execute(CommandSender sender, String[] args);
+    void execute(CommandSender sender, String[] args);
 
 }
