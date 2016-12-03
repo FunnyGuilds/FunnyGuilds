@@ -21,11 +21,18 @@ public class PacketReceive implements Listener {
             if (!event.getPacketName().equals("PacketPlayInUseEntity")) {
                 return;
             }
+            
             Object packet = event.getPacket();
+            
+            if (packet == null) {
+                return;   
+            }
+            
             final Player player = event.getPlayer();
             int id = Reflections.getPrivateField(packet.getClass(), "a").getInt(packet);
             Object actionEnum = Reflections.getPrivateField(packet.getClass(), "action").get(packet);
             int action = Reflections.getPrivateField(actionEnum.getClass(), "d").getInt(actionEnum);
+            
             for (final Entry<Guild, Integer> entry : EntityUtil.map.entrySet()) {
                 if (!entry.getValue().equals(id)) {
                     continue;
