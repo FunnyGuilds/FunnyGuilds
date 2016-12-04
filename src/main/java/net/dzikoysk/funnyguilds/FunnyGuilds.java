@@ -223,4 +223,5 @@ public class FunnyGuilds extends JavaPlugin {
         error("");
         return false;
     }
+
 }
