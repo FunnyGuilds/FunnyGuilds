@@ -155,9 +155,10 @@ dummy-suffix: 'pkt'
 # {PLAYER} - Gracz
 # {PING} - Ping
 # {TPS} - TPS
-# {GUILD} - Gildia
-# {TAG} - Tag gildii
+# {GUILD} - Gildia do której należy gracz
+# {TAG} - Tag gildii gracza
 # {POINTS} - Punkty
+# {RANK} - pozycja w rankingu gracza
 # {KILLS} - Zabojstwa
 # {DEATHS} - Smierci
 # {SECOND} - Sekunda
@@ -165,6 +166,10 @@ dummy-suffix: 'pkt'
 # {HOUR} - Godzina
 # {PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu (np. {PTOP-1}, {PTOP-60})
 # {GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})
+# {GPOINTS} - punkty gildii
+# {GRANK} - pozycja gildii w rankingu
+# {SIZE} - wielkość terenu gildii
+# {LIVES} - życia gildii
 player-list:
   1: '&7Nick: &b{PLAYER}'
   2: '&7Ping: &b{PING}'

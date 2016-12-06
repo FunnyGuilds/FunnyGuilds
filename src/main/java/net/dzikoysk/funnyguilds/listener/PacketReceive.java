@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.lang.reflect.Field;
 import java.util.Map.Entry;
 
 public class PacketReceive implements Listener {
@@ -27,25 +28,48 @@ public class PacketReceive implements Listener {
             if (packet == null) {
                 return;   
             }
-            
-            final Player player = event.getPlayer();
-            int id = Reflections.getPrivateField(packet.getClass(), "a").getInt(packet);
-            Object actionEnum = Reflections.getPrivateField(packet.getClass(), "action").get(packet);
+
+            Field aField = Reflections.getPrivateField(packet.getClass(), "a");
+
+            if (aField == null) {
+                return;
+            }
+
+            int id = aField.getInt(packet);
+            Field actionField = Reflections.getPrivateField(packet.getClass(), "action");
+
+            if (actionField == null) {
+                return;
+            }
+
+            Object actionEnum = actionField.get(packet);
+
+            if (actionEnum == null) {
+                return;
+            }
+
+            Player player = event.getPlayer();
             int action = Reflections.getPrivateField(actionEnum.getClass(), "d").getInt(actionEnum);
             
             for (final Entry<Guild, Integer> entry : EntityUtil.map.entrySet()) {
                 if (!entry.getValue().equals(id)) {
                     continue;
                 }
+
                 Guild guild = entry.getKey();
+
                 if (SecuritySystem.getSecurity().checkPlayer(player, guild)) {
                     return;
                 }
+
                 if (action == 1) {
                     WarSystem.getInstance().attack(player, entry.getKey());
                 }
                 else {
-                    new ExcInfo().execute(player, new String[]{ entry.getKey().getTag() });
+                    ExcInfo excInfo = new ExcInfo();
+                    String[] parameters = new String[]{ entry.getKey().getTag() };
+
+                    excInfo.execute(player, parameters);
                 }
             }
         } catch (Exception e) {

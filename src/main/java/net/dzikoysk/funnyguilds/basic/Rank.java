@@ -10,6 +10,7 @@ public class Rank implements Comparable<Rank> {
     private String idns;
     private Guild guild;
     private User user;
+    private int position;
     private int points;
     private int kills;
     private int deaths;
@@ -65,6 +66,10 @@ public class Rank implements Comparable<Rank> {
         return i;
     }
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     public void setPoints(int i) {
         this.points = i;
         this.basic.changes();
@@ -87,19 +92,28 @@ public class Rank implements Comparable<Rank> {
         else {
             double points = 0;
             int size = guild.getMembers().size();
+
             if (size == 0) {
                 return 0;
             }
+
             for (User user : guild.getMembers()) {
                 points += user.getRank().getPoints();
             }
+
             double calc = points / size;
+
             if (calc != this.points) {
                 this.points = (int) calc;
                 this.basic.changes();
             }
+
             return this.points;
         }
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     public int getKills() {
@@ -135,13 +149,17 @@ public class Rank implements Comparable<Rank> {
         if (o == null) {
             return false;
         }
+
         if (o.getClass() != this.getClass()) {
             return false;
         }
+
         Rank rank = (Rank) o;
+
         if (rank.getType() != type) {
             return false;
         }
+
         return rank.getIDNS().equalsIgnoreCase(idns);
     }
 

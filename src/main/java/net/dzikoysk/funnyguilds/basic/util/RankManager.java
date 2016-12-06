@@ -6,12 +6,13 @@ import net.dzikoysk.funnyguilds.basic.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class RankManager {
 
     private static RankManager instance;
-    private final ArrayList<Rank> users = new ArrayList<>();
-    private final ArrayList<Rank> guilds = new ArrayList<>();
+    private final List<Rank> users = new ArrayList<>();
+    private final List<Rank> guilds = new ArrayList<>();
 
     public RankManager() {
         instance = this;
@@ -21,9 +22,16 @@ public class RankManager {
         if (!this.users.contains(user.getRank())) {
             this.users.add(user.getRank());
         }
+
         Collections.sort(this.users);
+
         if (user.hasGuild()) {
             update(user.getGuild());
+        }
+
+        for (int i = 0; i < guilds.size(); i++) {
+            Rank rank = guilds.get(i);
+            rank.setPosition(i + 1);
         }
     }
 
@@ -33,6 +41,11 @@ public class RankManager {
         }
         else {
             Collections.sort(this.guilds);
+
+            for (int i = 0; i < guilds.size(); i++) {
+                Rank rank = guilds.get(i);
+                rank.setPosition(i + 1);
+            }
         }
     }
 
@@ -82,4 +95,5 @@ public class RankManager {
         }
         return instance;
     }
+
 }
