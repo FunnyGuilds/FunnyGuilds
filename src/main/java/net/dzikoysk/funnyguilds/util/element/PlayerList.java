@@ -150,9 +150,11 @@ public class PlayerList {
 
     public void send() {
         Player player = Bukkit.getPlayer(user.getName());
+
         if (player == null) {
             return;
         }
+
         update();
         split();
         PlayerListManager.send(player);
@@ -173,4 +175,5 @@ public class PlayerList {
     public boolean getInit() {
         return init;
     }
+
 }

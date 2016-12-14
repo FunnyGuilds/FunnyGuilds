@@ -23,14 +23,14 @@ public class RankManager {
             this.users.add(user.getRank());
         }
 
-        Collections.sort(this.users);
+        Collections.sort(users);
 
         if (user.hasGuild()) {
             update(user.getGuild());
         }
 
-        for (int i = 0; i < guilds.size(); i++) {
-            Rank rank = guilds.get(i);
+        for (int i = 0; i < users.size(); i++) {
+            Rank rank = users.get(i);
             rank.setPosition(i + 1);
         }
     }
@@ -40,7 +40,7 @@ public class RankManager {
             this.guilds.add(guild.getRank());
         }
         else {
-            Collections.sort(this.guilds);
+            Collections.sort(guilds);
 
             for (int i = 0; i < guilds.size(); i++) {
                 Rank rank = guilds.get(i);
