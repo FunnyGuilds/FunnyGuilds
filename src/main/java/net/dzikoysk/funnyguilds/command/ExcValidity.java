@@ -41,8 +41,9 @@ public class ExcValidity implements Executor {
             long c = guild.getValidity();
             long d = c - System.currentTimeMillis();
             if (d > s.validityWhen) {
+                long when = d - s.validityWhen;
                 p.sendMessage(m.getMessage("validityWhen")
-                        .replace("{TIME}", TimeUtils.getDurationBreakdown(d))
+                        .replace("{TIME}", TimeUtils.getDurationBreakdown(when))
                 );
                 return;
             }
