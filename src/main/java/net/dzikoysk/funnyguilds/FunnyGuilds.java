@@ -131,9 +131,14 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void patch() {
         for (final Player player : Bukkit.getOnlinePlayers()) {
-            Bukkit.getScheduler().runTask(this, () -> {
-                PacketExtension.registerPlayer(player);
+            Bukkit.getScheduler().runTask(this, new Runnable() {
+                @Override
+                public void run() {
+                    PacketExtension.registerPlayer(player);
+
+                }
             });
+
             User user = User.get(player);
             user.getScoreboard();
             user.getDummy();
@@ -190,10 +195,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static boolean exception(Throwable cause) {
-        if (cause == null) {
-            return true;
-        }
-        return exception(cause.getMessage(), cause.getStackTrace());
+        return cause == null || exception(cause.getMessage(), cause.getStackTrace());
     }
 
     public static boolean exception(String cause, StackTraceElement[] ste) {

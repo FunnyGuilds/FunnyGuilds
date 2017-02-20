@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
-import net.dzikoysk.funnyguilds.util.reflect.event.PacketReceiveEvent;
+import net.dzikoysk.funnyguilds.util.reflect.event.AsyncPacketReceiveEvent;
 import net.minecraft.util.io.netty.channel.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -55,17 +55,17 @@ public class PacketExtension {
                         if (msg == null) {
                             return;
                         }
-                        PacketReceiveEvent event = new PacketReceiveEvent(msg, p);
+
+                        AsyncPacketReceiveEvent event = new AsyncPacketReceiveEvent(msg, p);
                         Bukkit.getPluginManager().callEvent(event);
-                        if (event.isCancelled() || event.getPacket() == null) {
-                            return;
-                        }
+
                         super.channelRead(ctx, event.getPacket());
                     } catch (Exception e) {
                         super.channelRead(ctx, msg);
                     }
                 }
             };
+
             ChannelPipeline cp = c.pipeline();
             if (cp.names().contains("packet_handler")) {
                 if (cp.names().contains("FunnyGuilds")) {

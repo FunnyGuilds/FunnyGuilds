@@ -10,7 +10,7 @@ public class IndependentThread extends Thread {
     private static IndependentThread instance;
     private static List<Action> temp = new ArrayList<>();
     private List<Action> actions = new ArrayList<>();
-    private Object locker = new Object();
+    private final Object locker = new Object();
 
     public IndependentThread() {
         instance = this;
@@ -23,9 +23,10 @@ public class IndependentThread extends Thread {
     public void run() {
         while (true) {
             try {
-                List<Action> currently = new ArrayList<Action>(actions);
+                List<Action> currently = new ArrayList<>(actions);
                 actions.clear();
                 execute(currently);
+
                 synchronized (locker) {
                     locker.wait();
                 }
@@ -40,12 +41,15 @@ public class IndependentThread extends Thread {
     private void execute(List<Action> actions) {
         for (Action action : actions) {
             try {
+                if (action == null) {
+                    continue;
+                }
+
                 action.execute();
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
                 }
-                continue;
             }
         }
     }
@@ -54,22 +58,27 @@ public class IndependentThread extends Thread {
         if (instance == null) {
             new IndependentThread().start();
         }
+
         return instance;
     }
 
-    public static void action(Action... actions) {
+    private static void action(Action... actions) {
         IndependentThread it = getInstance();
+
         for (Action action : temp) {
             if (!it.actions.contains(action)) {
                 it.actions.add(action);
             }
         }
+
         for (Action action : actions) {
             if (!it.actions.contains(action)) {
                 it.actions.add(action);
             }
         }
+
         temp.clear();
+
         synchronized (getInstance().locker) {
             getInstance().locker.notify();
         }
@@ -96,4 +105,5 @@ public class IndependentThread extends Thread {
             temp.add(action);
         }
     }
+
 }

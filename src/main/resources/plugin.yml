@@ -1,6 +1,6 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: 3.9.9.5 Cleaned
+version: 3.9.9.6 Cleaned
 author: Dzikoysk
 website: http://www.dzikoysk.net/
 loadbefore: [WorldEdit]
