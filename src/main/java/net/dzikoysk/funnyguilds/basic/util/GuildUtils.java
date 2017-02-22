@@ -155,12 +155,17 @@ public class GuildUtils {
         if (names == null) {
             return null;
         }
+
         List<Guild> list = new ArrayList<>();
-        for (String s : names) {
-            if (get(s) != null) {
-                list.add(get(s));
+
+        for (String name : names) {
+            Guild guild = Guild.get(name);
+
+            if (guild != null) {
+                list.add(guild);
             }
         }
+
         return list;
     }
 

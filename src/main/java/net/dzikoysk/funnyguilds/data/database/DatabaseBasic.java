@@ -74,6 +74,15 @@ public class DatabaseBasic {
             }
         }
 
+        // TODO
+        for (Guild guild : GuildUtils.getGuilds()) {
+            if (guild.getOwner() != null) {
+                continue;
+            }
+
+            GuildUtils.deleteGuild(guild);
+        }
+
         db.closeConnection();
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
     }

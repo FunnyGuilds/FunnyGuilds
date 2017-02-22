@@ -61,7 +61,7 @@ public class FunnyGuilds extends JavaPlugin {
         em.enable();
 
         PluginManager pm = Bukkit.getPluginManager();
-        pm.registerEvents(new PacketReceive(), this);
+        //pm.registerEvents(new PacketReceive(), this);
 
         pm.registerEvents(new EntityDamage(), this);
         pm.registerEvents(new EntityInteract(), this);

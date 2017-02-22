@@ -17,11 +17,11 @@ public class AxcAdd implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messages m = Messages.getInstance();
+        Messages messages = Messages.getInstance();
         Player player = (Player) sender;
 
         if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.getMessage("permission"));
+            player.sendMessage(messages.getMessage("permission"));
             return;
         }
 
@@ -56,7 +56,7 @@ public class AxcAdd implements Executor {
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, offline);
 
         if (offline.isOnline()) {
-            Bukkit.getPlayer(user.getName()).sendMessage(m.getMessage("joinToMember")
+            Bukkit.getPlayer(user.getName()).sendMessage(messages.getMessage("joinToMember")
                     .replace("{GUILD}", guild.getName())
                     .replace("{TAG}", guild.getTag())
             );
@@ -64,12 +64,12 @@ public class AxcAdd implements Executor {
 
         Player owner = Bukkit.getPlayer(guild.getOwner().getName());
         if (owner != null) {
-            owner.sendMessage(m.getMessage("joinToOwner")
+            owner.sendMessage(messages.getMessage("joinToOwner")
                     .replace("{PLAYER}", user.getName())
             );
         }
 
-        Bukkit.broadcastMessage(m.getMessage("broadcastJoin")
+        Bukkit.broadcastMessage(messages.getMessage("broadcastJoin")
                 .replace("{PLAYER}", user.getName())
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", tag)

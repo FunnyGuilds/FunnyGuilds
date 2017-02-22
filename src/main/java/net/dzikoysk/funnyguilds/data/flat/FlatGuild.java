@@ -135,7 +135,7 @@ public class FlatGuild {
         }
 
         if (ms == null || ms.isEmpty()) {
-            ms = new ArrayList<String>();
+            ms = new ArrayList<>();
             ms.add(os);
         }
         List<User> members = UserUtils.getUsers(ms);
@@ -156,7 +156,7 @@ public class FlatGuild {
             }
         }
 
-        List<Guild> enemies = new ArrayList<Guild>();
+        List<Guild> enemies = new ArrayList<>();
         if (ens != null) {
             for (String s : ens) {
                 enemies.add(Guild.get(s));

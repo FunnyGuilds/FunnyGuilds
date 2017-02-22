@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
+import net.dzikoysk.funnyguilds.system.war.WarListener;
 import net.dzikoysk.funnyguilds.util.element.DummyManager;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
@@ -80,6 +81,9 @@ public class Action {
                 break;
             case PREFIX_UPDATE_GUILD:
                 ((User) values[0]).getIndividualPrefix().addGuild((Guild) values[1]);
+                break;
+            case PACKET_PLAY_IN_USE_ENTITY:
+                WarListener.use((Player) values[0], values[1]);
                 break;
         }
     }

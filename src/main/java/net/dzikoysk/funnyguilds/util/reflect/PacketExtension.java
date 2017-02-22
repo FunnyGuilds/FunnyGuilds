@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
-import net.dzikoysk.funnyguilds.util.reflect.event.AsyncPacketReceiveEvent;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import net.minecraft.util.io.netty.channel.*;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -56,10 +56,13 @@ public class PacketExtension {
                             return;
                         }
 
+                        /*
                         AsyncPacketReceiveEvent event = new AsyncPacketReceiveEvent(msg, p);
                         Bukkit.getPluginManager().callEvent(event);
+                        */
+                        IndependentThread.action(ActionType.PACKET_PLAY_IN_USE_ENTITY, p, msg);
 
-                        super.channelRead(ctx, event.getPacket());
+                        super.channelRead(ctx, msg);
                     } catch (Exception e) {
                         super.channelRead(ctx, msg);
                     }

@@ -201,6 +201,7 @@ public class DatabaseGuild {
             values[14] = ban;
             values[15] = deputy;
             values[16] = pvp;
+
             return DeserializationUtils.deserializeGuild(values);
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {

@@ -38,7 +38,7 @@ public class Flat {
     }
 
     private void saveUsers(boolean b) {
-        if (UserUtils.getUsers() == null || UserUtils.getUsers().isEmpty()) {
+        if (UserUtils.getUsers().isEmpty()) {
             return;
         }
         for (User user : UserUtils.getUsers()) {
@@ -56,24 +56,31 @@ public class Flat {
     private void loadUsers() {
         int i = 0;
         File[] path = USERS.listFiles();
+
         if (path != null) {
             for (File file : path) {
                 if (file.isDirectory() || file.length() == 0) {
                     file.delete();
+                    i++;
                     continue;
                 }
+
                 User user = FlatUser.deserialize(file);
+
                 if (user == null) {
                     file.delete();
+                    i++;
                 }
                 else {
                     user.changed();
                 }
             }
         }
+
         if (i > 0) {
             FunnyGuilds.warning("Repaired conflicts: " + i);
         }
+
         FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());
     }
 
@@ -143,6 +150,16 @@ public class Flat {
                 }
             }
         }
+
+        // TODO
+        for (Guild guild : GuildUtils.getGuilds()) {
+            if (guild.getOwner() != null) {
+                continue;
+            }
+
+            GuildUtils.deleteGuild(guild);
+        }
+
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
         FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
