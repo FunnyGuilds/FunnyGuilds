@@ -107,37 +107,28 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void update() {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
-                if (latest == null || latest.isEmpty()) {
-                    update("Failed to check the new version of FunnyGuilds.");
-                }
-                else if (latest.equalsIgnoreCase(getVersion())) {
-                    update("You have a current version of FunnyGuilds.");
-                }
-                else {
-                    update("");
-                    update("Available is new version of FunnyGuilds!");
-                    update("Current: " + getVersion());
-                    update("Latest: " + latest);
-                    update("");
-                }
+        Thread thread = new Thread(() -> {
+            String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
+            if (latest == null || latest.isEmpty()) {
+                update("Failed to check the new version of FunnyGuilds.");
             }
-        };
+            else if (latest.equalsIgnoreCase(getVersion())) {
+                update("You have a current version of FunnyGuilds.");
+            }
+            else {
+                update("");
+                update("Available is new version of FunnyGuilds!");
+                update("Current: " + getVersion());
+                update("Latest: " + latest);
+                update("");
+            }
+        });
         thread.start();
     }
 
     private void patch() {
         for (final Player player : Bukkit.getOnlinePlayers()) {
-            Bukkit.getScheduler().runTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    PacketExtension.registerPlayer(player);
-
-                }
-            });
+            this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player) );
 
             User user = User.get(player);
             user.getScoreboard();
