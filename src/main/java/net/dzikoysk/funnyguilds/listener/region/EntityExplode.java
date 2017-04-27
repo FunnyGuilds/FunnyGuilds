@@ -64,9 +64,7 @@ public class EntityExplode implements Listener {
         }
 
         Guild guild = region.getGuild();
-        if (!guild.canBuild()) {
-            return;
-        }
+
         guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode * 1000L);
         for (User user : guild.getMembers()) {
             Player player = Bukkit.getPlayer(user.getName());
