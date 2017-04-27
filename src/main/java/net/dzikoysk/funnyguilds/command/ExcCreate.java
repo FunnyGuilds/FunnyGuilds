@@ -33,6 +33,12 @@ public class ExcCreate implements Executor {
         Player p = (Player) s;
         User u = User.get(p);
 
+        boolean bool = this.checkWorld(p);
+        if (!bool) {
+            p.sendMessage(m.getMessage("blockedWorld"));
+            return;
+        }
+
         if (u.hasGuild()) {
             p.sendMessage(m.getMessage("createHasGuild"));
             return;

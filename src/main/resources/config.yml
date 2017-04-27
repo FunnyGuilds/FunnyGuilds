@@ -32,8 +32,12 @@ create-material: ender crystal
 create-center-y: 60
 # Czy ma tworzyc pusta przestrzen dookola centrum gildii
 create-center-sphere: true
-# Maxymalna ilosc czlonkow w gildii
+# Maksymalna ilosc czlonkow w gildii
 max-members: 15
+
+# Swiaty, na ktorym jest zablokowane tworzenie gildii
+blockedworlds:
+- "some_world"
 
 # Mozliwosc teleportacji do gildii
 base-enable: true

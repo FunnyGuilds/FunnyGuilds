@@ -62,6 +62,7 @@ public class Settings {
     public int inviteMembers;
     public List<ItemStack> joinItems;
     public boolean infoPlayerSneaking;
+    public List<String> blockedWorlds;
 
     public String prefixOur;
     public String prefixAllies;
@@ -193,15 +194,14 @@ public class Settings {
     }
 
     private void load() {
-
-// Plugin Section
+        // Plugin Section
         this.pluginName = "FunnyGuilds";
         String name = pc.getString("plugin-name");
         if (name != null && !name.isEmpty()) {
             this.pluginName = name;
         }
 
-// Create Section
+        // Create Section
         this.createNameLength = pc.getInt("name-length");
         this.createTagLength = pc.getInt("tag-length");
         this.createNameMinLength = pc.getInt("name-min-length");
@@ -235,7 +235,7 @@ public class Settings {
         this.createCenterY = pc.getInt("create-center-y");
         this.createCenterSphere = pc.getBoolean("create-center-sphere");
 
-// Region Section
+        // Region Section
         this.regionSize = pc.getInt("region-size");
         this.regionMinDistance = pc.getInt("region-min-distance");
         this.regionNotificationTime = pc.getInt("region-notification-time");
@@ -243,13 +243,13 @@ public class Settings {
         this.regionExplode = pc.getInt("region-explode");
         this.regionCommands = pc.getStringList("region-commands");
 
-// Event Section
+        // Event Section
         if (this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG) {
             this.eventPhysics = true;
         }
         this.eventMove = pc.getBoolean("event-move");
 
-// Enlarge Section
+        // Enlarge Section
         this.enlargeEnable = pc.getBoolean("enlarge-enable");
         if (this.enlargeEnable) {
             this.enlargeSize = pc.getInt("enlarge-size");
@@ -265,12 +265,12 @@ public class Settings {
             this.enlargeItems = items;
         }
 
-// War section
+        // War section
         this.warLives = pc.getInt("war-lives");
         this.warProtection = Parser.parseTime(pc.getString("war-protection"));
         this.warWait = Parser.parseTime(pc.getString("war-wait"));
 
-// Validity Section
+        // Validity Section
         this.validityStart = Parser.parseTime(pc.getString("validity-start"));
         this.validityTime = Parser.parseTime(pc.getString("validity-time"));
         this.validityWhen = Parser.parseTime(pc.getString("validity-when"));
@@ -284,7 +284,7 @@ public class Settings {
         }
         this.validityItems = items;
 
-// Other Section
+        // Other Section
         this.inviteMembers = pc.getInt("max-members");
         this.infoPlayerSneaking = pc.getBoolean("info-player-sneaking");
         items = new ArrayList<ItemStack>();
@@ -296,16 +296,18 @@ public class Settings {
         }
         this.joinItems = items;
 
-// Prefix Section
+        this.blockedWorlds = pc.getStringList("blockedworlds");
+
+        // Prefix Section
         this.prefixOur = StringUtils.colored(pc.getString("prefix-our"));
         this.prefixAllies = StringUtils.colored(pc.getString("prefix-allies"));
         this.prefixOther = StringUtils.colored(pc.getString("prefix-other"));
 
-// Dummy Section
+        // Dummy Section
         this.dummyEnable = pc.getBoolean("dummy-enable");
         this.dummySuffix = StringUtils.colored(pc.getString("dummy-suffix"));
 
-// Chat Section
+        // Chat Section
         this.chatGuild = StringUtils.colored(pc.getString("chat-guild"));
         this.chatRank = StringUtils.colored(pc.getString("chat-rank"));
         this.chatPoints = StringUtils.colored(pc.getString("chat-points"));
@@ -316,18 +318,18 @@ public class Settings {
         this.chatAllyDesign = StringUtils.colored(pc.getString("chat-ally-design"));
         this.chatGlobalDesign = StringUtils.colored(pc.getString("chat-global-design"));
 
-// Rank Section
+        // Rank Section
         this.rankStart = pc.getInt("rank-start");
         this.rankPercent = pc.getDouble("rank-percent");
         if (this.rankPercent == 0) {
             this.rankPercent = 1.0;
         }
 
-// Damage Section
+        // Damage Section
         this.damageGuild = pc.getBoolean("damage-guild");
         this.damageAlly = pc.getBoolean("damage-ally");
 
-// Base Section
+        // Base Section
         this.baseEnable = pc.getBoolean("base-enable");
         if (this.baseEnable) {
             list = pc.getStringList("base-items");
@@ -342,7 +344,7 @@ public class Settings {
             this.baseDelay = pc.getInt("base-delay");
         }
 
-// Explosion Section
+        // Explosion Section
         this.explodeRadius = pc.getInt("explode-radius");
         HashMap<Material, Double> map = new HashMap<>();
         for (String path : pc.getSectionKeys("explode-materials")) {
@@ -358,7 +360,7 @@ public class Settings {
         }
         this.explodeMaterials = map;
 
-// PlayerList Section
+        // PlayerList Section
         String[] ss = new String[60];
         for (String path : pc.getSectionKeys("player-list")) {
             try {
@@ -385,7 +387,7 @@ public class Settings {
         PlayerListManager.patch(this.playerlistPatch);
         PlayerListManager.ping(this.playerlistPing);
 
-// Commands Section
+        // Commands Section
         this.excCreate = pc.getString("commands.create.name");
         this.excDelete = pc.getString("commands.delete.name");
         this.excConfirm = pc.getString("commands.confirm.name");
@@ -448,7 +450,7 @@ public class Settings {
         this.axcName = pc.getString("commands.admin.name");
 
 
-// Data Section
+        // Data Section
         this.dataInterval = pc.getInt("data-interval");
         this.flat = pc.getBoolean("data-type.flat");
         this.mysql = pc.getBoolean("data-type.mysql");
