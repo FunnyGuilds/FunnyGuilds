@@ -55,7 +55,7 @@ public class FunnyGuilds extends JavaPlugin {
         new Manager().start();
         new AsynchronouslyRepeater().start();
         new Ticking().start();
-        new MetricsCollector().start();
+        new MetricsCollector(this).start();
 
         EventManager em = EventManager.getEventManager();
         em.enable();
