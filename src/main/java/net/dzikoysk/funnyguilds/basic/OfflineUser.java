@@ -101,8 +101,8 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return name;
     }
 
-    public String getUniqueId() {
-        return uuid.toString();
+    public UUID getUniqueId() {
+        return uuid;
     }
 
     public Server getServer() {
