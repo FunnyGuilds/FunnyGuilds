@@ -323,6 +323,7 @@ mysql:
   database: db
   user: root
   password: passwd
+  poolSize: 16 # maksymalna liczba elementow w pool'u od polaczen
   
 # Config Version
-version: 3.5 NewYear
+version: 3.9.9.9 Cleaned

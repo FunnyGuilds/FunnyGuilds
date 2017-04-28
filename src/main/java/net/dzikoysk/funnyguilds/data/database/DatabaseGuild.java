@@ -38,29 +38,24 @@ public class DatabaseGuild {
         }
         if (guild.getUUID() != null) {
             Database db = Database.getInstance();
-            db.openConnection();
             StringBuilder update = new StringBuilder();
             update.append("DELETE FROM `guilds` WHERE `uuid`='");
             update.append(guild.getUUID().toString());
             update.append("'");
             db.executeUpdate(update.toString());
-            db.closeConnection();
         }
         else if (guild.getName() != null) {
             Database db = Database.getInstance();
-            db.openConnection();
             StringBuilder update = new StringBuilder();
             update.append("DELETE FROM `guilds` WHERE `name`='");
             update.append(guild.getName());
             update.append("'");
             db.executeUpdate(update.toString());
-            db.closeConnection();
         }
     }
 
     public void updatePoints() {
         Database db = Database.getInstance();
-        db.openConnection();
         StringBuilder update = new StringBuilder();
         update.append("UPDATE `guilds` SET `points`=");
         update.append(guild.getRank().getPoints());
@@ -68,7 +63,6 @@ public class DatabaseGuild {
         update.append(guild.getUUID().toString());
         update.append("'");
         db.executeUpdate(update.toString());
-        db.closeConnection();
     }
 
     public String getInsert() {

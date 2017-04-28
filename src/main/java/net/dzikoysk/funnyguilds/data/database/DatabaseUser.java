@@ -15,7 +15,6 @@ public class DatabaseUser {
     }
 
     public void save(Database db) {
-        db.openConnection();
         String update = getInsert();
         if (update != null) {
             for (String query : update.split(";")) {
@@ -33,7 +32,6 @@ public class DatabaseUser {
 
     public void updatePoints() {
         Database db = Database.getInstance();
-        db.openConnection();
         StringBuilder update = new StringBuilder();
         update.append("UPDATE `users` SET `points`='");
         update.append(user.getRank().getPoints());
@@ -41,7 +39,6 @@ public class DatabaseUser {
         update.append(user.getUUID().toString());
         update.append("'");
         db.executeUpdate(update.toString());
-        db.closeConnection();
     }
 
     public String getInsert() {

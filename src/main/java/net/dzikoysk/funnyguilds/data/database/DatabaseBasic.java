@@ -23,7 +23,6 @@ public class DatabaseBasic {
 
     public void load() {
         Database db = Database.getInstance();
-        db.openConnection();
 
         usersTable(db);
         regionsTable(db);
@@ -83,13 +82,11 @@ public class DatabaseBasic {
             GuildUtils.deleteGuild(guild);
         }
 
-        db.closeConnection();
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
     }
 
     public void save(boolean b) throws ClassNotFoundException, SQLException {
         Database db = Database.getInstance();
-        db.openConnection();
         for (User user : UserUtils.getUsers()) {
             if (!b) {
                 if (!user.changed()) {
@@ -132,7 +129,6 @@ public class DatabaseBasic {
                 }
             }
         }
-        db.closeConnection();
     }
 
     public void guildsTable(Database db) {

@@ -17,7 +17,7 @@ import java.util.List;
 public class Settings {
 
     private static final File SETTINGS = new File(FunnyGuilds.getInstance().getDataFolder(), "config.yml");
-    private static final String VERSION = "3.5 NewYear";
+    private static final String VERSION = "3.9.9.9 Cleaned";
 
     private static Settings instance;
     private PandaConfiguration pc;
@@ -171,6 +171,7 @@ public class Settings {
     public String mysqlDatabase;
     public String mysqlUser;
     public String mysqlPassword;
+    public int poolSize;
 
     public Settings() {
         instance = this;
@@ -460,6 +461,10 @@ public class Settings {
             this.mysqlDatabase = pc.getString("mysql.database");
             this.mysqlUser = pc.getString("mysql.user");
             this.mysqlPassword = pc.getString("mysql.password");
+            this.poolSize = pc.getInt("mysql.poolSize");
+            if (poolSize <= 0) {
+                poolSize = 16;
+            }
         }
     }
 
