@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -8,7 +9,6 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.RandomizationUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,11 +18,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 public class EntityExplode implements Listener {
+
+    private final FunnyGuilds plugin;
+
+    public EntityExplode(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onExplode(EntityExplodeEvent event) {
@@ -32,6 +37,30 @@ public class EntityExplode implements Listener {
 
         List<Location> sphere = SpaceUtils.sphere(loc, s.explodeRadius, s.explodeRadius, false, true, 0);
         Map<Material, Double> materials = s.explodeMaterials;
+
+        if (RegionUtils.isIn(loc)) {
+            Region region = RegionUtils.getAt(loc);
+            Guild guild = region.getGuild();
+
+            if (guild.isValid()) {
+                event.setCancelled(true);
+                return;
+            }
+
+            Location protect = region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
+
+            destroyed.removeIf(block -> block.getLocation().equals(protect));
+
+            guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode * 1000L);
+            for (User user : guild.getMembers()) {
+                Player player = this.plugin.getServer().getPlayer(user.getName());
+                if (player != null) {
+                    player.sendMessage(Messages.getInstance().getMessage("regionExplode")
+                                               .replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));
+                }
+            }
+        }
+
         for (Location l : sphere) {
             Material material = l.getBlock().getType();
             if (!materials.containsKey(material)) {
@@ -46,33 +75,6 @@ public class EntityExplode implements Listener {
                 if (RandomizationUtils.chance(materials.get(material))) {
                     l.getBlock().breakNaturally();
                 }
-            }
-        }
-
-        if (!RegionUtils.isIn(loc)) {
-            return;
-        }
-        Region region = RegionUtils.getAt(loc);
-
-        Location protect = region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
-
-        Iterator<Block> it = destroyed.iterator();
-        while (it.hasNext()) {
-            if (it.next().getLocation().equals(protect)) {
-                it.remove();
-            }
-        }
-
-        Guild guild = region.getGuild();
-        if (!guild.canBuild()) {
-            return;
-        }
-        guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode * 1000L);
-        for (User user : guild.getMembers()) {
-            Player player = Bukkit.getPlayer(user.getName());
-            if (player != null) {
-                player.sendMessage(Messages.getInstance().getMessage("regionExplode")
-                        .replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));
             }
         }
     }

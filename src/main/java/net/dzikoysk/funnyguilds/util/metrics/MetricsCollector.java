@@ -3,16 +3,30 @@ package net.dzikoysk.funnyguilds.util.metrics;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import org.bukkit.Bukkit;
+
+import java.util.HashMap;
 
 public class MetricsCollector implements Runnable {
 
-    private static Metrics metrics;
+    private final FunnyGuilds plugin;
 
-    public MetricsCollector() {
+    private Metrics mcstats;
+    private org.bstats.Metrics bstats;
+
+    public MetricsCollector(FunnyGuilds plugin) {
+        this.plugin = plugin;
         try {
-            metrics = new Metrics(FunnyGuilds.getInstance());
+            mcstats = new Metrics(plugin);
         } catch (Exception e) {
+            this.mcstats = null;
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            this.bstats = new org.bstats.Metrics(plugin);
+        } catch (Exception e) {
+            this.bstats = null;
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
             }
@@ -20,32 +34,41 @@ public class MetricsCollector implements Runnable {
     }
 
     public void start() {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), this, 20L);
+        this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, this, 20L);
     }
 
     @Override
     public void run() {
-        Metrics metrics = getMetrics();
-        Metrics.Graph global = metrics.createGraph("Guilds and Users");
-        global.addPlotter(new Metrics.Plotter("Guilds") {
-            @Override
-            public int getValue() {
-                return GuildUtils.getGuilds().size();
-            }
-        });
-        global.addPlotter(new Metrics.Plotter("Users") {
-            @Override
-            public int getValue() {
-                return UserUtils.getUsers().size();
-            }
-        });
-        metrics.start();
-    }
-
-    public static Metrics getMetrics() {
-        if (metrics == null) {
-            new MetricsCollector();
+        // mcstats
+        Metrics mcstats = this.mcstats;
+        if (mcstats != null) {
+            Metrics.Graph global = mcstats.createGraph("Guilds and Users");
+            global.addPlotter(new Metrics.Plotter("Guilds") {
+                @Override
+                public int getValue() {
+                    return GuildUtils.getGuilds().size();
+                }
+            });
+            global.addPlotter(new Metrics.Plotter("Users") {
+                @Override
+                public int getValue() {
+                    return UserUtils.getUsers().size();
+                }
+            });
+            mcstats.start();
         }
-        return metrics;
+
+        // bstats
+        org.bstats.Metrics bstats = this.bstats;
+        if (bstats != null) {
+            bstats.addCustomChart(new org.bstats.Metrics.MultiLineChart("Guilds and Users") {
+                @Override
+                public HashMap<String, Integer> getValues(HashMap<String, Integer> hashMap) {
+                    hashMap.put("Guilds", GuildUtils.getGuilds().size());
+                    hashMap.put("Users", UserUtils.getUsers().size());
+                    return hashMap;
+                }
+            });
+        }
     }
 }

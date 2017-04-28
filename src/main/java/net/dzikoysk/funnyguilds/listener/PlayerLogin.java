@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -12,9 +12,15 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 public class PlayerLogin implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerLogin(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        if (Bukkit.hasWhitelist()) {
+        if (this.plugin.getServer().hasWhitelist()) {
             return;
         }
         String name = event.getPlayer().getName();

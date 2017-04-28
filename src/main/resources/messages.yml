@@ -3,6 +3,7 @@ version: '3.0 Christmas'
 
 # <------- Permission Messages -------> #
 permission: '&cNie masz wystarczajacych uprawnien do uzycia tej komendy!'
+blockedWorld: '&cZarzadzanie gildiami jest zablokowane na tym swiecie!'
 
 # <------- Rank Messages -------> #
 rankAddressAttacker: '&7Wykryto ten sam &cadres&7, punkty nie zostaja naliczone!'

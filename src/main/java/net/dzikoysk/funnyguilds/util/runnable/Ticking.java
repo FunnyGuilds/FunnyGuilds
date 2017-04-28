@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.util.runnable;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.bukkit.Bukkit;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -14,12 +13,15 @@ public class Ticking implements Runnable {
     private transient long lastPoll = System.nanoTime();
     private final LinkedList<Double> history = new LinkedList<>();
 
-    public Ticking() {
+    private final FunnyGuilds plugin;
+
+    public Ticking(FunnyGuilds plugin) {
+        this.plugin = plugin;
         history.add(Double.valueOf(20.0D));
     }
 
     public void start() {
-        Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), this, 1000L, 50L);
+        this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, this, 1000L, 50L);
     }
 
     @Override

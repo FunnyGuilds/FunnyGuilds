@@ -13,8 +13,8 @@ public class IndependentThread extends Thread {
     private final Object locker = new Object();
 
     public IndependentThread() {
+        super("FunnyGuilds | IndependentThread");
         instance = this;
-        this.setName("IndependentThread");
         FunnyGuilds.info("Available Processors: " + Runtime.getRuntime().availableProcessors());
         FunnyGuilds.info("Active Threads: " + Thread.activeCount());
     }
@@ -55,11 +55,17 @@ public class IndependentThread extends Thread {
     }
 
     public static IndependentThread getInstance() {
-        if (instance == null) {
-            new IndependentThread().start();
+        try {
+            if (instance == null) {
+                throw new UnsupportedOperationException("IndependentThread is not setup!");
+            }
+            return instance;
+        } catch (Exception ex) {
+            if (FunnyGuilds.exception(ex.getCause())) {
+                ex.printStackTrace();
+            }
+            return null;
         }
-
-        return instance;
     }
 
     private static void action(Action... actions) {

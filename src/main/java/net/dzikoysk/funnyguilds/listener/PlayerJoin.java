@@ -8,13 +8,18 @@ import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 public class PlayerJoin implements Listener {
+
+    private final FunnyGuilds plugin;
+
+    public PlayerJoin(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -27,15 +32,12 @@ public class PlayerJoin implements Listener {
         IndependentThread.actions(ActionType.RANK_UPDATE_USER, user);
         IndependentThread.action(ActionType.PLAYERLIST_SEND, user);
 
-        Bukkit.getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                PacketExtension.registerPlayer(player);
-                if (Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")) {
-                    EntityUtil.spawn(player);
-                }
-                Version.check(player);
+        this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
+            PacketExtension.registerPlayer(player);
+            if (Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                EntityUtil.spawn(player);
             }
+            Version.check(player);
         }, 40L);
     }
 }

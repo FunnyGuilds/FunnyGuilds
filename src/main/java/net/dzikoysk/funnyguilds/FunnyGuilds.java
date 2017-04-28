@@ -50,12 +50,12 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        new ScoreboardStack().start();
+        new ScoreboardStack(this).start();
         new IndependentThread().start();
         new Manager().start();
-        new AsynchronouslyRepeater().start();
-        new Ticking().start();
-        new MetricsCollector().start();
+        new AsynchronouslyRepeater(this).start();
+        new Ticking(this).start();
+        new MetricsCollector(this).start();
 
         EventManager em = EventManager.getEventManager();
         em.enable();
@@ -65,17 +65,17 @@ public class FunnyGuilds extends JavaPlugin {
 
         pm.registerEvents(new EntityDamage(), this);
         pm.registerEvents(new EntityInteract(), this);
-        pm.registerEvents(new PlayerChat(), this);
+        pm.registerEvents(new PlayerChat(this), this);
         pm.registerEvents(new PlayerDeath(), this);
-        pm.registerEvents(new PlayerJoin(), this);
-        pm.registerEvents(new PlayerLogin(), this);
+        pm.registerEvents(new PlayerJoin(this), this);
+        pm.registerEvents(new PlayerLogin(this), this);
         pm.registerEvents(new PlayerQuit(), this);
 
         pm.registerEvents(new BlockBreak(), this);
         pm.registerEvents(new BlockIgnite(), this);
         pm.registerEvents(new BlockPlace(), this);
         pm.registerEvents(new BucketAction(), this);
-        pm.registerEvents(new EntityExplode(), this);
+        pm.registerEvents(new EntityExplode(this), this);
         pm.registerEvents(new PlayerCommand(), this);
         pm.registerEvents(new PlayerInteract(), this);
 
@@ -107,37 +107,27 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void update() {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
-                if (latest == null || latest.isEmpty()) {
-                    update("Failed to check the new version of FunnyGuilds.");
-                }
-                else if (latest.equalsIgnoreCase(getVersion())) {
-                    update("You have a current version of FunnyGuilds.");
-                }
-                else {
-                    update("");
-                    update("Available is new version of FunnyGuilds!");
-                    update("Current: " + getVersion());
-                    update("Latest: " + latest);
-                    update("");
-                }
+        this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
+            String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
+            if (latest == null || latest.isEmpty()) {
+                update("Failed to check the newest version of FunnyGuilds..");
             }
-        };
-        thread.start();
+            else if (latest.equalsIgnoreCase(getVersion())) {
+                update("You have the newest version of FunnyGuilds.");
+            }
+            else {
+                update("");
+                update("A new version of FunnyGuilds is available!");
+                update("Current: " + getVersion());
+                update("Latest: " + latest);
+                update("");
+            }
+        });
     }
 
     private void patch() {
-        for (final Player player : Bukkit.getOnlinePlayers()) {
-            Bukkit.getScheduler().runTask(this, new Runnable() {
-                @Override
-                public void run() {
-                    PacketExtension.registerPlayer(player);
-
-                }
-            });
+        for (final Player player : this.getServer().getOnlinePlayers()) {
+            this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player) );
 
             User user = User.get(player);
             user.getScoreboard();

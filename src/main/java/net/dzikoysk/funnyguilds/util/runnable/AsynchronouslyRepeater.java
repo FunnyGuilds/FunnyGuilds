@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
-import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
 import net.dzikoysk.funnyguilds.util.reflect.transition.PacketPlayOutPlayerInfo;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
@@ -18,13 +17,16 @@ public class AsynchronouslyRepeater implements Runnable {
     private static AsynchronouslyRepeater instance;
     private volatile BukkitTask repeater;
 
+    private final FunnyGuilds plugin;
+
     private int player_list;
     private int ban_system;
     private int validity_system;
-    private int funnyguilds_stats;
+    /*private int funnyguilds_stats;*/
     private int player_list_time;
 
-    public AsynchronouslyRepeater() {
+    public AsynchronouslyRepeater(FunnyGuilds plugin) {
+        this.plugin = plugin;
         instance = this;
         player_list_time = Settings.getInstance().playerlistInterval;
     }
@@ -33,7 +35,7 @@ public class AsynchronouslyRepeater implements Runnable {
         if (this.repeater != null) {
             return;
         }
-        this.repeater = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), this, 100, 20);
+        this.repeater = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, this, 100, 20);
     }
 
     @Override
@@ -41,7 +43,7 @@ public class AsynchronouslyRepeater implements Runnable {
         player_list++;
         ban_system++;
         validity_system++;
-        funnyguilds_stats++;
+        /*funnyguilds_stats++;*/
 
         if (player_list == player_list_time) {
             playerList();
@@ -52,9 +54,9 @@ public class AsynchronouslyRepeater implements Runnable {
         if (ban_system >= 7) {
             banSystem();
         }
-        if (funnyguilds_stats >= 10) {
+        /*if (funnyguilds_stats >= 10) {
             funnyguildsStats();
-        }
+        }*/
     }
 
     private void playerList() {
@@ -79,10 +81,10 @@ public class AsynchronouslyRepeater implements Runnable {
         ban_system = 0;
     }
 
-    private void funnyguildsStats() {
+    /*private void funnyguildsStats() {
         MetricsCollector.getMetrics();
         funnyguilds_stats = 0;
-    }
+    }*/
 
     public void reload() {
         player_list_time = Settings.getInstance().playerlistInterval;
@@ -96,10 +98,17 @@ public class AsynchronouslyRepeater implements Runnable {
     }
 
     public static AsynchronouslyRepeater getInstance() {
-        if (instance == null) {
-            new AsynchronouslyRepeater();
+        try {
+            if (instance == null) {
+                throw new UnsupportedOperationException("AsynchronouslyRepeater is not setup!");
+            }
+            return instance;
+        } catch (Exception ex) {
+            if (FunnyGuilds.exception(ex.getCause())) {
+                ex.printStackTrace();
+            }
+            return null;
         }
-        return instance;
     }
 
 }
