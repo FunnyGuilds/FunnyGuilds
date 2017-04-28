@@ -10,6 +10,7 @@ permissions:
         children:
             funnyguilds.player: true
             funnyguilds.admin: true
+            funnymigrator.use: true
     funnyguilds.admin:
         default: op
         children:
