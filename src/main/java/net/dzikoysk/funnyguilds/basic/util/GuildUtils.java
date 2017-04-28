@@ -23,7 +23,7 @@ public class GuildUtils {
     private static List<Guild> guilds = new ArrayList<>();
 
     public static List<Guild> getGuilds() {
-        return new ArrayList<Guild>(guilds);
+        return new ArrayList<>(guilds);
     }
 
     public static void deleteGuild(final Guild guild) {
