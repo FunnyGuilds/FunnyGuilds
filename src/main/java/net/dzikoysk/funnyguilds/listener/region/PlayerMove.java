@@ -23,77 +23,62 @@ public class PlayerMove implements Listener {
         final Location to = event.getTo();
         final Player player = event.getPlayer();
 
-        Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                if (from == null || to == null) {
-                    return;
-                }
-                if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) {
-                    return;
-                }
+        Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
+            if (from == null || to == null) {
+                return;
+            }
+            if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) {
+                return;
+            }
 
-                Messages m = Messages.getInstance();
-                User user = User.get(player);
+            Messages m = Messages.getInstance();
+            User user = User.get(player);
 
-
-                Region region = RegionUtils.getAt(to);
-                if (region == null && user.getEnter()) {
-                    user.setEnter(false);
-                    region = RegionUtils.getAt(from);
-                    if (region != null) {
-                        Guild guild = region.getGuild();
-                        player.sendMessage(m.getMessage("regionLeave")
-                                .replace("{GUILD}", guild.getName())
-                                .replace("{TAG}", guild.getTag())
-                        );
-                    }
-                }
-                else if (!user.getEnter() && region != null) {
+            Region region = RegionUtils.getAt(to);
+            if (region == null && user.getEnter()) {
+                user.setEnter(false);
+                region = RegionUtils.getAt(from);
+                if (region != null) {
                     Guild guild = region.getGuild();
-                    if (guild == null || guild.getName() == null) {
-                        return;
-                    }
-                    user.setEnter(true);
-
-                    if (guild.getMembers().contains(user)) {
-                        player.sendMessage(m.getMessage("regionEnter")
-                                .replace("{GUILD}", guild.getName())
-                                .replace("{TAG}", guild.getTag()));
-                        return;
-                    }
-
-                    player.sendMessage(m.getMessage("notificationOther")
-                            .replace("{GUILD}", guild.getName())
-                            .replace("{TAG}", guild.getTag())
-                    );
-
-                    if (player.hasPermission("funnyguilds.admin.notification")) {
-                        return;
-                    }
-                    if (user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime()) {
-                        return;
-                    }
-
-                    NotificationBar.set(player, m.getMessage("notificationOther")
-                                    .replace("{GUILD}", guild.getName())
-                                    .replace("{TAG}", guild.getTag())
-                            , 1, Settings.getInstance().regionNotificationTime);
-
-                    for (User u : guild.getMembers()) {
-                        if (u.getName() == null) {
-                            continue;
-                        }
-                        Player member = Bukkit.getPlayer(u.getName());
-                        if (member == null) {
-                            continue;
-                        }
-                        NotificationBar.set(member, m.getMessage("notificationMember")
-                                        .replace("{PLAYER}", player.getName())
-                                , 1, Settings.getInstance().regionNotificationTime);
-                    }
-                    user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getInstance().regionNotificationCooldown);
+                    player.sendMessage(m.getMessage("regionLeave").replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
                 }
+            }
+            else if (!user.getEnter() && region != null) {
+                Guild guild = region.getGuild();
+                if (guild == null || guild.getName() == null) {
+                    return;
+                }
+                user.setEnter(true);
+
+                if (guild.getMembers().contains(user)) {
+                    player.sendMessage(m.getMessage("regionEnter").replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+                    return;
+                }
+
+                player.sendMessage(m.getMessage("notificationOther").replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+
+                if (player.hasPermission("funnyguilds.admin.notification")) {
+                    return;
+                }
+                if (user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime()) {
+                    return;
+                }
+
+                NotificationBar.set(player, m.getMessage("notificationOther").replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
+                        1, Settings.getInstance().regionNotificationTime);
+
+                for (User u : guild.getMembers()) {
+                    if (u.getName() == null) {
+                        continue;
+                    }
+                    Player member = Bukkit.getPlayer(u.getName());
+                    if (member == null) {
+                        continue;
+                    }
+                    NotificationBar.set(member, m.getMessage("notificationMember").replace("{PLAYER}", player.getName()),
+                            1, Settings.getInstance().regionNotificationTime);
+                }
+                user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getInstance().regionNotificationCooldown);
             }
         });
     }

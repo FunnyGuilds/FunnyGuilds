@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -8,7 +9,6 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.RandomizationUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,6 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 public class EntityExplode implements Listener {
+
+    private final FunnyGuilds plugin;
+
+    public EntityExplode(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onExplode(EntityExplodeEvent event) {
@@ -67,7 +73,7 @@ public class EntityExplode implements Listener {
 
         guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode * 1000L);
         for (User user : guild.getMembers()) {
-            Player player = Bukkit.getPlayer(user.getName());
+            Player player = this.plugin.getServer().getPlayer(user.getName());
             if (player != null) {
                 player.sendMessage(Messages.getInstance().getMessage("regionExplode")
                         .replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));

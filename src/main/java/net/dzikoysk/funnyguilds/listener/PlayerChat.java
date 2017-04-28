@@ -1,18 +1,24 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerChat implements Listener {
+
+    private final FunnyGuilds plugin;
+
+    public PlayerChat(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent event) {
@@ -60,7 +66,7 @@ public class PlayerChat implements Listener {
             format = StringUtils.replace(format, "{TAG}", guild.getTag());
             format = StringUtils.replace(format, "{MESSAGE}", event.getMessage().substring(length));
             for (User u : guild.getMembers()) {
-                Player p = Bukkit.getPlayer(u.getName());
+                Player p = this.plugin.getServer().getPlayer(u.getName());
                 if (p != null) {
                     p.sendMessage(format);
                 }
@@ -80,14 +86,14 @@ public class PlayerChat implements Listener {
             format = StringUtils.replace(format, "{TAG}", guild.getTag());
             format = StringUtils.replace(format, "{MESSAGE}", event.getMessage().substring(length));
             for (User u : guild.getMembers()) {
-                Player p = Bukkit.getPlayer(u.getName());
+                Player p = this.plugin.getServer().getPlayer(u.getName());
                 if (p != null) {
                     p.sendMessage(format);
                 }
             }
             for (Guild g : guild.getAllies()) {
                 for (User u : g.getMembers()) {
-                    Player p = Bukkit.getPlayer(u.getName());
+                    Player p = this.plugin.getServer().getPlayer(u.getName());
                     if (p != null) {
                         p.sendMessage(format);
                     }
@@ -109,7 +115,7 @@ public class PlayerChat implements Listener {
             format = StringUtils.replace(format, "{MESSAGE}", event.getMessage().substring(length));
             for (Guild g : GuildUtils.getGuilds()) {
                 for (User u : g.getMembers()) {
-                    Player p = Bukkit.getPlayer(u.getName());
+                    Player p = this.plugin.getServer().getPlayer(u.getName());
                     if (p != null) {
                         p.sendMessage(format);
                     }
