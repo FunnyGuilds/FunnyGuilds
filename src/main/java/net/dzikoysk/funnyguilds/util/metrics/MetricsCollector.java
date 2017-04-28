@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.util.metrics;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import org.bukkit.Bukkit;
 
 import java.util.HashMap;
 
@@ -35,7 +34,7 @@ public class MetricsCollector implements Runnable {
     }
 
     public void start() {
-        Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, this, 20L);
+        this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, this, 20L);
     }
 
     @Override

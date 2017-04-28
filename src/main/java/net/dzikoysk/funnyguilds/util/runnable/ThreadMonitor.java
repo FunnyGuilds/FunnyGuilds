@@ -1,15 +1,20 @@
 package net.dzikoysk.funnyguilds.util.runnable;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.bukkit.Bukkit;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 
 public class ThreadMonitor implements Runnable {
 
+    private final FunnyGuilds plugin;
+
+    public ThreadMonitor(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     public void start() {
-        Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), this, 0, 200);
+        this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, this, 0, 200);
     }
 
     @Override

@@ -12,7 +12,10 @@ public class ScoreboardStack implements Runnable {
     private static ScoreboardStack instance;
     private static Stack<Scoreboard> stack = new Stack<>();
 
-    public ScoreboardStack() {
+    private final FunnyGuilds plugin;
+
+    public ScoreboardStack(FunnyGuilds plugin) {
+        this.plugin = plugin;
         instance = this;
         stack = new Stack<>();
         this.fill();
@@ -24,7 +27,7 @@ public class ScoreboardStack implements Runnable {
     }
 
     public void start() {
-        Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), this, 0, 20);
+        this.plugin.getServer().getScheduler().runTaskTimer(this.plugin, this, 0, 20);
     }
 
     private void fill() {
@@ -43,10 +46,17 @@ public class ScoreboardStack implements Runnable {
     }
 
     public static ScoreboardStack getInstance() {
-        if (instance == null) {
-            new ScoreboardStack();
+        try {
+            if (instance == null) {
+                throw new UnsupportedOperationException("ScoreboardStack is not setup!");
+            }
+            return instance;
+        } catch (Exception ex) {
+            if (FunnyGuilds.exception(ex.getCause())) {
+                ex.printStackTrace();
+            }
+            return null;
         }
-        return instance;
     }
 
     public static Scoreboard pull() {

@@ -34,7 +34,7 @@ public class ExcCreate implements Executor {
         User u = User.get(p);
 
         boolean bool = this.checkWorld(p);
-        if (!bool) {
+        if (bool) {
             p.sendMessage(m.getMessage("blockedWorld"));
             return;
         }

@@ -14,16 +14,8 @@ public interface Executor {
     default boolean checkWorld(Player player) {
         Settings settings = Settings.getInstance(); // TODO
         List<String> blockedWorlds = settings.blockedWorlds;
-        if (blockedWorlds == null || blockedWorlds.size() == 0) {
-            return true;
-        }
         World playerWorld = player.getWorld();
-        for (String blockedWorld : blockedWorlds) {
-            if (playerWorld.getName().equals(blockedWorld)) {
-                return false;
-            }
-        }
-        return true;
+        return blockedWorlds != null && blockedWorlds.size() == 0 && blockedWorlds.contains(playerWorld.getName());
     }
 
 }

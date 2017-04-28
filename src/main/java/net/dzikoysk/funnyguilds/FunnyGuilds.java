@@ -50,11 +50,11 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        new ScoreboardStack().start();
+        new ScoreboardStack(this).start();
         new IndependentThread().start();
         new Manager().start();
-        new AsynchronouslyRepeater().start();
-        new Ticking().start();
+        new AsynchronouslyRepeater(this).start();
+        new Ticking(this).start();
         new MetricsCollector(this).start();
 
         EventManager em = EventManager.getEventManager();
@@ -107,27 +107,26 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void update() {
-        Thread thread = new Thread(() -> {
+        this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
             String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
             if (latest == null || latest.isEmpty()) {
-                update("Failed to check the new version of FunnyGuilds.");
+                update("Failed to check the newest version of FunnyGuilds..");
             }
             else if (latest.equalsIgnoreCase(getVersion())) {
-                update("You have a current version of FunnyGuilds.");
+                update("You have the newest version of FunnyGuilds.");
             }
             else {
                 update("");
-                update("Available is new version of FunnyGuilds!");
+                update("A new version of FunnyGuilds is available!");
                 update("Current: " + getVersion());
                 update("Latest: " + latest);
                 update("");
             }
         });
-        thread.start();
     }
 
     private void patch() {
-        for (final Player player : Bukkit.getOnlinePlayers()) {
+        for (final Player player : this.getServer().getOnlinePlayers()) {
             this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player) );
 
             User user = User.get(player);
