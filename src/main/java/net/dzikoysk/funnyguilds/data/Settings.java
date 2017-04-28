@@ -462,8 +462,8 @@ public class Settings {
             this.mysqlUser = pc.getString("mysql.user");
             this.mysqlPassword = pc.getString("mysql.password");
             this.poolSize = pc.getInt("mysql.poolSize");
-            if (poolSize <= 0) {
-                poolSize = 16;
+            if (this.poolSize <= 1) {
+                this.poolSize = 16;
             }
         }
     }

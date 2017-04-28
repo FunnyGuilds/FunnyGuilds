@@ -318,12 +318,12 @@ data-type:
   mysql: false
 # Dane wymagane do polaczenia z baza
 mysql:
-  hostname: localhost
+  hostname: "localhost"
   port: 3306
-  database: db
-  user: root
-  password: passwd
-  poolSize: 16 # maksymalna liczba elementow w pool'u od polaczen
+  database: "db"
+  user: "root"
+  password: "passwd"
+  poolSize: 16
   
 # Config Version
 version: 3.9.9.9 Cleaned
