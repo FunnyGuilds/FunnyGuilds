@@ -51,7 +51,7 @@ public class Database {
             String url = "jdbc:mysql://" + this.hostname + ":" + this.port + "/?user=" + this.user + "&password=" + this.password;
             Connection conn = DriverManager.getConnection(url);
             Statement s = conn.createStatement();
-            s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + this.database);
+            s.executeUpdate("CREATE DATABASE IF NOT EXISTS `" + this.database + "`");
             conn.close();
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
