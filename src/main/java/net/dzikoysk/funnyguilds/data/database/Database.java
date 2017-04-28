@@ -21,11 +21,12 @@ public class Database {
         this.dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         this.dataSource.setMaximumPoolSize(c.poolSize);
 
-        this.dataSource.addDataSourceProperty("serverName", c.mysqlHostname);
-        this.dataSource.addDataSourceProperty("databaseName", c.mysqlDatabase);
-        this.dataSource.addDataSourceProperty("port", c.mysqlPort);
-        this.dataSource.addDataSourceProperty("user", c.mysqlUser);
-        this.dataSource.addDataSourceProperty("password", c.mysqlPassword);
+        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.mysqlHostname + ":" + c.mysqlPort + "/" + c.mysqlDatabase);
+        this.dataSource.setUsername(c.mysqlUser);
+        if (c.mysqlPassword != null && !c.mysqlPassword.isEmpty()) {
+            this.dataSource.setPassword(c.mysqlPassword);
+        }
+
         this.dataSource.addDataSourceProperty("cachePrepStmts", true);
         this.dataSource.addDataSourceProperty("prepStmtCacheSize", 250);
         this.dataSource.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
