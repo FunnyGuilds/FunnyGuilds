@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
-public class Metrics {
+public class MCStats {
 
     private final static int REVISION = 7;
     private static final String BASE_URL = "http://report.mcstats.org";
@@ -31,7 +31,7 @@ public class Metrics {
     private final Object optOutLock = new Object();
     private volatile BukkitTask task = null;
 
-    public Metrics(Plugin plugin) throws IOException {
+    public MCStats(Plugin plugin) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null");
         }

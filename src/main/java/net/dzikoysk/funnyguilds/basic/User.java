@@ -61,7 +61,7 @@ public class User implements Basic {
     }
 
     private User(OfflineUser offline) {
-        this.uuid = UUID.fromString(offline.getUniqueId());
+        this.uuid = offline.getUniqueId();
         this.name = offline.getName();
         this.changes = true;
         UserUtils.addUser(this);
