@@ -167,11 +167,9 @@ public class BStats {
      */
     public JSONObject getPluginData() {
         JSONObject data = new JSONObject();
-
-        String pluginName = plugin.getDescription().getName();
         String pluginVersion = plugin.getDescription().getVersion();
 
-        data.put("pluginName", pluginName); // Append the name of the plugin
+        data.put("pluginName", "FunnyGuilds"); // Append the name of the plugin
         data.put("pluginVersion", pluginVersion); // Append the version of the plugin
         JSONArray customCharts = new JSONArray();
         for (CustomChart customChart : charts) {
@@ -255,7 +253,7 @@ public class BStats {
                 } catch (Exception e) {
                     // Something went wrong! :(
                     if (logFailedRequests) {
-                        plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + plugin.getName(), e);
+                        plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of FunnyGuilds", e);
                     }
                 }
             }
