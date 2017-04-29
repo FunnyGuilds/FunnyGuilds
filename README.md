@@ -1,4 +1,4 @@
-<a href="http://novaguilds.pl/"><img src="http://novaguilds.pl/img/newlogo.png" /></a><br/><br/>
+<a href="http://novaguilds.pl/"><img src="https://avatars0.githubusercontent.com/u/24680420?v=3&s=200" /></a><br/><br/>
 
 FunnyGuilds is my own guilds plugin, still in development, but I want to hear your opinions and ideas.<br/>
 Check the wiki on github for details.<br/>
