@@ -38,8 +38,14 @@ public class EntityExplode implements Listener {
         List<Location> sphere = SpaceUtils.sphere(loc, s.explodeRadius, s.explodeRadius, false, true, 0);
         Map<Material, Double> materials = s.explodeMaterials;
 
-        if (RegionUtils.isIn(loc)) {
-            Region region = RegionUtils.getAt(loc);
+        destroyed.removeIf(blocks -> {
+            Region region = RegionUtils.getAt(blocks.getLocation());
+            return region != null && region.getGuild() != null && region.getGuild().isValid();
+        });
+
+        Region region = RegionUtils.getAt(loc);
+
+        if (region != null) {
             Guild guild = region.getGuild();
 
             if (guild.isValid()) {
@@ -56,7 +62,7 @@ public class EntityExplode implements Listener {
                 Player player = this.plugin.getServer().getPlayer(user.getName());
                 if (player != null) {
                     player.sendMessage(Messages.getInstance().getMessage("regionExplode")
-                                               .replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));
+                            .replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));
                 }
             }
         }
