@@ -1,86 +1,60 @@
-name: FunnyGuilds
-main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: 3.9.9.9 Cleaned
-author: Dzikoysk
-website: http://www.dzikoysk.net/
-loadbefore: [WorldEdit]
-permissions:
-    funnyguilds.*:
-        default: op
-        children:
-            funnyguilds.player: true
-            funnyguilds.admin: true
-            funnymigrator.use: true
-    funnyguilds.admin:
-        default: op
-        children:
-            funnyguilds.reload: true
-            funnyguilds.admin.build: true
-            funnyguilds.admin.notification: true
-    funnyguilds.player:
-        default: true
-        children:
-            funnyguilds.create: true
-            funnyguilds.delete: true
-            funnyguilds.invite: true
-            funnyguilds.join: true
-            funnyguilds.leave: true
-            funnyguilds.kick: true
-            funnyguilds.base: true
-            funnyguilds.enlarge: true
-            funnyguilds.help: true
-            funnyguilds.ally: true
-            funnyguilds.break: true
-            funnyguilds.player: true
-            funnyguilds.info: true
-            funnyguilds.top: true
-            funnyguilds.validity: true
-            funnyguilds.leader: true
-            funnyguilds.deputy: true
-            funnyguilds.ranking: true
-            funnyguilds.manage: true
-    funnyguilds.reload:
-        default: op
-    funnyguilds.admin.build:
-        default: op
-    funnyguilds.admin.notification:
-        default: op
-    funnyguilds.info:
-        default: true
-    funnyguilds.create:
-        default: true
-    funnyguilds.delete:
-        default: true
-    funnyguilds.invite:
-        default: true
-    funnyguilds.join:
-        default: true
-    funnyguilds.leave:
-        default: true
-    funnyguilds.kick:
-        default: true
-    funnyguilds.base:
-        default: true
-    funnyguilds.enlarge:
-        default: true
-    funnyguilds.help:
-        default: true
-    funnyguilds.player:
-        default: true
-    funnyguilds.ally:
-        default: true
-    funnyguilds.break:
-        default: true
-    funnyguilds.top:
-        default: true
-    funnyguilds.validity:
-        default: true
-    funnyguilds.leader:
-        default: true
-    funnyguilds.deputy:
-        default: true
-    funnyguilds.manage:
-        default: true
-    funnyguilds.ranking:
-        default: true
+name: NovaGuilds
+main: co.marcin.novaguilds.NovaGuilds
+author: Marcin Wieczorek
+description: The best polish guilds plugin!
+website: http://novaguilds.pl/
+version: 40
+softdepend: [HolographicDisplays, BarAPI, BossBarAPI, VanishNoPacket, Vault, WorldGuard, ScoreboardStats, Essentials]
+commands:
+   novaguilds:
+      description: Main NovaGuilds command
+      usage: /novaguilds
+      aliases: [ng]
+   nga:
+      description: Admin commands
+      usage: /nga [cmd]
+   guild:
+      description: NovaGuilds guild command
+      usage: /guild <cmd> [params]
+      aliases: [g]
+   guildmenu:
+      description: NovaGuilds menu gui command
+      usage: /guildmenu
+      aliases: [gg]
+   gi:
+      description: NovaGuilds Guild Info
+      usage: /gi <tag>
+      aliases: [guildinfo]
+   create:
+      description: Create a guild
+      usage: /create <tag> <name>
+   nghome:
+      description: Guilds home
+      usage: /nghome
+   abandon:
+      description: Abandon guild
+      usage: /abandon
+   invite:
+      description: Invite to guild
+      usage: /invite <player>
+   join:
+      description: join a guild
+      usage: /join [name]
+   leave:
+      description: leave the guild
+      usage: /leave
+   playerinfo:
+      description: Show player's info
+      usage: /pi [player]
+      aliases: [pi]
+   confirm:
+      description: Confirm action
+      usage: /confirm
 
+permissions:
+   novaguilds.group.default:
+      default: true
+   novaguilds.info:
+       default: true
+   novaguilds.novaguilds:
+      default: true

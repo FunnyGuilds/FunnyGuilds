@@ -1,329 +1,725 @@
-﻿#~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
-#                               #
-#          FunnyGuilds          #
-#        3.9.9.9 Cleaned        #
-#                               #
-#~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~#
+           ############################
+           # NovaGuilds Configuration #
+           #                          #
+           #         Support          #
+           #   http://novaguilds.pl   #
+           #                          #
+           ############################
+           #      Time format:        #
+           #     1y 1d 1h 1m 1s       #
+           #           =              #
+           #  One year, one day, one  #
+           #     hour, one minute     #
+           #     and one second       #
+           ############################
 
-# Wyswietlana nazwa pluginu
-plugin-name: 'FunnyGuilds'
+###################################################
+# Data storage type                               #
+# mysql - MySQL database                          #
+# sqlite - Local database                         #
+# flat - file based                               #
+datastorage:
+ primary: mysql
+ secondary: flat
 
-# Maksymalna dlugosc nazwy gildii
-name-length: 22
-# Minimalna dlugosc nazwy gildii
-name-min-length: 4
-# Maksymalna dlugosc tagu gildii
-tag-length: 4
-# Minimalna dlugosc tagu gildii
-tag-min-length: 2
-# Przedmioty wymagane do zalozenia gildii
-items:
-- 5 stone
-- 5 dirt
-# Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip
-items-vip:
-- 1 stone
-# Odleglosc od spawnu
-create-distance: 100
-# Blok, jaki pojawi sie pod nami po stworzeniu gildii
-create-material: ender crystal
-# Na jakim poziomie ma byc wyznaczone centrum gildii
-# - Wpisz 0, jezeli ma byc ustalone przez gracza
-create-center-y: 60
-# Czy ma tworzyc pusta przestrzen dookola centrum gildii
-create-center-sphere: true
-# Maksymalna ilosc czlonkow w gildii
-max-members: 15
-
-# Swiaty, na ktorym jest zablokowane tworzenie gildii
-blockedworlds:
-- "some_world"
-
-# Mozliwosc teleportacji do gildii
-base-enable: true
-# Czas oczekiwania na teleportacje (w sekundach)
-base-delay: 5
-# Koszt teleportacji do gildii (jezeli brak, wystarczy zrobic: base-items: [])
-base-items:
-- 1 diamond
-- 1 emerald
-# Koszt dolaczenia do gildii (jezeli brak, wystarczy zrobic: join-items: [])
-join-items:
-- 1 diamond
-
-# Mozliwosc powiekszania gildii
-enlarge-enable: true
-# O ile powieksza teren gildii 1 poziom
-enlarge-size: 5
-# Koszt powiekszania gildii 
-# - kazdy myslnik, to 1 poziom gildii
-enlarge-items:
-- 8 diamond
-- 16 diamond
-- 24 diamond
-- 32 diamond
-- 40 diamond
-- 48 diamond
-- 56 diamond
-- 64 diamond
-- 72 diamond
-- 80 diamond
-
-# Wielkosc regionu gildii
-region-size: 50
-# Minimalna odleglosc miedzy terenami gildii
-region-min-distance: 10
-# Czas wyswietlania powiadomienia na pasku powiadomien (w sekundach)
-region-notification-time: 15
-# Co ile moze byc wywolywany pasek powiadomien przez jednego gracza (w sekundach)
-region-notification-cooldown: 60
-# Blokowane komendy dla graczy spoza gildii na jej terenie
-region-commands:
-- sethome
-# Przez ile sekund nie mozna budowac na terenie gildii po wybuchu
-region-explode: 120
-
-# Jaki ma byc zasieg pobieranych przedmiotow po wybuchu (jezeli chcesz wylaczyc, wpisz 0)
-explode-radius: 3
-# Jakie materialy i z jaka szansa maja byc niszczone po wybuchu
-# <material>: <szansa (w %)
-explode-materials:
-  obsidian: 20
-  water: 33
-  lava: 33
-  
-# Ile zyc ma gildia
-war-lives: 3
-# Po jakim czasie od zalozenia mozna zaatakowac gildie
-war-protection: 24h
-# Ile czasu trzeba czekac do nastepnego ataku na gildie
-war-wait: 24h
-
-# Jaka waznosc ma gildia po jej zalozeniu
-validity-start: 14d
-# Ile czasu dodaje przedluzenie gildii
-validity-time: 14d
-# Ile dni przed koncem wygasania mozna przedluzyc gildie (wpisz 0, jezeli funkcja ma byc wylaczona)
-validity-when: 14d
-# Koszt przedluzenia gildii
-validity-items:
-- 10 diamond
-
-# Ranking od ktorego rozpoczyna gracz
-rank-start: 1000
-# Czy trzeba kucac, zeby przy klikniecu prawym na gracza wyswietlilo informacje o nim
-info-player-sneaking: true
-
-# Czy czlonkowie gildii moga sobie zadawac obrazenia (domyslnie)
-damage-guild: false
-# Czy sojuszniczy moga sobie zadawac obrazenia
-damage-ally: false
-
-# Wyglad znaczika {TAG} wstawionego w format chatu
-chat-guild: '&b{TAG} '
-# Wyglad znaczika {RANK} wstawionego w format chatu
-chat-rank: '&b{RANK} '
-# Wyglad znaczika {POINTS} wstawionego w format chatu
-chat-points: '&b{POINTS} '
-
-# Symbol od ktorego zaczyna sie wiadomosc do gildii/sojusznikow/wszystkich gildii
-chat-priv: '!'
-chat-ally: '!!'
-chat-global: '!!!'
-# Wyglad wiadomosci wysylanej na czacie gildii
-# Zmienne: {PLAYER}, {TAG}, {MESSAGE}
-chat-priv-design: '&8[&aChat gildii&8] &7{PLAYER}&8:&f {MESSAGE}'
-# Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow
-# Zmienne: {PLAYER}, {TAG}, {MESSAGE}
-chat-ally-design: '&8[&6Chat sojuszniczy&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}'
-# Wyglad wiadomosci wysylanej na czacie globalnym gildii
-# Zmienne: {PLAYER}, {TAG}, {MESSAGE}
-chat-global-design: '&8[&cChat globalny gildii&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}'
-
-# Wyglad tagu osob w gildii
-prefix-our: '&a{TAG}&f '
-# Wyglad tagu gildii sojuszniczej
-prefix-allies: '&6{TAG}&f '
-# Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)
-prefix-other: '&7{TAG}&f '
-
-# Czy wlaczyc dummy z punktami
-dummy-enable: true
-# Wyglad nazwy wyswietlanej (suffix, za punktami)
-dummy-suffix: 'pkt'
-
-# Wyglad listy graczy. Przedzial od 1 do 60
-# Limit znakow: 30
-# > Spis zmiennych:
-# {ONLINE} - Liczba graczy online
-# {PLAYER} - Gracz
-# {PING} - Ping
-# {TPS} - TPS
-# {GUILD} - Gildia do której należy gracz
-# {TAG} - Tag gildii gracza
-# {POINTS} - Punkty
-# {RANK} - pozycja w rankingu gracza
-# {KILLS} - Zabojstwa
-# {DEATHS} - Smierci
-# {SECOND} - Sekunda
-# {MINUTE} - Minuta
-# {HOUR} - Godzina
-# {PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu (np. {PTOP-1}, {PTOP-60})
-# {GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})
-# {GPOINTS} - punkty gildii
-# {GRANK} - pozycja gildii w rankingu
-# {SIZE} - wielkość terenu gildii
-# {LIVES} - życia gildii
-player-list:
-  1: '&7Nick: &b{PLAYER}'
-  2: '&7Ping: &b{PING}'
-  3: '&7TPS: &b{TPS}'
-  
-  4: '&7Punkty: &b{POINTS}'
-  5: '&7Zabojstwa: &b{KILLS}'
-  6: '&7Smierci: &b{DEATHS}'
-  
-  7: '&7Godzina: &b{HOUR}'
-  8: '&7Minuta: &b{MINUTE}'
-  9: '&7Sekunda: &b{SECOND}'
-  
-  10: '&7Online: &b{ONLINE}'
-  11: '&7Gildia: &b{GUILD}'
-  
-  23: '&bTop 3 Gildii'
-  
-  25: '&71. &b{GTOP-1}'
-  26: '&72. &b{GTOP-2}'
-  27: '&73. &b{GTOP-3}'
-  
-  32: '&bTop 3 Graczy'
-  
-  34: '&71. &b{PTOP-1}'
-  35: '&72. &b{PTOP-2}'
-  36: '&73. &b{PTOP-3}'
-
-# Tablista wlaczona
-player-list-enable: false
-# Co ile sekund ma odswiezac liste graczy
-player-list-interval: 1
-# Ping wyswietlany na tab
-player-list-ping: 0
-# Jezeli buguje Ci sie tablista
-# - Po wejsciu gracza wszystko sie rozjezdza
-# Wlacz ta opcje
-player-list-patch: false
-# Wyglad punktow wyswietlanych przy gildii w rankingu
-player-list-points: '&7[&b{POINTS}&7]'
-
-# Nazwy komend
-commands:
-  guild: 
-    name: 'gildia'
-    aliases:
-    - 'gildie'
-    - 'g'
-  create:
-    name: 'zaloz'
-    aliases: []
-  delete:
-    name: 'usun'
-    aliases: []
-  confirm:
-    name: 'potwierdz'
-    aliases: []
-  invite:
-    name: 'zapros'
-    aliases: []
-  join:
-    name: 'dolacz'
-    aliases: []
-  leave:
-    name: 'opusc'
-    aliases: []
-  kick:
-    name: 'wyrzuc'
-    aliases: []
-  base: 
-    name: 'baza'
-    aliases: []
-  enlarge: 
-    name: 'powieksz'
-    aliases: []
-  ally: 
-    name: 'sojusz'
-    aliases: []
-  break: 
-    name: 'rozwiaz'
-    aliases: []
-  info: 
-    name: 'info'
-    aliases: []
-  player: 
-    name: 'gracz'
-    aliases: []
-  top: 
-    name: 'top'
-    aliases:
-    - 'top10'
-  validity:
-    name: 'przedluz'
-    aliases: []
-  leader:
-    name: 'lider'
-    aliases:
-    - 'zalozyciel'
-  deputy:
-    name: 'zastepca'
-    aliases: []
-  ranking: 
-    name: 'ranking'
-    aliases: []
-
-  setbase:
-    name: 'ustawbaze'
-    aliases:
-    - 'ustawdom'
-  pvp:
-    name: 'pvp'
-    aliases:
-    - 'ustawpvp'
-
-  # Komendy administratora
-  admin:
-    main: 'ga'
-    add: 'ga dodaj'
-    delete: 'ga usun'
-    kick: 'ga wyrzuc'
-    teleport: 'ga tp'
-    points: 'ga points'
-    kills: 'ga kills'
-    deaths: 'ga deaths'
-    ban: 'ga ban'
-    lives: 'ga zycia'
-    move: 'ga przenies'
-    unban: 'ga unban'
-    validity: 'ga przedluz'
-    name: 'ga nazwa'
-
-# Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)
-event-move: true
-
-# Co ile minut ma automatycznie zapisywac dane
-data-interval: 1
-# Typ zapisu danych
-# Flat - Lokalne pliki
-# MySQL - baza danych 
-data-type:
-  flat: true
-  mysql: false
-# Dane wymagane do polaczenia z baza
+###################################################
+# MySQL settings                                  #
 mysql:
-  hostname: localhost
-  port: 3306
-  database: db
-  user: root
-  password: passwd
-  poolSize: 16
-  
-# Config Version
-version: 3.9.9.9 Cleaned
+ host: ""
+ port: 3306
+ database: ""
+ username: ""
+ password: ""
+ prefix: "novaguilds_"
+
+###################################################
+# Debug mode                                      #
+debug: false
+
+###################################################
+# Delete invalid guilds/players/regions etc.      #
+deleteinvalid: false
+
+# =-=-= # =-=-=-= #
+# Available langs #
+# =-=-= # =-=-=-= #
+# en-en # English #
+# pl-pl # Polish  #
+# de-de # German  #
+# zh-cn # Chinese #
+# nl-nl # Dutch   #
+# fr-fr # French  #
+# =-=-= # =-=-=-= #
+lang:
+ name: en-en
+
+###################################################
+# Override Essentials' language settings          #
+# true  - use language set above                  #
+# false - use Essentials' language                #
+ overrideessentials: false
+
+###################################################
+# Use titles to display suitable messages         #
+usetitles: true
+
+bossbar:
+ enabled: true
+
+# Boss bar during the raid                        #
+ raidbar:
+  enabled: true
+
+# Bar style                                       #
+  style: SOLID
+
+# Bar color                                       #
+  color: PURPLE
+
+tagapi:
+ enabled: true
+
+signgui:
+ enabled: true
+
+###################################################
+# Points below player's name                      #
+pointsbelowname: true
+
+###################################################
+# HolographicDisplays settings                    #
+holographicdisplays:
+
+# enabled or not                                  #
+ enabled: true
+
+# Refreshing holograms                            #
+ refresh: 15m
+
+###################################################
+# Custom entities (Flan's mod tanks etc.)         #
+# Vanilla Minecraft will work fine with this off  #
+advancedentityuse: false
+
+###################################################
+# Save interval                                   #
+saveinterval: 30m
+
+###################################################
+# Dynmap                                          #
+dynmap: true
+
+###################################################
+# after the raid is over and this time            #
+# the guild will get +1 live                      #
+liveregeneration:
+
+# live regeneration time                          #
+ regentime: 48h
+
+# checking for new lives - interval               #
+ taskinterval: 30m
+
+###################################################
+# Guilds cleanup                                  #
+cleanup:
+
+# enabled or not                                  #
+ enabled: true
+
+# time after which a guild is removed             #
+ inactivetime: 7d
+
+# checking interval                               #
+ interval: 1d
+
+# checking delay after startup                    #
+ startupdelay: 30s
+
+###################################################
+# Command aliases                                 #
+aliases:
+ guild:
+  - g
+  - gildia
+ create:
+  - zaloz
+ invite:
+  - zapros
+ abandon:
+  - rozwiaz
+ join:
+  - dolacz
+ leave:
+  - opusc
+
+###################################################
+# Leaderboard settings                            #
+leaderboard:
+ guild:
+  rows: 5
+
+###################################################
+# Chat settings                                   #
+chat:
+
+# tag pattern                                     #
+ tag:
+  chat: "&7[&a{RANK}&{COLOR}{TAG}&7] &r"
+  scoreboard: "&a{RANK}&{COLOR}{TAG} &r"
+
+# leader prefix character                         #
+ leaderprefix: "*"
+
+# displaying tags using Essentials (or whatever)  #
+# or just tag+name                                #
+# false requires adding {TAG} to chat format      #
+# in Essentials' config!                          #
+ displaynametags: false
+
+# advanced chat                                   #
+# + colored tags                                  #
+# - often breaks chat plugins :(                  #
+ advanced: true
+
+# /confirm timeout
+ confirmtimeout: 20s
+
+# tag colors depending on ally/war etc            #
+ tagcolors:
+  neutral: "a"
+  ally: "5"
+  war: "c"
+  guild: "b"
+
+# ally chat settings                              #
+ ally:
+  prefix: "!!"
+  enabled: true
+  leaderprefix: true
+  format: "&6[&5Ally&6] &a{GUILD_TAG}&8{PLAYER_NAME}&6:&r "
+
+# guild chat settings                             #
+ guild:
+  prefix: "!"
+  enabled: true
+  leaderprefix: true
+  format: "&6[&7Guild&6] &a{LEADER_PREFIX}&8{PLAYER_NAME}&6:&r "
+
+# Top players have their rank displayed in chat   #
+# Put {NOVAGUILDS_TOP} in Essentials' config      #
+# true = points, false = kdr                      #
+ top:
+  amount: 3
+  format: "&7[&b{INDEX}&7] "
+  points: true
+
+###################################################
+# Raid settings                                   #
+raid:
+ enabled: true
+
+# minimum players online to start a raid          #
+ minonline: 1
+
+# how many points tare being taken when defeated  #
+ pointstake: 100
+
+# progress of raid every second                   #
+# (1.00 = 100s to take life)                      #
+ multipler: 1.00
+
+# time guild has to rest after a raid (24h)       #
+ timerest: 24h
+
+# inactive time after which the raid is over      #
+ timeinactive: 30s
+
+# +5% points/money for pvp kill during raid       #
+ pvp:
+  bonuspercent:
+   money: 5
+   points: 5
+
+###################################################
+# PVP settings                                    #
+killing:
+
+# percent of victim's money                       #
+ moneyforkill: 5
+ moneyforrevenge: 10
+
+# That's probably some mysterious math.           #
+# play with it                                    #
+ rankpercent: 1
+
+# starting amount of points                       #
+ startpoints: 1000
+
+# cooldown until points/money can be gained again #
+ cooldown: 10m
+
+###################################################
+# Guild settings                                  #
+guild:
+
+# disabled worlds                                 #
+ disabledworlds:
+  - world_nether
+  - world_the_end
+
+# new guilds protection                           #
+ createprotection: 24h
+
+# start amounts                                   #
+ start:
+  points: 1000
+  money: 0
+
+# slots amount; start and maximum amount          #
+ slots:
+  start: 10
+  max: 50
+
+# lives amount; start and maximum amount          #
+ lives:
+  start: 2
+  max: 3
+
+# minimal distance from spawn                     #
+ fromspawn: 100
+
+# default guild pvp setting. false = no pvp       #
+ defaultpvp: false
+
+# allowed strings                                 #
+ stringcheck:
+# checking enabled                                #
+  enabled: true
+
+# use regex or allowed characters                 #
+  regex: false
+
+# allowed characters patter                       #
+  pattern: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&"
+
+# regex pattern                                   #
+  regexpattern: "[A-Za-z0-9&]*"
+
+# settings for tag and name strings               #
+ settings:
+
+  tag:
+# length                                          #
+   min: 2
+   max: 6
+
+  name:
+# length                                          #
+   min: 4
+   max: 10
+
+# guild points taken and given on death           #
+ killpoints: 5
+ deathpoints: 5
+
+# /g effect                                       #
+ effect:
+
+# duration of the effect                          #
+  duration: 100s
+
+# available effects                               #
+  list:
+   - JUMP
+   - INCREASE_DAMAGE
+   - HEAL
+
+# If this is set to true the points of the guild  #
+# Are the sum of points of all its members        #
+ playerpoints: false
+
+###################################################
+# Guild ranks                                     #
+rank:
+
+# Maximum allowed amount of custom ranks          #
+ maxamount: 5
+
+# Enable ranks menu in the GUI                    #
+ gui: true
+
+# default guild ranks                             #
+# leader rank is generated by the plugin          #
+ defaultranks:
+  member:
+   permissions:
+    - BLOCK_BREAK
+    - BLOCK_PLACE
+    - MOB_ATTACK
+    - MOB_RIDE
+    - MOB_LEASH
+    - INTERACT
+    - BANK_PAY
+    - HOME_TELEPORT
+    - VAULT_ACCESS
+    - VAULT_PUT
+  mayor:
+   inherit: member
+   permissions:
+    - KICK
+    - EFFECT
+    - INVITE
+    - BANK_WITHDRAW
+    - PVPTOGGLE
+    - BUYSLOT
+    - BUYLIFE
+
+###################################################
+# Groups                                          #
+# permissions: novaguilds.group.GROUP             #
+# eg: novaguilds.group.vip                        #
+# there's no need for admin group.                #
+# novaguilds.group.admin for all stuff free       #
+groups:
+# THIS IS A DEFAULT GROUP! #
+
+# the name goes here                              #
+ default:
+  guild:
+# teleporting to guild's home                     #
+   home:
+
+# teleport delay                                  #
+    tpdelay: 5
+
+# money required                                  #
+    money: 0
+
+# items required                                  #
+    items: []
+
+# join a guild                                    #
+   join:
+    money: 0
+    items: []
+
+# creating a guild                                #
+   create:
+    money: 0
+    items:
+     - dirt 1
+
+# schematic that gets pasted when creating guild  #
+# This is WorldEdit compatible                    #
+# Save schematic with                             #
+# //schem save schematic <name>                   #
+# And move to plugins/NovaGuilds/schematic/       #
+    schematic: ""
+
+# buying a life                                   #
+   buylife:
+    money: 10
+    items:
+     - GOLD_BLOCK 1
+
+# buying a slot                                   #
+   buyslot:
+    money: 10
+    items:
+     - GOLD_BLOCK 1
+
+# buying an effect                                #
+   effect:
+    money: 100
+    items: []
+
+# buying a banner                                 #
+   banner:
+    money: 0
+    items: []
+
+  region:
+# size (radius) of auto created region (5=10x10)  #
+   autoregionsize: 5
+# create price                                    #
+   createmoney: 100
+# price per block                                 #
+   ppb: 1
+
+# Admin group (missing values are 0/empty (free)  #
+ admin:
+  guild:
+   create:
+    schematic: ""
+  region:
+   autoregionsize: 10
+
+###################################################
+# Guild's vault                                   #
+vault:
+ enabled: true
+
+# vault item #
+ item: CHEST 1 name:&6Guild's_Vault
+
+# deny placing items from the list next           #
+# to the vault                                    #
+ denyrelative:
+  - HOPPER
+
+# vault hologram #
+ hologram:
+  enabled: true
+
+# Adding item holograms:                          #
+# [ITEM]NAMEORID AMOUNT                           #
+  lines:
+   - "[ITEM]GOLD_INGOT 1"
+   - "&6Guild's Vault"
+
+###################################################
+# The Tablist                                     #
+# All vars and info is available on the website   #
+# which is given on the top                       #
+#                                                 #
+# Players top:                                    #
+# By points: {PLAYER_TOP_PLAYER_POINTS_Nx}        #
+# By KDR: {PLAYER_TOP_PLAYER_KDR_Nx}              #
+# Guilds top:                                     #
+# By points: {GUILD_TOP_Nx}                       #
+# Replace 'x' with numbers 1-20 and place lines   #
+# in the scheme. The plugin will do the rest      #
+tablist:
+# enabled?                                        #
+ enabled: true
+
+# refresh interval                                #
+ refresh: 30s
+
+# header and footer                               #
+ header: "NovaGuilds"
+ footer: "Marcin (CTRL) Wieczorek"
+
+# The skin to be displayed in the tab             #
+ texture: "MHF_Question"
+
+# top patterns                                    #
+ toprow:
+  players:
+   points: "&6[&2{N}&6] &a{PLAYER_NAME} &c{PLAYER_POINTS}"
+   kdr: "&6[&2{N}&6] &a{PLAYER_NAME} &c{PLAYER_KDR}"
+  guilds: "&6[&2{N}&6] &a{GUILD_NAME} &c{GUILD_POINTS}"
+ scheme:
+  - "{PLAYER_NAME}"
+  - "Money: &2{PLAYER_BALANCE}$"
+  - "Kills: {PLAYER_KILLS}"
+  - "Deaths: {PLAYER_DEATHS}"
+  - "KDR: {PLAYER_KDR}"
+  - "ChatMode: {PLAYER_CHATMODE}"
+  - "SpyMode: {PLAYER_SPYMODE}"
+  - "Bypass: {PLAYER_BYPASS}"
+  - ""
+  - "{SERVER_ONLINE}/{SERVER_MAX}"
+  - "{WORLD_NAME}"
+  - "{WORLD_SPAWN}"
+  - ""
+  - "{DATE_DAY}-{DATE_MONTH}-{DATE_YEAR}"
+  - "{DATE_HOURS}:{DATE_MINUTES}:{DATE_SECONDS}"
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - "Name: {GUILD_NAME}"
+  - "Tag: {GUILD_TAG}"
+  - "{GUILD_PLAYERS_ONLINE}/{GUILD_PLAYERS_MAX}"
+  - "Lives: {GUILD_LIVES}"
+  - "Progress: {GUILD_RAIDPROGRESS}"
+  - "PVP: {GUILD_PVP}"
+  - "Money: {GUILD_MONEY}"
+  - "Points: {GUILD_POINTS}"
+  - "Slots: {GUILD_SLOTS}"
+  - "OpenInv: {GUILD_OPENINVITATION}"
+  - "{GUILD_TIME_REGEN}"
+  - "{GUILD_TIME_REST}"
+  - "{GUILD_TIME_CREATED}"
+  - "{GUILD_TIME_PROTECTION}"
+  - "{GUILD_HOME}"
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - "Guild top"
+  - ""
+  - "{GUILD_TOP_N1}"
+  - "{GUILD_TOP_N2}"
+  - "{GUILD_TOP_N3}"
+  - "{GUILD_TOP_N4}"
+  - "{GUILD_TOP_N5}"
+  - "{GUILD_TOP_N6}"
+  - "{GUILD_TOP_N7}"
+  - "{GUILD_TOP_N8}"
+  - "{GUILD_TOP_N9}"
+  - "{GUILD_TOP_N10}"
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - ""
+  - "Players TOP (kdr)"
+  - "{PLAYER_TOP_PLAYER_KDR_N1}"
+  - "{PLAYER_TOP_PLAYER_KDR_N2}"
+  - "{PLAYER_TOP_PLAYER_KDR_N3}"
+  - "{PLAYER_TOP_PLAYER_KDR_N4}"
+  - "{PLAYER_TOP_PLAYER_KDR_N5}"
+  - "{PLAYER_TOP_PLAYER_KDR_N6}"
+  - "{PLAYER_TOP_PLAYER_KDR_N7}"
+  - "{PLAYER_TOP_PLAYER_KDR_N8}"
+  - "{PLAYER_TOP_PLAYER_KDR_N9}"
+  - "{PLAYER_TOP_PLAYER_KDR_N10}"
+
+###################################################
+# Region settings                                 #
+region:
+
+# materials used with selection                   #
+ materials:
+
+# highlighting a region                           #
+  highlight:
+   region:
+    corner: DIAMOND_BLOCK
+    border: "null"
+
+# Ready to resize                                 #
+   resize:
+    corner: GOLD_BLOCK
+    border: "null"
+
+# creating regions                                #
+  selection:
+
+# a valid rectangle                               #
+   valid:
+    corner: EMERALD_BLOCK
+    border: WOOL:14
+
+# an invalid rectangle                            #
+   invalid:
+    corner: EMERALD_BLOCK
+    border: WOOL:15
+
+# resizing                                        #
+  resize:
+   corner: GOLD_BLOCK
+   border: WOOL:6
+
+# auto creating regions (when creating a guild)   #
+ autoregion: true
+
+# minimal region size                             #
+ minsize: 10
+
+# maximum region size                             #
+ maxsize: 100
+
+# Maximum amount of regions #
+ maxamount: 3
+
+# particles when entering a region                #
+ borderparticles: true
+
+# water flow at regions                           #
+ waterflow: true
+
+# minimal distance from another guild or region   #
+ mindistance: 20
+
+# allow allies interact                           #
+ allyinteract: false
+
+# tool item                                       #
+ tool: "STICK 1 name:&5NovaGuilds_&6Tool lore:&cLeft_Click_+_SHIFT|&6To_toggle_the_mode|&e****&2Check_Mode&e****|&6Right_click_to_check|&e****&2Select_Mode&e***|&cLeft/Right|&6click_to_select|&6Right_click_a_corner|&6to_resize glow:1"
+
+# Disallow lava/water 5 blocks outside the region #
+ fluidprotect: 5
+
+# Block creating regions on WorldGuard areas      #
+# Set 'ngregion' flag to ALLOW to override        #
+ worldguard: true
+
+# commands blocked at region                      #
+# when player is not member and not ally          #
+# ! commands have to be lowercase !               #
+ blockedcmds:
+  - sethome
+  - home
+  - back
+
+# deny interact (right click etc) at region       #
+ denyinteract:
+  - WOODEN_DOOR
+  - DARK_OAK_DOOR
+  - SPRUCE_DOOR
+  - BIRCH_DOOR
+  - JUNGLE_DOOR
+  - ACACIA_DOOR
+  - DARK_OAK_FENCE_GATE
+  - SPRUCE_FENCE_GATE
+  - BIRCH_FENCE_GATE
+  - JUNGLE_FENCE_GATE
+  - ACACIA_FENCE_GATE
+  - LEVER
+  - DISPENSER
+  - STONE_BUTTON
+  - WOOD_BUTTON
+  - DROPPER
+  - HOPPER
+  - FENCE_GATE
+  - REDSTONE_COMPARATOR_OFF
+  - REDSTONE_COMPARATOR_ON
+  - REDSTONE_REPEATER
+  - TRAP_DOOR
+  - CHEST
+  - ANVIL
+  - ENCHANTMENT_TABLE
+  - WORKBENCH
+  - FURNACE
+  - DIODE_BLOCK_ON
+  - DIODE_BLOCK_OFF
+  - WOOD_PLATE
+  - STONE_PLATE
+  - IRON_PLATE
+  - GOLD_PLATE
+  - ENDER_CHEST
+  - ENDER_PORTAL_FRAME
+  - NOTE_BLOCK
+  - JUKEBOX
+  - BEACON
+  - ITEM_FRAME
+  - BREWING_STAND
+  - TRAPPED_CHEST
+
+# deny using                                      #
+ denyuse:
+  - ITEM_FRAME
+  - ARMOR_STAND
+
+# deny hitting mobs                               #
+ denymobdamage:
+  - PIG
+  - COW
+  - SHEEP
+  - HORSE
+  - WOLF
+  - OCELOT
+  - ARMOR_STAND
+
+# deny riding mobs                                #
+ denyriding:
+  - HORSE
