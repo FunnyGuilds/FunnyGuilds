@@ -11,7 +11,7 @@
     <distributionManagement>
         <repository>
             <id>novaguilds-repo</id>
-            <name>NovaGuilds repository</name>
+            <name>FunnyGuilds repository</name>
             <url>ftp://repo.novaguilds.pl/</url>
         </repository>
     </distributionManagement>
@@ -188,7 +188,7 @@
     </dependencies>
 
     <build>
-        <finalName>NovaGuilds</finalName>
+        <finalName>FunnyGuilds</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

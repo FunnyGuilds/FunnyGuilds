@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.util.exceptionparser;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.exceptionparser.Block;
 import org.apache.commons.lang.StringUtils;
 
@@ -44,8 +44,8 @@ public class BlockImpl implements Block {
 	 * @param stackTraceElement first stacktrace element
 	 */
 	public BlockImpl(String name, String message, String stackTraceElement) {
-		if(StringUtils.startsWith(stackTraceElement, NovaGuilds.class.getPackage().getName())) {
-			StringUtils.replaceOnce(stackTraceElement, NovaGuilds.class.getPackage().getName() + ".", "");
+		if(StringUtils.startsWith(stackTraceElement, FunnyGuilds.class.getPackage().getName())) {
+			StringUtils.replaceOnce(stackTraceElement, FunnyGuilds.class.getPackage().getName() + ".", "");
 		}
 
 		this.name = name;

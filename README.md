@@ -1,14 +1,14 @@
 <a href="http://novaguilds.pl/"><img src="http://novaguilds.pl/img/newlogo.png" /></a><br/><br/>
 
-NovaGuilds is my own guilds plugin, still in development, but I want to hear your opinions and ideas.<br/>
+FunnyGuilds is my own guilds plugin, still in development, but I want to hear your opinions and ideas.<br/>
 Check the wiki on github for details.<br/>
 Please leave feedback!<br/><br/>
 
 <span style="font-size: 20px;color:red">
     I do not allow anybody to publish compiled source (.jar) on their websites.<br/>
-    Please download NovaGuilds' binary files only from bukkit.org, github and novaguilds.pl<br/>
+    Please download FunnyGuilds' binary files only from bukkit.org, github and novaguilds.pl<br/>
     The safest way is to compile it yourself!<br/>
-    You are free to redistribute modified versions of source code to others, but you must not distribute compiled versions of the plugin using the name NovaGuilds.
+    You are free to redistribute modified versions of source code to others, but you must not distribute compiled versions of the plugin using the name FunnyGuilds.
 </span>
 
 <br/><br/>
@@ -20,9 +20,9 @@ Please leave feedback!<br/><br/>
 <b>VanishNoPacket</b> is supported by the plugin<br/>
 <b>ScoreBoardStats</b> is optional<br/>
 <br/><br/>
-[![Join the chat at https://gitter.im/MarcinWieczorek/NovaGuilds](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarcinWieczorek/NovaGuilds?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/MarcinWieczorek/NovaGuilds.svg?branch=master)](https://travis-ci.org/MarcinWieczorek/NovaGuilds)
-[![ghit.me](https://ghit.me/badge.svg?repo=MarcinWieczorek/NovaGuilds)](https://ghit.me/repo/MarcinWieczorek/NovaGuilds)
+[![Join the chat at https://gitter.im/MarcinWieczorek/FunnyGuilds](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MarcinWieczorek/FunnyGuilds?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/MarcinWieczorek/FunnyGuilds.svg?branch=master)](https://travis-ci.org/MarcinWieczorek/FunnyGuilds)
+[![ghit.me](https://ghit.me/badge.svg?repo=MarcinWieczorek/FunnyGuilds)](https://ghit.me/repo/MarcinWieczorek/FunnyGuilds)
 <br/>
 
 <h2><b>Downloads</b></h2>
@@ -33,19 +33,19 @@ The plugin works on all versions including and above <b>1.7.5</b>
 
 <h2><b>Support</b></h2>
 If you need support:<br/>
-<a href="https://github.com/MarcinWieczorek/NovaGuilds/issues">Visit issues page</a><br/>
+<a href="https://github.com/MarcinWieczorek/FunnyGuilds/issues">Visit issues page</a><br/>
 <a href="mailto:marcin@marcin.co">Send me an email</a><br/>
 Send me a message using XMPP/Jabber: marcin@marcin.co
 <br/><br/><br/>
 
-<h2><b>How to compile NovaGuilds on your own?</b></h2>
+<h2><b>How to compile FunnyGuilds on your own?</b></h2>
 First of all, you'll need to download the source. Download the zip from github and unpack, or (and this is a better idea)
 Then you need Maven to build the project. Download it from public repositories (your machine probably runs Linux).
 'cd' into plugin's directory and build it.
 My project uses CraftBukkit <i>1.7.10-R0.1</i> Please build it on your own, because redistributing is against its license. 
 ```bash
-git clone https://github.com/MarcinWieczorek/NovaGuilds.git
-cd NovaGuilds/
+git clone https://github.com/MarcinWieczorek/FunnyGuilds.git
+cd FunnyGuilds/
 mvn clean install
 ```
 <br/><br/>
@@ -132,7 +132,7 @@ mvn clean install
     </tr>
     <tr>
         <td>/ng tool</td>
-        <td>Get NovaGuilds tool!</td>
+        <td>Get FunnyGuilds tool!</td>
         <td>Read its lore.</td>
     </tr>
     <tr>

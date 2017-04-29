@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.CommandExecutor;
 import co.marcin.novaguilds.api.basic.CommandExecutorHandler;
 import co.marcin.novaguilds.api.basic.CommandWrapper;
@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CommandManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final Map<String, String> aliases = new HashMap<>();
 	private final Map<CommandWrapper, CommandExecutor> executors = new HashMap<>();
 	private static final org.bukkit.command.CommandExecutor genericExecutor = new GenericExecutor();
@@ -142,7 +142,7 @@ public class CommandManager {
 				executor.execute(sender, args);
 			}
 			catch(Exception e) {
-				LoggerUtils.exception(new CommandException("Unhandled exception executing command '" + command.getName() + "' in plugin NovaGuilds", e));
+				LoggerUtils.exception(new CommandException("Unhandled exception executing command '" + command.getName() + "' in plugin FunnyGuilds", e));
 			}
 		}
 	}

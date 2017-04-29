@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.util.bossbar;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.IBossBarUtils;
 import co.marcin.novaguilds.enums.Config;
 import co.marcin.novaguilds.enums.Dependency;
@@ -79,10 +79,10 @@ public class BossBarUtils {
 					case MINECRAFT_1_8_R1:
 					case MINECRAFT_1_8_R2:
 					case MINECRAFT_1_8_R3:
-						if(NovaGuilds.getInstance().getDependencyManager().isEnabled(Dependency.BOSSBARAPI)) {
+						if(FunnyGuilds.getInstance().getDependencyManager().isEnabled(Dependency.BOSSBARAPI)) {
 							bossBarUtils = new BossBarUtilsBossBarImpl();
 						}
-						else if(NovaGuilds.getInstance().getDependencyManager().isEnabled(Dependency.BARAPI)) {
+						else if(FunnyGuilds.getInstance().getDependencyManager().isEnabled(Dependency.BARAPI)) {
 							bossBarUtils = new BossBarUtilsBarAPIImpl();
 						}
 						else {

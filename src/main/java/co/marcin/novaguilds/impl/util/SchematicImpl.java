@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.util;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.Schematic;
 import co.marcin.novaguilds.util.LoggerUtils;
 import co.marcin.novaguilds.util.Meta;
@@ -64,13 +64,13 @@ public class SchematicImpl implements Schematic {
 
 	/**
 	 * Constructor using file name
-	 * in plugins/NovaGuilds/schematic/
+	 * in plugins/FunnyGuilds/schematic/
 	 *
 	 * @param fileName file name
 	 * @throws FileNotFoundException when the file does not exist
 	 */
 	public SchematicImpl(String fileName) throws FileNotFoundException {
-		this(new File(NovaGuilds.getInstance().getDataFolder() + "/schematic/", fileName));
+		this(new File(FunnyGuilds.getInstance().getDataFolder() + "/schematic/", fileName));
 	}
 
 	/**

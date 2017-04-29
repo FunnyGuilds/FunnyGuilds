@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.basic;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.ConfigWrapper;
 import co.marcin.novaguilds.impl.util.AbstractVarKeyApplicable;
 import co.marcin.novaguilds.manager.ConfigManager;
@@ -92,7 +92,7 @@ public class ConfigWrapperImpl extends AbstractVarKeyApplicable<ConfigWrapper> i
 		}
 	}
 
-	protected static final ConfigManager cM = NovaGuilds.getInstance() == null ? null : NovaGuilds.getInstance().getConfigManager();
+	protected static final ConfigManager cM = FunnyGuilds.getInstance() == null ? null : FunnyGuilds.getInstance().getConfigManager();
 	protected String path;
 	protected boolean fixColors;
 

@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
 import co.marcin.novaguilds.api.basic.NovaRank;
@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class RankManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final List<NovaRank> genericRanks = new ArrayList<>();
 	private boolean loaded = false;
 
@@ -263,7 +263,7 @@ public class RankManager {
 	 * @return the rank
 	 */
 	public static NovaRank getLeaderRank() {
-		return NovaGuilds.getInstance().getRankManager().getGenericRanks().get(0);
+		return FunnyGuilds.getInstance().getRankManager().getGenericRanks().get(0);
 	}
 
 	/**

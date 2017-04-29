@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.runnable;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaRaid;
 import co.marcin.novaguilds.api.event.GuildAbandonEvent;
@@ -41,7 +41,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class RunnableRaid implements Runnable {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final UUID taskUUID = UUID.randomUUID();
 	private static UUID scheduledUUID;
 
@@ -196,6 +196,6 @@ public class RunnableRaid implements Runnable {
 			return;
 		}
 
-		NovaGuilds.runTaskLater(this, 1, TimeUnit.SECONDS);
+		FunnyGuilds.runTaskLater(this, 1, TimeUnit.SECONDS);
 	}
 }

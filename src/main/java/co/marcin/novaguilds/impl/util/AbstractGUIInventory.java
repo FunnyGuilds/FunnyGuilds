@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.util;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.GUIInventory;
 import co.marcin.novaguilds.api.basic.MessageWrapper;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
@@ -35,7 +35,7 @@ import java.util.Set;
 public abstract class AbstractGUIInventory implements GUIInventory {
 	protected final Inventory inventory;
 	private NovaPlayer viewer;
-	protected final NovaGuilds plugin = NovaGuilds.getInstance();
+	protected final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final Set<GUIInventory.Executor> executors = new HashSet<>();
 
 	/**

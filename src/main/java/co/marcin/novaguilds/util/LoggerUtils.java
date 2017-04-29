@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.util;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.exceptionparser.IError;
 import co.marcin.novaguilds.enums.Config;
 import co.marcin.novaguilds.enums.Message;
@@ -30,8 +30,8 @@ import java.util.logging.Logger;
 
 public final class LoggerUtils {
 	private static final Logger logger = Logger.getLogger("Minecraft");
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
-	private static final String logPrefix = "[NovaGuilds]";
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
+	private static final String logPrefix = "[FunnyGuilds]";
 
 	private LoggerUtils() {
 
@@ -128,7 +128,7 @@ public final class LoggerUtils {
 		String[] split1 = org.apache.commons.lang.StringUtils.split(line, '(');
 		String[] split2 = split1[1].split(":");
 		String className = org.apache.commons.lang.StringUtils.replace(split2[0], ".java", "");
-		return className.equals("NovaGuilds") ? "" : "[" + className + "]";
+		return className.equals("FunnyGuilds") ? "" : "[" + className + "]";
 	}
 
 	/**

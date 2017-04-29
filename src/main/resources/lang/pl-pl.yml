@@ -1,5 +1,5 @@
 chat:
- prefix: "&4&l[&7NovaGuilds&4&l] &6"
+ prefix: "&4&l[&7FunnyGuilds&4&l] &6"
  nopermissions: "&cNie masz uprawnien."
  unknowncmd: "&cNieznana komenda."
  invalidparam: "&cNieprawidlowy argument"
@@ -134,7 +134,7 @@ chat:
     points: "Zmieniłeś punkty gracza &c{PLAYER_NAME}'s na &a{PLAYER_POINTS}"
 
  reload:
-  reloading: "Przeladowywanie NovaGuilds..."
+  reloading: "Przeladowywanie FunnyGuilds..."
   config: "Konfiguracja przeladowana!"
   messages: "Wiadomosci przeladowane!"
   mysql: "MySQL przeladowane!"
@@ -144,12 +144,12 @@ chat:
   newmsgfile: "Nowy plik wiadomosci stworzony!"
   groups: "Grupy zaladowane!"
   ranks: "Rangi załadowane!"
-  reloaded: "NovaGuilds przeladowane!"
+  reloaded: "FunnyGuilds przeladowane!"
 
  usage:
   nga:
    access: "&4&l> &7/nga &2- &6Komendy admina"
-   reload: "&4&l> &7/nga &creload &2- &6Przeładuj &4&l[&7NovaGuilds&4&l]"
+   reload: "&4&l> &7/nga &creload &2- &6Przeładuj &4&l[&7FunnyGuilds&4&l]"
    save: "&4&l> &7/nga &csave &6[&cplayers&6/&cguilds&6/&cregions&6/&cranks&6] &2- &6Zapisz dane"
    chatspy: "&4&l> &7/nga &cspy &2- &6Przełącz szpiegowanie czatu"
    migrate: "&4&l> &7/nga &cmigrate &6<&cfrom/to&6> &6<&ctyp&6> &2- &6Migracja danych"

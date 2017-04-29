@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
 import co.marcin.novaguilds.api.basic.NovaRegion;
@@ -61,7 +61,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class RegionManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	public static Object WORLDGUARD_FLAG;
 
 	/**

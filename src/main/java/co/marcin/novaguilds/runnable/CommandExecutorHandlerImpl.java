@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.runnable;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.CommandExecutorHandler;
 import co.marcin.novaguilds.api.basic.CommandWrapper;
 import co.marcin.novaguilds.api.storage.Resource;
@@ -50,7 +50,7 @@ public class CommandExecutorHandlerImpl implements CommandExecutorHandler {
 		this.args = args;
 
 		if(command.hasFlag(CommandWrapper.Flag.CONFIRM)) {
-			bukkitTask = Bukkit.getScheduler().runTaskLater(NovaGuilds.getInstance(), this, Config.CHAT_CONFIRMTIMEOUT.getSeconds() * 20);
+			bukkitTask = Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), this, Config.CHAT_CONFIRMTIMEOUT.getSeconds() * 20);
 		}
 		else {
 			bukkitTask = null;

@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.util;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
 import co.marcin.novaguilds.api.util.ChatMessage;
@@ -182,10 +182,10 @@ public class ChatMessageImpl implements ChatMessage {
 			List<NovaPlayer> list;
 
 			if(Config.CHAT_TOP_POINTS.getBoolean()) {
-				list = NovaGuilds.getInstance().getPlayerManager().getTopPlayersByPoints(topAmount);
+				list = FunnyGuilds.getInstance().getPlayerManager().getTopPlayersByPoints(topAmount);
 			}
 			else {
-				list = NovaGuilds.getInstance().getPlayerManager().getTopPlayersByKDR(topAmount);
+				list = FunnyGuilds.getInstance().getPlayerManager().getTopPlayersByKDR(topAmount);
 			}
 
 			int rank = list.indexOf(nPlayer);

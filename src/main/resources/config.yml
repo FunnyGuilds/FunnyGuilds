@@ -1,5 +1,5 @@
            ############################
-           # NovaGuilds Configuration #
+           # FunnyGuilds Configuration #
            #                          #
            #         Support          #
            #   http://novaguilds.pl   #
@@ -414,7 +414,7 @@ groups:
 # This is WorldEdit compatible                    #
 # Save schematic with                             #
 # //schem save schematic <name>                   #
-# And move to plugins/NovaGuilds/schematic/       #
+# And move to plugins/FunnyGuilds/schematic/       #
     schematic: ""
 
 # buying a life                                   #
@@ -498,7 +498,7 @@ tablist:
  refresh: 30s
 
 # header and footer                               #
- header: "NovaGuilds"
+ header: "FunnyGuilds"
  footer: "Marcin (CTRL) Wieczorek"
 
 # The skin to be displayed in the tab             #
@@ -644,7 +644,7 @@ region:
  allyinteract: false
 
 # tool item                                       #
- tool: "STICK 1 name:&5NovaGuilds_&6Tool lore:&cLeft_Click_+_SHIFT|&6To_toggle_the_mode|&e****&2Check_Mode&e****|&6Right_click_to_check|&e****&2Select_Mode&e***|&cLeft/Right|&6click_to_select|&6Right_click_a_corner|&6to_resize glow:1"
+ tool: "STICK 1 name:&5FunnyGuilds_&6Tool lore:&cLeft_Click_+_SHIFT|&6To_toggle_the_mode|&e****&2Check_Mode&e****|&6Right_click_to_check|&e****&2Select_Mode&e***|&cLeft/Right|&6click_to_select|&6Right_click_a_corner|&6to_resize glow:1"
 
 # Disallow lava/water 5 blocks outside the region #
  fluidprotect: 5

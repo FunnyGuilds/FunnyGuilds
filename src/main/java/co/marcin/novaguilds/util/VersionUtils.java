@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.util;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.enums.Message;
 import co.marcin.novaguilds.enums.Permission;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -53,7 +53,7 @@ public class VersionUtils {
 	 */
 	private VersionUtils() throws IOException {
 		init = true;
-		NovaGuilds ng = NovaGuilds.getInstance();
+		FunnyGuilds ng = FunnyGuilds.getInstance();
 		String currentString;
 
 		if(ng == null) {

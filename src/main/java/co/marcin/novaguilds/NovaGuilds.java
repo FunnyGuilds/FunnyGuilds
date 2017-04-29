@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds;
 
-import co.marcin.novaguilds.api.NovaGuildsAPI;
+import co.marcin.novaguilds.api.FunnyGuildsAPI;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
 import co.marcin.novaguilds.api.basic.TabList;
 import co.marcin.novaguilds.api.event.PlayerInteractEntityEvent;
@@ -30,7 +30,7 @@ import co.marcin.novaguilds.api.util.reflect.FieldAccessor;
 import co.marcin.novaguilds.enums.Config;
 import co.marcin.novaguilds.enums.Dependency;
 import co.marcin.novaguilds.enums.EntityUseAction;
-import co.marcin.novaguilds.exception.FatalNovaGuildsException;
+import co.marcin.novaguilds.exception.FatalFunnyGuildsException;
 import co.marcin.novaguilds.exception.StorageConnectionFailedException;
 import co.marcin.novaguilds.impl.storage.StorageConnector;
 import co.marcin.novaguilds.impl.util.AbstractListener;
@@ -79,7 +79,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class NovaGuilds extends JavaPlugin implements NovaGuildsAPI {
+public class FunnyGuilds extends JavaPlugin implements FunnyGuildsAPI {
 	/*
 	 * Dioricie nasz, któryś jest w Javie, święć się bugi Twoje, przyjdź ficzery Twoje,
 	 * bądź kod Twój jako w gicie tak i w mavenie, stacktrace naszego powszedniego
@@ -88,7 +88,7 @@ public class NovaGuilds extends JavaPlugin implements NovaGuildsAPI {
 	 * Escape. ~Bukkit.PL
 	 */
 
-	private static NovaGuilds instance;
+	private static FunnyGuilds instance;
 
 	private final DependencyManager dependencyManager;
 	private final ListenerManager   listenerManager;
@@ -113,7 +113,7 @@ public class NovaGuilds extends JavaPlugin implements NovaGuildsAPI {
 	/**
 	 * The constructor
 	 */
-	public NovaGuilds() {
+	public FunnyGuilds() {
 		instance = this;
 
 		dependencyManager = new DependencyManager();
@@ -146,8 +146,8 @@ public class NovaGuilds extends JavaPlugin implements NovaGuildsAPI {
 	@Override
 	public void onEnable() {
 		try {
-			if(FatalNovaGuildsException.fatal) {
-				throw new FatalNovaGuildsException("The plugin has crashed");
+			if(FatalFunnyGuildsException.fatal) {
+				throw new FatalFunnyGuildsException("The plugin has crashed");
 			}
 
 			//managers
@@ -354,7 +354,7 @@ public class NovaGuilds extends JavaPlugin implements NovaGuildsAPI {
 
 	@Override
 	public void onDisable() {
-		if(FatalNovaGuildsException.fatal) {
+		if(FatalFunnyGuildsException.fatal) {
 			LoggerUtils.info("#" + VersionUtils.getBuildCurrent() + " (FATAL) Disabled");
 			return;
 		}
@@ -510,16 +510,16 @@ public class NovaGuilds extends JavaPlugin implements NovaGuildsAPI {
 	 *
 	 * @return the instance
 	 */
-	public static NovaGuilds getInstance() {
+	public static FunnyGuilds getInstance() {
 		return instance;
 	}
 
 	/**
 	 * Sets up the storage
 	 *
-	 * @throws FatalNovaGuildsException if fails
+	 * @throws FatalFunnyGuildsException if fails
 	 */
-	public void setUpStorage() throws FatalNovaGuildsException {
+	public void setUpStorage() throws FatalFunnyGuildsException {
 		try {
 			storage = new StorageConnector(getConfigManager().getDataStorageType()).getStorage();
 		}
@@ -533,7 +533,7 @@ public class NovaGuilds extends JavaPlugin implements NovaGuildsAPI {
 			}
 
 			if(getConfigManager().isSecondaryDataStorageType()) {
-				throw new FatalNovaGuildsException("Storage connection failed", e);
+				throw new FatalFunnyGuildsException("Storage connection failed", e);
 			}
 
 			getConfigManager().setToSecondaryDataStorageType();

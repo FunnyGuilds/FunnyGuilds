@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.util.guiinventory.guild.player;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
 import co.marcin.novaguilds.api.basic.NovaRank;
@@ -51,7 +51,7 @@ public class GUIInventoryGuildPlayerSettingsRank extends AbstractGUIInventory {
 		NovaGuild guild = nPlayer.getGuild();
 
 		final List<NovaRank> ranks = new ArrayList<>();
-		ranks.addAll(NovaGuilds.getInstance().getRankManager().getGenericRanks());
+		ranks.addAll(FunnyGuilds.getInstance().getRankManager().getGenericRanks());
 		ranks.addAll(guild.getRanks());
 
 		for(final NovaRank rank : ranks) {

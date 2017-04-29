@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.listener;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
 import co.marcin.novaguilds.api.util.ChatMessage;
@@ -166,7 +166,7 @@ public class ChatListener extends AbstractListener {
 					|| cmd.equalsIgnoreCase("v")
 					|| cmd.equalsIgnoreCase("essentials:vanish")
 					|| cmd.equalsIgnoreCase("essentials:v"))) {
-			NovaGuilds.runTask(new Runnable() {
+			FunnyGuilds.runTask(new Runnable() {
 				@Override
 				public void run() {
 					plugin.getRegionManager().checkAtRegionChange(nPlayer);

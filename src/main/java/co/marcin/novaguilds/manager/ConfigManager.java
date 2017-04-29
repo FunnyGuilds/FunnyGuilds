@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.ConfigWrapper;
 import co.marcin.novaguilds.enums.Config;
 import co.marcin.novaguilds.enums.DataStorageType;
@@ -49,7 +49,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ConfigManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private FileConfiguration config;
 
 	private DataStorageType primaryDataStorageType;
@@ -115,9 +115,9 @@ public class ConfigManager {
 			}
 
 			ServerVersion closestVersion = getClosestVersion(craftBukkitVersion);
-			LoggerUtils.error("Version " + craftBukkitVersion + " is not supported by NovaGuilds.");
+			LoggerUtils.error("Version " + craftBukkitVersion + " is not supported by FunnyGuilds.");
 			LoggerUtils.error("Expect bugs and report them to the development team. (/ng)");
-			LoggerUtils.error("NovaGuilds is now using implementation for version: " + closestVersion.name());
+			LoggerUtils.error("FunnyGuilds is now using implementation for version: " + closestVersion.name());
 
 			//Work on closest supported version
 			return closestVersion;
@@ -234,7 +234,7 @@ public class ConfigManager {
 			plugin.saveDefaultConfig();
 		}
 
-		File schematicDirectory = new File(NovaGuilds.getInstance().getDataFolder(), "/schematic/");
+		File schematicDirectory = new File(FunnyGuilds.getInstance().getDataFolder(), "/schematic/");
 		if(!schematicDirectory.exists() && schematicDirectory.mkdirs()) {
 			LoggerUtils.info("Created schematic/ directory");
 		}

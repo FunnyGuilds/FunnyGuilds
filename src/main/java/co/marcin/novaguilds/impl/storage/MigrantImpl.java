@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.storage;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.storage.Migrant;
 import co.marcin.novaguilds.api.storage.Resource;
@@ -76,7 +76,7 @@ public class MigrantImpl implements Migrant {
 			for(Resource resource : new ArrayList<>(data)) {
 				resource.setNotAdded();
 
-				if(entry.getKey() == NovaGuild.class && !NovaGuilds.getInstance().getGuildManager().postCheck((NovaGuild) resource)) {
+				if(entry.getKey() == NovaGuild.class && !FunnyGuilds.getInstance().getGuildManager().postCheck((NovaGuild) resource)) {
 					LoggerUtils.error(resource.getUUID() + " failed postCheck");
 					data.remove(resource);
 				}

@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.command.abstractexecutor;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.CommandExecutor;
 import co.marcin.novaguilds.api.basic.CommandWrapper;
 import co.marcin.novaguilds.enums.Command;
@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public abstract class AbstractCommandExecutor implements CommandExecutor {
-	protected final NovaGuilds plugin = NovaGuilds.getInstance();
+	protected final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	public final Map<String, CommandWrapper> commandsMap = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
 	@Override

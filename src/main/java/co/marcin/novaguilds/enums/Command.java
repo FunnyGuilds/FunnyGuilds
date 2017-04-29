@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 
 package co.marcin.novaguilds.enums;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.CommandExecutor;
 import co.marcin.novaguilds.api.basic.CommandWrapper;
 import co.marcin.novaguilds.api.basic.MessageWrapper;
 import co.marcin.novaguilds.command.CommandConfirm;
-import co.marcin.novaguilds.command.CommandNovaGuilds;
+import co.marcin.novaguilds.command.CommandFunnyGuilds;
 import co.marcin.novaguilds.command.CommandPlayerInfo;
 import co.marcin.novaguilds.command.CommandToolGet;
 import co.marcin.novaguilds.command.admin.CommandAdmin;
@@ -202,7 +202,7 @@ public final class Command extends CommandWrapperImpl {
 	public static final CommandWrapper REGION_DELETE =                        new Command(CommandRegionDelete.class,                        Permission.NOVAGUILDS_REGION_DELETE,                                     Message.CHAT_USAGE_REGION_DELETE,                     Flag.NOCONSOLE, Flag.CONFIRM);
 	public static final CommandWrapper TOOL_GET =                             new Command(CommandToolGet.class,                             Permission.NOVAGUILDS_TOOL_GET,                                          Message.CHAT_USAGE_TOOL,                              Flag.NOCONSOLE              );
 	public static final CommandWrapper PLAYERINFO =                           new Command(CommandPlayerInfo.class,                          Permission.NOVAGUILDS_PLAYERINFO,                          "playerinfo", Message.CHAT_USAGE_PLAYER_INFO                                                    );
-	public static final CommandWrapper NOVAGUILDS =                           new Command(CommandNovaGuilds.class,                          Permission.NOVAGUILDS_NOVAGUILDS,                          "novaguilds"                                                                                    );
+	public static final CommandWrapper NOVAGUILDS =                           new Command(CommandFunnyGuilds.class,                          Permission.NOVAGUILDS_NOVAGUILDS,                          "novaguilds"                                                                                    );
 	public static final CommandWrapper CONFIRM =                              new Command(CommandConfirm.class,                             Permission.NOVAGUILDS_CONFIRM,                             "confirm",    Message.CHAT_USAGE_CONFIRM                                                        );
 
 	private static final Map<String, CommandWrapper> map = new HashMap<>();
@@ -219,7 +219,7 @@ public final class Command extends CommandWrapperImpl {
 				map.put(field.getName(), commandWrapper);
 
 				CommandExecutor commandExecutor = commandWrapper.getExecutorClass().newInstance();
-				NovaGuilds.getInstance().getCommandManager().registerExecutor(commandWrapper, commandExecutor);
+				FunnyGuilds.getInstance().getCommandManager().registerExecutor(commandWrapper, commandExecutor);
 
 				commandWrapper.setExecutor(commandExecutor);
 			}

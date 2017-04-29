@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -109,13 +109,13 @@ public class PacketExtensionImpl implements PacketExtension {
 
 		};
 		ChannelPipeline cp = c.pipeline();
-		cp.addBefore("packet_handler", "NovaGuilds", handler);
+		cp.addBefore("packet_handler", "FunnyGuilds", handler);
 	}
 
 	@Override
 	public void unregisterChannel() {
 		for(Player player : CompatibilityUtils.getOnlinePlayers()) {
-			getChannel(player).pipeline().remove("NovaGuilds");
+			getChannel(player).pipeline().remove("FunnyGuilds");
 		}
 	}
 

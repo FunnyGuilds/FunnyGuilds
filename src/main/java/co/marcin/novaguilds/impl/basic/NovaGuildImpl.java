@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.basic;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
 import co.marcin.novaguilds.api.basic.NovaRaid;
@@ -630,7 +630,7 @@ public class NovaGuildImpl extends AbstractResource implements NovaGuild {
 				}
 			}
 
-			if(NovaGuilds.getInstance().getRankManager().isLoaded() && !nPlayer.isLeader()) {
+			if(FunnyGuilds.getInstance().getRankManager().isLoaded() && !nPlayer.isLeader()) {
 				nPlayer.setGuildRank(getDefaultRank());
 			}
 		}
@@ -783,7 +783,7 @@ public class NovaGuildImpl extends AbstractResource implements NovaGuild {
 
 	@Override
 	public void destroy(AbandonCause cause) {
-		final NovaGuilds plugin = NovaGuilds.getInstance();
+		final FunnyGuilds plugin = FunnyGuilds.getInstance();
 
 		//remove players
 		for(NovaPlayer nPlayer : getPlayers()) {

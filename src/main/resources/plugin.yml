@@ -1,5 +1,5 @@
-name: NovaGuilds
-main: co.marcin.novaguilds.NovaGuilds
+name: FunnyGuilds
+main: co.marcin.novaguilds.FunnyGuilds
 author: Marcin Wieczorek
 description: The best polish guilds plugin!
 website: http://novaguilds.pl/
@@ -7,22 +7,22 @@ version: 40
 softdepend: [HolographicDisplays, BarAPI, BossBarAPI, VanishNoPacket, Vault, WorldGuard, ScoreboardStats, Essentials]
 commands:
    novaguilds:
-      description: Main NovaGuilds command
+      description: Main FunnyGuilds command
       usage: /novaguilds
       aliases: [ng]
    nga:
       description: Admin commands
       usage: /nga [cmd]
    guild:
-      description: NovaGuilds guild command
+      description: FunnyGuilds guild command
       usage: /guild <cmd> [params]
       aliases: [g]
    guildmenu:
-      description: NovaGuilds menu gui command
+      description: FunnyGuilds menu gui command
       usage: /guildmenu
       aliases: [gg]
    gi:
-      description: NovaGuilds Guild Info
+      description: FunnyGuilds Guild Info
       usage: /gi <tag>
       aliases: [guildinfo]
    create:

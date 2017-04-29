@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.MessageWrapper;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
@@ -57,7 +57,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class GuildManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final Map<String, NovaGuild> guilds = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
 	/**
@@ -504,7 +504,7 @@ public class GuildManager {
 		if(delay > 0) {
 			Map<VarKey, String> vars = new HashMap<>();
 			vars.put(VarKey.DELAY, String.valueOf(GroupManager.getGroup(player).get(NovaGroupImpl.Key.HOME_DELAY)));
-			NovaGuilds.runTaskLater(task, delay, TimeUnit.SECONDS);
+			FunnyGuilds.runTaskLater(task, delay, TimeUnit.SECONDS);
 			Message.CHAT_DELAYEDTELEPORT.clone().vars(vars).send(player);
 		}
 		else {

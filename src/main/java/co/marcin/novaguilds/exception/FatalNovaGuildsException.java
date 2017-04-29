@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,16 +18,16 @@
 
 package co.marcin.novaguilds.exception;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.manager.ListenerManager;
 
-public class FatalNovaGuildsException extends Exception {
+public class FatalFunnyGuildsException extends Exception {
 	public static boolean fatal;
 
 	/**
 	 * The constructor
 	 */
-	public FatalNovaGuildsException() {
+	public FatalFunnyGuildsException() {
 		disable();
 	}
 
@@ -36,7 +36,7 @@ public class FatalNovaGuildsException extends Exception {
 	 *
 	 * @param message exception message
 	 */
-	public FatalNovaGuildsException(String message) {
+	public FatalFunnyGuildsException(String message) {
 		super(message);
 		disable();
 	}
@@ -47,22 +47,22 @@ public class FatalNovaGuildsException extends Exception {
 	 * @param message exception message
 	 * @param cause   cause
 	 */
-	public FatalNovaGuildsException(String message, Throwable cause) {
+	public FatalFunnyGuildsException(String message, Throwable cause) {
 		super(message, cause);
 		disable();
 	}
 
 	/**
-	 * Disables NovaGuilds
+	 * Disables FunnyGuilds
 	 */
 	private void disable() {
 		fatal = true;
 
-		if(NovaGuilds.getInstance().isEnabled()) {
-			NovaGuilds.runTask(new Runnable() {
+		if(FunnyGuilds.getInstance().isEnabled()) {
+			FunnyGuilds.runTask(new Runnable() {
 				@Override
 				public void run() {
-					ListenerManager.getLoggedPluginManager().disablePlugin(NovaGuilds.getInstance());
+					ListenerManager.getLoggedPluginManager().disablePlugin(FunnyGuilds.getInstance());
 				}
 			});
 		}

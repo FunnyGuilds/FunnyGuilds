@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.storage;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.storage.Resource;
 import co.marcin.novaguilds.api.storage.ResourceManager;
 import co.marcin.novaguilds.api.storage.Storage;
@@ -27,7 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class AbstractStorage implements Storage {
-	protected static final NovaGuilds plugin = NovaGuilds.getInstance();
+	protected static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final Map<Class<? extends Resource>, ResourceManager<? extends Resource>> resourceManagers = new LinkedHashMap<>();
 
 	@Override

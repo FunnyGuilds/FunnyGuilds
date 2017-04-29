@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.MessageWrapper;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.util.Title;
@@ -28,7 +28,7 @@ import co.marcin.novaguilds.enums.Lang;
 import co.marcin.novaguilds.enums.Message;
 import co.marcin.novaguilds.enums.Permission;
 import co.marcin.novaguilds.enums.VarKey;
-import co.marcin.novaguilds.exception.FatalNovaGuildsException;
+import co.marcin.novaguilds.exception.FatalFunnyGuildsException;
 import co.marcin.novaguilds.util.CompatibilityUtils;
 import co.marcin.novaguilds.util.LoggerUtils;
 import co.marcin.novaguilds.util.StringUtils;
@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MessageManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private FileConfiguration messages = null;
 	public String prefix;
 	public ChatColor prefixColor = ChatColor.WHITE;
@@ -95,16 +95,16 @@ public class MessageManager {
 	/**
 	 * Loads messages
 	 *
-	 * @throws FatalNovaGuildsException when something goes wrong
+	 * @throws FatalFunnyGuildsException when something goes wrong
 	 */
-	public void load() throws FatalNovaGuildsException {
+	public void load() throws FatalFunnyGuildsException {
 		setupDirectories();
 
 		try {
 			detectLanguage();
 			messages = Lang.loadConfiguration(messagesFile);
 
-			//Fork, edit and compile NovaGuilds on your own if you want not to use the original prefix
+			//Fork, edit and compile FunnyGuilds on your own if you want not to use the original prefix
 			restorePrefix();
 
 			prefix = Message.CHAT_PREFIX.get();
@@ -113,7 +113,7 @@ public class MessageManager {
 			LoggerUtils.info("Messages loaded: " + Config.LANG_NAME.getString());
 		}
 		catch(ScannerException | IOException e) {
-			throw new FatalNovaGuildsException("Failed to load messages", e);
+			throw new FatalFunnyGuildsException("Failed to load messages", e);
 		}
 	}
 
@@ -124,8 +124,8 @@ public class MessageManager {
 		String prefix = Message.CHAT_PREFIX.get();
 		prefix = StringUtils.removeColors(StringUtils.fixColors(prefix));
 
-		if(!prefix.contains("NovaGuilds")) {
-			Message.CHAT_PREFIX.set("&4&l[&7NovaGuilds&4&l] &6");
+		if(!prefix.contains("FunnyGuilds")) {
+			Message.CHAT_PREFIX.set("&4&l[&7FunnyGuilds&4&l] &6");
 			LoggerUtils.info("Prefix restored.");
 		}
 	}

@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,13 +18,13 @@
 
 package co.marcin.novaguilds.impl.util;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.packet.PacketExtension;
 import co.marcin.novaguilds.listener.PacketListener;
 import org.bukkit.event.EventPriority;
 
 public abstract class AbstractPacketHandler implements PacketExtension.PacketHandler {
-	protected static final NovaGuilds plugin = NovaGuilds.getInstance();
+	protected static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final String packetName;
 	protected EventPriority priority = EventPriority.NORMAL;
 	private Direction direction;

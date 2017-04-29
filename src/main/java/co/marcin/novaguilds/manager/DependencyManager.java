@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.reflect.FieldAccessor;
 import co.marcin.novaguilds.enums.Config;
 import co.marcin.novaguilds.enums.Dependency;
 import co.marcin.novaguilds.exception.AdditionalTaskException;
-import co.marcin.novaguilds.exception.FatalNovaGuildsException;
+import co.marcin.novaguilds.exception.FatalFunnyGuildsException;
 import co.marcin.novaguilds.exception.MissingDependencyException;
 import co.marcin.novaguilds.util.LoggerUtils;
 import co.marcin.novaguilds.util.reflect.Reflections;
@@ -43,21 +43,21 @@ import java.util.List;
 import java.util.Map;
 
 public class DependencyManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final Map<Dependency, Plugin> pluginMap = new HashMap<>();
 	private Economy economy;
 
 	/**
 	 * Sets up the manager
 	 *
-	 * @throws FatalNovaGuildsException when something goes wrong
+	 * @throws FatalFunnyGuildsException when something goes wrong
 	 */
-	public void setUp() throws FatalNovaGuildsException {
+	public void setUp() throws FatalFunnyGuildsException {
 		try {
 			checkDependencies();
 		}
 		catch(MissingDependencyException e) {
-			throw new FatalNovaGuildsException("Could not satisfy dependencies", e);
+			throw new FatalFunnyGuildsException("Could not satisfy dependencies", e);
 		}
 	}
 

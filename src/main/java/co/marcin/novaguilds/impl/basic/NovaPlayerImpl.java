@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.basic;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.CommandExecutorHandler;
 import co.marcin.novaguilds.api.basic.CommandWrapper;
 import co.marcin.novaguilds.api.basic.GUIInventory;
@@ -138,7 +138,7 @@ public class NovaPlayerImpl extends AbstractResource implements NovaPlayer {
 			return 0D;
 		}
 
-		return NovaGuilds.getInstance().getDependencyManager().getEconomy().getBalance(oPlayer);
+		return FunnyGuilds.getInstance().getDependencyManager().getEconomy().getBalance(oPlayer);
 	}
 
 	@Override
@@ -361,7 +361,7 @@ public class NovaPlayerImpl extends AbstractResource implements NovaPlayer {
 			return;
 		}
 
-		NovaGuilds.getInstance().getDependencyManager().getEconomy().depositPlayer(oPlayer, money);
+		FunnyGuilds.getInstance().getDependencyManager().getEconomy().depositPlayer(oPlayer, money);
 	}
 
 	@Override
@@ -406,7 +406,7 @@ public class NovaPlayerImpl extends AbstractResource implements NovaPlayer {
 			return;
 		}
 
-		NovaGuilds.getInstance().getDependencyManager().getEconomy().withdrawPlayer(oPlayer, money);
+		FunnyGuilds.getInstance().getDependencyManager().getEconomy().withdrawPlayer(oPlayer, money);
 	}
 
 	@Override

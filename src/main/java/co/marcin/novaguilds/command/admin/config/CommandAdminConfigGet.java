@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.command.admin.config;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.command.abstractexecutor.AbstractCommandExecutor;
 import co.marcin.novaguilds.enums.Message;
 import co.marcin.novaguilds.enums.VarKey;
@@ -103,6 +103,6 @@ public class CommandAdminConfigGet extends AbstractCommandExecutor {
 
 	@Override
 	protected Collection<String> tabCompleteOptions(CommandSender sender, String[] args) {
-		return NovaGuilds.getInstance().getConfigManager().getConfig().getKeys(true);
+		return FunnyGuilds.getInstance().getConfigManager().getConfig().getKeys(true);
 	}
 }

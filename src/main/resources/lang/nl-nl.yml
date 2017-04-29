@@ -1,5 +1,5 @@
 chat:
- prefix: "&4&l[&7NovaGuilds&4&l] &6"
+ prefix: "&4&l[&7FunnyGuilds&4&l] &6"
  nopermissions: "&cJe hebt geen rechten om dit te doen."
  unknowncmd: "&cOnbekende opdracht."
  invalidparam: "&cOngeldige opdracht waarde"
@@ -134,7 +134,7 @@ chat:
     points: "You have changed &c{PLAYER_NAME}'s points to &a{PLAYER_POINTS}"
 
  reload:
-  reloading: "Herladen NovaGuilds..."
+  reloading: "Herladen FunnyGuilds..."
   config: "Instellingen herladen!"
   messages: "Berichten herladen!"
   mysql: "MySQL herladen!"
@@ -144,12 +144,12 @@ chat:
   newmsgfile: "Nieuwe berichteb bestand gemaakt!"
   groups: "Groupen herladen!"
   ranks: "Rangen herladen!"
-  reloaded: "NovaGuilds Herladen!"
+  reloaded: "FunnyGuilds Herladen!"
 
  usage:
   nga:
    access: "&4&l> &7/nga &2- &6Admin commands"
-   reload: "&4&l> &7/nga &creload &2- &6Herladen &4&l[&7NovaGuilds&4&l]"
+   reload: "&4&l> &7/nga &creload &2- &6Herladen &4&l[&7FunnyGuilds&4&l]"
    save: "&4&l> &7/nga &csave &6[&cplayers&6/&cguilds&6/&cregions&6/&cranks&6] &2- &6Sla gegevens op"
    chatspy: "&4&l> &7/nga &cspy &2- &6Verander geheime mode"
    migrate: "&4&l> &7/nga &cmigrate &6<&cfrom/to&6> &6<&ctype&6> &2- &6Migrate data"

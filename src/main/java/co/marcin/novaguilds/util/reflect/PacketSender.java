@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.util.reflect;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.Packet;
 import co.marcin.novaguilds.util.ParticleUtils;
 import org.bukkit.Location;
@@ -70,7 +70,7 @@ public class PacketSender {
 			}
 		}
 
-		NovaGuilds.getInstance().getPacketExtension().sendPacket(player, packetList.toArray());
+		FunnyGuilds.getInstance().getPacketExtension().sendPacket(player, packetList.toArray());
 	}
 
 	/**

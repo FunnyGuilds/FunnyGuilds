@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.util;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
@@ -188,10 +188,10 @@ public final class RegionUtils {
 	public static Location sectionToLocation(ConfigurationSection section) {
 		World world;
 		try {
-			world = NovaGuilds.getInstance().getServer().getWorld(UUID.fromString(section.getString("world")));
+			world = FunnyGuilds.getInstance().getServer().getWorld(UUID.fromString(section.getString("world")));
 		}
 		catch(IllegalArgumentException e) {
-			world = NovaGuilds.getInstance().getServer().getWorld(section.getString("world"));
+			world = FunnyGuilds.getInstance().getServer().getWorld(section.getString("world"));
 		}
 
 		double x = section.getDouble("x");

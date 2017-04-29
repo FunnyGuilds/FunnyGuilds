@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaRegion;
 import co.marcin.novaguilds.enums.Config;
@@ -37,7 +37,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class DynmapManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private MarkerSet markerSet;
 	private boolean enabled = false;
 	private MarkerIcon guildHomeIcon;
@@ -54,7 +54,7 @@ public class DynmapManager {
 	public void init() {
 		if(plugin.getDependencyManager().isEnabled(Dependency.DYNMAP) && Config.DYNMAP.getBoolean()) {
 			DynmapAPI api = (DynmapAPI) plugin.getDependencyManager().get(Dependency.DYNMAP, Plugin.class);
-			markerSet = api.getMarkerAPI().createMarkerSet("novaguilds.markerset", "NovaGuilds", null, false);
+			markerSet = api.getMarkerAPI().createMarkerSet("novaguilds.markerset", "FunnyGuilds", null, false);
 			InputStream inputStream = plugin.getResource("guildhomeicon.png");
 			guildHomeIcon = api.getMarkerAPI().createMarkerIcon("novaguilds.guildhome", "Guild Home", inputStream);
 			enabled = true;

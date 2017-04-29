@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 
 package co.marcin.novaguilds.impl.util;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.manager.ListenerManager;
 import org.bukkit.event.Listener;
 
 public abstract class AbstractListener implements Listener {
-	protected final NovaGuilds plugin = NovaGuilds.getInstance();
+	protected final FunnyGuilds plugin = FunnyGuilds.getInstance();
 
 	/**
 	 * The constructor

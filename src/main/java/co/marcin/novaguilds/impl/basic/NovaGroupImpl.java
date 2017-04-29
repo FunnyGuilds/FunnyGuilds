@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.basic;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGroup;
 import co.marcin.novaguilds.api.util.Schematic;
 import co.marcin.novaguilds.api.util.reflect.FieldAccessor;
@@ -104,7 +104,7 @@ public class NovaGroupImpl implements NovaGroup {
 		}
 	}
 
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private static final Map<NovaGroup.Key<?>, String> paths = new HashMap<NovaGroup.Key<?>, String>() {{
 		put(Key.CREATE_MONEY, "guild.create.money");
 		put(Key.CREATE_ITEMS, "guild.create.items");

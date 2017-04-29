@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ import org.bukkit.command.CommandSender;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommandNovaGuilds extends AbstractCommandExecutor {
+public class CommandFunnyGuilds extends AbstractCommandExecutor {
 	@Override
 	public void execute(CommandSender sender, String[] args) throws Exception {
 		if(args.length == 0) {
@@ -41,8 +41,8 @@ public class CommandNovaGuilds extends AbstractCommandExecutor {
 			String commit = VersionUtils.getCommit();
 
 			langInfo.put("zh-cn", new String[]{
-					Message.CHAT_PREFIX.get() + "NovaGuilds 公会插件信息",
-					"&2NovaGuilds &6#&c" + VersionUtils.getBuildCurrent() + " &4(&e" + commit + "&4)",
+					Message.CHAT_PREFIX.get() + "FunnyGuilds 公会插件信息",
+					"&2FunnyGuilds &6#&c" + VersionUtils.getBuildCurrent() + " &4(&e" + commit + "&4)",
 					"&2作者: &6Marcin (CTRL) Wieczorek",
 					"&22017 &4波&f兰",
 					"&6网址: &bhttp://novaguilds.pl/",
@@ -50,8 +50,8 @@ public class CommandNovaGuilds extends AbstractCommandExecutor {
 			});
 
 			langInfo.put("en-en", new String[]{
-					Message.CHAT_PREFIX.get() + "NovaGuilds Information",
-					"&2NovaGuilds &6#&c" + VersionUtils.getBuildCurrent() + " &4(&e" + commit + "&4)",
+					Message.CHAT_PREFIX.get() + "FunnyGuilds Information",
+					"&2FunnyGuilds &6#&c" + VersionUtils.getBuildCurrent() + " &4(&e" + commit + "&4)",
 					"&2Author: &6Marcin (CTRL) Wieczorek",
 					"&22017 &4Pol&fand",
 					"&bhttp://novaguilds.pl/",
@@ -59,8 +59,8 @@ public class CommandNovaGuilds extends AbstractCommandExecutor {
 			});
 
 			langInfo.put("pl-pl", new String[]{
-					Message.CHAT_PREFIX.get() + "NovaGuilds Informacje",
-					"&2NovaGuilds &6#&c" + VersionUtils.getBuildCurrent() + " &4(&e" + commit + "&4)",
+					Message.CHAT_PREFIX.get() + "FunnyGuilds Informacje",
+					"&2FunnyGuilds &6#&c" + VersionUtils.getBuildCurrent() + " &4(&e" + commit + "&4)",
 					"&2Autor: &6Marcin (CTRL) Wieczorek",
 					"&22017 &4Pol&fska",
 					"&bhttp://novaguilds.pl/",

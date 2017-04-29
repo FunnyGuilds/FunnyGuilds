@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.basic;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaHologram;
 import co.marcin.novaguilds.enums.Message;
 import co.marcin.novaguilds.util.ItemStackUtils;
@@ -93,7 +93,7 @@ public class NovaHologramImpl extends AbstractResource implements NovaHologram {
 		if(isTop()) {
 			clearLines();
 			addLine(Message.HOLOGRAPHICDISPLAYS_TOPGUILDS_HEADER.prefix(false).get());
-			addLine(NovaGuilds.getInstance().getGuildManager().getTopGuilds());
+			addLine(FunnyGuilds.getInstance().getGuildManager().getTopGuilds());
 		}
 
 		for(String line : lines) {
@@ -119,14 +119,14 @@ public class NovaHologramImpl extends AbstractResource implements NovaHologram {
 
 	@Override
 	public void create() {
-		hologram = HologramsAPI.createHologram(NovaGuilds.getInstance(), location);
+		hologram = HologramsAPI.createHologram(FunnyGuilds.getInstance(), location);
 		refresh();
 	}
 
 	@Override
 	public void delete() {
 		hologram.delete();
-		NovaGuilds.getInstance().getHologramManager().getHolograms().remove(this);
+		FunnyGuilds.getInstance().getHologramManager().getHolograms().remove(this);
 		location.getWorld().playEffect(location, Effect.POTION_SWIRL, 1000);
 		deleted = true;
 	}

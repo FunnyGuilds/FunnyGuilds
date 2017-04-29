@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.manager;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaHologram;
 import co.marcin.novaguilds.enums.Message;
 import co.marcin.novaguilds.impl.basic.NovaHologramImpl;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HologramManager {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final File file = new File(plugin.getDataFolder(), "holograms.yml");
 	private YamlConfiguration configuration;
 	private final List<NovaHologram> holograms = new ArrayList<>();

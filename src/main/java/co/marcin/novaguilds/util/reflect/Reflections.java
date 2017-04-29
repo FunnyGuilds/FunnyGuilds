@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.util.reflect;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.reflect.FieldAccessor;
 import co.marcin.novaguilds.api.util.reflect.MethodInvoker;
 import co.marcin.novaguilds.impl.util.reflect.FieldAccessorImpl;
@@ -41,7 +41,7 @@ public final class Reflections {
 
 	static {
 		try {
-			if(NovaGuilds.getInstance() != null) {
+			if(FunnyGuilds.getInstance() != null) {
 				Class<?> craftWorldClass = getBukkitClass("CraftWorld");
 				Class<?> craftEntityClass = getBukkitClass("entity.CraftEntity");
 				worldGetHandleMethod = getMethod(craftWorldClass, "getHandle");

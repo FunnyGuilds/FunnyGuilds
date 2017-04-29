@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.command.guild;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.MessageWrapper;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
@@ -233,13 +233,13 @@ public class CommandGuildInfo extends AbstractCommandExecutor {
 	protected Collection<String> tabCompleteOptions(CommandSender sender, String[] args) {
 		Set<String> options = new HashSet<>();
 
-		for(NovaGuild guild : NovaGuilds.getInstance().getGuildManager().getGuilds()) {
+		for(NovaGuild guild : FunnyGuilds.getInstance().getGuildManager().getGuilds()) {
 			options.add(guild.getTag().toLowerCase());
 			options.add(guild.getName().toLowerCase());
 		}
 
 		int limit = 0;
-		for(NovaPlayer nPlayerLoop : NovaGuilds.getInstance().getPlayerManager().getPlayers()) {
+		for(NovaPlayer nPlayerLoop : FunnyGuilds.getInstance().getPlayerManager().getPlayers()) {
 			if(limit > 100) {
 				break;
 			}

@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.basic;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.CommandExecutor;
 import co.marcin.novaguilds.api.basic.CommandWrapper;
 import co.marcin.novaguilds.api.basic.MessageWrapper;
@@ -111,7 +111,7 @@ public class CommandWrapperImpl implements CommandWrapper {
 
 	@Override
 	public void execute(CommandSender sender, String[] args) {
-		NovaGuilds.getInstance().getCommandManager().execute(this, sender, args);
+		FunnyGuilds.getInstance().getCommandManager().execute(this, sender, args);
 	}
 
 	@Override

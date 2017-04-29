@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.basic;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.basic.NovaGuild;
 import co.marcin.novaguilds.api.basic.NovaPlayer;
 import co.marcin.novaguilds.api.basic.NovaRank;
@@ -213,6 +213,6 @@ public class NovaRankImpl extends AbstractResource implements NovaRank {
 			nPlayer.setGuildRank(getGuild().getDefaultRank());
 		}
 
-		NovaGuilds.getInstance().getRankManager().delete(this);
+		FunnyGuilds.getInstance().getRankManager().delete(this);
 	}
 }

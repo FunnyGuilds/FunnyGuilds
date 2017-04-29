@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 package co.marcin.novaguilds.impl.util.exceptionparser;
 
-import co.marcin.novaguilds.NovaGuilds;
+import co.marcin.novaguilds.FunnyGuilds;
 import co.marcin.novaguilds.api.util.exceptionparser.ErrorSignature;
 import co.marcin.novaguilds.api.util.exceptionparser.IError;
 import co.marcin.novaguilds.manager.ConfigManager;
@@ -30,7 +30,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 
 public class ErrorImpl implements IError {
-	private static final NovaGuilds plugin = NovaGuilds.getInstance();
+	private static final FunnyGuilds plugin = FunnyGuilds.getInstance();
 	private final Collection<String> consoleOutput = new ArrayList<>();
 	private final Collection<Throwable> causes = new LinkedHashSet<>();
 	private final Throwable exception;
@@ -95,7 +95,7 @@ public class ErrorImpl implements IError {
 		consoleOutput.add(" Please send this whole message to the author (/novaguilds)");
 		consoleOutput.add("");
 		consoleOutput.add("Server Information:");
-		consoleOutput.add(" NovaGuilds: #" + VersionUtils.getBuildCurrent() + " (" + VersionUtils.getCommit() + ")");
+		consoleOutput.add(" FunnyGuilds: #" + VersionUtils.getBuildCurrent() + " (" + VersionUtils.getCommit() + ")");
 		consoleOutput.add(" Storage Type: " + (plugin.getConfigManager() == null || plugin.getConfigManager().getDataStorageType() == null ? "null" : plugin.getConfigManager().getDataStorageType().name()));
 		consoleOutput.add(" Bukkit: " + Bukkit.getBukkitVersion());
 		consoleOutput.add(" Version Implementation: " + ConfigManager.getServerVersion().name());

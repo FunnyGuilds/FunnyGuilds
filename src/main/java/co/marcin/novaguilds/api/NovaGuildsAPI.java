@@ -1,5 +1,5 @@
 /*
- *     NovaGuilds - Bukkit plugin
+ *     FunnyGuilds - Bukkit plugin
  *     Copyright (C) 2017 Marcin (CTRL) Wieczorek
  *
  *     This program is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ import co.marcin.novaguilds.manager.RegionManager;
 import co.marcin.novaguilds.manager.TaskManager;
 
 /**
- * NovaGuilds API
+ * FunnyGuilds API
  *
  * @author Marcin Wieczorek
  */
-public interface NovaGuildsAPI {
+public interface FunnyGuildsAPI {
 	/**
 	 * Returns the instance of RegionManager
 	 *
