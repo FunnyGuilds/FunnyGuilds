@@ -4,9 +4,15 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class Database {
+
+    /*
+     * https://github.com/brettwooldridge/HikariCP#popular-datasource-class-names
+     */
 
     private static Database instance;
 
@@ -18,7 +24,7 @@ public class Database {
         this.dataSource = new HikariDataSource();
         Settings c = Settings.getInstance();
 
-        this.dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        //this.dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         this.dataSource.setMaximumPoolSize(c.poolSize);
 
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.mysqlHostname + ":" + c.mysqlPort + "/" + c.mysqlDatabase);
