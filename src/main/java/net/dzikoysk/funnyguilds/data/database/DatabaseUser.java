@@ -15,7 +15,6 @@ public class DatabaseUser {
     }
 
     public void save(Database db) {
-        db.openConnection();
         String update = getInsert();
         if (update != null) {
             for (String query : update.split(";")) {
@@ -33,15 +32,13 @@ public class DatabaseUser {
 
     public void updatePoints() {
         Database db = Database.getInstance();
-        db.openConnection();
         StringBuilder update = new StringBuilder();
-        update.append("UPDATE users SET points=");
+        update.append("UPDATE `users` SET `points`='");
         update.append(user.getRank().getPoints());
-        update.append(" WHERE uuid='");
+        update.append("' WHERE `uuid`='");
         update.append(user.getUUID().toString());
         update.append("'");
         db.executeUpdate(update.toString());
-        db.closeConnection();
     }
 
     public String getInsert() {
@@ -49,30 +46,30 @@ public class DatabaseUser {
             return null;
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO users (uuid, name, points, kills, deaths, ban, reason) VALUES (");
+        sb.append("INSERT INTO `users` (`uuid`, `name`, `points`, `kills`, `deaths`, `ban`, `reason`) VALUES (");
         sb.append("'" + user.getUUID().toString() + "',");
         sb.append("'" + user.getName() + "',");
-        sb.append(user.getRank().getPoints() + ",");
-        sb.append(user.getRank().getKills() + ",");
-        sb.append(user.getRank().getDeaths() + ",");
-        sb.append(user.getBan() + ",");
+        sb.append("'" + user.getRank().getPoints() + "',");
+        sb.append("'" + user.getRank().getKills() + "',");
+        sb.append("'" + user.getRank().getDeaths() + "',");
+        sb.append("'" + user.getBan() + "',");
         sb.append("'" + user.getReason() + "'");
         sb.append(") ON DUPLICATE KEY UPDATE ");
-        sb.append("name='" + user.getName() + "',");
-        sb.append("points=" + user.getRank().getPoints() + ",");
-        sb.append("kills=" + user.getRank().getKills() + ",");
-        sb.append("deaths=" + user.getRank().getDeaths() + ",");
-        sb.append("ban=" + user.getBan() + ",");
-        sb.append("reason='" + user.getReason() + "'");
+        sb.append("`name`='" + user.getName() + "',");
+        sb.append("`points`='" + user.getRank().getPoints() + "',");
+        sb.append("`kills`='" + user.getRank().getKills() + "',");
+        sb.append("`deaths`='" + user.getRank().getDeaths() + "',");
+        sb.append("`ban`='" + user.getBan() + "',");
+        sb.append("`reason`='" + user.getReason() + "'");
         if (user.hasGuild()) {
-            sb.append("; UPDATE users SET guild='");
+            sb.append("; UPDATE `users` SET `guild`='");
             sb.append(user.getGuild().getName());
-            sb.append("' WHERE uuid='");
+            sb.append("' WHERE `uuid`='");
             sb.append(user.getUUID().toString());
             sb.append("'");
         }
         else {
-            sb.append("; UPDATE users SET guild=NULL WHERE uuid='");
+            sb.append("; UPDATE `users` SET `guild`=NULL WHERE `uuid`='");
             sb.append(user.getUUID().toString());
             sb.append("'");
         }

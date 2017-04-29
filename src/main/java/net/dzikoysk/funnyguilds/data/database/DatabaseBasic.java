@@ -23,13 +23,12 @@ public class DatabaseBasic {
 
     public void load() {
         Database db = Database.getInstance();
-        db.openConnection();
 
         usersTable(db);
         regionsTable(db);
         guildsTable(db);
 
-        ResultSet users = Database.getInstance().executeQuery("SELECT * FROM users");
+        ResultSet users = Database.getInstance().executeQuery("SELECT * FROM `users`");
         try {
             while (users.next()) {
                 User user = DatabaseUser.deserialize(users);
@@ -44,7 +43,7 @@ public class DatabaseBasic {
             }
         }
 
-        ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM regions");
+        ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM `regions`");
         try {
             while (regions.next()) {
                 Region region = DatabaseRegion.deserialize(regions);
@@ -59,7 +58,7 @@ public class DatabaseBasic {
             }
         }
 
-        ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM guilds");
+        ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM `guilds`");
         try {
             while (guilds.next()) {
                 Guild guild = DatabaseGuild.deserialize(guilds);
@@ -83,13 +82,11 @@ public class DatabaseBasic {
             GuildUtils.deleteGuild(guild);
         }
 
-        db.closeConnection();
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
     }
 
     public void save(boolean b) throws ClassNotFoundException, SQLException {
         Database db = Database.getInstance();
-        db.openConnection();
         for (User user : UserUtils.getUsers()) {
             if (!b) {
                 if (!user.changed()) {
@@ -132,70 +129,69 @@ public class DatabaseBasic {
                 }
             }
         }
-        db.closeConnection();
     }
 
     public void guildsTable(Database db) {
         StringBuilder sb = new StringBuilder();
-        sb.append("create table if not exists guilds(");
-        sb.append("uuid varchar(100) not null,");
-        sb.append("name text not null,");
-        sb.append("tag text not null,");
-        sb.append("owner text not null,");
-        sb.append("home text not null,");
-        sb.append("region text not null,");
-        sb.append("members text not null,");
-        sb.append("regions text not null,");
-        sb.append("points int not null,");
-        sb.append("lives int not null,");
-        sb.append("ban bigint not null,");
-        sb.append("born bigint not null,");
-        sb.append("validity bigint not null,");
-        sb.append("pvp boolean not null,");
-        sb.append("attacked bigint,");
-        sb.append("allies text,");
-        sb.append("enemies text,");
-        sb.append("info text,");
-        sb.append("deputy text,");
+        sb.append("create table if not exists `guilds`(");
+        sb.append("`uuid` varchar(100) not null,");
+        sb.append("`name` text not null,");
+        sb.append("`tag` text not null,");
+        sb.append("`owner` text not null,");
+        sb.append("`home` text not null,");
+        sb.append("`region` text not null,");
+        sb.append("`members` text not null,");
+        sb.append("`regions` text not null,");
+        sb.append("`points` int not null,");
+        sb.append("`lives` int not null,");
+        sb.append("`ban` bigint not null,");
+        sb.append("`born` bigint not null,");
+        sb.append("`validity` bigint not null,");
+        sb.append("`pvp` boolean not null,");
+        sb.append("`attacked` bigint,");
+        sb.append("`allies` text,");
+        sb.append("`enemies` text,");
+        sb.append("`info` text,");
+        sb.append("`deputy` text,");
         sb.append("primary key (uuid));");
         db.executeUpdate(sb.toString());
-        db.executeUpdate("alter table guilds add born bigint not null;");
-        db.executeUpdate("alter table guilds add validity bigint not null;");
-        db.executeUpdate("alter table guilds add attacked bigint not null;");
-        db.executeUpdate("alter table guilds add lives int not null;");
-        db.executeUpdate("alter table guilds add ban bigint not null;");
-        db.executeUpdate("alter table guilds add pvp boolean not null;");
-        db.executeUpdate("alter table guilds add deputy text;");
-        //db.executeUpdate("alter table guilds add constraint deputy foreign key (deputy) references users (name) on update cascade;");
+        /*db.executeUpdate("alter table `guilds` add `born` bigint not null;");
+        db.executeUpdate("alter table `guilds` add `validity` bigint not null;");
+        db.executeUpdate("alter table `guilds` add `attacked` bigint not null;");
+        db.executeUpdate("alter table `guilds` add `lives` int not null;");
+        db.executeUpdate("alter table `guilds` add `ban` bigint not null;");
+        db.executeUpdate("alter table `guilds` add `pvp` boolean not null;");
+        db.executeUpdate("alter table `guilds` add `deputy` text;");
+        db.executeUpdate("alter table guilds add constraint deputy foreign key (deputy) references users (name) on update cascade;");*/
     }
 
     public void regionsTable(Database db) {
         StringBuilder sb = new StringBuilder();
-        sb.append("create table if not exists regions(");
-        sb.append("name varchar(100) not null,");
-        sb.append("center text not null,");
-        sb.append("size int not null,");
-        sb.append("enlarge int not null,");
+        sb.append("create table if not exists `regions`(");
+        sb.append("`name` varchar(100) not null,");
+        sb.append("`center` text not null,");
+        sb.append("`size` int not null,");
+        sb.append("`enlarge` int not null,");
         sb.append("primary key (name));");
         db.executeUpdate(sb.toString());
     }
 
     public void usersTable(Database db) {
         StringBuilder sb = new StringBuilder();
-        sb.append("create table if not exists users(");
-        sb.append("uuid varchar(100) not null,");
-        sb.append("name text not null,");
-        sb.append("points int not null,");
-        sb.append("kills int not null,");
-        sb.append("deaths int not null,");
-        sb.append("guild varchar(100),");
-        sb.append("ban bigint,");
-        sb.append("reason text,");
+        sb.append("create table if not exists `users`(");
+        sb.append("`uuid` varchar(100) not null,");
+        sb.append("`name` text not null,");
+        sb.append("`points` int not null,");
+        sb.append("`kills` int not null,");
+        sb.append("`deaths` int not null,");
+        sb.append("`guild` varchar(100),");
+        sb.append("`ban` bigint,");
+        sb.append("`reason` text,");
         sb.append("primary key (uuid));");
         db.executeUpdate(sb.toString());
-        db.executeUpdate("alter table users add ban bigint;");
-        db.executeUpdate("alter table users add reason text;");
-        db.executeUpdate("alter table users add guild varchar(100);");
+        /*db.executeUpdate("alter table `users` add `ban` bigint;");
+        db.executeUpdate("alter table `users` add `reason` text;");
+        db.executeUpdate("alter table `users` add `guild` varchar(100);");*/
     }
 
     public static DatabaseBasic getInstance() {

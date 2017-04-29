@@ -21,6 +21,7 @@ public class EntityDamage implements Listener {
         if (!(entity instanceof Player)) {
             return;
         }
+
         Player attacker = null;
         if (damager instanceof Player) {
             attacker = (Player) damager;
@@ -36,11 +37,16 @@ public class EntityDamage implements Listener {
         if (attacker == null) {
             return;
         }
+
         Player victim = (Player) event.getEntity();
+
         User uv = User.get(victim);
         User ua = User.get(attacker);
 
         if (uv.hasGuild() && ua.hasGuild()) {
+            if (uv.getUUID().equals(ua.getUUID())) {
+                return;
+            }
             if (uv.getGuild().equals(ua.getGuild())) {
                 if (!uv.getGuild().getPvP()) {
                     event.setCancelled(true);

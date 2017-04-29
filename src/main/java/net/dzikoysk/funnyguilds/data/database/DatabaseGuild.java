@@ -38,37 +38,31 @@ public class DatabaseGuild {
         }
         if (guild.getUUID() != null) {
             Database db = Database.getInstance();
-            db.openConnection();
             StringBuilder update = new StringBuilder();
-            update.append("DELETE FROM guilds WHERE uuid='");
+            update.append("DELETE FROM `guilds` WHERE `uuid`='");
             update.append(guild.getUUID().toString());
             update.append("'");
             db.executeUpdate(update.toString());
-            db.closeConnection();
         }
         else if (guild.getName() != null) {
             Database db = Database.getInstance();
-            db.openConnection();
             StringBuilder update = new StringBuilder();
-            update.append("DELETE FROM guilds WHERE name='");
+            update.append("DELETE FROM `guilds` WHERE `name`='");
             update.append(guild.getName());
             update.append("'");
             db.executeUpdate(update.toString());
-            db.closeConnection();
         }
     }
 
     public void updatePoints() {
         Database db = Database.getInstance();
-        db.openConnection();
         StringBuilder update = new StringBuilder();
-        update.append("UPDATE guilds SET points=");
+        update.append("UPDATE `guilds` SET `points`=");
         update.append(guild.getRank().getPoints());
-        update.append(" WHERE uuid='");
+        update.append(" WHERE `uuid`='");
         update.append(guild.getUUID().toString());
         update.append("'");
         db.executeUpdate(update.toString());
-        db.closeConnection();
     }
 
     public String getInsert() {
@@ -78,25 +72,25 @@ public class DatabaseGuild {
         String allies = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 
-        sb.append("INSERT INTO guilds (");
-        sb.append("uuid, name, tag, owner, home, region, members, regions, allies, ");
-        sb.append("enemies, points, born, validity, attacked, ban, lives, pvp");
+        sb.append("INSERT INTO `guilds` (");
+        sb.append("`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `regions`, `allies`, ");
+        sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`");
         sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");
         sb.append("'%members%','%regions%','%allies%','%enemies%',%points%,%born%,");
         sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%) ON DUPLICATE KEY UPDATE ");
-        sb.append("uuid='%uuid%',name='%name%',tag='%tag%',owner='%owner%',home='%home%',");
-        sb.append("region='%region%',members='%members%',regions='%regions%',allies='%allies%',");
-        sb.append("enemies='%enemies%',points=%points%,born=%born%,validity=%validity%,");
-        sb.append("attacked=%attacked%,ban=%ban%,lives=%lives%,pvp=%pvp%");
+        sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
+        sb.append("`region`='%region%',`members`='%members%',`regions`='%regions%',`allies`='%allies%',");
+        sb.append("`enemies`='%enemies%',`points`=%points%,`born`=%born%,`validity`=%validity%,");
+        sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%");
         if (guild.getDeputy() != null) {
-            sb.append("; UPDATE guilds SET deputy='");
+            sb.append("; UPDATE `guilds` SET `deputy`='");
             sb.append(guild.getDeputy().getName());
-            sb.append("' WHERE uuid='");
+            sb.append("' WHERE `uuid`='");
             sb.append(guild.getUUID().toString());
             sb.append("'");
         }
         else {
-            sb.append("; UPDATE guilds SET deputy=NULL WHERE uuid='");
+            sb.append("; UPDATE `guilds` SET `deputy`=NULL WHERE `uuid`='");
             sb.append(guild.getUUID().toString());
             sb.append("'");
         }

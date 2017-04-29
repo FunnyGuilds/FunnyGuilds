@@ -1,34 +1,44 @@
 package net.dzikoysk.funnyguilds.data.database;
 
+import com.zaxxer.hikari.HikariDataSource;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class Database {
 
+    /*
+     * https://github.com/brettwooldridge/HikariCP#popular-datasource-class-names
+     */
+
     private static Database instance;
 
-    private final String user;
-    private final String database;
-    private final String password;
-    private final String port;
-    private final String hostname;
-    private Connection connection;
+    private final HikariDataSource dataSource;
 
     public Database() {
         instance = this;
+
+        this.dataSource = new HikariDataSource();
         Settings c = Settings.getInstance();
-        this.hostname = c.mysqlHostname;
-        this.port = c.mysqlPort;
-        this.database = c.mysqlDatabase;
-        this.user = c.mysqlUser;
-        this.password = c.mysqlPassword;
-        this.connection = null;
-        this.firstConnection();
+
+        //this.dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
+        this.dataSource.setMaximumPoolSize(c.poolSize);
+
+        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.mysqlHostname + ":" + c.mysqlPort + "/" + c.mysqlDatabase);
+        this.dataSource.setUsername(c.mysqlUser);
+        if (c.mysqlPassword != null && !c.mysqlPassword.isEmpty()) {
+            this.dataSource.setPassword(c.mysqlPassword);
+        }
+
+        this.dataSource.addDataSourceProperty("cachePrepStmts", true);
+        this.dataSource.addDataSourceProperty("prepStmtCacheSize", 250);
+        this.dataSource.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
     }
 
-    public Connection openConnection() {
+    /*public Connection openConnection() {
         try {
             if (checkConnection()) {
                 return connection;
@@ -51,7 +61,7 @@ public class Database {
             String url = "jdbc:mysql://" + this.hostname + ":" + this.port + "/?user=" + this.user + "&password=" + this.password;
             Connection conn = DriverManager.getConnection(url);
             Statement s = conn.createStatement();
-            s.executeUpdate("CREATE DATABASE IF NOT EXISTS " + this.database);
+            s.executeUpdate("CREATE DATABASE IF NOT EXISTS `" + this.database + "`");
             conn.close();
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
@@ -83,19 +93,13 @@ public class Database {
             }
         }
         return true;
-    }
+    }*/
 
     public ResultSet executeQuery(String query) {
         try {
-            if (!checkConnection()) {
-                openConnection();
-            }
-            if (connection == null) {
-                return null;
-            }
-            Statement statement = connection.createStatement();
-            ResultSet result = statement.executeQuery(query);
-            return result;
+            Connection connection = this.dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            return statement.executeQuery();
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
@@ -106,36 +110,21 @@ public class Database {
 
     public int executeUpdate(String query) {
         try {
-            if (!checkConnection()) {
-                openConnection();
-            }
-            if (connection == null) {
-                openConnection();
-                if (connection == null) {
-                    return 0;
-                }
-            }
-            Statement statement = connection.createStatement();
+            Connection connection = this.dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
             if (statement == null) {
                 return 0;
             }
-            return statement.executeUpdate(query);
-        } catch (SQLException e) {
-            if (e.getSQLState().equals("42S21")) {
-                return 4221;
-            }
+            int result = statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return result;
+        } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
         return 0;
-    }
-
-    public Connection getConnection() {
-        if (!checkConnection()) {
-            openConnection();
-        }
-        return connection;
     }
 
     public static Database getInstance() {
