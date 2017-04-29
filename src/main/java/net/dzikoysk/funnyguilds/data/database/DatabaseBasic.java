@@ -155,14 +155,14 @@ public class DatabaseBasic {
         sb.append("`deputy` text,");
         sb.append("primary key (uuid));");
         db.executeUpdate(sb.toString());
-        db.executeUpdate("alter table `guilds` add `born` bigint not null;");
+        /*db.executeUpdate("alter table `guilds` add `born` bigint not null;");
         db.executeUpdate("alter table `guilds` add `validity` bigint not null;");
         db.executeUpdate("alter table `guilds` add `attacked` bigint not null;");
         db.executeUpdate("alter table `guilds` add `lives` int not null;");
         db.executeUpdate("alter table `guilds` add `ban` bigint not null;");
         db.executeUpdate("alter table `guilds` add `pvp` boolean not null;");
         db.executeUpdate("alter table `guilds` add `deputy` text;");
-        //db.executeUpdate("alter table guilds add constraint deputy foreign key (deputy) references users (name) on update cascade;");
+        db.executeUpdate("alter table guilds add constraint deputy foreign key (deputy) references users (name) on update cascade;");*/
     }
 
     public void regionsTable(Database db) {
@@ -189,9 +189,9 @@ public class DatabaseBasic {
         sb.append("`reason` text,");
         sb.append("primary key (uuid));");
         db.executeUpdate(sb.toString());
-        db.executeUpdate("alter table `users` add `ban` bigint;");
+        /*db.executeUpdate("alter table `users` add `ban` bigint;");
         db.executeUpdate("alter table `users` add `reason` text;");
-        db.executeUpdate("alter table `users` add `guild` varchar(100);");
+        db.executeUpdate("alter table `users` add `guild` varchar(100);");*/
     }
 
     public static DatabaseBasic getInstance() {
