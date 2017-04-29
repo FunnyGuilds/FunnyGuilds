@@ -4,9 +4,9 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class Database {
 
@@ -97,9 +97,9 @@ public class Database {
 
     public ResultSet executeQuery(String query) {
         try {
-            PreparedStatement statement = this.dataSource.getConnection().prepareStatement(query);
-            ResultSet result = statement.executeQuery();
-            return result;
+            Connection connection = this.dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
+            return statement.executeQuery();
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
@@ -110,15 +110,16 @@ public class Database {
 
     public int executeUpdate(String query) {
         try {
-            PreparedStatement statement = this.dataSource.getConnection().prepareStatement(query);
+            Connection connection = this.dataSource.getConnection();
+            PreparedStatement statement = connection.prepareStatement(query);
             if (statement == null) {
                 return 0;
             }
-            return statement.executeUpdate();
-        } catch (SQLException e) {
-            if (e.getSQLState().equals("42S21")) {
-                return 4221;
-            }
+            int result = statement.executeUpdate();
+            statement.close();
+            connection.close();
+            return result;
+        } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
             }
