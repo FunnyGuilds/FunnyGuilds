@@ -51,10 +51,7 @@ public class StringUtils {
     }
 
     public static String colored(String s) {
-        if (s == null) {
-            return null;
-        }
-        return ChatColor.translateAlternateColorCodes('&', s);
+        return s != null ? ChatColor.translateAlternateColorCodes('&', s) : null;
     }
 
     public static String toString(List<String> list, boolean send) {
