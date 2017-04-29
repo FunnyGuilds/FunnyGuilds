@@ -45,10 +45,12 @@ public class UserUtils {
 
     public static void addUser(User user) {
         uuidUserMap.put(user.getUUID(), user);
-        nameUserMap.put(user.getName(), user);
-
         uuidUserCache.put(user.getUUID(), user);
-        nameUserCache.put(user.getName(), user);
+
+        if(user.getName() != null) {
+            nameUserMap.put(user.getName(), user);
+            nameUserCache.put(user.getName(), user);
+        }
     }
 
     public static void removeUser(User user) {

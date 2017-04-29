@@ -45,7 +45,7 @@ public class User implements Basic {
     private User(UUID uuid) {
         this.uuid = uuid;
         this.changes = true;
-        UserUtils.addUser(this);
+        this.updateCache();
     }
 
     private User(String name) {
@@ -57,14 +57,14 @@ public class User implements Basic {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
         this.changes = true;
-        UserUtils.addUser(this);
+        this.updateCache();
     }
 
     private User(OfflineUser offline) {
         this.uuid = offline.getUniqueId();
         this.name = offline.getName();
         this.changes = true;
-        UserUtils.addUser(this);
+        this.updateCache();
     }
 
     public void removeGuild() {
@@ -94,6 +94,7 @@ public class User implements Basic {
     public void setName(String name) {
         this.name = name;
         this.changes();
+        this.updateCache();
     }
 
     public void setGuild(Guild guild) {
@@ -308,6 +309,11 @@ public class User implements Basic {
             }
         }
         return ping;
+    }
+
+    private void updateCache()
+    {
+        UserUtils.addUser(this);
     }
 
     @Override
