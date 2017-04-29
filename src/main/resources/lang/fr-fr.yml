@@ -1,0 +1,782 @@
+chat:
+ prefix: "&4&l[&7FunnyGuilds&4&l] &6"
+ nopermissions: "&cVous n'avez pas assez de permissions pour faire ceci."
+ unknowncmd: "&cCommande inconnue."
+ invalidparam: "&cParamètres invalides de commande"
+ cmdfromconsole: "Vous ne pouvez pas effectuer cette commande depuis la console"
+ enterinteger: "Merci d'entrer un nombre."
+ delayedteleport: "Vous allez être téléporté dans &c{DELAY} secondes"
+ delayedtpmoved: "Vous avez bougé! Téléportation annulé!"
+ erroroccured: "&cUne erreur à eu lieu. Contactez l'administrateur du serveur."
+ update: "&4Il y a une mise à jour disponible! &6http://www.novaguilds.pl/"
+ maxamount: "Le montant maximum autorisé est : &c{AMOUNT}"
+ basic:
+  negativenumber: "Merci de donner un nombre plus grand ou égal à zero."
+  'on': "ON"
+  'off': "OFF"
+  coords3d: "&6{X}&c/&6{Y}&c/&6{Z}"
+ confirm:
+  nullhandler: "Il n'y a pas de commande en suspens à confirmer"
+  needconfirm: "Vous devez confirmer cet action. &c/confirm"
+  timeout: "Votre demande de confirmation a expiré."
+
+ admin:
+  migrate:
+   sametype: "Data storage types can't be the same."
+   invalidtype: "Invalid data storage type."
+   connectionfail: "Failed to connect to the storage."
+   success: "All data have been successfully migrated."
+  config:
+   reloaded: "La configuration a été rechargé"
+   reset: "La configuration a été réinitialisé"
+   saved: "La configuration a été sauvegardé"
+   set: "&c{KEY} a été fixé à &c{VALUE}"
+   get:
+    single: "&f{KEY}&c: &f{VALUE}"
+    list:
+     section: "{DEPTH}&c{KEY}"
+     key: "{DEPTH}&4&l> &7{KEY}"
+  guild:
+   timerest:
+    set: "Temps de repos de guildes restant fixé."
+   list:
+    header: "Liste de toutes les guildes:"
+    page: 
+     hasnext: "&7-- &cPage &7{PAGE} &csur &7{PAGES} -- &c/nga g list {NEXT} &7--"
+     nonext: "&7-- &cPage &7{PAGE} &csur &7{PAGES} --"
+    item: " &2- &a{GUILD_NAME} &7[&a{TAG}&7] &6Dirigeant: &c{PLAYER_NAME} ({PLAYERSCOUNT} joueurs)"
+   inactive:
+    updated: "Temps inactif de toutes les guildes mis à jour. (&c{COUNT} guilds)"
+    list:
+     header: "Guildes les plus inactives"
+     item: " &2- &a{GUILD_NAME} actif {AGONOW}"
+     ago: "depuis &c{INACTIVE}"
+     now: "&cmaintenant"
+   bank:
+    paid: "vous avez versé &c${MONEY} dans la banque de &a{GUILD_NAME}."
+    withdrew: "Vous avez prélevé &c${MONEY} de la banque de &a{GUILD_NAME}."
+   kick:
+    leader: "Vous ne pouvez pas expulser le dirigeant. Vous devez abandonner la guilde."
+   invited: "joueur &c{PLAYER_NAME} invité à &a{GUILD_NAME}"
+   teleported:
+    self: "Teleportation au foyer de &a{GUILD_NAME}"
+    other: "&c{PLAYER_NAME} téléporté au foyer de &a{GUILD_NAME}"
+   set:
+    tag: "Tag changé à &a{TAG}"
+    points: "Points fixé."
+    lives: "Vies fixé."
+    slots:
+     smallerthanplayers: "Le montant des emplacement ne peut pas être plut petit que le nombre de joueurs."
+     success: "Emplacement fixé."
+    name:
+     enternewname: "Entrez un nouveau nom"
+     success: "Nom de la guilde modifié."
+    leader:
+     notinguild: "Ce joueur n'est pas dans la guilde &a{GUILD_NAME}"
+     alreadyleader: "Le joueur &c{PLAYER_NAME} est déjà le dirigeant!"
+     success: "Nouveau dirigeant fixé!"
+   reset:
+    points:
+     invalidconditiontype: "&cCondition invalide de type &4(&a< > = all&4)"
+     novalue: "Merci d'ajouter une valeur après &a{CHAR}"
+     success: "Points de la guilde &a{COUNT} réinitialisé avec succès"
+   rank:
+    notfound: "Could not find the rank."
+    delete:
+     success: "The rank has been successfully deleted."
+    list:
+     header: "Rank list for guild {GUILD_NAME}"
+     item: "&a{NAME}"
+  region:
+   bypass:
+    toggled:
+     self: "Contournement de région basculé. Actuellement: &c{BYPASS}"
+     other: "Contournement de région basculé pour le joueur &c{PLAYER_NAME}. Actuellement: &c{BYPASS}"
+    notifyother: "Votre contournement de région à été basculé. Actuellement: &c{BYPASS}"
+   spectate:
+    toggled:
+     self: "Mode spectateur de région basculé. Actuellement: &c{FLAG}"
+     other: "Mode spectateur de territoire basculé pour le joueur &c{PLAYER_NAME}. Actuellement: &c{FLAG}"
+    notifyother: "Votre mode spectateur de votre territoire à été basculé. Actuellement: &c{FLAG}"
+   delete:
+    success: "Territoire de guilde supprimé avec succès."
+   teleport:
+    self: "Vous a téléporté au territoire de& a{GUILD_NAME}."
+    other: "&c{PLAYER_NAME} téléporté au territoire de &a{GUILD_NAME}"
+    notifyother: "Vous avez été téléporté au territoire de &a{GUILD_NAME}"
+  save:
+   players: "Joueurs sauvegardés."
+   guilds: "Guildes sauvegardés."
+   regions: "Régions sauvegardés."
+   ranks: "Rangs sauvegardés."
+   all: "Toutes données sauvegardé. (Joueurs, Régions, Guildes, Rangs)"
+   autosave: "Sauvegarde automatique complété."
+  hologram:
+   disabled: "&cCette commande est désactivé sans le plugin HolographicDisplays présent."
+   notfound: "Impossible de trouver un hologramme avec ce nom."
+   teleport:
+    self: "Téléportation vers &a{NAME}"
+    other: "&c{PLAYER_NAME} téléporté à &a{NAME}"
+   add:
+    success: "Hologramme ajouté avec succès: &a{NAME}"
+   delete:
+    success: "Hologramme supprimé avec succès: &a{NAME}"
+   list:
+    header: "Liste tout les hologrammes:"
+    item: "&a{NAME} &2 - &6{X}&c/&6{Y}&c/&6{Z}"
+  spymode:
+   notify: "Votre mode espion a été changé. Actuellement &c{MODE}"
+   success:
+    self: "Mode espion changé. Actuellement &c{MODE}"
+    other: "&c{PLAYER_NAME} mode espion à été changé à &c{MODE}"
+  player:
+   set:
+    points: "You have changed &c{PLAYER_NAME}'s points to &a{PLAYER_POINTS}"
+ 
+ reload:
+  reloading: "Rechargement de FunnyGuilds..."
+  config: "Configuration rechargé!"
+  messages: "Messages rechargés!"
+  mysql: "MySQL rechargé!"
+  players: "Joueurs chargé!"
+  guilds: "Guildes chargé!"
+  regions: "Regions chargé!"
+  newmsgfile: "Fichier des nouveaux messages créée!"
+  groups: "Groupes chargé!"
+  ranks: "Rangs chargé!"
+  reloaded: "FunnyGuilds rechargé!"
+  
+ usage:
+  nga:
+   access: "&4&l> &7/nga &2- &6Admin commands"
+   reload: "&4&l> &7/nga &creload &2- &6Recharge &4&l[&7FunnyGuilds&4&l]"
+   save: "&4&l> &7/nga &csave &6[&cplayers&6/&cguilds&6/&cregions&6/&cranks&6] &2- &6Sauvegarde les données"
+   chatspy: "&4&l> &7/nga &cspy &2- &6Basculement en mode espion"
+   migrate: "&4&l> &7/nga &cmigrate &6<&cfrom/to&6> &6<&ctype&6> &2- &6Migrate data"
+   config:
+    access: "&4&l> &7/nga &cconfig &2- &6Commandes de configurations"
+    reload: "&4&l> &7/nga &cconfig &6reload &2- &6Recharge la configuration"
+    save: "&4&l> &7/nga &cconfig &6save &2- &6Sauvegarde la configuration"
+    reset: "&4&l> &7/nga &cconfig &6reset &2- &6Réinitialise la configuration"
+    get: "&4&l> &7/nga &cconfig &6get &6<&ckey&6> &2- &6Obtient une valeur"
+    set: "&4&l> &7/nga &cconfig &6set &6<&ckey&6> &6<&cvalue&6> &2- &6Fixe une valeur"
+   guild:
+    access: "&4&l> &7/nga &cg &2- &6Commandes de guildes"
+    set:
+     slots: "&4&l> &7/nga &cg &6<&cguild&6> &cslots &6<&camount&6> &2- &6fixe les slots"
+     points: "&4&l> &7/nga &cg &6<&cguild&6> &cpoints &6<&cpoints&6> &2- &6fixe les points"
+     lives: "&4&l> &7/nga &cg &6<&cguild&6> &clives &6<&clives&6> &2- &6fixe les vies"
+     timerest: "&4&l> &7/nga &cg &6<&cguild&6> &ctimerest &6<&ctime&6> &2- &6Fixe le temps de repos. (1y/d/m/h/s)"
+     name: "&4&l> &7/nga &cg &6<&cguild&6> &csetname &6<&cname&6> &2- &6Rebaptise une guilde"
+     tag: "&4&l> &7/nga &cg &6<&cguild&6> &csettag &6<&ctag&6> &2- &6Fixe le tag"
+     leader: "&4&l> &7/nga &cg &6promote &6<&cplayer&6> &2- &6Promeut un joueur au rang de dirigeant"
+     liveregenerationtime: "&4&l> &7/nga &cg &6<&cguild&6> &cliveregentime &6<&ctime&6> &2- &6Fixe le temps de la regénération de vie."
+    abandon: "&4&l> &7/nga &cg &6<&cguild&6> &cabandon &2- &6abandonne la guilde"
+    bank:
+     pay: "&4&l> &7/nga &cg &6<&cguild&6> &cpay &6<&camount&6> &2- &6Verse de l'argent à la banque de la guilde"
+     withdraw: "&4&l> &7/nga &cg &6<&cguild&6> &cwithdraw &6<&camount&6> &2- &6Prélève de l'argent dans la banque d'une guilde"
+    inactive:
+     list: "&4&l> &7/nga &cg &6inactive &2- &6Show last activity"
+    invite: "&4&l> &7/nga &cg &6<&cguild&6> &cinvite &6<&cplayer&6> &2- &6Invite un joueur à la guilde"
+    kick: "&4&l> &7/nga &cg &6kick &6<&cplayer&6> &2- &6Éjecte un joueur de la guilde"
+    list: "&4&l> &7/nga &cg &6list &2- &6Liste toutes les guildes"
+    purge: "&4&l> &7/nga &cg &6purge &2- &6Supprime toutes les guiles"
+    tp: "&4&l> &7/nga &cg &6<&cguild&6> &ctp &6[&cplayer&6] &2- &6TP au foyer de la guilde"
+    reset:
+     points: "&4&l> &7/nga &cg &6resetpoints &6<&ccondition&6> &6[&cvalue&6] &2- &6Réinitialise les points de la guilde"
+    rank:
+     access: "&4&l> &7/nga &cg &6<&cguild&6> &crank &2- &6rank commands"
+     delete: "&4&l> &7/nga &cg rank &6<&cguild&6> &clist &2- &6list ranks"
+     list: "&4&l> &7/nga &cg rank &6<&cguild&6> &cdel &6<&crank&6> &2- &6delete a rank"
+   region:
+    access: "&4&l> &7/nga &crg &2- &6Commande de régions"
+    list: "&4&l> &7/nga &crg &6list &6[&cguild&6] &2- &6Liste de la régions"
+    delete: "&4&l> &7/nga &crg &6<&cguild&6> &cdel &6<&cindex&6> &2- &6Supprime la région"
+    teleport: "&4&l> &7/nga &crg &6<&cguild&6> &ctp &6<&cindex&6> &6[&cplayer&6] &2- &6Teleportation à la région"
+    bypass: "&4&l> &7/nga &crg &6bypass &6[&cplayer&6] &2- &6Change le mode de contournement"
+    spectate: "&4&l> &7/nga &crg &6spectate &6[&cplayer&6] &2- &6Change le mode spectateur"
+    buy: "&4&l> &7/nga &crg &6<&cguild&6> &cbuy &2- &6Buy a region for the guild"
+   hologram:
+    access: "&4&l> &7/nga &ch &2- &6Commandes des hologrammes"
+    list: "&4&l> &7/nga &ch &6list &2- &6Liste tout les hologrammes"
+    teleport:
+     self: "&4&l> &7/nga &ch &6<&cname&6> &6tp &6<&cplayer&6> &2- &6Teleporte vers un hologramme"
+     here: "&4&l> &7/nga &ch &6<&cname&6> &6tphere &2- &6Teleporte un hologramme"
+    delete: "&4&l> &7/nga &ch &6<&cname&6> &6del &2- &6Détruit un hologramme"
+    addtop: "&4&l> &7/nga &ch &6addtop &2- &6Ajoute un hologramme en TOP"
+   player:
+    access: "&4&l> &7/nga &cplayer &2- &6Player commands"
+    set:
+     points: "&4&l> &7/nga &cp &6<&cplayer&6> points &6<&cpoints&6> &2- &6Set player points"
+  guild:
+   access: "&4&l> &7/g &2- &6Guild commands"
+   abandon: "&4&l> &7/abandon &2- &6Abandonne votre guilde"
+   ally: "&4&l> &7/g &cally &6<&cguild&6> &2- &6Invite à une alliance"
+   bank:
+    pay: "&4&l> &7/g &cpay &6<&camount&6> &2- &6Verse de l'argent dans la banque de la guilde"
+    withdraw: "&4&l> &7/g &cwithdraw &6<&camount&6> &2- &6Prélève de l'argent de la banque de guilde"
+   buy:
+    life: "&4&l> &7/g &cbuylife &2- &6Achète une vie"
+    slot: "&4&l> &7/g &cbuyslot &2- &6Extend la limite de joueurs!"
+   chatmode: "&4&l> &7/g &cc &2- &6Change le canal de discution"
+   compass: "&4&l> &7/g &ccompass &2- &6Laisse votre bousole pointer le foyer de votre guilde!"
+   create: "&4&l> &7/create &6<&ctag&6> &6<&cname&6> &2- &6Créer une guilde"
+   effect: "&4&l> &7/g &ceffect &2- &6Effets pour la guilde"
+   home:
+    teleport: "&4&l> &7/g &chome &2- &6TP au foyer de la guilde"
+    set: "&4&l> &7/g &chome set &2- &6Fixe le foyer de la guilde"
+   invite: "&4&l> &7/invite &6<&cplayer&6> &2- &6Invite un joueur à la guilde"
+   info: "&4&l> &7/gi &2- &6Information de la guilde."
+   join: "&4&l> &7/join &6[&cguild&6] &2- &6Rejoint une guilde"
+   kick: "&4&l> &7/g &ckick &6<&cplayer&6> &2- &6Éjecte un joueur de la guilde"
+   leader: "&4&l> &7/g &cleader &6<&cplayer&6> &2- &6Fixe le dirigeant de la guilde"
+   leave: "&4&l> &7/leave &2- &6Quitte la guilde"
+   menu: "&4&l> &7/gg &2- &6Menu de la guilde"
+   openinvitation: "&4&l> &7/g &copeninv &2- &6Basculement du statut des invitations ouverte"
+   pvptoggle: "&4&l> &7/g &cpvp &2- &6Basculement en mode PVP"
+   requireditems: "&4&l> &7/g &csettag &2- &Montre les objets exigé pour créer une guilde"
+   set:
+    name: "&4&l> &7/g &csetname &2- &6Fixe le nom"
+    tag: "&4&l> &7/g &csettag &2- &6Fixe le tag"
+   rank:
+    access: "&4&l> &7/g &crank &2- &6rank commands"
+    delete: "&4&l> &7/g &crank &6<&crank&6> &cdel &2- &6delete a rank"
+    list: "&4&l> &7/g &crank list &2- &6list ranks"
+   top: "&4&l> &7/g &ctop &2- &6Top 5"
+   vault:
+    restore: "&4&l> &7/g &cvault &2- &6Restore vault item"
+   war: "&4&l> &7/g &cwar &6[&cguild&6] &2- &6Guerre!"
+  region:
+   access: "&4&l> &7/g &crg &2- &6Commandes de régions"
+   buy: "&4&l> &7/g &crg &6buy &2- &6Crée une région"
+   delete: "&4&l> &7/g &crg &6delete &6<&cindex&6> &2- &6Détruit la région"
+   list: "&4&l> &7/g &crg &6list &2- &6List regions"
+  tool: "&4&l> &7/ng &ctool &2- &6Vérifie ou sélectionne une zone avec l'outil!"
+  player:
+   info: "&4&l> &7/pi &2- &6Player info"
+  confirm: "&4&l> &7/confirm &2- &6Command confirmation"
+
+ commands:
+  header:
+   admin:
+    main: "Commandes admins:"
+    config: "Admin config commands:"
+    region: "Commandes des régions pour admins:"
+    player: "Admin player commands:"
+    guild:
+     main: "Commandes de guildes pour admins"
+     rank: "Rank commands for admins"
+    hologram: "Commandes des hologrammes:"
+   guild:
+    rank: "Rank commands"
+   region: "Commandes de région:"
+  guild:
+   noguild:
+    - "&4&l> &7/create &6<&ctag&6> <&cname&6> &2- &6créer une guilde"
+    - "&4&l> &7/join &6[&cguild&6] &2- &6Rejoindre une guilde"
+    - "&4&l> &7/gi &6[&cguild/tag/player&6] &2- &6Informations sur la guilde"
+    - "&4&l> &7/g &ctop &2- &6Top 5"
+    - "&4&l> &7/g &citems &2- &6Objets requis"
+    - "&4&l> &7/gg &2- &6Menu de guilde"
+   hasguild:
+    - "&4&l> &7/gi &2- &6Information de la guilde."
+    - "&4&l> &7/leave &2- &6Quitte la guilde"
+    - "&4&l> &7/g &ccompass &2- &6Laisse votre boussole pointer le foyer de votre guilde!"
+    - "&4&l> &7/g &ctop &2- &6Top 5"
+    - "&4&l> &7/g &cc &2- &6Change le canal de discussion"
+    - "&4&l> &7/ng &ctool &2- &6Vérifiez ou sélectionnez la zone avec votre outil!"
+    - "&4&l> &7/gg &2- &6Menu de la guilde"
+    - "{VAULT_PLACE}&4&l> &7/g &cvault &2- &6Restore vault item"
+    - "{BUYLIFE}&4&l> &7/g &cbuylife &2- &6Achète une vie"
+    - "{BUYSLOT}&4&l> &7/g &cbuyslot &2- &6Étend la limitation du nombre de joueurs!"
+    - "{EFFECT}&4&l> &7/g &ceffect &2- &6Effets pour la guilde"
+    - "{HOME_TELEPORT}&4&l> &7/g &chome &2- &6Téléporte vers le foyer de la guilde"
+    - "{HOME_SET}&4&l> &7/g &chome set &2- &6Fixe le foyer de votre guilde"
+    - "{BANK_PAY}&4&l> &7/g &cpay &6<&camount&6> &2- &6Verse de l'argent dans la banque de guilde"
+    - "{BANK_WITHDRAW}&4&l> &7/g &cwithdraw &6<&camount&6> &2- &6Prélève de l'argent dans la banque de guilde"
+    - "&4&l> &7/g &cleader &6<&cplayer&6> &2- &6Fixe le dirigeant de la guilde"
+    - "&4&l> &7/g &cally &6<&cguild&6> &2- &6Invite à une alliance"
+    - "&4&l> &7/g &cwar &6[&cguild&6] &2- &6Guerre!"
+    - "{KICK}&4&l> &7/g &ckick &6<&cplayer&6> &2- &6Éjecte un joueur de la guilde"
+    - "{PVPTOGGLE}&4&l> &7/g &cpvp &2- &6Basculement en mode PVP"
+    - "{OPENINVITATION}&4&l> &7/g &copeninv &2- &6Basculement du status d'invitation ouverte"
+    - "{SET_NAME}&4&l> &7/g &csetname &2- &6Fixe le nom"
+    - "{SET_TAG}&4&l> &7/g &csettag &2- &6Fixe le tag"
+    - "&4&l> &7/g &crg &2- &6Commandes de régions"
+    - "&4&l> &7/g &crank &2- &6rank commands"
+    - "{ABANDON}&4&l> &7/abandon &2- &6Abandonne votre guilde"
+    - "{INVITE}&4&l> &7/invite &6<&cplayer&6> &2- &6Invite un joueur à votre guilde"
+
+ pvp:
+  team: "Vous ne pouvez pas blesser vos coéquipiers."
+  ally: "Vous ne pouvez pas blesser vos alliés."
+ 
+ raid:
+  resting: "Vous devez attendre &c{GUILD_TIME_REST} avant d'attaquer cette guilde."
+  protection: "Cette guilde est nouvelle et est toujours protégé. Réessayez demain."
+ 
+ guild:
+  vault:
+   outsideregion: "Vous ne pouvez pas placer le coffre-fort en dehors de la région de la guilde"
+   drop: "Vous ne pouvez pas laisser tomber les objets du coffre de guilde"
+   place:
+    success: "Coffre-fort de la guilde placé."
+    exists: "Le coffre-fort existe déjà!"
+    doublechest: "Le coffre-fort ne peut que seulement être un seul coffre"
+   break:
+    notempty: "Le coffre fort n'est pas vide!"
+    success: "Coffre-fort détruit."
+   denyrelative: "Vous ne pouvez pas placer ce block près du coffre-fort"
+   restore:
+    hasalready: "Vous avez déjà l'objet dans vôtre inventaire."
+    success: "Objet du coffre-fort restauré avec succès."
+
+  compasstarget:
+   'on': "La boussole pointe désormais vers le foyer de votre guilde."
+   'off': "La boussole point désormais vers le spawn."
+  noguilds: "Aucune guilde trouvé."
+  openinvitation: "Basculement des invitation ouvertes, actuellement: &c{STATUS}"
+  fpvptoggled: "Basculement en mode PVP amical pour votre guilde. Actuellement: &c{GUILD_PVP}"
+  effect:
+   success: "Vous avez acheté &a{EFFECTTYPE} comme effet pour tout vos membres!"
+ 
+  ally:
+   war: "Premièrement vous devez terminer la guerre avec cette guilde."
+   samename: "Vous ne pouvez pas vous allier avec votre propre guilde!"
+   invited: "Vous avez invité &a{ALLYNAME} à une alliance."
+   accepted: "Vous avez accepté la demande d'alliance avec &a{ALLYNAME}"
+   notifyguild: "La guilde &a{GUILD_NAME} vous a invité à s'allier avec eux."
+   notifyguildcanceled: "La guilde &a{GUILD_NAME} a annulé leurs demande d'alliance"
+   canceled: "Demande d'alliance annulé avec la guilde &a{ALLYNAME}"
+   list:
+    noallies: "Aucun allié."
+    header:
+     allies: "Liste des alliés:"
+     invitations: "Liste des demandes d'alliances:"
+    item: "&c{GUILD_NAME}"
+    separator: "&f, "
+   
+  couldnotfind: "Impossible de trouver la guilde."
+  hasnoregion: "Cette guilde n'a pas de région"
+  entername: "Entrez le nom de la guilde"
+  entertag: "Donnez un nouveau tag"
+  namenotexist: "Il n'y a pas de guilde portant ce nom"
+  notinguild: "Vous n'avez pas de guilde"
+  abandoned: "Guilde abandonné avec succès"
+  notleader: "Vous n'êtes pas le dirigeant"
+  noguildperm: "Vous n'avez pas assez de permissions"
+  notenoughmoney: "Il n'y a pas assez d'argent dans la banque de la guilde."
+  sethome:
+   success: "Foyer de la guilde fixé!"
+   outsideregion: "Vous ne pouvez pas fixer votre foyer en dehors de la région de votre guilde"
+   overlaps: "Vous ne pouvez pas fixer le foyer à l'emplacement d'une autre guilde!"
+  set:
+   name: "Le nom de la guilde a été fixé."
+   tag: "Le tag de la guilde a été fixé."
+  home: "Téléporté au foyer de la guilde"
+  joined: "Vous avez rejoins la guilde!"
+  explosionatregion: "Il y a eu une explosion dans la région de votre guilde!"
+  kickyourself: "Vous ne pouvez pas vous éjecter vous même de la guilde!"
+  tooclose: "Vous êtes trop proche d'une autre guilde"
+  isfull: "Cette guilde à atteint sa limite de joueurs"
+  buy:
+   life:
+    success: "Vous avez acheté une vie pour votre guilde."
+    maxreached: "Vous ne pouvez pas acheter plus de vie."
+   slot:
+    success: "Vous avez acheté un emplacement supplementaire pour votre guilde."
+    maxreached: "Le montant des emplacement a atteint sa valeur maximum."
+
+  war:
+   ally: "Premièrement vous devez arrêter votre alliance avec cette guilde."
+   yourguildwar: "Vous ne pouvez pas commencer une guerre avec vous-même!"
+   nowar:
+    invite:
+     success: "Vous avez demandé à &a{GUILD_NAME} d'arrêter la guerre"
+     notify: "&a{GUILD_NAME} vous a demandé d'arrêter la guerre"
+    cancel:
+     success: "Vous avez annulé  l'invitation d'arrêter la guerre avec &a{GUILD_NAME}"
+     notify: "&a{GUILD_NAME} a annulé son invitation pour arrêter la guerre"
+   list:
+    nowars: "Aucune guerre."
+    warsheader: "Liste des guerres:"
+    nowarinvheader: "Liste des invitations pour arrêter la guerre:"
+    item: "&c{GUILD_NAME}"
+    separator: "&f, "
+  
+  leader:
+   success: "&a{PLAYER_NAME} est désormais le dirigeant de la guilde!"
+   samenick: "Vous êtes déjà le dirigeant!"
+   notsameguild: "Ce joueur n'est pas dans votre guilde."
+  leave:
+   isleader: "Le dirigeant ne peut pas quitter la guilde. &c/abandon"
+   left: "Vous avez quitté la guilde."
+  bank:
+   enteramount: "Merci de préciser le montant."
+   pay:
+    paid: "Vous avez payé &2$&c{AMOUNT} à la banque de guilde."
+    notenough: "Vous n'avez pas assez d'argent."
+   withdraw:
+    success: "Vous avez pris &2$&c{AMOUNT} de la banque de guilde."
+    notenough: "Il n'y a pas assez d'argent dans la banque."
+  chatmode:
+   success: "Canal de discution fixé à &c{MODE}."
+   invalid: "Canal invalide. Essayez &cnormal&6/&cguilde&6/&calliance"
+   names:
+    normal: "normal"
+    guild: "guilde"
+    ally: "alliance"
+  
+ player:
+  entername: "Entrez le nom du joueur"
+  notexists: "Ce joueur n'existe pas."
+  notonline: "Ce joueur n'est pas en ligne"
+  hasguild: "Ce joueur a déjà une guilde."
+  hasnoguild: "Ce joueur n'a pas de guilde"
+  alreadyinvited: "Ce joueur a déjà été invité dans cette guilde."
+  notinyourguild: "Ce joueur n'est pas dans votre guilde!"
+  pvpmoney:
+   kill: "Vous avez gagné &a{MONEY}$ pour avoir tué &c{PLAYER_NAME}"
+   revenge: "Vous avez gagné &a{MONEY}$ pour avoir pris la revanche sur &c{PLAYER_NAME}"
+  invite:
+   invited: "Le joueur a été invité à rejoindre la guilde."
+   list:
+    header: "Liste des guildes dans lequelles vous avez été invité:"
+    nothing: "vous n'êtes invité dans aucune guilde."
+    item: "&c{GUILD_NAME}"
+    separator: "&f, "
+   notinvited: "Vous n'avez pas été invité à rejoindre cette guilde!"
+   notify: "Vous avez été invité à rejoindre la guilde &a{GUILD_NAME}"
+   cancel:
+    success: "Annulation de l'invitation pour le joueur &c{PLAYER_NAME}"
+    notify: "Votre invitation dans la guilde &a{GUILD_NAME} a été annulé"
+  info:
+   header: "&4*** &6Information du joueur &4***"
+   guildrow: "&4&l> &7Guilde: &7[&a{TAG}&7] &6{GUILD_NAME}"
+   items:
+   - "&4&l> &7Surnom: &6{PLAYER_NAME}"
+   - "{GUILDROW}"
+   - "&4&l> &7Points: &6{PLAYER_POINTS}"
+   - "&4&l> &7Tués: &6{PLAYER_KILLS}"
+   - "&4&l> &7Morts: &6{PLAYER_DEATHS}"
+   - "&4&l> &7KDR: &6{PLAYER_KDR}"
+
+ region:
+  blockedcmd: "Cette commande est bloquée dans les régions."
+  deleted: "Région détruite avec succès"
+  deny:
+   interact: "Vous ne pouvez pas interargir ici"
+   ridemob: "Vous ne pouvez pas chevaucher ce mob, c'est protégé!"
+   attackmob: "Vous ne pouvez pas attaquer ce mob"
+   unleash: "Vous ne pouvez pas retirer la laisse de ce mob"
+   leash: "Vous ne pouvez pas mettre en laisse ce mob"
+  noregionhere: "Il n'y a pas de guilde ici."
+  regionhere: "Il y a d'autres territoire de guilde!"
+  validation:
+   toosmall: "La zone selectionné est trop petite. &6(&6min: &c{MINSIZE}x&c{MINSIZE}&6)"
+   toobig: "La zone selectionné est trop grande. &6(&6max: &c{MAXSIZE}x&c{MAXSIZE}&6)"
+   tooclose: "La zone selectionné est trop proche d'un autre territoire de guilde."
+   overlaps: "Cette zone chevauche le territoire d'une autre guilde"
+   worldguard: "This area overlaps a WorldGuard region"
+   notvalid: "La zone que vous avez selectionné n'est pas valide. Reessayez."
+   valid: "Zone selectionné. &c/g rg buy"
+   notselected: "Veuillez selectionner la zone"
+  size: "Taille de la zone séléctionné: &c{SIZE} blocks"
+  price: "Acheter cette zone vous coutera: &c${PRICE}"
+  cnotafford: "Vous ne pouvez pas vous permettre d'acheter cette revendication. Vous devez avoir &c${NEEDMORE} en plus"
+  maxamount: "Vous avez atteint le montant maximum de &c${AMOUNT} regions"
+  created: "Région crée avec succès"
+  mustveguild: "Vous devez avoir un guilde pour acheter cette zone. &c/create"
+  entered: "Vous entre dans la région appartenant à la guilde &a{GUILD_NAME}"
+  exited: "Vous sortez de la région appartenant à la guilde &a{GUILD_NAME}"
+  notfound: "Impossible de trouver la région"
+  resize:
+   start: "Redimensionnement de la région... Fixez avec un &cclick-droit"
+   toggle: "Coin sélectionné."
+   success: "Redimensionnement de la région effectué avec succès"
+  notifyguild:
+   entered: "Le joueur &c{PLAYER_NAME} est entrée sur le territoire de votre guilde!"
+  belongsto: "Cette région appartient à &a{GUILD_NAME} (i=&a{INDEX})"
+  list:
+   header: "Liste de la région:"
+   item: "&a{GUILD_NAME} (&a{INDEX})&7 - &2{X}&6;&2{Z}"
+  tool:
+   toggledmode: "Mode de la région basculé. Actuellement: &c{MODE}"
+   modes:
+    check: "Mode vérifié"
+    select: "Mode séléction"
+  
+  
+ createguild:
+  disabledworld: "Les guildes sont désactivé dans ce monde."
+  notenoughmoney: "Pas assez d'argent"
+  itemlist: "&c{AMOUNT} {ITEMNAME}"
+  itemlistsep: "&f, "
+  noitems: "Vous n'avez pas les objets requis!"
+  tagexists: "Il y a déja une guilde avec ce tag."
+  nameexists: "Il y a déjà une guilde avec ce nom."
+  hasguild: "Vous avez déjà une guilde"
+  success: "Guilde crée"
+  regionhere: "Vous ne pouvez pas créer de guilde sur un emplacement d'une autre guilde"
+  tooclosespawn: "Vous devez vous éloigner de {DISTANCE} blocks du spawn!"
+  notallowedstring: "Ce que vous avez rentré contient des caractères non autorisé."
+  tag:
+   tooshort: "Le tag est trop court!"
+   toolong: "Le tag est trop long!"
+  name:
+   tooshort: "Le nom est trop court!"
+   toolong: "Le nom est trop long!"
+ 
+ guildinfo:
+  playerseparator: "&f, "
+  leaderprefix: "*"
+  playercolor:
+   online: "&a"
+   offline: "&f"
+  row:
+   ally: "&5{GUILD_NAME}"
+   player: "{COLOR}{LEADER_PREFIX}{PLAYER_NAME}"
+   war: "&c{GUILD_NAME}"
+  fullinfo:
+   - "&4*** &6Information de la guilde &4***"
+   - "&4&l> &7Nom: &6{GUILD_NAME}"
+   - "&4&l> &7Tag: &6{TAG}"
+   - "&4&l> &7Chef: &6{LEADER}"
+   - "&4&l> &7Création: &6{CREATEDAGO} &2ago"
+   - "&4&l> &7Invitation ouverte: &6{GUILD_OPENINVITATION}"
+   - "&4&l> &7Protection: &6{PROTLEFT} &2left"
+   - "&4&l> &7Vies: &6{GUILD_LIVES}"
+   - "&4&l> &7Regénération de la vie dans: &6{LIVEREGENERATIONTIME}"
+   - "&4&l> &7Temps restant: &6{GUILD_TIME_REST}"
+   - "&4&l> &7Localisation: &6{X}&2,&6{Y}&2,&6{Z}"
+   - "&4&l> &7Joueurs: &6(&c{PLAYERSCOUNT}&6/&c{SLOTS}&6) {PLAYERS}"
+   - "&4&l> &7Alliances: {ALLIES}"
+   - "&4&l> &7Guerre: {WARS}"
+   - "&4&l> &7Argent: &6{MONEY}"
+   - "&4&l> &7Points: &6{GUILD_POINTS}"
+  info:
+   - "&4*** &6Information de la guilde &4***"
+   - "&4&l> &7Nom: &6{GUILD_NAME}"
+   - "&4&l> &7Tag: &6{TAG}"
+   - "&4&l> &7Chef: &6{LEADER}"
+   - "&4&l> &7Création: &6{CREATEDAGO} &2ago"
+   - "&4&l> &7Invitation ouverte: &6{GUILD_OPENINVITATION}"
+   - "&4&l> &7Protection: &6{PROTLEFT} &2left"
+   - "&4&l> &7Vies: &6{GUILD_LIVES}"
+   - "&4&l> &7Temps restant: &6{GUILD_TIME_REST}"
+   - "&4&l> &7Joueurs: &6(&c{PLAYERSCOUNT}&6/&c{SLOTS}&6) {PLAYERS}"
+   - "&4&l> &7Alliances: {ALLIES}"
+   - "&4&l> &7Guerre: {WARS}"
+   - "&4&l> &7Points: &6{GUILD_POINTS}"
+   
+#broadcast messages:
+broadcast:
+ admin:
+  guild:
+   abandon: "L'administrateur &c{PLAYER_NAME} a abandonné la guilde &a{GUILD_NAME}"
+   cleanup: "La guilde &a{GUILD_NAME} a été détruite pour inactivité"
+ guild:
+  war: "La guilde &a{GUILD1} ont commencé une &cguerre &6avec &a{GUILD2}"
+  nowar: "La guilde &a{GUILD1} et &a{GUILD2} ont arrêté la guerre"
+  joined: "Le joueur &c{PLAYER_NAME} a rejoint &a{GUILD_NAME}"
+  left: "Le joueur &c{PLAYER_NAME} a quitté &a{GUILD_NAME}"
+  created: "Le joueur &c{PLAYER_NAME} a créée la guilde &a{GUILD_NAME}"
+  abandoned: "Le joueur &c{PLAYER_NAME} a abandonné &a{GUILD_NAME}"
+  setleader: "Le joueur &c{PLAYER_NAME} est désormais le dirigeant de &a{GUILD_NAME}"
+  allied: "&a{GUILD_NAME} et &a{ALLYNAME} sont désormais alliés!"
+  endally: "&a{GUILD_NAME} et &a{ALLYNAME} ont terminé leurs alliances!"
+  kicked: "Le joueur &c{PLAYER_NAME} a été expulsé de &a{GUILD_NAME}"
+  newleader: "Le joueur &c{PLAYER_NAME} est maintenant le dirigeant de &a{GUILD_NAME}"
+  destroyed: "La guilde &a{GUILD_NAME} a été détruire!"
+  raid:
+   finished: 
+    attackerwon: "Raid terminé! &a{ATTACKER} vs &a{DEFENDER}! l'attaquant a gagné."
+    defenderwon: "Raid terminé! &a{ATTACKER} vs &a{DEFENDER}! le défenseur a gagné."
+ pvp:
+  killed: "Le joueur {TAG1}&c{PLAYER1} a été tué par {TAG2}&c{PLAYER2}"
+  
+holographicdisplays:
+ locations:
+  topguilds: 
+ topguilds:
+  header: "&cTOP5 &2des guildes"
+  row: "&6[&2{N}&6] &a{GUILD_NAME} &2- &c{GUILD_POINTS}"
+  
+#no prefix, start with color
+barapi:
+ warprogress: "&6La guilde &a{DEFENDER} &6est attaqué!"
+
+misc:
+ pointsbelowname: "points"
+
+inventory:
+ requireditems:
+  name: "Objets requis"
+  lore:
+   - ""
+   - "&6Inventory: &a{AMOUNT_AVAILABLE}"
+   - "&6EnderChest: &a{AMOUNT_AVAILABLE2}"
+   - "&6Total: &a{AMOUNT_AVAILABLE3} of &a{AMOUNT}"
+   - "&6You need &a{NEEDMORE} more"
+ ggui:
+  name: "Menu de la guilde"
+ gui:
+  guildtop: "SIGN 1"
+  hometp: "ENDER_PEARL 1 name:Foyer"
+  join:
+   title: "Rejoindre une guilde"
+   iconitem: "IRON_DOOR 1 name:Join_a_guild"
+   rowitem: "ENCHANTED_BOOK 1 name:&a{GUILD_NAME} lore:&7Tag:_&a{TAG}|&7Leader:_&c{PLAYER_NAME}"
+  settings:
+   title: "Réglages de la guilde"
+   item:
+    icon: "WORKBENCH 1 name:&4Réglages"
+    set:
+     name: "SIGN 1 name:&6Fixer_le_nom_de_la_guilde"
+     tag: "SIGN 1 name:&6Fixer_le_tag_de_la_guilde"
+     home: "EYE_OF_ENDER 1 name:&6Fixer_le_foyer_de_la_guilde"
+    togglepvp:
+     'on': "GOLD_SWORD 1 name:&2Tourner_la_guilde_en_PVP_OFF"
+     'off': "WOOD_SWORD 1 name:&4Tourner_la_guilde_en_PVP_ON"
+    openinvitation: "FENCE_GATE 1 name:&6Basculer_en_invitation_ouverte lore:Actuellement_{FLAG}"
+    buylife: "APPLE 1 name:&6Acheter_de_la_vie"
+    buyslot: "MINECART 1 name:&6Acheter_un_emplacement"
+    invite: "CAKE 1 name:&6Inviter_des_joueurs"
+   invite:
+    title: "Invitation des joueurs"
+    item: "SKULL_ITEM:3 1 joueur:{PLAYER_NAME} name:{PLAYER_NAME}"
+  back: "REDSTONE_TORCH_ON 1 name:&cBack"
+  playerslist:
+   title: "Players list"
+   iconitem: "SKULL_ITEM:3 1 name:Liste_des_joueurs"
+   rowitem: "SKULL_ITEM:3 1 joueur:{PLAYER_NAME} name:{PLAYER_NAME}"
+  playersettings:
+   title: "{PLAYER_NAME} réglages"
+   item:
+    rank: "BOOK_AND_QUILL 1 name:Fixer_le_folklore_du_rang lore:{RANKNAME}"
+    kick: "FERMENTED_SPIDER_EYE 1 name:Kick"
+  ranks:
+   title: "Ranks"
+   iconitem: "EMPTY_MAP 1 name:Rangs"
+   rowitem: "BOOK 1 name:{RANKNAME}"
+   additem: "BOOK_AND_QUILL 1 name:Ajouter_un_rang"
+   defaultname: "Rangs personnalisés"
+   leadername: "Chef"
+  rank:
+   settings:
+    title: "&l{RANKNAME} &rréglages"
+    cloneprefix: "Clone de "
+    item:
+     editpermissions: "BOOK_AND_QUILL 1 name:&6Édition_des_permissions"
+     setdefault: "WOOD_DOOR 1 name:&6Fixer_par_défaut"
+     clone: "GOLD_NUGGET 1 name:&6Clone"
+     rename: "NAME_TAG 1 name:&6Rebaptiser"
+     delete: "REDSTONE_BLOCK 1 name:&cDétruire"
+     memberlist: "SKULL_ITEM:3 1 name:Membres"
+  permissions:
+   title: "Editer les rangs: &l{RANKNAME}"
+   item:
+    enabled: "STAINED_GLASS_PANE:5 1 name:{PERMNAME}"
+    disabled: "STAINED_GLASS_PANE:14 1 name:{PERMNAME}"
+   names:
+    block:
+     break: "Casser_les_blocks"
+     place: "Placer_les_blocks"
+    mob:
+     attack: "Attaquer_les_mobs"
+     ride: "Monter_les_mobs"
+     leash: "Tenir_en_laisse_les_chevaux"
+    interact: "Interaction_à_la_région"
+    abandon: "Commande_d_abandon"
+    kick: "Commande_de_kick"
+    effect: "Commande_d_effet"
+    invite: "Commande_d_invitation"
+    pvptoggle: "Basculement_PVP"
+    ally:
+     cancel: "Annulation_d_alliance"
+     invite:
+      send: "Envoyer_une_invitation_aux_alliés"
+      cancel: "Annuler_l_invitation_d_allié"
+     accept: "Accepter_l_invitation_d_allié"
+    buylife: "Acheter_de_la_vie"
+    buyslot: "Acheter_un_emplacement"
+    home:
+     set: "Fixer_le_foyer"
+     teleport: "Teleportation_au_foyer"
+    openinvitation: "Basculer_en_invitation_ouverte"
+    set:
+     name: "Fixer_le_nom_de_la_guilde"
+     tag: "Fixer_le_tag_de_la_guilde"
+    war:
+     invite:
+      send: "Inviter_pour_stopper_la_guerre"
+      cancel: "Cancel_no-war_invitation"
+      accept: "Accepter_les_invitation_de_non-guerre"
+     start: "Commencer_une_guerre"
+    bank:
+     pay: "Paiement_à_la_banque"
+     withdraw: "Retrait_de_la_banque"
+    vault:
+     access: "Accès_au_coffre-fort"
+     put: "Mettre_dans_le_coffre-fort"
+     take: "Prélèvement_du_coffre-fort"
+     place: "Placement_du_coffre-fort"
+     break: "Rupture_du_coffre-fort"
+    region:
+     create: "Creation_de_la_regions"
+     remove: "Suppression_de_la_regions"
+     resize: "Redimensionnement_de_la_regions"
+    rank:
+     delete: "Deleting_ranks"
+     list: "Listing_ranks"
+     set: "Réglage_rangs"
+     edit: "Edition_rangs"
+
+signgui:
+ guild:
+  settings:
+   set:
+    name:
+     - "Entrez un nouveau nom"
+     - "---------------"
+     - "{INPUT}"
+     - "---------------"
+    tag:
+     - "Entrez un nouveau tag"
+     - "---------------"
+     - "{INPUT}"
+     - "---------------"
+  ranks:
+   set:
+    name:
+     - "Édition du nom:"
+     - "---------------"
+     - "{INPUT}"
+     - "---------------"
+
+dynmap:
+ region: "{GUILD_NAME}'s region ({INDEX})"
+ guildhome: "{GUILD_NAME}'s home"
+
+timeunit:
+ second:
+  singular: seconde
+  plural: secondes
+ minute:
+  singular: minute
+  plural: minutes
+ hour:
+  singular: heure
+  plural: heures
+ day:
+  singular: jour
+  plural: jours
+ week:
+  singular: semaine
+  plural: semaines
+ month:
+  singular: mois
+  plural: mois
+ year:
+  singular: année
+  plural: années

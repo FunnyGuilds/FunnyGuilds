@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+	<module name="TreeWalker">
+        <module name="AvoidStarImport"/>
+        <module name="EmptyBlock"/>
+        <module name="AtclauseOrder">
+            <property name="tagOrder" value="@author, @version, @param, @return, @throws, @exception, @see, @since, @serial, @serialField, @serialData, @deprecated"/>
+            <property name="target" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+        </module>
+        <module name="JavadocMethod">
+            <property name="validateThrows" value="true"/>
+            <property name="scope" value="public"/>
+        </module>
+    </module>
+</module>

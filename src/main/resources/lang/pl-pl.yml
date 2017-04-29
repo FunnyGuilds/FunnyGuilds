@@ -1,0 +1,782 @@
+chat:
+ prefix: "&4&l[&7FunnyGuilds&4&l] &6"
+ nopermissions: "&cNie masz uprawnien."
+ unknowncmd: "&cNieznana komenda."
+ invalidparam: "&cNieprawidlowy argument"
+ cmdfromconsole: "Nie mozesz wykonac tej komendy z konsoli"
+ enterinteger: "Wprowadz liczbe."
+ delayedteleport: "Zostaniesz teleportowany w ciagu &c{DELAY} sekund"
+ delayedtpmoved: "Ruszyles sie, teleportacja anulowana."
+ erroroccured: "Wystapil blad. Skontaktuj sie z administratorem"
+ update: "&4Dostepna jest aktualizacja! &6http://www.novaguilds.pl/"
+ maxamount: "Maksymalna dozwolona wartość to: &c{AMOUNT}"
+ basic:
+  negativenumber: "Wprowadz liczbe wieksza lub rowna zeru."
+  'on': "ON"
+  'off': "OFF"
+  coords3d: "&6{X}&c/&6{Y}&c/&6{Z}"
+ confirm:
+  nullhandler: "Zadna komenda nie oczekuje na potwierdzenie"
+  needconfirm: "Ta komenda wymaga potwierdzenia. &c/confirm"
+  timeout: "Zadanie potwierdzenia komendy wygaslo."
+
+ admin:
+  migrate:
+   sametype: "Typy danych nie mogą być takie same."
+   invalidtype: "Niepoprawny typ danych."
+   connectionfail: "Nie udało się połączyć z magazynem zasobów."
+   success: "Wszystkie dane zostały pomyślnie przeniesione."
+  config:
+   reloaded: "Konfiguracja została przeładowana."
+   reset: "Konfiguracja została zresetowana"
+   saved: "Konfiguracja została zapisana"
+   set: "Wartość &c{KEY} została ustawiona na: &c{VALUE}"
+   get:
+    single: "&f{KEY}&c: &f{VALUE}"
+    list:
+     section: "{DEPTH}&c{KEY}"
+     key: "{DEPTH}&4&l> &7{KEY}"
+  guild:
+   timerest:
+    set: "Ustawiono czas odpoczynku gildii"
+   list:
+    header: "Lista gildii:"
+    page:
+     hasnext: "&7-- &cStrona &7{PAGE} &cz &7{PAGES} -- &c/nga g list {NEXT} &7--"
+     nonext: "&7-- &cStrona &7{PAGE} &cz &7{PAGES} --"
+    item: " &2- &a{GUILD_NAME} &7[&a{TAG}&7] &6Lider: &c{PLAYER_NAME} ({PLAYERSCOUNT} graczy)"
+   inactive:
+    updated: "Wszystkie gildie uaktualnione. (&c{COUNT} gildii)"
+    list:
+     header: "Najmniej aktywne gildie:"
+     item: " &2- &a{GUILD_NAME} aktywna {AGONOW}"
+     ago: "&c{INACTIVE} temu"
+     now: "&cteraz"
+   bank:
+    paid: "Wplaciles &c${MONEY} do banku gildii &a{GUILD_NAME}"
+    withdrew: "Zabrales &c${MONEY} z banku &a{GUILD_NAME}"
+   kick:
+    leader: "Nie mozesz wyrzucic lidera. Musisz rozwiazac gildie."
+   invited: "Zaproszono gracza &c{PLAYER_NAME} do &a{GUILD_NAME}"
+   teleported:
+    self: "Teleportowano do bazy gildii &a{GUILD_NAME}"
+    other: "Teleportowano gracza &c{PLAYER_NAME} do bazy &a{GUILD_NAME}"
+   set:
+    tag: "Tag zmieniony na &a{TAG}"
+    points: "Punkty zmienione."
+    lives: "ilość zyc zmieniona."
+    slots:
+     smallerthanplayers: "ilość slotow nie moze byc mniejsza niz liczba graczy"
+     success: "ilość slotow zmieniona."
+    name:
+     enternewname: "Wprowadz nowa nazwe"
+     success: "Nazwa gildii zmieniona."
+    leader:
+     notinguild: "Ten gracz nie jest w gildii &a{GUILD_NAME}"
+     alreadyleader: "Gracz &c{PLAYER_NAME} jest juz liderem!"
+     success: "Nowy lider ustalony!"
+   reset:
+    points:
+     invalidconditiontype: "&cNiepoprawny typ warunku &4(&a< > = all&4)"
+     novalue: "Proszę dodaj wartość po &a{CHAR}"
+     success: "Zresetowano punkty &a{COUNT} gildiom"
+   rank:
+    notfound: "Nie udało się znaleźć rangi."
+    delete:
+     success: "Ranga została pomyślnie usunięta."
+    list:
+     header: "Lista rang gildii {GUILD_NAME}"
+     item: "&a{NAME}"
+  region:
+   bypass:
+    toggled:
+     self: "Zmieniono tryb ignorowania regionow. Aktualnie: &c{BYPASS}"
+     other: "Zmieniono tryb ignorowania regionow graczowi &c{PLAYER_NAME}. Aktualnie: &c{BYPASS}"
+    notifyother: "Twoj tryb ignorowania regionow zostal zmieniony. Aktualnie: &c{BYPASS}"
+   spectate:
+    toggled:
+     self: "Zmieniono tryb podglądu zaznaczenia. Aktualnie: &c{FLAG}"
+     other: "Zmieniono tryb podglądu zaznaczenia graczowi &c{PLAYER_NAME}. Aktualnie: &c{FLAG}"
+    notifyother: "Twoj tryb podglądu zaznaczenia zostal zmieniony. Aktualnie: &c{FLAG}"
+   delete:
+    success: "Pomyslnie usunieto region"
+   teleport:
+    self: "Zostales teleportowany na teren gildii &a{GUILD_NAME}"
+    other: "Teleportowano gracza &c{PLAYER_NAME} na teren gildii &a{GUILD_NAME}"
+    notifyother: "Zostales teleportowany na teren gildii &a{GUILD_NAME}"
+  save:
+   players: "Gracze zapisani."
+   guilds: "Gildie zapisane."
+   regions: "Regiony zapisane."
+   ranks: "Rangi zapisane."
+   all: "Zapisano wszystkie dane. (Gracze, gildie, regiony, rangi)"
+   autosave: "Zakonczono automatyczny zapis."
+  hologram:
+   disabled: "&cTa komenda jest zablokowana gdy plugin HolographicDisplays nie jest obecny."
+   notfound: "Nie udalo sie znalezc hologramu o takiej nazwie."
+   teleport:
+    self: "Teleportowano Cie do &a{NAME}"
+    other: "Teleportowano gracza &c{PLAYER_NAME} do &a{NAME}"
+   add:
+    success: "Dodano hologram: &a{NAME}"
+   delete:
+    success: "Pomyslnie usunieto hologram: &a{NAME}"
+   list:
+    header: "List of all holograms:"
+    item: "&a{NAME} &2 - &6{X}&c/&6{Y}&c/&6{Z}"
+  spymode:
+   notify: "Tryb szpiegowania został zmieniony. Obecnie: &c{MODE}"
+   success:
+    self: "Zmieniono tryb szpiegowania. Obecnie &c{MODE}"
+    other: "Zmieniono tryb szpiegowania gracza &c{PLAYER_NAME}. Obecnie &c{MODE}"
+  player:
+   set:
+    points: "Zmieniłeś punkty gracza &c{PLAYER_NAME}'s na &a{PLAYER_POINTS}"
+
+ reload:
+  reloading: "Przeladowywanie FunnyGuilds..."
+  config: "Konfiguracja przeladowana!"
+  messages: "Wiadomosci przeladowane!"
+  mysql: "MySQL przeladowane!"
+  players: "Gracze zaladowani!"
+  guilds: "Gildie zaladowane!"
+  regions: "Regiony zaladowane"
+  newmsgfile: "Nowy plik wiadomosci stworzony!"
+  groups: "Grupy zaladowane!"
+  ranks: "Rangi załadowane!"
+  reloaded: "FunnyGuilds przeladowane!"
+
+ usage:
+  nga:
+   access: "&4&l> &7/nga &2- &6Komendy admina"
+   reload: "&4&l> &7/nga &creload &2- &6Przeładuj &4&l[&7FunnyGuilds&4&l]"
+   save: "&4&l> &7/nga &csave &6[&cplayers&6/&cguilds&6/&cregions&6/&cranks&6] &2- &6Zapisz dane"
+   chatspy: "&4&l> &7/nga &cspy &2- &6Przełącz szpiegowanie czatu"
+   migrate: "&4&l> &7/nga &cmigrate &6<&cfrom/to&6> &6<&ctyp&6> &2- &6Migracja danych"
+   config:
+    access: "&4&l> &7/nga &cconfig &2- &6Komendy konfiguracji"
+    reload: "&4&l> &7/nga &cconfig &6reload &2- &6Przeładuj konfigurację"
+    save: "&4&l> &7/nga &cconfig &6save &2- &6Zapisz konfigurację"
+    reset: "&4&l> &7/nga &cconfig &6reset &2- &6Resetuj konfigurację"
+    get: "&4&l> &7/nga &cconfig &6get &6<&cklucz&6> &2- &6Pobierz wartość"
+    set: "&4&l> &7/nga &cconfig &6set &6<&cklucz&6> &6<&cvalue&6> &2- &6Ustaw wartość"
+   guild:
+    access: "&4&l> &7/nga &cg &2- &6Komendy gildyjne"
+    set:
+     slots: "&4&l> &7/nga &cg &6<&cgildia&6> &cslots &6<&cilość&6> &2- &6Zmien ilość slotow"
+     points: "&4&l> &7/nga &cg &6<&cgildia&6> &cpoints &6<&cpunkty&6> &2- &6Zmien punkty"
+     lives: "&4&l> &7/nga &cg &6lives &6<&cilość&6> &2- &6ustaw zycia"
+     timerest: "&4&l> &7/nga &cg &6<&cgildia&6> &ctimerest &6<&ctime&6> &2- &6Ustaw czas odpoczynku. (1y/d/m/h/s)"
+     name: "&4&l> &7/nga &cg &6<&cgildia&6> &csetname &6<&cname&6> &2- &6Zmień nazwę"
+     tag: "&4&l> &7/nga &cg &6<&cgildia&6> &csettag &6<&ctag&6> &2- &6Zmień tag"
+     leader: "&4&l> &7/nga &cg &6promote &6<&cgracz&6> &2- &6Zmien lidera gildii"
+     liveregenerationtime: "&4&l> &7/nga &cg &6<&cgildia&6> &cliveregentime &6<&ctime&6> &2- &6Czas regeneracji zycia"
+    abandon: "&4&l> &7/nga &cg &6abandon &6<&cgildia&6> &2- &6porzuc gildie"
+    bank:
+     pay: "&7/nga &cg &6pay &6<&cgildia&6> &6<&cilość&6>"
+     withdraw: "&7/nga &cg &6withdraw &6<&cgildia&6> &6<&cilość&6>"
+    inactive:
+     list: "&4&l> &7/nga &cg &6inactive &2- &6Ostatnia aktywność"
+    invite: "&4&l> &7/nga &cg &6<&cgildia&6> &cinvite &6<&cgracz&6> &2- &6Zaproś gracza do gildii"
+    kick: "&4&l> &7/nga &cg &6kick &6<&cgracz&6> &2- &6Wyrzuć gracza z gildii"
+    list: "&4&l> &7/nga &cg &6list &2- &6Lista gildii"
+    purge: "&4&l> &7/nga &cg &6purge &2- &6Usuń wszystkie gildie"
+    tp: "&7/nga &cg &6tp &6<&cgildia&6> &6[&cgracz&6]"
+    reset:
+     points: "&4&l> &7/nga &cg &6resetpoints &6<&cwarunek&6> &6[&cvalue&6] &2- &6Resetuj punkty gildi"
+    rank:
+     access: "&4&l> &7/nga &cg &6<&cgildia&6> &crank &2- &6Komendy tang"
+     delete: "&4&l> &7/nga &cg rank &6<&cgildia&6> &clist &2- &6Lista rang"
+     list: "&4&l> &7/nga &cg rank &6<&cgildia&6> &cdel &6<&crank&6> &2- &6Usuń rangę"
+   region:
+    access: "&4&l> &7/nga &crg &2- &6Komendy regionów"
+    list: "&4&l> &7/nga &crg &6list &6[&cgildia&6] &2- &6Lista regionów"
+    delete: "&4&l> &7/nga &crg &6<&cgildia&6> &cdel &6<&cindex&6> &2- &6Usuń region"
+    teleport: "&4&l> &7/nga &crg &6<&cgildia&6> &ctp &6<&cindex&6> &6[&cgracz&6] &2- &6Teleport do regionu"
+    bypass: "&4&l> &7/nga &crg &6bypass &6[&cgracz&6] &2- &6Zmiana trybu ignorowania regionów"
+    spectate: "&4&l> &7/nga &crg &6spectate &6[&cgracz&6] &2- &6Zmiana trybu podglądu zaznaczenia"
+    buy: "&4&l> &7/nga &crg &6<&cgildia&6> &cbuy &2- &6Kup region dla gildii"
+   hologram:
+    access: "&4&l> &7/nga &ch &2- &6Komendy hologramów"
+    list: "&4&l> &7/nga &ch &6list &2- &6Lista hologramów"
+    teleport:
+     self: "&4&l> &7/nga &ch &6<&cname&6> &6tp &6[&cgracz&6] &2- &6Teleport do hologramu"
+     here: "&4&l> &7/nga &ch &6<&cname&6> &6tphere &2- &6Teleportuj hologram"
+    delete: "&4&l> &7/nga &ch &6<&cname&6> &6del &2- &6Usuń hologram"
+    addtop: "&4&l> &7/nga &ch &6addtop &2- &6Dodaj hologram z rankingiem"
+   player:
+    access: "&4&l> &7/nga &cplayer &2- &6Komendy gracza"
+    set:
+     points: "&4&l> &7/nga &cp &6<&cgracz&6> points &6<&cpunkty&6> &2- &6Zmień ilość punktów"
+  guild:
+   access: "&4&l> &7/g &2- &6Komendy gildii"
+   abandon: "&4&l> &7/rozwiaz &2- &6Porzuć gildię"
+   ally: "&4&l> &7/g &cally &6<&cgildia&6> &2- &6Zaproś do sojuszu"
+   bank:
+    pay: "&4&l> &7/g &cpay &6<&cilość&6> &2- &6Wpłać pieniądze do banku"
+    withdraw: "&4&l> &7/g &cwithdraw &6<&cilość&6> &2- &6Zabierz pieniądze z banku"
+   buy:
+    life: "&4&l> &7/g &cbuylife &2- &6Kup życie"
+    slot: "&4&l> &7/g &cbuyslot &2- &6Kup dodatkowy slot w gildii."
+   chatmode: "&4&l> &7/g &cc &2- &6Zmiana trybu czatu"
+   compass: "&4&l> &7/g &ccompass &2- &6Niech kompas wskazuje dom Twojej gildii!"
+   create: "&4&l> &7/zaloz &6<&ctag&6> &6<&cnazwa&6> &2- &6Stworz gildie"
+   effect: "&4&l> &7/g &ceffect &2- &6Kup efekt dla gildii"
+   home:
+    teleport: "&4&l> &7/g &chome &2- &6Teleport do domu gildii"
+    set: "&4&l> &7/g &chome set &2- &6Ustaw dom gildii"
+   info: "&4&l> &7/gi &2- &6Informacje o gildii."
+   invite: "&4&l> &7/zapros &6<&cgracz&6> &2- &6Zapros gracza do gildii"
+   join: "&4&l> &7/dolacz &6[&cgildia&6] &2- &6Dolacz do gildii"
+   kick: "&4&l> &7/g &ckick &6<&cgracz&6> &2- &6Wyrzuć gracza"
+   leader: "&4&l> &7/g &cleader &6<&cgracz&6> &2- &6Ustaw lidera"
+   leave: "&4&l> &7/opusc &2- &6Opuść gildię"
+   menu: "&4&l> &7/gg &2- &6Menu gildii"
+   openinvitation: "&4&l> &7/g &copeninv &2- &6Przełącz status otwartych zaproszen"
+   pvptoggle: "&4&l> &7/g &cpvp &2- &6Wlacz/Wyłącz PVP"
+   requireditems: "&4&l> &7/g &citems &2- &6Wymagane przedmioty"
+   set:
+    name: "&4&l> &7/g &csetname &2- &6Zmień nazwę"
+    tag: "&4&l> &7/g &csettag &2- &6Zmień tag"
+   rank:
+    access: "&4&l> &7/g &crank &2- &6Komendy rang"
+    delete: "&4&l> &7/g &crank &6<&crank&6> &cdel &2- &6Usuń rangę"
+    list: "&4&l> &7/g &crank list &2- &6Lista rang"
+   top: "&4&l> &7/g &ctop &2- &6Top 5"
+   vault:
+    restore: "&4&l> &7/g &cvault &2- &6Przywróć skarbiec"
+   war: "&4&l> &7/g &cwar &6[&cgildia&6] &2- &6Wojna!"
+  region:
+   access: "&4&l> &7/g &crg &2- &6Komendy regionów"
+   buy: "&4&l> &7/g &crg &6buy &2- &6Stwórz region"
+   delete: "&4&l> &7/g &crg &6delete &6<&cindex&6> &2- &6Usuń region"
+   list: "&4&l> &7/g &crg &6list &2- &6Lista regionów"
+  tool: "&4&l> &7/ng &ctool &2- &6Sprawdź lub zaznacz teren patykiem!"
+  player:
+   info: "&4&l> &7/pi &2- &6Informacje o graczu"
+  confirm: "&4&l> &7/confirm &2- &6Potwierdzenie komendy"
+
+ commands:
+  header:
+   admin:
+    main: "Komendy Admina:"
+    config: "Komendy konfiguracji:"
+    region: "Komendy Admina, regiony:"
+    player: "Komendy Admina, gracze:"
+    guild:
+     main: "Komendy Admina, gildie:"
+     rank: "Rank commands for admins"
+    hologram: "Komendy hologramow:"
+   guild:
+    rank: "Komendy rang:"
+   region: "Komendy regionów:"
+  guild:
+   noguild:
+    - "&4&l> &7/zaloz &6<&ctag&6> <&cnazwa&6> &2- &6Zaloz gildie"
+    - "&4&l> &7/dolacz &6[&cgildia&6] &2- &6Dolacz do gildii"
+    - "&4&l> &7/gi &6[&cgildia&6/&cgracz&6] &2- &6Informacje o gildii"
+    - "&4&l> &7/g &ctop &2- &6Top 5"
+    - "&4&l> &7/g &citems &2- &6Wymagane przedmioty"
+    - "&4&l> &7/gg &2- &6Menu gildii"
+   hasguild:
+    - "&4&l> &7/gi &2- &6Informacje o gildii."
+    - "&4&l> &7/opusc &2- &6Opuść gildię"
+    - "&4&l> &7/g &ccompass &2- &6Niech kompas wskazuje dom Twojej gildii!"
+    - "&4&l> &7/g &ctop &2- &6Top 5"
+    - "&4&l> &7/g &cc &2- &6Zmiana trybu czatu"
+    - "&4&l> &7/ng &ctool &2- &6Sprawdź lub zaznacz teren patykiem!"
+    - "&4&l> &7/gg &2- &6Menu gildii"
+    - "{VAULT_PLACE}&4&l> &7/g &cvault &2- &6Przywróć skarbiec"
+    - "{BUYLIFE}&4&l> &7/g &cbuylife &2- &6Kup życie"
+    - "{BUYSLOT}&4&l> &7/g &cbuyslot &2- &6Kup dodatkowy slot w gildii."
+    - "{EFFECT}&4&l> &7/g &ceffect &2- &6Kup efekt dla gildii"
+    - "{HOME_TELEPORT}&4&l> &7/g &chome &2- &6Teleport do domu gildii"
+    - "{HOME_SET}&4&l> &7/g &chome set &2- &6Ustaw dom gildii"
+    - "{BANK_PAY}&4&l> &7/g &cpay &6<&cilość&6> &2- &6Wpłać pieniądze do banku"
+    - "{BANK_WITHDRAW}&4&l> &7/g &cwithdraw &6<&cilość&6> &2- &6Zabierz pieniądze z banku"
+    - "&4&l> &7/g &cleader &6<&cgracz&6> &2- &6Ustaw lidera"
+    - "&4&l> &7/g &cally &6<&cgildia&6> &2- &6Zaproś do sojuszu"
+    - "&4&l> &7/g &cwar &6[&cgildia&6] &2- &6Wojna!"
+    - "{KICK}&4&l> &7/g &ckick &6<&cgracz&6> &2- &6Wyrzuć gracza"
+    - "{PVPTOGGLE}&4&l> &7/g &cpvp &2- &6Wlacz/Wyłącz PVP"
+    - "{OPENINVITATION}&4&l> &7/g &copeninv &2- &6Przełącz status otwartych zaproszen"
+    - "{SET_NAME}&4&l> &7/g &csetname &2- &6Zmień nazwę"
+    - "{SET_TAG}&4&l> &7/g &csettag &2- &6Zmień tag"
+    - "&4&l> &7/g &crg &2- &6Komendy regionów"
+    - "&4&l> &7/g &crank &2- &6Komendy rang"
+    - "{ABANDON}&4&l> &7/rozwiaz &2- &6Porzuć gildię"
+    - "{INVITE}&4&l> &7/zapros &6<&cgracz&6> &2- &6Zaproś gracza do gildii"
+
+ pvp:
+  team: "Nie mozesz bic swoich kolegow z gildii"
+  ally: "Nie mozesz ranic swoich sojusznikow"
+
+ raid:
+  resting: "Musisz poczekac &c{GUILD_TIME_REST} Przed atakowaniem tej gildii."
+  protection: "Ta gildia jest nowa i obejmuje ja ochrona. Sprobuj jutro."
+
+ guild:
+  vault:
+   outsideregion: "Nie mozesz postawic skarbca poza regionem gildii"
+   drop: "Nie mozesz upuscic przedmiotu skarbca"
+   place:
+    success: "Utworzono skarbiec."
+    exists: "Skarbiec juz istenieje!"
+    doublechest: "Skarbiec moze byc tylko pojedyncza skrzynka"
+   break:
+    notempty: "Skarbiec nie jest pusty!"
+    success: "Skarbiec zniszczony."
+   denyrelative: "Nie mozesz postawic tego bloku obok skarbca."
+   restore:
+    hasalready: "Masz już przedmiot skarbca."
+    success: "Przedmiot skarbca został przywrócony."
+
+  compasstarget:
+   'on': "Kompas wskazuje teraz dom Twojej gildii."
+   'off': "Kompas wskazuje teraz spawn."
+  noguilds: "Brak gildii"
+  openinvitation: "Przelaczono otwarte zaproszenia. Obecnie: &c{STATUS}"
+  fpvptoggled: "Przelaczono sojusznicze pvp. Obecnie: &c{GUILD_PVP}"
+  effect:
+   success: "Kupiles efekt &a{EFFECTTYPE} dla swoich wojownikow!"
+
+  ally:
+   war: "Najpierw musisz zakonczyc wojne z ta gildia"
+   samename: "Nie mozesz zaprosic swojej gildii do sojuszu!"
+   invited: "Zaprosiles &a{ALLYNAME} do sojuszu"
+   accepted: "Zaakceptowales propozycje sojuszu z &a{ALLYNAME}"
+   notifyguild: "Gildia &a{GUILD_NAME} Zaprosila Cie do sojuszu"
+   notifyguildcanceled: "Gildia &a{GUILD_NAME} cofnela propozycje sojuszu"
+   canceled: "Cofnieto zaproszenie sojuszu z &a{ALLYNAME}"
+   list:
+    noallies: "Brak sojuszy."
+    header:
+     allies: "Lista sojuszy:"
+     invitations: "Lista zaproszeń do sojuszy:"
+    item: "&c{GUILD_NAME}"
+    separator: "&f, "
+
+  couldnotfind: "Nie udalo sie znalezc gildii"
+  hasnoregion: "Ta gildia nie ma swojego terenu"
+  entername: "Wprowadz nazwe gildii"
+  entertag: "Wprowadz tag gildii"
+  namenotexist: "Nie udalo sie znalezc gildii o tej nazwie"
+  notinguild: "Nie masz gildii!"
+  abandoned: "Porzuciles swoja gildie"
+  notleader: "Nie jestes liderem"
+  noguildperm: "Nie masz uprawnien!"
+  notenoughmoney: "W banku gildii nie ma wystarczajacej ilośći pieniedzy"
+  sethome:
+   success: "Ustawiono dom gildii!"
+   outsideregion: "Nie mozesz ustawic domu poza regionem gildii"
+   overlaps: "Nie mozesz ustawic domu na terenie innej gildii"
+  set:
+   name: "Nazwa gildii została zmieniona."
+   tag: "Tag gildii został zmieniony."
+  home: "Teleportowano do domu gildii"
+  joined: "Dolaczyles do gildii!"
+  explosionatregion: "Na terenie Twojej gildii nastapil wybuch!"
+  kickyourself: "Nie mozesz wyrzucic siebie z gildii!"
+  tooclose: "Jestes zbyt blisko innej gildii"
+  isfull: "Ta gildia osiągnęła limit graczy."
+  buy:
+   life:
+    success: "Kupiles dodatkowe zycie dla swojej gildii"
+    maxreached: "Maksymalna ilość żyć została osiągnięta"
+   slot:
+    success: "Kupiles dodatkowy slot dla swojej gildii."
+    maxreached: "Maksymalna ilość slotów została osiągnięta."
+
+  war:
+   ally: "Najpierw zakoncz sojusz z ta gildia"
+   yourguildwar: "Nie mozesz wywolac wojny sam ze soba"
+   nowar:
+    invite:
+     success: "Poprosiles &a{GUILD_NAME} aby zakonczyc wojne."
+     notify: "&a{GUILD_NAME} poprosila o zakonczenie wojny."
+    cancel:
+     success: "Odwołałeś prośbę o zakończenie wojny z gildią &a{GUILD_NAME}."
+     notify: "&a{GUILD_NAME} odwołała swoją prośbę o zakończenie wojny."
+   list:
+    nowars: "Brak wojen."
+    warsheader: "Lista wojen:"
+    nowarinvheader: "Lista zaproszen do zakonczenia wojny:"
+    item: "&c{GUILD_NAME}"
+    separator: "&f, "
+
+  leader:
+   success: "&a{PLAYER_NAME} jest teraz liderem!"
+   samenick: "Juz jestes liderem!"
+   notsameguild: "Ten gracz nie nalezy do Twojej gildii"
+  leave:
+   isleader: "Lider nie moze opuscic swojej gildii. &c/abandon"
+   left: "Opusciles gildie."
+  bank:
+   enteramount: "Wprowadz kwote."
+   pay:
+    paid: "Wplaciles &2$&c{AMOUNT} do banku gildii."
+    notenough: "Nie masz wystarczajacej ilośći pieniedzy"
+   withdraw:
+    success: "Zabrales &2$&c{AMOUNT} z banku gildii."
+    notenough: "Nie ma wystarczajacej ilośći pieniedzy w banku gildii."
+  chatmode:
+   success: "Tryb czatu zmieniony na: &c{MODE}"
+   invalid: "Niepoprawny tryb. Spróbuj &cnormal&6/&cguild&6/&cally"
+   names:
+    normal: "standardowy"
+    guild: "gildyjny"
+    ally: "sojuszniczy"
+
+ player:
+  entername: "Wprowadz nazwe gracza"
+  notexists: "Ten gracz nie istnieje"
+  notonline: "Ten gracz nie jest online"
+  hasguild: "Ten gracz ma gildie"
+  hasnoguild: "Ten gracz nie ma gildii"
+  alreadyinvited: "Ten gracz jest juz zaproszony do tej gildii"
+  notinyourguild: "Ten gracz nie nalezy do Twojej gildii"
+  pvpmoney:
+   kill: "Dostajesz &a{MONEY}$ za zabicie &c{PLAYER_NAME}"
+   revenge: "Dostajesz &a{MONEY}$ za zemste na &c{PLAYER_NAME}"
+  invite:
+   invited: "Gracz zostal zaproszony do gildii"
+   list:
+    header: "Lista gildii do ktorych jestes zaproszony:"
+    nothing: "Nie jestes zaproszony do zadnej gildii"
+    item: "&c{GUILD_NAME}"
+    separator: "&f, "
+   notinvited: "Nie jestes zaproszony do tej gildii"
+   notify: "Zostales zaproszony do gildii &a{GUILD_NAME}"
+   cancel:
+    success: "Cofnieto zaproszenie dla gracza &c{PLAYER_NAME}"
+    notify: "Twoje zaproszenie do &a{GUILD_NAME} zostalo anulowane"
+  info:
+   header: "&4*** &6Informacje o graczu &4***"
+   guildrow: "&4&l> &7Gildia: &7[&a{TAG}&7] &6{GUILD_NAME}"
+   items:
+   - "&4&l> &7Nick: &6{PLAYER_NAME}"
+   - "{GUILDROW}"
+   - "&4&l> &7Punkty: &6{PLAYER_POINTS}"
+   - "&4&l> &7Zabicia: &6{PLAYER_KILLS}"
+   - "&4&l> &7Smierci: &6{PLAYER_DEATHS}"
+   - "&4&l> &7KDR: &6{PLAYER_KDR}"
+
+ region:
+  blockedcmd: "Ta komenda jest zablokowana na regionach."
+  deleted: "Region zostal usuniety."
+  deny:
+   interact: "Nie mozesz tutaj ingerowac."
+   ridemob: "Nie mozesz jezdzic na tym zwierzeciu."
+   attackmob: "Nie mozesz atakowac tego zwierzecia."
+   unleash: "Nie mozesz zdjac smyczy tego zwierzecia."
+   leash: "Nie mozesz zalozyc smyczy na to zwierze."
+  noregionhere: "Nie ma tutaj zadnej gildii"
+  regionhere: "Tutaj jest teren innej gildii!"
+  validation:
+   toosmall: "Zaznaczony teren jest za maly. &6(&6min: &c{MINSIZE}x&c{MINSIZE}&6)"
+   toobig: "Zaznaczony teren jest za duzy. &6(&6max: &c{MAXSIZE}x&c{MAXSIZE}&6)"
+   tooclose: "Zaznaczony teren jest zbyt blisko innej gildii."
+   overlaps: "Zaznaczony teren nachodzi na region innej gildii"
+   worldguard: "Zaznaczony teren nachodzi na region WorldGuard"
+   notvalid: "Zaznaczony teren jest niepoprawny."
+   valid: "Teren zaznaczony. &c/g rg buy"
+   notselected: "Prosze zaznaczyc teren"
+  size: "Rozmiar zaznaczonego terenu: &c{SIZE} blokow"
+  price: "Kupienie terenu bedzie Cie kosztowalo: &c${PRICE}"
+  cnotafford: "Nie stac Cie na ten teren. Potrzebujesz jeszcze &c${NEEDMORE}"
+  maxamount: "Osiągnąłeś maksymalną liczbę &a{AMOUNT} regionów."
+  created: "Region stworzony pomyslnie."
+  mustveguild: "Potrzebujesz gildii aby kupic teren. &c/create"
+  entered: "Wkroczyles na teren gildii &a{GUILD_NAME}"
+  exited: "Opusciles teren gildii &a{GUILD_NAME}"
+  notfound: "Nie udało się znaleźć regionu."
+  resize:
+   start: "Zmienianie rozmiaru regionu... Zaznacz rog &cprawym."
+   toggle: "Narożnik zmieniony na przeciwny."
+   success: "Zmieniono rozmiar regionu."
+  notifyguild:
+   entered: "Gracz &c{PLAYER_NAME} wkroczyl na teren Twojej gildii!"
+  belongsto: "Ten teren nalezy do &a{GUILD_NAME} (i=&a{INDEX})"
+  list:
+   header: "Lista regionow:"
+   item: "&a{GUILD_NAME} (&a{INDEX})&7 - &2{X}&6;&2{Z}"
+  tool:
+   toggledmode: "Zmieniono tryb. Obecnie: &c{MODE}"
+   modes:
+    check: "SPRAWDZANIE"
+    select: "ZAZNACZANIE"
+
+
+ createguild:
+  disabledworld: "Nie mozesz stworzyc gildii na tym swiecie."
+  notenoughmoney: "Nie masz wystarczajacej ilośći pieniedzy"
+  itemlist: "&c{AMOUNT} {ITEMNAME}"
+  itemlistsep: "&f, "
+  noitems: "Nie masz wymaganych przedmiotow!"
+  tagexists: "Istnieje juz gildia z tym tagiem."
+  nameexists: "Istnieje juz gildia o tej nazwie"
+  hasguild: "Masz juz gildie"
+  success: "Gildia stworzona"
+  regionhere: "Nie mozesz stworzyc gildii w miejscu gdzie istnieje inna"
+  tooclosespawn: "Musisz odejsc {DISTANCE} blokow od spawnu"
+  notallowedstring: "Wprowadzony tekst zawiera niedozwolone znaki"
+  tag:
+   tooshort: "Tag jest za krotki!"
+   toolong: "Tag jest za dlugi!"
+  name:
+   tooshort: "Nazwa jest za krotka"
+   toolong: "Nazwa jest za dluga"
+
+ guildinfo:
+  playerseparator: "&f, "
+  leaderprefix: "*"
+  playercolor:
+   online: "&a"
+   offline: "&f"
+  row:
+   ally: "&5{GUILD_NAME}"
+   player: "{COLOR}{LEADER_PREFIX}{PLAYER_NAME}"
+   war: "&c{GUILD_NAME}"
+  fullinfo:
+   - "&4*** &6Informacje o gildii &4***"
+   - "&4&l> &7Nazwa: &6{GUILD_NAME}"
+   - "&4&l> &7Tag: &6{TAG}"
+   - "&4&l> &7Lider: &6{LEADER}"
+   - "&4&l> &7Stworzona: &6{CREATEDAGO} &2temu"
+   - "&4&l> &7Otwarte zaproszenie: &6{GUILD_OPENINVITATION}"
+   - "&4&l> &7Ochrona: &6{PROTLEFT}"
+   - "&4&l> &7Zycia: &6{GUILD_LIVES}"
+   - "&4&l> &7Regenaracja zycia: &6{LIVEREGENERATIONTIME}"
+   - "&4&l> &7Czas odpoczynku: &6{GUILD_TIME_REST}"
+   - "&4&l> &7Lokacja: &6{X}&2,&6{Y}&2,&6{Z}"
+   - "&4&l> &7Gracze: &6(&c{PLAYERSCOUNT}&6/&c{SLOTS}&6) {PLAYERS}"
+   - "&4&l> &7Sojusze: {ALLIES}"
+   - "&4&l> &7Wojny: {WARS}"
+   - "&4&l> &7Pieniadze: &6{MONEY}"
+   - "&4&l> &7Punkty: &6{GUILD_POINTS}"
+  info:
+   - "&4*** &6Informacje o gildii &4***"
+   - "&4&l> &7Nazwa: &6{GUILD_NAME}"
+   - "&4&l> &7Tag: &6{TAG}"
+   - "&4&l> &7Lider: &6{LEADER}"
+   - "&4&l> &7Stworzona: &6{CREATEDAGO} &2temu"
+   - "&4&l> &7Otwarte zaproszenie: &6{GUILD_OPENINVITATION}"
+   - "&4&l> &7Ochrona: &6{PROTLEFT}"
+   - "&4&l> &7Zycia: &6{GUILD_LIVES}"
+   - "&4&l> &7Czas odpoczynku: &6{GUILD_TIME_REST}"
+   - "&4&l> &7Gracze: &6(&c{PLAYERSCOUNT}&6/&c{SLOTS}&6) {PLAYERS}"
+   - "&4&l> &7Sojusze: {ALLIES}"
+   - "&4&l> &7Wojny: {WARS}"
+   - "&4&l> &7Punkty: &6{GUILD_POINTS}"
+
+#broadcast messages:
+broadcast:
+ admin:
+  guild:
+   abandon: "Admin &c{PLAYER_NAME} rozwiazal gildie &a{GUILD_NAME}"
+   cleanup: "Gildia &a{GUILD_NAME} została usunięta w skutek nieobecności"
+ guild:
+  war: "Gildia &a{GUILD1} rozpoczela &cwojne &6z &a{GUILD2}"
+  nowar: "Gildie &a{GUILD1} i &a{GUILD2} zakonczyly wojne"
+  joined: "Gracz &c{PLAYER_NAME} dolaczyl do &a{GUILD_NAME}"
+  left: "Gracz &c{PLAYER_NAME} opuscil &a{GUILD_NAME}"
+  created: "Gracz &c{PLAYER_NAME} zalozyl gildie &a{GUILD_NAME}"
+  abandoned: "Gracz &c{PLAYER_NAME} porzucil gildie &a{GUILD_NAME}"
+  setleader: "Gracz &c{PLAYER_NAME} jest teraz liderem &a{GUILD_NAME}"
+  allied: "&a{GUILD_NAME} i &a{ALLYNAME} sa teraz sojusznikami!"
+  endally: "&a{GUILD_NAME} i &a{ALLYNAME} zakonczyli sojusz!"
+  kicked: "Gracz &c{PLAYER_NAME} zostal wyrzucony z &a{GUILD_NAME}"
+  newleader: "Gracz &c{PLAYER_NAME} jest teraz liderem &a{GUILD_NAME}"
+  destroyed: "Gildia &a{GUILD_NAME} zostala zniszczona!"
+  raid:
+   finished:
+    attackerwon: "Nalot zakonczony! &a{ATTACKER} vs &a{DEFENDER}! Atakujacy wygral."
+    defenderwon: "Nalot zakonczony! &a{ATTACKER} vs &a{DEFENDER}! Obronca wygral."
+ pvp:
+  killed: "Gracz {TAG1}&c{PLAYER1} zostal zabity przez {TAG2}&c{PLAYER2}"
+
+holographicdisplays:
+ locations:
+  topguilds:
+ topguilds:
+  header: "&2Gildie &cTOP5"
+  row: "&6[&2{N}&6] &a{GUILD_NAME} &2- &c{GUILD_POINTS}"
+
+#no prefix, start with color
+barapi:
+ warprogress: "&6Gildia &a{DEFENDER} jest atakowana!"
+
+misc:
+ pointsbelowname: "punktów"
+
+inventory:
+ requireditems:
+  name: "Wymagane przedmioty"
+  lore:
+   - ""
+   - "&6Plecak: &a{AMOUNT_AVAILABLE}"
+   - "&6EnderChest: &a{AMOUNT_AVAILABLE2}"
+   - "&6Razem: &a{AMOUNT_AVAILABLE3} z &a{AMOUNT}"
+   - "&6Potrzebujesz jeszcze &a{NEEDMORE}"
+ ggui:
+  name: "Menu Gildii"
+ gui:
+  guildtop: "SIGN 1"
+  hometp: "ENDER_PEARL 1 name:Dom"
+  join:
+   title: "Dołącz do gildii"
+   iconitem: "IRON_DOOR 1 name:Dołącz_do_gildii"
+   rowitem: "ENCHANTED_BOOK 1 name:&a{GUILD_NAME} lore:&7Tag:_&a{TAG}|&7Lider:_&c{PLAYER_NAME}"
+  settings:
+   title: "Ustawienia gildii"
+   item:
+    icon: "WORKBENCH 1 name:&4Ustawienia"
+    set:
+     name: "SIGN 1 name:&6Zmień_nazwę_gildii"
+     tag: "SIGN 1 name:&6Zmień_tag_gildii"
+     home: "EYE_OF_ENDER 1 name:&6Zmień_dom_gildii"
+    togglepvp:
+     'on': "GOLD_SWORD 1 name:&2Wyłącz_gildyjne_PVP"
+     'off': "WOOD_SWORD 1 name:&4Włącz_gildyjne_PVP"
+    openinvitation: "FENCE_GATE 1 name:&6Przełącz_otwarte_zaproszenie lore:Obecnie_{FLAG}"
+    buylife: "APPLE 1 name:&6Kup_życie"
+    buyslot: "MINECART 1 name:&6Kup_slot"
+    invite: "CAKE 1 name:&6Zaproś_graczy"
+   invite:
+    title: "Zapraszanie graczy"
+    item: "SKULL_ITEM:3 1 player:{PLAYER_NAME} name:{PLAYER_NAME}"
+  back: "REDSTONE_TORCH_ON 1 name:&cPowrót"
+  playerslist:
+   title: "Lista członków"
+   iconitem: "SKULL_ITEM:3 1 name:Lista_członków"
+   rowitem: "SKULL_ITEM:3 1 player:{PLAYER_NAME} name:{PLAYER_NAME}"
+  playersettings:
+   title: "{PLAYER_NAME} ustawienia"
+   item:
+    rank: "BOOK_AND_QUILL 1 name:Ustaw_rangę lore:{RANKNAME}"
+    kick: "FERMENTED_SPIDER_EYE 1 name:Wyrzuć"
+  ranks:
+   title: "Rangi"
+   iconitem: "EMPTY_MAP 1 name:Rangi"
+   rowitem: "BOOK 1 name:{RANKNAME}"
+   additem: "BOOK_AND_QUILL 1 name:Dodaj_rangę"
+   defaultname: "Nowa Ranga"
+   leadername: "Lider"
+  rank:
+   settings:
+    title: "&l{RANKNAME} &rustawienia"
+    cloneprefix: "Kopia "
+    item:
+     editpermissions: "BOOK_AND_QUILL 1 name:&6Edytuj_uprawnienia"
+     setdefault: "WOOD_DOOR 1 name:&6Ustaw_jako_domyślna"
+     clone: "GOLD_NUGGET 1 name:&6Sklonuj"
+     rename: "NAME_TAG 1 name:&6Zmień_nazwę"
+     delete: "REDSTONE_BLOCK 1 name:&cUsuń"
+     memberlist: "SKULL_ITEM:3 1 name:Członkowie"
+  permissions:
+   title: "Edycja rangi: &l{RANKNAME}"
+   item:
+    enabled: "STAINED_GLASS_PANE:5 1 name:{PERMNAME}"
+    disabled: "STAINED_GLASS_PANE:14 1 name:{PERMNAME}"
+   names:
+    block:
+     break: "Niszczenie_bloków"
+     place: "Stawianie_bloków"
+    mob:
+     attack: "Atakowanie_potworów"
+     ride: "Jeżdzenie_na_zwierzętach"
+     leash: "Wiązanie_koni"
+    interact: "Interakcja_w_regionach"
+    abandon: "Rozwiązanie_gildii" 
+    kick: "Wyrzucanie_graczy"
+    effect: "Kupowanie_efektów" 
+    invite: "Zapraszanie_graczy"
+    pvptoggle: "Włączanie_PVP"  
+    ally:
+     cancel: "Zakończenie_sojuszu"
+     invite:
+      send: "Wysłanie_zaproszenia_do_sojuszu"
+      cancel: "Anulowanie_zaproszenia_do_sojuszu"
+     accept: "Akceptacja_zaproszenia_do_sojuszu"
+    buylife: "Kupowanie_żyć"
+    buyslot: "Kupowanie_slotów"
+    home:
+     set: "Ustawianie_domu"
+     teleport: "Teleportacja_do_domu"
+    openinvitation: "Zmiana_statusu_otwartego_zaproszenia"
+    set:
+     name: "Zmiana_nazwy_gildii"
+     tag: "Zmiana_tagu_gildii"
+    war:
+     invite:
+      send: "Prośba_o_zakończenie_wojny"
+      cancel: "Confnięcie_prośby_końca_wojny"
+      accept: "Zakończenie_wojny"
+     start: "Rozpoczęcie_wojny"
+    bank:
+     pay: "Wpłacanie_do_banku" 
+     withdraw: "Wypłacanie_z_banku" 
+    vault:
+     access: "Dostęp_do_skarbca"
+     put: "Wkładanie_do_skarbca"
+     take: "Zabieranie_ze_skarbca"
+     place: "Stawianie_skarbca"
+     break: "Niszczenie_skarbca"
+    region:
+     create: "Tworzenie_regionów"
+     remove: "Usuwanie_regionów"
+     resize: "Zmiana_rozmiaru_regionów"
+    rank:
+     delete: "Usuwanie_rang"
+     list: "Wyświetlanie_listy_rang"
+     set: "Ustawianie_rang_graczom"
+     edit: "Edycja_rang"
+
+signgui:
+ guild:
+  settings:
+   set:
+    name:
+     - "Nowa nazwa"
+     - "---------------"
+     - "{INPUT}"
+     - "---------------"
+    tag:
+     - "Nowy tag"
+     - "---------------"
+     - "{INPUT}"
+     - "---------------"
+  ranks:
+   set:
+    name:
+     - "Zmień nazwę:"
+     - "---------------"
+     - "{INPUT}"
+     - "---------------"
+
+dynmap:
+ region: "Region gildii {GUILD_NAME} ({INDEX})"
+ guildhome: "Dom gildii {GUILD_NAME}"
+
+timeunit:
+ second:
+  singular: sekunda
+  plural: sekundy
+ minute:
+  singular: minuta
+  plural: minuty
+ hour:
+  singular: godzina
+  plural: godziny
+ day:
+  singular: dzien
+  plural: dni
+ week:
+  singular: tydzien
+  plural: tygodni
+ month:
+  singular: miesiac
+  plural: miesiecy
+ year:
+  singular: rok
+  plural: lata
