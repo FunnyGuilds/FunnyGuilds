@@ -1,6 +1,6 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: 3.9.9.9 Cleaned
+version: '${project.version} Cleaned'
 author: Dzikoysk
 website: http://www.dzikoysk.net/
 loadbefore: [WorldEdit]
