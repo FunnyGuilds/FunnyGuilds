@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -45,6 +46,11 @@ public class ExcEnlarge implements Executor {
                     m.getMessage("enlargeItem")
                             .replace("{ITEM}", need.getAmount() + " " + need.getType().name().toLowerCase())
             );
+            return;
+        }
+
+        if (RegionUtils.isNear(region.getCenter())) {
+            p.sendMessage(m.getMessage("enlargeIsNear"));
             return;
         }
 

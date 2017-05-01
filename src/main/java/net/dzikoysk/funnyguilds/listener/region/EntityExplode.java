@@ -40,7 +40,7 @@ public class EntityExplode implements Listener {
 
         destroyed.removeIf(blocks -> {
             Region region = RegionUtils.getAt(blocks.getLocation());
-            return region != null && region.getGuild() != null && region.getGuild().isValid();
+            return region != null && region.getGuild() != null && !region.getGuild().canBeAttacked();
         });
 
         Region region = RegionUtils.getAt(loc);
@@ -48,7 +48,7 @@ public class EntityExplode implements Listener {
         if (region != null) {
             Guild guild = region.getGuild();
 
-            if (guild.isValid()) {
+            if (!guild.canBeAttacked()) {
                 event.setCancelled(true);
                 return;
             }

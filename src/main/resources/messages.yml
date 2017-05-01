@@ -222,6 +222,7 @@ kickToPlayer: '&cZostales wyrzucony z gildii!'
 enlargeHasNotGuild: '&cNie masz gildii!'
 enlargeIsNotOwner: '&cNie jestes zalozycielem gildii!'
 enlargeMaxSize: '&cOsiagnieto juz maksymalny rozmiar terenu!'
+enlargeIsNear: '&cW poblizu znajduje sie jakas gildia, nie mozesz powiekszyc terenu!'
 # Available variables: {ITEM}
 enlargeItem: '&7Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz &c{ITEM}'
 # Available variables: {SIZE}, {LEVEL}
