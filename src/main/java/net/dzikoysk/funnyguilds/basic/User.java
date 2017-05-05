@@ -45,7 +45,7 @@ public class User implements Basic {
     private User(UUID uuid) {
         this.uuid = uuid;
         this.changes = true;
-        UserUtils.addUser(this);
+        this.updateCache();
     }
 
     private User(String name) {
@@ -57,14 +57,14 @@ public class User implements Basic {
         this.uuid = player.getUniqueId();
         this.name = player.getName();
         this.changes = true;
-        UserUtils.addUser(this);
+        this.updateCache();
     }
 
     private User(OfflineUser offline) {
         this.uuid = offline.getUniqueId();
         this.name = offline.getName();
         this.changes = true;
-        UserUtils.addUser(this);
+        this.updateCache();
     }
 
     public void removeGuild() {
@@ -94,6 +94,7 @@ public class User implements Basic {
     public void setName(String name) {
         this.name = name;
         this.changes();
+        this.updateCache();
     }
 
     public void setGuild(Guild guild) {
@@ -310,6 +311,11 @@ public class User implements Basic {
         return ping;
     }
 
+    private void updateCache()
+    {
+        UserUtils.addUser(this);
+    }
+
     @Override
     public BasicType getType() {
         return BasicType.USER;
@@ -345,44 +351,22 @@ public class User implements Basic {
     }
 
     public static User get(UUID uuid) {
-        for (User lp : UserUtils.getUsers()) {
-            if (uuid.equals(lp.getUUID())) {
-                return lp;
-            }
-        }
-        return new User(uuid);
+        User u = UserUtils.get(uuid);
+        return u != null ? u : new User(uuid);
     }
 
     public static User get(Player player) {
-        for (User u : UserUtils.getUsers()) {
-            if (u.getName() == null) {
-                continue;
-            }
-            if (u.getName().equalsIgnoreCase(player.getName())) {
-                return u;
-            }
-        }
-        return new User(player);
+        User u = UserUtils.get(player.getUniqueId());
+        return u != null ? u : new User(player);
     }
 
     public static User get(OfflinePlayer offline) {
-        for (User u : UserUtils.getUsers()) {
-            if (u.getName() == null) {
-                continue;
-            }
-            if (u.getName().equalsIgnoreCase(offline.getName())) {
-                return u;
-            }
-        }
-        return new User(offline.getName());
+        User u = UserUtils.get(offline.getName());
+        return u != null ? u : new User(offline.getName());
     }
 
     public static User get(String name) {
-        for (User lp : UserUtils.getUsers()) {
-            if (name.equalsIgnoreCase(lp.getName())) {
-                return lp;
-            }
-        }
-        return new User(name);
+        User u = UserUtils.get(name);
+        return u != null ? u : new User(name);
     }
 }

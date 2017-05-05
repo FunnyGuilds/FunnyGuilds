@@ -345,6 +345,10 @@ public class Guild implements Basic {
         return this.attacked;
     }
 
+    public boolean canBeAttacked() {
+        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getInstance().warWait > System.currentTimeMillis());
+    }
+
     public int getLives() {
         return this.lives;
     }

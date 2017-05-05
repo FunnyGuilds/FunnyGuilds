@@ -64,10 +64,20 @@ public class Messages {
         return pc;
     }
 
+
     public String getMessage(String key) {
+        return getMessage(key, null);
+    }
+
+    public String getMessage(String key, String defaultValue) {
         String s = single.get(key);
         if (s == null) {
-            return StringUtils.colored("&cMessage '" + key + "' not found");
+            if (defaultValue == null) {
+                return StringUtils.colored("&cMessage '" + key + "' not found");
+            }
+            else {
+                return defaultValue;
+            }
         }
         else {
             return s;
