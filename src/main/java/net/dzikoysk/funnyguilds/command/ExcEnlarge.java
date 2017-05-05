@@ -50,7 +50,7 @@ public class ExcEnlarge implements Executor {
         }
 
         if (RegionUtils.isNear(region.getCenter())) {
-            p.sendMessage(m.getMessage("enlargeIsNear"));
+            p.sendMessage(m.getMessage("enlargeIsNear", "&cW poblizu znajduje sie jakas gildia, nie mozesz powiekszyc terenu!"));
             return;
         }
 
