@@ -8,6 +8,13 @@
     <version>3.9.9.10</version>
     <packaging>jar</packaging>
 
+    <distributionManagement>
+        <repository>
+            <id>funnyguilds-repo</id>
+            <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
+        </repository>
+    </distributionManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
