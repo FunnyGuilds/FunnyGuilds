@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -18,29 +19,29 @@ public class ExcBreak implements Executor {
 
 
     public void execute(CommandSender s, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
         User lp = User.get(p);
 
         if (!lp.hasGuild()) {
-            p.sendMessage(m.getMessage("breakHasNotGuild"));
+            p.sendMessage(m.breakHasNotGuild);
             return;
         }
 
         if (!lp.isOwner()) {
-            p.sendMessage(m.getMessage("breakIsNotOwner"));
+            p.sendMessage(m.breakIsNotOwner);
             return;
         }
 
         Guild guild = lp.getGuild();
 
         if (guild.getAllies() == null || guild.getAllies().isEmpty()) {
-            p.sendMessage(m.getMessage("breakHasNotAllies"));
+            p.sendMessage(m.breakHasNotAllies);
             return;
         }
 
         if (args.length < 1) {
-            List<String> list = m.getList("breakAlliesList");
+            List<String> list = m.breakAlliesList;
             String[] msgs = list.toArray(new String[list.size()]);
             String iss = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
             for (int i = 0; i < msgs.length; i++) {
@@ -55,7 +56,7 @@ public class ExcBreak implements Executor {
 
         if (!GuildUtils.tagExists(tag)) {
             p.sendMessage(
-                    m.getMessage("breakGuildExists")
+                    m.breakGuildExists
                             .replace("{TAG}", tag)
             );
             return;
@@ -65,7 +66,7 @@ public class ExcBreak implements Executor {
 
         if (!guild.getAllies().contains(tb)) {
             p.sendMessage(
-                    m.getMessage("breakAllyExists")
+                    m.breakAllyExists
                             .replace("{GUILD}", tb.getName())
                             .replace("{TAG}", tag)
             );
@@ -82,7 +83,7 @@ public class ExcBreak implements Executor {
         }
 
         p.sendMessage(
-                m.getMessage("breakDone")
+                m.breakDone
                         .replace("{GUILD}", tb.getName())
                         .replace("{TAG}", tb.getTag())
         );
@@ -90,7 +91,7 @@ public class ExcBreak implements Executor {
         OfflineUser of = tb.getOwner().getOfflineUser();
         if (of.isOnline()) {
             of.getPlayer().sendMessage(
-                    m.getMessage("allyIDone")
+                    m.allyIDone
                             .replace("{GUILD}", guild.getName())
                             .replace("{TAG}", guild.getTag())
             );

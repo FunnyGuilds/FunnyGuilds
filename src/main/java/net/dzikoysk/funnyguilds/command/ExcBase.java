@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.Bukkit;
@@ -21,19 +22,19 @@ public class ExcBase implements Executor {
 
     public void execute(CommandSender s, String[] args) {
 
-        final Messages m = Messages.getInstance();
+        final MessagesConfig m = Messages.getInstance();
         final Player p = (Player) s;
         final User user = User.get(p);
 
         if (!user.hasGuild()) {
-            p.sendMessage(m.getMessage("baseHasNotGuild"));
+            p.sendMessage(m.baseHasNotGuild);
             return;
         }
 
         final Guild guild = user.getGuild();
 
         if (user.getTeleportation() != null) {
-            p.sendMessage(m.getMessage("baseIsTeleportation"));
+            p.sendMessage(m.baseIsTeleportation);
             return;
         }
 
@@ -41,7 +42,7 @@ public class ExcBase implements Executor {
         final ItemStack[] items = itemsList.toArray(new ItemStack[0]);
         for (int i = 0; i < items.length; i++) {
             if (!p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
-                String msg = m.getMessage("baseItems");
+                String msg = m.baseItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(items[i].getAmount());
@@ -69,11 +70,11 @@ public class ExcBase implements Executor {
         final int time = Settings.getConfig().baseDelay;
         if (time < 1) {
             p.teleport(guild.getHome());
-            p.sendMessage(m.getMessage("baseTeleport"));
+            p.sendMessage(m.baseTeleport);
             return;
         }
 
-        p.sendMessage(m.getMessage("baseDontMove")
+        p.sendMessage(m.baseDontMove
                 .replace("{TIME}", Integer.toString(time))
         );
 
@@ -86,14 +87,14 @@ public class ExcBase implements Executor {
                 i++;
                 if (!LocationUtils.equals(player.getLocation(), before)) {
                     user.getTeleportation().cancel();
-                    player.sendMessage(m.getMessage("baseMove"));
+                    player.sendMessage(m.baseMove);
                     user.setTeleportation(null);
                     player.getInventory().addItem(items);
                     return;
                 }
                 if (i > time) {
                     user.getTeleportation().cancel();
-                    player.sendMessage(m.getMessage("baseTeleport"));
+                    player.sendMessage(m.baseTeleport);
                     player.teleport(guild.getHome());
                     user.setTeleportation(null);
                     return;

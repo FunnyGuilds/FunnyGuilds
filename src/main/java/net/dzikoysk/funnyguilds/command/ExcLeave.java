@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
@@ -15,17 +16,17 @@ public class ExcLeave implements Executor {
     @Override
     public void execute(CommandSender s, String[] args) {
 
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
         User u = User.get(p);
 
         if (!u.hasGuild()) {
-            p.sendMessage(m.getMessage("leaveHasNotGuild"));
+            p.sendMessage(m.leaveHasNotGuild);
             return;
         }
 
         if (u.isOwner()) {
-            p.sendMessage(m.getMessage("leaveIsOwner"));
+            p.sendMessage(m.leaveIsOwner);
             return;
         }
 
@@ -36,13 +37,13 @@ public class ExcLeave implements Executor {
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, p);
 
         p.sendMessage(
-                m.getMessage("leaveToUser")
+                m.leaveToUser
                         .replace("{GUILD}", guild.getName())
                         .replace("{TAG}", guild.getTag())
         );
 
         Bukkit.broadcastMessage(
-                m.getMessage("broadcastLeave")
+                m.broadcastLeave
                         .replace("{PLAYER}", u.getName())
                         .replace("{GUILD}", guild.getName())
                         .replace("{TAG}", guild.getTag())

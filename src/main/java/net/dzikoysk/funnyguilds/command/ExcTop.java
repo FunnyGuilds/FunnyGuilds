@@ -9,7 +9,7 @@ public class ExcTop implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-        for (String m : Messages.getInstance().getList("topList")) {
+        for (String m : Messages.getInstance().topList) {
             String r = Parser.parseRank(m);
             if (r != null) {
                 m = r;

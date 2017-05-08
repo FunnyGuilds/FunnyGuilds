@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
@@ -17,11 +18,11 @@ public class AxcAdd implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messages messages = Messages.getInstance();
+        MessagesConfig messages = Messages.getInstance();
         Player player = (Player) sender;
 
         if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(messages.getMessage("permission"));
+            player.sendMessage(messages.permission);
             return;
         }
 
@@ -56,7 +57,7 @@ public class AxcAdd implements Executor {
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, offline);
 
         if (offline.isOnline()) {
-            Bukkit.getPlayer(user.getName()).sendMessage(messages.getMessage("joinToMember")
+            Bukkit.getPlayer(user.getName()).sendMessage(messages.joinToMember
                     .replace("{GUILD}", guild.getName())
                     .replace("{TAG}", guild.getTag())
             );
@@ -64,12 +65,12 @@ public class AxcAdd implements Executor {
 
         Player owner = Bukkit.getPlayer(guild.getOwner().getName());
         if (owner != null) {
-            owner.sendMessage(messages.getMessage("joinToOwner")
+            owner.sendMessage(messages.joinToOwner
                     .replace("{PLAYER}", user.getName())
             );
         }
 
-        Bukkit.broadcastMessage(messages.getMessage("broadcastJoin")
+        Bukkit.broadcastMessage(messages.broadcastJoin
                 .replace("{PLAYER}", user.getName())
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", tag)

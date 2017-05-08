@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
@@ -86,7 +87,7 @@ public class Manager {
         return Settings.getConfig();
     }
 
-    public Messages getMessages() {
+    public MessagesConfig getMessages() {
         return Messages.getInstance();
     }
 

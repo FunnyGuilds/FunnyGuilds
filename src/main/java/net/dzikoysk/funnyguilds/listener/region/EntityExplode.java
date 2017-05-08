@@ -62,7 +62,7 @@ public class EntityExplode implements Listener {
             for (User user : guild.getMembers()) {
                 Player player = this.plugin.getServer().getPlayer(user.getName());
                 if (player != null) {
-                    player.sendMessage(Messages.getInstance().getMessage("regionExplode")
+                    player.sendMessage(Messages.getInstance().regionExplode
                             .replace("{TIME}", Integer.toString(Settings.getConfig().regionExplode)));
                 }
             }

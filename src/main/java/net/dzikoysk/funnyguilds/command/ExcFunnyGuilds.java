@@ -20,7 +20,7 @@ public class ExcFunnyGuilds implements Executor {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("reload")) {
                 if (s instanceof Player && !s.hasPermission("funnyguilds.reload")) {
-                    s.sendMessage(Messages.getInstance().getMessage("permission"));
+                    s.sendMessage(Messages.getInstance().permission);
                     return;
                 }
                 Thread thread = new Thread() {
@@ -50,7 +50,7 @@ public class ExcFunnyGuilds implements Executor {
             }
             else if (args[0].equalsIgnoreCase("save-all")) {
                 if (s instanceof Player && !s.hasPermission("funnyguilds.admin")) {
-                    s.sendMessage(Messages.getInstance().getMessage("permission"));
+                    s.sendMessage(Messages.getInstance().permission);
                     return;
                 }
                 s.sendMessage(ChatColor.GRAY + "Zapisywanie...");

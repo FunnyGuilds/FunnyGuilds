@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.command.CommandSender;
@@ -17,11 +18,11 @@ public class AxcValidity implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player player = (Player) sender;
 
         if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.getMessage("permission"));
+            player.sendMessage(m.permission);
             return;
         }
 

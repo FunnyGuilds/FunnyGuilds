@@ -47,7 +47,7 @@ public class PlayerCommand implements Listener {
         }
 
         event.setCancelled(true);
-        player.sendMessage(Messages.getInstance().getMessage("regionCommand"));
+        player.sendMessage(Messages.getInstance().regionCommand);
     }
 
 }

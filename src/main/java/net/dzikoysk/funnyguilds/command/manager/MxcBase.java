@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
@@ -16,17 +17,17 @@ public class MxcBase implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User user = User.get(p);
 
         if (!user.hasGuild()) {
-            p.sendMessage(m.getMessage("setbaseHasNotGuild"));
+            p.sendMessage(m.setbaseHasNotGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            p.sendMessage(m.getMessage("setbaseIsNotOwner"));
+            p.sendMessage(m.setbaseIsNotOwner);
             return;
         }
 
@@ -35,7 +36,7 @@ public class MxcBase implements Executor {
         Location loc = p.getLocation();
 
         if (!region.isIn(loc)) {
-            p.sendMessage(m.getMessage("setbaseOutside"));
+            p.sendMessage(m.setbaseOutside);
             return;
         }
 
@@ -49,7 +50,7 @@ public class MxcBase implements Executor {
             }
         }
 
-        p.sendMessage(m.getMessage("setbaseDone"));
+        p.sendMessage(m.setbaseDone);
     }
 
 }

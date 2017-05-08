@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.TimeUtils;
@@ -23,18 +24,18 @@ public class ExcValidity implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         PluginConfig s = Settings.getConfig();
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User user = User.get(p);
         Guild guild = user.getGuild();
 
         if (!user.hasGuild()) {
-            p.sendMessage(m.getMessage("validityHasNotGuild"));
+            p.sendMessage(m.validityHasNotGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            p.sendMessage(m.getMessage("validityIsNotOwner"));
+            p.sendMessage(m.validityIsNotOwner);
             return;
         }
 
@@ -43,7 +44,7 @@ public class ExcValidity implements Executor {
             long d = c - System.currentTimeMillis();
             if (d > s.validityWhen) {
                 long when = d - s.validityWhen;
-                p.sendMessage(m.getMessage("validityWhen")
+                p.sendMessage(m.validityWhen
                         .replace("{TIME}", TimeUtils.getDurationBreakdown(when))
                 );
                 return;
@@ -54,7 +55,7 @@ public class ExcValidity implements Executor {
         ItemStack[] items = itemsList.toArray(new ItemStack[0]);
         for (int i = 0; i < items.length; i++) {
             if (!p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
-                String msg = m.getMessage("validityItems");
+                String msg = m.validityItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(items[i].getAmount());
@@ -89,7 +90,7 @@ public class ExcValidity implements Executor {
         DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Date v = new Date(c);
 
-        p.sendMessage(m.getMessage("validityDone")
+        p.sendMessage(m.validityDone
                 .replace("{DATE}", date.format(v))
         );
     }

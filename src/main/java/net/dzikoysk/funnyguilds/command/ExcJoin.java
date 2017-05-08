@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
@@ -22,22 +23,22 @@ public class ExcJoin implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
         User user = User.get(p);
 
         if (user.hasGuild()) {
-            p.sendMessage(m.getMessage("joinHasGuild"));
+            p.sendMessage(m.joinHasGuild);
             return;
         }
 
         if (InvitationsList.get(user, 0).getLS().isEmpty()) {
-            p.sendMessage(m.getMessage("joinHasNotInvitation"));
+            p.sendMessage(m.joinHasNotInvitation);
             return;
         }
 
         if (args.length < 1) {
-            List<String> list = m.getList("joinInvitationList");
+            List<String> list = m.joinInvitationList;
             String[] msgs = list.toArray(new String[list.size()]);
             String iss = StringUtils.toString(InvitationsList.get(user, 0).getLS(), true);
             for (int i = 0; i < msgs.length; i++) {
@@ -50,12 +51,12 @@ public class ExcJoin implements Executor {
 
         String tag = args[0];
         if (!GuildUtils.tagExists(tag)) {
-            p.sendMessage(m.getMessage("joinTagExists"));
+            p.sendMessage(m.joinTagExists);
             return;
         }
 
         if (!InvitationsList.get(user, 0).contains(tag)) {
-            p.sendMessage(m.getMessage("joinHasNotInvitationTo"));
+            p.sendMessage(m.joinHasNotInvitationTo);
             return;
         }
 
@@ -63,7 +64,7 @@ public class ExcJoin implements Executor {
         ItemStack[] items = itemsList.toArray(new ItemStack[0]);
         for (int i = 0; i < items.length; i++) {
             if (!p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
-                String msg = m.getMessage("joinItems");
+                String msg = m.joinItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(items[i].getAmount());
@@ -98,19 +99,19 @@ public class ExcJoin implements Executor {
 
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
 
-        p.sendMessage(m.getMessage("joinToMember")
+        p.sendMessage(m.joinToMember
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", guild.getTag())
         );
 
         Player owner = Bukkit.getPlayer(guild.getOwner().getName());
         if (owner != null) {
-            owner.sendMessage(m.getMessage("joinToOwner")
+            owner.sendMessage(m.joinToOwner
                     .replace("{PLAYER}", p.getName())
             );
         }
 
-        Bukkit.broadcastMessage(m.getMessage("broadcastJoin")
+        Bukkit.broadcastMessage(m.broadcastJoin
                 .replace("{PLAYER}", p.getName())
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", tag)

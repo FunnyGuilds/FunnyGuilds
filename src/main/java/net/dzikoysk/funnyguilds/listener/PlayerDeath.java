@@ -31,15 +31,15 @@ public class PlayerDeath implements Listener {
 
         if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
             if (attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()) {
-                v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));
-                a.sendMessage(Messages.getInstance().getMessage("rankLastVictimA"));
+                v.sendMessage(Messages.getInstance().rankLastVictimV);
+                a.sendMessage(Messages.getInstance().rankLastVictimA);
                 return;
             }
         }
         else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
             if (victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()) {
-                v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
-                a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
+                v.sendMessage(Messages.getInstance().rankLastAttackerV);
+                a.sendMessage(Messages.getInstance().rankLastAttackerA);
                 return;
             }
         }
@@ -70,7 +70,7 @@ public class PlayerDeath implements Listener {
         IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
         IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
 
-        String death = Messages.getInstance().getMessage("rankDeathMessage");
+        String death = Messages.getInstance().rankDeathMessage;
         death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());
         death = StringUtils.replace(death, "{VICTIM}", victim.getName());
         death = StringUtils.replace(death, "{-}", Integer.toString(points));

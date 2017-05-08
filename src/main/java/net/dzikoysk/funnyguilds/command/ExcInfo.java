@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -20,7 +21,7 @@ public class ExcInfo implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-        Messages msg = Messages.getInstance();
+        MessagesConfig msg = Messages.getInstance();
 
         String tag = null;
         if (args.length > 0) {
@@ -34,24 +35,24 @@ public class ExcInfo implements Executor {
         }
 
         if (tag == null || tag.isEmpty()) {
-            s.sendMessage(msg.getMessage("infoTag"));
+            s.sendMessage(msg.infoTag);
             return;
         }
 
         if (!GuildUtils.tagExists(tag)) {
-            s.sendMessage(msg.getMessage("infoExists"));
+            s.sendMessage(msg.infoExists);
             return;
         }
 
         Guild guild = GuildUtils.byTag(tag);
         if (guild == null) {
-            s.sendMessage(msg.getMessage("infoExists"));
+            s.sendMessage(msg.infoExists);
             return;
         }
         DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Date v = new Date(guild.getValidity());
 
-        for (String m : msg.getList("infoList")) {
+        for (String m : msg.infoList) {
             m = StringUtils.replace(m, "{GUILD}", guild.getName());
             m = StringUtils.replace(m, "{TAG}", guild.getTag());
             m = StringUtils.replace(m, "{OWNER}", guild.getOwner().getName());
