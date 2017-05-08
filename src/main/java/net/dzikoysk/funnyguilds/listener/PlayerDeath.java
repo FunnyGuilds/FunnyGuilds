@@ -44,7 +44,7 @@ public class PlayerDeath implements Listener {
             }
         }
 
-        Double d = victim.getRank().getPoints() * (Settings.getInstance().rankPercent / 100);
+        Double d = victim.getRank().getPoints() * (Settings.getConfig().rankPercent / 100);
         int points = d.intValue();
 
         victim.getRank().removePoints(points);
@@ -54,7 +54,7 @@ public class PlayerDeath implements Listener {
         attacker.getRank().addPoints(points);
         attacker.setLastVictim(victim);
 
-        if (Settings.getInstance().mysql) {
+        if (Settings.getConfig().dataType.mysql) {
             if (victim.hasGuild()) {
                 IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
             }
@@ -78,11 +78,11 @@ public class PlayerDeath implements Listener {
         death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
         if (victim.hasGuild()) {
             death = StringUtils.replace(death, "{VTAG}",
-                    StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
+                    StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", victim.getGuild().getTag()));
         }
         if (attacker.hasGuild()) {
             death = StringUtils.replace(death, "{ATAG}",
-                    StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", attacker.getGuild().getTag()));
+                    StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", attacker.getGuild().getTag()));
         }
         death = StringUtils.replace(death, "{VTAG}", "");
         death = StringUtils.replace(death, "{ATAG}", "");

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.basic.util;
 
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
 import org.bukkit.Location;
@@ -59,7 +60,7 @@ public class RegionUtils {
                 return false;
             }
             double distance = center.distance(region.getCenter());
-            Settings s = Settings.getInstance();
+            PluginConfig s = Settings.getConfig();
             int i = s.regionSize;
             if (s.enlargeItems != null) {
                 i += s.enlargeItems.size() * s.enlargeSize;
@@ -70,10 +71,10 @@ public class RegionUtils {
     }
 
     public static void delete(Region region) {
-        if (Settings.getInstance().flat) {
+        if (Settings.getConfig().dataType.flat) {
             Flat.getRegionFile(region).delete();
         }
-        if (Settings.getInstance().mysql) {
+        if (Settings.getConfig().dataType.mysql) {
             new DatabaseRegion(region).delete();
         }
         region.delete();

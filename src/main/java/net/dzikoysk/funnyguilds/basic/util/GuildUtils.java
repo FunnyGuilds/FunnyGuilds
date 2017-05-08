@@ -36,10 +36,10 @@ public class GuildUtils {
         final Region region = RegionUtils.get(guild.getRegion());
 
         if (region != null) {
-            if (Settings.getInstance().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+            if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
                 EntityUtil.despawn(guild);
             }
-            else if (Settings.getInstance().createMaterial != Material.AIR) {
+            else if (Settings.getConfig().createMaterial != Material.AIR) {
                 Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable() {
                     @Override
                     public void run() {
@@ -74,11 +74,11 @@ public class GuildUtils {
             g.removeEnemy(guild);
         }
 
-        if (Settings.getInstance().flat) {
+        if (Settings.getConfig().dataType.flat) {
             Flat.getGuildFile(guild).delete();
         }
 
-        if (Settings.getInstance().mysql) {
+        if (Settings.getConfig().dataType.mysql) {
             new DatabaseGuild(guild).delete();
         }
 

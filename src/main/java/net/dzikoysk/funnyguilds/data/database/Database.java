@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import com.zaxxer.hikari.HikariDataSource;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,15 +23,15 @@ public class Database {
         instance = this;
 
         this.dataSource = new HikariDataSource();
-        Settings c = Settings.getInstance();
+        PluginConfig.MySQL c = Settings.getConfig().mysql;
 
         //this.dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         this.dataSource.setMaximumPoolSize(c.poolSize);
 
-        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.mysqlHostname + ":" + c.mysqlPort + "/" + c.mysqlDatabase);
-        this.dataSource.setUsername(c.mysqlUser);
-        if (c.mysqlPassword != null && !c.mysqlPassword.isEmpty()) {
-            this.dataSource.setPassword(c.mysqlPassword);
+        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.databse);
+        this.dataSource.setUsername(c.user);
+        if (c.password != null && !c.password.isEmpty()) {
+            this.dataSource.setPassword(c.password);
         }
 
         this.dataSource.addDataSourceProperty("cachePrepStmts", true);

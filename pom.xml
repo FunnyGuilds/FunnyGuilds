@@ -52,6 +52,11 @@
             <version>1.7.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.diorite</groupId>
+            <artifactId>diorite-config-minimal</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -59,6 +64,10 @@
             <id>panda-repo</id>
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/</url>
+        </repository>
+        <repository>
+            <id>funnyguilds-repo</id>
+            <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
         </repository>
         <repository>
             <id>bukkit-temp-repo</id>

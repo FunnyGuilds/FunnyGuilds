@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.RandomizationUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import org.bukkit.Location;
@@ -33,7 +34,7 @@ public class EntityExplode implements Listener {
     public void onExplode(EntityExplodeEvent event) {
         List<Block> destroyed = event.blockList();
         Location loc = event.getLocation();
-        Settings s = Settings.getInstance();
+        PluginConfig s = Settings.getConfig();
 
         List<Location> sphere = SpaceUtils.sphere(loc, s.explodeRadius, s.explodeRadius, false, true, 0);
         Map<Material, Double> materials = s.explodeMaterials;
@@ -57,12 +58,12 @@ public class EntityExplode implements Listener {
 
             destroyed.removeIf(block -> block.getLocation().equals(protect));
 
-            guild.setBuild(System.currentTimeMillis() + Settings.getInstance().regionExplode * 1000L);
+            guild.setBuild(System.currentTimeMillis() + Settings.getConfig().regionExplode * 1000L);
             for (User user : guild.getMembers()) {
                 Player player = this.plugin.getServer().getPlayer(user.getName());
                 if (player != null) {
                     player.sendMessage(Messages.getInstance().getMessage("regionExplode")
-                            .replace("{TIME}", Integer.toString(Settings.getInstance().regionExplode)));
+                            .replace("{TIME}", Integer.toString(Settings.getConfig().regionExplode)));
                 }
             }
         }

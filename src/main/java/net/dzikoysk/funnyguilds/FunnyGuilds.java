@@ -41,7 +41,7 @@ public class FunnyGuilds extends JavaPlugin {
         thread = Thread.currentThread();
 
         new Reloader().init();
-        new DescriptionChanger(getDescription()).name(Settings.getInstance().pluginName);
+        new DescriptionChanger(getDescription()).name(Settings.getConfig().pluginName);
         new Commands().register();
 
         EventManager em = EventManager.getEventManager();
@@ -79,10 +79,10 @@ public class FunnyGuilds extends JavaPlugin {
         pm.registerEvents(new PlayerCommand(), this);
         pm.registerEvents(new PlayerInteract(), this);
 
-        if (Settings.getInstance().eventMove) {
+        if (Settings.getConfig().eventMove) {
             pm.registerEvents(new PlayerMove(), this);
         }
-        if (Settings.getInstance().eventPhysics) {
+        if (Settings.getConfig().eventPhysics) {
             pm.registerEvents(new BlockPhysics(), this);
         }
 

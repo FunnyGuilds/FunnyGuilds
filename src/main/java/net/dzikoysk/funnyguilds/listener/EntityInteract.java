@@ -20,7 +20,7 @@ public class EntityInteract implements Listener {
     public void onInteract(PlayerInteractEntityEvent event) {
         Entity entity = event.getRightClicked();
         if (entity instanceof Player) {
-            if (Settings.getInstance().infoPlayerSneaking && !event.getPlayer().isSneaking()) {
+            if (Settings.getConfig().infoPlayerSneaking && !event.getPlayer().isSneaking()) {
                 return;
             }
             Player clicked = (Player) entity;

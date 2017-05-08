@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.TimeUtils;
 import org.bukkit.command.CommandSender;
@@ -21,7 +22,7 @@ public class ExcValidity implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Settings s = Settings.getInstance();
+        PluginConfig s = Settings.getConfig();
         Messages m = Messages.getInstance();
         Player p = (Player) sender;
         User user = User.get(p);
@@ -82,7 +83,7 @@ public class ExcValidity implements Executor {
         if (c == 0) {
             c = System.currentTimeMillis();
         }
-        c += Settings.getInstance().validityTime;
+        c += Settings.getConfig().validityTime;
         guild.setValidity(c);
 
         DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");

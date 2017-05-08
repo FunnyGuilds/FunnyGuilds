@@ -123,7 +123,7 @@ public class Parser {
                     return StringUtils
                             .replace(string, "{GTOP-" + Integer.toString(i) + '}',
                                     guild.getTag() + " " +
-                                            StringUtils.replace(Settings.getInstance().playerlistPoints,
+                                            StringUtils.replace(Settings.getConfig().playerlistPoints,
                                                     "{POINTS}", Integer.toString(guild.getRank().getPoints()))
                             );
                 }

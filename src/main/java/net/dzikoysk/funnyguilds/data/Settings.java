@@ -1,392 +1,27 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
-import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.panda_lang.panda.util.configuration.PandaConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.ConfigUtils;
+import org.diorite.cfg.system.Template;
+import org.diorite.cfg.system.TemplateCreator;
+import org.diorite.cfg.system.deserializers.TemplateDeserializer;
+import org.diorite.cfg.system.deserializers.TemplateDeserializers;
+import org.diorite.cfg.system.elements.TemplateElements;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class Settings {
 
     private static final File SETTINGS = new File(FunnyGuilds.getInstance().getDataFolder(), "config.yml");
-    private static final String VERSION = "3.9.9.9 Cleaned";
-
-    private static Settings instance;
-    private PandaConfiguration pc;
-    public String pluginName;
-
-    public int createNameLength;
-    public int createNameMinLength;
-    public int createTagLength;
-    public int createTagMinLength;
-    public List<ItemStack> createItems;
-    public List<ItemStack> createItemsVip;
-    public int createDistance;
-    public Material createMaterial;
-    public String createStringMaterial;
-    public int createCenterY;
-    public boolean createCenterSphere;
-
-    public int regionSize;
-    public int regionMaxSize;
-    public int regionMinDistance;
-    public int regionNotificationTime;
-    public int regionNotificationCooldown;
-    public int regionExplode;
-    public List<String> regionCommands;
-
-    public boolean eventMove;
-    public boolean eventPhysics;
-
-    public boolean enlargeEnable;
-    public int enlargeSize;
-    public List<ItemStack> enlargeItems;
-
-    public int warLives;
-    public long warProtection;
-    public long warWait;
-
-    public long validityStart;
-    public long validityTime;
-    public long validityWhen;
-    public List<ItemStack> validityItems;
-
-    public int inviteMembers;
-    public List<ItemStack> joinItems;
-    public boolean infoPlayerSneaking;
-    public List<String> blockedWorlds;
-
-    public String prefixOur;
-    public String prefixAllies;
-    public String prefixEnemies;
-    public String prefixOther;
-
-    public boolean dummyEnable;
-    public String dummySuffix;
-
-    public String chatGuild;
-    public String chatRank;
-    public String chatPoints;
-
-    public String chatPriv;
-    public String chatAlly;
-    public String chatGlobal;
-    public String chatPrivDesign;
-    public String chatAllyDesign;
-    public String chatGlobalDesign;
-
-    public int rankStart;
-    public double rankPercent;
-
-    public boolean damageGuild;
-    public boolean damageAlly;
-
-    public boolean baseEnable;
-    public int baseDelay;
-    public List<ItemStack> baseItems;
-
-    public int explodeRadius;
-    public HashMap<Material, Double> explodeMaterials;
-
-    public boolean playerlistEnable;
-    public int playerlistInterval;
-    public int playerlistPing;
-    public boolean playerlistPatch;
-    public String playerlistPoints;
-
-    public String excCreate;
-    public String excDelete;
-    public String excConfirm;
-    public String excInvite;
-    public String excJoin;
-    public String excLeave;
-    public String excKick;
-    public String excBase;
-    public String excEnlarge;
-    public String excGuild;
-    public String excAlly;
-    public String excBreak;
-    public String excInfo;
-    public String excPlayer;
-    public String excTop;
-    public String excValidity;
-    public String excLeader;
-    public String excDeputy;
-    public String excRanking;
-
-    public String mxcBase;
-    public String mxcPvP;
-
-    public List<String> excCreateAliases;
-    public List<String> excDeleteAliases;
-    public List<String> excConfirmAliases;
-    public List<String> excInviteAliases;
-    public List<String> excJoinAliases;
-    public List<String> excLeaveAliases;
-    public List<String> excKickAliases;
-    public List<String> excBaseAliases;
-    public List<String> excEnlargeAliases;
-    public List<String> excGuildAliases;
-    public List<String> excAllyAliases;
-    public List<String> excBreakAliases;
-    public List<String> excInfoAliases;
-    public List<String> excPlayerAliases;
-    public List<String> excTopAliases;
-    public List<String> excValidityAliases;
-    public List<String> excLeaderAliases;
-    public List<String> excDeputyAliases;
-    public List<String> excRankingAliases;
-
-    public List<String> mxcBaseAliases;
-    public List<String> mxcPvPAliases;
-
-    public String axcMain;
-    public String axcAdd;
-    public String axcDelete;
-    public String axcKick;
-    public String axcTeleport;
-    public String axcPoints;
-    public String axcKills;
-    public String axcDeaths;
-    public String axcBan;
-    public String axcUnban;
-    public String axcLives;
-    public String axcMove;
-    public String axcValidity;
-    public String axcName;
-
-    public int dataInterval;
-    public boolean flat;
-    public boolean mysql;
-    public String mysqlHostname;
-    public String mysqlPort;
-    public String mysqlDatabase;
-    public String mysqlUser;
-    public String mysqlPassword;
-    public int poolSize;
+    private static PluginConfig settings;
 
     public Settings() {
-        instance = this;
-        Manager.loadDefaultFiles(new String[]{ "config.yml" });
-        this.update();
-        this.load();
+        settings = ConfigUtils.loadConfig(SETTINGS, PluginConfig.class);
+        settings.reload();
     }
 
-    private boolean update() {
-        this.pc = new PandaConfiguration(SETTINGS);
-        String version = pc.getString("version");
-        if (version != null && version.equals(Settings.VERSION)) {
-            return true;
-        }
-        FunnyGuilds.info("Updating the plugin settings ...");
-        SETTINGS.renameTo(new File(FunnyGuilds.getInstance().getDataFolder(), "config.old"));
-        Manager.loadDefaultFiles(new String[]{ "config.yml" });
-        pc = new PandaConfiguration(SETTINGS);
-        FunnyGuilds.info("Successfully updated settings!");
-        return true;
-    }
-
-    private void load() {
-        // Plugin Section
-        this.pluginName = "FunnyGuilds";
-        String name = pc.getString("plugin-name");
-        if (name != null && !name.isEmpty()) {
-            this.pluginName = name;
-        }
-
-        // Create Section
-        this.createNameLength = pc.getInt("name-length");
-        this.createTagLength = pc.getInt("tag-length");
-        this.createNameMinLength = pc.getInt("name-min-length");
-        this.createTagMinLength = pc.getInt("tag-min-length");
-
-        List<String> list = pc.getStringList("items");
-        List<ItemStack> items = new ArrayList<ItemStack>();
-        for (String item : list) {
-            if (item == null) {
-                continue;
-            }
-            ItemStack itemstack = Parser.parseItem(item);
-            if (itemstack != null) {
-                items.add(itemstack);
-            }
-        }
-        this.createItems = items;
-
-        list = pc.getStringList("items-vip");
-        items = new ArrayList<ItemStack>();
-        for (String item : list) {
-            ItemStack itemstack = Parser.parseItem(item);
-            if (itemstack != null) {
-                items.add(itemstack);
-            }
-        }
-        this.createItemsVip = items;
-        this.createDistance = pc.getInt("create-distance");
-        this.createStringMaterial = pc.getString("create-material");
-        this.createMaterial = Parser.parseMaterial(createStringMaterial);
-        this.createCenterY = pc.getInt("create-center-y");
-        this.createCenterSphere = pc.getBoolean("create-center-sphere");
-
-        // Region Section
-        this.regionSize = pc.getInt("region-size");
-        this.regionMinDistance = pc.getInt("region-min-distance");
-        this.regionNotificationTime = pc.getInt("region-notification-time");
-        this.regionNotificationCooldown = pc.getInt("region-notification-cooldown");
-        this.regionExplode = pc.getInt("region-explode");
-        this.regionCommands = pc.getStringList("region-commands");
-
-        // Event Section
-        if (this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG) {
-            this.eventPhysics = true;
-        }
-        this.eventMove = pc.getBoolean("event-move");
-
-        // Enlarge Section
-        this.enlargeEnable = pc.getBoolean("enlarge-enable");
-        if (this.enlargeEnable) {
-            this.enlargeSize = pc.getInt("enlarge-size");
-
-            list = pc.getStringList("enlarge-items");
-            items = new ArrayList<ItemStack>();
-            for (String item : list) {
-                ItemStack itemstack = Parser.parseItem(item);
-                if (itemstack != null) {
-                    items.add(itemstack);
-                }
-            }
-            this.enlargeItems = items;
-        }
-
-        // War section
-        this.warLives = pc.getInt("war-lives");
-        this.warProtection = Parser.parseTime(pc.getString("war-protection"));
-        this.warWait = Parser.parseTime(pc.getString("war-wait"));
-
-        // Validity Section
-        this.validityStart = Parser.parseTime(pc.getString("validity-start"));
-        this.validityTime = Parser.parseTime(pc.getString("validity-time"));
-        this.validityWhen = Parser.parseTime(pc.getString("validity-when"));
-        list = pc.getStringList("validity-items");
-        items = new ArrayList<ItemStack>();
-        for (String item : list) {
-            ItemStack itemstack = Parser.parseItem(item);
-            if (itemstack != null) {
-                items.add(itemstack);
-            }
-        }
-        this.validityItems = items;
-
-        // Other Section
-        this.inviteMembers = pc.getInt("max-members");
-        this.infoPlayerSneaking = pc.getBoolean("info-player-sneaking");
-        items = new ArrayList<ItemStack>();
-        for (String item : pc.getStringList("join-items")) {
-            ItemStack itemstack = Parser.parseItem(item);
-            if (itemstack != null) {
-                items.add(itemstack);
-            }
-        }
-        this.joinItems = items;
-
-        this.blockedWorlds = pc.getStringList("blockedworlds");
-
-        // Prefix Section
-        this.prefixOur = StringUtils.colored(pc.getString("prefix-our"));
-        this.prefixAllies = StringUtils.colored(pc.getString("prefix-allies"));
-        this.prefixOther = StringUtils.colored(pc.getString("prefix-other"));
-
-        // Dummy Section
-        this.dummyEnable = pc.getBoolean("dummy-enable");
-        this.dummySuffix = StringUtils.colored(pc.getString("dummy-suffix"));
-
-        // Chat Section
-        this.chatGuild = StringUtils.colored(pc.getString("chat-guild"));
-        this.chatRank = StringUtils.colored(pc.getString("chat-rank"));
-        this.chatPoints = StringUtils.colored(pc.getString("chat-points"));
-        this.chatPriv = pc.getString("chat-priv");
-        this.chatAlly = pc.getString("chat-ally");
-        this.chatGlobal = pc.getString("chat-global");
-        this.chatPrivDesign = StringUtils.colored(pc.getString("chat-priv-design"));
-        this.chatAllyDesign = StringUtils.colored(pc.getString("chat-ally-design"));
-        this.chatGlobalDesign = StringUtils.colored(pc.getString("chat-global-design"));
-
-        // Rank Section
-        this.rankStart = pc.getInt("rank-start");
-        this.rankPercent = pc.getDouble("rank-percent");
-        if (this.rankPercent == 0) {
-            this.rankPercent = 1.0;
-        }
-
-        // Damage Section
-        this.damageGuild = pc.getBoolean("damage-guild");
-        this.damageAlly = pc.getBoolean("damage-ally");
-
-        // Base Section
-        this.baseEnable = pc.getBoolean("base-enable");
-        if (this.baseEnable) {
-            list = pc.getStringList("base-items");
-            items = new ArrayList<ItemStack>();
-            for (String item : list) {
-                ItemStack itemstack = Parser.parseItem(item);
-                if (itemstack != null) {
-                    items.add(itemstack);
-                }
-            }
-            this.baseItems = items;
-            this.baseDelay = pc.getInt("base-delay");
-        }
-
-        // Explosion Section
-        this.explodeRadius = pc.getInt("explode-radius");
-        HashMap<Material, Double> map = new HashMap<>();
-        for (String path : pc.getSectionKeys("explode-materials")) {
-            Material material = Parser.parseMaterial(path);
-            if (material == null || material == Material.AIR) {
-                continue;
-            }
-            double chance = pc.getDouble("explode-materials." + path);
-            if (chance == 0) {
-                continue;
-            }
-            map.put(material, chance);
-        }
-        this.explodeMaterials = map;
-
-        // PlayerList Section
-        String[] ss = new String[60];
-        for (String path : pc.getSectionKeys("player-list")) {
-            try {
-                int i = Integer.parseInt(path);
-                if (i > 60) {
-                    continue;
-                }
-                String s = pc.getString("player-list." + path);
-                if (s != null) {
-                    s = StringUtils.colored(s);
-                }
-                ss[i - 1] = s;
-            } catch (NumberFormatException e) {
-                FunnyGuilds.parser("[Settings] Unknown number: " + path);
-            }
-        }
-        new PlayerListScheme(ss);
-        this.playerlistEnable = pc.getBoolean("player-list-enable");
-        this.playerlistInterval = pc.getInt("player-list-interval");
-        this.playerlistPing = pc.getInt("player-list-ping");
-        this.playerlistPatch = pc.getBoolean("player-list-patch");
-        this.playerlistPoints = StringUtils.colored(pc.getString("player-list-points"));
-        PlayerListManager.enable(this.playerlistEnable);
-        PlayerListManager.patch(this.playerlistPatch);
-        PlayerListManager.ping(this.playerlistPing);
+      /*
 
         // Commands Section
         this.excCreate = pc.getString("commands.create.name");
@@ -466,13 +101,15 @@ public class Settings {
                 this.poolSize = 16;
             }
         }
-    }
+        return null;
+    */
 
-    public static Settings getInstance() {
-        if (instance != null) {
-            return instance;
+    public static PluginConfig getConfig() {
+        if(settings == null)
+        {
+            new Settings();
         }
-        return new Settings();
+        return settings;
     }
 
 }

@@ -21,7 +21,7 @@ public class Dummy {
     }
 
     public void updateScore(User user) {
-        if (!Settings.getInstance().dummyEnable) {
+        if (!Settings.getConfig().dummyEnable) {
             return;
         }
         Scoreboard scoreboard = this.user.getScoreboard();
@@ -36,7 +36,7 @@ public class Dummy {
     }
 
     private void initialize() {
-        if (!Settings.getInstance().dummyEnable) {
+        if (!Settings.getConfig().dummyEnable) {
             return;
         }
         Scoreboard scoreboard = this.user.getScoreboard();
@@ -44,7 +44,7 @@ public class Dummy {
         if (objective == null || !objective.getName().equals(name)) {
             objective = scoreboard.registerNewObjective(name, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            objective.setDisplayName(Settings.getInstance().dummySuffix);
+            objective.setDisplayName(Settings.getConfig().dummySuffix);
         }
         for (Player player : Bukkit.getOnlinePlayers()) {
             User user = User.get(player);

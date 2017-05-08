@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -42,7 +43,7 @@ public class AxcMove implements Executor {
             return;
         }
 
-        Settings s = Settings.getInstance();
+        PluginConfig s = Settings.getConfig();
         Location loc = player.getLocation();
         if (s.createCenterY != 0) {
             loc.setY(s.createCenterY);

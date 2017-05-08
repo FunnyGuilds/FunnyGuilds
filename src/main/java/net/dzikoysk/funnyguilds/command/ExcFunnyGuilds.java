@@ -55,7 +55,7 @@ public class ExcFunnyGuilds implements Executor {
                 }
                 s.sendMessage(ChatColor.GRAY + "Zapisywanie...");
                 long l = System.currentTimeMillis();
-                if (Settings.getInstance().flat) {
+                if (Settings.getConfig().dataType.flat) {
                     try {
                         Flat.getInstance().save(true);
                     } catch (Exception e) {
@@ -65,7 +65,7 @@ public class ExcFunnyGuilds implements Executor {
                         }
                     }
                 }
-                if (Settings.getInstance().mysql) {
+                if (Settings.getConfig().dataType.mysql) {
                     try {
                         DatabaseBasic.getInstance().save(true);
                     } catch (Exception e) {

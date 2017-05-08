@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -59,7 +60,7 @@ public class ExcCreate implements Executor {
             }
         }
 
-        Settings c = Settings.getInstance();
+        PluginConfig c = Settings.getConfig();
 
         String tag = args[0];
         String name = args[1];

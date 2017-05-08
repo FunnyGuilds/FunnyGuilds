@@ -65,7 +65,7 @@ public class PlayerMove implements Listener {
                 }
 
                 NotificationBar.set(player, m.getMessage("notificationOther").replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
-                        1, Settings.getInstance().regionNotificationTime);
+                        1, Settings.getConfig().regionNotificationTime);
 
                 for (User u : guild.getMembers()) {
                     if (u.getName() == null) {
@@ -76,9 +76,9 @@ public class PlayerMove implements Listener {
                         continue;
                     }
                     NotificationBar.set(member, m.getMessage("notificationMember").replace("{PLAYER}", player.getName()),
-                            1, Settings.getInstance().regionNotificationTime);
+                            1, Settings.getConfig().regionNotificationTime);
                 }
-                user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getInstance().regionNotificationCooldown);
+                user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getConfig().regionNotificationCooldown);
             }
         });
     }

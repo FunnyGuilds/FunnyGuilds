@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
@@ -18,8 +19,8 @@ public class Manager {
     public Manager() {
         instance = this;
         Messages.getInstance();
-        Settings.getInstance();
-        if (Settings.getInstance().mysql) {
+        Settings.getConfig();
+        if (Settings.getConfig().dataType.mysql) {
             DatabaseBasic.getInstance().load();
         }
         else {
@@ -29,7 +30,7 @@ public class Manager {
     }
 
     public void save() {
-        if (Settings.getInstance().flat) {
+        if (Settings.getConfig().dataType.flat) {
             try {
                 Flat.getInstance().save(false);
             } catch (Exception e) {
@@ -39,7 +40,7 @@ public class Manager {
                 }
             }
         }
-        if (Settings.getInstance().mysql) {
+        if (Settings.getConfig().dataType.mysql) {
             try {
                 DatabaseBasic.getInstance().save(false);
             } catch (Exception e) {
@@ -63,7 +64,7 @@ public class Manager {
             public void run() {
                 IndependentThread.action(ActionType.SAVE_DATA);
             }
-        }, Settings.getInstance().dataInterval * 60 * 20, Settings.getInstance().dataInterval * 60 * 20);
+        }, Settings.getConfig().dataInterval * 60 * 20, Settings.getConfig().dataInterval * 60 * 20);
     }
 
     public void stop() {
@@ -81,8 +82,8 @@ public class Manager {
         return instance;
     }
 
-    public Settings getSettings() {
-        return Settings.getInstance();
+    public PluginConfig getSettings() {
+        return Settings.getConfig();
     }
 
     public Messages getMessages() {

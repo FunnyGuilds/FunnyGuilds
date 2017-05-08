@@ -59,7 +59,7 @@ public class ExcJoin implements Executor {
             return;
         }
 
-        List<ItemStack> itemsList = Settings.getInstance().joinItems;
+        List<ItemStack> itemsList = Settings.getConfig().joinItems;
         ItemStack[] items = itemsList.toArray(new ItemStack[0]);
         for (int i = 0; i < items.length; i++) {
             if (!p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {

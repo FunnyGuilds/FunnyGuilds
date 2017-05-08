@@ -14,7 +14,7 @@ public class BlockPhysics implements Listener {
 
     @EventHandler
     public void onPhysics(BlockPhysicsEvent event) {
-        Material m = Settings.getInstance().createMaterial;
+        Material m = Settings.getConfig().createMaterial;
         if (m == null || event.getBlock().getType() != m) {
             return;
         }

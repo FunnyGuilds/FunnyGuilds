@@ -25,7 +25,7 @@ public class PlayerCommand implements Listener {
             return;
         }
         String command = splited[0];
-        for (String s : Settings.getInstance().regionCommands) {
+        for (String s : Settings.getConfig().regionCommands) {
             if (("/" + s).equalsIgnoreCase(command)) {
                 command = null;
                 break;

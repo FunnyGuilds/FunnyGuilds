@@ -37,7 +37,7 @@ public class ExcBase implements Executor {
             return;
         }
 
-        List<ItemStack> itemsList = Settings.getInstance().baseItems;
+        List<ItemStack> itemsList = Settings.getConfig().baseItems;
         final ItemStack[] items = itemsList.toArray(new ItemStack[0]);
         for (int i = 0; i < items.length; i++) {
             if (!p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
@@ -66,7 +66,7 @@ public class ExcBase implements Executor {
         }
         p.getInventory().removeItem(items);
 
-        final int time = Settings.getInstance().baseDelay;
+        final int time = Settings.getConfig().baseDelay;
         if (time < 1) {
             p.teleport(guild.getHome());
             p.sendMessage(m.getMessage("baseTeleport"));

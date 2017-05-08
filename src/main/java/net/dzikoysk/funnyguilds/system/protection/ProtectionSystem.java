@@ -48,7 +48,7 @@ public class ProtectionSystem {
                 return true;
             }
             else if (location.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
-                Material m = Settings.getInstance().createMaterial;
+                Material m = Settings.getConfig().createMaterial;
                 if (m != null && m != Material.AIR) {
                     return true;
                 }

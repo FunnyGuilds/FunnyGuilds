@@ -226,7 +226,7 @@ public class Guild implements Basic {
 
     public void setValidity(long l) {
         if (l == this.born) {
-            this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
         }
         else {
             this.validity = l;
@@ -265,11 +265,11 @@ public class Guild implements Basic {
 
     public boolean isValid() {
         if (this.validity == this.born) {
-            this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             this.changes();
         }
         if (this.validity == 0) {
-            this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             this.changes();
         }
         return this.validity >= System.currentTimeMillis();
@@ -346,7 +346,7 @@ public class Guild implements Basic {
     }
 
     public boolean canBeAttacked() {
-        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getInstance().warWait > System.currentTimeMillis());
+        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getConfig().warWait > System.currentTimeMillis());
     }
 
     public int getLives() {

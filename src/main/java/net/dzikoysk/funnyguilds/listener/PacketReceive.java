@@ -60,7 +60,7 @@ public class PacketReceive implements Listener {
                 }
 
                 if (action == 1) {
-                    WarSystem.getInstance().attack(player, entry.getKey());
+                    WarSystem.getConfig().attack(player, entry.getKey());
                 }
                 else {
                     ExcInfo excInfo = new ExcInfo();
