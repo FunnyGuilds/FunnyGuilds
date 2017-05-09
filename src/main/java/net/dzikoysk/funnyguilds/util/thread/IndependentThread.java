@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util.thread;
 
+import com.google.common.collect.ImmutableList;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class IndependentThread extends Thread {
     private static void action(Action... actions) {
         IndependentThread it = getInstance();
 
-        for (Action action : temp) {
+        for (Action action : ImmutableList.copyOf(temp)) {
             if (!it.actions.contains(action)) {
                 it.actions.add(action);
             }

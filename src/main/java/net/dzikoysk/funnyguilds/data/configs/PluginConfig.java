@@ -233,21 +233,21 @@ public class PluginConfig {
 
     @CfgComment("Wyglad znaczika {TAG} wstawionego w format chatu")
     @CfgName("chat-guild")
-    public String chatGuild_ = "'&b{TAG} '";
+    public String chatGuild_ = "&b{TAG} ";
 
     @CfgExclude
     public String chatGuild;
 
     @CfgComment("Wyglad znaczika {RANK} wstawionego w format chatu")
     @CfgName("chat-rank")
-    public String chatRank_ = "'&b{RANK} '";
+    public String chatRank_ = "&b{RANK} ";
 
     @CfgExclude
     public String chatRank;
 
     @CfgComment("Wyglad znaczika {POINTS} wstawionego w format chatu")
     @CfgName("chat-points")
-    public String chatPoints_ = "'&b{POINTS} '";
+    public String chatPoints_ = "&b{POINTS} ";
 
     @CfgExclude
     public String chatPoints;
@@ -267,7 +267,7 @@ public class PluginConfig {
     @CfgComment("Wyglad wiadomosci wysylanej na czacie gildii")
     @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}")
     @CfgName("chat-priv-design")
-    public String chatPrivDesign_ = "'&8[&aChat gildii&8] &7{PLAYER}&8:&f {MESSAGE}'";
+    public String chatPrivDesign_ = "&8[&aChat gildii&8] &7{PLAYER}&8:&f {MESSAGE}";
 
     @CfgExclude
     public String chatPrivDesign;
@@ -275,7 +275,7 @@ public class PluginConfig {
     @CfgComment("Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow")
     @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}")
     @CfgName("chat-ally-design")
-    public String chatAllyDesign_ = "'&8[&6Chat sojuszniczy&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}'";
+    public String chatAllyDesign_ = "&8[&6Chat sojuszniczy&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}";
 
     @CfgExclude
     public String chatAllyDesign;
@@ -283,21 +283,21 @@ public class PluginConfig {
     @CfgComment("Wyglad wiadomosci wysylanej na czacie globalnym gildii")
     @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}")
     @CfgName("chat-global-design")
-    public String chatGlobalDesign_ = "'&8[&cChat globalny gildii&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}'";
+    public String chatGlobalDesign_ = "&8[&cChat globalny gildii&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}";
 
     @CfgExclude
     public String chatGlobalDesign;
 
     @CfgComment("Wyglad tagu osob w gildii")
     @CfgName("prefix-our")
-    public String prefixOur_ = "'&a{TAG}&f '";
+    public String prefixOur_ = "&a{TAG}&f ";
 
     @CfgExclude
     public String prefixOur;
 
     @CfgComment("Wyglad tagu gildii sojuszniczej")
     @CfgName("prefix-allies")
-    public String prefixAllies_ = "'&6{TAG}&f '";
+    public String prefixAllies_ = "&6{TAG}&f ";
 
     @CfgExclude
     public String prefixAllies;
@@ -307,7 +307,7 @@ public class PluginConfig {
 
     @CfgComment("Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)")
     @CfgName("prefix-other")
-    public String prefixOther_ = "'&7{TAG}&f '";
+    public String prefixOther_ = "&7{TAG}&f ";
 
     @CfgExclude
     public String prefixOther;
@@ -388,7 +388,7 @@ public class PluginConfig {
 
     @CfgComment("Wyglad punktow wyswietlanych przy gildii w rankingu")
     @CfgName("player-list-points")
-    public String playerlistPoints_ = "'&7[&b{POINTS}&7]'";
+    public String playerlistPoints_ = "&7[&b{POINTS}&7]";
 
     @CfgExclude
     public String playerlistPoints;
