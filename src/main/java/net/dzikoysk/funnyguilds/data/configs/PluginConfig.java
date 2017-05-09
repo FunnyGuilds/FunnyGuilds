@@ -254,15 +254,15 @@ public class PluginConfig {
 
     @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do gildii gildii")
     @CfgName("chat-priv")
-    public String chatPriv = "'!'";
+    public String chatPriv = "!";
 
     @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do sojusznikow gildii")
     @CfgName("chat-ally")
-    public String chatAlly = "'!!'";
+    public String chatAlly = "!!";
 
     @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do wszystkich gildii")
     @CfgName("chat-global")
-    public String chatGlobal = "'!!!'";
+    public String chatGlobal = "!!!";
 
     @CfgComment("Wyglad wiadomosci wysylanej na czacie gildii")
     @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}")
