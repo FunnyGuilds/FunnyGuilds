@@ -219,6 +219,14 @@ public class PluginConfig {
     @CfgName("rank-percent")
     public double rankPercent = 1.0;
 
+    @CfgComment("Czy pokazywac informacje przy kliknieciu prawym na gracza")
+    @CfgName("info-player-enabled")
+    public boolean infoPlayerEnabled = true;
+
+    @CfgComment("Cooldown pomiedzy pokazywanie informacji przez prawy klik (w sekundach)")
+    @CfgName("info-player-cooldown")
+    public int infoPlayerCooldown = 0;
+
     @CfgComment("Czy trzeba kucac, zeby przy klikniecu prawym na gracza wyswietlilo informacje o nim")
     @CfgName("info-player-sneaking")
     public boolean infoPlayerSneaking = true;

@@ -6,6 +6,8 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.ExcInfo;
 import net.dzikoysk.funnyguilds.command.ExcPlayer;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.Cooldown;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
@@ -14,16 +16,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
+import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
+
 public class EntityInteract implements Listener {
+    private final Cooldown<Player> playerInfoCooldown = new Cooldown<>();
 
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
         Entity entity = event.getRightClicked();
         if (entity instanceof Player) {
-            if (Settings.getConfig().infoPlayerSneaking && !event.getPlayer().isSneaking()) {
+            final PluginConfig config = Settings.getConfig();
+            Player clicked = (Player) entity;
+
+            if (!config.infoPlayerEnabled || (config.infoPlayerSneaking && !event.getPlayer().isSneaking()) || playerInfoCooldown.cooldown(event.getPlayer(), TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 return;
             }
-            Player clicked = (Player) entity;
             new ExcPlayer().execute(event.getPlayer(), new String[]{ clicked.getName() });
         }
         else if (entity instanceof EnderCrystal) {
