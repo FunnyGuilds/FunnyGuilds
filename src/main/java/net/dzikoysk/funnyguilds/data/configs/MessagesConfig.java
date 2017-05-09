@@ -176,6 +176,7 @@ public class MessagesConfig {
     public String deleteIsNotOwner = "&cNie jestes zalozycielem gildii!";
     public String deleteConfirm = "&7Aby potwierdzic usuniecie gildii, wpisz: &c/potwierdz";
     public String deleteToConfirm = "&cNie masz zadnych dzialan do potwierdzenia!";
+    public String deleteSomeoneIsNear = "&cNie mozesz usunac gildii, ktos jest w poblizu!";
     @CfgComment("Available variables: {GUILD}, {TAG}")
     public String deleteSuccessful = "&7Pomyslnie &cusunieto &7gildie!";
 

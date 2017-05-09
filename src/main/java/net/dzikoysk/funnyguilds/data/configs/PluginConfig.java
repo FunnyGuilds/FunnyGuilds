@@ -149,6 +149,10 @@ public class PluginConfig {
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> regionCommands = Collections.singletonList("sethome");
 
+    @CfgComment("Czy mozna usunac gildie jezeli ktos spoza gildii jest na jej terenie")
+    @CfgName("region-delete-if-near")
+    public boolean regionDeleteIfNear = false;
+
     @CfgComment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     @CfgName("region-explode")
     public int regionExplode = 120;

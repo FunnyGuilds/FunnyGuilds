@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import org.bukkit.Bukkit;
@@ -25,6 +26,11 @@ public class ExcConfirm implements Executor {
 
         if (!lp.isOwner()) {
             p.sendMessage(m.deleteIsNotOwner);
+            return;
+        }
+
+        if(Settings.getConfig().regionDeleteIfNear && lp.getGuild().isSomeoneInRegion()) {
+            p.sendMessage(m.deleteSomeoneIsNear);
             return;
         }
 
