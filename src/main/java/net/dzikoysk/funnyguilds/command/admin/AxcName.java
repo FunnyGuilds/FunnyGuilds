@@ -8,6 +8,8 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
@@ -19,11 +21,11 @@ public class AxcName implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player player = (Player) sender;
 
         if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.getMessage("permission"));
+            player.sendMessage(m.permission);
             return;
         }
 
@@ -47,7 +49,8 @@ public class AxcName implements Executor {
         Guild guild = GuildUtils.byTag(tag);
         Region region = RegionUtils.get(guild.getRegion());
 
-        Settings s = Settings.getInstance();
+        final PluginConfig.DataType s = Settings.getConfig().dataType;
+
         Manager.getInstance().stop();
         if (s.flat) {
             Flat.getGuildFile(guild).delete();

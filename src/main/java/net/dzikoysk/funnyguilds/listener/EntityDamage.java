@@ -54,7 +54,7 @@ public class EntityDamage implements Listener {
                 }
             }
             if (uv.getGuild().getAllies().contains(ua.getGuild())) {
-                if (!Settings.getInstance().damageAlly) {
+                if (!Settings.getConfig().damageAlly) {
                     event.setCancelled(true);
                     return;
                 }

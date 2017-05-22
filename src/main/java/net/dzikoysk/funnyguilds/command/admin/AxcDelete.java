@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -15,11 +16,11 @@ public class AxcDelete implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
 
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player player = (Player) sender;
 
         if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.getMessage("permission"));
+            player.sendMessage(m.permission);
             return;
         }
 
@@ -43,7 +44,7 @@ public class AxcDelete implements Executor {
 
         GuildUtils.deleteGuild(guild);
 
-        player.sendMessage(m.getMessage("deleteSuccessful")
+        player.sendMessage(m.deleteSuccessful
                 .replace("{GUILD}", name)
                 .replace("{TAG}", tag)
         );
@@ -55,7 +56,7 @@ public class AxcDelete implements Executor {
             );
         }
 
-        Bukkit.getServer().broadcastMessage(m.getMessage("broadcastDelete")
+        Bukkit.getServer().broadcastMessage(m.broadcastDelete
                 .replace("{PLAYER}", player.getDisplayName())
                 .replace("{GUILD}", name)
                 .replace("{TAG}", tag)

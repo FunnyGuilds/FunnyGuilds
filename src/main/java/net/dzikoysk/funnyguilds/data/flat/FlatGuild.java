@@ -167,10 +167,10 @@ public class FlatGuild {
             born = System.currentTimeMillis();
         }
         if (validity == 0) {
-            validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
         }
         if (lives == 0) {
-            lives = Settings.getInstance().warLives;
+            lives = Settings.getConfig().warLives;
         }
 
         Object[] values = new Object[17];

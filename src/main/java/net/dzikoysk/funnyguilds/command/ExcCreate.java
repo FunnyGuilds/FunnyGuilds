@@ -9,6 +9,8 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -29,84 +31,84 @@ public class ExcCreate implements Executor {
 
     @Override
     public void execute(final CommandSender s, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
         User u = User.get(p);
 
         boolean bool = this.checkWorld(p);
         if (bool) {
-            p.sendMessage(m.getMessage("blockedWorld"));
+            p.sendMessage(m.blockedWorld);
             return;
         }
 
         if (u.hasGuild()) {
-            p.sendMessage(m.getMessage("createHasGuild"));
+            p.sendMessage(m.createHasGuild);
             return;
         }
 
         if (!(args.length == 2)) {
             if (args.length == 0) {
-                p.sendMessage(m.getMessage("createTag"));
+                p.sendMessage(m.createTag);
                 return;
             }
             else if (args.length == 1) {
-                p.sendMessage(m.getMessage("createName"));
+                p.sendMessage(m.createName);
                 return;
             }
             else if (args.length > 2) {
-                p.sendMessage(m.getMessage("createMore"));
+                p.sendMessage(m.createMore);
                 return;
             }
         }
 
-        Settings c = Settings.getInstance();
+        PluginConfig c = Settings.getConfig();
 
         String tag = args[0];
         String name = args[1];
 
         if (tag.length() > c.createTagLength) {
-            p.sendMessage(m.getMessage("createTagLength")
+            p.sendMessage(m.createTagLength
                     .replace("{LENGTH}", Integer.toString(c.createTagLength)));
             return;
         }
 
         if (tag.length() < c.createTagMinLength) {
-            p.sendMessage(m.getMessage("createTagMinLength")
+            p.sendMessage(m.createTagMinLength
                     .replace("{LENGTH}", Integer.toString(c.createTagMinLength)));
             return;
         }
 
         if (name.length() > c.createNameLength) {
-            p.sendMessage(m.getMessage("createNameLength")
+            p.sendMessage(m.createNameLength
                     .replace("{LENGTH}", Integer.toString(c.createNameLength))
             );
             return;
         }
 
         if (name.length() < c.createNameMinLength) {
-            p.sendMessage(m.getMessage("createNameMinLength")
+            p.sendMessage(m.createNameMinLength
                     .replace("{LENGTH}", Integer.toString(c.createNameMinLength))
             );
             return;
         }
 
         if (!tag.matches("[a-zA-Z]+")) {
-            p.sendMessage(m.getMessage("createOLTag"));
+            p.sendMessage(m.createOLTag);
             return;
         }
 
         if (!name.matches("[a-zA-Z]+")) {
-            p.sendMessage(m.getMessage("createOLName"));
+            p.sendMessage(m.createOLName);
             return;
         }
 
         if (GuildUtils.isExists(name)) {
-            p.sendMessage(m.getMessage("createNameExists"));
+            p.sendMessage(m.createNameExists);
             return;
         }
 
         if (GuildUtils.tagExists(tag)) {
-            p.sendMessage(m.getMessage("createTagExists"));
+            p.sendMessage(m.createTagExists);
             return;
         }
 
@@ -121,7 +123,7 @@ public class ExcCreate implements Executor {
             d += c.enlargeItems.size() * c.enlargeSize;
         }
         if (d > p.getWorld().getSpawnLocation().distance(loc)) {
-            p.sendMessage(m.getMessage("createSpawn").replace("{DISTANCE}", Integer.toString(d)));
+            p.sendMessage(m.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
             return;
         }
 
@@ -138,7 +140,7 @@ public class ExcCreate implements Executor {
                 if (p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
                     continue;
                 }
-                String msg = m.getMessage("createItems");
+                String msg = m.createItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(items[i].getAmount());
@@ -163,7 +165,7 @@ public class ExcCreate implements Executor {
         }
 
         if (RegionUtils.isNear(loc)) {
-            p.sendMessage(m.getMessage("createIsNear"));
+            p.sendMessage(m.createIsNear);
             return;
         }
 
@@ -220,14 +222,14 @@ public class ExcCreate implements Executor {
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, u.getOfflineUser());
 
         p.sendMessage(
-                m.getMessage("createGuild")
+                m.createGuild
                         .replace("{GUILD}", name)
                         .replace("{PLAYER}", p.getName())
                         .replace("{TAG}", tag)
         );
 
         Bukkit.getServer().broadcastMessage(
-                m.getMessage("broadcastCreate")
+                m.broadcastCreate
                         .replace("{GUILD}", name)
                         .replace("{PLAYER}", p.getName())
                         .replace("{TAG}", tag)

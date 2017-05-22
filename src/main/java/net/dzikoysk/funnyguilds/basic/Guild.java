@@ -2,9 +2,11 @@ package net.dzikoysk.funnyguilds.basic;
 
 import net.dzikoysk.funnyguilds.basic.util.*;
 import net.dzikoysk.funnyguilds.data.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -129,6 +131,14 @@ public class Guild implements Basic {
         return true;
     }
 
+    public boolean isSomeoneInRegion()
+    {
+        return Arrays.stream(Bukkit.getOnlinePlayers())
+                .filter(player -> User.get(player).getGuild() != this)
+                .map(player -> RegionUtils.getAt(player.getLocation()))
+                .anyMatch(region -> region != null && region.getGuild() == this);
+    }
+
     public void updateRank() {
         this.getRank();
         RankManager.getInstance().update(this);
@@ -226,7 +236,7 @@ public class Guild implements Basic {
 
     public void setValidity(long l) {
         if (l == this.born) {
-            this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
         }
         else {
             this.validity = l;
@@ -265,11 +275,11 @@ public class Guild implements Basic {
 
     public boolean isValid() {
         if (this.validity == this.born) {
-            this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             this.changes();
         }
         if (this.validity == 0) {
-            this.validity = System.currentTimeMillis() + Settings.getInstance().validityStart;
+            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             this.changes();
         }
         return this.validity >= System.currentTimeMillis();
@@ -346,7 +356,7 @@ public class Guild implements Basic {
     }
 
     public boolean canBeAttacked() {
-        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getInstance().warWait > System.currentTimeMillis());
+        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getConfig().warWait > System.currentTimeMillis());
     }
 
     public int getLives() {

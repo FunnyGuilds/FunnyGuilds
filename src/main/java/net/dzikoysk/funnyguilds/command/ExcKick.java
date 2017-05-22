@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
@@ -16,23 +17,23 @@ public class ExcKick implements Executor {
     @Override
     public void execute(CommandSender s, String[] args) {
 
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
 
         Player p = (Player) s;
         User u = User.get(p);
 
         if (!u.hasGuild()) {
-            p.sendMessage(m.getMessage("kickHasNotGuild"));
+            p.sendMessage(m.kickHasNotGuild);
             return;
         }
 
         if (!u.isOwner() && !u.isDeputy()) {
-            p.sendMessage(m.getMessage("kickIsNotOwner"));
+            p.sendMessage(m.kickIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            p.sendMessage(m.getMessage("kickPlayer"));
+            p.sendMessage(m.kickPlayer);
             return;
         }
 
@@ -40,17 +41,17 @@ public class ExcKick implements Executor {
         OfflineUser up = uk.getOfflineUser();
 
         if (!uk.hasGuild()) {
-            p.sendMessage(m.getMessage("kickToHasNotGuild"));
+            p.sendMessage(m.kickToHasNotGuild);
             return;
         }
 
         if (!u.getGuild().equals(uk.getGuild())) {
-            p.sendMessage(m.getMessage("kickOtherGuild"));
+            p.sendMessage(m.kickOtherGuild);
             return;
         }
 
         if (uk.isOwner()) {
-            p.sendMessage(m.getMessage("kickOwner"));
+            p.sendMessage(m.kickOwner);
             return;
         }
 
@@ -66,19 +67,19 @@ public class ExcKick implements Executor {
         }
 
         p.sendMessage(
-                m.getMessage("kickToOwner")
+                m.kickToOwner
                         .replace("{PLAYER}", uk.getName())
         );
 
         Player pk = Bukkit.getPlayer(uk.getName());
         if (pk != null) {
-            pk.sendMessage(m.getMessage("kickToPlayer")
+            pk.sendMessage(m.kickToPlayer
                     .replace("{GUILD}", guild.getName())
             );
         }
 
         Bukkit.broadcastMessage(
-                m.getMessage("broadcastKick")
+                m.broadcastKick
                         .replace("{PLAYER}", uk.getName())
                         .replace("{GUILD}", guild.getName())
                         .replace("{TAG}", guild.getTag())

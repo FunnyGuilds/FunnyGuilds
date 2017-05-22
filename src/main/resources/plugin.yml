@@ -4,6 +4,7 @@ version: '${project.version} Cleaned'
 author: Dzikoysk
 website: http://www.dzikoysk.net/
 loadbefore: [WorldEdit]
+softdepend: [WorldGuard]
 permissions:
     funnyguilds.*:
         default: op

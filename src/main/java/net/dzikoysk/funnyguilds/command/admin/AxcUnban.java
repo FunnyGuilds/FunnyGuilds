@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.Bukkit;
@@ -14,11 +15,11 @@ public class AxcUnban implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player player = (Player) sender;
 
         if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.getMessage("permission"));
+            player.sendMessage(m.permission);
             return;
         }
 
@@ -42,7 +43,7 @@ public class AxcUnban implements Executor {
         BanUtils.unban(guild);
         player.sendMessage(StringUtils.colored("&7Odbanowano gildie &a" + guild.getName() + "&7!"));
 
-        Bukkit.broadcastMessage(Messages.getInstance().getMessage("broadcastUnban")
+        Bukkit.broadcastMessage(Messages.getInstance().broadcastUnban
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", guild.getTag())
         );

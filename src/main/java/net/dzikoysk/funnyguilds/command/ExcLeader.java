@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -14,28 +15,28 @@ public class ExcLeader implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
         User owner = User.get(p);
 
         if (!owner.hasGuild()) {
-            p.sendMessage(m.getMessage("leaderHasNotGuild"));
+            p.sendMessage(m.leaderHasNotGuild);
             return;
         }
 
         if (!owner.isOwner()) {
-            p.sendMessage(m.getMessage("leaderIsNotOwner"));
+            p.sendMessage(m.leaderIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            p.sendMessage(m.getMessage("leaderPlayer"));
+            p.sendMessage(m.leaderPlayer);
             return;
         }
 
         String name = args[0];
         if (!UserUtils.playedBefore(name)) {
-            p.sendMessage(m.getMessage("leaderPlayedBefore"));
+            p.sendMessage(m.leaderPlayedBefore);
             return;
         }
 
@@ -48,17 +49,17 @@ public class ExcLeader implements Executor {
         Guild guild = owner.getGuild();
 
         if (!guild.getMembers().contains(user)) {
-            p.sendMessage(m.getMessage("leaderIsNotMember"));
+            p.sendMessage(m.leaderIsNotMember);
             return;
         }
 
         guild.setOwner(user);
 
-        p.sendMessage(m.getMessage("leaderSet"));
+        p.sendMessage(m.leaderSet);
 
         Player o = Bukkit.getPlayer(user.getName());
         if (o != null) {
-            o.sendMessage(m.getMessage("leaderOwner"));
+            o.sendMessage(m.leaderOwner);
         }
     }
 }

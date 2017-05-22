@@ -87,7 +87,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             }
             if (sender instanceof Player) {
                 if (ec.permission != null && !sender.hasPermission(ec.permission)) {
-                    sender.sendMessage(Messages.getInstance().getMessage("permission"));
+                    sender.sendMessage(Messages.getInstance().permission);
                     return true;
                 }
             }
@@ -104,7 +104,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             if (this.aliases != null) {
                 p.setAliases(this.aliases);
             }
-            p.setPermissionMessage(Messages.getInstance().getMessage("permission"));
+            p.setPermissionMessage(Messages.getInstance().permission);
             Field f = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             f.setAccessible(true);
             CommandMap cmap = (CommandMap) f.get(Bukkit.getServer());

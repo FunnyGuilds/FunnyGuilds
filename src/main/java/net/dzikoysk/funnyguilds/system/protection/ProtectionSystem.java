@@ -42,20 +42,20 @@ public class ProtectionSystem {
         User user = User.get(player);
         if (guild.getMembers().contains(user)) {
             if (build && !guild.canBuild()) {
-                player.sendMessage(Messages.getInstance().getMessage("regionExplodeInteract").replace("{TIME}",
+                player.sendMessage(Messages.getInstance().regionExplodeInteract.replace("{TIME}",
                         Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))
                 ));
                 return true;
             }
             else if (location.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
-                Material m = Settings.getInstance().createMaterial;
+                Material m = Settings.getConfig().createMaterial;
                 if (m != null && m != Material.AIR) {
                     return true;
                 }
             }
             return false;
         }
-        player.sendMessage(Messages.getInstance().getMessage("regionOther"));
+        player.sendMessage(Messages.getInstance().regionOther);
         return true;
     }
 

@@ -30,7 +30,7 @@ public class WarSystem {
             return;
         }
         if (!guild.canBeAttacked()) {
-            WarUtils.message(player, 2, (guild.getAttacked() + Settings.getInstance().warWait) - System.currentTimeMillis());
+            WarUtils.message(player, 2, (guild.getAttacked() + Settings.getConfig().warWait) - System.currentTimeMillis());
             return;
         }
         guild.setAttacked(System.currentTimeMillis());

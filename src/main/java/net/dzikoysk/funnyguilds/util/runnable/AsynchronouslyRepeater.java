@@ -28,7 +28,7 @@ public class AsynchronouslyRepeater implements Runnable {
     public AsynchronouslyRepeater(FunnyGuilds plugin) {
         this.plugin = plugin;
         instance = this;
-        player_list_time = Settings.getInstance().playerlistInterval;
+        player_list_time = Settings.getConfig().playerlistInterval;
     }
 
     public void start() {
@@ -60,9 +60,9 @@ public class AsynchronouslyRepeater implements Runnable {
     }
 
     private void playerList() {
-        if (Settings.getInstance().playerlistEnable) {
+        if (Settings.getConfig().playerlistEnable) {
             IndependentThread.action(ActionType.PLAYERLIST_GLOBAL_UPDATE);
-            if (Settings.getInstance().playerlistPatch) {
+            if (Settings.getConfig().playerlistPatch) {
                 for (Player p : Bukkit.getOnlinePlayers()) {
                     PacketSender.sendPacket(p, PacketPlayOutPlayerInfo.getPacket(p.getPlayerListName(), false, 0));
                 }
@@ -87,7 +87,7 @@ public class AsynchronouslyRepeater implements Runnable {
     }*/
 
     public void reload() {
-        player_list_time = Settings.getInstance().playerlistInterval;
+        player_list_time = Settings.getConfig().playerlistInterval;
     }
 
     public void stop() {

@@ -7,6 +7,8 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -23,11 +25,11 @@ public class AxcMove implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player player = (Player) sender;
 
         if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.getMessage("permission"));
+            player.sendMessage(m.permission);
             return;
         }
 
@@ -42,7 +44,7 @@ public class AxcMove implements Executor {
             return;
         }
 
-        Settings s = Settings.getInstance();
+        PluginConfig s = Settings.getConfig();
         Location loc = player.getLocation();
         if (s.createCenterY != 0) {
             loc.setY(s.createCenterY);
@@ -54,7 +56,7 @@ public class AxcMove implements Executor {
         }
 
         if (d > player.getWorld().getSpawnLocation().distance(loc)) {
-            player.sendMessage(m.getMessage("createSpawn")
+            player.sendMessage(m.createSpawn
                     .replace("{DISTANCE}", Integer.toString(d))
             );
             return;

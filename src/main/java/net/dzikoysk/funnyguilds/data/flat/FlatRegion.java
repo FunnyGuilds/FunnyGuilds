@@ -51,7 +51,7 @@ public class FlatRegion {
         }
 
         if (size < 1) {
-            size = Settings.getInstance().regionSize;
+            size = Settings.getConfig().regionSize;
         }
 
         Object[] values = new Object[4];

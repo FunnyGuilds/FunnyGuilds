@@ -5,7 +5,7 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>3.9.9.10</version>
+    <version>3.9.9.11</version>
     <packaging>jar</packaging>
 
     <distributionManagement>
@@ -52,6 +52,23 @@
             <version>1.7.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.sk89q.worldguard</groupId>
+            <artifactId>worldguard-legacy</artifactId>
+            <version>6.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>6.0.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.diorite</groupId>
+            <artifactId>diorite-config-minimal</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -59,6 +76,10 @@
             <id>panda-repo</id>
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/</url>
+        </repository>
+        <repository>
+            <id>funnyguilds-repo</id>
+            <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
         </repository>
         <repository>
             <id>bukkit-temp-repo</id>
@@ -71,6 +92,10 @@
         <repository>
             <id>spigot-snapshot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+        </repository>
+        <repository>
+            <id>sk89q-repo</id>
+            <url>http://maven.sk89q.com/repo/</url>
         </repository>
     </repositories>
 

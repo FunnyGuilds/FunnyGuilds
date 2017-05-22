@@ -13,7 +13,7 @@ public class ValidityUtils {
             return;
         }
         Region region = RegionUtils.get(guild.getRegion());
-        String message = Messages.getInstance().getMessage("broadcastValidity")
+        String message = Messages.getInstance().broadcastValidity
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", guild.getTag())
                 .replace("{GUILD}", guild.getName());

@@ -4,6 +4,8 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -13,22 +15,27 @@ public class ExcConfirm implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Messages m = Messages.getInstance();
+        MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User lp = User.get(p);
 
         if (!lp.hasGuild()) {
-            p.sendMessage(m.getMessage("deleteHasNotGuild"));
+            p.sendMessage(m.deleteHasNotGuild);
             return;
         }
 
         if (!lp.isOwner()) {
-            p.sendMessage(m.getMessage("deleteIsNotOwner"));
+            p.sendMessage(m.deleteIsNotOwner);
+            return;
+        }
+
+        if(Settings.getConfig().regionDeleteIfNear && lp.getGuild().isSomeoneInRegion()) {
+            p.sendMessage(m.deleteSomeoneIsNear);
             return;
         }
 
         if (!ConfirmationList.contains(lp.getUUID())) {
-            p.sendMessage(m.getMessage("deleteToConfirm"));
+            p.sendMessage(m.deleteToConfirm);
             return;
         }
 
@@ -37,13 +44,13 @@ public class ExcConfirm implements Executor {
         String tag = lp.getGuild().getTag();
         GuildUtils.deleteGuild(lp.getGuild());
 
-        p.sendMessage(m.getMessage("deleteSuccessful")
+        p.sendMessage(m.deleteSuccessful
                 .replace("{GUILD}", name)
                 .replace("{TAG}", tag)
         );
 
         Bukkit.getServer().broadcastMessage(
-                m.getMessage("broadcastDelete")
+                m.broadcastDelete
                         .replace("{PLAYER}", p.getName())
                         .replace("{GUILD}", name)
                         .replace("{TAG}", tag)

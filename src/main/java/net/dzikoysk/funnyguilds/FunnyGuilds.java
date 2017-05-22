@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
+import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.reflect.DescriptionChanger;
@@ -41,8 +42,10 @@ public class FunnyGuilds extends JavaPlugin {
         thread = Thread.currentThread();
 
         new Reloader().init();
-        new DescriptionChanger(getDescription()).name(Settings.getInstance().pluginName);
+        new DescriptionChanger(getDescription()).name(Settings.getConfig().pluginName);
         new Commands().register();
+
+        PluginHook.init();
 
         EventManager em = EventManager.getEventManager();
         em.load();
@@ -79,10 +82,10 @@ public class FunnyGuilds extends JavaPlugin {
         pm.registerEvents(new PlayerCommand(), this);
         pm.registerEvents(new PlayerInteract(), this);
 
-        if (Settings.getInstance().eventMove) {
+        if (Settings.getConfig().eventMove) {
             pm.registerEvents(new PlayerMove(), this);
         }
-        if (Settings.getInstance().eventPhysics) {
+        if (Settings.getConfig().eventPhysics) {
             pm.registerEvents(new BlockPhysics(), this);
         }
 

@@ -24,7 +24,7 @@ public class Rank implements Comparable<Rank> {
         }
         else if (this.type == BasicType.USER) {
             this.user = (User) basic;
-            this.points = Settings.getInstance().rankStart;
+            this.points = Settings.getConfig().rankStart;
         }
     }
 

@@ -3,6 +3,8 @@ package net.dzikoysk.funnyguilds.listener;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.util.hook.PluginHook;
+import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -29,22 +31,28 @@ public class PlayerDeath implements Listener {
         }
         User attacker = User.get(a);
 
+        if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
+            if (WorldGuardHook.isOnNonPointsRegion(v.getLocation()) || WorldGuardHook.isOnNonPointsRegion(a.getLocation())) {
+                return;
+            }
+        }
+
         if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
             if (attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()) {
-                v.sendMessage(Messages.getInstance().getMessage("rankLastVictimV"));
-                a.sendMessage(Messages.getInstance().getMessage("rankLastVictimA"));
+                v.sendMessage(Messages.getInstance().rankLastVictimV);
+                a.sendMessage(Messages.getInstance().rankLastVictimA);
                 return;
             }
         }
         else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
             if (victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()) {
-                v.sendMessage(Messages.getInstance().getMessage("rankLastAttackerV"));
-                a.sendMessage(Messages.getInstance().getMessage("rankLastAttackerA"));
+                v.sendMessage(Messages.getInstance().rankLastAttackerV);
+                a.sendMessage(Messages.getInstance().rankLastAttackerA);
                 return;
             }
         }
 
-        Double d = victim.getRank().getPoints() * (Settings.getInstance().rankPercent / 100);
+        Double d = victim.getRank().getPoints() * (Settings.getConfig().rankPercent / 100);
         int points = d.intValue();
 
         victim.getRank().removePoints(points);
@@ -54,7 +62,7 @@ public class PlayerDeath implements Listener {
         attacker.getRank().addPoints(points);
         attacker.setLastVictim(victim);
 
-        if (Settings.getInstance().mysql) {
+        if (Settings.getConfig().dataType.mysql) {
             if (victim.hasGuild()) {
                 IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
             }
@@ -70,7 +78,7 @@ public class PlayerDeath implements Listener {
         IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
         IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
 
-        String death = Messages.getInstance().getMessage("rankDeathMessage");
+        String death = Messages.getInstance().rankDeathMessage;
         death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());
         death = StringUtils.replace(death, "{VICTIM}", victim.getName());
         death = StringUtils.replace(death, "{-}", Integer.toString(points));
@@ -78,11 +86,11 @@ public class PlayerDeath implements Listener {
         death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
         if (victim.hasGuild()) {
             death = StringUtils.replace(death, "{VTAG}",
-                    StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", victim.getGuild().getTag()));
+                    StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", victim.getGuild().getTag()));
         }
         if (attacker.hasGuild()) {
             death = StringUtils.replace(death, "{ATAG}",
-                    StringUtils.replace(Settings.getInstance().chatGuild, "{TAG}", attacker.getGuild().getTag()));
+                    StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", attacker.getGuild().getTag()));
         }
         death = StringUtils.replace(death, "{VTAG}", "");
         death = StringUtils.replace(death, "{ATAG}", "");
