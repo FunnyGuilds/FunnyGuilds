@@ -3,6 +3,8 @@ package net.dzikoysk.funnyguilds.listener;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.util.hook.PluginHook;
+import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -28,6 +30,12 @@ public class PlayerDeath implements Listener {
             return;
         }
         User attacker = User.get(a);
+
+        if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
+            if (WorldGuardHook.isOnNonPointsRegion(v.getLocation()) || WorldGuardHook.isOnNonPointsRegion(a.getLocation())) {
+                return;
+            }
+        }
 
         if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
             if (attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()) {

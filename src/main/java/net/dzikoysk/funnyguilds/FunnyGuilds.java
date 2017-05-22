@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
+import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.reflect.DescriptionChanger;
@@ -43,6 +44,8 @@ public class FunnyGuilds extends JavaPlugin {
         new Reloader().init();
         new DescriptionChanger(getDescription()).name(Settings.getConfig().pluginName);
         new Commands().register();
+
+        PluginHook.init();
 
         EventManager em = EventManager.getEventManager();
         em.load();
