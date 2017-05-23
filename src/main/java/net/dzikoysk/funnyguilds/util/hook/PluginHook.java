@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util.hook;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -11,7 +12,14 @@ public class PluginHook {
 
     @SuppressWarnings("Convert2MethodRef")
     public static void init() {
-        tryInit(PLUGIN_WORLDGUARD, () -> WorldGuardHook.initWorldGuard());
+        tryInit(PLUGIN_WORLDGUARD, () -> {
+            try {
+                Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
+                WorldGuardHook.initWorldGuard();
+            } catch (final ClassNotFoundException e) {
+                FunnyGuilds.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
+            }
+        });
     }
 
     public static void tryInit(String plugin, Runnable init) {

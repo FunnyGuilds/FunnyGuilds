@@ -335,6 +335,7 @@ public class PluginConfig {
     @CfgExclude
     public String dummySuffix;
 
+    @CfgStringStyle(CfgStringStyle.StringStyle.ALWAYS_QUOTED)
     @CfgComment("Wyglad listy graczy. Przedzial od 1 do 60")
     @CfgComment("Limit znakow: 30")
     @CfgComment("> Spis zmiennych:")
@@ -510,7 +511,7 @@ public class PluginConfig {
     public static class MySQL {
         public String hostname;
         public int port;
-        public String databse;
+        public String database;
         public String user;
         public String password;
         public int poolSize;
@@ -518,10 +519,10 @@ public class PluginConfig {
         public MySQL() {
         }
 
-        public MySQL(String hostname, int port, String databse, String user, String password, int poolSize) {
+        public MySQL(String hostname, int port, String database, String user, String password, int poolSize) {
             this.hostname = hostname;
             this.port = port;
-            this.databse = databse;
+            this.database = database;
             this.user = user;
             this.password = password;
             this.poolSize = poolSize;

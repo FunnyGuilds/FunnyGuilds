@@ -28,7 +28,7 @@ public class Database {
         //this.dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         this.dataSource.setMaximumPoolSize(c.poolSize);
 
-        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.databse);
+        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database);
         this.dataSource.setUsername(c.user);
         if (c.password != null && !c.password.isEmpty()) {
             this.dataSource.setPassword(c.password);
