@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Yamler extends YamlConfiguration {
 
-    private File file;
+    private final File file;
 
     public Yamler(File file) {
         super();
