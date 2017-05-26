@@ -13,8 +13,22 @@ public class ConfigUtils {
         final Template<T> template = TemplateCreator.getTemplate(implementationFile);
 
         T config;
-        try {
-            if (file.exists()) {
+
+        if (!file.exists()) {
+            try {
+                try {
+                    config = template.fillDefaults(implementationFile.newInstance());
+                } catch (final InstantiationException | IllegalAccessException e) {
+                    throw new RuntimeException("Couldn't get access to " + implementationFile.getName() + "  constructor", e);
+                }
+
+                Validate.isTrue(file.createNewFile(), "Couldn't create " + file.getAbsolutePath() + " config file");
+
+            } catch (final IOException e) {
+                throw new RuntimeException("IO exception when creating config file: " + file.getAbsolutePath(), e);
+            }
+        } else {
+            try {
                 try {
                     config = template.load(file);
                     if (config == null) {
@@ -23,18 +37,9 @@ public class ConfigUtils {
                 } catch (final IOException e) {
                     throw new RuntimeException("IO exception when loading config file: " + file.getAbsolutePath(), e);
                 }
+            } catch (final InstantiationException | IllegalAccessException e) {
+                throw new RuntimeException("Couldn't get access to " + implementationFile.getName() + "  constructor", e);
             }
-            else {
-                config = template.fillDefaults(implementationFile.newInstance());
-
-                try {
-                    Validate.isTrue(file.createNewFile(), "Couldn't create " + file.getAbsolutePath() + " config file");
-                } catch (final IOException e) {
-                    throw new RuntimeException("IO exception when creating config file: " + file.getAbsolutePath(), e);
-                }
-            }
-        } catch (final InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException("Couldn't get access to " + implementationFile.getName() + "  constructor", e);
         }
 
         try {
