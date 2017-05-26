@@ -15,7 +15,7 @@ public class RegionUtils {
     public static List<Region> regions = new ArrayList<>();
 
     public static List<Region> getRegions() {
-        return new ArrayList<Region>(regions);
+        return new ArrayList<>(regions);
     }
 
     public static Region get(String name) {
