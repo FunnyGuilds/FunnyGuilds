@@ -16,6 +16,9 @@ public class WorldGuardHook {
     }
 
     public static boolean isOnNonPointsRegion(Location location) {
+        if (location == null) {
+            return false;
+        }
         for (ProtectedRegion region : worldGuard.getRegionManager(location.getWorld()).getApplicableRegions(location)) {
             if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
                 return true;

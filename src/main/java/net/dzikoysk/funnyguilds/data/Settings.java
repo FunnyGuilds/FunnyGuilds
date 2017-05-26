@@ -17,8 +17,7 @@ public class Settings {
     }
 
     public static PluginConfig getConfig() {
-        if(settings == null)
-        {
+        if (settings == null) {
             new Settings();
         }
         return settings;
