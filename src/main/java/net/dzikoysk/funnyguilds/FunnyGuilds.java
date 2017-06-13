@@ -39,6 +39,11 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onLoad() {
+
+        if (!this.getDataFolder().exists()) {
+            this.getDataFolder().mkdir();
+        }
+
         thread = Thread.currentThread();
 
         new Reloader().init();
