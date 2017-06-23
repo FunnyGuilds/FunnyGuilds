@@ -39,7 +39,7 @@ public class Commands {
         new ExecutorCaller(new ExcRanking(), commands.ranking.name, "funnyguilds.ranking", commands.ranking.aliases);
 
         new ExecutorCaller(new MxcPvP(), commands.pvp.name, "funnyguilds.manage", commands.pvp.aliases);
-        new ExecutorCaller(new MxcBase(), commands.base.name, "funnyguilds.manage", commands.base.aliases);
+        new ExecutorCaller(new MxcBase(), commands.setbase.name, "funnyguilds.manage", commands.setbase.aliases);
 
         new ExecutorCaller(new AxcMain(), commands.admin.main, "funnyguilds.admin", null);
         new ExecutorCaller(new AxcAdd(), commands.admin.add, "funnyguilds.admin", null);
