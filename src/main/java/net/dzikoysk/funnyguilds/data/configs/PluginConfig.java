@@ -17,7 +17,7 @@ import java.util.*;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("        3.9.9.11 Cleaned        #")
+@CfgComment("        3.9.9.13 Cleaned        #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfig {

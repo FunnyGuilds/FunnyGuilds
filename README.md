@@ -7,7 +7,7 @@ Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 <br>
 
 #### Current Version
-FunnyGuilds Cleaned 3.9.9.12 for 1.7.x
+FunnyGuilds Cleaned 3.9.9.13 for 1.7.x
 <br>
 
 #### Stats
