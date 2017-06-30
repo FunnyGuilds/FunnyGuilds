@@ -5,12 +5,15 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 public class Parser {
@@ -116,20 +119,36 @@ public class Parser {
         try {
             int i = Integer.valueOf(sb.toString());
 
-            if (string.contains("GTOP")) {
-                Guild guild = RankManager.getInstance().getGuild(i);
+            PluginConfig c = Settings.getConfig();
+            List<Guild> rankedGuilds = new ArrayList<>();
 
-                if (guild != null) {
+            for(int in = 1; in <= RankManager.getInstance().guilds(); in++) {
+                Guild guild = RankManager.getInstance().getGuild(in);
+
+                if(guild != null && guild.getMembers().size() >= c.minMembersToInclude) {
+                    rankedGuilds.add(guild);
+                }
+            }
+
+            if (string.contains("GTOP")) {
+                if(rankedGuilds.isEmpty()) {
+                    return StringUtils
+                            .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
+                }
+                else if(i - 1 >= rankedGuilds.size()) {
+                    return StringUtils
+                            .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
+                }
+                else
+                {
+                    Guild guild = rankedGuilds.get(i - 1);
+
                     return StringUtils
                             .replace(string, "{GTOP-" + Integer.toString(i) + '}',
                                     guild.getTag() + " " +
                                             StringUtils.replace(Settings.getConfig().playerlistPoints,
                                                     "{POINTS}", Integer.toString(guild.getRank().getPoints()))
                             );
-                }
-                else {
-                    return StringUtils
-                            .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
                 }
             }
             else if (string.contains("PTOP")) {
