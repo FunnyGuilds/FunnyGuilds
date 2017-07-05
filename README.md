@@ -1,5 +1,7 @@
 FunnyGuilds
+[![Build Status](https://travis-ci.org/FunnyGuilds/FunnyGuilds.svg?branch=master)](https://travis-ci.org/FunnyGuilds/FunnyGuilds)
 ===========
+
 #### About
 FunnyGuilds is a fully customisable RPG plugin that allows you to create guilds
 <br>
