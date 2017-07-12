@@ -65,7 +65,7 @@ public class RegionUtils {
             if (s.enlargeItems != null) {
                 i += s.enlargeItems.size() * s.enlargeSize;
             }
-            return distance < (2 * i + s.regionMinDistance);
+            if (distance < (2 * i + s.regionMinDistance)) return true;
         }
         return false;
     }
