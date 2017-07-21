@@ -48,8 +48,14 @@
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>1.7.10-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.7.2-R0.1-SNAPSHOT</version>
+            <version>1.7.10-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -82,16 +88,8 @@
             <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
         </repository>
         <repository>
-            <id>bukkit-temp-repo</id>
-            <url>http://repo.mikeprimm.com</url>
-        </repository>
-        <repository>
             <id>spigot-repo</id>
             <url>http://maven.elmakers.com/repository/</url>
-        </repository>
-        <repository>
-            <id>spigot-snapshot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>

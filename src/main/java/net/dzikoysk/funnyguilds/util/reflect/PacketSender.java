@@ -5,6 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class PacketSender {
 
@@ -12,10 +14,14 @@ public class PacketSender {
     private static final String version = packageName.substring(packageName.lastIndexOf(".") + 1);
 
     public static void sendPacket(Player player, Object... os) {
-        sendPacket(new Player[]{ player }, os);
+        sendPacket(new Player[] { player }, os);
     }
 
     public static void sendPacket(Player[] players, Object... os) {
+        sendPacket(Arrays.asList(players), os);
+    }
+
+    public static void sendPacket(Collection<? extends Player> players, Object... os) {
         try {
             Class<?> packetClass = Class.forName("net.minecraft.server." + version + ".Packet");
             Class<?> craftPlayer = Class.forName("org.bukkit.craftbukkit." + version + ".entity.CraftPlayer");
