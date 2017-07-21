@@ -187,33 +187,27 @@ public class Parser {
                 case 'h':
                 case 'm':
                 case 's':
-                    if (!calc) {
-                        type.push(c);
-                        calc = true;
-                    }
-                    if (calc) {
-                        try {
-                            long i = Integer.valueOf(value.toString());
-                            switch (type.pop()) {
-                                case 'd':
-                                    time += i * 86400000L;
-                                    break;
-                                case 'h':
-                                    time += i * 3600000L;
-                                    break;
-                                case 'm':
-                                    time += i * 60000L;
-                                    break;
-                                case 's':
-                                    time += i * 1000L;
-                                    break;
-                            }
-                        } catch (NumberFormatException e) {
-                            FunnyGuilds.parser("Unknown number: " + value.toString());
-                            return time;
+                    if (!calc) type.push(c);
+                    try {
+                        long i = Integer.valueOf(value.toString());
+                        switch (type.pop()) {
+                            case 'd':
+                                time += i * 86400000L;
+                                break;
+                            case 'h':
+                                time += i * 3600000L;
+                                break;
+                            case 'm':
+                                time += i * 60000L;
+                                break;
+                            case 's':
+                                time += i * 1000L;
+                                break;
                         }
+                    } catch (NumberFormatException e) {
+                        FunnyGuilds.parser("Unknown number: " + value.toString());
+                        return time;
                     }
-
                     type.push(c);
                     calc = true;
                     break;
