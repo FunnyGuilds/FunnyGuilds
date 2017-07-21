@@ -189,31 +189,29 @@ public class Parser {
                 case 's':
                     if (!calc) {
                         type.push(c);
-                        calc = true;
                     }
-                    if (calc) {
-                        try {
-                            long i = Integer.valueOf(value.toString());
-                            switch (type.pop()) {
-                                case 'd':
-                                    time += i * 86400000L;
-                                    break;
-                                case 'h':
-                                    time += i * 3600000L;
-                                    break;
-                                case 'm':
-                                    time += i * 60000L;
-                                    break;
-                                case 's':
-                                    time += i * 1000L;
-                                    break;
-                            }
-                        } catch (NumberFormatException e) {
-                            FunnyGuilds.parser("Unknown number: " + value.toString());
-                            return time;
+                    
+                    try {
+                        long i = Integer.valueOf(value.toString());
+                        switch (type.pop()) {
+                            case 'd':
+                                time += i * 86400000L;
+                                break;
+                            case 'h':
+                                time += i * 3600000L;
+                                break;
+                            case 'm':
+                                time += i * 60000L;
+                                break;
+                            case 's':
+                                time += i * 1000L;
+                                break;
                         }
+                    } catch (NumberFormatException e) {
+                        FunnyGuilds.parser("Unknown number: " + value.toString());
+                        return time;
                     }
-
+                    
                     type.push(c);
                     calc = true;
                     break;
@@ -222,10 +220,10 @@ public class Parser {
                     break;
             }
         }
-
+        
         return time;
     }
-
+    
     public static String toString(Location loc) {
         if (loc == null) {
             return null;
