@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.util.Collection;
+
 public class PlayerListManager {
 
     private static String[] scheme = new String[60];
@@ -56,21 +58,27 @@ public class PlayerListManager {
             }
         }
         if (!pl.getInit()) {
-            Player[] ps = Bukkit.getOnlinePlayers();
-            String[] ss = new String[ps.length];
-            for (int i = 0; i < ps.length; i++) {
-                ss[i] = ps[i].getPlayerListName();
+            Collection<? extends Player> ps = Bukkit.getOnlinePlayers();
+            String[] ss = new String[ps.size()];
+
+            int i = 0;
+            for (Player p : ps) {
+                ss[i] = p.getPlayerListName();
             }
+
             pl.init(true);
             PacketSender.sendPacket(player, packets(ss, false));
             PacketSender.sendPacket(player, packets(scheme, true));
         }
         if (patch) {
-            Player[] ps = Bukkit.getOnlinePlayers();
-            String[] ss = new String[ps.length];
-            for (int i = 0; i < ps.length; i++) {
-                ss[i] = ps[i].getPlayerListName();
+            Collection<? extends Player> ps = Bukkit.getOnlinePlayers();
+            String[] ss = new String[ps.size()];
+
+            int i = 0;
+            for (Player p : ps) {
+                ss[i] = p.getPlayerListName();
             }
+
             PacketSender.sendPacket(player, packets(ss, false));
         }
         try {
