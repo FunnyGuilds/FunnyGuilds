@@ -134,7 +134,7 @@ public class Guild implements Basic {
         return Bukkit.getOnlinePlayers().stream()
                 .filter(player -> User.get(player).getGuild() != this)
                 .map(player -> RegionUtils.getAt(player.getLocation()))
-                .allMatch(region -> region != null && region.getGuild() == this);
+                .anyMatch(region -> region != null && region.getGuild() == this);
     }
 
     public void updateRank() {
