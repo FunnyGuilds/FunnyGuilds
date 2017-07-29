@@ -66,7 +66,7 @@ public class RegionUtils {
                 return false;
             }
             double distance = center.distance(region.getCenter());
-            if (distance < requiredDistance) return true;
+            return distance < requiredDistance;
         }
         return false;
     }
