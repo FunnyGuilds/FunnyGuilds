@@ -8,7 +8,10 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.element.NotificationBar;
+import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
+import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -42,6 +45,11 @@ public class PlayerMove implements Listener {
                 if (region != null) {
                     Guild guild = region.getGuild();
                     player.sendMessage(m.regionLeave.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+                    FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
+                        if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                            EntityUtil.despawn(guild, player);
+                        }
+                    }, 40L);
                 }
             }
             else if (!user.getEnter() && region != null) {
@@ -50,7 +58,11 @@ public class PlayerMove implements Listener {
                     return;
                 }
                 user.setEnter(true);
-
+                FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
+                    if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                        EntityUtil.spawn(guild, player);
+                    }
+                }, 40L);
                 if (guild.getMembers().contains(user)) {
                     player.sendMessage(m.regionEnter.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
                     return;

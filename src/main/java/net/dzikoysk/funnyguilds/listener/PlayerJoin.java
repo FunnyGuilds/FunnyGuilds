@@ -34,10 +34,7 @@ public class PlayerJoin implements Listener {
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             PacketExtension.registerPlayer(player);
-            if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
-                EntityUtil.spawn(player);
-            }
             Version.check(player);
-        }, 40L);
+        }, 30L);
     }
 }
