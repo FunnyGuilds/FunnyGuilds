@@ -163,7 +163,7 @@ public class ExcCreate implements Executor {
                 return;
             }
         }
-        if (RegionUtils.getAt(loc) != null){
+        if (RegionUtils.isIn(loc)){
             p.sendMessage(m.createIsNear);
             return;
         }
