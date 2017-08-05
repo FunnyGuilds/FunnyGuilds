@@ -59,17 +59,10 @@ public class RegionUtils {
         }
         int requiredDistance = (2 * i) + s.regionMinDistance;
         for (Region region : regions) {
+            if (region.getCenter() == null) continue;
             if (region.getCenter().equals(center)) continue;
-            if (region.getCenter() == null) {
-                return false;
-            }
-            if (!center.getWorld().equals(region.getCenter().getWorld())) {
-                return false;
-            }
-            double distance = center.distance(region.getCenter());
-            if (distance < requiredDistance) {
-                return true;
-            }
+            if (!center.getWorld().equals(region.getCenter().getWorld())) continue;
+            if (center.distance(region.getCenter()) < requiredDistance) return true;
         }
         return false;
     }
