@@ -29,12 +29,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>reflectasm</artifactId>
-            <version>1.11.3</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>2.6.1</version>
@@ -49,7 +43,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.7.2-R0.1-SNAPSHOT</version>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -68,6 +62,7 @@
             <groupId>org.diorite</groupId>
             <artifactId>diorite-config-minimal</artifactId>
             <version>1.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -79,22 +74,17 @@
         </repository>
         <repository>
             <id>funnyguilds-repo</id>
+            <name>FunnyGuilds repository</name>
             <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
         </repository>
         <repository>
-            <id>bukkit-temp-repo</id>
+            <id>bukkit-repo</id>
+            <name>Bukkit Repository</name>
             <url>http://repo.mikeprimm.com</url>
         </repository>
         <repository>
-            <id>spigot-repo</id>
-            <url>http://maven.elmakers.com/repository/</url>
-        </repository>
-        <repository>
-            <id>spigot-snapshot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
             <id>sk89q-repo</id>
+            <name>sk89q Repository</name>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
     </repositories>
