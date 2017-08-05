@@ -78,11 +78,6 @@
             <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
         </repository>
         <repository>
-            <id>bukkit-repo</id>
-            <name>Bukkit Repository</name>
-            <url>http://repo.mikeprimm.com</url>
-        </repository>
-        <repository>
             <id>sk89q-repo</id>
             <name>sk89q Repository</name>
             <url>http://maven.sk89q.com/repo/</url>
