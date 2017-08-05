@@ -41,7 +41,7 @@ public class ExcInvite implements Executor {
 
         if (guild.getMembers().size() >= Settings.getConfig().inviteMembers) {
             p.sendMessage(m.inviteAmount
-                    .replace("{AMOUNT}", Integer.toString(Settings.getConfig().inviteMembers)));
+                                  .replace("{AMOUNT}", Integer.toString(Settings.getConfig().inviteMembers)));
             return;
         }
 

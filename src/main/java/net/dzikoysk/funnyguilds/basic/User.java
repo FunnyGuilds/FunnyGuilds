@@ -91,6 +91,11 @@ public class User implements Basic {
         this.changes = true;
     }
 
+    private void updateCache()
+    {
+        UserUtils.addUser(this);
+    }
+
     public void setName(String name) {
         this.name = name;
         this.changes();
@@ -309,11 +314,6 @@ public class User implements Basic {
             }
         }
         return ping;
-    }
-
-    private void updateCache()
-    {
-        UserUtils.addUser(this);
     }
 
     @Override

@@ -21,8 +21,7 @@ public class Rank implements Comparable<Rank> {
         this.idns = basic.getName();
         if (this.type == BasicType.GUILD) {
             this.guild = (Guild) basic;
-        }
-        else if (this.type == BasicType.USER) {
+        } else if (this.type == BasicType.USER) {
             this.user = (User) basic;
             this.points = Settings.getConfig().rankStart;
         }
@@ -88,8 +87,7 @@ public class Rank implements Comparable<Rank> {
     public int getPoints() {
         if (this.type == BasicType.USER) {
             return this.points;
-        }
-        else {
+        } else {
             double points = 0;
             int size = guild.getMembers().size();
 

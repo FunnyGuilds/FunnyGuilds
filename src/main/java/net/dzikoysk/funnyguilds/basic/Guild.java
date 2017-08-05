@@ -130,14 +130,6 @@ public class Guild implements Basic {
         return true;
     }
 
-    public boolean isSomeoneInRegion()
-    {
-        return Bukkit.getOnlinePlayers().stream()
-                .filter(player -> User.get(player).getGuild() != this)
-                .map(player -> RegionUtils.getAt(player.getLocation()))
-                .anyMatch(region -> region != null && region.getGuild() == this);
-    }
-
     public void updateRank() {
         this.getRank();
         RankManager.getInstance().update(this);
@@ -155,6 +147,10 @@ public class Guild implements Basic {
     @Override
     public void changes() {
         this.changes = true;
+    }
+
+    public boolean canBeAttacked() {
+        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getConfig().warWait > System.currentTimeMillis());
     }
 
     public void setUUID(UUID uuid) {
@@ -236,8 +232,7 @@ public class Guild implements Basic {
     public void setValidity(long l) {
         if (l == this.born) {
             this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
-        }
-        else {
+        } else {
             this.validity = l;
         }
         this.changes();
@@ -261,8 +256,7 @@ public class Guild implements Basic {
     public void setBan(long l) {
         if (l > System.currentTimeMillis()) {
             this.ban = l;
-        }
-        else {
+        } else {
             this.ban = 0;
         }
         this.changes();
@@ -270,6 +264,13 @@ public class Guild implements Basic {
 
     public void setEnderCrystal(Location loc) {
         this.endercrystal = loc;
+    }
+
+    public boolean isSomeoneInRegion() {
+        return Bukkit.getOnlinePlayers().stream()
+                       .filter(player -> User.get(player).getGuild() != this)
+                       .map(player -> RegionUtils.getAt(player.getLocation()))
+                       .anyMatch(region -> region != null && region.getGuild() == this);
     }
 
     public boolean isValid() {
@@ -352,10 +353,6 @@ public class Guild implements Basic {
 
     public long getAttacked() {
         return this.attacked;
-    }
-
-    public boolean canBeAttacked() {
-        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getConfig().warWait > System.currentTimeMillis());
     }
 
     public int getLives() {

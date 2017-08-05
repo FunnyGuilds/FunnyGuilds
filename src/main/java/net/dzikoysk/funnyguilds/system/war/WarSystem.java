@@ -37,8 +37,7 @@ public class WarSystem {
         guild.removeLive();
         if (guild.getLives() < 1) {
             conquer(attacker, guild);
-        }
-        else {
+        } else {
             for (User u : attacker.getMembers()) {
                 Player p = Bukkit.getPlayer(u.getName());
                 if (p != null) {

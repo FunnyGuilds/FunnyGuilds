@@ -40,22 +40,22 @@ public class WarUtils {
 
     public static String getWinMessage(Guild conqueror, Guild loser) {
         return Messages.getInstance().warWin
-                .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag())
+                       .replace("{WINNER}", conqueror.getTag())
+                       .replace("{LOSER}", loser.getTag())
                 ;
     }
 
     public static String getLoseMessage(Guild conqueror, Guild loser) {
         return Messages.getInstance().warLose
-                .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag())
+                       .replace("{WINNER}", conqueror.getTag())
+                       .replace("{LOSER}", loser.getTag())
                 ;
     }
 
     public static String getBroadcastMessage(Guild conqueror, Guild loser) {
         return Messages.getInstance().broadcastWar
-                .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag())
+                       .replace("{WINNER}", conqueror.getTag())
+                       .replace("{LOSER}", loser.getTag())
                 ;
     }
 }

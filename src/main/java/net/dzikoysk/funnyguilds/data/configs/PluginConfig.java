@@ -364,26 +364,26 @@ public class PluginConfig {
     @CfgComment("{LIVES} - życia gildii")
     @CfgName("player-list")
     public Map<Integer, String> playerList = ImmutableMap.<Integer, String> builder()
-            .put(1, "&7Nick: &b{PLAYER}")
-            .put(2, "&7Ping: &b{PING}")
-            .put(3, "&7TPS: &b{TPS}")
-            .put(4, "&7Punkty: &b{POINTS}")
-            .put(5, "&7Zabojstwa: &b{KILLS}")
-            .put(6, "&7Smierci: &b{DEATHS}")
-            .put(7, "&7Godzina: &b{HOUR}")
-            .put(8, "&7Minuta: &b{MINUTE}")
-            .put(9, "&7Sekunda: &b{SECOND}")
-            .put(10, "&7Online: &b{ONLINE}")
-            .put(11, "&7Gildia: &b{GUILD}")
-            .put(23, "&bTop 3 Gildii")
-            .put(25, "&71. &b{GTOP-1}")
-            .put(26, "&72. &b{GTOP-2}")
-            .put(27, "&73. &b{GTOP-3}")
-            .put(32, "&bTop 3 Graczy")
-            .put(34, "&71. &b{PTOP-1}")
-            .put(35, "&72. &b{PTOP-2}")
-            .put(36, "&73. &b{PTOP-3}")
-            .build();
+                                                     .put(1, "&7Nick: &b{PLAYER}")
+                                                     .put(2, "&7Ping: &b{PING}")
+                                                     .put(3, "&7TPS: &b{TPS}")
+                                                     .put(4, "&7Punkty: &b{POINTS}")
+                                                     .put(5, "&7Zabojstwa: &b{KILLS}")
+                                                     .put(6, "&7Smierci: &b{DEATHS}")
+                                                     .put(7, "&7Godzina: &b{HOUR}")
+                                                     .put(8, "&7Minuta: &b{MINUTE}")
+                                                     .put(9, "&7Sekunda: &b{SECOND}")
+                                                     .put(10, "&7Online: &b{ONLINE}")
+                                                     .put(11, "&7Gildia: &b{GUILD}")
+                                                     .put(23, "&bTop 3 Gildii")
+                                                     .put(25, "&71. &b{GTOP-1}")
+                                                     .put(26, "&72. &b{GTOP-2}")
+                                                     .put(27, "&73. &b{GTOP-3}")
+                                                     .put(32, "&bTop 3 Graczy")
+                                                     .put(34, "&71. &b{PTOP-1}")
+                                                     .put(35, "&72. &b{PTOP-2}")
+                                                     .put(36, "&73. &b{PTOP-3}")
+                                                     .build();
 
     @CfgComment("Tablista wlaczona")
     @CfgName("player-list-enable")
@@ -413,125 +413,22 @@ public class PluginConfig {
     @CfgComment("Nazwy komend")
     @CfgName("commands")
     public Commands commands = new Commands();
-
-    public static class Commands {
-        public Command guild = new Command("gildia", Arrays.asList("gildie", "g"));
-        public Command create = new Command("zaloz");
-        public Command delete = new Command("usun");
-        public Command confirm = new Command("potwierdz");
-        public Command invite = new Command("zapros");
-        public Command join = new Command("dolacz");
-        public Command leave = new Command("opusc");
-        public Command kick = new Command("wyrzuc");
-        public Command base = new Command("baza");
-        public Command enlarge = new Command("powieksz");
-        public Command ally = new Command("sojusz");
-        @CfgName("break")
-        public Command break_ = new Command("rozwiaz");
-        public Command info = new Command("info");
-        public Command player = new Command("gracz");
-        public Command top = new Command("top", Collections.singletonList("top10"));
-        public Command validity = new Command("przedluz");
-        public Command leader = new Command("lider", Collections.singletonList("zalozyciel"));
-        public Command deputy = new Command("zastepca");
-        public Command ranking = new Command("ranking");
-        public Command setbase = new Command("ustawbaze", Collections.singletonList("ustawdom"));
-        public Command pvp = new Command("pvp", Collections.singletonList("ustawpvp"));
-
-        public static class Command {
-            @CfgStringStyle(CfgStringStyle.StringStyle.ALWAYS_SINGLE_QUOTED)
-            public String name;
-            @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-            public List<String> aliases;
-
-            public Command() {
-            }
-
-            public Command(String name) {
-                this(name, Collections.emptyList());
-            }
-
-            public Command(String name, List<String> aliases) {
-                this.name = name;
-                this.aliases = aliases;
-            }
-        }
-
-        @CfgComment("Komendy administratora")
-        public AdminCommands admin = new AdminCommands();
-
-        public static class AdminCommands {
-            public String main = "ga";
-            public String add = "ga dodaj";
-            public String delete = "ga usun";
-            public String kick = "ga wyrzuc";
-            public String teleport = "ga tp";
-            public String points = "ga points";
-            public String kills = "ga kills";
-            public String deaths = "ga deaths";
-            public String ban = "ga ban";
-            public String lives = "ga zycia";
-            public String move = "ga przenies";
-            public String unban = "ga unban";
-            public String validity = "ga przedluz";
-            public String name = "ga nazwa";
-        }
-    }
-
     @CfgComment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)")
     @CfgName("event-move")
     public boolean eventMove = true;
-
     @CfgExclude
     public boolean eventPhysics;
-
     @CfgComment("Co ile minut ma automatycznie zapisywac dane")
     @CfgName("data-interval")
     public int dataInterval = 1;
-
     @CfgComment("Typ zapisu danych")
     @CfgComment("Flat - Lokalne pliki")
     @CfgComment("MySQL - baza danych")
     @CfgName("data-type")
     public DataType dataType = new DataType(true, false);
-
-    public static class DataType {
-        public boolean flat;
-        public boolean mysql;
-
-        public DataType() {
-        }
-
-        public DataType(boolean flat, boolean mysql) {
-            this.flat = flat;
-            this.mysql = mysql;
-        }
-    }
-
     @CfgComment("Dane wymagane do polaczenia z baza")
     @CfgName("mysql")
     public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 16);
-
-    public static class MySQL {
-        public String hostname;
-        public int port;
-        public String database;
-        public String user;
-        public String password;
-        public int poolSize;
-
-        public MySQL() {
-        }
-
-        public MySQL(String hostname, int port, String database, String user, String password, int poolSize) {
-            this.hostname = hostname;
-            this.port = port;
-            this.database = database;
-            this.user = user;
-            this.password = password;
-            this.poolSize = poolSize;
-        }
-    }
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
@@ -559,8 +456,7 @@ public class PluginConfig {
 
         if (this.enlargeEnable) {
             this.enlargeItems = this.loadItemStackList(this.enlargeItems_);
-        }
-        else {
+        } else {
             this.enlargeSize = 0;
             this.enlargeItems = null;
         }
@@ -626,5 +522,102 @@ public class PluginConfig {
         this.chatGlobalDesign = StringUtils.colored(this.chatGlobalDesign_);
 
         this.playerlistPoints = StringUtils.colored(this.playerlistPoints_);
+    }
+
+    public static class Commands {
+        public Command guild = new Command("gildia", Arrays.asList("gildie", "g"));
+        public Command create = new Command("zaloz");
+        public Command delete = new Command("usun");
+        public Command confirm = new Command("potwierdz");
+        public Command invite = new Command("zapros");
+        public Command join = new Command("dolacz");
+        public Command leave = new Command("opusc");
+        public Command kick = new Command("wyrzuc");
+        public Command base = new Command("baza");
+        public Command enlarge = new Command("powieksz");
+        public Command ally = new Command("sojusz");
+        @CfgName("break")
+        public Command break_ = new Command("rozwiaz");
+        public Command info = new Command("info");
+        public Command player = new Command("gracz");
+        public Command top = new Command("top", Collections.singletonList("top10"));
+        public Command validity = new Command("przedluz");
+        public Command leader = new Command("lider", Collections.singletonList("zalozyciel"));
+        public Command deputy = new Command("zastepca");
+        public Command ranking = new Command("ranking");
+        public Command setbase = new Command("ustawbaze", Collections.singletonList("ustawdom"));
+        public Command pvp = new Command("pvp", Collections.singletonList("ustawpvp"));
+        @CfgComment("Komendy administratora")
+        public AdminCommands admin = new AdminCommands();
+
+        public static class Command {
+            @CfgStringStyle(CfgStringStyle.StringStyle.ALWAYS_SINGLE_QUOTED)
+            public String name;
+            @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+            public List<String> aliases;
+
+            public Command() {
+            }
+
+            public Command(String name) {
+                this(name, Collections.emptyList());
+            }
+
+            public Command(String name, List<String> aliases) {
+                this.name = name;
+                this.aliases = aliases;
+            }
+        }
+
+        public static class AdminCommands {
+            public String main = "ga";
+            public String add = "ga dodaj";
+            public String delete = "ga usun";
+            public String kick = "ga wyrzuc";
+            public String teleport = "ga tp";
+            public String points = "ga points";
+            public String kills = "ga kills";
+            public String deaths = "ga deaths";
+            public String ban = "ga ban";
+            public String lives = "ga zycia";
+            public String move = "ga przenies";
+            public String unban = "ga unban";
+            public String validity = "ga przedluz";
+            public String name = "ga nazwa";
+        }
+    }
+
+    public static class DataType {
+        public boolean flat;
+        public boolean mysql;
+
+        public DataType() {
+        }
+
+        public DataType(boolean flat, boolean mysql) {
+            this.flat = flat;
+            this.mysql = mysql;
+        }
+    }
+
+    public static class MySQL {
+        public String hostname;
+        public int port;
+        public String database;
+        public String user;
+        public String password;
+        public int poolSize;
+
+        public MySQL() {
+        }
+
+        public MySQL(String hostname, int port, String database, String user, String password, int poolSize) {
+            this.hostname = hostname;
+            this.port = port;
+            this.database = database;
+            this.user = user;
+            this.password = password;
+            this.poolSize = poolSize;
+        }
     }
 }

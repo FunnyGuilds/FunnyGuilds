@@ -50,12 +50,10 @@ public class ExcCreate implements Executor {
             if (args.length == 0) {
                 p.sendMessage(m.createTag);
                 return;
-            }
-            else if (args.length == 1) {
+            } else if (args.length == 1) {
                 p.sendMessage(m.createName);
                 return;
-            }
-            else if (args.length > 2) {
+            } else if (args.length > 2) {
                 p.sendMessage(m.createMore);
                 return;
             }
@@ -68,26 +66,26 @@ public class ExcCreate implements Executor {
 
         if (tag.length() > c.createTagLength) {
             p.sendMessage(m.createTagLength
-                    .replace("{LENGTH}", Integer.toString(c.createTagLength)));
+                                  .replace("{LENGTH}", Integer.toString(c.createTagLength)));
             return;
         }
 
         if (tag.length() < c.createTagMinLength) {
             p.sendMessage(m.createTagMinLength
-                    .replace("{LENGTH}", Integer.toString(c.createTagMinLength)));
+                                  .replace("{LENGTH}", Integer.toString(c.createTagMinLength)));
             return;
         }
 
         if (name.length() > c.createNameLength) {
             p.sendMessage(m.createNameLength
-                    .replace("{LENGTH}", Integer.toString(c.createNameLength))
+                                  .replace("{LENGTH}", Integer.toString(c.createNameLength))
             );
             return;
         }
 
         if (name.length() < c.createNameMinLength) {
             p.sendMessage(m.createNameMinLength
-                    .replace("{LENGTH}", Integer.toString(c.createNameMinLength))
+                                  .replace("{LENGTH}", Integer.toString(c.createNameMinLength))
             );
             return;
         }
@@ -130,8 +128,7 @@ public class ExcCreate implements Executor {
         List<ItemStack> itemsList = null;
         if (p.hasPermission("funnyguilds.vip")) {
             itemsList = c.createItemsVip;
-        }
-        else {
+        } else {
             itemsList = c.createItems;
         }
         ItemStack[] items = itemsList.toArray(new ItemStack[0]);
@@ -163,7 +160,7 @@ public class ExcCreate implements Executor {
                 return;
             }
         }
-        if (RegionUtils.isIn(loc)){
+        if (RegionUtils.isIn(loc)) {
             p.sendMessage(m.createIsNear);
             return;
         }
@@ -174,8 +171,7 @@ public class ExcCreate implements Executor {
 
         if (u.getBypass()) {
             u.setBypass(false);
-        }
-        else {
+        } else {
             p.getInventory().removeItem(items);
         }
 
@@ -211,8 +207,7 @@ public class ExcCreate implements Executor {
 
         if (c.createMaterial != null && c.createMaterial != Material.AIR) {
             loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
-        }
-        else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        } else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
 

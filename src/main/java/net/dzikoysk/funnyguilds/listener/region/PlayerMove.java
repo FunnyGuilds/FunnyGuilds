@@ -8,10 +8,8 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.element.NotificationBar;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -51,8 +49,7 @@ public class PlayerMove implements Listener {
                         }
                     }, 40L);
                 }
-            }
-            else if (!user.getEnter() && region != null) {
+            } else if (!user.getEnter() && region != null) {
                 Guild guild = region.getGuild();
                 if (guild == null || guild.getName() == null) {
                     return;

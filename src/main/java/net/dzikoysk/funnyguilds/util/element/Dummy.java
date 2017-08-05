@@ -28,8 +28,7 @@ public class Dummy {
         Objective objective = scoreboard.getObjective(name);
         if (objective == null || !objective.getName().equals(name)) {
             initialize();
-        }
-        else {
+        } else {
             OfflineUser offline = user.getOfflineUser();
             objective.getScore(offline).setScore(user.getRank().getPoints());
         }

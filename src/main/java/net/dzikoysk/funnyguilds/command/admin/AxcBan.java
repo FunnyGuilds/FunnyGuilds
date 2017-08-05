@@ -27,12 +27,10 @@ public class AxcBan implements Executor {
         if (args.length < 1) {
             player.sendMessage(StringUtils.colored("&cPodaj tag gildii!"));
             return;
-        }
-        else if (args.length < 2) {
+        } else if (args.length < 2) {
             player.sendMessage(StringUtils.colored("&cPodaj czas na jaki ma byc zbanowana gildia!"));
             return;
-        }
-        else if (args.length < 3) {
+        } else if (args.length < 3) {
             player.sendMessage(StringUtils.colored("&cPodaj powod!"));
             return;
         }
@@ -67,10 +65,10 @@ public class AxcBan implements Executor {
         BanUtils.ban(guild, time, reason);
         player.sendMessage(StringUtils.colored("&7Zbanowano gildie &b" + guild.getName() + " &7na okres &b" + ts + "&7!"));
         Bukkit.broadcastMessage(Messages.getInstance().broadcastBan
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag())
-                .replace("{REASON}", StringUtils.colored(reason))
-                .replace("{TIME}", ts)
+                                        .replace("{GUILD}", guild.getName())
+                                        .replace("{TAG}", guild.getTag())
+                                        .replace("{REASON}", StringUtils.colored(reason))
+                                        .replace("{TIME}", ts)
         );
     }
 

@@ -16,7 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
 
 public class EntityInteract implements Listener {
@@ -33,8 +32,7 @@ public class EntityInteract implements Listener {
                 return;
             }
             new ExcPlayer().execute(event.getPlayer(), new String[]{ clicked.getName() });
-        }
-        else if (entity instanceof EnderCrystal) {
+        } else if (entity instanceof EnderCrystal) {
             EnderCrystal ec = (EnderCrystal) entity;
             Region region = RegionUtils.getAt(ec.getLocation());
             if (region == null) {
@@ -42,7 +40,8 @@ public class EntityInteract implements Listener {
             }
             event.setCancelled(true);
             if (region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
-                    .equals(ec.getLocation().getBlock().getLocation().toVector())) {
+                        .equals(ec.getLocation().getBlock().getLocation().toVector()))
+            {
                 Guild guild = region.getGuild();
                 if (guild == null) {
                     return;

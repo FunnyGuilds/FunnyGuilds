@@ -86,8 +86,7 @@ public class IndividualPrefix {
                 prefix = prefix.substring(0, 16);
             }
             team.setPrefix(prefix);
-        }
-        else {
+        } else {
             Team team = scoreboard.getTeam(to.getTag());
             if (team == null) {
                 team = scoreboard.registerNewTeam(to.getTag());
@@ -180,16 +179,13 @@ public class IndividualPrefix {
                 }
                 if (guild.getAllies().contains(one)) {
                     team.setPrefix(replace(ally, "{TAG}", one.getTag()));
-                }
-                else if (guild.getEnemies().contains(one)) {
+                } else if (guild.getEnemies().contains(one)) {
                     team.setPrefix(replace(enemy, "{TAG}", one.getTag()));
-                }
-                else {
+                } else {
                     team.setPrefix(replace(other, "{TAG}", one.getTag()));
                 }
             }
-        }
-        else {
+        } else {
             String other = Settings.getConfig().prefixOther;
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {

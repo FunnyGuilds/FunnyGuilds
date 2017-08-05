@@ -37,8 +37,7 @@ public class TimeUtils {
 
             if (i == 1) {
                 sb.append(" dzien ");
-            }
-            else {
+            } else {
                 sb.append(" dni ");
             }
         }
@@ -48,11 +47,9 @@ public class TimeUtils {
 
             if (i == 1) {
                 sb.append(" godzine ");
-            }
-            else if (i < 5) {
+            } else if (i < 5) {
                 sb.append(" godziny ");
-            }
-            else {
+            } else {
                 sb.append(" godzin ");
             }
         }
@@ -62,11 +59,9 @@ public class TimeUtils {
 
             if (i == 1) {
                 sb.append(" minute ");
-            }
-            else if (i < 5) {
+            } else if (i < 5) {
                 sb.append(" minuty ");
-            }
-            else {
+            } else {
                 sb.append(" minut ");
             }
         }
@@ -76,11 +71,9 @@ public class TimeUtils {
 
             if (i == 1) {
                 sb.append("sekunde ");
-            }
-            else if (i < 5) {
+            } else if (i < 5) {
                 sb.append("sekundy ");
-            }
-            else {
+            } else {
                 sb.append("sekund ");
             }
         }

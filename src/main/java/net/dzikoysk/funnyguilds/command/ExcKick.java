@@ -74,7 +74,7 @@ public class ExcKick implements Executor {
         Player pk = Bukkit.getPlayer(uk.getName());
         if (pk != null) {
             pk.sendMessage(m.kickToPlayer
-                    .replace("{GUILD}", guild.getName())
+                                   .replace("{GUILD}", guild.getName())
             );
         }
 

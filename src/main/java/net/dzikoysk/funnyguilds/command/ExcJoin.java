@@ -43,7 +43,7 @@ public class ExcJoin implements Executor {
             String iss = StringUtils.toString(InvitationsList.get(user, 0).getLS(), true);
             for (int i = 0; i < msgs.length; i++) {
                 p.sendMessage(msgs[i]
-                        .replace("{GUILDS}", iss)
+                                      .replace("{GUILDS}", iss)
                 );
             }
             return;
@@ -100,21 +100,21 @@ public class ExcJoin implements Executor {
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
 
         p.sendMessage(m.joinToMember
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag())
+                              .replace("{GUILD}", guild.getName())
+                              .replace("{TAG}", guild.getTag())
         );
 
         Player owner = Bukkit.getPlayer(guild.getOwner().getName());
         if (owner != null) {
             owner.sendMessage(m.joinToOwner
-                    .replace("{PLAYER}", p.getName())
+                                      .replace("{PLAYER}", p.getName())
             );
         }
 
         Bukkit.broadcastMessage(m.broadcastJoin
-                .replace("{PLAYER}", p.getName())
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", tag)
+                                        .replace("{PLAYER}", p.getName())
+                                        .replace("{GUILD}", guild.getName())
+                                        .replace("{TAG}", tag)
         );
     }
 }

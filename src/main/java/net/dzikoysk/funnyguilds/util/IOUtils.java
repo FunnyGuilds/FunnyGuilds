@@ -14,8 +14,7 @@ public class IOUtils {
                 file.getParentFile().mkdirs();
                 if (b) {
                     file.createNewFile();
-                }
-                else {
+                } else {
                     file.mkdir();
                 }
             } catch (IOException e) {
@@ -55,8 +54,7 @@ public class IOUtils {
             if (!file.exists()) {
                 if (folder) {
                     file.mkdirs();
-                }
-                else {
+                } else {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
                 }

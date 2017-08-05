@@ -38,8 +38,7 @@ public class RankManager {
     public void update(Guild guild) {
         if (!this.guilds.contains(guild.getRank())) {
             this.guilds.add(guild.getRank());
-        }
-        else {
+        } else {
             Collections.sort(guilds);
 
             for (int i = 0; i < guilds.size(); i++) {

@@ -45,8 +45,8 @@ public class AxcDelete implements Executor {
         GuildUtils.deleteGuild(guild);
 
         player.sendMessage(m.deleteSuccessful
-                .replace("{GUILD}", name)
-                .replace("{TAG}", tag)
+                                   .replace("{GUILD}", name)
+                                   .replace("{TAG}", tag)
         );
 
         Player owner = Bukkit.getPlayer(o.getName());
@@ -57,9 +57,9 @@ public class AxcDelete implements Executor {
         }
 
         Bukkit.getServer().broadcastMessage(m.broadcastDelete
-                .replace("{PLAYER}", player.getDisplayName())
-                .replace("{GUILD}", name)
-                .replace("{TAG}", tag)
+                                                    .replace("{PLAYER}", player.getDisplayName())
+                                                    .replace("{GUILD}", name)
+                                                    .replace("{TAG}", tag)
         );
     }
 

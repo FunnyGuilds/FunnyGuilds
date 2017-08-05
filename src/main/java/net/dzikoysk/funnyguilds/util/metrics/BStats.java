@@ -88,7 +88,8 @@ public class BStats {
             ).copyDefaults(true);
             try {
                 config.save(configFile);
-            } catch (IOException ignored) { }
+            } catch (IOException ignored) {
+            }
         }
 
         // Load the data
@@ -102,7 +103,8 @@ public class BStats {
                     service.getField("B_STATS_VERSION"); // Our identifier :)
                     found = true; // We aren't the first
                     break;
-                } catch (NoSuchFieldException ignored) { }
+                } catch (NoSuchFieldException ignored) {
+                }
             }
             // Register our service
             Bukkit.getServicesManager().register(BStats.class, this, plugin, ServicePriority.Normal);
@@ -146,10 +148,50 @@ public class BStats {
                     }
                 });
             }
-        }, 1000*60*5, 1000*60*30);
+        }, 1000 * 60 * 5, 1000 * 60 * 30);
         // Submit the data every 30 minutes, first time after 5 minutes to give other plugins enough time to start
         // WARNING: Changing the frequency has no effect but your plugin WILL be blocked/deleted!
         // WARNING: Just don't do it!
+    }
+
+    /**
+     * Collects the data and sends it afterwards.
+     */
+    private void submitData() {
+        final JSONObject data = getServerData();
+
+        JSONArray pluginData = new JSONArray();
+        // Search for all other bStats Metrics classes to get their plugin data
+        for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
+            try {
+                service.getField("B_STATS_VERSION"); // Our identifier :)
+            } catch (NoSuchFieldException ignored) {
+                continue; // Continue "searching"
+            }
+            // Found one!
+            try {
+                pluginData.add(service.getMethod("getPluginData").invoke(Bukkit.getServicesManager().load(service)));
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
+            }
+        }
+
+        data.put("plugins", pluginData);
+
+        // Create a new thread for the connection to the bStats server
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Send the data
+                    sendData(data);
+                } catch (Exception e) {
+                    // Something went wrong! :(
+                    if (logFailedRequests) {
+                        plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of FunnyGuilds", e);
+                    }
+                }
+            }
+        }).start();
     }
 
     /**
@@ -212,45 +254,6 @@ public class BStats {
         data.put("coreCount", coreCount);
 
         return data;
-    }
-
-    /**
-     * Collects the data and sends it afterwards.
-     */
-    private void submitData() {
-        final JSONObject data = getServerData();
-
-        JSONArray pluginData = new JSONArray();
-        // Search for all other bStats Metrics classes to get their plugin data
-        for (Class<?> service : Bukkit.getServicesManager().getKnownServices()) {
-            try {
-                service.getField("B_STATS_VERSION"); // Our identifier :)
-            } catch (NoSuchFieldException ignored) {
-                continue; // Continue "searching"
-            }
-            // Found one!
-            try {
-                pluginData.add(service.getMethod("getPluginData").invoke(Bukkit.getServicesManager().load(service)));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) { }
-        }
-
-        data.put("plugins", pluginData);
-
-        // Create a new thread for the connection to the bStats server
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    // Send the data
-                    sendData(data);
-                } catch (Exception e) {
-                    // Something went wrong! :(
-                    if (logFailedRequests) {
-                        plugin.getLogger().log(Level.WARNING, "Could not submit plugin stats of FunnyGuilds", e);
-                    }
-                }
-            }
-        }).start();
     }
 
     /**
@@ -1009,7 +1012,7 @@ public class BStats {
          *
          * @param locale The locale.
          * @return The country from the giben locale or <code>null</code> if unknown country or
-         *         if the locale does not contain a country.
+         * if the locale does not contain a country.
          */
         public static Country byLocale(Locale locale) {
             return byIsoTag(locale.getCountry());

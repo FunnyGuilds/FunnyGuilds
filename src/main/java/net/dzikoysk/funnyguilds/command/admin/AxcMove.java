@@ -57,7 +57,7 @@ public class AxcMove implements Executor {
 
         if (d > player.getWorld().getSpawnLocation().distance(loc)) {
             player.sendMessage(m.createSpawn
-                    .replace("{DISTANCE}", Integer.toString(d))
+                                       .replace("{DISTANCE}", Integer.toString(d))
             );
             return;
         }
@@ -70,12 +70,10 @@ public class AxcMove implements Executor {
         Region region = RegionUtils.get(guild.getRegion());
         if (region == null) {
             region = new Region(guild, loc, s.regionSize);
-        }
-        else {
+        } else {
             if (s.createStringMaterial.equalsIgnoreCase("ender crystal")) {
                 EntityUtil.despawn(guild);
-            }
-            else {
+            } else {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                 if (block.getLocation().getBlockY() > 1) {
                     block.setType(Material.AIR);
@@ -93,8 +91,7 @@ public class AxcMove implements Executor {
         }
         if (s.createMaterial != null && s.createMaterial != Material.AIR) {
             loc.getBlock().getRelative(BlockFace.DOWN).setType(s.createMaterial);
-        }
-        else if (s.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        } else if (s.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
 

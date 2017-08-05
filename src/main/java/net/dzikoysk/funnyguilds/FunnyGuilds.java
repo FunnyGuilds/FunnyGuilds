@@ -10,8 +10,8 @@ import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
-import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.Reloader;
+import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.reflect.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -39,7 +39,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onLoad() {
-
         if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
@@ -119,11 +118,9 @@ public class FunnyGuilds extends JavaPlugin {
             String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
             if (latest == null || latest.isEmpty()) {
                 update("Failed to check the newest version of FunnyGuilds..");
-            }
-            else if (latest.equalsIgnoreCase(getVersion())) {
+            } else if (latest.equalsIgnoreCase(getVersion())) {
                 update("You have the newest version of FunnyGuilds.");
-            }
-            else {
+            } else {
                 update("");
                 update("A new version of FunnyGuilds is available!");
                 update("Current: " + getVersion());
@@ -135,7 +132,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void patch() {
         for (final Player player : this.getServer().getOnlinePlayers()) {
-            this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player) );
+            this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
 
             User user = User.get(player);
             user.getScoreboard();
@@ -210,8 +207,7 @@ public class FunnyGuilds extends JavaPlugin {
         if (cause == null || ste == null || ste.length < 1) {
             error("Stack trace: no/empty exception given, dumping current stack trace instead!");
             return true;
-        }
-        else {
+        } else {
             error("Stack trace: ");
         }
         error("Caused by: " + cause);

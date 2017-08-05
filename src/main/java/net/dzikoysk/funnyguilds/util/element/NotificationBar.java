@@ -44,9 +44,7 @@ public class NotificationBar {
             dragon = new FakeDragon(player.getLocation().add(0, -200, 0), text, percent);
             sendPacket(player, dragon.getSpawnPacket());
             bars.put(player, dragon);
-        }
-
-        else {
+        } else {
             dragon.setName(text);
             dragon.setHealth(percent);
             sendPacket(player, dragon.getMetaPacket(dragon.getWatcher()));
