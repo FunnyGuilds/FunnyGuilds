@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.util.reflect;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import net.minecraft.util.io.netty.channel.*;
+import io.netty.channel.*;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

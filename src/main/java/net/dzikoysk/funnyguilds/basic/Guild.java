@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -133,7 +132,7 @@ public class Guild implements Basic {
 
     public boolean isSomeoneInRegion()
     {
-        return Arrays.stream(Bukkit.getOnlinePlayers())
+        return Bukkit.getOnlinePlayers().stream()
                 .filter(player -> User.get(player).getGuild() != this)
                 .map(player -> RegionUtils.getAt(player.getLocation()))
                 .anyMatch(region -> region != null && region.getGuild() == this);

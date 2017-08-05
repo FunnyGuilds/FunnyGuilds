@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.basic;
 
 import com.google.common.base.Charsets;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.minecraft.util.com.mojang.authlib.GameProfile;
+import com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;

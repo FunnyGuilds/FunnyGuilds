@@ -15,7 +15,7 @@ public class Reloader {
     public void init() {
         PandaConfiguration pc = new PandaConfiguration(new File(Data.getDataFolder(), "funnyguilds.dat"));
         int before = pc.getInt("played-before");
-        int actual = Bukkit.getOnlinePlayers().length;
+        int actual = Bukkit.getOnlinePlayers().size();
         reloaded = before == actual;
 
         if (reloaded) {
