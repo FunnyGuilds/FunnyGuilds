@@ -55,18 +55,22 @@ public class RegionUtils {
         PluginConfig s = Settings.getConfig();
         int i = s.regionSize;
         if (s.enlargeItems != null) {
-            i += s.enlargeItems.size() * s.enlargeSize;
+            i += (s.enlargeItems.size() * s.enlargeSize);
         }
-        int requiredDistance = 2 * i + s.regionMinDistance;
+        int requiredDistance = (2 * i) + s.regionMinDistance;
         for (Region region : regions) {
             if (region.getCenter() == null) {
-                return false;
+                continue;
+            }
+            if (region.getCenter().equals(center)) {
+                continue;
             }
             if (!center.getWorld().equals(region.getCenter().getWorld())) {
-                return false;
+                continue;
             }
-            double distance = center.distance(region.getCenter());
-            return distance < requiredDistance;
+            if (center.distance(region.getCenter()) < requiredDistance) {
+                return true;
+            }
         }
         return false;
     }
