@@ -3,9 +3,9 @@ package net.dzikoysk.funnyguilds.listener;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
-import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.entity.Player;
@@ -43,8 +43,7 @@ public class PlayerDeath implements Listener {
                 a.sendMessage(Messages.getInstance().rankLastVictimA);
                 return;
             }
-        }
-        else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
+        } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
             if (victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()) {
                 v.sendMessage(Messages.getInstance().rankLastAttackerV);
                 a.sendMessage(Messages.getInstance().rankLastAttackerA);

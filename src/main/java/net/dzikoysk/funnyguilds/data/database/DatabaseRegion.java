@@ -60,8 +60,7 @@ public class DatabaseRegion {
             if (name == null) {
                 FunnyGuilds.error("Cannot deserialize region! Caused by: name == null");
                 return null;
-            }
-            else if (loc == null) {
+            } else if (loc == null) {
                 FunnyGuilds.error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
                 return null;
             }

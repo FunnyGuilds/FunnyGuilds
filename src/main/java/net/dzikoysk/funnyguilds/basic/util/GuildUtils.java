@@ -38,8 +38,7 @@ public class GuildUtils {
         if (region != null) {
             if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
                 EntityUtil.despawn(guild);
-            }
-            else if (Settings.getConfig().createMaterial != Material.AIR) {
+            } else if (Settings.getConfig().createMaterial != Material.AIR) {
                 Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable() {
                     @Override
                     public void run() {

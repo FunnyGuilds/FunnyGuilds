@@ -31,8 +31,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         this.permission = perm;
         if (aliases != null && aliases.size() > 0) {
             this.aliases = aliases;
-        }
-        else {
+        } else {
             this.aliases = null;
         }
 
@@ -43,8 +42,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             for (int i = 1; i < splited.length; i++) {
                 this.secondary[i - 1] = splited[i];
             }
-        }
-        else {
+        } else {
             this.secondary = null;
         }
 
@@ -80,8 +78,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
                     continue;
                 }
                 args = Arrays.copyOfRange(args, ec.secondary.length, args.length);
-            }
-            else {
+            } else {
                 main = ec;
                 continue;
             }
@@ -126,8 +123,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (this.secondary != null) {
             return Arrays.asList(this.secondary);
-        }
-        else {
+        } else {
             return null;
         }
     }

@@ -40,7 +40,7 @@ public class Data {
         File file = new File(folder, "funnyguilds.dat");
         PandaConfiguration pc = new PandaConfiguration(file);
         if (todo == DO.SAVE) {
-            pc.set("played-before", Bukkit.getOnlinePlayers().length);
+            pc.set("played-before", Bukkit.getOnlinePlayers().size());
             pc.set("reload-count", Reloader.getReloadCount());
             pc.save();
         }
@@ -56,8 +56,7 @@ public class Data {
             }
             pc.save();
             pc = null;
-        }
-        else if (todo == DO.LOAD) {
+        } else if (todo == DO.LOAD) {
             if (!file.exists()) {
                 return;
             }
@@ -89,8 +88,7 @@ public class Data {
                 pc.save();
                 pc = null;
             }
-        }
-        else if (todo == DO.LOAD) {
+        } else if (todo == DO.LOAD) {
             if (file.exists()) {
                 Yamler pc = new Yamler(file);
                 List<String> scheme = pc.getStringList("scheme");
@@ -105,8 +103,7 @@ public class Data {
                 }
                 PlayerListManager.scheme(scheme.toArray(new String[60]));
                 pc = null;
-            }
-            else {
+            } else {
                 String[] scheme = PlayerListScheme.uniqueFields();
                 PlayerListManager.scheme(scheme);
                 Yamler pc = new Yamler(file);
@@ -132,6 +129,9 @@ public class Data {
         return new Data();
     }
 
-    private enum DO {SAVE, LOAD}
+    private enum DO {
+        SAVE,
+        LOAD
+    }
 
 }

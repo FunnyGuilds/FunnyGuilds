@@ -31,13 +31,11 @@ public class Parser {
         if (material == null) {
             if (type.equalsIgnoreCase("Enchanted_Golden_Apple")) {
                 itemstack = new ItemStack(322, 1);
-            }
-            else {
+            } else {
                 FunnyGuilds.parser("Unknown item: " + string);
                 return new ItemStack(Material.AIR);
             }
-        }
-        else {
+        } else {
             itemstack = new ItemStack(material);
         }
 
@@ -122,45 +120,40 @@ public class Parser {
             PluginConfig c = Settings.getConfig();
             List<Guild> rankedGuilds = new ArrayList<>();
 
-            for(int in = 1; in <= RankManager.getInstance().guilds(); in++) {
+            for (int in = 1; in <= RankManager.getInstance().guilds(); in++) {
                 Guild guild = RankManager.getInstance().getGuild(in);
 
-                if(guild != null && guild.getMembers().size() >= c.minMembersToInclude) {
+                if (guild != null && guild.getMembers().size() >= c.minMembersToInclude) {
                     rankedGuilds.add(guild);
                 }
             }
 
             if (string.contains("GTOP")) {
-                if(rankedGuilds.isEmpty()) {
+                if (rankedGuilds.isEmpty()) {
                     return StringUtils
-                            .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
-                }
-                else if(i - 1 >= rankedGuilds.size()) {
+                                   .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
+                } else if (i - 1 >= rankedGuilds.size()) {
                     return StringUtils
-                            .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
-                }
-                else
-                {
+                                   .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
+                } else {
                     Guild guild = rankedGuilds.get(i - 1);
 
                     return StringUtils
-                            .replace(string, "{GTOP-" + Integer.toString(i) + '}',
-                                    guild.getTag() + " " +
-                                            StringUtils.replace(Settings.getConfig().playerlistPoints,
-                                                    "{POINTS}", Integer.toString(guild.getRank().getPoints()))
-                            );
+                                   .replace(string, "{GTOP-" + Integer.toString(i) + '}',
+                                           guild.getTag() + " " +
+                                                   StringUtils.replace(Settings.getConfig().playerlistPoints,
+                                                           "{POINTS}", Integer.toString(guild.getRank().getPoints()))
+                                   );
                 }
-            }
-            else if (string.contains("PTOP")) {
+            } else if (string.contains("PTOP")) {
                 User user = RankManager.getInstance().getUser(i);
 
                 if (user != null) {
                     return StringUtils
-                            .replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
-                }
-                else {
+                                   .replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
+                } else {
                     return StringUtils
-                            .replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
+                                   .replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
                 }
             }
         } catch (NumberFormatException e) {
@@ -190,7 +183,7 @@ public class Parser {
                     if (!calc) {
                         type.push(c);
                     }
-                    
+
                     try {
                         long i = Integer.valueOf(value.toString());
                         switch (type.pop()) {
@@ -211,7 +204,7 @@ public class Parser {
                         FunnyGuilds.parser("Unknown number: " + value.toString());
                         return time;
                     }
-                    
+
                     type.push(c);
                     calc = true;
                     break;
@@ -220,10 +213,10 @@ public class Parser {
                     break;
             }
         }
-        
+
         return time;
     }
-    
+
     public static String toString(Location loc) {
         if (loc == null) {
             return null;

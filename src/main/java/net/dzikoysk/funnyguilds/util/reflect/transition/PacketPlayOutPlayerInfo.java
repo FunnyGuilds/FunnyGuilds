@@ -24,8 +24,7 @@ public class PacketPlayOutPlayerInfo {
         try {
             if (type == 0) {
                 return packetClass.getConstructor(typesClass).newInstance(s, b, i);
-            }
-            else if (type == 1) {
+            } else if (type == 1) {
                 Class<?> clazz = Reflections.getCraftClass("PacketPlayOutPlayerInfo");
                 Object packet = packetClass.getConstructor().newInstance();
                 Reflections.getPrivateField(clazz, "username").set(packet, s);

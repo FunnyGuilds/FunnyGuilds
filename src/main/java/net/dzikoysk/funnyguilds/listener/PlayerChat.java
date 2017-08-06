@@ -36,14 +36,13 @@ public class PlayerChat implements Listener {
         }
         String format = event.getFormat();
         format = StringUtils.replace(format, "{RANK}", StringUtils
-                .replace(c.chatRank, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user))));
+                                                               .replace(c.chatRank, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user))));
         format = StringUtils.replace(format, "{POINTS}", StringUtils
-                .replace(c.chatPoints, "{POINTS}", Integer.toString(user.getRank().getPoints())));
+                                                                 .replace(c.chatPoints, "{POINTS}", Integer.toString(user.getRank().getPoints())));
         if (user.hasGuild()) {
             format = StringUtils.replace(format, "{TAG}", StringUtils
-                    .replace(c.chatGuild, "{TAG}", user.getGuild().getTag()));
-        }
-        else {
+                                                                  .replace(c.chatGuild, "{TAG}", user.getGuild().getTag()));
+        } else {
             format = StringUtils.replace(format, "{TAG}", "");
         }
         event.setFormat(format);

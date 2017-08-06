@@ -46,7 +46,7 @@ public class ExcBreak implements Executor {
             String iss = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
             for (int i = 0; i < msgs.length; i++) {
                 p.sendMessage(msgs[i]
-                        .replace("{GUILDS}", iss)
+                                      .replace("{GUILDS}", iss)
                 );
             }
             return;

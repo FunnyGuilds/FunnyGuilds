@@ -57,12 +57,12 @@ public class AxcKick implements Executor {
         }
 
         player.sendMessage(m.kickToOwner
-                .replace("{PLAYER}", user.getName())
+                                   .replace("{PLAYER}", user.getName())
         );
 
         if (p != null) {
             p.sendMessage(m.kickToPlayer
-                    .replace("{GUILD}", guild.getName())
+                                  .replace("{GUILD}", guild.getName())
             );
         }
 

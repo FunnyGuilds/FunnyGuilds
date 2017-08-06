@@ -61,8 +61,7 @@ public class ExcDeputy implements Executor {
             if (o != null) {
                 o.sendMessage(m.deputyMember);
             }
-        }
-        else {
+        } else {
             guild.setDeputy(user);
             p.sendMessage(m.deputySet);
             Player o = Bukkit.getPlayer(user.getName());

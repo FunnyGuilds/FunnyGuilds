@@ -29,7 +29,7 @@ public class ExcConfirm implements Executor {
             return;
         }
 
-        if(Settings.getConfig().regionDeleteIfNear && lp.getGuild().isSomeoneInRegion()) {
+        if (Settings.getConfig().regionDeleteIfNear && lp.getGuild().isSomeoneInRegion()) {
             p.sendMessage(m.deleteSomeoneIsNear);
             return;
         }
@@ -45,8 +45,8 @@ public class ExcConfirm implements Executor {
         GuildUtils.deleteGuild(lp.getGuild());
 
         p.sendMessage(m.deleteSuccessful
-                .replace("{GUILD}", name)
-                .replace("{TAG}", tag)
+                              .replace("{GUILD}", name)
+                              .replace("{TAG}", tag)
         );
 
         Bukkit.getServer().broadcastMessage(

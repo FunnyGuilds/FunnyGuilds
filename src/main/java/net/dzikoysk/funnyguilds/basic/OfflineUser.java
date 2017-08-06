@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.basic;
 
 import com.google.common.base.Charsets;
+import com.mojang.authlib.GameProfile;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.minecraft.util.com.mojang.authlib.GameProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -35,8 +35,7 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
                         String.class,
                         String.class
                 }).newInstance(uuid.toString(), name);
-            }
-            else if (type == 2) {
+            } else if (type == 2) {
                 this.profile = GameProfile.class.getConstructor(new Class<?>[]{
                         UUID.class,
                         String.class
@@ -66,11 +65,9 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         for (Constructor c : GameProfile.class.getConstructors()) {
             if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{ String.class, String.class })) {
                 type = 1;
-            }
-            else if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{ UUID.class, String.class })) {
+            } else if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{ UUID.class, String.class })) {
                 type = 2;
-            }
-            else {
+            } else {
                 FunnyGuilds.error("GameProfile constructor not found!");
             }
         }

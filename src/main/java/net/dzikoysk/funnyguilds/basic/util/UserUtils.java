@@ -17,6 +17,10 @@ public class UserUtils {
     private final static Cache<UUID, User> uuidUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
     private final static Cache<String, User> nameUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
+    public static List<User> getUsers() {
+        return new ArrayList<>(uuidUserMap.values());
+    }
+
     public static User get(String nickname) {
         User user = nameUserCache.getIfPresent(nickname);
         if (user == null) {
@@ -47,7 +51,7 @@ public class UserUtils {
         uuidUserMap.put(user.getUUID(), user);
         uuidUserCache.put(user.getUUID(), user);
 
-        if(user.getName() != null) {
+        if (user.getName() != null) {
             nameUserMap.put(user.getName(), user);
             nameUserCache.put(user.getName(), user);
         }
@@ -78,8 +82,7 @@ public class UserUtils {
         for (User u : users) {
             if (u.isOnline()) {
                 list.add("<online>" + u.getName() + "</online>");
-            }
-            else {
+            } else {
                 list.add(u.getName());
             }
         }
@@ -100,10 +103,6 @@ public class UserUtils {
 
     public static int usersSize() {
         return uuidUserMap.size();
-    }
-
-    public static List<User> getUsers() {
-        return new ArrayList<>(uuidUserMap.values());
     }
 
 }

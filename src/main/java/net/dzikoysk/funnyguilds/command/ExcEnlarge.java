@@ -61,8 +61,8 @@ public class ExcEnlarge implements Executor {
         region.setSize(region.getSize() + c.enlargeSize);
 
         String tm = m.enlargeDone
-                .replace("{SIZE}", region.getSize() + "")
-                .replace("{LEVEL}", region.getEnlarge() + "");
+                            .replace("{SIZE}", region.getSize() + "")
+                            .replace("{LEVEL}", region.getEnlarge() + "");
 
         for (User user : lp.getGuild().getMembers()) {
             OfflinePlayer of = Bukkit.getOfflinePlayer(user.getName());

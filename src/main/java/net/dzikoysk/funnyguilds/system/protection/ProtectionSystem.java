@@ -21,7 +21,7 @@ public class ProtectionSystem {
             return false;
         }
         return region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
-                .equals(loc.getBlock().getLocation().toVector());
+                       .equals(loc.getBlock().getLocation().toVector());
     }
 
     public static boolean build(Player player, Location location, boolean build) {
@@ -46,8 +46,7 @@ public class ProtectionSystem {
                         Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))
                 ));
                 return true;
-            }
-            else if (location.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
+            } else if (location.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
                 Material m = Settings.getConfig().createMaterial;
                 if (m != null && m != Material.AIR) {
                     return true;

@@ -23,8 +23,7 @@ public class Manager {
         Settings.getConfig();
         if (Settings.getConfig().dataType.mysql) {
             DatabaseBasic.getInstance().load();
-        }
-        else {
+        } else {
             Flat.getInstance().load();
         }
         Data.getInstance();

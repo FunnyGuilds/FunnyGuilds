@@ -67,8 +67,7 @@ public class DatabaseUser {
             sb.append("' WHERE `uuid`='");
             sb.append(user.getUUID().toString());
             sb.append("'");
-        }
-        else {
+        } else {
             sb.append("; UPDATE `users` SET `guild`=NULL WHERE `uuid`='");
             sb.append(user.getUUID().toString());
             sb.append("'");

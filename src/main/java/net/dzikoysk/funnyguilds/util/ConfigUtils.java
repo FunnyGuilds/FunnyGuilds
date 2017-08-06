@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class ConfigUtils {
 
-    public static  <T> T loadConfig(final File file, final Class<T> implementationFile) {
+    public static <T> T loadConfig(final File file, final Class<T> implementationFile) {
         final Template<T> template = TemplateCreator.getTemplate(implementationFile);
 
         T config;

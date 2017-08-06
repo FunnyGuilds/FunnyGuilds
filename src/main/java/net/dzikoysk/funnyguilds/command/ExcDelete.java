@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -9,8 +8,6 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Arrays;
 
 public class ExcDelete implements Executor {
 
@@ -31,7 +28,7 @@ public class ExcDelete implements Executor {
             return;
         }
 
-        if(Settings.getConfig().regionDeleteIfNear && u.getGuild().isSomeoneInRegion()) {
+        if (Settings.getConfig().regionDeleteIfNear && u.getGuild().isSomeoneInRegion()) {
             p.sendMessage(m.deleteSomeoneIsNear);
             return;
         }

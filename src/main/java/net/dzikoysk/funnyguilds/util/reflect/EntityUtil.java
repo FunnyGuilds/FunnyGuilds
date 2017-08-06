@@ -19,18 +19,22 @@ public class EntityUtil {
     public static HashMap<Guild, Integer> entitesMap = new HashMap<>();
     private static HashMap<Integer, Object> ids = new HashMap<>();
 
+    public static HashMap<Guild, Integer> getEntitesMap() {
+        return entitesMap;
+    }
+
     private static int spawnPacket(Location loc) throws Exception {
         Object world = Reflections.getHandle(loc.getWorld());
         Object crystal = enderCrystalClass.getConstructor(Reflections.getCraftClass("World")).newInstance(world);
         Reflections.getMethod(enderCrystalClass, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(crystal, loc.getX(), loc.getY(), loc.getZ(), 0, 0);
-        Object packet = spawnEntityClass.getConstructor(new Class<?>[]{entityClass, int.class}).newInstance(crystal, 51);
+        Object packet = spawnEntityClass.getConstructor(new Class<?>[]{ entityClass, int.class }).newInstance(crystal, 51);
         int id = (int) Reflections.getMethod(enderCrystalClass, "getId").invoke(crystal);
         ids.put(id, packet);
         return id;
     }
 
     private static Object despawnPacket(int id) throws Exception {
-        return despawnEntityClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
+        return despawnEntityClass.getConstructor(new Class<?>[]{ int[].class }).newInstance(new int[]{ id });
     }
 
     public static void spawn(Guild guild) {
@@ -108,10 +112,6 @@ public class EntityUtil {
                 e.printStackTrace();
             }
         }
-    }
-
-    public static HashMap<Guild, Integer> getEntitesMap() {
-        return entitesMap;
     }
 
 }

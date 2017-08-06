@@ -70,8 +70,7 @@ public class Flat {
                 if (user == null) {
                     file.delete();
                     i++;
-                }
-                else {
+                } else {
                     user.changed();
                 }
             }
@@ -109,8 +108,7 @@ public class Flat {
                 Region region = FlatRegion.deserialize(file);
                 if (region == null) {
                     file.delete();
-                }
-                else {
+                } else {
                     region.changed();
                 }
             }
@@ -144,8 +142,7 @@ public class Flat {
                 Guild guild = FlatGuild.deserialize(file);
                 if (guild == null) {
                     file.delete();
-                }
-                else {
+                } else {
                     guild.changed();
                 }
             }

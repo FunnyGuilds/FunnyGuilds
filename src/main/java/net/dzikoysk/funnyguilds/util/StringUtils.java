@@ -70,8 +70,7 @@ public class StringUtils {
         if (send) {
             if (s.length() > 2) {
                 s = s.substring(0, s.length() - 2);
-            }
-            else if (s.length() > 1) {
+            } else if (s.length() > 1) {
                 s = s.substring(0, s.length() - 1);
             }
         }

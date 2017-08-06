@@ -45,7 +45,7 @@ public class ExcValidity implements Executor {
             if (d > s.validityWhen) {
                 long when = d - s.validityWhen;
                 p.sendMessage(m.validityWhen
-                        .replace("{TIME}", TimeUtils.getDurationBreakdown(when))
+                                      .replace("{TIME}", TimeUtils.getDurationBreakdown(when))
                 );
                 return;
             }
@@ -91,7 +91,7 @@ public class ExcValidity implements Executor {
         Date v = new Date(c);
 
         p.sendMessage(m.validityDone
-                .replace("{DATE}", date.format(v))
+                              .replace("{DATE}", date.format(v))
         );
     }
 

@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
+import io.netty.channel.*;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import net.minecraft.util.io.netty.channel.*;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -73,8 +73,7 @@ public class PacketExtension {
             if (cp.names().contains("packet_handler")) {
                 if (cp.names().contains("FunnyGuilds")) {
                     cp.replace("FunnyGuilds", "FunnyGuilds", handler);
-                }
-                else {
+                } else {
                     cp.addBefore("packet_handler", "FunnyGuilds", handler);
                 }
             }

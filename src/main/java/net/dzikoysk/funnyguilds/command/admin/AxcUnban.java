@@ -44,8 +44,8 @@ public class AxcUnban implements Executor {
         player.sendMessage(StringUtils.colored("&7Odbanowano gildie &a" + guild.getName() + "&7!"));
 
         Bukkit.broadcastMessage(Messages.getInstance().broadcastUnban
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag())
+                                        .replace("{GUILD}", guild.getName())
+                                        .replace("{TAG}", guild.getTag())
         );
     }
 

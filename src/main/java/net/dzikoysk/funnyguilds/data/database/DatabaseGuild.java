@@ -43,8 +43,7 @@ public class DatabaseGuild {
             update.append(guild.getUUID().toString());
             update.append("'");
             db.executeUpdate(update.toString());
-        }
-        else if (guild.getName() != null) {
+        } else if (guild.getName() != null) {
             Database db = Database.getInstance();
             StringBuilder update = new StringBuilder();
             update.append("DELETE FROM `guilds` WHERE `name`='");
@@ -88,8 +87,7 @@ public class DatabaseGuild {
             sb.append("' WHERE `uuid`='");
             sb.append(guild.getUUID().toString());
             sb.append("'");
-        }
-        else {
+        } else {
             sb.append("; UPDATE `guilds` SET `deputy`=NULL WHERE `uuid`='");
             sb.append(guild.getUUID().toString());
             sb.append("'");

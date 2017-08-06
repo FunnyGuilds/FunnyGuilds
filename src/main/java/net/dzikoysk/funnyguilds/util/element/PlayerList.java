@@ -39,8 +39,7 @@ public class PlayerList {
             }
             if (s.length() <= 16) {
                 prefix[i] = s;
-            }
-            else {
+            } else {
                 String px = s.substring(0, 16);
                 if (px.charAt(15) == '\u00A7') {
                     px = s.substring(0, 15);
@@ -54,17 +53,14 @@ public class PlayerList {
                     int l = s.length();
                     if (l < 32) {
                         sx += s.substring(15, s.length());
-                    }
-                    else {
+                    } else {
                         sx += s.substring(15, 32);
                     }
-                }
-                else {
+                } else {
                     int l = s.length();
                     if (l < 32) {
                         sx += s.substring(16, s.length());
-                    }
-                    else {
+                    } else {
                         sx += s.substring(16, 32);
                     }
                 }
@@ -90,15 +86,13 @@ public class PlayerList {
 
             if (second < 10) {
                 s = StringUtils.replace(s, "{SECOND}", '0' + Integer.toString(second));
-            }
-            else {
+            } else {
                 s = StringUtils.replace(s, "{SECOND}", Integer.toString(second));
             }
 
             if (minute < 10) {
                 s = StringUtils.replace(s, "{MINUTE}", '0' + Integer.toString(minute));
-            }
-            else {
+            } else {
                 s = StringUtils.replace(s, "{MINUTE}", Integer.toString(minute));
             }
 
@@ -113,8 +107,7 @@ public class PlayerList {
                 s = StringUtils.replace(s, "{SIZE}", Integer.toString(region.getSize()));
                 s = StringUtils.replace(s, "{GPOINTS}", Integer.toString(rank.getPoints()));
                 s = StringUtils.replace(s, "{GRANK}", Integer.toString(rank.getPosition()));
-            }
-            else {
+            } else {
                 s = StringUtils.replace(s, "{GUILD}", "Brak");
                 s = StringUtils.replace(s, "{TAG}", "Brak");
                 s = StringUtils.replace(s, "{SIZE}", "-");
@@ -123,7 +116,7 @@ public class PlayerList {
                 s = StringUtils.replace(s, "{GRANK}", "-");
             }
 
-            s = StringUtils.replace(s, "{ONLINE}", Integer.toString(Bukkit.getOnlinePlayers().length));
+            s = StringUtils.replace(s, "{ONLINE}", Integer.toString(Bukkit.getOnlinePlayers().size()));
             s = StringUtils.replace(s, "{PLAYER}", user.getName());
             s = StringUtils.replace(s, "{TPS}", Ticking.getTPS());
             s = StringUtils.replace(s, "{PING}", Integer.toString(user.getPing()));

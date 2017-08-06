@@ -83,8 +83,7 @@ public class InvitationsList {
                 sb.append(x.getType());
                 sb.append(",");
                 sb.append(((User) x.getO()).getName());
-            }
-            else if (x.getO() instanceof Guild) {
+            } else if (x.getO() instanceof Guild) {
                 sb.append("G,");
                 sb.append(x.getType());
                 sb.append(",");
