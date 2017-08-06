@@ -36,9 +36,10 @@ public class PlayerJoin implements Listener {
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             PacketExtension.registerPlayer(player);
-            Region region = RegionUtils.getAt(player.getLocation());
             Version.check(player);
-            if(region == null || region.getGuild() == null){
+
+            Region region = RegionUtils.getAt(player.getLocation());
+            if(region == null || region.getGuild() == null) {
                 return;
             }
             if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
