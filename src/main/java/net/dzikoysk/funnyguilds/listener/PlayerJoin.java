@@ -1,8 +1,12 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.Version;
+import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -33,6 +37,14 @@ public class PlayerJoin implements Listener {
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             PacketExtension.registerPlayer(player);
             Version.check(player);
+
+            Region region = RegionUtils.getAt(player.getLocation());
+            if(region == null || region.getGuild() == null) {
+                return;
+            }
+            if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                EntityUtil.spawn(region.getGuild(), player);
+            }
         }, 30L);
     }
 }
