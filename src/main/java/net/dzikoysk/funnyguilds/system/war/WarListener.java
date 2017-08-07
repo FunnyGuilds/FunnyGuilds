@@ -41,10 +41,14 @@ public class WarListener {
                 return;
             }
 
+            if (actionField == null) {
+                return;
+            }
+
             int id = idField.getInt(packet);
             Object actionEnum = actionField.get(packet);
 
-            if (actionEnum == null) {
+            if (actionEnum == null || actionIdField == null) {
                 return;
             }
 
