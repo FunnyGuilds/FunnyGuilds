@@ -34,7 +34,6 @@ public class WarListener {
                 actionField = Reflections.getPrivateField(packet.getClass(), "action");
 
                 Object actionEnum = actionField.get(packet);
-                actionIdField = Reflections.getPrivateField(actionEnum.getClass(), "d");
             }
 
             if (!packet.getClass().equals(clazz)) {
@@ -48,19 +47,17 @@ public class WarListener {
             int id = idField.getInt(packet);
             Object actionEnum = actionField.get(packet);
 
-            if (actionEnum == null || actionIdField == null) {
+            if (actionEnum == null) {
                 return;
             }
 
-            int action = actionIdField.getInt(actionEnum);
-
-            call(player, id, action);
+            call(player, id, actionEnum.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static void call(Player player, int id, int action) {
+    private static void call(Player player, int id, String action) {
         for (final Map.Entry<Guild, Integer> entry : EntityUtil.getEntitesMap().entrySet()) {
             if (!entry.getValue().equals(id)) {
                 continue;
@@ -72,7 +69,7 @@ public class WarListener {
                 return;
             }
 
-            if (action == 1) {
+            if (action.equalsIgnoreCase("ATTACK")) {
                 WarSystem.getInstance().attack(player, entry.getKey());
             } else {
                 ExcInfo excInfo = new ExcInfo();
