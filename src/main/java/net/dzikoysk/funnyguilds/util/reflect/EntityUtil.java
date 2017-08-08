@@ -41,10 +41,11 @@ public class EntityUtil {
         try {
             Object o = null;
             if (!entitesMap.containsKey(guild)) {
-                Location loc = Region.get(guild.getRegion()).getCenter();
-                if (loc == null) {
+                Location center = Region.get(guild.getRegion()).getCenter();
+                if (center == null) {
                     return;
                 }
+                Location loc = new Location(center.getWorld(), center.getX() + 0.5D, center.getY() - 1.0D, center.getZ() + 0.5D);
                 int id = spawnPacket(loc);
                 o = ids.get(id);
                 entitesMap.put(guild, id);
@@ -61,10 +62,11 @@ public class EntityUtil {
         try {
             Object o = null;
             if (!entitesMap.containsKey(guild)) {
-                Location loc = Region.get(guild.getRegion()).getCenter();
-                if (loc == null) {
+                Location center = Region.get(guild.getRegion()).getCenter();
+                if (center == null) {
                     return;
                 }
+                Location loc = new Location(center.getWorld(), center.getX() + 0.5D, center.getY() - 1.0D, center.getZ() + 0.5D);
                 int id = spawnPacket(loc);
                 o = ids.get(id);
                 entitesMap.put(guild, id);

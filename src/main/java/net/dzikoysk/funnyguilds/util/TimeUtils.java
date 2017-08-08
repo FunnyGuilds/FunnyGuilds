@@ -70,11 +70,11 @@ public class TimeUtils {
             long i = seconds % 10;
 
             if (i == 1) {
-                sb.append("sekunde ");
+                sb.append(" sekunde ");
             } else if (i < 5) {
-                sb.append("sekundy ");
+                sb.append(" sekundy ");
             } else {
-                sb.append("sekund ");
+                sb.append(" sekund ");
             }
         }
 
