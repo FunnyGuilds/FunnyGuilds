@@ -116,11 +116,17 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            return true;
+        }
         return call(sender, cmd, args);
     }
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+        if (!(sender instanceof Player)) {
+            return new ArrayList<>();
+        }
         if (this.secondary != null) {
             return Arrays.asList(this.secondary);
         } else {
