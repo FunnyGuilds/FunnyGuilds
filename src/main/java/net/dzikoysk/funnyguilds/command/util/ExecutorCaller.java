@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ExecutorCaller implements CommandExecutor, TabExecutor {
@@ -125,7 +126,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
         if (!(sender instanceof Player)) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         }
         if (this.secondary != null) {
             return Arrays.asList(this.secondary);
