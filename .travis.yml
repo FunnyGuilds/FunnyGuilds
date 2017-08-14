@@ -9,3 +9,6 @@ script:
 - java -version
 - mvn validate
 - mvn clean test
+
+notifications:
+  email: false
