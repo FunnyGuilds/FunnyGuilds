@@ -123,7 +123,7 @@
                     <relocations>
                         <relocation>
                             <pattern>com.google.common.</pattern>
-                            <shadedPattern>net.dzikoysk.funnyguilds.libs.com.google.common</shadedPattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.com.google.common.</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
