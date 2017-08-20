@@ -14,7 +14,6 @@ public class ExcPlayer implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-
         MessagesConfig msg = Messages.getInstance();
         Player p = (Player) s;
         String name = p.getName();
@@ -37,7 +36,8 @@ public class ExcPlayer implements Executor {
             if (user.hasGuild()) {
                 m = StringUtils.replace(m, "{GUILD}", user.getGuild().getName());
                 m = StringUtils.replace(m, "{TAG}", user.getGuild().getTag());
-            } else {
+            }
+            else {
                 m = StringUtils.replace(m, "{GUILD}", "Brak");
                 m = StringUtils.replace(m, "{TAG}", "Brak");
             }

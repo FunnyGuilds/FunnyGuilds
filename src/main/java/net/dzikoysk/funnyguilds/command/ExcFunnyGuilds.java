@@ -23,29 +23,31 @@ public class ExcFunnyGuilds implements Executor {
                     s.sendMessage(Messages.getInstance().permission);
                     return;
                 }
-                Thread thread = new Thread() {
-                    @Override
-                    public void run() {
-                        Manager dm = Manager.getInstance();
-                        dm.stop();
-                        dm.save();
-                        new Messages();
-                        new Settings();
-                        dm.start();
-                        s.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano!");
-                    }
-                };
+
+                Thread thread = new Thread(() -> {
+                    Manager dm = Manager.getInstance();
+                    dm.stop();
+                    dm.save();
+                    new Messages();
+                    new Settings();
+                    dm.start();
+                    s.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano!");
+                });
+
                 s.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
                 thread.start();
                 return;
-            } else if (args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")) {
+            }
+            else if (args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")) {
                 if (s instanceof Player) {
                     Version.check((Player) s);
-                } else {
+                }
+                else {
                     FunnyGuilds.info("Console can not use this command");
                 }
                 return;
-            } else if (args[0].equalsIgnoreCase("save-all")) {
+            }
+            else if (args[0].equalsIgnoreCase("save-all")) {
                 if (s instanceof Player && !s.hasPermission("funnyguilds.admin")) {
                     s.sendMessage(Messages.getInstance().permission);
                     return;
@@ -73,8 +75,7 @@ public class ExcFunnyGuilds implements Executor {
                     }
                 }
                 Data.getInstance().save();
-                s.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA +
-                                      (System.currentTimeMillis() - l) / 1000F + "s" + ChatColor.GRAY + ")!");
+                s.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - l) / 1000F + "s" + ChatColor.GRAY + ")!");
                 return;
             }
             if (args[0].equalsIgnoreCase("admin") || args[0].equalsIgnoreCase("zarzadzaj")) {

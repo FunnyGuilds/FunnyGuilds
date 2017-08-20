@@ -62,8 +62,7 @@ public class EntityExplode implements Listener {
             for (User user : guild.getMembers()) {
                 Player player = this.plugin.getServer().getPlayer(user.getName());
                 if (player != null) {
-                    player.sendMessage(Messages.getInstance().regionExplode
-                                               .replace("{TIME}", Integer.toString(Settings.getConfig().regionExplode)));
+                    player.sendMessage(Messages.getInstance().regionExplode.replace("{TIME}", Integer.toString(Settings.getConfig().regionExplode)));
                 }
             }
         }
@@ -77,7 +76,8 @@ public class EntityExplode implements Listener {
                 if (RandomizationUtils.chance(materials.get(material))) {
                     l.getBlock().setType(Material.AIR);
                 }
-            } else {
+            }
+            else {
                 if (RandomizationUtils.chance(materials.get(material))) {
                     l.getBlock().breakNaturally();
                 }

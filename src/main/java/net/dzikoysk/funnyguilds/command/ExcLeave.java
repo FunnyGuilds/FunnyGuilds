@@ -15,7 +15,6 @@ public class ExcLeave implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
         User u = User.get(p);
@@ -36,17 +35,9 @@ public class ExcLeave implements Executor {
         u.removeGuild();
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, p);
 
-        p.sendMessage(
-                m.leaveToUser
-                        .replace("{GUILD}", guild.getName())
-                        .replace("{TAG}", guild.getTag())
-        );
+        p.sendMessage(m.leaveToUser.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
 
-        Bukkit.broadcastMessage(
-                m.broadcastLeave
-                        .replace("{PLAYER}", u.getName())
-                        .replace("{GUILD}", guild.getName())
-                        .replace("{TAG}", guild.getTag())
-        );
+        Bukkit.broadcastMessage(m.broadcastLeave.replace("{PLAYER}", u.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
+
 }

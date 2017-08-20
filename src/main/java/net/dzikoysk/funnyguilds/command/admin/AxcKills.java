@@ -30,7 +30,7 @@ public class AxcKills implements Executor {
             return;
         }
 
-        int kills = 0;
+        int kills;
         try {
             kills = Integer.valueOf(args[1]);
         } catch (NumberFormatException e) {
@@ -41,7 +41,6 @@ public class AxcKills implements Executor {
         User user = User.get(args[0]);
         user.getRank().setKills(kills);
         player.sendMessage(ChatColor.GRAY + "Ustawiono " + ChatColor.AQUA + kills + " zabojstw " + ChatColor.GRAY + "dla " + ChatColor.AQUA + user.getName());
-        return;
     }
 
 }

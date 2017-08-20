@@ -37,7 +37,7 @@ public class AxcLives implements Executor {
             return;
         }
 
-        int lives = 0;
+        int lives;
         try {
             lives = Integer.valueOf(args[1]);
         } catch (NumberFormatException e) {
@@ -47,7 +47,6 @@ public class AxcLives implements Executor {
 
         guild.setLives(lives);
         player.sendMessage(ChatColor.GRAY + "Ustawiono " + ChatColor.AQUA + lives + " zyc " + ChatColor.GRAY + "dla gildii " + ChatColor.AQUA + guild.getTag());
-        return;
     }
 
 }

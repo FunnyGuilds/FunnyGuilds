@@ -50,43 +50,38 @@ public class ExcCreate implements Executor {
             if (args.length == 0) {
                 p.sendMessage(m.createTag);
                 return;
-            } else if (args.length == 1) {
+            }
+            else if (args.length == 1) {
                 p.sendMessage(m.createName);
                 return;
-            } else if (args.length > 2) {
+            }
+            else if (args.length > 2) {
                 p.sendMessage(m.createMore);
                 return;
             }
         }
 
         PluginConfig c = Settings.getConfig();
-
         String tag = args[0];
         String name = args[1];
 
         if (tag.length() > c.createTagLength) {
-            p.sendMessage(m.createTagLength
-                                  .replace("{LENGTH}", Integer.toString(c.createTagLength)));
+            p.sendMessage(m.createTagLength.replace("{LENGTH}", Integer.toString(c.createTagLength)));
             return;
         }
 
         if (tag.length() < c.createTagMinLength) {
-            p.sendMessage(m.createTagMinLength
-                                  .replace("{LENGTH}", Integer.toString(c.createTagMinLength)));
+            p.sendMessage(m.createTagMinLength.replace("{LENGTH}", Integer.toString(c.createTagMinLength)));
             return;
         }
 
         if (name.length() > c.createNameLength) {
-            p.sendMessage(m.createNameLength
-                                  .replace("{LENGTH}", Integer.toString(c.createNameLength))
-            );
+            p.sendMessage(m.createNameLength.replace("{LENGTH}", Integer.toString(c.createNameLength)));
             return;
         }
 
         if (name.length() < c.createNameMinLength) {
-            p.sendMessage(m.createNameMinLength
-                                  .replace("{LENGTH}", Integer.toString(c.createNameMinLength))
-            );
+            p.sendMessage(m.createNameMinLength.replace("{LENGTH}", Integer.toString(c.createNameMinLength)));
             return;
         }
 
@@ -116,22 +111,28 @@ public class ExcCreate implements Executor {
         if (c.createCenterY != 0) {
             loc.setY(c.createCenterY);
         }
+
         int d = c.regionSize + c.createDistance;
+
         if (c.enlargeItems != null) {
             d += c.enlargeItems.size() * c.enlargeSize;
         }
+
         if (d > p.getWorld().getSpawnLocation().distance(loc)) {
             p.sendMessage(m.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
             return;
         }
 
-        List<ItemStack> itemsList = null;
+        List<ItemStack> itemsList;
         if (p.hasPermission("funnyguilds.vip")) {
             itemsList = c.createItemsVip;
-        } else {
+        }
+        else {
             itemsList = c.createItems;
         }
+
         ItemStack[] items = itemsList.toArray(new ItemStack[0]);
+
         if (!u.getBypass()) {
             for (int i = 0; i < items.length; i++) {
                 if (p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
@@ -160,10 +161,12 @@ public class ExcCreate implements Executor {
                 return;
             }
         }
+
         if (RegionUtils.isIn(loc)) {
             p.sendMessage(m.createIsNear);
             return;
         }
+
         if (RegionUtils.isNear(loc)) {
             p.sendMessage(m.createIsNear);
             return;
@@ -171,7 +174,8 @@ public class ExcCreate implements Executor {
 
         if (u.getBypass()) {
             u.setBypass(false);
-        } else {
+        }
+        else {
             p.getInventory().removeItem(items);
         }
 
@@ -198,6 +202,7 @@ public class ExcCreate implements Executor {
                     l.getBlock().setType(Material.AIR);
                 }
             }
+
             for (Location l : SpaceUtils.sphere(loc, 4, 4, true, true, 0)) {
                 if (l.getBlock().getType() != Material.BEDROCK) {
                     l.getBlock().setType(Material.OBSIDIAN);
@@ -207,32 +212,21 @@ public class ExcCreate implements Executor {
 
         if (c.createMaterial != null && c.createMaterial != Material.AIR) {
             loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
-        } else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        }
+        else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
 
         p.teleport(loc);
-
         Manager.getInstance().start();
 
         IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);
         IndependentThread.actions(ActionType.PREFIX_GLOBAL_ADD_GUILD, guild);
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, u.getOfflineUser());
 
-        p.sendMessage(
-                m.createGuild
-                        .replace("{GUILD}", name)
-                        .replace("{PLAYER}", p.getName())
-                        .replace("{TAG}", tag)
-        );
+        p.sendMessage(m.createGuild.replace("{GUILD}", name).replace("{PLAYER}", p.getName()).replace("{TAG}", tag));
 
-        Bukkit.getServer().broadcastMessage(
-                m.broadcastCreate
-                        .replace("{GUILD}", name)
-                        .replace("{PLAYER}", p.getName())
-                        .replace("{TAG}", tag)
-        );
-        return;
+        Bukkit.getServer().broadcastMessage(m.broadcastCreate.replace("{GUILD}", name).replace("{PLAYER}", p.getName()).replace("{TAG}", tag));
     }
 
 }

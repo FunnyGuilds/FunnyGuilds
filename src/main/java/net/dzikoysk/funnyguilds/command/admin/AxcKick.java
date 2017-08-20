@@ -17,7 +17,6 @@ public class AxcKick implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-
         MessagesConfig m = Messages.getInstance();
         Player player = (Player) sender;
 
@@ -45,10 +44,9 @@ public class AxcKick implements Executor {
             return;
         }
 
-        Guild guild = user.getGuild();
-
         IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, offline);
 
+        Guild guild = user.getGuild();
         guild.removeMember(user);
         user.removeGuild();
 
@@ -56,22 +54,13 @@ public class AxcKick implements Executor {
             IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
         }
 
-        player.sendMessage(m.kickToOwner
-                                   .replace("{PLAYER}", user.getName())
-        );
+        player.sendMessage(m.kickToOwner.replace("{PLAYER}", user.getName()));
 
         if (p != null) {
-            p.sendMessage(m.kickToPlayer
-                                  .replace("{GUILD}", guild.getName())
-            );
+            p.sendMessage(m.kickToPlayer.replace("{GUILD}", guild.getName()));
         }
 
-        Bukkit.broadcastMessage(
-                m.broadcastKick
-                        .replace("{PLAYER}", user.getName())
-                        .replace("{GUILD}", guild.getName())
-                        .replace("{TAG}", guild.getTag())
-        );
+        Bukkit.broadcastMessage(m.broadcastKick.replace("{PLAYER}", user.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 
 }

@@ -56,8 +56,7 @@ public class ExcAlly implements Executor {
         String tag = args[0];
 
         if (!GuildUtils.tagExists(tag)) {
-            player.sendMessage(StringUtils
-                                       .replace(messages.allyGuildExists, "{TAG}", tag));
+            player.sendMessage(StringUtils.replace(messages.allyGuildExists, "{TAG}", tag));
             return;
         }
 
@@ -79,16 +78,12 @@ public class ExcAlly implements Executor {
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
 
-            player.sendMessage(StringUtils
-                                       .replace(messages.allyDone, "{GUILD}", invitedGuild.getName())
-            );
+            player.sendMessage(StringUtils.replace(messages.allyDone, "{GUILD}", invitedGuild.getName()));
 
             OfflineUser of = invitedGuild.getOwner().getOfflineUser();
 
             if (of.isOnline()) {
-                of.getPlayer().sendMessage(messages.allyIDone
-                                                   .replace("{GUILD}", guild.getName())
-                );
+                of.getPlayer().sendMessage(messages.allyIDone.replace("{GUILD}", guild.getName()));
             }
 
             for (User u : guild.getMembers()) {
@@ -104,15 +99,11 @@ public class ExcAlly implements Executor {
 
         if (InvitationsList.get(invitedGuild, 1).getLS().contains(guild.getName())) {
             InvitationsList.get(invitedGuild, 1).remove(guild.getName());
-            player.sendMessage(messages.allyReturn
-                                       .replace("{GUILD}", invitedGuild.getName())
-            );
+            player.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
 
             OfflineUser of = invitedGuild.getOwner().getOfflineUser();
             if (of.isOnline()) {
-                of.getPlayer().sendMessage(messages.allyIReturn
-                                                   .replace("{GUILD}", guild.getName())
-                );
+                of.getPlayer().sendMessage(messages.allyIReturn.replace("{GUILD}", guild.getName()));
             }
 
             return;
@@ -120,16 +111,12 @@ public class ExcAlly implements Executor {
 
         InvitationsList.get(invitedGuild, 1).add(guild.getName());
 
-        player.sendMessage(messages.allyInviteDone
-                                   .replace("{GUILD}", invitedGuild.getName())
-        );
+        player.sendMessage(messages.allyInviteDone.replace("{GUILD}", invitedGuild.getName()));
 
         OfflineUser of = invitedGuild.getOwner().getOfflineUser();
 
         if (of.isOnline()) {
-            of.getPlayer().sendMessage(messages.allyToInvited
-                                               .replace("{GUILD}", guild.getName())
-            );
+            of.getPlayer().sendMessage(messages.allyToInvited.replace("{GUILD}", guild.getName()));
         }
     }
 

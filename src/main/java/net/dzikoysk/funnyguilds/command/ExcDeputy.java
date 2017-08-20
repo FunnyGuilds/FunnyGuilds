@@ -15,7 +15,6 @@ public class ExcDeputy implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
         User owner = User.get(p);
@@ -36,12 +35,14 @@ public class ExcDeputy implements Executor {
         }
 
         String name = args[0];
+
         if (!UserUtils.playedBefore(name)) {
             p.sendMessage(m.deputyPlayedBefore);
             return;
         }
 
         User user = User.get(name);
+
         if (owner.equals(user)) {
             p.sendMessage(StringUtils.colored("&cNie mozesz mianowac siebie zastepca!"));
             return;
@@ -58,16 +59,21 @@ public class ExcDeputy implements Executor {
             guild.setDeputy(null);
             p.sendMessage(m.deputyRemove);
             Player o = Bukkit.getPlayer(user.getName());
+
             if (o != null) {
                 o.sendMessage(m.deputyMember);
             }
-        } else {
-            guild.setDeputy(user);
-            p.sendMessage(m.deputySet);
-            Player o = Bukkit.getPlayer(user.getName());
-            if (o != null) {
-                o.sendMessage(m.deputyOwner);
-            }
+
+            return;
+        }
+
+        guild.setDeputy(user);
+        p.sendMessage(m.deputySet);
+        Player o = Bukkit.getPlayer(user.getName());
+
+        if (o != null) {
+            o.sendMessage(m.deputyOwner);
         }
     }
+
 }

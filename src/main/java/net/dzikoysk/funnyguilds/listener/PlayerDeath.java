@@ -43,7 +43,8 @@ public class PlayerDeath implements Listener {
                 a.sendMessage(Messages.getInstance().rankLastVictimA);
                 return;
             }
-        } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
+        }
+        else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
             if (victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()) {
                 v.sendMessage(Messages.getInstance().rankLastAttackerV);
                 a.sendMessage(Messages.getInstance().rankLastAttackerA);
@@ -84,12 +85,10 @@ public class PlayerDeath implements Listener {
         death = StringUtils.replace(death, "{+}", Integer.toString(points));
         death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
         if (victim.hasGuild()) {
-            death = StringUtils.replace(death, "{VTAG}",
-                    StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", victim.getGuild().getTag()));
+            death = StringUtils.replace(death, "{VTAG}", StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", victim.getGuild().getTag()));
         }
         if (attacker.hasGuild()) {
-            death = StringUtils.replace(death, "{ATAG}",
-                    StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", attacker.getGuild().getTag()));
+            death = StringUtils.replace(death, "{ATAG}", StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", attacker.getGuild().getTag()));
         }
         death = StringUtils.replace(death, "{VTAG}", "");
         death = StringUtils.replace(death, "{ATAG}", "");

@@ -57,24 +57,15 @@ public class AxcAdd implements Executor {
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, offline);
 
         if (offline.isOnline()) {
-            Bukkit.getPlayer(user.getName()).sendMessage(messages.joinToMember
-                                                                 .replace("{GUILD}", guild.getName())
-                                                                 .replace("{TAG}", guild.getTag())
-            );
+            Bukkit.getPlayer(user.getName()).sendMessage(messages.joinToMember.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
         }
 
         Player owner = Bukkit.getPlayer(guild.getOwner().getName());
         if (owner != null) {
-            owner.sendMessage(messages.joinToOwner
-                                      .replace("{PLAYER}", user.getName())
-            );
+            owner.sendMessage(messages.joinToOwner.replace("{PLAYER}", user.getName()));
         }
 
-        Bukkit.broadcastMessage(messages.broadcastJoin
-                                        .replace("{PLAYER}", user.getName())
-                                        .replace("{GUILD}", guild.getName())
-                                        .replace("{TAG}", tag)
-        );
+        Bukkit.broadcastMessage(messages.broadcastJoin.replace("{PLAYER}", user.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", tag));
     }
 
 }

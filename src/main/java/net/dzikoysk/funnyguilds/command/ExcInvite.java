@@ -18,7 +18,6 @@ public class ExcInvite implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
         User lp = User.get(p);
@@ -40,8 +39,7 @@ public class ExcInvite implements Executor {
         Guild guild = lp.getGuild();
 
         if (guild.getMembers().size() >= Settings.getConfig().inviteMembers) {
-            p.sendMessage(m.inviteAmount
-                                  .replace("{AMOUNT}", Integer.toString(Settings.getConfig().inviteMembers)));
+            p.sendMessage(m.inviteAmount.replace("{AMOUNT}", Integer.toString(Settings.getConfig().inviteMembers)));
             return;
         }
 
@@ -58,12 +56,7 @@ public class ExcInvite implements Executor {
             p.sendMessage(m.inviteCancelled);
             if (oi == null || !oi.isOnline()) {
                 Player inp = oi.getPlayer();
-                inp.sendMessage(
-                        m.inviteCancelledToInvited
-                                .replace("{OWNER}", p.getName())
-                                .replace("{GUILD}", guild.getName())
-                                .replace("{TAG}", guild.getTag())
-                );
+                inp.sendMessage(m.inviteCancelledToInvited.replace("{OWNER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             }
             return;
         }
@@ -82,16 +75,9 @@ public class ExcInvite implements Executor {
 
         InvitationsList.get(ip, 0).add(guild.getTag());
 
-        p.sendMessage(
-                m.inviteToOwner
-                        .replace("{PLAYER}", invited.getName())
-        );
+        p.sendMessage(m.inviteToOwner.replace("{PLAYER}", invited.getName()));
 
-        invited.sendMessage(
-                m.inviteToInvited
-                        .replace("{OWNER}", p.getName())
-                        .replace("{GUILD}", guild.getName())
-                        .replace("{TAG}", guild.getTag())
-        );
+        invited.sendMessage(m.inviteToInvited.replace("{OWNER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
+
 }

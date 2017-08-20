@@ -39,7 +39,7 @@ public class PlayerJoin implements Listener {
             Version.check(player);
 
             Region region = RegionUtils.getAt(player.getLocation());
-            if(region == null || region.getGuild() == null) {
+            if (region == null || region.getGuild() == null) {
                 return;
             }
             if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {

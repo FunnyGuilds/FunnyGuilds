@@ -29,7 +29,8 @@ public class AxcValidity implements Executor {
         if (args.length < 1) {
             player.sendMessage(StringUtils.colored("&cPodaj tag gildii!"));
             return;
-        } else if (args.length < 2) {
+        }
+        else if (args.length < 2) {
             player.sendMessage(StringUtils.colored("&cPodaj czas na jaki ma byc zbanowana gildia!"));
             return;
         }
@@ -65,7 +66,6 @@ public class AxcValidity implements Executor {
         Date v = new Date(c);
 
         player.sendMessage(StringUtils.colored("&7Przedluzono waznosc gildii &b" + guild.getName() + " &7do &b" + date.format(v) + "&7!"));
-        return;
     }
 
 }

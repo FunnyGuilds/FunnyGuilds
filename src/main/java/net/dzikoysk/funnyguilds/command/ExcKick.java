@@ -16,9 +16,7 @@ public class ExcKick implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
-
         MessagesConfig m = Messages.getInstance();
-
         Player p = (Player) s;
         User u = User.get(p);
 
@@ -66,24 +64,14 @@ public class ExcKick implements Executor {
             IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, p);
         }
 
-        p.sendMessage(
-                m.kickToOwner
-                        .replace("{PLAYER}", uk.getName())
-        );
+        p.sendMessage(m.kickToOwner.replace("{PLAYER}", uk.getName()));
 
         Player pk = Bukkit.getPlayer(uk.getName());
         if (pk != null) {
-            pk.sendMessage(m.kickToPlayer
-                                   .replace("{GUILD}", guild.getName())
-            );
+            pk.sendMessage(m.kickToPlayer.replace("{GUILD}", guild.getName()));
         }
 
-        Bukkit.broadcastMessage(
-                m.broadcastKick
-                        .replace("{PLAYER}", uk.getName())
-                        .replace("{GUILD}", guild.getName())
-                        .replace("{TAG}", guild.getTag())
-        );
+        Bukkit.broadcastMessage(m.broadcastKick.replace("{PLAYER}", uk.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 
 }

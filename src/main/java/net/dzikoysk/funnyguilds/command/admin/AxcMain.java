@@ -13,7 +13,6 @@ public class AxcMain implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-
         MessagesConfig m = Messages.getInstance();
         Player player = (Player) sender;
 
@@ -22,7 +21,7 @@ public class AxcMain implements Executor {
             return;
         }
 
-        final PluginConfig.Commands commands = Settings.getConfig().commands;
+        PluginConfig.Commands commands = Settings.getConfig().commands;
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.add + " [tag] [nick] " + ChatColor.GRAY + "- Dodaje gracza do gildii");
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.delete + " [tag] " + ChatColor.GRAY + "- Usuwa gildie");
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.kick + " [nick] " + ChatColor.GRAY + "- Wyrzuca gracza z gildii");
@@ -37,4 +36,5 @@ public class AxcMain implements Executor {
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.validity + " [tag] [czas] " + ChatColor.GRAY + "- Przedluza waznosc gildii o podany czas");
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.name + " [tag] [nazwa] " + ChatColor.GRAY + "- Zmienia nazwe gildii");
     }
+
 }

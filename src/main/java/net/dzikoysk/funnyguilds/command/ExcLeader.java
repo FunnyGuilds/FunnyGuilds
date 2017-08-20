@@ -35,12 +35,14 @@ public class ExcLeader implements Executor {
         }
 
         String name = args[0];
+
         if (!UserUtils.playedBefore(name)) {
             p.sendMessage(m.leaderPlayedBefore);
             return;
         }
 
         User user = User.get(name);
+
         if (owner.equals(user)) {
             p.sendMessage(StringUtils.colored("&cNie mozesz sobie oddac zalozyciela!"));
             return;
@@ -54,10 +56,9 @@ public class ExcLeader implements Executor {
         }
 
         guild.setOwner(user);
-
         p.sendMessage(m.leaderSet);
-
         Player o = Bukkit.getPlayer(user.getName());
+
         if (o != null) {
             o.sendMessage(m.leaderOwner);
         }

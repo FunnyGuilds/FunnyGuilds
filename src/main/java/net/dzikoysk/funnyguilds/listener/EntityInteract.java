@@ -32,16 +32,15 @@ public class EntityInteract implements Listener {
                 return;
             }
             new ExcPlayer().execute(event.getPlayer(), new String[]{ clicked.getName() });
-        } else if (entity instanceof EnderCrystal) {
+        }
+        else if (entity instanceof EnderCrystal) {
             EnderCrystal ec = (EnderCrystal) entity;
             Region region = RegionUtils.getAt(ec.getLocation());
             if (region == null) {
                 return;
             }
             event.setCancelled(true);
-            if (region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
-                        .equals(ec.getLocation().getBlock().getLocation().toVector()))
-            {
+            if (region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector().equals(ec.getLocation().getBlock().getLocation().toVector())) {
                 Guild guild = region.getGuild();
                 if (guild == null) {
                     return;

@@ -44,9 +44,7 @@ public class ExcValidity implements Executor {
             long d = c - System.currentTimeMillis();
             if (d > s.validityWhen) {
                 long when = d - s.validityWhen;
-                p.sendMessage(m.validityWhen
-                                      .replace("{TIME}", TimeUtils.getDurationBreakdown(when))
-                );
+                p.sendMessage(m.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(when)));
                 return;
             }
         }
@@ -84,15 +82,14 @@ public class ExcValidity implements Executor {
         if (c == 0) {
             c = System.currentTimeMillis();
         }
+
         c += Settings.getConfig().validityTime;
         guild.setValidity(c);
 
         DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Date v = new Date(c);
 
-        p.sendMessage(m.validityDone
-                              .replace("{DATE}", date.format(v))
-        );
+        p.sendMessage(m.validityDone.replace("{DATE}", date.format(v)));
     }
 
 }

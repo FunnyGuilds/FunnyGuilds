@@ -44,16 +44,9 @@ public class ExcConfirm implements Executor {
         String tag = lp.getGuild().getTag();
         GuildUtils.deleteGuild(lp.getGuild());
 
-        p.sendMessage(m.deleteSuccessful
-                              .replace("{GUILD}", name)
-                              .replace("{TAG}", tag)
-        );
+        p.sendMessage(m.deleteSuccessful.replace("{GUILD}", name).replace("{TAG}", tag));
 
-        Bukkit.getServer().broadcastMessage(
-                m.broadcastDelete
-                        .replace("{PLAYER}", p.getName())
-                        .replace("{GUILD}", name)
-                        .replace("{TAG}", tag)
-        );
+        Bukkit.getServer().broadcastMessage(m.broadcastDelete.replace("{PLAYER}", p.getName()).replace("{GUILD}", name).replace("{TAG}", tag));
     }
+
 }

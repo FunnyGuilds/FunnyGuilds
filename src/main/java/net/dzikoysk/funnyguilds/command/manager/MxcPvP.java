@@ -31,7 +31,8 @@ public class MxcPvP implements Executor {
         if (b) {
             guild.setPvP(false);
             p.sendMessage(m.pvpOff);
-        } else {
+        }
+        else {
             guild.setPvP(true);
             p.sendMessage(m.pvpOn);
         }

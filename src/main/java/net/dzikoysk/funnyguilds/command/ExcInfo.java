@@ -22,11 +22,12 @@ public class ExcInfo implements Executor {
     @Override
     public void execute(CommandSender s, String[] args) {
         MessagesConfig msg = Messages.getInstance();
-
         String tag = null;
+
         if (args.length > 0) {
             tag = args[0];
-        } else if (s instanceof Player) {
+        }
+        else if (s instanceof Player) {
             User user = User.get((Player) s);
             if (user.hasGuild()) {
                 tag = user.getGuild().getTag();
@@ -48,6 +49,7 @@ public class ExcInfo implements Executor {
             s.sendMessage(msg.infoExists);
             return;
         }
+
         DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
         Date v = new Date(guild.getValidity());
 
@@ -64,7 +66,8 @@ public class ExcInfo implements Executor {
             m = StringUtils.replace(m, "{LIVES}", Integer.toString(guild.getLives()));
             if (guild.getAllies().size() > 0) {
                 m = StringUtils.replace(m, "{ALLIES}", StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
-            } else {
+            }
+            else {
                 m = StringUtils.replace(m, "{ALLIES}", "Brak");
             }
             if (m.contains("<online>")) {
@@ -74,8 +77,6 @@ public class ExcInfo implements Executor {
             }
             s.sendMessage(m);
         }
-        return;
-
     }
 
 }

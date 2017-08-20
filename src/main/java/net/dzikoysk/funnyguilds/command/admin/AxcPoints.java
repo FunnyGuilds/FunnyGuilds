@@ -31,7 +31,7 @@ public class AxcPoints implements Executor {
             return;
         }
 
-        int points = 0;
+        int points;
         try {
             points = Integer.valueOf(args[1]);
         } catch (NumberFormatException e) {
@@ -44,7 +44,6 @@ public class AxcPoints implements Executor {
         RankManager.getInstance().update(user);
 
         player.sendMessage(ChatColor.GRAY + "Ustawiono " + ChatColor.AQUA + points + " punktow " + ChatColor.GRAY + "dla " + ChatColor.AQUA + user.getName());
-        return;
     }
 
 }

@@ -20,8 +20,8 @@ import java.util.List;
 
 public class ExcBase implements Executor {
 
+    @Override
     public void execute(CommandSender s, String[] args) {
-
         final MessagesConfig m = Messages.getInstance();
         final Player p = (Player) s;
         final User user = User.get(p);
@@ -74,9 +74,7 @@ public class ExcBase implements Executor {
             return;
         }
 
-        p.sendMessage(m.baseDontMove
-                              .replace("{TIME}", Integer.toString(time))
-        );
+        p.sendMessage(m.baseDontMove.replace("{TIME}", Integer.toString(time)));
 
         user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), new Runnable() {
             Location before = p.getLocation();
@@ -85,6 +83,7 @@ public class ExcBase implements Executor {
 
             public void run() {
                 i++;
+
                 if (!LocationUtils.equals(player.getLocation(), before)) {
                     user.getTeleportation().cancel();
                     player.sendMessage(m.baseMove);
@@ -92,15 +91,15 @@ public class ExcBase implements Executor {
                     player.getInventory().addItem(items);
                     return;
                 }
+
                 if (i > time) {
                     user.getTeleportation().cancel();
                     player.sendMessage(m.baseTeleport);
                     player.teleport(guild.getHome());
                     user.setTeleportation(null);
-                    return;
                 }
             }
         }, 0, 20));
-        return;
     }
+
 }

@@ -14,7 +14,6 @@ public class ExcDelete implements Executor {
     @Override
     public void execute(CommandSender s, String[] args) {
         MessagesConfig m = Messages.getInstance();
-
         Player p = (Player) s;
         User u = User.get(p);
 
@@ -36,4 +35,5 @@ public class ExcDelete implements Executor {
         ConfirmationList.add(u.getUUID());
         p.sendMessage(m.deleteConfirm);
     }
+
 }

@@ -49,7 +49,8 @@ public class PlayerMove implements Listener {
                         }
                     }, 40L);
                 }
-            } else if (!user.getEnter() && region != null) {
+            }
+            else if (!user.getEnter() && region != null) {
                 Guild guild = region.getGuild();
                 if (guild == null || guild.getName() == null) {
                     return;
@@ -74,8 +75,7 @@ public class PlayerMove implements Listener {
                     return;
                 }
 
-                NotificationBar.set(player, m.notificationOther.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
-                        1, Settings.getConfig().regionNotificationTime);
+                NotificationBar.set(player, m.notificationOther.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()), 1, Settings.getConfig().regionNotificationTime);
 
                 for (User u : guild.getMembers()) {
                     if (u.getName() == null) {
@@ -85,8 +85,7 @@ public class PlayerMove implements Listener {
                     if (member == null) {
                         continue;
                     }
-                    NotificationBar.set(member, m.notificationMember.replace("{PLAYER}", player.getName()),
-                            1, Settings.getConfig().regionNotificationTime);
+                    NotificationBar.set(member, m.notificationMember.replace("{PLAYER}", player.getName()), 1, Settings.getConfig().regionNotificationTime);
                 }
                 user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getConfig().regionNotificationCooldown);
             }

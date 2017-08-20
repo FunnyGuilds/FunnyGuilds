@@ -12,4 +12,5 @@ public class ExcGuild implements Executor {
             s.sendMessage(line);
         }
     }
+
 }

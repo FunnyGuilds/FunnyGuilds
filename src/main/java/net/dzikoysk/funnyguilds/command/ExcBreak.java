@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ExcBreak implements Executor {
 
-
+    @Override
     public void execute(CommandSender s, String[] args) {
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) s;
@@ -44,10 +44,8 @@ public class ExcBreak implements Executor {
             List<String> list = m.breakAlliesList;
             String[] msgs = list.toArray(new String[list.size()]);
             String iss = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
-            for (int i = 0; i < msgs.length; i++) {
-                p.sendMessage(msgs[i]
-                                      .replace("{GUILDS}", iss)
-                );
+            for (String msg : msgs) {
+                p.sendMessage(msg.replace("{GUILDS}", iss));
             }
             return;
         }
@@ -55,21 +53,14 @@ public class ExcBreak implements Executor {
         String tag = args[0];
 
         if (!GuildUtils.tagExists(tag)) {
-            p.sendMessage(
-                    m.breakGuildExists
-                            .replace("{TAG}", tag)
-            );
+            p.sendMessage(m.breakGuildExists.replace("{TAG}", tag));
             return;
         }
 
         Guild tb = GuildUtils.byTag(tag);
 
         if (!guild.getAllies().contains(tb)) {
-            p.sendMessage(
-                    m.breakAllyExists
-                            .replace("{GUILD}", tb.getName())
-                            .replace("{TAG}", tag)
-            );
+            p.sendMessage(m.breakAllyExists.replace("{GUILD}", tb.getName()).replace("{TAG}", tag));
         }
 
         guild.removeAlly(tb);
@@ -82,21 +73,12 @@ public class ExcBreak implements Executor {
             IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, guild);
         }
 
-        p.sendMessage(
-                m.breakDone
-                        .replace("{GUILD}", tb.getName())
-                        .replace("{TAG}", tb.getTag())
-        );
+        p.sendMessage(m.breakDone.replace("{GUILD}", tb.getName()).replace("{TAG}", tb.getTag()));
 
         OfflineUser of = tb.getOwner().getOfflineUser();
         if (of.isOnline()) {
-            of.getPlayer().sendMessage(
-                    m.allyIDone
-                            .replace("{GUILD}", guild.getName())
-                            .replace("{TAG}", guild.getTag())
-            );
+            of.getPlayer().sendMessage(m.allyIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
         }
-
-        return;
     }
+
 }

@@ -44,10 +44,7 @@ public class ExcEnlarge implements Executor {
 
         ItemStack need = c.enlargeItems.get(enlarge);
         if (!p.getInventory().containsAtLeast(need, need.getAmount())) {
-            p.sendMessage(
-                    m.enlargeItem
-                            .replace("{ITEM}", need.getAmount() + " " + need.getType().name().toLowerCase())
-            );
+            p.sendMessage(m.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().name().toLowerCase()));
             return;
         }
 
@@ -60,9 +57,7 @@ public class ExcEnlarge implements Executor {
         region.setEnlarge(enlarge + 1);
         region.setSize(region.getSize() + c.enlargeSize);
 
-        String tm = m.enlargeDone
-                            .replace("{SIZE}", region.getSize() + "")
-                            .replace("{LEVEL}", region.getEnlarge() + "");
+        String tm = m.enlargeDone.replace("{SIZE}", region.getSize() + "").replace("{LEVEL}", region.getEnlarge() + "");
 
         for (User user : lp.getGuild().getMembers()) {
             OfflinePlayer of = Bukkit.getOfflinePlayer(user.getName());
@@ -70,7 +65,6 @@ public class ExcEnlarge implements Executor {
                 of.getPlayer().sendMessage(tm);
             }
         }
-        return;
     }
 
 }

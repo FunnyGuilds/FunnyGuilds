@@ -15,7 +15,6 @@ public class AxcDelete implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-
         MessagesConfig m = Messages.getInstance();
         Player player = (Player) sender;
 
@@ -44,23 +43,14 @@ public class AxcDelete implements Executor {
 
         GuildUtils.deleteGuild(guild);
 
-        player.sendMessage(m.deleteSuccessful
-                                   .replace("{GUILD}", name)
-                                   .replace("{TAG}", tag)
-        );
+        player.sendMessage(m.deleteSuccessful.replace("{GUILD}", name).replace("{TAG}", tag));
 
         Player owner = Bukkit.getPlayer(o.getName());
         if (owner != null) {
-            owner.sendMessage(
-                    ChatColor.RED + "Twoja gildia zostala rozwiazana przez " + ChatColor.GRAY + player.getDisplayName()
-            );
+            owner.sendMessage(ChatColor.RED + "Twoja gildia zostala rozwiazana przez " + ChatColor.GRAY + player.getDisplayName());
         }
 
-        Bukkit.getServer().broadcastMessage(m.broadcastDelete
-                                                    .replace("{PLAYER}", player.getDisplayName())
-                                                    .replace("{GUILD}", name)
-                                                    .replace("{TAG}", tag)
-        );
+        Bukkit.getServer().broadcastMessage(m.broadcastDelete.replace("{PLAYER}", player.getDisplayName()).replace("{GUILD}", name).replace("{TAG}", tag));
     }
 
 }

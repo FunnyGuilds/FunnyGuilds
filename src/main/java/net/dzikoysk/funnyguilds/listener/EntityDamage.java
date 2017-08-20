@@ -25,9 +25,9 @@ public class EntityDamage implements Listener {
         Player attacker = null;
         if (damager instanceof Player) {
             attacker = (Player) damager;
-        } else if (damager instanceof Projectile) {
-            @SuppressWarnings("deprecation")
-            LivingEntity le = (LivingEntity) ((Projectile) damager).getShooter();
+        }
+        else if (damager instanceof Projectile) {
+            @SuppressWarnings("deprecation") LivingEntity le = (LivingEntity) ((Projectile) damager).getShooter();
             if (le instanceof Player) {
                 attacker = (Player) le;
             }
