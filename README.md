@@ -14,9 +14,9 @@ FunnyGuilds Cleaned 3.9.9.15 for 1.7.x
 <br>
 
 #### Stats
-Current statistics: http://mcstats.org/plugin/FunnyGuilds
+Current statistics: https://bstats.org/plugin/bukkit/FunnyGuilds
 <br>
-The best reported statistics:
+The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
 
 | Servers | Players | Users     | Guilds |
 |---------|---------|-----------|--------|
