@@ -15,7 +15,6 @@ public class PlayerQuit implements Listener {
         User user = User.get(player);
         NotificationBar.remove(player);
         user.setIndividualPrefix(null);
-        user.setPlayerList(null);
         user.setScoreboard(null);
         user.setDummy(null);
     }
