@@ -17,7 +17,7 @@ import java.util.*;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("      4.0-SNAPSHOT Cleaned      #")
+@CfgComment("      4.0-SNAPSHOT Tribute      #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfig {
@@ -384,6 +384,14 @@ public class PluginConfig {
                                                      .put(35, "&72. &b{PTOP-2}")
                                                      .put(36, "&73. &b{PTOP-3}")
                                                      .build();
+
+    @CfgComment("Wyglad naglowka w liscie graczy.")
+    @CfgName("player-list-header")
+    public String playerListHeader = "&7FunnyGuilds &b4.0-SNAPSHOT Tribute";
+
+    @CfgComment("Wyglad stopki w liscie graczy.")
+    @CfgName("player-list-footer")
+    public String playerListFooter = "&7O, dziala!";
 
     @CfgComment("Tablista wlaczona")
     @CfgName("player-list-enable")
