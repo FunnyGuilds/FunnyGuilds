@@ -439,7 +439,7 @@ public class PluginConfig {
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
         for (String item : strings) {
-            if (item == null) {
+            if (item == null || "".equals(item)) {
                 continue;
             }
             ItemStack itemstack = Parser.parseItem(item);
