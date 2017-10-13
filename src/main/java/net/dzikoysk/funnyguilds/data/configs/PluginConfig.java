@@ -3,8 +3,6 @@ package net.dzikoysk.funnyguilds.data.configs;
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
-import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.diorite.cfg.annotations.*;
@@ -483,25 +481,6 @@ public class PluginConfig {
         }
 
         this.explodeMaterials = map;
-
-        // PlayerList Section
-        String[] ss = new String[60];
-        for (Map.Entry<Integer, String> entry : this.playerList.entrySet()) {
-            int i = entry.getKey();
-            if (i > 60) {
-                continue;
-            }
-            String s = entry.getValue();
-            if (s != null) {
-                s = StringUtils.colored(s);
-            }
-            ss[i - 1] = s;
-        }
-
-        new PlayerListScheme(ss);
-        PlayerListManager.enable(this.playerlistEnable);
-        PlayerListManager.patch(this.playerlistPatch);
-        PlayerListManager.ping(this.playerlistPing);
 
         this.warProtection = Parser.parseTime(this.warProtection_);
         this.warWait = Parser.parseTime(this.warWait_);

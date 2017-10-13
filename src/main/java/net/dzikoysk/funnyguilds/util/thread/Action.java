@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
 import net.dzikoysk.funnyguilds.system.war.WarListener;
 import net.dzikoysk.funnyguilds.util.element.DummyManager;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefixManager;
-import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -31,12 +30,6 @@ public class Action {
 
     public void execute() {
         switch (action) {
-            case PLAYERLIST_SEND:
-                ((User) values[0]).getPlayerList().send();
-                break;
-            case PLAYERLIST_GLOBAL_UPDATE:
-                PlayerListManager.updatePlayers();
-                break;
             case SAVE_DATA:
                 Manager.getInstance().save();
                 break;

@@ -7,8 +7,6 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.util.InvitationsList;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.Yamler;
-import net.dzikoysk.funnyguilds.util.element.PlayerListManager;
-import net.dzikoysk.funnyguilds.util.element.PlayerListScheme;
 import org.bukkit.Bukkit;
 import org.panda_lang.panda.util.configuration.PandaConfiguration;
 
@@ -27,13 +25,11 @@ public class Data {
         instance = this;
         funnyguilds(DO.LOAD);
         invitations(DO.LOAD);
-        playerlist(DO.LOAD);
     }
 
     public void save() {
         funnyguilds(DO.SAVE);
         invitations(DO.SAVE);
-        playerlist(DO.SAVE);
     }
 
     private void funnyguilds(DO todo) {
@@ -77,41 +73,6 @@ public class Data {
             pc = null;
         }
 
-    }
-
-    private void playerlist(DO todo) {
-        File file = new File(folder, "playerlist.yml");
-        if (todo == DO.SAVE) {
-            if (!file.exists()) {
-                Yamler pc = new Yamler(file);
-                pc.set("scheme", PlayerListManager.scheme());
-                pc.save();
-                pc = null;
-            }
-        } else if (todo == DO.LOAD) {
-            if (file.exists()) {
-                Yamler pc = new Yamler(file);
-                List<String> scheme = pc.getStringList("scheme");
-                if (scheme == null || scheme.isEmpty()) {
-                    String[] sh = PlayerListScheme.uniqueFields();
-                    PlayerListManager.scheme(sh);
-                    pc = new Yamler(file);
-                    pc.set("scheme", scheme);
-                    pc.save();
-                    pc = null;
-                    return;
-                }
-                PlayerListManager.scheme(scheme.toArray(new String[60]));
-                pc = null;
-            } else {
-                String[] scheme = PlayerListScheme.uniqueFields();
-                PlayerListManager.scheme(scheme);
-                Yamler pc = new Yamler(file);
-                pc.set("scheme", scheme);
-                pc.save();
-                pc = null;
-            }
-        }
     }
 
     public static File getPlayerListFile() {

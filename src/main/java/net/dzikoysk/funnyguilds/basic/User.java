@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.util.element.Dummy;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefix;
-import net.dzikoysk.funnyguilds.util.element.PlayerList;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
@@ -27,7 +26,6 @@ public class User implements Basic {
     private Guild guild;
     private Rank rank;
     private Scoreboard scoreboard;
-    private PlayerList list;
     private IndividualPrefix prefix;
     private Dummy dummy;
     private long ban;
@@ -113,10 +111,6 @@ public class User implements Basic {
 
     public void setIndividualPrefix(IndividualPrefix prefix) {
         this.prefix = prefix;
-    }
-
-    public void setPlayerList(PlayerList pl) {
-        this.list = pl;
     }
 
     public void setDummy(Dummy dummy) {
@@ -217,13 +211,6 @@ public class User implements Basic {
             new IndividualPrefix(this);
         }
         return this.prefix;
-    }
-
-    public PlayerList getPlayerList() {
-        if (this.list == null) {
-            new PlayerList(this);
-        }
-        return this.list;
     }
 
     public Dummy getDummy() {
