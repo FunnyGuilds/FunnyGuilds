@@ -44,7 +44,12 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static String getVersion() {
-        return funnyguilds.getDescription().getVersion();
+        String[] array = funnyguilds.getDescription().getVersion().split("-");
+        if (array.length != 2) {
+            return funnyguilds.getDescription().getVersion();
+        }
+
+        return array[0];
     }
 
     public static FunnyGuilds getInstance() {
@@ -183,7 +188,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void update() {
         this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
+            String latest = IOUtils.getContent("https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/master/updater.txt");
             if (latest == null || latest.isEmpty()) {
                 update("Failed to check the newest version of FunnyGuilds..");
             } else if (latest.equalsIgnoreCase(getVersion())) {
@@ -213,6 +218,7 @@ public class FunnyGuilds extends JavaPlugin {
                 AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
             }
         }
+
         for (Guild guild : GuildUtils.getGuilds()) {
             EntityUtil.spawn(guild);
             guild.updateRank();
