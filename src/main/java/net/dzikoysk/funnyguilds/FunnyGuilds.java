@@ -6,11 +6,13 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.Commands;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
+import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.reflect.DescriptionChanger;
@@ -197,6 +199,8 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void patch() {
+        PluginConfig config = Settings.getConfig();
+
         for (final Player player : this.getServer().getOnlinePlayers()) {
             this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
 
@@ -204,6 +208,10 @@ public class FunnyGuilds extends JavaPlugin {
             user.getScoreboard();
             user.getDummy();
             user.getRank();
+
+            if (config.playerlistEnable) {
+                AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
+            }
         }
         for (Guild guild : GuildUtils.getGuilds()) {
             EntityUtil.spawn(guild);
