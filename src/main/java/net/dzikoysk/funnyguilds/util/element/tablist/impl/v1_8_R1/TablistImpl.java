@@ -69,8 +69,8 @@ public class TablistImpl extends AbstractTablist {
 
     private final Object[] profileCache = new Object[80];
 
-    public TablistImpl(final List<String> tablistPattern, final String header, final String footer, final Player player) {
-        super(tablistPattern, header, footer, player);
+    public TablistImpl(final List<String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
+        super(tablistPattern, header, footer, ping, player);
     }
 
     @Override
@@ -97,7 +97,7 @@ public class TablistImpl extends AbstractTablist {
                 Object playerInfoData = playerInfoDataConstructor.newInstance(
                         null,
                         gameProfile,
-                        0,
+                        ping,
                         gameMode,
                         component
                 );
