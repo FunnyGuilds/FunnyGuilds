@@ -32,7 +32,7 @@ public abstract class AbstractTablist {
         playerConnection = Reflections.getField(Reflections.getCraftClass("EntityPlayer"), "playerConnection");
     }
 
-    protected final List<String> tablistPattern;
+    protected final Map<Integer, String> tablistPattern;
     protected final String header;
     protected final String footer;
     protected final UUID player;
@@ -40,7 +40,7 @@ public abstract class AbstractTablist {
     protected boolean firstPacket = true;
 
 
-    public AbstractTablist(final List<String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
+    public AbstractTablist(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
         this.tablistPattern = tablistPattern;
         this.header = header;
         this.footer = footer;
@@ -48,7 +48,7 @@ public abstract class AbstractTablist {
         this.player = player.getUniqueId();
     }
 
-    public static AbstractTablist createTablist(final List<String> pattern, final String header, final String footer, final int ping, final Player player) {
+    public static AbstractTablist createTablist(final Map<Integer, String> pattern, final String header, final String footer, final int ping, final Player player) {
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return tablist;
@@ -137,7 +137,7 @@ public abstract class AbstractTablist {
         final User user = User.get(player);
 
         if (user == null) {
-            throw new IllegalStateException("given player is null!");
+            throw new IllegalStateException("Given player is null!");
         }
         Calendar time = Calendar.getInstance();
         int hour = time.get(Calendar.HOUR_OF_DAY);

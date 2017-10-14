@@ -10,6 +10,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class TablistImpl extends AbstractTablist {
@@ -69,7 +70,7 @@ public class TablistImpl extends AbstractTablist {
 
     private final Object[] profileCache = new Object[80];
 
-    public TablistImpl(final List<String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
+    public TablistImpl(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
         super(tablistPattern, header, footer, ping, player);
     }
 
@@ -89,7 +90,7 @@ public class TablistImpl extends AbstractTablist {
                     profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(uuid, StringUtils.appendDigit(i))), token + StringUtils.appendDigit(i));
                 }
 
-                String text = i < tablistPattern.size() ? this.putVars(tablistPattern.get(i)) : "";
+                String text = this.putVars(tablistPattern.getOrDefault(i + 1, ""));
                 Object gameProfile = profileCache[i];
                 Object gameMode = enumGamemodeClass.getEnumConstants()[1];
                 Object component = this.createBaseComponent(text);
