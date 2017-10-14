@@ -62,6 +62,9 @@ public class AsynchronouslyRepeater implements Runnable {
         }
 
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!AbstractTablist.hasTablist(player)) {
+                AbstractTablist.createTablist(Settings.getConfig().playerList, Settings.getConfig().playerListHeader, Settings.getConfig().playerListFooter, Settings.getConfig().playerListPing, player);
+            }
             final AbstractTablist tablist = AbstractTablist.getTablist(player);
             tablist.send();
         }

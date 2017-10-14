@@ -96,6 +96,15 @@ public abstract class AbstractTablist {
         }
     }
 
+    public static boolean hasTablist(final Player player) {
+        for (AbstractTablist tablist : TABLIST_CACHE) {
+            if (tablist.player.equals(player.getUniqueId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public abstract void send();
 
     protected void sendPackets(final List<Object> packets) {
