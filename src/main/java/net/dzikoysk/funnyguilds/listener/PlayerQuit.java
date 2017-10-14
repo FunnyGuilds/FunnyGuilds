@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.util.element.NotificationBar;
-import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,7 +17,6 @@ public class PlayerQuit implements Listener {
         user.setIndividualPrefix(null);
         user.setScoreboard(null);
         user.setDummy(null);
-        AbstractTablist.removeTablist(player);
     }
 
 }

@@ -4,7 +4,10 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
-import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
+import net.dzikoysk.funnyguilds.util.reflect.transition.PacketPlayOutPlayerInfo;
+import net.dzikoysk.funnyguilds.util.thread.ActionType;
+import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -42,21 +45,30 @@ public class AsynchronouslyRepeater implements Runnable {
         validity_system++;
         /*funnyguilds_stats++;*/
 
+        if (player_list == player_list_time) {
+            playerList();
+        }
         if (validity_system >= 10) {
             validitySystem();
         }
         if (ban_system >= 7) {
             banSystem();
         }
-
-        for (Player player : Bukkit.getOnlinePlayers())
-        {
-            final AbstractTablist tablist = AbstractTablist.getTablist(player);
-            tablist.send();
-        }
         /*if (funnyguilds_stats >= 10) {
             funnyguildsStats();
         }*/
+    }
+
+    private void playerList() {
+        if (Settings.getConfig().playerlistEnable) {
+            IndependentThread.action(ActionType.PLAYERLIST_GLOBAL_UPDATE);
+            if (Settings.getConfig().playerlistPatch) {
+                for (Player p : Bukkit.getOnlinePlayers()) {
+                    PacketSender.sendPacket(p, PacketPlayOutPlayerInfo.getPacket(p.getPlayerListName(), false, 0));
+                }
+            }
+        }
+        player_list = 0;
     }
 
     private void validitySystem() {

@@ -5,9 +5,7 @@ import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.Version;
-import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
@@ -20,28 +18,21 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class PlayerJoin implements Listener {
 
     private final FunnyGuilds plugin;
-    private final PluginConfig config;
 
     public PlayerJoin(FunnyGuilds plugin) {
         this.plugin = plugin;
-        this.config = Settings.getConfig();
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         final Player player = e.getPlayer();
-        final User user = User.get(player);
-
-        if (config.playerlistEnable)
-        {
-            AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, player);
-        }
-
+        User user = User.get(player);
         user.getScoreboard();
 
         IndependentThread.actions(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
         IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, user);
         IndependentThread.actions(ActionType.RANK_UPDATE_USER, user);
+        IndependentThread.action(ActionType.PLAYERLIST_SEND, user);
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             PacketExtension.registerPlayer(player);
