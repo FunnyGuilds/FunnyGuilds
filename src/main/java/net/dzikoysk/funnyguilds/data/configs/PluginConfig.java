@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
@@ -348,7 +347,6 @@ public class PluginConfig {
     @CfgComment("{GUILD} - Gildia do której należy gracz")
     @CfgComment("{TAG} - Tag gildii gracza")
     @CfgComment("{POINTS} - Punkty")
-    @CfgComment("{RANK} - pozycja w rankingu gracza")
     @CfgComment("{KILLS} - Zabojstwa")
     @CfgComment("{DEATHS} - Smierci")
     @CfgComment("{SECOND} - Sekunda")
@@ -357,13 +355,11 @@ public class PluginConfig {
     @CfgComment("{PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu (np. {PTOP-1}, {PTOP-60})")
     @CfgComment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
     @CfgComment("{G-POINTS} - punkty gildii")
-    @CfgComment("{G-RANK} - pozycja gildii w rankingu")
     @CfgComment("{G-OWNER} - wlasciciel gildii")
     @CfgComment("{G-LIVES} - liczba zyc gildii")
     @CfgComment("{G-ALLIES} - liczba sojusznikow gildii")
     @CfgComment("{G-KILLS} - suma zabojstw czlonkow gildii")
     @CfgComment("{G-DEATHS} - suma smierci czlonkow gildii")
-    @CfgComment("{SIZE} - wielkość terenu gildii")
     @CfgComment("{LIVES} - życia gildii")
     @CfgName("player-list")
     public Map<Integer, String> playerList = ImmutableMap.<Integer, String> builder()
