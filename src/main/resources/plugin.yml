@@ -2,9 +2,9 @@ name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
 version: '${project.version} Tribute-${git.commit.id.abbrev}'
 author: Dzikoysk
-authors: ['kacperduras', 'MrGregorix', 'insertt']
-website: https://www.dzikoysk.net/
-loadbefore: [WorldEdit, WorldGuard]
+website: http://www.dzikoysk.net/
+loadbefore: [WorldEdit]
+softdepend: [WorldGuard]
 permissions:
     funnyguilds.*:
         default: op
@@ -40,7 +40,6 @@ permissions:
             funnyguilds.deputy: true
             funnyguilds.ranking: true
             funnyguilds.manage: true
-            funnyguilds.items: true
     funnyguilds.reload:
         default: op
     funnyguilds.admin.build:
@@ -84,6 +83,4 @@ permissions:
     funnyguilds.manage:
         default: true
     funnyguilds.ranking:
-        default: true
-    funnyguilds.items:
         default: true
