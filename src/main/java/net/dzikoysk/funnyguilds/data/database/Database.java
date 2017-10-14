@@ -96,6 +96,13 @@ public class Database {
         return true;
     }*/
 
+    public static Database getInstance() {
+        if (instance == null) {
+            return new Database();
+        }
+        return instance;
+    }
+
     public ResultSet executeQuery(String query) {
         try {
             Connection connection = this.dataSource.getConnection();
@@ -126,12 +133,5 @@ public class Database {
             }
         }
         return 0;
-    }
-
-    public static Database getInstance() {
-        if (instance == null) {
-            return new Database();
-        }
-        return instance;
     }
 }

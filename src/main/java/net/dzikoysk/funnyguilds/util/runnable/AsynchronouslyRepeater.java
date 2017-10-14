@@ -4,10 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
-import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
-import net.dzikoysk.funnyguilds.util.reflect.transition.PacketPlayOutPlayerInfo;
-import net.dzikoysk.funnyguilds.util.thread.ActionType;
-import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -15,10 +12,8 @@ import org.bukkit.scheduler.BukkitTask;
 public class AsynchronouslyRepeater implements Runnable {
 
     private static AsynchronouslyRepeater instance;
-    private volatile BukkitTask repeater;
-
     private final FunnyGuilds plugin;
-
+    private volatile BukkitTask repeater;
     private int player_list;
     private int ban_system;
     private int validity_system;
@@ -29,6 +24,20 @@ public class AsynchronouslyRepeater implements Runnable {
         this.plugin = plugin;
         instance = this;
         player_list_time = Settings.getConfig().playerlistInterval;
+    }
+
+    public static AsynchronouslyRepeater getInstance() {
+        try {
+            if (instance == null) {
+                throw new UnsupportedOperationException("AsynchronouslyRepeater is not setup!");
+            }
+            return instance;
+        } catch (Exception ex) {
+            if (FunnyGuilds.exception(ex.getCause())) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
     }
 
     public void start() {
@@ -45,30 +54,20 @@ public class AsynchronouslyRepeater implements Runnable {
         validity_system++;
         /*funnyguilds_stats++;*/
 
-        if (player_list == player_list_time) {
-            playerList();
-        }
         if (validity_system >= 10) {
             validitySystem();
         }
         if (ban_system >= 7) {
             banSystem();
         }
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            final AbstractTablist tablist = AbstractTablist.getTablist(player);
+            tablist.send();
+        }
         /*if (funnyguilds_stats >= 10) {
             funnyguildsStats();
         }*/
-    }
-
-    private void playerList() {
-        if (Settings.getConfig().playerlistEnable) {
-            IndependentThread.action(ActionType.PLAYERLIST_GLOBAL_UPDATE);
-            if (Settings.getConfig().playerlistPatch) {
-                for (Player p : Bukkit.getOnlinePlayers()) {
-                    PacketSender.sendPacket(p, PacketPlayOutPlayerInfo.getPacket(p.getPlayerListName(), false, 0));
-                }
-            }
-        }
-        player_list = 0;
     }
 
     private void validitySystem() {
@@ -76,15 +75,15 @@ public class AsynchronouslyRepeater implements Runnable {
         validity_system = 0;
     }
 
-    private void banSystem() {
-        BanSystem.getInstance().run();
-        ban_system = 0;
-    }
-
     /*private void funnyguildsStats() {
         MetricsCollector.getMetrics();
         funnyguilds_stats = 0;
     }*/
+
+    private void banSystem() {
+        BanSystem.getInstance().run();
+        ban_system = 0;
+    }
 
     public void reload() {
         player_list_time = Settings.getConfig().playerlistInterval;
@@ -94,20 +93,6 @@ public class AsynchronouslyRepeater implements Runnable {
         if (repeater != null) {
             repeater.cancel();
             repeater = null;
-        }
-    }
-
-    public static AsynchronouslyRepeater getInstance() {
-        try {
-            if (instance == null) {
-                throw new UnsupportedOperationException("AsynchronouslyRepeater is not setup!");
-            }
-            return instance;
-        } catch (Exception ex) {
-            if (FunnyGuilds.exception(ex.getCause())) {
-                ex.printStackTrace();
-            }
-            return null;
         }
     }
 

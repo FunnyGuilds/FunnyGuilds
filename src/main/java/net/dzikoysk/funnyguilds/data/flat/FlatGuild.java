@@ -27,50 +27,6 @@ public class FlatGuild {
         this.guild = guild;
     }
 
-    public boolean serialize() {
-        if (guild.getName() == null) {
-            FunnyGuilds.error("[Serialize] Cannot serialize guild! Caused by: name is null");
-            return false;
-        } else if (guild.getTag() == null) {
-            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
-            return false;
-        } else if (guild.getOwner() == null) {
-            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
-            return false;
-        } else if (guild.getRegion() == null) {
-            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
-            return false;
-        } else if (guild.getUUID() == null) {
-            guild.setUUID(UUID.randomUUID());
-        }
-
-        File file = Flat.loadCustomFile(BasicType.GUILD, guild.getName());
-        Yamler pc = new Yamler(file);
-
-        pc.set("uuid", guild.getUUID().toString());
-        pc.set("name", guild.getName());
-        pc.set("tag", guild.getTag());
-        pc.set("owner", guild.getOwner().getName());
-        pc.set("home", Parser.toString(guild.getHome()));
-        pc.set("members", UserUtils.getNames(guild.getMembers()));
-        pc.set("region", guild.getRegion());
-        pc.set("regions", guild.getRegions());
-        pc.set("allies", GuildUtils.getNames(guild.getAllies()));
-        pc.set("enemies", GuildUtils.getNames(guild.getEnemies()));
-        pc.set("born", guild.getBorn());
-        pc.set("validity", guild.getValidity());
-        pc.set("attacked", guild.getAttacked());
-        pc.set("lives", guild.getLives());
-        pc.set("ban", guild.getBan());
-        pc.set("pvp", guild.getPvP());
-        if (guild.getDeputy() != null) {
-            pc.set("deputy", guild.getDeputy().getName());
-        }
-        pc.save();
-        pc = null;
-        return true;
-    }
-
     public static Guild deserialize(File file) {
         Yamler pc = new Yamler(file);
         String id = pc.getString("uuid");
@@ -185,6 +141,50 @@ public class FlatGuild {
         values[15] = deputy;
         values[16] = pvp;
         return DeserializationUtils.deserializeGuild(values);
+    }
+
+    public boolean serialize() {
+        if (guild.getName() == null) {
+            FunnyGuilds.error("[Serialize] Cannot serialize guild! Caused by: name is null");
+            return false;
+        } else if (guild.getTag() == null) {
+            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
+            return false;
+        } else if (guild.getOwner() == null) {
+            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
+            return false;
+        } else if (guild.getRegion() == null) {
+            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
+            return false;
+        } else if (guild.getUUID() == null) {
+            guild.setUUID(UUID.randomUUID());
+        }
+
+        File file = Flat.loadCustomFile(BasicType.GUILD, guild.getName());
+        Yamler pc = new Yamler(file);
+
+        pc.set("uuid", guild.getUUID().toString());
+        pc.set("name", guild.getName());
+        pc.set("tag", guild.getTag());
+        pc.set("owner", guild.getOwner().getName());
+        pc.set("home", Parser.toString(guild.getHome()));
+        pc.set("members", UserUtils.getNames(guild.getMembers()));
+        pc.set("region", guild.getRegion());
+        pc.set("regions", guild.getRegions());
+        pc.set("allies", GuildUtils.getNames(guild.getAllies()));
+        pc.set("enemies", GuildUtils.getNames(guild.getEnemies()));
+        pc.set("born", guild.getBorn());
+        pc.set("validity", guild.getValidity());
+        pc.set("attacked", guild.getAttacked());
+        pc.set("lives", guild.getLives());
+        pc.set("ban", guild.getBan());
+        pc.set("pvp", guild.getPvP());
+        if (guild.getDeputy() != null) {
+            pc.set("deputy", guild.getDeputy().getName());
+        }
+        pc.save();
+        pc = null;
+        return true;
     }
 
 }

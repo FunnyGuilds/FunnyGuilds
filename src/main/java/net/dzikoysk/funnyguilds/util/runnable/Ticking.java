@@ -10,14 +10,17 @@ public class Ticking implements Runnable {
 
     private static DecimalFormat df = new DecimalFormat("#,###.##");
     private static String result = "20.0";
-    private transient long lastPoll = System.nanoTime();
     private final LinkedList<Double> history = new LinkedList<>();
-
     private final FunnyGuilds plugin;
+    private transient long lastPoll = System.nanoTime();
 
     public Ticking(FunnyGuilds plugin) {
         this.plugin = plugin;
         history.add(Double.valueOf(20.0D));
+    }
+
+    public static String getTPS() {
+        return result;
     }
 
     public void start() {
@@ -47,9 +50,5 @@ public class Ticking implements Runnable {
         }
         df.setRoundingMode(RoundingMode.HALF_UP);
         result = df.format((avg / history.size()));
-    }
-
-    public static String getTPS() {
-        return result;
     }
 }

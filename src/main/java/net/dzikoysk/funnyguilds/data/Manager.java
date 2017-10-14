@@ -29,6 +29,23 @@ public class Manager {
         Data.getInstance();
     }
 
+    public static Manager getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        new Manager().start();
+        return instance;
+    }
+
+    public static void loadDefaultFiles(String[] files) {
+        for (String file : files) {
+            File cfg = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + file);
+            if (!cfg.exists()) {
+                FunnyGuilds.getInstance().saveResource(file, true);
+            }
+        }
+    }
+
     public void save() {
         if (Settings.getConfig().dataType.flat) {
             try {
@@ -74,28 +91,11 @@ public class Manager {
         }
     }
 
-    public static Manager getInstance() {
-        if (instance != null) {
-            return instance;
-        }
-        new Manager().start();
-        return instance;
-    }
-
     public PluginConfig getSettings() {
         return Settings.getConfig();
     }
 
     public MessagesConfig getMessages() {
         return Messages.getInstance();
-    }
-
-    public static void loadDefaultFiles(String[] files) {
-        for (String file : files) {
-            File cfg = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + file);
-            if (!cfg.exists()) {
-                FunnyGuilds.getInstance().saveResource(file, true);
-            }
-        }
     }
 }

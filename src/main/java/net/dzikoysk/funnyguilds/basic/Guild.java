@@ -47,6 +47,24 @@ public class Guild implements Basic {
         GuildUtils.addGuild(this);
     }
 
+    public static Guild get(UUID uuid) {
+        for (Guild guild : GuildUtils.getGuilds()) {
+            if (guild.getUUID().equals(uuid)) {
+                return guild;
+            }
+        }
+        return new Guild(uuid);
+    }
+
+    public static Guild get(String name) {
+        for (Guild guild : GuildUtils.getGuilds()) {
+            if (guild.getName().equalsIgnoreCase(name)) {
+                return guild;
+            }
+        }
+        return new Guild(name);
+    }
+
     public void addLive() {
         this.lives++;
         this.changes();
@@ -153,124 +171,11 @@ public class Guild implements Basic {
         return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getConfig().warWait > System.currentTimeMillis());
     }
 
-    public void setUUID(UUID uuid) {
-        this.uuid = uuid;
-        this.changes();
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        this.changes();
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-        this.changes();
-    }
-
-    public void setOwner(User user) {
-        this.owner = user;
-        this.addMember(user);
-        this.changes();
-    }
-
-    public void setDeputy(User user) {
-        this.deputy = user;
-        this.changes();
-    }
-
-    public void setRank(Rank rank) {
-        this.rank = rank;
-        this.changes();
-    }
-
-    public void setRegion(String s) {
-        this.region = s;
-        if (this.home == null) {
-            Region region = Region.get(s);
-            this.home = region.getCenter();
-        }
-        this.changes();
-    }
-
-    public void setHome(Location home) {
-        this.home = home;
-        this.changes();
-    }
-
-    public void setMembers(List<User> members) {
-        this.members = members;
-        this.updateRank();
-        this.changes();
-    }
-
-    public void setRegions(List<String> regions) {
-        this.regions = regions;
-        this.changes();
-    }
-
-    public void setAllies(List<Guild> guilds) {
-        this.allies = guilds;
-        this.changes();
-    }
-
-    public void setEnemies(List<Guild> guilds) {
-        this.enemies = guilds;
-        this.changes();
-    }
-
-    public void setPvP(boolean b) {
-        this.pvp = b;
-        this.changes();
-    }
-
-    public void setBorn(long l) {
-        this.born = l;
-        this.changes();
-    }
-
-    public void setValidity(long l) {
-        if (l == this.born) {
-            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
-        } else {
-            this.validity = l;
-        }
-        this.changes();
-    }
-
-    public void setAttacked(long l) {
-        this.attacked = l;
-        this.changes();
-    }
-
-    public void setLives(int i) {
-        this.lives = i;
-        this.changes();
-    }
-
-    public void setBuild(long time) {
-        this.build = time;
-        this.changes();
-    }
-
-    public void setBan(long l) {
-        if (l > System.currentTimeMillis()) {
-            this.ban = l;
-        } else {
-            this.ban = 0;
-        }
-        this.changes();
-    }
-
-    public void setEnderCrystal(Location loc) {
-        this.endercrystal = loc;
-    }
-
     public boolean isSomeoneInRegion() {
         return Bukkit.getOnlinePlayers().stream()
-                       .filter(player -> User.get(player).getGuild() != this)
-                       .map(player -> RegionUtils.getAt(player.getLocation()))
-                       .anyMatch(region -> region != null && region.getGuild() == this);
+                .filter(player -> User.get(player).getGuild() != this)
+                .map(player -> RegionUtils.getAt(player.getLocation()))
+                .anyMatch(region -> region != null && region.getGuild() == this);
     }
 
     public boolean isValid() {
@@ -298,73 +203,177 @@ public class Guild implements Basic {
         return this.uuid;
     }
 
+    public void setUUID(UUID uuid) {
+        this.uuid = uuid;
+        this.changes();
+    }
+
     @Override
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        this.changes();
     }
 
     public String getTag() {
         return this.tag;
     }
 
+    public void setTag(String tag) {
+        this.tag = tag;
+        this.changes();
+    }
+
     public User getOwner() {
         return this.owner;
+    }
+
+    public void setOwner(User user) {
+        this.owner = user;
+        this.addMember(user);
+        this.changes();
     }
 
     public User getDeputy() {
         return this.deputy;
     }
 
+    public void setDeputy(User user) {
+        this.deputy = user;
+        this.changes();
+    }
+
     public String getRegion() {
         return this.region;
+    }
+
+    public void setRegion(String s) {
+        this.region = s;
+        if (this.home == null) {
+            Region region = Region.get(s);
+            this.home = region.getCenter();
+        }
+        this.changes();
     }
 
     public Location getHome() {
         return this.home;
     }
 
+    public void setHome(Location home) {
+        this.home = home;
+        this.changes();
+    }
+
     public List<User> getMembers() {
         return this.members;
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members;
+        this.updateRank();
+        this.changes();
     }
 
     public List<String> getRegions() {
         return this.regions;
     }
 
+    public void setRegions(List<String> regions) {
+        this.regions = regions;
+        this.changes();
+    }
+
     public List<Guild> getAllies() {
         return this.allies;
+    }
+
+    public void setAllies(List<Guild> guilds) {
+        this.allies = guilds;
+        this.changes();
     }
 
     public List<Guild> getEnemies() {
         return this.enemies;
     }
 
+    public void setEnemies(List<Guild> guilds) {
+        this.enemies = guilds;
+        this.changes();
+    }
+
     public boolean getPvP() {
         return this.pvp;
+    }
+
+    public void setPvP(boolean b) {
+        this.pvp = b;
+        this.changes();
     }
 
     public long getBorn() {
         return this.born;
     }
 
+    public void setBorn(long l) {
+        this.born = l;
+        this.changes();
+    }
+
     public long getValidity() {
         return this.validity;
+    }
+
+    public void setValidity(long l) {
+        if (l == this.born) {
+            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
+        } else {
+            this.validity = l;
+        }
+        this.changes();
     }
 
     public long getAttacked() {
         return this.attacked;
     }
 
+    public void setAttacked(long l) {
+        this.attacked = l;
+        this.changes();
+    }
+
     public int getLives() {
         return this.lives;
+    }
+
+    public void setLives(int i) {
+        this.lives = i;
+        this.changes();
     }
 
     public long getBan() {
         return this.ban;
     }
 
+    public void setBan(long l) {
+        if (l > System.currentTimeMillis()) {
+            this.ban = l;
+        } else {
+            this.ban = 0;
+        }
+        this.changes();
+    }
+
     public long getBuild() {
         return this.build;
+    }
+
+    public void setBuild(long time) {
+        this.build = time;
+        this.changes();
     }
 
     public Rank getRank() {
@@ -376,8 +385,17 @@ public class Guild implements Basic {
         return this.rank;
     }
 
+    public void setRank(Rank rank) {
+        this.rank = rank;
+        this.changes();
+    }
+
     public Location getEnderCrystal() {
         return this.endercrystal;
+    }
+
+    public void setEnderCrystal(Location loc) {
+        this.endercrystal = loc;
     }
 
     @Override
@@ -411,24 +429,6 @@ public class Guild implements Basic {
     @Override
     public String toString() {
         return this.name;
-    }
-
-    public static Guild get(UUID uuid) {
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (guild.getUUID().equals(uuid)) {
-                return guild;
-            }
-        }
-        return new Guild(uuid);
-    }
-
-    public static Guild get(String name) {
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (guild.getName().equalsIgnoreCase(name)) {
-                return guild;
-            }
-        }
-        return new Guild(name);
     }
 
 }

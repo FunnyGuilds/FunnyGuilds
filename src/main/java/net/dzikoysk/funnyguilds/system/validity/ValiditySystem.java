@@ -11,6 +11,13 @@ public class ValiditySystem {
         instance = this;
     }
 
+    public static ValiditySystem getInstance() {
+        if (instance == null) {
+            new ValiditySystem();
+        }
+        return instance;
+    }
+
     public void run() {
         for (Guild guild : GuildUtils.getGuilds()) {
             if (!guild.isValid()) {
@@ -18,12 +25,5 @@ public class ValiditySystem {
                 GuildUtils.deleteGuild(guild);
             }
         }
-    }
-
-    public static ValiditySystem getInstance() {
-        if (instance == null) {
-            new ValiditySystem();
-        }
-        return instance;
     }
 }

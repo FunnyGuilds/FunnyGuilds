@@ -19,18 +19,6 @@ public class FlatRegion {
         this.region = region;
     }
 
-    public boolean serialize() {
-        File file = Flat.loadCustomFile(BasicType.REGION, region.getName());
-        Yamler pc = new Yamler(file);
-        pc.set("name", region.getName());
-        pc.set("center", Parser.toString(region.getCenter()));
-        pc.set("size", region.getSize());
-        pc.set("enlarge", region.getEnlarge());
-        pc.save();
-        pc = null;
-        return true;
-    }
-
     public static Region deserialize(File file) {
         Yamler pc = new Yamler(file);
         String name = pc.getString("name");
@@ -60,6 +48,18 @@ public class FlatRegion {
         values[2] = size;
         values[3] = enlarge;
         return DeserializationUtils.deserializeRegion(values);
+    }
+
+    public boolean serialize() {
+        File file = Flat.loadCustomFile(BasicType.REGION, region.getName());
+        Yamler pc = new Yamler(file);
+        pc.set("name", region.getName());
+        pc.set("center", Parser.toString(region.getCenter()));
+        pc.set("size", region.getSize());
+        pc.set("enlarge", region.getEnlarge());
+        pc.save();
+        pc = null;
+        return true;
     }
 
 }

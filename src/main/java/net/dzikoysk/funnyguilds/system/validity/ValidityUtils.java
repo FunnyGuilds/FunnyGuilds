@@ -14,19 +14,19 @@ public class ValidityUtils {
         }
         Region region = RegionUtils.get(guild.getRegion());
         String message = Messages.getInstance().broadcastValidity
-                                 .replace("{GUILD}", guild.getName())
-                                 .replace("{TAG}", guild.getTag())
-                                 .replace("{GUILD}", guild.getName());
+                .replace("{GUILD}", guild.getName())
+                .replace("{TAG}", guild.getTag())
+                .replace("{GUILD}", guild.getName());
         if (region != null && region.getCenter() != null) {
             message = message
-                              .replace("{X}", Integer.toString(region.getCenter().getBlockX()))
-                              .replace("{Y}", Integer.toString(region.getCenter().getBlockY()))
-                              .replace("{Z}", Integer.toString(region.getCenter().getBlockZ()));
+                    .replace("{X}", Integer.toString(region.getCenter().getBlockX()))
+                    .replace("{Y}", Integer.toString(region.getCenter().getBlockY()))
+                    .replace("{Z}", Integer.toString(region.getCenter().getBlockZ()));
         } else {
             message = message
-                              .replace("{X}", "Brak informacji")
-                              .replace("{Y}", "Brak informacji")
-                              .replace("{Z}", "Brak informacji");
+                    .replace("{X}", "Brak informacji")
+                    .replace("{Y}", "Brak informacji")
+                    .replace("{Z}", "Brak informacji");
         }
         Bukkit.broadcastMessage(message);
     }

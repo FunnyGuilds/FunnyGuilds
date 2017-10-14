@@ -24,6 +24,56 @@ public class Flat {
         new FlatPatcher().patch();
     }
 
+    public static Flat getInstance() {
+        if (instance == null) {
+            new Flat();
+        }
+        return instance;
+    }
+
+    public static File loadCustomFile(BasicType type, String name) {
+        switch (type) {
+            case GUILD: {
+                File file = new File(GUILDS + File.separator + name + ".yml");
+                IOUtils.initialize(file, true);
+                return file;
+            }
+            case REGION: {
+                File file = new File(REGIONS + File.separator + name + ".yml");
+                IOUtils.initialize(file, true);
+                return file;
+            }
+            case USER: {
+                File file = new File(USERS + File.separator + name + ".yml");
+                IOUtils.initialize(file, true);
+                return file;
+            }
+            default:
+                return null;
+        }
+    }
+
+    public static File getUserFile(User user) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(user.getName());
+        sb.append(".yml");
+        return new File(USERS + File.separator + sb.toString());
+    }
+
+    public static File getRegionFile(Region region) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(region.getName());
+        sb.append(".yml");
+        return new File(REGIONS, sb.toString());
+    }
+
+    public static File getGuildFile(Guild guild) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(guild.getName());
+        sb.append(".yml");
+        return new File(GUILDS, sb.toString());
+    }
+
     public void load() {
         loadUsers();
         loadRegions();
@@ -159,56 +209,6 @@ public class Flat {
 
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
         FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
-    }
-
-    public static Flat getInstance() {
-        if (instance == null) {
-            new Flat();
-        }
-        return instance;
-    }
-
-    public static File loadCustomFile(BasicType type, String name) {
-        switch (type) {
-            case GUILD: {
-                File file = new File(GUILDS + File.separator + name + ".yml");
-                IOUtils.initialize(file, true);
-                return file;
-            }
-            case REGION: {
-                File file = new File(REGIONS + File.separator + name + ".yml");
-                IOUtils.initialize(file, true);
-                return file;
-            }
-            case USER: {
-                File file = new File(USERS + File.separator + name + ".yml");
-                IOUtils.initialize(file, true);
-                return file;
-            }
-            default:
-                return null;
-        }
-    }
-
-    public static File getUserFile(User user) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(user.getName());
-        sb.append(".yml");
-        return new File(USERS + File.separator + sb.toString());
-    }
-
-    public static File getRegionFile(Region region) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(region.getName());
-        sb.append(".yml");
-        return new File(REGIONS, sb.toString());
-    }
-
-    public static File getGuildFile(Guild guild) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(guild.getName());
-        sb.append(".yml");
-        return new File(GUILDS, sb.toString());
     }
 
 }

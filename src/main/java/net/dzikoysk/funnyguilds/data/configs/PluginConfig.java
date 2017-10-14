@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
@@ -338,8 +339,7 @@ public class PluginConfig {
     public String dummySuffix;
 
     @CfgStringStyle(CfgStringStyle.StringStyle.ALWAYS_QUOTED)
-    @CfgComment("Wyglad listy graczy. Przedzial od 1 do 60")
-    @CfgComment("Limit znakow: 30")
+    @CfgComment("Wyglad listy graczy. Przedzial od 1 do 80")
     @CfgComment("> Spis zmiennych:")
     @CfgComment("{ONLINE} - Liczba graczy online")
     @CfgComment("{PLAYER} - Gracz")
@@ -361,27 +361,27 @@ public class PluginConfig {
     @CfgComment("{SIZE} - wielkość terenu gildii")
     @CfgComment("{LIVES} - życia gildii")
     @CfgName("player-list")
-    public Map<Integer, String> playerList = ImmutableMap.<Integer, String> builder()
-                                                     .put(1, "&7Nick: &b{PLAYER}")
-                                                     .put(2, "&7Ping: &b{PING}")
-                                                     .put(3, "&7TPS: &b{TPS}")
-                                                     .put(4, "&7Punkty: &b{POINTS}")
-                                                     .put(5, "&7Zabojstwa: &b{KILLS}")
-                                                     .put(6, "&7Smierci: &b{DEATHS}")
-                                                     .put(7, "&7Godzina: &b{HOUR}")
-                                                     .put(8, "&7Minuta: &b{MINUTE}")
-                                                     .put(9, "&7Sekunda: &b{SECOND}")
-                                                     .put(10, "&7Online: &b{ONLINE}")
-                                                     .put(11, "&7Gildia: &b{GUILD}")
-                                                     .put(23, "&bTop 3 Gildii")
-                                                     .put(25, "&71. &b{GTOP-1}")
-                                                     .put(26, "&72. &b{GTOP-2}")
-                                                     .put(27, "&73. &b{GTOP-3}")
-                                                     .put(32, "&bTop 3 Graczy")
-                                                     .put(34, "&71. &b{PTOP-1}")
-                                                     .put(35, "&72. &b{PTOP-2}")
-                                                     .put(36, "&73. &b{PTOP-3}")
-                                                     .build();
+    public List<String> playerList = ImmutableList.<String>builder()
+            .add("&7Nick: &b{PLAYER}")
+            .add("&7Ping: &b{PING}")
+            .add("&7TPS: &b{TPS}")
+            .add("&7Punkty: &b{POINTS}")
+            .add("&7Zabojstwa: &b{KILLS}")
+            .add("&7Smierci: &b{DEATHS}")
+            .add("&7Godzina: &b{HOUR}")
+            .add("&7Minuta: &b{MINUTE}")
+            .add("&7Sekunda: &b{SECOND}")
+            .add("&7Online: &b{ONLINE}")
+            .add("&7Gildia: &b{GUILD}")
+            .add("&bTop 3 Gildii")
+            .add("&71. &b{GTOP-1}")
+            .add("&72. &b{GTOP-2}")
+            .add("&73. &b{GTOP-3}")
+            .add("&bTop 3 Graczy")
+            .add("&71. &b{PTOP-1}")
+            .add("&72. &b{PTOP-2}")
+            .add("&73. &b{PTOP-3}")
+            .build();
 
     @CfgComment("Wyglad naglowka w liscie graczy.")
     @CfgName("player-list-header")
@@ -389,7 +389,7 @@ public class PluginConfig {
 
     @CfgComment("Wyglad stopki w liscie graczy.")
     @CfgName("player-list-footer")
-    public String playerListFooter = "&7O, dziala!";
+    public String playerListFooter = "&7O, dziala! &8{HOUR}:{MINUTE}:{SECOND}";
 
     @CfgComment("Tablista wlaczona")
     @CfgName("player-list-enable")
@@ -398,16 +398,6 @@ public class PluginConfig {
     @CfgComment("Co ile sekund ma odswiezac liste graczy")
     @CfgName("player-list-interval")
     public int playerlistInterval = 1;
-
-    @CfgComment("Ping wyswietlany na tab")
-    @CfgName("player-list-ping")
-    public int playerlistPing = 0;
-
-    @CfgComment("Jezeli buguje Ci sie tablista")
-    @CfgComment("- Po wejsciu gracza wszystko sie rozjezdza")
-    @CfgComment("Wlacz ta opcje")
-    @CfgName("player-list-patch")
-    public boolean playerlistPatch = false;
 
     @CfgComment("Wyglad punktow wyswietlanych przy gildii w rankingu")
     @CfgName("player-list-points")

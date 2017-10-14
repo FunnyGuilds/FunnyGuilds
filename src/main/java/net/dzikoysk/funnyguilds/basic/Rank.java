@@ -65,25 +65,6 @@ public class Rank implements Comparable<Rank> {
         return i;
     }
 
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
-    public void setPoints(int i) {
-        this.points = i;
-        this.basic.changes();
-    }
-
-    public void setKills(int i) {
-        this.kills = i;
-        this.basic.changes();
-    }
-
-    public void setDeaths(int i) {
-        this.deaths = i;
-        this.basic.changes();
-    }
-
     public int getPoints() {
         if (this.type == BasicType.USER) {
             return this.points;
@@ -110,16 +91,35 @@ public class Rank implements Comparable<Rank> {
         }
     }
 
+    public void setPoints(int i) {
+        this.points = i;
+        this.basic.changes();
+    }
+
     public int getPosition() {
         return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public int getKills() {
         return this.kills;
     }
 
+    public void setKills(int i) {
+        this.kills = i;
+        this.basic.changes();
+    }
+
     public int getDeaths() {
         return this.deaths;
+    }
+
+    public void setDeaths(int i) {
+        this.deaths = i;
+        this.basic.changes();
     }
 
     public String getIDNS() {

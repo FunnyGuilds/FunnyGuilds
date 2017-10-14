@@ -46,6 +46,13 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         }
     }
 
+    public static OfflinePlayer deserialize(Map<String, Object> args) {
+        if (args.get("name") == null) {
+            return null;
+        }
+        return new OfflineUser((String) args.get("name"));
+    }
+
     public Map<String, Object> serialize() {
         Map<String, Object> result = new LinkedHashMap<>();
         result.put("UUID", this.profile.getId().toString());
@@ -63,27 +70,14 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
             return;
         }
         for (Constructor c : GameProfile.class.getConstructors()) {
-            if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{ String.class, String.class })) {
+            if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{String.class, String.class})) {
                 type = 1;
-            } else if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{ UUID.class, String.class })) {
+            } else if (Arrays.equals(c.getParameterTypes(), new Class<?>[]{UUID.class, String.class})) {
                 type = 2;
             } else {
                 FunnyGuilds.error("GameProfile constructor not found!");
             }
         }
-    }
-
-    public void setOp(boolean b) {
-        getReal().setOp(b);
-    }
-
-    @SuppressWarnings("deprecation")
-    public void setBanned(boolean value) {
-        getReal().setBanned(value);
-    }
-
-    public void setWhitelisted(boolean value) {
-        Bukkit.getWhitelistedPlayers().add(this);
     }
 
     public GameProfile getProfile() {
@@ -114,6 +108,10 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return getReal().isOp();
     }
 
+    public void setOp(boolean b) {
+        getReal().setOp(b);
+    }
+
     public boolean isBanned() {
         if (getName() == null) {
             return false;
@@ -121,8 +119,17 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         return Bukkit.getServer().getBannedPlayers().contains(this);
     }
 
+    @SuppressWarnings("deprecation")
+    public void setBanned(boolean value) {
+        getReal().setBanned(value);
+    }
+
     public boolean isWhitelisted() {
         return Bukkit.getWhitelistedPlayers().contains(this);
+    }
+
+    public void setWhitelisted(boolean value) {
+        Bukkit.getWhitelistedPlayers().add(this);
     }
 
     public Player getPlayer() {
@@ -167,12 +174,5 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
 
     public String toString() {
         return getClass().getSimpleName() + "[UUID=" + this.profile.getId() + "]";
-    }
-
-    public static OfflinePlayer deserialize(Map<String, Object> args) {
-        if (args.get("name") == null) {
-            return null;
-        }
-        return new OfflineUser((String) args.get("name"));
     }
 }

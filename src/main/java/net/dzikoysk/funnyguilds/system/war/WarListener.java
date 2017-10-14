@@ -73,7 +73,7 @@ public class WarListener {
                 WarSystem.getInstance().attack(player, entry.getKey());
             } else {
                 ExcInfo excInfo = new ExcInfo();
-                String[] parameters = new String[]{ entry.getKey().getTag() };
+                String[] parameters = new String[]{entry.getKey().getTag()};
 
                 excInfo.execute(player, parameters);
             }

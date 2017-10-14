@@ -14,6 +14,36 @@ public class DatabaseUser {
         this.user = user;
     }
 
+    public static User deserialize(ResultSet rs) {
+        if (rs == null) {
+            return null;
+        }
+        try {
+            String uuid = rs.getString("uuid");
+            String name = rs.getString("name");
+            int points = rs.getInt("points");
+            int kills = rs.getInt("kills");
+            int deaths = rs.getInt("deaths");
+            long ban = rs.getLong("ban");
+            String reason = rs.getString("reason");
+
+            Object[] values = new Object[7];
+            values[0] = uuid;
+            values[1] = name;
+            values[2] = points;
+            values[3] = kills;
+            values[4] = deaths;
+            values[5] = ban;
+            values[6] = reason;
+            return DeserializationUtils.deserializeUser(values);
+        } catch (Exception e) {
+            if (FunnyGuilds.exception(e.getCause())) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     public void save(Database db) {
         String update = getInsert();
         if (update != null) {
@@ -73,35 +103,5 @@ public class DatabaseUser {
             sb.append("'");
         }
         return sb.toString();
-    }
-
-    public static User deserialize(ResultSet rs) {
-        if (rs == null) {
-            return null;
-        }
-        try {
-            String uuid = rs.getString("uuid");
-            String name = rs.getString("name");
-            int points = rs.getInt("points");
-            int kills = rs.getInt("kills");
-            int deaths = rs.getInt("deaths");
-            long ban = rs.getLong("ban");
-            String reason = rs.getString("reason");
-
-            Object[] values = new Object[7];
-            values[0] = uuid;
-            values[1] = name;
-            values[2] = points;
-            values[3] = kills;
-            values[4] = deaths;
-            values[5] = ban;
-            values[6] = reason;
-            return DeserializationUtils.deserializeUser(values);
-        } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
-                e.printStackTrace();
-            }
-        }
-        return null;
     }
 }

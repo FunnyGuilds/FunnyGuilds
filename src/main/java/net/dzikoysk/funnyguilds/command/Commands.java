@@ -15,6 +15,13 @@ public class Commands {
         instance = this;
     }
 
+    public static Commands getInstance() {
+        if (instance == null) {
+            return new Commands();
+        }
+        return instance;
+    }
+
     public void register() {
         final PluginConfig.Commands commands = Settings.getConfig().commands;
         new ExecutorCaller(new ExcFunnyGuilds(), "funnyguilds", null, null);
@@ -55,12 +62,5 @@ public class Commands {
         new ExecutorCaller(new AxcMove(), commands.admin.move, "funnyguilds.admin", null);
         new ExecutorCaller(new AxcValidity(), commands.admin.validity, "funnyguilds.admin", null);
         new ExecutorCaller(new AxcName(), commands.admin.name, "funnyguilds.admin", null);
-    }
-
-    public static Commands getInstance() {
-        if (instance == null) {
-            return new Commands();
-        }
-        return instance;
     }
 }

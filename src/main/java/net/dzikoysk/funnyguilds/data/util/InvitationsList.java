@@ -24,45 +24,8 @@ public class InvitationsList {
         is.add(this);
     }
 
-    public void set(int i) {
-        this.i = i;
-    }
-
-    public void set(List<String> ls) {
-        this.ls = ls;
-    }
-
-    public boolean contains(String s) {
-        if (ls == null) {
-            ls = new ArrayList<String>();
-        }
-        return this.ls.contains(s.toLowerCase());
-    }
-
-    public void add(String s) {
-        if (!ls.contains(s.toLowerCase())) {
-            this.ls.add(s.toLowerCase());
-        }
-    }
-
-    public void remove(String s) {
-        this.ls.remove(s.toLowerCase());
-    }
-
     public static List<InvitationsList> getIS() {
         return is;
-    }
-
-    public int getType() {
-        return i;
-    }
-
-    public Object getO() {
-        return o;
-    }
-
-    public List<String> getLS() {
-        return ls;
     }
 
     public static InvitationsList get(Object o, int i) {
@@ -92,6 +55,43 @@ public class InvitationsList {
             to.put(sb.toString(), x.getLS());
         }
         return to.entrySet();
+    }
+
+    public void set(int i) {
+        this.i = i;
+    }
+
+    public void set(List<String> ls) {
+        this.ls = ls;
+    }
+
+    public boolean contains(String s) {
+        if (ls == null) {
+            ls = new ArrayList<String>();
+        }
+        return this.ls.contains(s.toLowerCase());
+    }
+
+    public void add(String s) {
+        if (!ls.contains(s.toLowerCase())) {
+            this.ls.add(s.toLowerCase());
+        }
+    }
+
+    public void remove(String s) {
+        this.ls.remove(s.toLowerCase());
+    }
+
+    public int getType() {
+        return i;
+    }
+
+    public Object getO() {
+        return o;
+    }
+
+    public List<String> getLS() {
+        return ls;
     }
 
 }

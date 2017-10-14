@@ -11,16 +11,16 @@ public class BanSystem {
         instance = this;
     }
 
-    public void run() {
-        for (Guild guild : GuildUtils.getGuilds()) {
-            guild.isBanned();
-        }
-    }
-
     public static BanSystem getInstance() {
         if (instance == null) {
             new BanSystem();
         }
         return instance;
+    }
+
+    public void run() {
+        for (Guild guild : GuildUtils.getGuilds()) {
+            guild.isBanned();
+        }
     }
 }

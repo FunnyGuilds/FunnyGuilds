@@ -89,4 +89,7 @@ public class StringUtils {
         return list;
     }
 
+    public static String appendDigit(int number) {
+        return number > 9 ? "" + number : "0" + number;
+    }
 }

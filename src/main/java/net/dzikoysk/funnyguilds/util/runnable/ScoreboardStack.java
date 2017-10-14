@@ -21,6 +21,28 @@ public class ScoreboardStack implements Runnable {
         this.fill();
     }
 
+    public static ScoreboardStack getInstance() {
+        try {
+            if (instance == null) {
+                throw new UnsupportedOperationException("ScoreboardStack is not setup!");
+            }
+            return instance;
+        } catch (Exception ex) {
+            if (FunnyGuilds.exception(ex.getCause())) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public static Scoreboard pull() {
+        return stack.pop();
+    }
+
+    public static int size() {
+        return stack.size();
+    }
+
     @Override
     public void run() {
         fill();
@@ -43,27 +65,5 @@ public class ScoreboardStack implements Runnable {
                 stack.push(sm.getNewScoreboard());
             }
         }
-    }
-
-    public static ScoreboardStack getInstance() {
-        try {
-            if (instance == null) {
-                throw new UnsupportedOperationException("ScoreboardStack is not setup!");
-            }
-            return instance;
-        } catch (Exception ex) {
-            if (FunnyGuilds.exception(ex.getCause())) {
-                ex.printStackTrace();
-            }
-            return null;
-        }
-    }
-
-    public static Scoreboard pull() {
-        return stack.pop();
-    }
-
-    public static int size() {
-        return stack.size();
     }
 }

@@ -10,49 +10,14 @@ public class IndependentThread extends Thread {
 
     private static IndependentThread instance;
     private static List<Action> temp = new ArrayList<>();
-    private List<Action> actions = new ArrayList<>();
     private final Object locker = new Object();
+    private List<Action> actions = new ArrayList<>();
 
     public IndependentThread() {
         super("FunnyGuilds | IndependentThread");
         instance = this;
         FunnyGuilds.info("Available Processors: " + Runtime.getRuntime().availableProcessors());
         FunnyGuilds.info("Active Threads: " + Thread.activeCount());
-    }
-
-    @Override
-    public void run() {
-        while (true) {
-            try {
-                List<Action> currently = new ArrayList<>(actions);
-                actions.clear();
-                execute(currently);
-
-                synchronized (locker) {
-                    locker.wait();
-                }
-            } catch (InterruptedException e) {
-                if (FunnyGuilds.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    private void execute(List<Action> actions) {
-        for (Action action : actions) {
-            try {
-                if (action == null) {
-                    continue;
-                }
-
-                action.execute();
-            } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
     public static IndependentThread getInstance() {
@@ -110,6 +75,41 @@ public class IndependentThread extends Thread {
         Action action = new Action(type, values);
         if (!temp.contains(action)) {
             temp.add(action);
+        }
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            try {
+                List<Action> currently = new ArrayList<>(actions);
+                actions.clear();
+                execute(currently);
+
+                synchronized (locker) {
+                    locker.wait();
+                }
+            } catch (InterruptedException e) {
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void execute(List<Action> actions) {
+        for (Action action : actions) {
+            try {
+                if (action == null) {
+                    continue;
+                }
+
+                action.execute();
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
