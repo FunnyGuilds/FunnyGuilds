@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.util;
 
-import org.bukkit.ChatColor;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.bukkit.ChatColor;
 
 public class StringUtils {
 
@@ -89,4 +89,8 @@ public class StringUtils {
         return list;
     }
 
+    public static String appendDigit(int number)
+    {
+        return number > 9 ? "" + number : "0" + number;
+    }
 }

@@ -1,16 +1,17 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.SafeUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.SafeUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 
 public class Reflections {
     private static final Map<String, Class<?>> classCache = new HashMap<>();
@@ -25,6 +26,10 @@ public class Reflections {
     public static String getVersion() {
         String name = Bukkit.getServer().getClass().getPackage().getName();
         return name.substring(name.lastIndexOf('.') + 1) + ".";
+    }
+
+    public static String getFixedVersion() {
+        return Bukkit.getServer().getClass().getPackage().getName().replace(".",  ",").split(",")[3];
     }
 
     public static Class<?> getClassOmitCache(String className) {
@@ -217,6 +222,19 @@ public class Reflections {
 
     public static Method getMethod(Class<?> cl, String method) {
         return getMethod(cl, method, null);
+    }
+
+    public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... arguments)
+    {
+        for (Constructor<?> constructor : clazz.getDeclaredConstructors())
+        {
+            if (Arrays.equals(constructor.getParameterTypes(), arguments))
+            {
+                return constructor;
+            }
+        }
+
+        return null;
     }
 
     public static boolean classListEqual(Class<?>[] l1, Class<?>[] l2) {
