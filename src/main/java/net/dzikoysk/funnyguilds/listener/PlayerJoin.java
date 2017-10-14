@@ -32,8 +32,7 @@ public class PlayerJoin implements Listener {
         final Player player = e.getPlayer();
         final User user = User.get(player);
 
-        if (config.playerlistEnable)
-        {
+        if (config.playerlistEnable) {
             AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, player);
         }
 

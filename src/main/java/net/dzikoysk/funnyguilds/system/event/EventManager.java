@@ -16,6 +16,13 @@ public class EventManager {
         settings.hashCode();
     }
 
+    public static EventManager getEventManager() {
+        if (instance == null) {
+            new EventManager();
+        }
+        return instance;
+    }
+
     public final void load() {
         for (EventExtension ee : extensions) {
             ee.onLoad();
@@ -36,12 +43,5 @@ public class EventManager {
 
     public List<EventExtension> getExtensions() {
         return extensions;
-    }
-
-    public static EventManager getEventManager() {
-        if (instance == null) {
-            new EventManager();
-        }
-        return instance;
     }
 }

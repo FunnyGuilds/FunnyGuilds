@@ -133,20 +133,20 @@ public class Menu {
         return true;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
     public String getName() {
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getRow() {
         return this.row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
     }
 
     public Inventory getInventory() {

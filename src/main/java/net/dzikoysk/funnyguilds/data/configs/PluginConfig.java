@@ -1,25 +1,15 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.diorite.cfg.annotations.CfgClass;
-import org.diorite.cfg.annotations.CfgCollectionStyle;
-import org.diorite.cfg.annotations.CfgComment;
-import org.diorite.cfg.annotations.CfgExclude;
-import org.diorite.cfg.annotations.CfgName;
-import org.diorite.cfg.annotations.CfgStringStyle;
+import org.diorite.cfg.annotations.*;
 import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
+
+import java.util.*;
 
 @CfgClass(name = "PluginConfig")
 @CfgDelegateDefault("{new}")
@@ -371,27 +361,27 @@ public class PluginConfig {
     @CfgComment("{SIZE} - wielkość terenu gildii")
     @CfgComment("{LIVES} - życia gildii")
     @CfgName("player-list")
-    public List<String> playerList = ImmutableList.<String> builder()
-                                                     .add("&7Nick: &b{PLAYER}")
-                                                     .add("&7Ping: &b{PING}")
-                                                     .add("&7TPS: &b{TPS}")
-                                                     .add("&7Punkty: &b{POINTS}")
-                                                     .add("&7Zabojstwa: &b{KILLS}")
-                                                     .add("&7Smierci: &b{DEATHS}")
-                                                     .add("&7Godzina: &b{HOUR}")
-                                                     .add("&7Minuta: &b{MINUTE}")
-                                                     .add("&7Sekunda: &b{SECOND}")
-                                                     .add("&7Online: &b{ONLINE}")
-                                                     .add("&7Gildia: &b{GUILD}")
-                                                     .add("&bTop 3 Gildii")
-                                                     .add("&71. &b{GTOP-1}")
-                                                     .add("&72. &b{GTOP-2}")
-                                                     .add("&73. &b{GTOP-3}")
-                                                     .add("&bTop 3 Graczy")
-                                                     .add("&71. &b{PTOP-1}")
-                                                     .add("&72. &b{PTOP-2}")
-                                                     .add("&73. &b{PTOP-3}")
-                                                     .build();
+    public List<String> playerList = ImmutableList.<String>builder()
+            .add("&7Nick: &b{PLAYER}")
+            .add("&7Ping: &b{PING}")
+            .add("&7TPS: &b{TPS}")
+            .add("&7Punkty: &b{POINTS}")
+            .add("&7Zabojstwa: &b{KILLS}")
+            .add("&7Smierci: &b{DEATHS}")
+            .add("&7Godzina: &b{HOUR}")
+            .add("&7Minuta: &b{MINUTE}")
+            .add("&7Sekunda: &b{SECOND}")
+            .add("&7Online: &b{ONLINE}")
+            .add("&7Gildia: &b{GUILD}")
+            .add("&bTop 3 Gildii")
+            .add("&71. &b{GTOP-1}")
+            .add("&72. &b{GTOP-2}")
+            .add("&73. &b{GTOP-3}")
+            .add("&bTop 3 Graczy")
+            .add("&71. &b{PTOP-1}")
+            .add("&72. &b{PTOP-2}")
+            .add("&73. &b{PTOP-3}")
+            .build();
 
     @CfgComment("Wyglad naglowka w liscie graczy.")
     @CfgName("player-list-header")

@@ -76,8 +76,7 @@ public class EntityExplode implements Listener {
                 if (RandomizationUtils.chance(materials.get(material))) {
                     l.getBlock().setType(Material.AIR);
                 }
-            }
-            else {
+            } else {
                 if (RandomizationUtils.chance(materials.get(material))) {
                     l.getBlock().breakNaturally();
                 }

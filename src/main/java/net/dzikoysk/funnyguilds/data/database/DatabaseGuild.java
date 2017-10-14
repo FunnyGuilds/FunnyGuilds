@@ -23,96 +23,6 @@ public class DatabaseGuild {
         this.guild = guild;
     }
 
-    public void save(Database db) {
-        String update = getInsert();
-        if (update != null) {
-            for (String query : update.split(";")) {
-                db.executeUpdate(query);
-            }
-        }
-    }
-
-    public void delete() {
-        if (guild == null) {
-            return;
-        }
-        if (guild.getUUID() != null) {
-            Database db = Database.getInstance();
-            StringBuilder update = new StringBuilder();
-            update.append("DELETE FROM `guilds` WHERE `uuid`='");
-            update.append(guild.getUUID().toString());
-            update.append("'");
-            db.executeUpdate(update.toString());
-        } else if (guild.getName() != null) {
-            Database db = Database.getInstance();
-            StringBuilder update = new StringBuilder();
-            update.append("DELETE FROM `guilds` WHERE `name`='");
-            update.append(guild.getName());
-            update.append("'");
-            db.executeUpdate(update.toString());
-        }
-    }
-
-    public void updatePoints() {
-        Database db = Database.getInstance();
-        StringBuilder update = new StringBuilder();
-        update.append("UPDATE `guilds` SET `points`=");
-        update.append(guild.getRank().getPoints());
-        update.append(" WHERE `uuid`='");
-        update.append(guild.getUUID().toString());
-        update.append("'");
-        db.executeUpdate(update.toString());
-    }
-
-    public String getInsert() {
-        StringBuilder sb = new StringBuilder();
-        String members = StringUtils.toString(UserUtils.getNames(guild.getMembers()), false);
-        String regions = StringUtils.toString(guild.getRegions(), false);
-        String allies = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
-        String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-
-        sb.append("INSERT INTO `guilds` (");
-        sb.append("`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `regions`, `allies`, ");
-        sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`");
-        sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");
-        sb.append("'%members%','%regions%','%allies%','%enemies%',%points%,%born%,");
-        sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%) ON DUPLICATE KEY UPDATE ");
-        sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
-        sb.append("`region`='%region%',`members`='%members%',`regions`='%regions%',`allies`='%allies%',");
-        sb.append("`enemies`='%enemies%',`points`=%points%,`born`=%born%,`validity`=%validity%,");
-        sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%");
-        if (guild.getDeputy() != null) {
-            sb.append("; UPDATE `guilds` SET `deputy`='");
-            sb.append(guild.getDeputy().getName());
-            sb.append("' WHERE `uuid`='");
-            sb.append(guild.getUUID().toString());
-            sb.append("'");
-        } else {
-            sb.append("; UPDATE `guilds` SET `deputy`=NULL WHERE `uuid`='");
-            sb.append(guild.getUUID().toString());
-            sb.append("'");
-        }
-        String is = sb.toString();
-        is = StringUtils.replace(is, "%uuid%", guild.getUUID().toString());
-        is = StringUtils.replace(is, "%name%", guild.getName());
-        is = StringUtils.replace(is, "%tag%", guild.getTag());
-        is = StringUtils.replace(is, "%owner%", guild.getOwner().getName());
-        is = StringUtils.replace(is, "%home%", Parser.toString(guild.getHome()));
-        is = StringUtils.replace(is, "%region%", guild.getRegion());
-        is = StringUtils.replace(is, "%members%", members);
-        is = StringUtils.replace(is, "%regions%", regions);
-        is = StringUtils.replace(is, "%allies%", allies);
-        is = StringUtils.replace(is, "%enemies%", enemies);
-        is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));
-        is = StringUtils.replace(is, "%born%", Long.toString(guild.getBorn()));
-        is = StringUtils.replace(is, "%validity%", Long.toString(guild.getValidity()));
-        is = StringUtils.replace(is, "%attacked%", Long.toString(guild.getAttacked()));
-        is = StringUtils.replace(is, "%ban%", Long.toString(guild.getBan()));
-        is = StringUtils.replace(is, "%lives%", Integer.toString(guild.getLives()));
-        is = StringUtils.replace(is, "%pvp%", Boolean.toString(guild.getPvP()));
-        return is;
-    }
-
     public static Guild deserialize(ResultSet rs) {
         if (rs == null) {
             return null;
@@ -201,6 +111,96 @@ public class DatabaseGuild {
             }
         }
         return null;
+    }
+
+    public void save(Database db) {
+        String update = getInsert();
+        if (update != null) {
+            for (String query : update.split(";")) {
+                db.executeUpdate(query);
+            }
+        }
+    }
+
+    public void delete() {
+        if (guild == null) {
+            return;
+        }
+        if (guild.getUUID() != null) {
+            Database db = Database.getInstance();
+            StringBuilder update = new StringBuilder();
+            update.append("DELETE FROM `guilds` WHERE `uuid`='");
+            update.append(guild.getUUID().toString());
+            update.append("'");
+            db.executeUpdate(update.toString());
+        } else if (guild.getName() != null) {
+            Database db = Database.getInstance();
+            StringBuilder update = new StringBuilder();
+            update.append("DELETE FROM `guilds` WHERE `name`='");
+            update.append(guild.getName());
+            update.append("'");
+            db.executeUpdate(update.toString());
+        }
+    }
+
+    public void updatePoints() {
+        Database db = Database.getInstance();
+        StringBuilder update = new StringBuilder();
+        update.append("UPDATE `guilds` SET `points`=");
+        update.append(guild.getRank().getPoints());
+        update.append(" WHERE `uuid`='");
+        update.append(guild.getUUID().toString());
+        update.append("'");
+        db.executeUpdate(update.toString());
+    }
+
+    public String getInsert() {
+        StringBuilder sb = new StringBuilder();
+        String members = StringUtils.toString(UserUtils.getNames(guild.getMembers()), false);
+        String regions = StringUtils.toString(guild.getRegions(), false);
+        String allies = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
+        String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
+
+        sb.append("INSERT INTO `guilds` (");
+        sb.append("`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `regions`, `allies`, ");
+        sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`");
+        sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");
+        sb.append("'%members%','%regions%','%allies%','%enemies%',%points%,%born%,");
+        sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%) ON DUPLICATE KEY UPDATE ");
+        sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
+        sb.append("`region`='%region%',`members`='%members%',`regions`='%regions%',`allies`='%allies%',");
+        sb.append("`enemies`='%enemies%',`points`=%points%,`born`=%born%,`validity`=%validity%,");
+        sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%");
+        if (guild.getDeputy() != null) {
+            sb.append("; UPDATE `guilds` SET `deputy`='");
+            sb.append(guild.getDeputy().getName());
+            sb.append("' WHERE `uuid`='");
+            sb.append(guild.getUUID().toString());
+            sb.append("'");
+        } else {
+            sb.append("; UPDATE `guilds` SET `deputy`=NULL WHERE `uuid`='");
+            sb.append(guild.getUUID().toString());
+            sb.append("'");
+        }
+        String is = sb.toString();
+        is = StringUtils.replace(is, "%uuid%", guild.getUUID().toString());
+        is = StringUtils.replace(is, "%name%", guild.getName());
+        is = StringUtils.replace(is, "%tag%", guild.getTag());
+        is = StringUtils.replace(is, "%owner%", guild.getOwner().getName());
+        is = StringUtils.replace(is, "%home%", Parser.toString(guild.getHome()));
+        is = StringUtils.replace(is, "%region%", guild.getRegion());
+        is = StringUtils.replace(is, "%members%", members);
+        is = StringUtils.replace(is, "%regions%", regions);
+        is = StringUtils.replace(is, "%allies%", allies);
+        is = StringUtils.replace(is, "%enemies%", enemies);
+        is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));
+        is = StringUtils.replace(is, "%born%", Long.toString(guild.getBorn()));
+        is = StringUtils.replace(is, "%validity%", Long.toString(guild.getValidity()));
+        is = StringUtils.replace(is, "%attacked%", Long.toString(guild.getAttacked()));
+        is = StringUtils.replace(is, "%ban%", Long.toString(guild.getBan()));
+        is = StringUtils.replace(is, "%lives%", Integer.toString(guild.getLives()));
+        is = StringUtils.replace(is, "%pvp%", Boolean.toString(guild.getPvP()));
+        return is;
     }
 
 }

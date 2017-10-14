@@ -18,6 +18,13 @@ public class RankManager {
         instance = this;
     }
 
+    public static RankManager getInstance() {
+        if (instance == null) {
+            new RankManager();
+        }
+        return instance;
+    }
+
     public void update(User user) {
         if (!this.users.contains(user.getRank())) {
             this.users.add(user.getRank());
@@ -86,13 +93,6 @@ public class RankManager {
     public void remove(Guild guild) {
         this.guilds.remove(guild.getRank());
         Collections.sort(this.guilds);
-    }
-
-    public static RankManager getInstance() {
-        if (instance == null) {
-            new RankManager();
-        }
-        return instance;
     }
 
 }

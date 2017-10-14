@@ -31,9 +31,8 @@ public class EntityInteract implements Listener {
             if (!config.infoPlayerEnabled || (config.infoPlayerSneaking && !event.getPlayer().isSneaking()) || playerInfoCooldown.cooldown(event.getPlayer(), TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 return;
             }
-            new ExcPlayer().execute(event.getPlayer(), new String[]{ clicked.getName() });
-        }
-        else if (entity instanceof EnderCrystal) {
+            new ExcPlayer().execute(event.getPlayer(), new String[]{clicked.getName()});
+        } else if (entity instanceof EnderCrystal) {
             EnderCrystal ec = (EnderCrystal) entity;
             Region region = RegionUtils.getAt(ec.getLocation());
             if (region == null) {
@@ -45,7 +44,7 @@ public class EntityInteract implements Listener {
                 if (guild == null) {
                     return;
                 }
-                new ExcInfo().execute(event.getPlayer(), new String[]{ guild.getTag() });
+                new ExcInfo().execute(event.getPlayer(), new String[]{guild.getTag()});
             }
         }
     }

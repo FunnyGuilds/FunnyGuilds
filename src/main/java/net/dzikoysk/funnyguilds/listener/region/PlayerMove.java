@@ -49,8 +49,7 @@ public class PlayerMove implements Listener {
                         }
                     }, 40L);
                 }
-            }
-            else if (!user.getEnter() && region != null) {
+            } else if (!user.getEnter() && region != null) {
                 Guild guild = region.getGuild();
                 if (guild == null || guild.getName() == null) {
                     return;

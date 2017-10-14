@@ -16,6 +16,10 @@ public class AsyncPacketReceiveEvent extends Event {
         this.player = player;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public Object getPacket() {
         return packet;
     }
@@ -26,10 +30,6 @@ public class AsyncPacketReceiveEvent extends Event {
 
     public String getPacketName() {
         return this.packet.getClass().getSimpleName();
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
 
     @Override

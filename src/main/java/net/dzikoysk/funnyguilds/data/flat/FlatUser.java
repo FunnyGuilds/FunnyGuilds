@@ -15,25 +15,6 @@ public class FlatUser {
         this.user = user;
     }
 
-    public boolean serialize() {
-        File file = Flat.getUserFile(user);
-        if (file.isDirectory()) {
-            return false;
-        }
-
-        Yamler pc = new Yamler(file);
-        pc.set("uuid", user.getUUID().toString());
-        pc.set("name", user.getName());
-        pc.set("points", user.getRank().getPoints());
-        pc.set("kills", user.getRank().getKills());
-        pc.set("deaths", user.getRank().getDeaths());
-        pc.set("ban", user.getBan());
-        pc.set("reason", user.getReason());
-        pc.save();
-        pc = null;
-        return true;
-    }
-
     public static User deserialize(File file) {
         if (file.isDirectory()) {
             return null;
@@ -66,5 +47,24 @@ public class FlatUser {
         values[5] = ban;
         values[6] = reason;
         return DeserializationUtils.deserializeUser(values);
+    }
+
+    public boolean serialize() {
+        File file = Flat.getUserFile(user);
+        if (file.isDirectory()) {
+            return false;
+        }
+
+        Yamler pc = new Yamler(file);
+        pc.set("uuid", user.getUUID().toString());
+        pc.set("name", user.getName());
+        pc.set("points", user.getRank().getPoints());
+        pc.set("kills", user.getRank().getKills());
+        pc.set("deaths", user.getRank().getDeaths());
+        pc.set("ban", user.getBan());
+        pc.set("reason", user.getReason());
+        pc.save();
+        pc = null;
+        return true;
     }
 }

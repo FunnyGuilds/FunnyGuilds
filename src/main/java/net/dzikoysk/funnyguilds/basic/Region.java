@@ -36,6 +36,15 @@ public class Region implements Basic {
         this.changes = true;
     }
 
+    public static Region get(String name) {
+        for (Region region : RegionUtils.getRegions()) {
+            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
+                return region;
+            }
+        }
+        return new Region(name);
+    }
+
     public void update() {
         if (this.center == null) {
             return;
@@ -103,14 +112,26 @@ public class Region implements Basic {
         this.changes = true;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public void setName(String s) {
         this.name = s;
         this.changes();
     }
 
+    public Guild getGuild() {
+        return this.guild;
+    }
+
     public void setGuild(Guild guild) {
         this.guild = guild;
         this.changes();
+    }
+
+    public Location getCenter() {
+        return this.center;
     }
 
     public void setCenter(Location loc) {
@@ -120,10 +141,18 @@ public class Region implements Basic {
         this.changes();
     }
 
+    public int getSize() {
+        return this.size;
+    }
+
     public void setSize(int i) {
         this.size = i;
         this.update();
         this.changes();
+    }
+
+    public World getWorld() {
+        return this.world;
     }
 
     public void setWorld(World world) {
@@ -132,9 +161,17 @@ public class Region implements Basic {
         this.changes();
     }
 
+    public Location getL() {
+        return this.l;
+    }
+
     public void setL(Location loc) {
         this.l = loc;
         this.changes();
+    }
+
+    public Location getP() {
+        return this.p;
     }
 
     public void setP(Location loc) {
@@ -142,41 +179,13 @@ public class Region implements Basic {
         this.changes();
     }
 
+    public int getEnlarge() {
+        return this.enlarge;
+    }
+
     public void setEnlarge(int i) {
         this.enlarge = i;
         this.changes();
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public Guild getGuild() {
-        return this.guild;
-    }
-
-    public Location getCenter() {
-        return this.center;
-    }
-
-    public int getSize() {
-        return this.size;
-    }
-
-    public World getWorld() {
-        return this.world;
-    }
-
-    public Location getL() {
-        return this.l;
-    }
-
-    public Location getP() {
-        return this.p;
-    }
-
-    public int getEnlarge() {
-        return this.enlarge;
     }
 
     public int getUpperX() {
@@ -241,14 +250,5 @@ public class Region implements Basic {
     @Override
     public String toString() {
         return this.name;
-    }
-
-    public static Region get(String name) {
-        for (Region region : RegionUtils.getRegions()) {
-            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
-                return region;
-            }
-        }
-        return new Region(name);
     }
 }

@@ -21,6 +21,13 @@ public class DatabaseBasic {
         instance = this;
     }
 
+    public static DatabaseBasic getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        return new DatabaseBasic();
+    }
+
     public void load() {
         Database db = Database.getInstance();
 
@@ -192,12 +199,5 @@ public class DatabaseBasic {
         /*db.executeUpdate("alter table `users` add `ban` bigint;");
         db.executeUpdate("alter table `users` add `reason` text;");
         db.executeUpdate("alter table `users` add `guild` varchar(100);");*/
-    }
-
-    public static DatabaseBasic getInstance() {
-        if (instance != null) {
-            return instance;
-        }
-        return new DatabaseBasic();
     }
 }

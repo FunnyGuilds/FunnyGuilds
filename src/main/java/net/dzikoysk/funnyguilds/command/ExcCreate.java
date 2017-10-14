@@ -50,12 +50,10 @@ public class ExcCreate implements Executor {
             if (args.length == 0) {
                 p.sendMessage(m.createTag);
                 return;
-            }
-            else if (args.length == 1) {
+            } else if (args.length == 1) {
                 p.sendMessage(m.createName);
                 return;
-            }
-            else if (args.length > 2) {
+            } else if (args.length > 2) {
                 p.sendMessage(m.createMore);
                 return;
             }
@@ -126,8 +124,7 @@ public class ExcCreate implements Executor {
         List<ItemStack> itemsList;
         if (p.hasPermission("funnyguilds.vip")) {
             itemsList = c.createItemsVip;
-        }
-        else {
+        } else {
             itemsList = c.createItems;
         }
 
@@ -174,8 +171,7 @@ public class ExcCreate implements Executor {
 
         if (u.getBypass()) {
             u.setBypass(false);
-        }
-        else {
+        } else {
             p.getInventory().removeItem(items);
         }
 
@@ -212,8 +208,7 @@ public class ExcCreate implements Executor {
 
         if (c.createMaterial != null && c.createMaterial != Material.AIR) {
             loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
-        }
-        else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        } else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
 

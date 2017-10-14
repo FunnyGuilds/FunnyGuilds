@@ -19,6 +19,13 @@ public class SecuritySystem {
         blocked = new ArrayList<>();
     }
 
+    public static SecuritySystem getSecurity() {
+        if (instance == null) {
+            new SecuritySystem();
+        }
+        return instance;
+    }
+
     public boolean checkPlayer(Player player, Object... values) {
         for (SecurityType type : SecurityType.values()) {
             if (checkPlayer(player, type, values)) {
@@ -62,12 +69,5 @@ public class SecuritySystem {
 
     public boolean isBanned(User user) {
         return blocked.contains(user);
-    }
-
-    public static SecuritySystem getSecurity() {
-        if (instance == null) {
-            new SecuritySystem();
-        }
-        return instance;
     }
 }

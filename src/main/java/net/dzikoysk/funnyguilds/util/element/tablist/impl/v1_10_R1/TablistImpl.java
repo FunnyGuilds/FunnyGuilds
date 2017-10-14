@@ -1,19 +1,18 @@
 package net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.List;
-import java.util.UUID;
-
 import com.google.common.collect.Lists;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.entity.Player;
 
-public class TablistImpl extends AbstractTablist
-{
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.UUID;
+
+public class TablistImpl extends AbstractTablist {
     private static final Class<?> packetPlayOutPlayerInfoClass;
     private static final Class<?> packetPlayOutPlayerListHeaderFooterClass;
     private static final Class<?> playerInfoDataClass;
@@ -28,17 +27,12 @@ public class TablistImpl extends AbstractTablist
 
     private static final Enum<?> addPlayer;
     private static final Enum<?> updatePlayer;
-
+    private static final String uuid = "00000000-0000-%s-0000-000000000000";
+    private static final String token = "!@#$^*";
     private static Constructor<?> playerInfoDataConstructor;
     private static Constructor<?> gameProfileConstructor;
 
-    private static final String uuid = "00000000-0000-%s-0000-000000000000";
-    private static final String token = "!@#$^*";
-
-    private final Object[] profileCache = new Object[80];
-
-    static
-    {
+    static {
         packetPlayOutPlayerInfoClass = Reflections.getCraftClass("PacketPlayOutPlayerInfo");
         packetPlayOutPlayerListHeaderFooterClass = Reflections.getCraftClass("PacketPlayOutPlayerListHeaderFooter");
         playerInfoDataClass = Reflections.getCraftClass("PacketPlayOutPlayerInfo$PlayerInfoData");
@@ -54,8 +48,7 @@ public class TablistImpl extends AbstractTablist
         addPlayer = (Enum<?>) Reflections.getCraftClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction").getEnumConstants()[0];
         updatePlayer = (Enum<?>) Reflections.getCraftClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction").getEnumConstants()[3];
 
-        try
-        {
+        try {
             playerInfoDataConstructor = playerInfoDataClass.getConstructor(
                     packetPlayOutPlayerInfoClass,
                     gameProfileClass,
@@ -67,36 +60,31 @@ public class TablistImpl extends AbstractTablist
                     UUID.class,
                     String.class
             );
-        }
-        catch (final NoSuchMethodException ex)
-        {
+        } catch (final NoSuchMethodException ex) {
             ex.printStackTrace();
         }
 
     }
 
-    public TablistImpl(final List<String> tablistPattern, final String header, final String footer, final Player player)
-    {
+    private final Object[] profileCache = new Object[80];
+
+    public TablistImpl(final List<String> tablistPattern, final String header, final String footer, final Player player) {
         super(tablistPattern, header, footer, player);
     }
 
     @Override
-    public void send()
-    {
+    public void send() {
         final List<Object> packets = Lists.newArrayList();
         final List<Object> addPlayerList = Lists.newArrayList();
         final List<Object> updatePlayerList = Lists.newArrayList();
 
-        try
-        {
+        try {
             final Object addPlayerPacket = packetPlayOutPlayerInfoClass.newInstance();
             final Object updatePlayerPacket = packetPlayOutPlayerInfoClass.newInstance();
             final Object headerFooterPacket = packetPlayOutPlayerListHeaderFooterClass.newInstance();
 
-            for (int i = 0; i < 80; i++)
-            {
-                if (profileCache[i] == null)
-                {
+            for (int i = 0; i < 80; i++) {
+                if (profileCache[i] == null) {
                     profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(uuid, StringUtils.appendDigit(i))), token + StringUtils.appendDigit(i));
                 }
 
@@ -113,16 +101,14 @@ public class TablistImpl extends AbstractTablist
                         component
                 );
 
-                if (firstPacket)
-                {
+                if (firstPacket) {
                     addPlayerList.add(playerInfoData);
                 }
 
                 updatePlayerList.add(playerInfoData);
             }
 
-            if (firstPacket)
-            {
+            if (firstPacket) {
                 firstPacket = false;
             }
 
@@ -147,9 +133,7 @@ public class TablistImpl extends AbstractTablist
             footerField.set(headerFooterPacket, footer);
 
             this.sendPackets(packets);
-        }
-        catch(InstantiationException | IllegalAccessException | InvocationTargetException ex)
-        {
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
             ex.printStackTrace();
         }
     }

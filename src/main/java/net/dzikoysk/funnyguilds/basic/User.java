@@ -65,6 +65,26 @@ public class User implements Basic {
         this.updateCache();
     }
 
+    public static User get(UUID uuid) {
+        User u = UserUtils.get(uuid);
+        return u != null ? u : new User(uuid);
+    }
+
+    public static User get(Player player) {
+        User u = UserUtils.get(player.getUniqueId());
+        return u != null ? u : new User(player);
+    }
+
+    public static User get(OfflinePlayer offline) {
+        User u = UserUtils.get(offline.getName());
+        return u != null ? u : new User(offline.getName());
+    }
+
+    public static User get(String name) {
+        User u = UserUtils.get(name);
+        return u != null ? u : new User(name);
+    }
+
     public void removeGuild() {
         this.guild = null;
         IndependentThread.action(ActionType.RANK_UPDATE_USER, this);
@@ -89,73 +109,8 @@ public class User implements Basic {
         this.changes = true;
     }
 
-    private void updateCache()
-    {
+    private void updateCache() {
         UserUtils.addUser(this);
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        this.changes();
-        this.updateCache();
-    }
-
-    public void setGuild(Guild guild) {
-        this.guild = guild;
-        this.changes();
-    }
-
-    public void setScoreboard(Scoreboard sb) {
-        this.scoreboard = sb;
-    }
-
-    public void setIndividualPrefix(IndividualPrefix prefix) {
-        this.prefix = prefix;
-    }
-
-    public void setDummy(Dummy dummy) {
-        this.dummy = dummy;
-    }
-
-    public void setRank(Rank r) {
-        this.rank = r;
-        this.changes();
-    }
-
-    public void setBan(long l) {
-        this.ban = l;
-        this.changes();
-    }
-
-    public void setReason(String s) {
-        this.reason = s;
-        this.changes();
-    }
-
-    public void setEnter(boolean b) {
-        this.enter = b;
-    }
-
-    public void setLastVictim(User user) {
-        this.lastVictim = user;
-        this.lastVictimTime = System.currentTimeMillis();
-    }
-
-    public void setLastAttacker(User user) {
-        this.lastAttacker = user;
-        this.lastAttackerTime = System.currentTimeMillis();
-    }
-
-    public void setNotificationTime(long time) {
-        this.notification = time;
-    }
-
-    public void setTeleportation(BukkitTask task) {
-        this.teleportation = task;
-    }
-
-    public void setBypass(boolean b) {
-        this.bypass = b;
     }
 
     public boolean isOwner() {
@@ -195,8 +150,19 @@ public class User implements Basic {
         return this.name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+        this.changes();
+        this.updateCache();
+    }
+
     public Guild getGuild() {
         return this.guild;
+    }
+
+    public void setGuild(Guild guild) {
+        this.guild = guild;
+        this.changes();
     }
 
     public synchronized Scoreboard getScoreboard() {
@@ -206,6 +172,10 @@ public class User implements Basic {
         return this.scoreboard;
     }
 
+    public void setScoreboard(Scoreboard sb) {
+        this.scoreboard = sb;
+    }
+
     public IndividualPrefix getIndividualPrefix() {
         if (this.prefix == null) {
             new IndividualPrefix(this);
@@ -213,11 +183,19 @@ public class User implements Basic {
         return this.prefix;
     }
 
+    public void setIndividualPrefix(IndividualPrefix prefix) {
+        this.prefix = prefix;
+    }
+
     public Dummy getDummy() {
         if (this.dummy == null) {
             this.dummy = new Dummy(this);
         }
         return this.dummy;
+    }
+
+    public void setDummy(Dummy dummy) {
+        this.dummy = dummy;
     }
 
     public Rank getRank() {
@@ -230,8 +208,18 @@ public class User implements Basic {
         return this.rank;
     }
 
+    public void setRank(Rank r) {
+        this.rank = r;
+        this.changes();
+    }
+
     public long getBan() {
         return this.ban;
+    }
+
+    public void setBan(long l) {
+        this.ban = l;
+        this.changes();
     }
 
     public String getReason() {
@@ -241,20 +229,43 @@ public class User implements Basic {
         return "";
     }
 
+    public void setReason(String s) {
+        this.reason = s;
+        this.changes();
+    }
+
     public long getNotificationTime() {
         return this.notification;
+    }
+
+    public void setNotificationTime(long time) {
+        this.notification = time;
     }
 
     public boolean getEnter() {
         return this.enter;
     }
 
+    public void setEnter(boolean b) {
+        this.enter = b;
+    }
+
     public User getLastVictim() {
         return this.lastVictim;
     }
 
+    public void setLastVictim(User user) {
+        this.lastVictim = user;
+        this.lastVictimTime = System.currentTimeMillis();
+    }
+
     public User getLastAttacker() {
         return this.lastAttacker;
+    }
+
+    public void setLastAttacker(User user) {
+        this.lastAttacker = user;
+        this.lastAttackerTime = System.currentTimeMillis();
     }
 
     public long getLastVictimTime() {
@@ -267,6 +278,10 @@ public class User implements Basic {
 
     public BukkitTask getTeleportation() {
         return this.teleportation;
+    }
+
+    public void setTeleportation(BukkitTask task) {
+        this.teleportation = task;
     }
 
     public Player getPlayer() {
@@ -282,6 +297,10 @@ public class User implements Basic {
 
     public boolean getBypass() {
         return this.bypass;
+    }
+
+    public void setBypass(boolean b) {
+        this.bypass = b;
     }
 
     public int getPing() {
@@ -335,25 +354,5 @@ public class User implements Basic {
     @Override
     public String toString() {
         return this.name;
-    }
-
-    public static User get(UUID uuid) {
-        User u = UserUtils.get(uuid);
-        return u != null ? u : new User(uuid);
-    }
-
-    public static User get(Player player) {
-        User u = UserUtils.get(player.getUniqueId());
-        return u != null ? u : new User(player);
-    }
-
-    public static User get(OfflinePlayer offline) {
-        User u = UserUtils.get(offline.getName());
-        return u != null ? u : new User(offline.getName());
-    }
-
-    public static User get(String name) {
-        User u = UserUtils.get(name);
-        return u != null ? u : new User(name);
     }
 }

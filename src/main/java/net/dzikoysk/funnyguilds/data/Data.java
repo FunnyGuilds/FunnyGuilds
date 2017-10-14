@@ -27,6 +27,21 @@ public class Data {
         invitations(DO.LOAD);
     }
 
+    public static File getPlayerListFile() {
+        return new File(folder, "playerlist.yml");
+    }
+
+    public static File getDataFolder() {
+        return DATA;
+    }
+
+    public static Data getInstance() {
+        if (instance != null) {
+            return instance;
+        }
+        return new Data();
+    }
+
     public void save() {
         funnyguilds(DO.SAVE);
         invitations(DO.SAVE);
@@ -73,21 +88,6 @@ public class Data {
             pc = null;
         }
 
-    }
-
-    public static File getPlayerListFile() {
-        return new File(folder, "playerlist.yml");
-    }
-
-    public static File getDataFolder() {
-        return DATA;
-    }
-
-    public static Data getInstance() {
-        if (instance != null) {
-            return instance;
-        }
-        return new Data();
     }
 
     private enum DO {

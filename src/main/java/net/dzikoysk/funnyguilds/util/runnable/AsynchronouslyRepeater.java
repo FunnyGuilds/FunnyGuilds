@@ -12,10 +12,8 @@ import org.bukkit.scheduler.BukkitTask;
 public class AsynchronouslyRepeater implements Runnable {
 
     private static AsynchronouslyRepeater instance;
-    private volatile BukkitTask repeater;
-
     private final FunnyGuilds plugin;
-
+    private volatile BukkitTask repeater;
     private int player_list;
     private int ban_system;
     private int validity_system;
@@ -26,6 +24,20 @@ public class AsynchronouslyRepeater implements Runnable {
         this.plugin = plugin;
         instance = this;
         player_list_time = Settings.getConfig().playerlistInterval;
+    }
+
+    public static AsynchronouslyRepeater getInstance() {
+        try {
+            if (instance == null) {
+                throw new UnsupportedOperationException("AsynchronouslyRepeater is not setup!");
+            }
+            return instance;
+        } catch (Exception ex) {
+            if (FunnyGuilds.exception(ex.getCause())) {
+                ex.printStackTrace();
+            }
+            return null;
+        }
     }
 
     public void start() {
@@ -49,8 +61,7 @@ public class AsynchronouslyRepeater implements Runnable {
             banSystem();
         }
 
-        for (Player player : Bukkit.getOnlinePlayers())
-        {
+        for (Player player : Bukkit.getOnlinePlayers()) {
             final AbstractTablist tablist = AbstractTablist.getTablist(player);
             tablist.send();
         }
@@ -64,15 +75,15 @@ public class AsynchronouslyRepeater implements Runnable {
         validity_system = 0;
     }
 
-    private void banSystem() {
-        BanSystem.getInstance().run();
-        ban_system = 0;
-    }
-
     /*private void funnyguildsStats() {
         MetricsCollector.getMetrics();
         funnyguilds_stats = 0;
     }*/
+
+    private void banSystem() {
+        BanSystem.getInstance().run();
+        ban_system = 0;
+    }
 
     public void reload() {
         player_list_time = Settings.getConfig().playerlistInterval;
@@ -82,20 +93,6 @@ public class AsynchronouslyRepeater implements Runnable {
         if (repeater != null) {
             repeater.cancel();
             repeater = null;
-        }
-    }
-
-    public static AsynchronouslyRepeater getInstance() {
-        try {
-            if (instance == null) {
-                throw new UnsupportedOperationException("AsynchronouslyRepeater is not setup!");
-            }
-            return instance;
-        } catch (Exception ex) {
-            if (FunnyGuilds.exception(ex.getCause())) {
-                ex.printStackTrace();
-            }
-            return null;
         }
     }
 

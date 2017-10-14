@@ -12,19 +12,6 @@ public class Reloader {
     private static int reloadCount;
     private static boolean reloaded;
 
-    public void init() {
-        PandaConfiguration pc = new PandaConfiguration(new File(Data.getDataFolder(), "funnyguilds.dat"));
-        int before = pc.getInt("played-before");
-        int actual = Bukkit.getOnlinePlayers().size();
-        reloaded = before == actual;
-
-        if (reloaded) {
-            reloadCount = pc.getInt("reload-count") + 1;
-        }
-
-        init = true;
-    }
-
     public static int getReloadCount() {
         return reloadCount;
     }
@@ -36,6 +23,19 @@ public class Reloader {
         }
 
         return reloaded;
+    }
+
+    public void init() {
+        PandaConfiguration pc = new PandaConfiguration(new File(Data.getDataFolder(), "funnyguilds.dat"));
+        int before = pc.getInt("played-before");
+        int actual = Bukkit.getOnlinePlayers().size();
+        reloaded = before == actual;
+
+        if (reloaded) {
+            reloadCount = pc.getInt("reload-count") + 1;
+        }
+
+        init = true;
     }
 
 }

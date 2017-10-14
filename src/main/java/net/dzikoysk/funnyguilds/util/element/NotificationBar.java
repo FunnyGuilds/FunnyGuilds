@@ -109,7 +109,7 @@ public class NotificationBar {
             try {
                 Class<?> watcherClass = Reflections.getCraftClass("DataWatcher");
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
-                return packetClass.getConstructor(new Class<?>[]{ int.class, watcherClass, boolean.class }).newInstance(id, watcher, true);
+                return packetClass.getConstructor(new Class<?>[]{int.class, watcherClass, boolean.class}).newInstance(id, watcher, true);
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
@@ -121,7 +121,7 @@ public class NotificationBar {
         public Object getTeleportPacket(Location loc) {
             try {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityTeleport");
-                return packetClass.getConstructor(new Class<?>[]{ int.class, int.class, int.class, int.class, byte.class, byte.class }).newInstance(
+                return packetClass.getConstructor(new Class<?>[]{int.class, int.class, int.class, int.class, byte.class, byte.class}).newInstance(
                         this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
@@ -159,7 +159,7 @@ public class NotificationBar {
                 this.id = (Integer) Reflections.getMethod(EntityEnderDragon, "getId").invoke(dragon);
 
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
-                return packetClass.getConstructor(new Class<?>[]{ EntityLiving }).newInstance(dragon);
+                return packetClass.getConstructor(new Class<?>[]{EntityLiving}).newInstance(dragon);
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
@@ -171,7 +171,7 @@ public class NotificationBar {
         public Object getDestroyPacket() {
             try {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-                return packetClass.getConstructor(new Class<?>[]{ int[].class }).newInstance(new int[]{ id });
+                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
@@ -185,7 +185,7 @@ public class NotificationBar {
             Class<?> DataWatcher = Reflections.getCraftClass("DataWatcher");
 
             try {
-                Object watcher = DataWatcher.getConstructor(new Class<?>[]{ Entity }).newInstance(dragon);
+                Object watcher = DataWatcher.getConstructor(new Class<?>[]{Entity}).newInstance(dragon);
                 Method a = Reflections.getMethod(DataWatcher, "a", int.class, Object.class);
 
                 a.invoke(watcher, 0, visible ? (byte) 0 : (byte) 0x20);

@@ -131,29 +131,29 @@ public class Parser {
             if (string.contains("GTOP")) {
                 if (rankedGuilds.isEmpty()) {
                     return StringUtils
-                                   .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
+                            .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
                 } else if (i - 1 >= rankedGuilds.size()) {
                     return StringUtils
-                                   .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
+                            .replace(string, "{GTOP-" + Integer.toString(i) + '}', "Brak");
                 } else {
                     Guild guild = rankedGuilds.get(i - 1);
 
                     return StringUtils
-                                   .replace(string, "{GTOP-" + Integer.toString(i) + '}',
-                                           guild.getTag() + " " +
-                                                   StringUtils.replace(Settings.getConfig().playerlistPoints,
-                                                           "{POINTS}", Integer.toString(guild.getRank().getPoints()))
-                                   );
+                            .replace(string, "{GTOP-" + Integer.toString(i) + '}',
+                                    guild.getTag() + " " +
+                                            StringUtils.replace(Settings.getConfig().playerlistPoints,
+                                                    "{POINTS}", Integer.toString(guild.getRank().getPoints()))
+                            );
                 }
             } else if (string.contains("PTOP")) {
                 User user = RankManager.getInstance().getUser(i);
 
                 if (user != null) {
                     return StringUtils
-                                   .replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
+                            .replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
                 } else {
                     return StringUtils
-                                   .replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
+                            .replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
                 }
             }
         } catch (NumberFormatException e) {

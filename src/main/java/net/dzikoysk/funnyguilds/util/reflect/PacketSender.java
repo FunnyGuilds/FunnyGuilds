@@ -14,7 +14,7 @@ public class PacketSender {
     private static final String version = packageName.substring(packageName.lastIndexOf(".") + 1);
 
     public static void sendPacket(Player player, Object... os) {
-        sendPacket(new Player[]{ player }, os);
+        sendPacket(new Player[]{player}, os);
     }
 
     public static void sendPacket(Player[] players, Object... os) {

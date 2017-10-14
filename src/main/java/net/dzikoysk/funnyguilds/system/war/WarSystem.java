@@ -15,6 +15,13 @@ public class WarSystem {
         instance = this;
     }
 
+    public static WarSystem getInstance() {
+        if (instance == null) {
+            new WarSystem();
+        }
+        return instance;
+    }
+
     public void attack(Player player, Guild guild) {
         User user = User.get(player);
         if (!user.hasGuild()) {
@@ -74,12 +81,5 @@ public class WarSystem {
 
         message = WarUtils.getBroadcastMessage(conqueror, loser);
         Bukkit.broadcastMessage(message);
-    }
-
-    public static WarSystem getInstance() {
-        if (instance == null) {
-            new WarSystem();
-        }
-        return instance;
     }
 }
