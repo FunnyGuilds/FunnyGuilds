@@ -36,17 +36,19 @@ public abstract class AbstractTablist {
     protected final String header;
     protected final String footer;
     protected final UUID player;
+    protected final int ping;
     protected boolean firstPacket = true;
 
 
-    public AbstractTablist(final List<String> tablistPattern, final String header, final String footer, final Player player) {
+    public AbstractTablist(final List<String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
         this.tablistPattern = tablistPattern;
         this.header = header;
         this.footer = footer;
+        this.ping = ping;
         this.player = player.getUniqueId();
     }
 
-    public static AbstractTablist createTablist(final List<String> pattern, final String header, final String footer, final Player player) {
+    public static AbstractTablist createTablist(final List<String> pattern, final String header, final String footer, final int ping, final Player player) {
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return tablist;
@@ -54,19 +56,19 @@ public abstract class AbstractTablist {
         }
 
         if ("v1_8_R1".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, player);
+            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
         }
         if ("v1_8_R2".equals(Reflections.getFixedVersion()) || "v1_8_R3".equals(Reflections.getFixedVersion()) ||
                 "v1_9_R1".equals(Reflections.getFixedVersion()) || "v1_9_R2".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, player);
+            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
         } else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, player);
+            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;

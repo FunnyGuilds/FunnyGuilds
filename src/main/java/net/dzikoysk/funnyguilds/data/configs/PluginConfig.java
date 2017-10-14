@@ -391,6 +391,10 @@ public class PluginConfig {
     @CfgName("player-list-footer")
     public String playerListFooter = "&7O, dziala! &8{HOUR}:{MINUTE}:{SECOND}";
 
+    @CfgComment("Ilosc pingu pokazana przy kazdej komorce.")
+    @CfgName("player-list-ping")
+    public int playerListPing = 0;
+
     @CfgComment("Tablista wlaczona")
     @CfgName("player-list-enable")
     public boolean playerlistEnable = false;
