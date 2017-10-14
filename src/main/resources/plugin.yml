@@ -1,6 +1,6 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: '${project.version} Cleaned-${git.commit.id.abbrev}'
+version: '${project.version} Tribute-${git.commit.id.abbrev}'
 author: Dzikoysk
 website: http://www.dzikoysk.net/
 loadbefore: [WorldEdit]
