@@ -2,7 +2,8 @@ name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
 version: '${project.version} Tribute-${git.commit.id.abbrev}'
 author: Dzikoysk
-website: http://www.dzikoysk.net/
+authors: ['kacperduras', 'MrGregorix', 'insertt']
+website: https://www.dzikoysk.net/
 loadbefore: [WorldEdit]
 softdepend: [WorldGuard]
 permissions:
