@@ -339,6 +339,7 @@ public class PluginConfig {
     public String dummySuffix;
 
     @CfgStringStyle(CfgStringStyle.StringStyle.ALWAYS_QUOTED)
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     @CfgComment("Wyglad listy graczy. Przedzial od 1 do 80")
     @CfgComment("> Spis zmiennych:")
     @CfgComment("{ONLINE} - Liczba graczy online")
