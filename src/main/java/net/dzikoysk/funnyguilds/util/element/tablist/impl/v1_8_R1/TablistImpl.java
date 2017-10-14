@@ -93,7 +93,7 @@ public class TablistImpl extends AbstractTablist {
                 String text = this.putVars(tablistPattern.getOrDefault(i + 1, ""));
                 Object gameProfile = profileCache[i];
                 Object gameMode = enumGamemodeClass.getEnumConstants()[1];
-                Object component = this.createBaseComponent(text);
+                Object component = this.createBaseComponent(text, false);
 
                 Object playerInfoData = playerInfoDataConstructor.newInstance(
                         null,
@@ -128,8 +128,8 @@ public class TablistImpl extends AbstractTablist {
             actionEnum.set(updatePlayerPacket, updatePlayer);
             listField.set(updatePlayerPacket, updatePlayerList);
 
-            Object header = this.createBaseComponent(this.putHeaderFooterVars(super.header));
-            Object footer = this.createBaseComponent(this.putHeaderFooterVars(super.footer));
+            Object header = this.createBaseComponent(this.putHeaderFooterVars(super.header), true);
+            Object footer = this.createBaseComponent(this.putHeaderFooterVars(super.footer), true);
 
             headerField.set(headerFooterPacket, header);
             footerField.set(headerFooterPacket, footer);

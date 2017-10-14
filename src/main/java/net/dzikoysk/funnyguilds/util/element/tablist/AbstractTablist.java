@@ -27,7 +27,7 @@ public abstract class AbstractTablist {
     static {
         getHandle = Reflections.getMethod(Reflections.getBukkitClass("entity.CraftPlayer"), "getHandle");
         sendPacket = Reflections.getMethod(Reflections.getCraftClass("PlayerConnection"), "sendPacket");
-        createBaseComponent = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString");
+        createBaseComponent = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
 
         playerConnection = Reflections.getField(Reflections.getCraftClass("EntityPlayer"), "playerConnection");
     }
@@ -123,9 +123,10 @@ public abstract class AbstractTablist {
         }
     }
 
-    protected Object createBaseComponent(String text) {
+    protected Object createBaseComponent(String text, boolean keepNewLines) {
+        String text0 = text != null ? text : "";
         try {
-            return Array.get(createBaseComponent.invoke(null, text), 0);
+            return Array.get(createBaseComponent.invoke(null, text0, keepNewLines), 0);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
             return null;
