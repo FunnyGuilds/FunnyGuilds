@@ -33,6 +33,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private static FunnyGuilds funnyguilds;
     private static Thread thread;
+    private static String version;
     private boolean disabling;
 
     public FunnyGuilds() {
@@ -44,12 +45,15 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static String getVersion() {
+        if (version != null) {
+            return version;
+        }
         String[] array = funnyguilds.getDescription().getVersion().split("-");
         if (array.length != 2) {
-            return funnyguilds.getDescription().getVersion();
+            return version = funnyguilds.getDescription().getVersion();
         }
 
-        return array[0];
+        return version = array[0];
     }
 
     public static FunnyGuilds getInstance() {
@@ -97,7 +101,8 @@ public class FunnyGuilds extends JavaPlugin {
         if (cause == null || ste == null || ste.length < 1) {
             error("Stack trace: no/empty exception given, dumping current stack trace instead!");
             return true;
-        } else {
+        }
+        else {
             error("Stack trace: ");
         }
         error("Caused by: " + cause);
@@ -191,12 +196,18 @@ public class FunnyGuilds extends JavaPlugin {
             String latest = IOUtils.getContent("https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/master/updater.txt");
             if (latest == null || latest.isEmpty()) {
                 update("Failed to check the newest version of FunnyGuilds..");
-            } else if (latest.equalsIgnoreCase(getVersion())) {
+                return;
+            }
+            latest = latest.trim();
+            String current = getVersion().trim();
+
+            if (latest.equals(current)) {
                 update("You have the newest version of FunnyGuilds.");
-            } else {
+            }
+            else {
                 update("");
                 update("A new version of FunnyGuilds is available!");
-                update("Current: " + getVersion());
+                update("Current: " + current);
                 update("Latest: " + latest);
                 update("");
             }

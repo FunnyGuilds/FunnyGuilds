@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.panda_lang.panda.util.configuration.PandaConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -49,6 +50,15 @@ public class Data {
 
     private void funnyguilds(DO todo) {
         File file = new File(folder, "funnyguilds.dat");
+        if(!file.exists())
+        {
+            file.getParentFile().mkdirs();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to create data file", e);
+            }
+        }
         PandaConfiguration pc = new PandaConfiguration(file);
         if (todo == DO.SAVE) {
             pc.set("played-before", Bukkit.getOnlinePlayers().size());
