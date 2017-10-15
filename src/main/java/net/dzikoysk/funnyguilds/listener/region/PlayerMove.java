@@ -66,6 +66,7 @@ public class PlayerMove implements Listener {
                 }
 
                 player.sendMessage(m.notificationOther.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+                NotificationBar.set(player, m.notificationOther.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()), 1, Settings.getConfig().regionNotificationTime);
 
                 if (player.hasPermission("funnyguilds.admin.notification")) {
                     return;
@@ -73,8 +74,6 @@ public class PlayerMove implements Listener {
                 if (user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime()) {
                     return;
                 }
-
-                NotificationBar.set(player, m.notificationOther.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()), 1, Settings.getConfig().regionNotificationTime);
 
                 for (User u : guild.getMembers()) {
                     if (u.getName() == null) {
@@ -84,6 +83,7 @@ public class PlayerMove implements Listener {
                     if (member == null) {
                         continue;
                     }
+                    player.sendMessage(m.notificationMember.replace("{PLAYER}", player.getName()));
                     NotificationBar.set(member, m.notificationMember.replace("{PLAYER}", player.getName()), 1, Settings.getConfig().regionNotificationTime);
                 }
                 user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getConfig().regionNotificationCooldown);
