@@ -1,19 +1,23 @@
 package net.dzikoysk.funnyguilds.util.element.tablist;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.util.NotificationUtil;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
-import net.dzikoysk.funnyguilds.util.runnable.Ticking;
+import net.dzikoysk.funnyguilds.util.runnable.Ticker;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public abstract class AbstractTablist {
     private static final Set<AbstractTablist> TABLIST_CACHE = new HashSet<>();
@@ -120,23 +124,11 @@ public abstract class AbstractTablist {
             return;
         }
 
-        for (Object playerInfoPacket : packets) {
-            try {
-                sendPacket.invoke(playerConnection.get(getHandle.invoke(target)), playerInfoPacket);
-            } catch (IllegalAccessException | InvocationTargetException ex) {
-                FunnyGuilds.exception(ex.getCause());
-            }
-        }
+        PacketSender.sendPacket(target, packets);
     }
 
     protected Object createBaseComponent(String text, boolean keepNewLines) {
-        String text0 = text != null ? text : "";
-        try {
-            return Array.get(createBaseComponent.invoke(null, text0, keepNewLines), 0);
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
-            return null;
-        }
+        return NotificationUtil.createBaseComponent(text, keepNewLines);
     }
 
     protected String putVars(String cell) {
@@ -202,7 +194,7 @@ public abstract class AbstractTablist {
 
         formatted = StringUtils.replace(formatted, "{ONLINE}", String.valueOf(
                 Bukkit.getOnlinePlayers().size()));
-        formatted = StringUtils.replace(formatted, "{TPS}", Ticking.getTPS());
+        formatted = StringUtils.replace(formatted, "{TPS}", Ticker.getRecentTPS(0));
 
         formatted = StringUtils.colored(formatted);
 

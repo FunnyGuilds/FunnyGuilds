@@ -7,33 +7,54 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 
 public class EntityUtil {
 
-    public static HashMap<Guild, Integer> entitesMap = new HashMap<>();
-    private static Class<?> entityClass = Reflections.getCraftClass("Entity");
-    private static Class<?> enderCrystalClass = Reflections.getCraftClass("EntityEnderCrystal");
-    private static Class<?> spawnEntityClass = Reflections.getCraftClass("PacketPlayOutSpawnEntity");
-    private static Class<?> despawnEntityClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-    private static HashMap<Integer, Object> ids = new HashMap<>();
+    private static Constructor<?> spawnEntityConstructor;
+    private static Constructor<?> despawnEntityConstructor;
+    private static Constructor<?> enderCrystalConstructor;
 
-    public static HashMap<Guild, Integer> getEntitesMap() {
+    private static Method setLocation;
+    private static Method getId;
+
+    private static final Map<Guild, Integer> entitesMap = new HashMap<>();
+    private static final Map<Integer, Object> ids = new HashMap<>();
+
+    static {
+        final Class<?> entityClass = Reflections.getCraftClass("Entity");
+        final Class<?> enderCrystalClass = Reflections.getCraftClass("EntityEnderCrystal");
+        final Class<?> spawnEntityClass = Reflections.getCraftClass("PacketPlayOutSpawnEntity");
+        final Class<?> despawnEntityClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
+        final Class<?> craftWorldClass = Reflections.getCraftClass("World");
+
+        spawnEntityConstructor = Reflections.getConstructor(spawnEntityClass, entityClass, int.class);
+        despawnEntityConstructor = Reflections.getConstructor(despawnEntityClass, int[].class);
+        enderCrystalConstructor = Reflections.getConstructor(enderCrystalClass, craftWorldClass);
+
+        setLocation = Reflections.getMethod(enderCrystalClass, "setLocation", double.class, double.class, double.class, float.class, float.class);
+        getId = Reflections.getMethod(enderCrystalClass, "getId");
+    }
+
+    public static Map<Guild, Integer> getEntitesMap() {
         return entitesMap;
     }
 
     private static int spawnPacket(Location loc) throws Exception {
         Object world = Reflections.getHandle(loc.getWorld());
-        Object crystal = enderCrystalClass.getConstructor(Reflections.getCraftClass("World")).newInstance(world);
-        Reflections.getMethod(enderCrystalClass, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(crystal, loc.getX(), loc.getY(), loc.getZ(), 0, 0);
-        Object packet = spawnEntityClass.getConstructor(new Class<?>[]{entityClass, int.class}).newInstance(crystal, 51);
-        int id = (int) Reflections.getMethod(enderCrystalClass, "getId").invoke(crystal);
+        Object crystal = enderCrystalConstructor.newInstance(world);
+        setLocation.invoke(crystal, loc.getX(), loc.getY(), loc.getZ(), 0, 0);
+        Object packet = spawnEntityConstructor.newInstance(crystal, 51);
+        int id = (int) getId.invoke(crystal);
         ids.put(id, packet);
         return id;
     }
 
     private static Object despawnPacket(int id) throws Exception {
-        return despawnEntityClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
+        return despawnEntityConstructor.newInstance(new int[]{id});
     }
 
     public static void spawn(Guild guild) {

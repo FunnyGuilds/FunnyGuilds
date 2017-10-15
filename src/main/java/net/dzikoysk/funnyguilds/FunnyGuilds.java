@@ -20,7 +20,6 @@ import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import net.dzikoysk.funnyguilds.util.runnable.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
-import net.dzikoysk.funnyguilds.util.runnable.Ticking;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -139,7 +138,6 @@ public class FunnyGuilds extends JavaPlugin {
         new IndependentThread().start();
         new Manager().start();
         new AsynchronouslyRepeater(this).start();
-        new Ticking(this).start();
         new MetricsCollector(this).start();
 
         EventManager em = EventManager.getEventManager();
