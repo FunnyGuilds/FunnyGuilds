@@ -50,8 +50,7 @@ public class Data {
 
     private void funnyguilds(DO todo) {
         File file = new File(folder, "funnyguilds.dat");
-        if(!file.exists())
-        {
+        if (!file.exists()) {
             file.getParentFile().mkdirs();
             try {
                 file.createNewFile();
