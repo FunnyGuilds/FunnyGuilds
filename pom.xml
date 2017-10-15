@@ -74,7 +74,7 @@
         </repository>
         <repository>
             <id>funnyguilds-repo</id>
-            <name>FunnyGuilds repository</name>
+            <name>FunnyGuilds Repository</name>
             <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
         </repository>
         <repository>

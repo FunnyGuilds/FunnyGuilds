@@ -8,6 +8,7 @@ import java.util.List;
 
 public class PluginHook {
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
+    public static final String PLUGIN_BUNGEETABLISTPLUS= "BungeeTabListPlus";
     private static final List<String> hooks = new ArrayList<>();
 
     @SuppressWarnings("Convert2MethodRef")
