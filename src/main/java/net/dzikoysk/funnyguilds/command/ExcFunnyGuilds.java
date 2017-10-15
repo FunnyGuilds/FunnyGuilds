@@ -6,9 +6,12 @@ import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.Version;
+import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -31,6 +34,15 @@ public class ExcFunnyGuilds implements Executor {
                     new Messages();
                     new Settings();
                     dm.start();
+
+                    if(Settings.getConfig().playerlistEnable) {
+                        PluginConfig config = Settings.getConfig();
+                        AbstractTablist.wipeCache();
+
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
+                        }
+                    }
                     s.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano!");
                 });
 

@@ -20,17 +20,16 @@ import org.bukkit.event.player.PlayerJoinEvent;
 public class PlayerJoin implements Listener {
 
     private final FunnyGuilds plugin;
-    private final PluginConfig config;
 
     public PlayerJoin(FunnyGuilds plugin) {
         this.plugin = plugin;
-        this.config = Settings.getConfig();
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         final Player player = e.getPlayer();
         final User user = User.get(player);
+        final PluginConfig config = Settings.getConfig();
 
         if (config.playerlistEnable) {
             if (!AbstractTablist.hasTablist(player)) {

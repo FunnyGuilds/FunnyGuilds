@@ -82,7 +82,6 @@ public class TablistImpl extends AbstractTablist {
         try {
             final Object addPlayerPacket = packetPlayOutPlayerInfoClass.newInstance();
             final Object updatePlayerPacket = packetPlayOutPlayerInfoClass.newInstance();
-            final Object headerFooterPacket = packetPlayOutPlayerListHeaderFooterClass.newInstance();
 
             for (int i = 0; i < 80; i++) {
                 if (profileCache[i] == null) {
@@ -115,7 +114,6 @@ public class TablistImpl extends AbstractTablist {
 
             packets.add(addPlayerPacket);
             packets.add(updatePlayerPacket);
-            packets.add(headerFooterPacket);
 
             actionEnum.setAccessible(true);
             listField.setAccessible(true);
@@ -130,8 +128,12 @@ public class TablistImpl extends AbstractTablist {
             Object header = this.createBaseComponent(this.putHeaderFooterVars(super.header), true);
             Object footer = this.createBaseComponent(this.putHeaderFooterVars(super.footer), true);
 
-            headerField.set(headerFooterPacket, header);
-            footerField.set(headerFooterPacket, footer);
+            if(this.shouldUseHeaderAndFooter()) {
+                final Object headerFooterPacket = packetPlayOutPlayerListHeaderFooterClass.newInstance();
+                headerField.set(headerFooterPacket, header);
+                footerField.set(headerFooterPacket, footer);
+                packets.add(headerFooterPacket);
+            }
 
             this.sendPackets(packets);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {

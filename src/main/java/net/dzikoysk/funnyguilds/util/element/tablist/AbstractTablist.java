@@ -48,6 +48,10 @@ public abstract class AbstractTablist {
         this.player = player.getUniqueId();
     }
 
+    public static void wipeCache() {
+        TABLIST_CACHE.clear();
+    }
+
     public static AbstractTablist createTablist(final Map<Integer, String> pattern, final String header, final String footer, final int ping, final Player player) {
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
@@ -67,12 +71,14 @@ public abstract class AbstractTablist {
             TABLIST_CACHE.add(tablist);
 
             return tablist;
-        } else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
+        }
+        else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
             final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
-        } else {
+        }
+        else {
             throw new RuntimeException("Could not find tablist for given version.");
         }
     }
@@ -146,17 +152,20 @@ public abstract class AbstractTablist {
         int second = time.get(Calendar.SECOND);
         if (hour < 10) {
             formatted = StringUtils.replace(formatted, "{HOUR}", "0" + String.valueOf(hour));
-        } else {
+        }
+        else {
             formatted = StringUtils.replace(formatted, "{HOUR}", String.valueOf(hour));
         }
         if (minute < 10) {
             formatted = StringUtils.replace(formatted, "{MINUTE}", "0" + String.valueOf(minute));
-        } else {
+        }
+        else {
             formatted = StringUtils.replace(formatted, "{MINUTE}", String.valueOf(minute));
         }
         if (second < 10) {
             formatted = StringUtils.replace(formatted, "{SECOND}", "0" + String.valueOf(second));
-        } else {
+        }
+        else {
             formatted = StringUtils.replace(formatted, "{SECOND}", String.valueOf(second));
         }
 
@@ -173,7 +182,8 @@ public abstract class AbstractTablist {
                     user.getGuild().getRank().getKills()));
             formatted = StringUtils.replace(formatted, "{G-DEATHS}", String.valueOf(
                     user.getGuild().getRank().getDeaths()));
-        } else {
+        }
+        else {
             formatted = StringUtils.replace(formatted, "{GUILD}", "Brak");
             formatted = StringUtils.replace(formatted, "{TAG}", "Brak");
             formatted = StringUtils.replace(formatted, "{G-OWNER}", "Brak");
@@ -214,22 +224,29 @@ public abstract class AbstractTablist {
 
         if (hour < 10) {
             formatted = StringUtils.replace(formatted, "{HOUR}", "0" + String.valueOf(hour));
-        } else {
+        }
+        else {
             formatted = StringUtils.replace(formatted, "{HOUR}", String.valueOf(hour));
         }
         if (minute < 10) {
             formatted = StringUtils.replace(formatted, "{MINUTE}", "0" + String.valueOf(minute));
-        } else {
+        }
+        else {
             formatted = StringUtils.replace(formatted, "{MINUTE}", String.valueOf(minute));
         }
         if (second < 10) {
             formatted = StringUtils.replace(formatted, "{SECOND}", "0" + String.valueOf(second));
-        } else {
+        }
+        else {
             formatted = StringUtils.replace(formatted, "{SECOND}", String.valueOf(second));
         }
 
         formatted = StringUtils.colored(formatted);
 
         return formatted;
+    }
+
+    protected boolean shouldUseHeaderAndFooter() {
+        return !this.header.isEmpty() || !this.footer.isEmpty();
     }
 }
