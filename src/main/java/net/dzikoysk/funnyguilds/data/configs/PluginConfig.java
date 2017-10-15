@@ -222,9 +222,6 @@ public class PluginConfig {
     @CfgName("rank-start")
     public int rankStart = 1000;
 
-    @CfgName("rank-percent")
-    public double rankPercent = 1.0;
-
     @CfgComment("Czy pokazywac informacje przy kliknieciu prawym na gracza")
     @CfgName("info-player-enabled")
     public boolean infoPlayerEnabled = true;
