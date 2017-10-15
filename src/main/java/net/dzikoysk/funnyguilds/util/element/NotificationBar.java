@@ -12,19 +12,19 @@ import java.util.*;
 
 public class NotificationBar {
 
-    private static PlayerMap<FakeDragon> bars = new PlayerMap<FakeDragon>();
+    private static final PlayerMap<FakeDragon> DRAGONBAR_CACHE = new PlayerMap<FakeDragon>();
 
     public static void remove(Player player) {
         if (has(player)) {
-            sendPacket(player, bars.get(player).getDestroyPacket());
-            bars.remove(player);
+            sendPacket(player, DRAGONBAR_CACHE.get(player).getDestroyPacket());
+            DRAGONBAR_CACHE.remove(player);
         }
     }
 
     public static void set(final Player player, String text, float percent, int time) {
 
         remove(player);
-        FakeDragon dragon = bars.containsKey(player) ? bars.get(player) : null;
+        FakeDragon dragon = DRAGONBAR_CACHE.containsKey(player) ? DRAGONBAR_CACHE.get(player) : null;
 
         if (text.length() > 64) {
             text = text.substring(0, 63);
@@ -43,7 +43,7 @@ public class NotificationBar {
         if (dragon == null) {
             dragon = new FakeDragon(player.getLocation().add(0, -200, 0), text, percent);
             sendPacket(player, dragon.getSpawnPacket());
-            bars.put(player, dragon);
+            DRAGONBAR_CACHE.put(player, dragon);
         } else {
             dragon.setName(text);
             dragon.setHealth(percent);
@@ -60,7 +60,7 @@ public class NotificationBar {
     }
 
     public static boolean has(Player player) {
-        return bars.containsKey(player) && bars.get(player) != null;
+        return DRAGONBAR_CACHE.containsKey(player) && DRAGONBAR_CACHE.get(player) != null;
     }
 
     private static void sendPacket(Player player, Object packet) {
