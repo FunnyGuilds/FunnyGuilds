@@ -6,7 +6,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 
-final class WorldGuardHook {
+public final class WorldGuardHook {
     private static WorldGuardPlugin worldGuard;
     private static StateFlag noPointsFlag;
 
