@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
@@ -106,16 +107,8 @@ public class PlayerDeath implements Listener {
         int vP = victim.getPoints();
         
         return new int[] {
-            (int) Math.round(aP + getEloConstant(aP) * (1 - (1.0D / (1.0D + Math.pow(10.0D, (vP - aP) / 400.0D))))),
-            (int) Math.round(vP + getEloConstant(vP) * (0 - (1.0D / (1.0D + Math.pow(10.0D, (aP - vP) / 400.0D)))))
+            (int) Math.round(aP + EloUtils.getConstantForRank(aP) * (1 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (vP - aP) / Settings.getConfig().eloDivider))))),
+            (int) Math.round(vP + EloUtils.getConstantForRank(vP) * (0 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (aP - vP) / Settings.getConfig().eloDivider)))))
         };
-    }
-    
-    private int getEloConstant(int base) {
-        if (base < 2000)
-            return 32;
-        if (base < 2401)
-            return 24;
-        return 16;
     }
 }
