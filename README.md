@@ -10,11 +10,14 @@ Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 <br>
 
 #### Current Version
-FunnyGuilds Tribute 4.0.0.2 for 1.8+
-<br>
+[FunnyGuilds Tribute 4.0.0.2 for 1.8+](https://github.com/FunnyGuilds/FunnyGuilds/releases)
+
+#### Building
+You can build FunnyGuilds as a maven project or just generate plugin using [FunnyCreator](https://github.com/FunnyGuilds/FunnyCreator)
+![FunnyCreator](https://dzikoysk.net/projects/funnycreator/funnycreator-short.gif)
 
 #### Stats
-Current statistics: https://bstats.org/plugin/bukkit/FunnyGuilds
+Current statistics (since 3.9.9.2): https://bstats.org/plugin/bukkit/FunnyGuilds
 <br>
 The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
 
