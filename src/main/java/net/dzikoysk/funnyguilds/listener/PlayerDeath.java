@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
-import net.dzikoysk.funnyguilds.basic.Rank;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -55,7 +54,7 @@ public class PlayerDeath implements Listener {
             }
         }
 
-        int[] rankChanges = getRankChanges(attacker.getRank(), victim.getRank());
+        int[] rankChanges = EloUtils.getRankChanges(attacker.getRank(), victim.getRank());
 
         attacker.getRank().addKill();
         attacker.getRank().addPoints(rankChanges[0]);
@@ -100,15 +99,5 @@ public class PlayerDeath implements Listener {
         death = StringUtils.replace(death, "{VTAG}", "");
         death = StringUtils.replace(death, "{ATAG}", "");
         event.setDeathMessage(death);
-    }
-    
-    private int[] getRankChanges(Rank attacker, Rank victim) {
-        int aP = attacker.getPoints();
-        int vP = victim.getPoints();
-        
-        return new int[] {
-            (int) Math.round(aP + EloUtils.getConstantForRank(aP) * (1 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (vP - aP) / Settings.getConfig().eloDivider))))),
-            (int) Math.round(vP + EloUtils.getConstantForRank(vP) * (0 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (aP - vP) / Settings.getConfig().eloDivider)))))
-        };
     }
 }

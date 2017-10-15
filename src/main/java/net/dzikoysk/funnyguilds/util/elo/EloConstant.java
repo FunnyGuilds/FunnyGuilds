@@ -2,9 +2,9 @@ package net.dzikoysk.funnyguilds.util.elo;
 
 public class EloConstant {
 
-    private int minRank;
-    private int maxRank;
-    private int constant;
+    private final int minRank;
+    private final int maxRank;
+    private final int constant;
 
     public EloConstant(int minRank, int maxRank, int constant) {
         this.minRank = minRank;

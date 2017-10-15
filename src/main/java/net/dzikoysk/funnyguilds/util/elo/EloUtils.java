@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.Rank;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 public class EloUtils {
 
@@ -62,7 +64,7 @@ public class EloUtils {
         }
     }
     
-    public static int getConstantForRank(int rank) {
+    private static int getConstantForRank(int rank) {
         for(EloConstant c : constants) {
             if(c.isInRange(rank)) {
                 return c.getConstant();
@@ -70,5 +72,15 @@ public class EloUtils {
         }
         
         return 0;
+    }
+    
+    public static int[] getRankChanges(Rank attacker, Rank victim) {
+        int aP = attacker.getPoints();
+        int vP = victim.getPoints();
+        
+        return new int[] {
+            (int) Math.round(aP + EloUtils.getConstantForRank(aP) * (1 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (vP - aP) / Settings.getConfig().eloDivider))))),
+            (int) Math.round(vP + EloUtils.getConstantForRank(vP) * (0 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (aP - vP) / Settings.getConfig().eloDivider)))))
+        };
     }
 }
