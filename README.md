@@ -10,7 +10,7 @@ Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 <br>
 
 #### Current Version
-FunnyGuilds Tribute 4.0.0.1 for 1.8+
+FunnyGuilds Tribute 4.0.0.2 for 1.8+
 <br>
 
 #### Stats
