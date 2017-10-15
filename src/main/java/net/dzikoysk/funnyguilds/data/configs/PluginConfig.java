@@ -507,6 +507,8 @@ public class PluginConfig {
     }
 
     public static class Commands {
+        public Command funnyguilds = new Command("funnyguilds", Collections.singletonList("fg"));
+
         public Command guild = new Command("gildia", Arrays.asList("gildie", "g"));
         public Command create = new Command("zaloz");
         public Command delete = new Command("usun");
