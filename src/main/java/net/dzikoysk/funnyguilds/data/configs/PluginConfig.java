@@ -360,7 +360,6 @@ public class PluginConfig {
     @CfgComment("{G-ALLIES} - liczba sojusznikow gildii")
     @CfgComment("{G-KILLS} - suma zabojstw czlonkow gildii")
     @CfgComment("{G-DEATHS} - suma smierci czlonkow gildii")
-    @CfgComment("{LIVES} - życia gildii")
     @CfgName("player-list")
     public Map<Integer, String> playerList = ImmutableMap.<Integer, String> builder()
             .put(1, "&7Nick: &b{PLAYER}")
