@@ -126,8 +126,8 @@ public class TablistImpl extends AbstractTablist {
             actionEnum.set(updatePlayerPacket, updatePlayer);
             listField.set(updatePlayerPacket, updatePlayerList);
 
-            Object header = this.createBaseComponent(this.putHeaderFooterVars(super.header), true);
-            Object footer = this.createBaseComponent(this.putHeaderFooterVars(super.footer), true);
+            Object header = this.createBaseComponent(this.putVars(super.header), true);
+            Object footer = this.createBaseComponent(this.putVars(super.footer), true);
 
             if (this.shouldUseHeaderAndFooter()) {
                 final Object headerFooterPacket = packetPlayOutPlayerListHeaderFooterClass.newInstance();

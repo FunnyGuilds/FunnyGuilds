@@ -206,6 +206,7 @@ public abstract class AbstractTablist {
         return formatted;
     }
 
+    @Deprecated
     protected String putHeaderFooterVars(String text) {
         String formatted = text;
 
