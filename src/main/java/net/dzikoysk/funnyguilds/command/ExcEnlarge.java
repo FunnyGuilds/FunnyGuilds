@@ -19,8 +19,13 @@ public class ExcEnlarge implements Executor {
     @Override
     public void execute(CommandSender s, String[] args) {
         MessagesConfig m = Messages.getInstance();
+        PluginConfig c = Settings.getConfig();
         Player p = (Player) s;
         User lp = User.get(p);
+
+        if(!c.enlargeEnable) {
+            return;
+        }
 
         if (!lp.hasGuild()) {
             p.sendMessage(m.enlargeHasNotGuild);
@@ -34,8 +39,6 @@ public class ExcEnlarge implements Executor {
 
         Region region = Region.get(lp.getGuild().getRegion());
         int enlarge = region.getEnlarge();
-
-        PluginConfig c = Settings.getConfig();
 
         if (enlarge > c.enlargeItems.size() - 1) {
             p.sendMessage(m.enlargeMaxSize);

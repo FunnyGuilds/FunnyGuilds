@@ -45,7 +45,10 @@ public class PacketSender {
 
     public static void sendPacket(final Player[] players, final Object... packets) {
         final List<Object> packetList = Arrays.asList(packets);
-        Arrays.stream(players).forEach(p -> sendPacket(p, packetList));
+
+        for(Player player : players) {
+            sendPacket(player, packetList);
+        }
     }
 
 //    public static void sendPacket(Collection<? extends Player> players, Object... os) {
