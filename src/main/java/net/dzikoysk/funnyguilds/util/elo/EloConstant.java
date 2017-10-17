@@ -19,4 +19,5 @@ public class EloConstant {
     public int getConstant() {
         return this.constant;
     }
+
 }
