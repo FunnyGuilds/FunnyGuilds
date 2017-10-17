@@ -223,7 +223,11 @@ public class PluginConfig {
     @CfgComment("Ranking od ktorego rozpoczyna gracz")
     @CfgName("rank-start")
     public int rankStart = 1000;
-    
+
+    @CfgComment("Czy blokada nabijania rankingu na tych samych osobach powinna byc wlaczona")
+    @CfgName("rank-farming-protect")
+    public boolean rankFarmingProtect = true;
+
     @CfgComment("Lista stalych obliczen rankingowych ELO, uzywanych przy zmianach rankingu - im mniejsza stala, tym mniejsze zmiany rankingu")
     @CfgComment("Stale okreslaja tez o ile maksymalnie moze zmienic sie ranking pochodzacy z danego przedzialu")
     @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
@@ -236,12 +240,12 @@ public class PluginConfig {
     @CfgComment("Dzielnik powinien byc liczba dodatnia, niezerowa")
     @CfgName("elo-divider")
     public double eloDivider = 400.0D;
-    
+
     @CfgComment("Wykladnik potegi obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
     @CfgComment("Wykladnik powinien byc liczba dodatnia, niezerowa")
     @CfgName("elo-exponent")
     public double eloExponent = 10.0D;
-    
+
     @CfgComment("Czy pokazywac informacje przy kliknieciu prawym na gracza")
     @CfgName("info-player-enabled")
     public boolean infoPlayerEnabled = true;
@@ -477,7 +481,7 @@ public class PluginConfig {
             this.enlargeSize = 0;
             this.enlargeItems = null;
         }
-        
+
         EloUtils.parseData(this.eloConstants);
 
         HashMap<Material, Double> map = new HashMap<>();

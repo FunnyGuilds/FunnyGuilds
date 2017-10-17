@@ -40,17 +40,19 @@ public class PlayerDeath implements Listener {
             }
         }
 
-        if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
-            if (attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()) {
-                v.sendMessage(Messages.getInstance().rankLastVictimV);
-                a.sendMessage(Messages.getInstance().rankLastVictimA);
-                return;
-            }
-        } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
-            if (victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()) {
-                v.sendMessage(Messages.getInstance().rankLastAttackerV);
-                a.sendMessage(Messages.getInstance().rankLastAttackerA);
-                return;
+        if (Settings.getConfig().rankFarmingProtect) {
+            if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
+                if (attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()) {
+                    v.sendMessage(Messages.getInstance().rankLastVictimV);
+                    a.sendMessage(Messages.getInstance().rankLastVictimA);
+                    return;
+                }
+            } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
+                if (victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()) {
+                    v.sendMessage(Messages.getInstance().rankLastAttackerV);
+                    a.sendMessage(Messages.getInstance().rankLastAttackerA);
+                    return;
+                }
             }
         }
 
