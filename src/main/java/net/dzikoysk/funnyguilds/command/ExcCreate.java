@@ -178,7 +178,7 @@ public class ExcCreate implements Executor {
         Manager.getInstance().stop();
 
         Guild guild = new Guild(name);
-        guild.setTag(tag);
+        guild.setTag(Settings.getConfig().guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase());
         guild.setOwner(u);
         guild.setLives(c.warLives);
         guild.setBorn(System.currentTimeMillis());

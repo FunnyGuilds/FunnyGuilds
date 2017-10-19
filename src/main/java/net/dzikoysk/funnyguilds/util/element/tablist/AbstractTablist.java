@@ -162,33 +162,43 @@ public abstract class AbstractTablist {
         }
 
         if (user.hasGuild()) {
-            formatted = StringUtils.replace(formatted, "{GUILD}", user.getGuild().getName());
-            formatted = StringUtils.replace(formatted, "{TAG}", user.getGuild().getTag());
+            formatted = StringUtils.replace(formatted, "{G-NAME}", user.getGuild().getName());
+            formatted = StringUtils.replace(formatted, "{G-TAG}", user.getGuild().getTag());
             formatted = StringUtils.replace(formatted, "{G-OWNER}", user.getGuild().getOwner().getName());
             formatted = StringUtils.replace(formatted, "{G-LIVES}", String.valueOf(user.getGuild().getLives()));
             formatted = StringUtils.replace(formatted, "{G-ALLIES}", String.valueOf(
                     (user.getGuild()).getAllies().size()));
             formatted = StringUtils.replace(formatted, "{G-POINTS}", String.valueOf(
                     user.getGuild().getRank().getPoints()));
+            formatted = StringUtils.replace(formatted,"{G-POSITION}", String.valueOf(
+                    user.getGuild().getRank().getPosition()));
             formatted = StringUtils.replace(formatted, "{G-KILLS}", String.valueOf(
                     user.getGuild().getRank().getKills()));
             formatted = StringUtils.replace(formatted, "{G-DEATHS}", String.valueOf(
                     user.getGuild().getRank().getDeaths()));
+            formatted = StringUtils.replace(formatted, "{G-MEMBERS-ONLINE}", String.valueOf(
+                    user.getGuild().getOnlineMembers().size()));
+            formatted = StringUtils.replace(formatted, "{G-MEMBERS-ALL}", String.valueOf(
+                    user.getGuild().getMembers().size()));
         }
         else {
-            formatted = StringUtils.replace(formatted, "{GUILD}", "Brak");
-            formatted = StringUtils.replace(formatted, "{TAG}", "Brak");
+            formatted = StringUtils.replace(formatted, "{G-NAME}", "Brak");
+            formatted = StringUtils.replace(formatted, "{G-TAG}", "Brak");
             formatted = StringUtils.replace(formatted, "{G-OWNER}", "Brak");
             formatted = StringUtils.replace(formatted, "{G-LIVES}", "0");
             formatted = StringUtils.replace(formatted, "{G-ALLIES}", "0");
             formatted = StringUtils.replace(formatted, "{G-POINTS}", "0");
+            formatted = StringUtils.replace(formatted,"{G-POSITION}", "0");
             formatted = StringUtils.replace(formatted, "{G-KILLS}", "0");
             formatted = StringUtils.replace(formatted, "{G-DEATHS}", "0");
+            formatted = StringUtils.replace(formatted, "{G-MEMBERS-ONLINE}", "0");
+            formatted = StringUtils.replace(formatted, "{G-MEMBERS-ALL}", "0");
         }
 
         formatted = StringUtils.replace(formatted, "{PLAYER}", user.getName());
         formatted = StringUtils.replace(formatted, "{PING}", String.valueOf((double) user.getPing()));
         formatted = StringUtils.replace(formatted, "{POINTS}", String.valueOf(user.getRank().getPoints()));
+        formatted = StringUtils.replace(formatted, "{POSITION}", String.valueOf(user.getRank().getPosition()));
         formatted = StringUtils.replace(formatted, "{KILLS}", String.valueOf(user.getRank().getKills()));
         formatted = StringUtils.replace(formatted, "{DEATHS}", String.valueOf(user.getRank().getDeaths()));
 

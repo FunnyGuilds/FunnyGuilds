@@ -17,9 +17,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public class User implements Basic {
+
+    private static final Set<UUID> ONLINE_USERS_CACHE = new HashSet<>();
 
     private UUID uuid;
     private String name;
@@ -134,8 +138,15 @@ public class User implements Basic {
         if (this.name == null) {
             return false;
         }
-        Player player = Bukkit.getPlayer(this.name);
-        return player != null && player.getName().equals(this.name) && player.isOnline();
+        if (! ONLINE_USERS_CACHE.contains(this.uuid)) {
+            final Player player = Bukkit.getPlayer(this.uuid);
+            if (player != null) {
+                ONLINE_USERS_CACHE.add(player.getUniqueId());
+                return true;
+            }
+            return false;
+        }
+        return true;
     }
 
     public boolean isBanned() {
@@ -325,6 +336,10 @@ public class User implements Basic {
     @Override
     public BasicType getType() {
         return BasicType.USER;
+    }
+
+    public void removeFromCache() {
+        ONLINE_USERS_CACHE.remove(this.uuid);
     }
 
     @Override

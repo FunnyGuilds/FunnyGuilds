@@ -18,6 +18,7 @@ public class PlayerQuit implements Listener {
         user.setIndividualPrefix(null);
         user.setScoreboard(null);
         user.setDummy(null);
+        user.removeFromCache();
         AbstractTablist.removeTablist(player);
     }
 

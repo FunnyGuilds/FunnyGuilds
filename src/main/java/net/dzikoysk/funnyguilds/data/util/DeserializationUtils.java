@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class DeserializationUtils {
         }
         Guild guild = Guild.get((String) values[1]);
         guild.setUUID((UUID) values[0]);
-        guild.setTag((String) values[2]);
+        guild.setTag(Settings.getConfig().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase());
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
         guild.setRegion((String) values[5]);

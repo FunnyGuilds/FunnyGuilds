@@ -14,13 +14,13 @@ public class EloUtils {
     public static void parseData(List<String> eloConstants) {
         constants.clear();
         for (String s : eloConstants) {
-            String[] splitted = s.split(" ");
-            if (splitted.length < 2) {
+            String[] split = s.split(" ");
+            if (split.length < 2) {
                 FunnyGuilds.exception(new IllegalArgumentException("\"" + s + "\" is not a valid constant String!"));
                 continue;
             }
 
-            String[] range = splitted[0].split("-");
+            String[] range = split[0].split("-");
             if (range.length < 2) {
                 FunnyGuilds.exception(new IllegalArgumentException("\"" + s + "\" is not a valid constant range String!"));
                 continue;
@@ -50,13 +50,13 @@ public class EloUtils {
             }
 
             try {
-                constant = Integer.parseInt(splitted[0]);
+                constant = Integer.parseInt(split[1]);
                 if (constant < 0) {
                     FunnyGuilds.exception(new IllegalArgumentException("\"" + constant + "\" of constant String \"" + s + "\" is an invalid, negative integer!"));
                     continue;
                 }
             } catch (NumberFormatException e) {
-                FunnyGuilds.exception(new NumberFormatException("\"" + splitted[0] + "\" of constant String \"" + s + "\" is not a valid integer!"));
+                FunnyGuilds.exception(new NumberFormatException("\"" + split[1] + "\" of constant String \"" + s + "\" is not a valid integer!"));
                 continue;
             }
 

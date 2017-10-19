@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class Guild implements Basic {
 
@@ -270,6 +271,13 @@ public class Guild implements Basic {
 
     public List<User> getMembers() {
         return this.members;
+    }
+
+    public List<User> getOnlineMembers() {
+        return this.members
+                .stream()
+                .filter(User::isOnline)
+                .collect(Collectors.toList());
     }
 
     public void setMembers(List<User> members) {
