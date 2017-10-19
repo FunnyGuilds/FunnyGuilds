@@ -10,31 +10,10 @@ import net.dzikoysk.funnyguilds.util.runnable.Ticker;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public abstract class AbstractTablist {
     private static final Set<AbstractTablist> TABLIST_CACHE = new HashSet<>();
-
-    private static final Method getHandle;
-    private static final Method sendPacket;
-    private static final Method createBaseComponent;
-
-    private static final Field playerConnection;
-
-    static {
-        getHandle = Reflections.getMethod(Reflections.getBukkitClass("entity.CraftPlayer"), "getHandle");
-        sendPacket = Reflections.getMethod(Reflections.getCraftClass("PlayerConnection"), "sendPacket");
-        createBaseComponent = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
-
-        playerConnection = Reflections.getField(Reflections.getCraftClass("EntityPlayer"), "playerConnection");
-    }
 
     protected final Map<Integer, String> tablistPattern;
     protected final String header;
@@ -42,7 +21,6 @@ public abstract class AbstractTablist {
     protected final UUID player;
     protected final int ping;
     protected boolean firstPacket = true;
-
 
     public AbstractTablist(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
         this.tablistPattern = tablistPattern;
