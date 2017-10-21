@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcBase implements Executor {
 
@@ -76,30 +77,27 @@ public class ExcBase implements Executor {
 
         p.sendMessage(m.baseDontMove.replace("{TIME}", Integer.toString(time)));
 
-        user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), new Runnable() {
-            Location before = p.getLocation();
-            Player player = p;
-            int i = 0;
+        final Location before = p.getLocation();
+        final AtomicInteger i = new AtomicInteger(0);
 
-            public void run() {
-                i++;
+        user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
+            i.getAndIncrement();
 
-                if (!LocationUtils.equals(player.getLocation(), before)) {
-                    user.getTeleportation().cancel();
-                    player.sendMessage(m.baseMove);
-                    user.setTeleportation(null);
-                    player.getInventory().addItem(items);
-                    return;
-                }
-
-                if (i > time) {
-                    user.getTeleportation().cancel();
-                    player.sendMessage(m.baseTeleport);
-                    player.teleport(guild.getHome());
-                    user.setTeleportation(null);
-                }
+            if (!LocationUtils.equals(p.getLocation(), before)) {
+                user.getTeleportation().cancel();
+                p.sendMessage(m.baseMove);
+                user.setTeleportation(null);
+                p.getInventory().addItem(items);
+                return;
             }
-        }, 0, 20));
+
+            if (i.get() > time) {
+                user.getTeleportation().cancel();
+                p.sendMessage(m.baseTeleport);
+                p.teleport(guild.getHome());
+                user.setTeleportation(null);
+            }
+        }, 0L, 20L));
     }
 
 }

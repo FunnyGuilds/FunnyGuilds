@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
+import net.dzikoysk.funnyguilds.util.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -161,6 +162,7 @@ public class FunnyGuilds extends JavaPlugin {
         pm.registerEvents(new EntityExplode(this), this);
         pm.registerEvents(new PlayerCommand(), this);
         pm.registerEvents(new PlayerInteract(), this);
+        pm.registerEvents(new GuiActionHandler(), this);
 
         if (Settings.getConfig().eventMove) {
             pm.registerEvents(new PlayerMove(), this);

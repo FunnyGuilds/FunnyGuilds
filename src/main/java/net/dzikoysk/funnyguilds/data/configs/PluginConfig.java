@@ -47,9 +47,12 @@ public class PluginConfig {
     public int minMembersToInclude = 3;
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii")
+    @CfgComment("Wzor: <ilosc> <przedmiot> [name:lore:enchant]")
+    @CfgComment("Spacja = _ ")
+    @CfgComment("Nowa linia lore = #")
     @CfgName("items")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> items_ = Arrays.asList("5 stone", "5 dirt");
+    public List<String> items_ = Arrays.asList("5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!", "5 dirt");
 
     @CfgExclude
     public List<ItemStack> createItems;
@@ -57,7 +60,7 @@ public class PluginConfig {
     @CfgName("items-vip")
     @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> itemsVip_ = Collections.singletonList("1 stone");
+    public List<String> itemsVip_ = Collections.singletonList("1 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!");
 
     @CfgExclude
     public List<ItemStack> createItemsVip;
@@ -469,7 +472,7 @@ public class PluginConfig {
             if (item == null || "".equals(item)) {
                 continue;
             }
-            ItemStack itemstack = Parser.parseItem(item);
+            ItemStack itemstack = Parser.parseItemStack(item);
             if (itemstack != null) {
                 items.add(itemstack);
             }
@@ -554,6 +557,7 @@ public class PluginConfig {
         public Command base = new Command("baza");
         public Command enlarge = new Command("powieksz");
         public Command ally = new Command("sojusz");
+        public Command items = new Command("przedmioty");
         @CfgName("break")
         public Command break_ = new Command("rozwiaz");
         public Command info = new Command("info");

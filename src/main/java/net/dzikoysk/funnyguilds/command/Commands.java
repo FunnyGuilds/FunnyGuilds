@@ -44,6 +44,7 @@ public class Commands {
         new ExecutorCaller(new ExcLeader(), commands.leader.name, "funnyguilds.leader", commands.leader.aliases);
         new ExecutorCaller(new ExcDeputy(), commands.deputy.name, "funnyguilds.deputy", commands.deputy.aliases);
         new ExecutorCaller(new ExcRanking(), commands.ranking.name, "funnyguilds.ranking", commands.ranking.aliases);
+        new ExecutorCaller(new ExcItems(), commands.items.name, "funnyguilds.items", commands.items.aliases);
 
         new ExecutorCaller(new MxcPvP(), commands.pvp.name, "funnyguilds.manage", commands.pvp.aliases);
         new ExecutorCaller(new MxcBase(), commands.setbase.name, "funnyguilds.manage", commands.setbase.aliases);

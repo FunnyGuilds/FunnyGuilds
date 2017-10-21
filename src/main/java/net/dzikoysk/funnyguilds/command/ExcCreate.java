@@ -61,6 +61,7 @@ public class ExcCreate implements Executor {
 
         PluginConfig c = Settings.getConfig();
         String tag = args[0];
+        tag = Settings.getConfig().guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
         String name = args[1];
 
         if (tag.length() > c.createTagLength) {
@@ -178,7 +179,7 @@ public class ExcCreate implements Executor {
         Manager.getInstance().stop();
 
         Guild guild = new Guild(name);
-        guild.setTag(Settings.getConfig().guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase());
+        guild.setTag(tag);
         guild.setOwner(u);
         guild.setLives(c.warLives);
         guild.setBorn(System.currentTimeMillis());

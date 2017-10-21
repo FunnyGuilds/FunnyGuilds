@@ -10,37 +10,108 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
 public class Parser {
 
-    @SuppressWarnings("deprecation")
-    public static ItemStack parseItem(String string) {
-        Integer amount = Integer.parseInt(string.substring(0, string.indexOf(' ')));
-        String type = string.substring(string.indexOf(' ') + 1);
+//    @Deprecated
+//    public static ItemStack parseItem(String string) {
+//        Integer amount = Integer.parseInt(string.substring(0, string.indexOf(' ')));
+//        String type = string.substring(string.indexOf(' ') + 1);
+//
+//        type = type.toUpperCase();
+//        type = type.replaceAll(" ", "_");
+//        Material material = Material.getMaterial(type);
+//        ItemStack itemstack;
+//
+//        if (material == null) {
+//            if (type.equalsIgnoreCase("Enchanted_Golden_Apple")) {
+//                itemstack = new ItemStack(322, 1);
+//            } else {
+//                FunnyGuilds.parser("Unknown item: " + string);
+//                return new ItemStack(Material.AIR);
+//            }
+//        } else {
+//            itemstack = new ItemStack(material);
+//        }
+//
+//        itemstack.setAmount(amount);
+//        return itemstack;
+//    }
 
+    public static ItemStack parseItemStack(String string) {
+        final String[] split = string.split(" ");
+        String type = split[1];
         type = type.toUpperCase();
         type = type.replaceAll(" ", "_");
-        Material material = Material.getMaterial(type);
-        ItemStack itemstack;
+        final Material mat = Material.matchMaterial(type);
+        int stack;
 
-        if (material == null) {
-            if (type.equalsIgnoreCase("Enchanted_Golden_Apple")) {
-                itemstack = new ItemStack(322, 1);
-            } else {
-                FunnyGuilds.parser("Unknown item: " + string);
-                return new ItemStack(Material.AIR);
-            }
-        } else {
-            itemstack = new ItemStack(material);
+        try {
+            stack = Integer.parseInt(split[0]);
+        }
+        catch(NumberFormatException ex) {
+            FunnyGuilds.parser("Unknown size: " + split[0]);
+            stack = 1;
+        }
+        if(mat == null) {
+            FunnyGuilds.parser("Unknown item: " + type);
         }
 
-        itemstack.setAmount(amount);
-        return itemstack;
+        final ItemStack item = new ItemStack(mat, stack);
+        final ItemMeta meta = item.getItemMeta();
+
+        for(int i = 2; i < split.length; i++) {
+            String str = split[i];
+
+            if(str.contains("name")) {
+                String[] split0 = str.split(":");
+                String itemName = StringUtils.replace(split0[1], "_", " ");
+                meta.setDisplayName(StringUtils.colored(itemName));
+            }
+            else if(str.contains("lore")) {
+                String[] split0 = str.split(":");
+                String loreArgs = String.join("", Arrays.copyOfRange(split0, 1, split0.length));
+                String[] lores = loreArgs.split("#");
+                final List<String> lore = new ArrayList<>();
+
+                for(String s : lores) {
+                    lore.add(StringUtils.replace(StringUtils.colored(s), "_", " "));
+                }
+                meta.setLore(lore);
+            }
+            else if (str.contains("enchant")) {
+                String[] parse = str.split(":");
+                String enchantName = parse[1];
+                int level;
+
+                try {
+                    level = Integer.parseInt(parse[2]);
+                }
+                catch(NumberFormatException ex) {
+                    FunnyGuilds.parser("Unknown enchant level: " + split[2]);
+                    level = 1;
+                }
+
+                final Enchantment enchant = Enchantment.getByName(enchantName.toUpperCase());
+
+                if (enchant == null) {
+                    FunnyGuilds.parser("Unknown enchant: " + parse[1]);
+                }
+
+                meta.addEnchant(enchant, level, false);
+            }
+        }
+        item.setItemMeta(meta);
+
+        return item;
     }
 
     public static Material parseMaterial(String string) {
