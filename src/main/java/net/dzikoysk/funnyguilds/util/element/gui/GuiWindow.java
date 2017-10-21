@@ -37,7 +37,7 @@ public class GuiWindow
         name = this.getValidName(name);
 
         this.inv = Bukkit.createInventory(null, this.roundUp(items.size()), name);
-        this.items = new HashMap<>();
+        this.items = new HashMap<>(this.roundUp(items.size()));
 
         windows.put(name, this);
     }
