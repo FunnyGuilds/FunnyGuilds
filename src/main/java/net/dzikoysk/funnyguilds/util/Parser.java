@@ -12,7 +12,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,46 +45,45 @@ public class Parser {
 //        return itemstack;
 //    }
 
-    public static ItemStack parseItemStack(String string) {
-        final String[] split = string.split(" ");
+    public static ItemStack parseItem(String string) {
+        String[] split = string.split(" ");
         String type = split[1];
         type = type.toUpperCase();
         type = type.replaceAll(" ", "_");
-        final Material mat = Material.matchMaterial(type);
+        Material mat = Material.matchMaterial(type);
         int stack;
 
         try {
             stack = Integer.parseInt(split[0]);
         }
-        catch(NumberFormatException ex) {
+        catch (NumberFormatException ex) {
             FunnyGuilds.parser("Unknown size: " + split[0]);
             stack = 1;
         }
-        if(mat == null) {
+        if (mat == null) {
             FunnyGuilds.parser("Unknown item: " + type);
         }
 
-        final ItemStack item = new ItemStack(mat, stack);
-        final ItemMeta meta = item.getItemMeta();
+        ItemBuilder item = new ItemBuilder(mat, stack);
 
-        for(int i = 2; i < split.length; i++) {
+        for (int i = 2; i < split.length; i++) {
             String str = split[i];
 
-            if(str.contains("name")) {
+            if (str.contains("name")) {
                 String[] split0 = str.split(":");
                 String itemName = StringUtils.replace(split0[1], "_", " ");
-                meta.setDisplayName(StringUtils.colored(itemName));
+                item.setName(itemName, true);
             }
-            else if(str.contains("lore")) {
+            else if (str.contains("lore")) {
                 String[] split0 = str.split(":");
                 String loreArgs = String.join("", Arrays.copyOfRange(split0, 1, split0.length));
                 String[] lores = loreArgs.split("#");
-                final List<String> lore = new ArrayList<>();
+                List<String> lore = new ArrayList<>();
 
-                for(String s : lores) {
+                for (String s : lores) {
                     lore.add(StringUtils.replace(StringUtils.colored(s), "_", " "));
                 }
-                meta.setLore(lore);
+                item.setLore(lore);
             }
             else if (str.contains("enchant")) {
                 String[] parse = str.split(":");
@@ -95,23 +93,22 @@ public class Parser {
                 try {
                     level = Integer.parseInt(parse[2]);
                 }
-                catch(NumberFormatException ex) {
+                catch (NumberFormatException ex) {
                     FunnyGuilds.parser("Unknown enchant level: " + split[2]);
                     level = 1;
                 }
 
-                final Enchantment enchant = Enchantment.getByName(enchantName.toUpperCase());
+                Enchantment enchant = Enchantment.getByName(enchantName.toUpperCase());
 
                 if (enchant == null) {
                     FunnyGuilds.parser("Unknown enchant: " + parse[1]);
                 }
 
-                meta.addEnchant(enchant, level, false);
+                item.addEnchant(enchant, level);
             }
         }
-        item.setItemMeta(meta);
 
-        return item;
+        return item.getItem();
     }
 
     public static Material parseMaterial(String string) {
@@ -216,18 +213,19 @@ public class Parser {
                                                     "{POINTS}", Integer.toString(guild.getRank().getPoints()))
                             );
                 }
-            } else if (string.contains("PTOP")) {
+            }
+            else if (string.contains("PTOP")) {
                 User user = RankManager.getInstance().getUser(i);
 
                 if (user != null) {
-                    return StringUtils
-                            .replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
-                } else {
-                    return StringUtils
-                            .replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
+                    return StringUtils.replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
+                }
+                else {
+                    return StringUtils.replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
                 }
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             FunnyGuilds.parser("Unknown number: " + sb.toString());
         }
 
@@ -271,7 +269,8 @@ public class Parser {
                                 time += i * 1000L;
                                 break;
                         }
-                    } catch (NumberFormatException e) {
+                    }
+                    catch (NumberFormatException e) {
                         FunnyGuilds.parser("Unknown number: " + value.toString());
                         return time;
                     }

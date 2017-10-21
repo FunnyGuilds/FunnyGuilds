@@ -9,9 +9,9 @@ public class GuiActionHandler implements Listener {
     @EventHandler
     public void onClick(final InventoryClickEvent e) {
         if (e.getInventory() != null && e.getInventory().getType().equals(InventoryType.CHEST)) {
-            final GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+            GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
             if (window != null) {
-                final GuiItem item = window.getItem(e.getSlot());
+                GuiItem item = window.getItem(e.getSlot());
                 if (item != null) {
                     item.handleClick(e);
                 }
@@ -23,7 +23,7 @@ public class GuiActionHandler implements Listener {
 
     @EventHandler
     public void onOpen(final InventoryOpenEvent e) {
-        final GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+        GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
         if (window != null) {
             window.handleOpen(e);
         }
@@ -31,7 +31,7 @@ public class GuiActionHandler implements Listener {
 
     @EventHandler
     public void onClose(final InventoryCloseEvent e) {
-        final GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+        GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
         if (window != null) {
             window.handleClose(e);
         }

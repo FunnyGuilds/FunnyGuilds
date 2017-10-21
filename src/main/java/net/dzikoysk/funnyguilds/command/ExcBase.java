@@ -77,8 +77,8 @@ public class ExcBase implements Executor {
 
         p.sendMessage(m.baseDontMove.replace("{TIME}", Integer.toString(time)));
 
-        final Location before = p.getLocation();
-        final AtomicInteger i = new AtomicInteger(0);
+        Location before = p.getLocation();
+        AtomicInteger i = new AtomicInteger(0);
 
         user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
             i.getAndIncrement();

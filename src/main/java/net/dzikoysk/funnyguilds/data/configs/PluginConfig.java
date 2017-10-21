@@ -472,7 +472,7 @@ public class PluginConfig {
             if (item == null || "".equals(item)) {
                 continue;
             }
-            ItemStack itemstack = Parser.parseItemStack(item);
+            ItemStack itemstack = Parser.parseItem(item);
             if (itemstack != null) {
                 items.add(itemstack);
             }

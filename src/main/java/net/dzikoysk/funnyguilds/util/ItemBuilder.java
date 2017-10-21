@@ -39,8 +39,17 @@ public class ItemBuilder
         this.itemStack.setItemMeta(itemMeta);
     }
 
-    public ItemBuilder setName(String name) {
-        this.itemMeta.setDisplayName(StringUtils.replace(name, "&", "§"));
+    public ItemBuilder setName(String name, boolean color) {
+        this.itemMeta.setDisplayName(color ? net.dzikoysk.funnyguilds.util.StringUtils.colored(name) : name);
+        return this;
+    }
+
+    public ItemBuilder setLore(List<String> lore) {
+        final List<String> formatted = new ArrayList<>();
+        for (String str : lore) {
+            formatted.add(StringUtils.replace(str, "&", "§"));
+        }
+        this.itemMeta.setLore(formatted);
         this.refreshMeta();
         return this;
     }
@@ -55,7 +64,7 @@ public class ItemBuilder
         return this;
     }
 
-    public ItemBuilder setEnchant(Enchantment enchant, int level) {
+    public ItemBuilder addEnchant(Enchantment enchant, int level) {
         this.itemMeta.addEnchant(enchant, level, true);
         this.refreshMeta();
         return this;
