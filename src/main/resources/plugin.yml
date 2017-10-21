@@ -41,6 +41,7 @@ permissions:
             funnyguilds.deputy: true
             funnyguilds.ranking: true
             funnyguilds.manage: true
+            funnyguilds.items: true
     funnyguilds.reload:
         default: op
     funnyguilds.admin.build:
@@ -84,4 +85,6 @@ permissions:
     funnyguilds.manage:
         default: true
     funnyguilds.ranking:
+        default: true
+    funnyguilds.items:
         default: true
