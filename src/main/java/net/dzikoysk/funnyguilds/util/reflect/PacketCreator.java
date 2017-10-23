@@ -1,59 +1,74 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class PacketCreator {
 
+    private static final Map<String, ThreadLocal<PacketCreator>> PACKET_CREATOR_CACHE = new HashMap<>();
+
     private final Class<?> packetClass;
+    private final Map<String, Field> packetFields;
     private Object packetInstance;
 
-    public static PacketCreator of(Class<?> packetClass) {
-        return new PacketCreator(packetClass);
+    public static PacketCreator of(String packetClassName) {
+        ThreadLocal<PacketCreator> creator = PACKET_CREATOR_CACHE.get(packetClassName);
+
+        if (creator == null) {
+            Class<?> packetClass = Reflections.getCraftClass(packetClassName);
+            creator = ThreadLocal.withInitial(() -> new PacketCreator(packetClass));
+            PACKET_CREATOR_CACHE.put(packetClassName, creator);
+        }
+
+        return creator.get();
     }
 
-    public static PacketCreator of(Constructor<?> packetConstructor, Object... params) {
-        return new PacketCreator(packetConstructor, params);
+    public static PacketCreator of(Class<?> packetClass) {
+        ThreadLocal<PacketCreator> creator = PACKET_CREATOR_CACHE.get(packetClass.getName());
+
+        if (creator == null) {
+            creator = ThreadLocal.withInitial(() -> new PacketCreator(packetClass));
+            PACKET_CREATOR_CACHE.put(packetClass.getName(), creator);
+        }
+
+        return creator.get();
     }
 
     private PacketCreator(Class<?> packetClass) {
         this.packetClass = packetClass;
+        this.packetFields = new HashMap<>(this.packetClass.getDeclaredFields().length);
 
-        try {
-            this.packetInstance = packetClass.newInstance();
-        }
-        catch(final InstantiationException | IllegalAccessException ex) {
-            FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
-            this.packetInstance = null;
+        for (Field field : this.packetClass.getDeclaredFields()) {
+            field.setAccessible(true);
+            this.packetFields.put(field.getName(), field);
         }
     }
 
-    private PacketCreator(Constructor<?> packetConstructor, Object... params) {
-        this.packetClass = packetConstructor.getDeclaringClass();
-
+    public PacketCreator create() {
         try {
-            this.packetInstance = packetConstructor.newInstance(params);
+            this.packetInstance = this.packetClass.newInstance();
         }
-        catch (final InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-            FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
-            this.packetInstance = null;
+        catch (final InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
         }
+
+        return this;
     }
 
     public PacketCreator withField(String fieldName, Object value) {
-        try
-        {
-            Field field = this.packetClass.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            field.set(this.packetInstance, value);
+        Validate.notNull(value, "Value cannot be NULL!");
+        if (this.packetInstance == null) {
+            throw new RuntimeException("Tried to set field on non-existing packet instance!");
         }
-        catch(final NoSuchFieldException ex) {
-            FunnyGuilds.exception("Could not find field with given fieldName", ex.getStackTrace());
+        try {
+            Field field = this.packetFields.get(fieldName);
+            field.set(this.packetInstance, value);
         }
         catch(final IllegalAccessException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
@@ -63,18 +78,18 @@ public final class PacketCreator {
     }
 
     public PacketCreator withField(String fieldName, Object value, Class<?> fieldType) {
+        Validate.notNull(value, "Value cannot be NULL!");
+        if (this.packetInstance == null) {
+            throw new RuntimeException("Tried to set field on non-existing packet instance!");
+        }
         try {
-            final Field field = this.packetClass.getDeclaredField(fieldName);
+            Field field = this.packetFields.get(fieldName);
 
-            if (! fieldType.isAssignableFrom(field.getType())) {
+            if (!fieldType.isAssignableFrom(field.getType())) {
                 FunnyGuilds.error("Given fieldType is not assignable from found field's type");
             }
 
-            field.setAccessible(true);
             field.set(this.packetInstance, value);
-        }
-        catch(final NoSuchFieldException ex) {
-            FunnyGuilds.exception("Could not find field with given fieldName", ex.getStackTrace());
         }
         catch(final IllegalAccessException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
@@ -84,10 +99,10 @@ public final class PacketCreator {
     }
 
     public void send(final Collection<? extends Player> players) {
-        PacketSender.sendPacket(players, this.create());
+        PacketSender.sendPacket(players, this.getPacket());
     }
 
-    public Object create() {
+    public Object getPacket() {
         return packetInstance;
     }
 }

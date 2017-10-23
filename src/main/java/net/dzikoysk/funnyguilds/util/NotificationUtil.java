@@ -3,9 +3,7 @@ package net.dzikoysk.funnyguilds.util;
 import com.google.common.collect.Lists;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.reflect.PacketCreator;
-import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
-import org.bukkit.entity.Player;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
@@ -15,44 +13,39 @@ import java.util.List;
 
 public final class NotificationUtil {
 
-    private static final Class<?> packetPlayOutTitleClass;
-    private static final Class<?> packetPlayOutChatClass;
-    private static final Class<?> titleActionClass;
+    private static final Class<?> PACKET_PLAY_OUT_TITLE_CLASS;
+    private static final Class<?> PACKET_PLAY_OUT_CHAT_CLASS;
+    private static final Class<?> TITLE_ACTION_CLASS;
+    private static final Class<?> CHAT_MESSAGE_TYPE_CLASS;
 
-    private static final Method createBaseComponent;
+    private static final Method CREATE_BASE_COMPONENT;
 
     static {
-        packetPlayOutTitleClass = Reflections.getCraftClass("PacketPlayOutTitle");
-        packetPlayOutChatClass = Reflections.getCraftClass("PacketPlayOutChat");
-        titleActionClass = Reflections.getCraftClass("PacketPlayOutTitle$EnumTitleAction");
+        PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getCraftClass("PacketPlayOutTitle");
+        PACKET_PLAY_OUT_CHAT_CLASS = Reflections.getCraftClass("PacketPlayOutChat");
+        TITLE_ACTION_CLASS = Reflections.getCraftClass("PacketPlayOutTitle$EnumTitleAction");
+        CHAT_MESSAGE_TYPE_CLASS = Reflections.getCraftClass("ChatMessageType");
 
-        createBaseComponent = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
+        CREATE_BASE_COMPONENT = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
     }
 
     public static List<Object> createTitleNotification(String text, String subText, int fadeIn, int stay, int fadeOut) {
         final List<Object> packets = Lists.newArrayList();
 
-        final Object titlePacket = PacketCreator.of(packetPlayOutTitleClass)
-                .withField("a", titleActionClass.getEnumConstants()[0])
+        final Object titlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS).create().withField("a", TITLE_ACTION_CLASS.getEnumConstants()[0])
                 .withField("b", createBaseComponent(text, false))
                 .withField("c", -1)
                 .withField("d", -1)
-                .withField("e", -1)
-                .create();
-        final Object subtitlePacket = PacketCreator.of(packetPlayOutTitleClass)
-                .withField("a", titleActionClass.getEnumConstants()[1])
+                .withField("e", -1).getPacket();
+        final Object subtitlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS).create().withField("a", TITLE_ACTION_CLASS.getEnumConstants()[1])
                 .withField("b", createBaseComponent(text, false))
                 .withField("c", -1)
                 .withField("d", -1)
-                .withField("e", -1)
-                .create();
-        final Object timerPacket = PacketCreator.of(packetPlayOutTitleClass)
-                .withField("a", titleActionClass.getEnumConstants()[2])
-                .withField("b", null)
+                .withField("e", -1).getPacket();
+        final Object timerPacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS).withField("a", TITLE_ACTION_CLASS.getEnumConstants()[2])
                 .withField("c", fadeIn)
                 .withField("d", stay)
-                .withField("e", fadeOut)
-                .create();
+                .withField("e", fadeOut).getPacket();
 
         packets.addAll(Arrays.asList(titlePacket, subtitlePacket, timerPacket));
         return packets;
@@ -61,7 +54,7 @@ public final class NotificationUtil {
     public static Object createBaseComponent(String text, boolean keepNewLines) {
         String text0 = text != null ? text : "";
         try {
-            return Array.get(createBaseComponent.invoke(null, text0, keepNewLines), 0);
+            return Array.get(CREATE_BASE_COMPONENT.invoke(null, text0, keepNewLines), 0);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
             return null;
@@ -69,16 +62,16 @@ public final class NotificationUtil {
     }
 
     public static Object createActionbarNotification(String text) {
-        final Object actionbarPacket = PacketCreator.of(packetPlayOutChatClass)
-                .withField("a", createBaseComponent(text, false))
-                .withField("b", (byte) 2)
-                .create();
+        final Object actionbarPacket;
+
+        if ("v1_12_R1".equals(Reflections.getFixedVersion())) {
+            actionbarPacket = PacketCreator.of(PACKET_PLAY_OUT_CHAT_CLASS).create().withField("a", createBaseComponent(text, false)).withField("b", CHAT_MESSAGE_TYPE_CLASS.getEnumConstants()[2]).getPacket();
+        }
+        else {
+            actionbarPacket = PacketCreator.of(PACKET_PLAY_OUT_CHAT_CLASS).create().withField("a", createBaseComponent(text, false)).withField("b", (byte) 2).getPacket();
+        }
 
         return actionbarPacket;
-    }
-
-    public static void sendNotification(Player player, List<Object> notifications) {
-        PacketSender.sendPacket(player, notifications);
     }
 
     private NotificationUtil() {
