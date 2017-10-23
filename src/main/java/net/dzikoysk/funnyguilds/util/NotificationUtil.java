@@ -35,17 +35,14 @@ public final class NotificationUtil {
         final Object titlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS).create().withField("a", TITLE_ACTION_CLASS.getEnumConstants()[0])
                 .withField("b", createBaseComponent(text, false))
                 .withField("c", -1)
-                .withField("d", -1)
-                .withField("e", -1).getPacket();
+                .withField("d", -1).withField("e", -1).getPacket();
         final Object subtitlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS).create().withField("a", TITLE_ACTION_CLASS.getEnumConstants()[1])
                 .withField("b", createBaseComponent(text, false))
                 .withField("c", -1)
-                .withField("d", -1)
-                .withField("e", -1).getPacket();
-        final Object timerPacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS).withField("a", TITLE_ACTION_CLASS.getEnumConstants()[2])
+                .withField("d", -1).withField("e", -1).getPacket();
+        final Object timerPacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS).create().withField("a", TITLE_ACTION_CLASS.getEnumConstants()[2])
                 .withField("c", fadeIn)
-                .withField("d", stay)
-                .withField("e", fadeOut).getPacket();
+                .withField("d", stay).withField("e", fadeOut).getPacket();
 
         packets.addAll(Arrays.asList(titlePacket, subtitlePacket, timerPacket));
         return packets;
