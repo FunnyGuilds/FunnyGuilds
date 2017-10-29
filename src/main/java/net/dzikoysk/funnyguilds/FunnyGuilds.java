@@ -23,6 +23,7 @@ import net.dzikoysk.funnyguilds.util.runnable.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -231,7 +232,10 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         for (Guild guild : GuildUtils.getGuilds()) {
-            EntityUtil.spawn(guild);
+            if (config.createMaterial == Material.DRAGON_EGG) {
+                EntityUtil.spawn(guild);
+            }
+
             guild.updateRank();
         }
     }
