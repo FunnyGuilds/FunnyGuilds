@@ -243,6 +243,7 @@ public class MessagesConfig {
     public String enlargeDone = "&7Teren &aTwojej &7gildii zostal powiekszony i jego wielkosc wynosi teraz &a{SIZE} &7(poz.&a{LEVEL}&7)";
 
     @CfgComment("<------- Base Messages -------> #")
+    public String baseTeleportationDisabled = "&cTeleportacja do baz gildyjnych nie jest dostepna.";
     public String baseHasNotGuild = "&cNie masz gildii!";
     public String baseHasNotRegion = "&cTwoja gildia nie posiada terenu!";
     public String baseHasNotCenter = "&cTwoja gildia nie posiada srodka regionu!";

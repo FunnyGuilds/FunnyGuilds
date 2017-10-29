@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.Bukkit;
@@ -23,9 +24,15 @@ public class ExcBase implements Executor {
 
     @Override
     public void execute(CommandSender s, String[] args) {
+        final PluginConfig c = Settings.getConfig();
         final MessagesConfig m = Messages.getInstance();
         final Player p = (Player) s;
         final User user = User.get(p);
+
+        if (!c.baseEnable) {
+            p.sendMessage(m.baseTeleportationDisabled);
+            return;
+        }
 
         if (!user.hasGuild()) {
             p.sendMessage(m.baseHasNotGuild);
