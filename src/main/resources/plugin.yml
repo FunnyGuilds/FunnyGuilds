@@ -4,8 +4,7 @@ version: '${project.version} Tribute-${git.commit.id.abbrev}'
 author: Dzikoysk
 authors: ['kacperduras', 'MrGregorix', 'insertt']
 website: https://www.dzikoysk.net/
-loadbefore: [WorldEdit]
-softdepend: [WorldGuard]
+loadbefore: [WorldEdit, WorldGuard]
 permissions:
     funnyguilds.*:
         default: op
