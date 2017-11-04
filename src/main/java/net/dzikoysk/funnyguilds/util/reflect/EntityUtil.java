@@ -35,8 +35,8 @@ public class EntityUtil {
         DESPAWN_ENTITY_CONSTRUCTOR = Reflections.getConstructor(despawnEntityClass, int[].class);
         ENDER_CRYSTAL_CONSTRUCTOR = Reflections.getConstructor(enderCrystalClass, craftWorldClass);
 
-        SET_LOCATION = Reflections.getMethod(enderCrystalClass, "SET_LOCATION", double.class, double.class, double.class, float.class, float.class);
-        GET_ID = Reflections.getMethod(enderCrystalClass, "GET_ID");
+        SET_LOCATION = Reflections.getMethod(enderCrystalClass, "setLocation", double.class, double.class, double.class, float.class, float.class);
+        GET_ID = Reflections.getMethod(enderCrystalClass, "getId");
     }
 
     public static Map<Guild, Integer> getEntitesMap() {
