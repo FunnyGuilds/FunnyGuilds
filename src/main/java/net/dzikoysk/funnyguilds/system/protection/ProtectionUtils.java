@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.system.protection;
 
+import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
 
@@ -13,6 +14,9 @@ public class ProtectionUtils {
     }
 
     private static boolean checkBlock(Block block) {
+        if (WorldGuardHook.isOnRegion(block.getLocation())) {
+            return false;
+        }
         switch (block.getType()) {
             case CHEST:
             case ENCHANTMENT_TABLE:

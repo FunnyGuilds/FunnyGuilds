@@ -35,4 +35,20 @@ public final class WorldGuardHook {
 
         return false;
     }
+
+    public static boolean isOnRegion(Location location) {
+        if (location == null) {
+            return false;
+        }
+        if (worldGuard == null) {
+            return false;
+        }
+        RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
+
+        if (regionManager == null) {
+            return false;
+        }
+
+        return regionManager.getApplicableRegions(location).size() != 0;
+    }
 }
