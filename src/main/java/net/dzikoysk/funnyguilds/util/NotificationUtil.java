@@ -43,7 +43,7 @@ public final class NotificationUtil {
         final Object subtitlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS)
                 .create()
                 .withField("a", TITLE_ACTION_CLASS.getEnumConstants()[1])
-                .withField("b", createBaseComponent(text, false))
+                .withField("b", createBaseComponent(subText, false))
                 .withField("c", -1)
                 .withField("d", -1)
                 .withField("e", -1)
