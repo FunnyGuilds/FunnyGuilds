@@ -529,10 +529,10 @@ public class PluginConfig {
 
         this.explodeMaterials = map;
 
-        this.translatedMaterials = new WeakHashMap<>();
-        for(String materialName: translatedMaterials_.keySet()){
+        this.translatedMaterials = new HashMap<>();
+        for (String materialName : translatedMaterials_.keySet()) {
             Material material = Material.matchMaterial(materialName.toUpperCase());
-            if(material == null){
+            if (material == null) {
                 continue;
             }
             translatedMaterials.put(material, translatedMaterials_.get(materialName));
