@@ -446,6 +446,21 @@ public class PluginConfig {
     @CfgExclude
     public String playerlistPoints;
 
+    @CfgComment("Czy wlaczyc tlumaczenie nazw przedmiotow przy zabojstwie")
+    @CfgName("translated-materials-enable")
+    public boolean translatedMaterialsEnable = true;
+
+    @CfgComment("Tlumaczenia nazw przedmiotow przy zabojstwie")
+    @CfgComment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
+    @CfgName("translated-materials-name")
+    public Map<String, String> translatedMaterials_ = ImmutableMap.<String, String> builder()
+            .put("diamond_sword", "&3diamentowy miecz")
+            .put("iron_sword", "&7zelazny miecz")
+            .build();
+
+    @CfgExclude
+    public Map<Material, String> translatedMaterials;
+
     @CfgComment("Nazwy komend")
     @CfgName("commands")
     public Commands commands = new Commands();
@@ -514,6 +529,15 @@ public class PluginConfig {
 
         this.explodeMaterials = map;
 
+        this.translatedMaterials = new WeakHashMap<>();
+        for(String materialName: translatedMaterials_.keySet()){
+            Material material = Material.matchMaterial(materialName.toUpperCase());
+            if(material == null){
+                continue;
+            }
+            translatedMaterials.put(material, translatedMaterials_.get(materialName));
+        }
+
         this.warProtection = Parser.parseTime(this.warProtection_);
         this.warWait = Parser.parseTime(this.warWait_);
 
@@ -541,6 +565,8 @@ public class PluginConfig {
         this.chatGlobalDesign = StringUtils.colored(this.chatGlobalDesign_);
 
         this.playerlistPoints = StringUtils.colored(this.playerlistPoints_);
+
+
     }
 
     public static class Commands {

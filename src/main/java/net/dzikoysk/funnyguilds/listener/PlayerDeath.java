@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.util.MaterialUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -89,6 +90,7 @@ public class PlayerDeath implements Listener {
         death = StringUtils.replace(death, "{+}", Integer.toString(rankChanges[0]));
         death = StringUtils.replace(death, "{-}", Integer.toString(rankChanges[1]));
         death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
+        death = StringUtils.replace(death, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
         
         if (victim.hasGuild()) {
             death = StringUtils.replace(death, "{VTAG}", StringUtils.replace(Settings.getConfig().chatGuild, "{TAG}", victim.getGuild().getTag()));
