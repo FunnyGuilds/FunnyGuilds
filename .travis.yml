@@ -1,14 +1,15 @@
 language: java
 sudo: required
-jdk:
-- oraclejdk8
-install: true
-script:
-- sudo apt-get update && sudo apt-get install oracle-java8-installer
-- sudo apt install oracle-java8-set-default
-- java -version
-- mvn validate
-- mvn clean test
+
+addons:
+  apt:
+    packages:
+      - oracle-java9-installer
+
+matrix:
+  include:
+    - jdk: oraclejdk8
+    - jdk: oraclejdk9
 
 notifications:
   email: false
