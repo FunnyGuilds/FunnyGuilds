@@ -5,15 +5,8 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.0.0.2</version>
+    <version>4.0.1</version>
     <packaging>jar</packaging>
-
-    <distributionManagement>
-        <repository> <!-- TODO -->
-            <id>funnyguilds-repo</id>
-            <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
-        </repository>
-    </distributionManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -82,6 +75,13 @@
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
     </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>panda-repository</id>
+            <url>https://repo.panda-lang.org/releases</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
