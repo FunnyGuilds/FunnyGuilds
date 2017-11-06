@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
 
     <distributionManagement>
-        <repository>
+        <repository> <!-- TODO -->
             <id>funnyguilds-repo</id>
             <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
         </repository>
@@ -73,9 +73,8 @@
             <url>https://repo.panda-lang.org/</url>
         </repository>
         <repository>
-            <id>funnyguilds-repo</id>
-            <name>FunnyGuilds Repository</name>
-            <url>https://repo.funnyguilds.net/content/repositories/funnyguilds-repo/</url>
+            <id>kacperduras-repo</id>
+            <url>https://repo.kacperduras.pl/content/groups/public/</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>
