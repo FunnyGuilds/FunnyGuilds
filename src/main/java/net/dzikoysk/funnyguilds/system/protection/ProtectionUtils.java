@@ -1,10 +1,11 @@
 package net.dzikoysk.funnyguilds.system.protection;
 
+import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
 
-public class ProtectionUtils {
+public final class ProtectionUtils {
 
     public static boolean action(Action action, Block block) {
         if (action == Action.RIGHT_CLICK_BLOCK) {
@@ -14,9 +15,12 @@ public class ProtectionUtils {
     }
 
     private static boolean checkBlock(Block block) {
-        if (WorldGuardHook.isOnRegion(block.getLocation())) {
-            return false;
+        if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
+            if (WorldGuardHook.isOnRegion(block.getLocation())) {
+                return false;
+            }
         }
+
         switch (block.getType()) {
             case CHEST:
             case ENCHANTMENT_TABLE:
@@ -30,4 +34,7 @@ public class ProtectionUtils {
         }
     }
 
+    private ProtectionUtils() {
+
+    }
 }

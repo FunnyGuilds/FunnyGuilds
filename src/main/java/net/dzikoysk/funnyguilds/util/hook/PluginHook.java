@@ -8,13 +8,14 @@ import java.util.List;
 
 public final class PluginHook {
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
-    private static final List<String> hooks = new ArrayList<>();
+    private static final List<String> HOOK_LIST = new ArrayList<>();
 
     @SuppressWarnings("Convert2MethodRef")
     public static void init() {
         tryInit(PLUGIN_WORLDGUARD, () -> {
             try {
                 Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
+                Class.forName("com.sk89q.worldguard.protection.flags.Flag");
                 WorldGuardHook.initWorldGuard();
             } catch (final ClassNotFoundException e) {
                 FunnyGuilds.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
@@ -26,7 +27,7 @@ public final class PluginHook {
         try {
             if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
                 init.run();
-                hooks.add(plugin);
+                HOOK_LIST.add(plugin);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,6 +35,6 @@ public final class PluginHook {
     }
 
     public static boolean isPresent(String plugin) {
-        return hooks.contains(plugin);
+        return HOOK_LIST.contains(plugin);
     }
 }
