@@ -47,24 +47,29 @@ public class Parser {
 
     public static ItemStack parseItem(String string) {
         String[] split = string.split(" ");
-        String type = split[1];
+        String[] typeSplit = split[1].split(":");
+        String type = typeSplit[0];
+        String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
         type = type.toUpperCase();
         type = type.replaceAll(" ", "_");
         Material mat = Material.matchMaterial(type);
         int stack;
+        int data;
 
         try {
             stack = Integer.parseInt(split[0]);
+            data = Integer.parseInt(subtype);
         }
         catch (NumberFormatException ex) {
             FunnyGuilds.parser("Unknown size: " + split[0]);
             stack = 1;
+            data = 0;
         }
         if (mat == null) {
             FunnyGuilds.parser("Unknown item: " + type);
         }
 
-        ItemBuilder item = new ItemBuilder(mat, stack);
+        ItemBuilder item = new ItemBuilder(mat, stack, data);
 
         for (int i = 2; i < split.length; i++) {
             String str = split[i];

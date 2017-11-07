@@ -117,6 +117,9 @@ public class EntityUtil {
 
     public static void despawn(Guild guild, Player... players) {
         try {
+            if (!ENTITY_MAP.containsKey(guild)) {
+                return;
+            }
             int id = ENTITY_MAP.get(guild);
             Object o = despawnPacket(id);
             PacketSender.sendPacket(players, o);
@@ -128,6 +131,9 @@ public class EntityUtil {
     public static void despawn() {
         for (Guild guild : GuildUtils.getGuilds()) {
             try {
+                if (!ENTITY_MAP.containsKey(guild)) {
+                    return;
+                }
                 int id = ENTITY_MAP.get(guild);
                 ID_MAP.remove(id);
                 ENTITY_MAP.remove(guild);
