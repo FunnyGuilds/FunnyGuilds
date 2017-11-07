@@ -18,7 +18,7 @@ public class MessagesConfig {
     public String rankLastVictimA = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!";
     public String rankLastAttackerV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
-    @CfgComment("Available variables: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}")
+    @CfgComment("Available variables: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}, {WEAPON}")
     public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&b+{+}&7) zabil {VTAG}&b{VICTIM} &7(&b-{-}&7) uzywajac &b{WEAPON}";
 
     @CfgComment("<------- Rank Messages -------> #")
