@@ -10,19 +10,19 @@ import org.bukkit.Location;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegionUtils {
+public final class RegionUtils {
 
-    public static List<Region> regions = new ArrayList<>();
+    public static final List<Region> REGION_LIST = new ArrayList<>();
 
     public static List<Region> getRegions() {
-        return new ArrayList<>(regions);
+        return new ArrayList<>(REGION_LIST);
     }
 
     public static Region get(String name) {
         if (name == null) {
             return null;
         }
-        for (Region region : regions) {
+        for (Region region : REGION_LIST) {
             if (region != null && region.getName() != null && region.getName().equalsIgnoreCase(name)) {
                 return region;
             }
@@ -31,7 +31,7 @@ public class RegionUtils {
     }
 
     public static boolean isIn(Location loc) {
-        for (Region region : regions) {
+        for (Region region : REGION_LIST) {
             if (region.isIn(loc)) {
                 return true;
             }
@@ -40,7 +40,7 @@ public class RegionUtils {
     }
 
     public static Region getAt(Location loc) {
-        for (Region region : regions) {
+        for (Region region : REGION_LIST) {
             if (region.isIn(loc)) {
                 return region;
             }
@@ -58,7 +58,7 @@ public class RegionUtils {
             i += (s.enlargeItems.size() * s.enlargeSize);
         }
         int requiredDistance = (2 * i) + s.regionMinDistance;
-        for (Region region : regions) {
+        for (Region region : REGION_LIST) {
             if (region.getCenter() == null) {
                 continue;
             }
@@ -99,10 +99,10 @@ public class RegionUtils {
     }
 
     public static void addRegion(Region region) {
-        regions.add(region);
+        REGION_LIST.add(region);
     }
 
     public static void removeRegion(Region region) {
-        regions.remove(region);
+        REGION_LIST.remove(region);
     }
 }

@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.system.protection;
 
-import net.dzikoysk.funnyguilds.util.hook.PluginHook;
-import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
+import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.Action;
 
@@ -15,10 +15,9 @@ public final class ProtectionUtils {
     }
 
     private static boolean checkBlock(Block block) {
-        if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
-            if (WorldGuardHook.isOnRegion(block.getLocation())) {
-                return false;
-            }
+        Region region = RegionUtils.getAt(block.getLocation());
+        if (region == null) {
+            return false;
         }
 
         switch (block.getType()) {
@@ -28,6 +27,7 @@ public final class ProtectionUtils {
             case ENDER_CHEST:
             case WORKBENCH:
             case ANVIL:
+            case HOPPER:
                 return true;
             default:
                 return false;
