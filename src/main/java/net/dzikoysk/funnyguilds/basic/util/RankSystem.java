@@ -5,4 +5,5 @@ public enum RankSystem {
     ELO,
     PERCENT,
     STATIC
+	
 }
