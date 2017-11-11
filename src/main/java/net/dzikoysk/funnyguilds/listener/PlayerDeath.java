@@ -71,6 +71,9 @@ public class PlayerDeath implements Listener {
             rankChanges[0] = Settings.getConfig().staticAttackerChange;
             rankChanges[1] = Settings.getConfig().staticVictimChange;
             break;
+        default:
+            rankChanges = EloUtils.getRankChanges(attacker.getRank(), victim.getRank());
+            break;
         }
 
         attacker.getRank().addKill();

@@ -118,6 +118,8 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         }
         return Bukkit.getServer().getBannedPlayers().contains(this);
     }
+    
+    public void setBanned(boolean value) {}
 
     public boolean isWhitelisted() {
         return Bukkit.getWhitelistedPlayers().contains(this);
