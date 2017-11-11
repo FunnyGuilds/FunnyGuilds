@@ -35,7 +35,7 @@ public class ExcFunnyGuilds implements Executor {
                     new Settings();
                     dm.start();
 
-                    if(Settings.getConfig().playerlistEnable) {
+                    if (Settings.getConfig().playerlistEnable) {
                         PluginConfig config = Settings.getConfig();
                         AbstractTablist.wipeCache();
 

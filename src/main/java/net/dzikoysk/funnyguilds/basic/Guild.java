@@ -273,17 +273,17 @@ public class Guild implements Basic {
         return this.members;
     }
 
+    public void setMembers(List<User> members) {
+        this.members = members;
+        this.updateRank();
+        this.changes();
+    }
+
     public List<User> getOnlineMembers() {
         return this.members
                 .stream()
                 .filter(User::isOnline)
                 .collect(Collectors.toList());
-    }
-
-    public void setMembers(List<User> members) {
-        this.members = members;
-        this.updateRank();
-        this.changes();
     }
 
     public List<String> getRegions() {

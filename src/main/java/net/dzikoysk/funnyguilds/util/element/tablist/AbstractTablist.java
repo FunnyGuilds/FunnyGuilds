@@ -53,14 +53,12 @@ public abstract class AbstractTablist {
             TABLIST_CACHE.add(tablist);
 
             return tablist;
-        }
-        else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
+        } else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
             final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
-        }
-        else {
+        } else {
             throw new RuntimeException("Could not find tablist for given version.");
         }
     }
@@ -122,20 +120,17 @@ public abstract class AbstractTablist {
         int second = time.get(Calendar.SECOND);
         if (hour < 10) {
             formatted = StringUtils.replace(formatted, "{HOUR}", "0" + String.valueOf(hour));
-        }
-        else {
+        } else {
             formatted = StringUtils.replace(formatted, "{HOUR}", String.valueOf(hour));
         }
         if (minute < 10) {
             formatted = StringUtils.replace(formatted, "{MINUTE}", "0" + String.valueOf(minute));
-        }
-        else {
+        } else {
             formatted = StringUtils.replace(formatted, "{MINUTE}", String.valueOf(minute));
         }
         if (second < 10) {
             formatted = StringUtils.replace(formatted, "{SECOND}", "0" + String.valueOf(second));
-        }
-        else {
+        } else {
             formatted = StringUtils.replace(formatted, "{SECOND}", String.valueOf(second));
         }
 
@@ -148,7 +143,7 @@ public abstract class AbstractTablist {
                     (user.getGuild()).getAllies().size()));
             formatted = StringUtils.replace(formatted, "{G-POINTS}", String.valueOf(
                     user.getGuild().getRank().getPoints()));
-            formatted = StringUtils.replace(formatted,"{G-POSITION}", String.valueOf(
+            formatted = StringUtils.replace(formatted, "{G-POSITION}", String.valueOf(
                     user.getGuild().getRank().getPosition()));
             formatted = StringUtils.replace(formatted, "{G-KILLS}", String.valueOf(
                     user.getGuild().getRank().getKills()));
@@ -158,15 +153,14 @@ public abstract class AbstractTablist {
                     user.getGuild().getOnlineMembers().size()));
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ALL}", String.valueOf(
                     user.getGuild().getMembers().size()));
-        }
-        else {
+        } else {
             formatted = StringUtils.replace(formatted, "{G-NAME}", "Brak");
             formatted = StringUtils.replace(formatted, "{G-TAG}", "Brak");
             formatted = StringUtils.replace(formatted, "{G-OWNER}", "Brak");
             formatted = StringUtils.replace(formatted, "{G-LIVES}", "0");
             formatted = StringUtils.replace(formatted, "{G-ALLIES}", "0");
             formatted = StringUtils.replace(formatted, "{G-POINTS}", "0");
-            formatted = StringUtils.replace(formatted,"{G-POSITION}", "0");
+            formatted = StringUtils.replace(formatted, "{G-POSITION}", "0");
             formatted = StringUtils.replace(formatted, "{G-KILLS}", "0");
             formatted = StringUtils.replace(formatted, "{G-DEATHS}", "0");
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ONLINE}", "0");
@@ -205,20 +199,17 @@ public abstract class AbstractTablist {
 
         if (hour < 10) {
             formatted = StringUtils.replace(formatted, "{HOUR}", "0" + String.valueOf(hour));
-        }
-        else {
+        } else {
             formatted = StringUtils.replace(formatted, "{HOUR}", String.valueOf(hour));
         }
         if (minute < 10) {
             formatted = StringUtils.replace(formatted, "{MINUTE}", "0" + String.valueOf(minute));
-        }
-        else {
+        } else {
             formatted = StringUtils.replace(formatted, "{MINUTE}", String.valueOf(minute));
         }
         if (second < 10) {
             formatted = StringUtils.replace(formatted, "{SECOND}", "0" + String.valueOf(second));
-        }
-        else {
+        } else {
             formatted = StringUtils.replace(formatted, "{SECOND}", String.valueOf(second));
         }
 

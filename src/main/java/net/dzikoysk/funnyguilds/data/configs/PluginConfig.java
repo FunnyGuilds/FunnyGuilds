@@ -1,10 +1,11 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
 import com.google.common.collect.ImmutableMap;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.util.RankSystem;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.diorite.cfg.annotations.*;
@@ -17,7 +18,7 @@ import java.util.*;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("         4.0.1 Tribute          #")
+@CfgComment("             4.0.1              #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfig {
@@ -47,7 +48,8 @@ public class PluginConfig {
     public int minMembersToInclude = 3;
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii")
-    @CfgComment("Wzor: <ilosc> <przedmiot> [name:lore:enchant]")
+    @CfgComment("Dwukropek i metadata po nazwie przedmiotu sa opcjonalne")
+    @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant]")
     @CfgComment("Spacja = _ ")
     @CfgComment("Nowa linia lore = #")
     @CfgName("items")
@@ -231,6 +233,21 @@ public class PluginConfig {
     @CfgName("rank-farming-protect")
     public boolean rankFarmingProtect = true;
 
+    @CfgComment("Czas (w sekundach) blokady nabijania rankingu po walce dwoch osob")
+    @CfgName("rank-farming-cooldown")
+    public int rankFarmingCooldown = 7200;
+
+    @CfgComment("System rankingowy uzywany przez plugin, do wyboru:")
+    @CfgComment("ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")
+    @CfgComment("PERCENT - system, ktory obu graczom zabiera procent rankingu osoby zabitej")
+    @CfgComment("STATIC - system, ktory zawsze zabiera iles rankingu zabijajacemu i iles zabitemu")
+    @CfgName("rank-system")
+    public String rankSystem_ = "ELO";
+
+    @CfgExclude
+    public RankSystem rankSystem;
+
+    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @CfgComment("Lista stalych obliczen rankingowych ELO, uzywanych przy zmianach rankingu - im mniejsza stala, tym mniejsze zmiany rankingu")
     @CfgComment("Stale okreslaja tez o ile maksymalnie moze zmienic sie ranking pochodzacy z danego przedzialu")
     @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
@@ -239,15 +256,32 @@ public class PluginConfig {
     @CfgName("elo-constants")
     public List<String> eloConstants = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
 
+    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @CfgComment("Dzielnik obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
     @CfgComment("Dzielnik powinien byc liczba dodatnia, niezerowa")
     @CfgName("elo-divider")
     public double eloDivider = 400.0D;
 
+    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @CfgComment("Wykladnik potegi obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
     @CfgComment("Wykladnik powinien byc liczba dodatnia, niezerowa")
     @CfgName("elo-exponent")
     public double eloExponent = 10.0D;
+
+    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest PERCENT!")
+    @CfgComment("Procent rankingu osoby zabitej o jaki zmienia sie rankingi po walce")
+    @CfgName("percent-rank-change")
+    public double percentRankChange = 1.0;
+
+    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
+    @CfgComment("Punkty dawane osobie, ktora wygrywa walke")
+    @CfgName("static-attacker-change")
+    public int staticAttackerChange = 15;
+
+    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
+    @CfgComment("Punkty zabierane osobie, ktora przegrywa walke")
+    @CfgName("static-victim-change")
+    public int staticVictimChange = 10;
 
     @CfgComment("Czy pokazywac informacje przy kliknieciu prawym na gracza")
     @CfgName("info-player-enabled")
@@ -391,7 +425,7 @@ public class PluginConfig {
     @CfgComment("{PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu (np. {PTOP-1}, {PTOP-60})")
     @CfgComment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
     @CfgName("player-list")
-    public Map<Integer, String> playerList = ImmutableMap.<Integer, String> builder()
+    public Map<Integer, String> playerList = ImmutableMap.<Integer, String>builder()
             .put(1, "&7Nick: &b{PLAYER}")
             .put(2, "&7Ping: &b{PING}")
             .put(3, "&7Punkty: &b{POINTS}")
@@ -453,7 +487,7 @@ public class PluginConfig {
     @CfgComment("Tlumaczenia nazw przedmiotow przy zabojstwie")
     @CfgComment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
     @CfgName("translated-materials-name")
-    public Map<String, String> translatedMaterials_ = ImmutableMap.<String, String> builder()
+    public Map<String, String> translatedMaterials_ = ImmutableMap.<String, String>builder()
             .put("diamond_sword", "&3diamentowy miecz")
             .put("iron_sword", "&7zelazny miecz")
             .build();
@@ -512,7 +546,16 @@ public class PluginConfig {
             this.enlargeItems = null;
         }
 
-        EloUtils.parseData(this.eloConstants);
+        try {
+            this.rankSystem = RankSystem.valueOf(this.rankSystem_.toUpperCase());
+        } catch (Exception e) {
+            this.rankSystem = RankSystem.ELO;
+            FunnyGuilds.exception(new IllegalArgumentException("\"" + this.rankSystem_ + "\" is not a valid rank system!"));
+        }
+
+        if (this.rankSystem == RankSystem.ELO) {
+            EloUtils.parseData(this.eloConstants);
+        }
 
         HashMap<Material, Double> map = new HashMap<>();
         for (Map.Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {

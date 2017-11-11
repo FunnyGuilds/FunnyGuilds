@@ -23,7 +23,7 @@ public class ExcEnlarge implements Executor {
         Player p = (Player) s;
         User lp = User.get(p);
 
-        if(!c.enlargeEnable) {
+        if (!c.enlargeEnable) {
             return;
         }
 

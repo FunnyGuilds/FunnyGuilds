@@ -15,8 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class GuiWindow
-{
+public class GuiWindow {
     private static final Map<String, GuiWindow> windows = new HashMap<>();
 
     private final Inventory inv;
@@ -40,6 +39,10 @@ public class GuiWindow
         this.items = new HashMap<>(this.roundUp(items.size()));
 
         windows.put(name, this);
+    }
+
+    static GuiWindow getWindow(String inv) {
+        return windows.get(inv);
     }
 
     public void setItem(int slot, GuiItem item) {
@@ -99,7 +102,6 @@ public class GuiWindow
         }
     }
 
-
     public Inventory wrap() {
         return this.inv;
     }
@@ -115,15 +117,10 @@ public class GuiWindow
         this.items.clear();
     }
 
-    static GuiWindow getWindow(String inv) {
-        return windows.get(inv);
-    }
-
     private String getValidName(String name) {
         if (windows.containsKey(name)) {
             return getValidName(name + ChatColor.RESET);
-        }
-        else {
+        } else {
             return name;
         }
     }

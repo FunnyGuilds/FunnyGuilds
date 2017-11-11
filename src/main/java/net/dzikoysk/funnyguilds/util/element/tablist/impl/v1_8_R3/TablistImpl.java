@@ -129,7 +129,7 @@ public class TablistImpl extends AbstractTablist {
             Object header = this.createBaseComponent(this.putVars(super.header), true);
             Object footer = this.createBaseComponent(this.putVars(super.footer), true);
 
-            if(this.shouldUseHeaderAndFooter()) {
+            if (this.shouldUseHeaderAndFooter()) {
                 final Object headerFooterPacket = PLAYER_LIST_HEADER_FOOTER_CLASS.newInstance();
                 HEADER_FIELD.set(headerFooterPacket, header);
                 FOOTER_FIELD.set(headerFooterPacket, footer);

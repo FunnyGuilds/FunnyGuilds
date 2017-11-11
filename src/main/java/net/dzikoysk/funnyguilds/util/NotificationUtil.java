@@ -26,12 +26,15 @@ public final class NotificationUtil {
         TITLE_ACTION_CLASS = Reflections.getCraftClass("PacketPlayOutTitle$EnumTitleAction");
         if ("v1_12_R1".equals(Reflections.getFixedVersion())) {
             CHAT_MESSAGE_TYPE_CLASS = Reflections.getCraftClass("ChatMessageType");
-        }
-        else {
+        } else {
             CHAT_MESSAGE_TYPE_CLASS = null;
         }
 
         CREATE_BASE_COMPONENT = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
+    }
+
+    private NotificationUtil() {
+
     }
 
     public static List<Object> createTitleNotification(String text, String subText, int fadeIn, int stay, int fadeOut) {
@@ -84,8 +87,7 @@ public final class NotificationUtil {
                     .withField("a", createBaseComponent(text, false))
                     .withField("b", CHAT_MESSAGE_TYPE_CLASS.getEnumConstants()[2])
                     .getPacket();
-        }
-        else {
+        } else {
             actionbarPacket = PacketCreator.of(PACKET_PLAY_OUT_CHAT_CLASS)
                     .create()
                     .withField("a", createBaseComponent(text, false))
@@ -94,10 +96,6 @@ public final class NotificationUtil {
         }
 
         return actionbarPacket;
-    }
-
-    private NotificationUtil() {
-
     }
 
 }

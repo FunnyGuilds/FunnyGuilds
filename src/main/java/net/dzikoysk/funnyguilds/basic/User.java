@@ -138,7 +138,7 @@ public class User implements Basic {
         if (this.name == null) {
             return false;
         }
-        if (! ONLINE_USERS_CACHE.contains(this.uuid)) {
+        if (!ONLINE_USERS_CACHE.contains(this.uuid)) {
             final Player player = Bukkit.getPlayer(this.uuid);
             if (player != null) {
                 ONLINE_USERS_CACHE.add(player.getUniqueId());

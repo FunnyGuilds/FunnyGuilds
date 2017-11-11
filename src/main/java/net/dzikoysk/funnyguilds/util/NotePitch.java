@@ -51,11 +51,20 @@ public enum NotePitch {
                 return note.pitch;
             }
         }
+
         return 0.0F;
     }
 
     public static void play(Player player, int octave, Tone tone) {
-        player.playSound(player.getEyeLocation(), Sound.NOTE_PIANO, 1, NotePitch.getPitch(octave, tone));
+        Sound s = null;
+
+        try {
+            s = Sound.valueOf("NOTE_PIANO");
+        } catch (Exception e) {
+            s = Sound.valueOf("BLOCK_NOTE_HARP");
+        }
+
+        player.playSound(player.getEyeLocation(), s, 1, NotePitch.getPitch(octave, tone));
     }
 
 }

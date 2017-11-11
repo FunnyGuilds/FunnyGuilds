@@ -25,8 +25,7 @@ public class Ticker {
     }
 
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
-    public static String getRecentTPS(int last)
-    {
+    public static String getRecentTPS(int last) {
         try {
             double[] tps = ((double[]) tpsField.get(serverInstance));
             return format.format(tps[last]);
