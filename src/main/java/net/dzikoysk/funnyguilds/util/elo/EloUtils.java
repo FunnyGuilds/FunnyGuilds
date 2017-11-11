@@ -77,7 +77,7 @@ public class EloUtils {
     public static int[] getRankChanges(Rank attacker, Rank victim) {
         int aP = attacker.getPoints();
         int vP = victim.getPoints();
-        
+
         return new int[]{
                 (int) Math.round(EloUtils.getConstantForRank(aP) * (1 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (vP - aP) / Settings.getConfig().eloDivider))))),
                 (int) Math.round(EloUtils.getConstantForRank(vP) * (0 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (aP - vP) / Settings.getConfig().eloDivider)))) * -1)

@@ -59,8 +59,7 @@ public class Parser {
         try {
             stack = Integer.parseInt(split[0]);
             data = Integer.parseInt(subtype);
-        }
-        catch (NumberFormatException ex) {
+        } catch (NumberFormatException ex) {
             FunnyGuilds.parser("Unknown size: " + split[0]);
             stack = 1;
             data = 0;
@@ -78,8 +77,7 @@ public class Parser {
                 String[] split0 = str.split(":");
                 String itemName = StringUtils.replace(split0[1], "_", " ");
                 item.setName(itemName, true);
-            }
-            else if (str.contains("lore")) {
+            } else if (str.contains("lore")) {
                 String[] split0 = str.split(":");
                 String loreArgs = String.join("", Arrays.copyOfRange(split0, 1, split0.length));
                 String[] lores = loreArgs.split("#");
@@ -89,16 +87,14 @@ public class Parser {
                     lore.add(StringUtils.replace(StringUtils.colored(s), "_", " "));
                 }
                 item.setLore(lore);
-            }
-            else if (str.contains("enchant")) {
+            } else if (str.contains("enchant")) {
                 String[] parse = str.split(":");
                 String enchantName = parse[1];
                 int level;
 
                 try {
                     level = Integer.parseInt(parse[2]);
-                }
-                catch (NumberFormatException ex) {
+                } catch (NumberFormatException ex) {
                     FunnyGuilds.parser("Unknown enchant level: " + split[2]);
                     level = 1;
                 }
@@ -218,19 +214,16 @@ public class Parser {
                                                     "{POINTS}", Integer.toString(guild.getRank().getPoints()))
                             );
                 }
-            }
-            else if (string.contains("PTOP")) {
+            } else if (string.contains("PTOP")) {
                 User user = RankManager.getInstance().getUser(i);
 
                 if (user != null) {
                     return StringUtils.replace(string, "{PTOP-" + Integer.toString(i) + '}', user.getName());
-                }
-                else {
+                } else {
                     return StringUtils.replace(string, "{PTOP-" + Integer.toString(i) + '}', "Brak");
                 }
             }
-        }
-        catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
             FunnyGuilds.parser("Unknown number: " + sb.toString());
         }
 
@@ -274,8 +267,7 @@ public class Parser {
                                 time += i * 1000L;
                                 break;
                         }
-                    }
-                    catch (NumberFormatException e) {
+                    } catch (NumberFormatException e) {
                         FunnyGuilds.parser("Unknown number: " + value.toString());
                         return time;
                     }

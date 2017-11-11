@@ -46,7 +46,7 @@ public class PacketSender {
     public static void sendPacket(final Player[] players, final Object... packets) {
         final List<Object> packetList = Arrays.asList(packets);
 
-        for(Player player : players) {
+        for (Player player : players) {
             sendPacket(player, packetList);
         }
     }
@@ -94,8 +94,7 @@ public class PacketSender {
             for (Object packet : packets) {
                 sendPacket.invoke(connection, packet);
             }
-        }
-        catch (IllegalAccessException | InvocationTargetException ex) {
+        } catch (IllegalAccessException | InvocationTargetException ex) {
             ex.printStackTrace();
         }
     }

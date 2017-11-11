@@ -102,8 +102,7 @@ public class FunnyGuilds extends JavaPlugin {
         if (cause == null || ste == null || ste.length < 1) {
             error("Stack trace: no/empty exception given, dumping current stack trace instead!");
             return true;
-        }
-        else {
+        } else {
             error("Stack trace: ");
         }
         error("Caused by: " + cause);
@@ -204,8 +203,7 @@ public class FunnyGuilds extends JavaPlugin {
 
             if (latest.equals(current)) {
                 update("You have the newest version of FunnyGuilds.");
-            }
-            else {
+            } else {
                 update("");
                 update("A new version of FunnyGuilds is available!");
                 update("Current: " + current);

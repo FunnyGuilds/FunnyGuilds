@@ -1,13 +1,11 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
 import com.google.common.collect.ImmutableMap;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.RankSystem;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.diorite.cfg.annotations.*;
@@ -234,7 +232,7 @@ public class PluginConfig {
     @CfgComment("Czy blokada nabijania rankingu na tych samych osobach powinna byc wlaczona")
     @CfgName("rank-farming-protect")
     public boolean rankFarmingProtect = true;
-    
+
     @CfgComment("Czas (w sekundach) blokady nabijania rankingu po walce dwoch osob")
     @CfgName("rank-farming-cooldown")
     public int rankFarmingCooldown = 7200;
@@ -245,10 +243,10 @@ public class PluginConfig {
     @CfgComment("STATIC - system, ktory zawsze zabiera iles rankingu zabijajacemu i iles zabitemu")
     @CfgName("rank-system")
     public String rankSystem_ = "ELO";
-    
+
     @CfgExclude
     public RankSystem rankSystem;
-    
+
     @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @CfgComment("Lista stalych obliczen rankingowych ELO, uzywanych przy zmianach rankingu - im mniejsza stala, tym mniejsze zmiany rankingu")
     @CfgComment("Stale okreslaja tez o ile maksymalnie moze zmienic sie ranking pochodzacy z danego przedzialu")
@@ -269,17 +267,17 @@ public class PluginConfig {
     @CfgComment("Wykladnik powinien byc liczba dodatnia, niezerowa")
     @CfgName("elo-exponent")
     public double eloExponent = 10.0D;
-    
+
     @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest PERCENT!")
     @CfgComment("Procent rankingu osoby zabitej o jaki zmienia sie rankingi po walce")
     @CfgName("percent-rank-change")
     public double percentRankChange = 1.0;
-    
+
     @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
     @CfgComment("Punkty dawane osobie, ktora wygrywa walke")
     @CfgName("static-attacker-change")
     public int staticAttackerChange = 15;
-    
+
     @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
     @CfgComment("Punkty zabierane osobie, ktora przegrywa walke")
     @CfgName("static-victim-change")
@@ -427,7 +425,7 @@ public class PluginConfig {
     @CfgComment("{PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu (np. {PTOP-1}, {PTOP-60})")
     @CfgComment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
     @CfgName("player-list")
-    public Map<Integer, String> playerList = ImmutableMap.<Integer, String> builder()
+    public Map<Integer, String> playerList = ImmutableMap.<Integer, String>builder()
             .put(1, "&7Nick: &b{PLAYER}")
             .put(2, "&7Ping: &b{PING}")
             .put(3, "&7Punkty: &b{POINTS}")
@@ -489,7 +487,7 @@ public class PluginConfig {
     @CfgComment("Tlumaczenia nazw przedmiotow przy zabojstwie")
     @CfgComment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
     @CfgName("translated-materials-name")
-    public Map<String, String> translatedMaterials_ = ImmutableMap.<String, String> builder()
+    public Map<String, String> translatedMaterials_ = ImmutableMap.<String, String>builder()
             .put("diamond_sword", "&3diamentowy miecz")
             .put("iron_sword", "&7zelazny miecz")
             .build();
@@ -550,12 +548,12 @@ public class PluginConfig {
 
         try {
             this.rankSystem = RankSystem.valueOf(this.rankSystem_.toUpperCase());
-        } catch(Exception e) {
+        } catch (Exception e) {
             this.rankSystem = RankSystem.ELO;
             FunnyGuilds.exception(new IllegalArgumentException("\"" + this.rankSystem_ + "\" is not a valid rank system!"));
         }
-        
-        if(this.rankSystem == RankSystem.ELO) {
+
+        if (this.rankSystem == RankSystem.ELO) {
             EloUtils.parseData(this.eloConstants);
         }
 

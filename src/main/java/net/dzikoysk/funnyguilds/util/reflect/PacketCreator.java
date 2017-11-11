@@ -17,6 +17,16 @@ public final class PacketCreator {
     private final Map<String, Field> packetFields;
     private Object packetInstance;
 
+    private PacketCreator(Class<?> packetClass) {
+        this.packetClass = packetClass;
+        this.packetFields = new HashMap<>(this.packetClass.getDeclaredFields().length);
+
+        for (Field field : this.packetClass.getDeclaredFields()) {
+            field.setAccessible(true);
+            this.packetFields.put(field.getName(), field);
+        }
+    }
+
     public static PacketCreator of(String packetClassName) {
         ThreadLocal<PacketCreator> creator = PACKET_CREATOR_CACHE.get(packetClassName);
 
@@ -40,21 +50,10 @@ public final class PacketCreator {
         return creator.get();
     }
 
-    private PacketCreator(Class<?> packetClass) {
-        this.packetClass = packetClass;
-        this.packetFields = new HashMap<>(this.packetClass.getDeclaredFields().length);
-
-        for (Field field : this.packetClass.getDeclaredFields()) {
-            field.setAccessible(true);
-            this.packetFields.put(field.getName(), field);
-        }
-    }
-
     public PacketCreator create() {
         try {
             this.packetInstance = this.packetClass.newInstance();
-        }
-        catch (final InstantiationException | IllegalAccessException e) {
+        } catch (final InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
@@ -69,8 +68,7 @@ public final class PacketCreator {
         try {
             Field field = this.packetFields.get(fieldName);
             field.set(this.packetInstance, value);
-        }
-        catch(final IllegalAccessException ex) {
+        } catch (final IllegalAccessException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
         }
 
@@ -90,8 +88,7 @@ public final class PacketCreator {
             }
 
             field.set(this.packetInstance, value);
-        }
-        catch(final IllegalAccessException ex) {
+        } catch (final IllegalAccessException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
         }
 
