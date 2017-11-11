@@ -18,9 +18,6 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
 public class PlayerDeath implements Listener {
 
-    public static long victimCooldown = 7200000L;
-    private static long attackerCooldown = 7200000L;
-
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         Player v = event.getEntity();
@@ -43,21 +40,41 @@ public class PlayerDeath implements Listener {
 
         if (Settings.getConfig().rankFarmingProtect) {
             if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
-                if (attacker.getLastVictimTime() + attackerCooldown > System.currentTimeMillis()) {
+                if (attacker.getLastVictimTime() + (Settings.getConfig().rankFarmingCooldown * 1000) > System.currentTimeMillis()) {
                     v.sendMessage(Messages.getInstance().rankLastVictimV);
                     a.sendMessage(Messages.getInstance().rankLastVictimA);
+                    event.setDeathMessage(null);
                     return;
                 }
             } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
-                if (victim.getLastVictimTime() + victimCooldown > System.currentTimeMillis()) {
+                if (victim.getLastVictimTime() + (Settings.getConfig().rankFarmingCooldown * 1000) > System.currentTimeMillis()) {
                     v.sendMessage(Messages.getInstance().rankLastAttackerV);
                     a.sendMessage(Messages.getInstance().rankLastAttackerA);
+                    event.setDeathMessage(null);
                     return;
                 }
             }
         }
 
-        int[] rankChanges = EloUtils.getRankChanges(attacker.getRank(), victim.getRank());
+        int[] rankChanges = new int[2];
+        
+        switch(Settings.getConfig().rankSystem) {
+        case ELO:
+            rankChanges = EloUtils.getRankChanges(attacker.getRank(), victim.getRank());
+            break;
+        case PERCENT:
+            Double d = victim.getRank().getPoints() * (Settings.getConfig().percentRankChange / 100);
+            rankChanges[0] = d.intValue();
+            rankChanges[1] = d.intValue();
+            break;
+        case STATIC:
+            rankChanges[0] = Settings.getConfig().staticAttackerChange;
+            rankChanges[1] = Settings.getConfig().staticVictimChange;
+            break;
+        default:
+            rankChanges = EloUtils.getRankChanges(attacker.getRank(), victim.getRank());
+            break;
+        }
 
         attacker.getRank().addKill();
         attacker.getRank().addPoints(rankChanges[0]);
