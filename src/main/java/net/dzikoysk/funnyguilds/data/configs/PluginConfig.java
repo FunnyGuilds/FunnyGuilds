@@ -43,9 +43,13 @@ public class PluginConfig {
     @CfgName("tag-min-length")
     public int createTagMinLength = 2;
 
-    @CfgComment("Minimalna ilosc graczy w gildii aby zaliczala sie do rankingu.")
+    @CfgComment("Minimalna ilosc graczy w gildii aby zaliczala sie do rankingu")
     @CfgName("guild-min-members")
     public int minMembersToInclude = 3;
+    
+    @CfgComment("Tekst wstawiany za pozycje w rankingu jesli gildia ma mniej niz minMembersToInclude czlonkow (lub gracz nie ma gildii)")
+    @CfgName("guild-min-members-pos-string")
+    public String minMembersPositionString = "Brak";
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii")
     @CfgComment("Dwukropek i metadata po nazwie przedmiotu sa opcjonalne")
