@@ -29,6 +29,7 @@ public class PlayerMove implements Listener {
             if (from == null || to == null) {
                 return;
             }
+            
             if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) {
                 return;
             }
@@ -40,6 +41,7 @@ public class PlayerMove implements Listener {
             if (region == null && user.getEnter()) {
                 user.setEnter(false);
                 region = RegionUtils.getAt(from);
+                
                 if (region != null) {
                     Guild guild = region.getGuild();
                     player.sendMessage(m.regionLeave.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
@@ -54,12 +56,14 @@ public class PlayerMove implements Listener {
                 if (guild == null || guild.getName() == null) {
                     return;
                 }
+                
                 user.setEnter(true);
                 FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
                     if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
                         EntityUtil.spawn(guild, player);
                     }
                 }, 40L);
+                
                 if (guild.getMembers().contains(user)) {
                     player.sendMessage(m.regionEnter.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
                     return;
@@ -71,21 +75,22 @@ public class PlayerMove implements Listener {
                 if (player.hasPermission("funnyguilds.admin.notification")) {
                     return;
                 }
+                
                 if (user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime()) {
                     return;
                 }
 
-                for (User u : guild.getMembers()) {
+                for (User u : guild.getOnlineMembers()) {
                     if (u.getName() == null) {
                         continue;
                     }
-                    Player member = Bukkit.getPlayer(u.getName());
-                    if (member == null) {
-                        continue;
-                    }
-                    player.sendMessage(m.notificationMember.replace("{PLAYER}", player.getName()));
+                    
+                    Player member = u.getPlayer();
+                    
+                    member.sendMessage(m.notificationMember.replace("{PLAYER}", player.getName()));
                     NotificationBar.set(member, m.notificationMember.replace("{PLAYER}", player.getName()), 1, Settings.getConfig().regionNotificationTime);
                 }
+                
                 user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getConfig().regionNotificationCooldown);
             }
         });
