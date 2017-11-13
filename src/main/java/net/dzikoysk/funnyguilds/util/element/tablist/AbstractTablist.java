@@ -31,8 +31,7 @@ public abstract class AbstractTablist {
     protected final int ping;
     protected boolean firstPacket = true;
 
-    public AbstractTablist(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping,
-                    final Player player) {
+    public AbstractTablist(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
         this.tablistPattern = tablistPattern;
         this.header = header;
         this.footer = footer;
@@ -44,8 +43,7 @@ public abstract class AbstractTablist {
         TABLIST_CACHE.clear();
     }
 
-    public static AbstractTablist createTablist(final Map<Integer, String> pattern, final String header, final String footer,
-                    final int ping, final Player player) {
+    public static AbstractTablist createTablist(final Map<Integer, String> pattern, final String header, final String footer, final int ping, final Player player) {
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return tablist;
@@ -53,23 +51,18 @@ public abstract class AbstractTablist {
         }
 
         if ("v1_8_R1".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R1.TablistImpl(pattern,
-                            header, footer, ping, player);
+            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
         }
-        if ("v1_8_R2".equals(Reflections.getFixedVersion()) || "v1_8_R3".equals(Reflections.getFixedVersion())
-                        || "v1_9_R1".equals(Reflections.getFixedVersion()) || "v1_9_R2".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R3.TablistImpl(pattern,
-                            header, footer, ping, player);
+        if ("v1_8_R2".equals(Reflections.getFixedVersion()) || "v1_8_R3".equals(Reflections.getFixedVersion()) || "v1_9_R1".equals(Reflections.getFixedVersion()) || "v1_9_R2".equals(Reflections.getFixedVersion())) {
+            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
-        } else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion())
-                        || "v1_12_R1".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern,
-                            header, footer, ping, player);
+        } else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
+            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
@@ -161,10 +154,8 @@ public abstract class AbstractTablist {
             formatted = StringUtils.replace(formatted, "{G-DEATHS}", String.valueOf(guild.getRank().getDeaths()));
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ONLINE}", String.valueOf(guild.getOnlineMembers().size()));
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ALL}", String.valueOf(guild.getMembers().size()));
-            formatted = StringUtils.replace(formatted, "{G-POSITION}",
-                            guild.getMembers().size() >= Settings.getConfig().minMembersToInclude
-                                            ? String.valueOf(guild.getRank().getPosition())
-                                            : Settings.getConfig().minMembersPositionString);
+            formatted = StringUtils.replace(formatted, "{G-POSITION}", guild.getMembers().size() >= Settings.getConfig().minMembersToInclude
+                            ? String.valueOf(guild.getRank().getPosition()) : Settings.getConfig().minMembersPositionString);
         } else {
             formatted = StringUtils.replace(formatted, "{G-NAME}", "Brak");
             formatted = StringUtils.replace(formatted, "{G-TAG}", "Brak");
