@@ -17,7 +17,7 @@ You can build FunnyGuilds as a maven project or just generate plugin using [Funn
 ![FunnyCreator](https://dzikoysk.net/projects/funnycreator/funnycreator-short.gif)
 
 #### Stats
-Current statistics (since 3.9.9.2): https://bstats.org/plugin/bukkit/FunnyGuilds
+Current statistics (since 3.9.9.2) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
 <br>
 The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
 
