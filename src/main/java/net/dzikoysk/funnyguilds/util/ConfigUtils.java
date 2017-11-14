@@ -52,6 +52,6 @@ public final class ConfigUtils {
     }
 
     private ConfigUtils() {
-        throw new UnsupportedOperationException("This class cannot be instantiated");
+
     }
 }

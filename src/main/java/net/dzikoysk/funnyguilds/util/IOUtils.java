@@ -106,6 +106,6 @@ public final class IOUtils {
     }
 
     private IOUtils() {
-        throw new UnsupportedOperationException("This class cannot be instantiated");
+
     }
 }
