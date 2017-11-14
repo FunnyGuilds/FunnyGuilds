@@ -51,7 +51,7 @@ public class ExcFunnyGuilds implements Executor {
                 return;
             } else if (args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")) {
                 if (s instanceof Player) {
-                    Version.check((Player) s);
+                    Version.isNewAvailable((Player) s);
                 } else {
                     FunnyGuilds.info("Console can not use this command");
                 }

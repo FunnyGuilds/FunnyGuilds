@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.util;
 
 import java.util.concurrent.TimeUnit;
 
-public class TimeUtils {
+public final class TimeUtils {
 
     public static String getDurationBreakdown(long millis) {
         if (millis == 0) {
@@ -81,4 +81,7 @@ public class TimeUtils {
         return (sb.toString());
     }
 
+    private TimeUtils() {
+
+    }
 }

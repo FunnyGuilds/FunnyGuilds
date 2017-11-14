@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.util;
 
 import org.bukkit.Location;
 
-public class LocationUtils {
+public final class LocationUtils {
 
     public static boolean equals(Location f, Location s) {
         return (f.getBlockX() == s.getBlockX() && f.getBlockY() == s.getBlockY() && f.getBlockZ() == s.getBlockZ());
@@ -10,6 +10,10 @@ public class LocationUtils {
 
     public static boolean equalsFlat(Location f, Location s) {
         return (f.getBlockX() == s.getBlockX() && f.getBlockZ() == s.getBlockZ());
+    }
+
+    private LocationUtils() {
+
     }
 
 }

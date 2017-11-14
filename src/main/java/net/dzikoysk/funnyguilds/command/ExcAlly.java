@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.util.InvitationsList;
+import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -35,19 +35,20 @@ public class ExcAlly implements Executor {
         }
 
         Guild guild = user.getGuild();
+        List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            if (InvitationsList.get(guild, 1).getLS().isEmpty()) {
+            if (invitations.size() == 0) {
                 player.sendMessage(messages.allyHasNotInvitation);
                 return;
             }
 
             List<String> list = messages.allyInvitationList;
             String[] msgs = list.toArray(new String[list.size()]);
-            String iss = StringUtils.toString(InvitationsList.get(guild, 1).getLS(), true);
+            String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
             for (String msg : msgs) {
-                player.sendMessage(msg.replace("{GUILDS}", iss));
+                player.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
 
             return;
@@ -72,8 +73,8 @@ public class ExcAlly implements Executor {
             return;
         }
 
-        if (InvitationsList.get(guild, 1).contains(invitedGuild.getName())) {
-            InvitationsList.get(guild, 1).remove(invitedGuild.getName());
+        if (InvitationList.hasInvitationFrom(guild, invitedGuild)) {
+            InvitationList.expireInvitation(invitedGuild, guild);
 
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
@@ -97,8 +98,8 @@ public class ExcAlly implements Executor {
             return;
         }
 
-        if (InvitationsList.get(invitedGuild, 1).getLS().contains(guild.getName())) {
-            InvitationsList.get(invitedGuild, 1).remove(guild.getName());
+        if (InvitationList.hasInvitationFrom(invitedGuild, guild)) {
+            InvitationList.expireInvitation(guild, invitedGuild);
             player.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
 
             OfflineUser of = invitedGuild.getOwner().getOfflineUser();
@@ -109,7 +110,7 @@ public class ExcAlly implements Executor {
             return;
         }
 
-        InvitationsList.get(invitedGuild, 1).add(guild.getName());
+        InvitationList.createInvitation(guild, invitedGuild);
 
         player.sendMessage(messages.allyInviteDone.replace("{GUILD}", invitedGuild.getName()));
 

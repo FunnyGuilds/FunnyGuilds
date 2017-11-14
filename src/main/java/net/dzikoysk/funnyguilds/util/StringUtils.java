@@ -6,11 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class StringUtils {
-
-    public static List<String> getEmptyList() {
-        return new ArrayList<>();
-    }
+public final class StringUtils {
 
     public static String replace(String text, String searchString, String replacement) {
         if (text == null || text.isEmpty() || searchString.isEmpty()) {
@@ -91,5 +87,9 @@ public class StringUtils {
 
     public static String appendDigit(int number) {
         return number > 9 ? "" + number : "0" + number;
+    }
+
+    private StringUtils() {
+
     }
 }

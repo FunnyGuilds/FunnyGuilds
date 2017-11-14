@@ -6,14 +6,11 @@ import java.util.List;
 public class EventManager {
 
     private static EventManager instance;
-    private List<EventExtension> extensions;
-    private EventSettings settings;
+    private final List<EventExtension> extensions;
 
     public EventManager() {
         instance = this;
-        settings = EventSettings.getInstance();
         extensions = new ArrayList<>();
-        settings.hashCode();
     }
 
     public static EventManager getEventManager() {

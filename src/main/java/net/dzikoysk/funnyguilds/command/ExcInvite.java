@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.util.InvitationsList;
+import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -51,8 +51,8 @@ public class ExcInvite implements Executor {
         OfflinePlayer oi = Bukkit.getOfflinePlayer(args[0]);
         User ip = User.get(args[0]);
 
-        if (InvitationsList.get(ip, 0).contains(guild.getTag())) {
-            InvitationsList.get(ip, 0).remove(guild.getTag());
+        if (InvitationList.hasInvitationFrom(ip, guild)) {
+            InvitationList.expireInvitation(guild, ip);
             p.sendMessage(m.inviteCancelled);
             if (oi == null || !oi.isOnline()) {
                 Player inp = oi.getPlayer();
@@ -73,7 +73,7 @@ public class ExcInvite implements Executor {
             return;
         }
 
-        InvitationsList.get(ip, 0).add(guild.getTag());
+        InvitationList.createInvitation(guild, invited);
 
         p.sendMessage(m.inviteToOwner.replace("{PLAYER}", invited.getName()));
 

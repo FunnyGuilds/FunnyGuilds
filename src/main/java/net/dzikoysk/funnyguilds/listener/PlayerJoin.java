@@ -45,7 +45,7 @@ public class PlayerJoin implements Listener {
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             PacketExtension.registerPlayer(player);
-            Version.check(player);
+            Version.isNewAvailable(player);
 
             Region region = RegionUtils.getAt(player.getLocation());
             if (region == null || region.getGuild() == null) {

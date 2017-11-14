@@ -2,9 +2,8 @@ package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.data.util.InvitationsList;
+import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import org.bukkit.Bukkit;
@@ -12,8 +11,9 @@ import org.panda_lang.panda.util.configuration.PandaConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.UUID;
 
 public class Data {
 
@@ -71,30 +71,47 @@ public class Data {
         if (todo == DO.SAVE) {
             file.delete();
             Yamler pc = new Yamler(file);
-            for (Entry<String, List<String>> entry : InvitationsList.entrySet()) {
-                pc.set(entry.getKey(), entry.getValue());
+            for (Guild guild : GuildUtils.getGuilds()) {
+                List<InvitationList.Invitation> invitationList = InvitationList.getInvitationsFrom(guild);
+                for(InvitationList.Invitation invitation : invitationList) {
+                    List<String> allyInvitations = new ArrayList<>();
+                    List<String> playerInvitations = new ArrayList<>();
+
+                    if (invitation.isToGuild()) {
+                        playerInvitations.add(invitation.getFor().toString());
+                    }
+                    else if (invitation.isToAlly()) {
+                        allyInvitations.add(invitation.getFor().toString());
+                    }
+
+                    pc.set(invitation.getFrom().toString() + ".guilds", allyInvitations);
+                    pc.set(invitation.getFrom().toString() + ".players", playerInvitations);
+                }
             }
+
             pc.save();
-            pc = null;
         } else if (todo == DO.LOAD) {
             if (!file.exists()) {
                 return;
             }
             Yamler pc = new Yamler(file);
-            for (String key : pc.getKeys(true)) {
-                String[] check = key.split(",");
-                if (check[0].equalsIgnoreCase("U")) {
-                    InvitationsList.get(User.get(check[0]), Integer.valueOf(check[1])).set(pc.getStringList(key));
-                }
-                if (check[0].equalsIgnoreCase("G")) {
-                    Guild guild = GuildUtils.get(check[0]);
-                    int i = Integer.valueOf(check[1]);
-                    if (guild != null) {
-                        InvitationsList.get(guild, i).set(pc.getStringList(key));
+            for (String key : pc.getKeys(false)) {
+                Guild guild = Guild.get(UUID.fromString(key));
+                if (guild != null) {
+                    List<String> allyInvitations = pc.getStringList(key + ".guilds");
+                    List<String> playerInvitations = pc.getStringList(key + ".players");
+                    for (String ally : allyInvitations) {
+                        Guild allyGuild = Guild.get(UUID.fromString(ally));
+                        if (allyGuild != null) {
+                            InvitationList.createInvitation(guild, allyGuild);
+                        }
+                    }
+
+                    for (String player : playerInvitations) {
+                        InvitationList.createInvitation(guild, UUID.fromString(player));
                     }
                 }
             }
-            pc = null;
         }
 
     }

@@ -35,9 +35,9 @@ public enum NotePitch {
     NOTE_4E(4, Tone.E, 1.88F),
     NOTE_4F(4, Tone.F, 2.0F);
 
-    public int octave;
-    public Tone tone;
-    public float pitch;
+    public final int octave;
+    public final Tone tone;
+    public final float pitch;
 
     NotePitch(int octave, Tone tone, float pitch) {
         this.octave = octave;

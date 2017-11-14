@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.system.fight.FightUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -58,6 +57,5 @@ public class EntityDamage implements Listener {
                 }
             }
         }
-        FightUtils.attacked(uv);
     }
 }

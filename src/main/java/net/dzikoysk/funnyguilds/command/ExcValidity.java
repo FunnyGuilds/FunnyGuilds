@@ -50,15 +50,14 @@ public class ExcValidity implements Executor {
         }
 
         List<ItemStack> itemsList = s.validityItems;
-        ItemStack[] items = itemsList.toArray(new ItemStack[0]);
-        for (int i = 0; i < items.length; i++) {
-            if (!p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
+        for (ItemStack itemStack : itemsList) {
+            if (!p.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
                 String msg = m.validityItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(items[i].getAmount());
+                    sb.append(itemStack.getAmount());
                     sb.append(" ");
-                    sb.append(items[i].getType().toString().toLowerCase());
+                    sb.append(itemStack.getType().toString().toLowerCase());
                     msg = msg.replace("{ITEM}", sb.toString());
                 }
                 if (msg.contains("{ITEMS}")) {
@@ -75,8 +74,8 @@ public class ExcValidity implements Executor {
                 p.sendMessage(msg);
                 return;
             }
+            p.getInventory().removeItem(itemStack);
         }
-        p.getInventory().removeItem(items);
 
         long c = guild.getValidity();
         if (c == 0) {

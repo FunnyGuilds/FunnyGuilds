@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.util;
 
-
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import org.bukkit.Material;
 
-public class MaterialUtil {
+public final class MaterialUtil {
 
     public static String getMaterialName(Material material) {
         PluginConfig config = Settings.getConfig();
@@ -16,4 +15,7 @@ public class MaterialUtil {
         }
     }
 
+    private MaterialUtil() {
+
+    }
 }

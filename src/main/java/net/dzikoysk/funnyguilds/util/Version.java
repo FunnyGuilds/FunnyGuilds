@@ -4,12 +4,14 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-public class Version {
+public final class Version {
 
-    public static void check(final Player player) {
+    public static final String VERSION_FILE_URL = "https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/master/updater.txt";
+
+    public static void isNewAvailable(final Player player) {
         if (player.hasPermission("funnyguilds.admin") || player.isOp()) {
             FunnyGuilds.getInstance().getServer().getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
-                String latest = IOUtils.getContent("http://www.dzikoysk.net/projects/funnyguilds/latest.info");
+                String latest = IOUtils.getContent(VERSION_FILE_URL);
                 if (latest != null && !latest.equalsIgnoreCase(FunnyGuilds.getVersion())) {
                     player.sendMessage("");
                     player.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");

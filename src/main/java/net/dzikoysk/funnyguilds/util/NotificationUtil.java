@@ -33,10 +33,6 @@ public final class NotificationUtil {
         CREATE_BASE_COMPONENT = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
     }
 
-    private NotificationUtil() {
-
-    }
-
     public static List<Object> createTitleNotification(String text, String subText, int fadeIn, int stay, int fadeOut) {
         List<Object> packets = Lists.newArrayList();
 
@@ -98,4 +94,7 @@ public final class NotificationUtil {
         return actionbarPacket;
     }
 
+    private NotificationUtil() {
+
+    }
 }

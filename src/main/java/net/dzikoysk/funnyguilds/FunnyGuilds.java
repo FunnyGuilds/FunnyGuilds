@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
+import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.hook.PluginHook;
@@ -193,7 +194,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void update() {
         this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            String latest = IOUtils.getContent("https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/master/updater.txt");
+            String latest = IOUtils.getContent(Version.VERSION_FILE_URL);
             if (latest == null || latest.isEmpty()) {
                 update("Failed to check the newest version of FunnyGuilds..");
                 return;

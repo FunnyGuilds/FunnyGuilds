@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.util.InvitationsList;
+import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -32,7 +32,8 @@ public class ExcJoin implements Executor {
             return;
         }
 
-        if (InvitationsList.get(user, 0).getLS().isEmpty()) {
+        List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(p);
+        if (invitations.size() == 0) {
             p.sendMessage(m.joinHasNotInvitation);
             return;
         }
@@ -40,9 +41,9 @@ public class ExcJoin implements Executor {
         if (args.length < 1) {
             List<String> list = m.joinInvitationList;
             String[] msgs = list.toArray(new String[list.size()]);
-            String iss = StringUtils.toString(InvitationsList.get(user, 0).getLS(), true);
-            for (int i = 0; i < msgs.length; i++) {
-                p.sendMessage(msgs[i].replace("{GUILDS}", iss));
+            String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(p), false);
+            for (String msg : msgs) {
+                p.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
             return;
         }
@@ -53,21 +54,20 @@ public class ExcJoin implements Executor {
             return;
         }
 
-        if (!InvitationsList.get(user, 0).contains(tag)) {
+        if (!InvitationList.hasInvitationFrom(p, GuildUtils.byTag(tag))) {
             p.sendMessage(m.joinHasNotInvitationTo);
             return;
         }
 
         List<ItemStack> itemsList = Settings.getConfig().joinItems;
-        ItemStack[] items = itemsList.toArray(new ItemStack[0]);
-        for (int i = 0; i < items.length; i++) {
-            if (!p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
+        for (ItemStack itemStack : itemsList) {
+            if (!p.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
                 String msg = m.joinItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(items[i].getAmount());
+                    sb.append(itemStack.getAmount());
                     sb.append(" ");
-                    sb.append(items[i].getType().toString().toLowerCase());
+                    sb.append(itemStack.getType().toString().toLowerCase());
                     msg = msg.replace("{ITEM}", sb.toString());
                 }
                 if (msg.contains("{ITEMS}")) {
@@ -84,13 +84,12 @@ public class ExcJoin implements Executor {
                 p.sendMessage(msg);
                 return;
             }
+            p.getInventory().removeItem(itemStack);
         }
-        p.getInventory().removeItem(items);
 
         Guild guild = GuildUtils.byTag(tag);
 
-        InvitationsList.get(user, 0).remove(guild.getTag());
-        InvitationsList.get(user, 0).getLS().clear();
+        InvitationList.expireInvitation(guild, p);
 
         guild.addMember(user);
         user.setGuild(guild);

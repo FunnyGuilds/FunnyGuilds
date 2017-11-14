@@ -3,21 +3,22 @@ package net.dzikoysk.funnyguilds.system.fight;
 import net.dzikoysk.funnyguilds.basic.User;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
-public class FightUtils {
+public final class FightUtils {
 
-    private static HashMap<User, Long> map = new HashMap<>();
+    private static final Map<UUID, Long> FIGHT_CACHE_MAP = new HashMap<>();
 
     public static void attacked(User victim) {
-        map.put(victim, System.currentTimeMillis());
+        FIGHT_CACHE_MAP.put(victim.getUUID(), System.currentTimeMillis());
     }
 
     public boolean check(User user) {
-        if (map.containsKey(user)) {
-            if (map.get(user) > System.currentTimeMillis()) {
-                return true;
-            }
-        }
-        return false;
+        return FIGHT_CACHE_MAP.getOrDefault(user.getUUID(), 0L) > System.currentTimeMillis();
+    }
+
+    private FightUtils() {
+
     }
 }

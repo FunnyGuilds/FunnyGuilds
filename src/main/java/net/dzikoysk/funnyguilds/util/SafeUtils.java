@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.util;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
-public class SafeUtils {
+public final class SafeUtils {
 
     private static void reportUnsafe(Throwable t) {
         FunnyGuilds.exception(t);
@@ -20,5 +20,9 @@ public class SafeUtils {
     @FunctionalInterface
     public interface SafeInitializer<T> {
         T initialize() throws Exception;
+    }
+
+    private SafeUtils() {
+
     }
 }

@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpaceUtils {
+public final class SpaceUtils {
 
     public static List<Location> sphere(Location loc, int radius, int height, boolean hollow, boolean sphere, int plusY) {
         List<Location> circleblocks = new ArrayList<>();
@@ -27,5 +27,9 @@ public class SpaceUtils {
         }
 
         return circleblocks;
+    }
+
+    private SpaceUtils() {
+
     }
 }

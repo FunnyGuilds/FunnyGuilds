@@ -2,10 +2,12 @@ package net.dzikoysk.funnyguilds.system.security;
 
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
-public class SecurityUtils {
+public final class SecurityUtils {
+
+    private static final String SECURITY_TAG = "&c!!!&4[FunnyGuilds]&c!!! ";
 
     public static String getSecurityTag() {
-        return "&c!!!&4[FunnyGuilds]&c!!! ";
+        return SECURITY_TAG;
     }
 
     public static String getBustedMessage(String name, String cheat) {
@@ -24,4 +26,7 @@ public class SecurityUtils {
         );
     }
 
+    private SecurityUtils() {
+
+    }
 }

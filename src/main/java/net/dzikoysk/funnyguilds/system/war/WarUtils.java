@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.TimeUtils;
 import org.bukkit.entity.Player;
 
-public class WarUtils {
+public final class WarUtils {
 
     public static void message(Player player, int i, Object... values) {
         MessagesConfig m = Messages.getInstance();
@@ -57,5 +57,9 @@ public class WarUtils {
                 .replace("{WINNER}", conqueror.getTag())
                 .replace("{LOSER}", loser.getTag())
                 ;
+    }
+
+    private WarUtils() {
+
     }
 }

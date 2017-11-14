@@ -9,10 +9,10 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SecuritySystem {
+public final class SecuritySystem {
 
     private static SecuritySystem instance;
-    private List<User> blocked;
+    private final List<User> blocked;
 
     public SecuritySystem() {
         instance = this;

@@ -7,7 +7,7 @@ import org.diorite.cfg.system.TemplateCreator;
 import java.io.File;
 import java.io.IOException;
 
-public class ConfigUtils {
+public final class ConfigUtils {
 
     public static <T> T loadConfig(final File file, final Class<T> implementationFile) {
         final Template<T> template = TemplateCreator.getTemplate(implementationFile);
@@ -49,5 +49,9 @@ public class ConfigUtils {
         }
 
         return config;
+    }
+
+    private ConfigUtils() {
+        throw new UnsupportedOperationException("This class cannot be instantiated");
     }
 }

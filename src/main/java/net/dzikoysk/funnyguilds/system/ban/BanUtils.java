@@ -11,7 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class BanUtils {
+public final class BanUtils {
 
     public static void ban(Guild guild, long time, String reason) {
         guild.setBan(time + System.currentTimeMillis());
@@ -59,5 +59,9 @@ public class BanUtils {
         message = StringUtils.replace(message, "{REASON}", user.getReason());
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    private BanUtils() {
+
     }
 }

@@ -6,7 +6,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class IOUtils {
+public final class IOUtils {
 
     public static File initialize(File file, boolean b) {
         if (!file.exists()) {
@@ -105,4 +105,7 @@ public class IOUtils {
         }
     }
 
+    private IOUtils() {
+        throw new UnsupportedOperationException("This class cannot be instantiated");
+    }
 }

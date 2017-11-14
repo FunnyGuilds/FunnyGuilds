@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.concurrent.TimeUnit;
 
-public class ProtectionSystem {
+public final class ProtectionSystem {
 
     public static boolean center(Location loc) {
         Region region = RegionUtils.getAt(loc);
