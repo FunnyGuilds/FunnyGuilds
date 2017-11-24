@@ -43,6 +43,7 @@ public class User implements Basic {
     private boolean enter;
     private boolean bypass;
     private boolean changes;
+    private boolean spy;
 
     private User(UUID uuid) {
         this.uuid = uuid;
@@ -331,6 +332,14 @@ public class User implements Basic {
             }
         }
         return ping;
+    }
+
+    public boolean isSpy() {
+        return spy;
+    }
+
+    public void setSpy(boolean spy) {
+        this.spy = spy;
     }
 
     @Override

@@ -5,14 +5,18 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
+import net.dzikoysk.funnyguilds.command.admin.AxcSpy;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+
+import java.util.UUID;
 
 public class PlayerChat implements Listener {
 
@@ -55,6 +59,15 @@ public class PlayerChat implements Listener {
         return priv(event, message, c, player, guild);
     }
 
+    private void spy(Player player, String message) {
+        String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
+        for (Player looped : plugin.getServer().getOnlinePlayers()) {
+            if (User.get(looped).isSpy()) {
+                looped.sendMessage(spyMessage);
+            }
+        }
+    }
+
     private boolean priv(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
         String priv = c.chatPriv;
         int length = priv.length();
@@ -62,13 +75,16 @@ public class PlayerChat implements Listener {
             String format = c.chatPrivDesign;
             format = StringUtils.replace(format, "{PLAYER}", player.getName());
             format = StringUtils.replace(format, "{TAG}", guild.getTag());
-            format = StringUtils.replace(format, "{MESSAGE}", event.getMessage().substring(length));
+            String subMessage = event.getMessage().substring(length);
+            this.spy(player, subMessage);
+            format = StringUtils.replace(format, "{MESSAGE}", subMessage);
             for (User u : guild.getMembers()) {
                 Player p = this.plugin.getServer().getPlayer(u.getName());
                 if (p != null) {
                     p.sendMessage(format);
                 }
             }
+            this.spy(player, message);
             event.setCancelled(true);
             return true;
         }
@@ -82,7 +98,9 @@ public class PlayerChat implements Listener {
             String format = c.chatAllyDesign;
             format = StringUtils.replace(format, "{PLAYER}", player.getName());
             format = StringUtils.replace(format, "{TAG}", guild.getTag());
-            format = StringUtils.replace(format, "{MESSAGE}", event.getMessage().substring(length));
+            String subMessage = event.getMessage().substring(length);
+            this.spy(player, subMessage);
+            format = StringUtils.replace(format, "{MESSAGE}", subMessage);
             for (User u : guild.getMembers()) {
                 Player p = this.plugin.getServer().getPlayer(u.getName());
                 if (p != null) {
@@ -110,7 +128,9 @@ public class PlayerChat implements Listener {
             String format = c.chatGlobalDesign;
             format = StringUtils.replace(format, "{PLAYER}", player.getName());
             format = StringUtils.replace(format, "{TAG}", guild.getTag());
-            format = StringUtils.replace(format, "{MESSAGE}", event.getMessage().substring(length));
+            String subMessage = event.getMessage().substring(length);
+            this.spy(player, subMessage);
+            format = StringUtils.replace(format, "{MESSAGE}", subMessage);
             for (Guild g : GuildUtils.getGuilds()) {
                 for (User u : g.getMembers()) {
                     Player p = this.plugin.getServer().getPlayer(u.getName());
@@ -119,6 +139,7 @@ public class PlayerChat implements Listener {
                     }
                 }
             }
+            this.spy(player, message);
             event.setCancelled(true);
             return true;
         }
