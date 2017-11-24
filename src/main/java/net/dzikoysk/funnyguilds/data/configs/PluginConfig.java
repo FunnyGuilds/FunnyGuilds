@@ -679,6 +679,7 @@ public class PluginConfig {
             public String unban = "ga unban";
             public String validity = "ga przedluz";
             public String name = "ga nazwa";
+            public String spy = "ga spy";
         }
     }
 
