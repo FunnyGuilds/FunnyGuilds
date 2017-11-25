@@ -78,12 +78,7 @@ public class PlayerChat implements Listener {
             String subMessage = event.getMessage().substring(length);
             this.spy(player, subMessage);
             format = StringUtils.replace(format, "{MESSAGE}", subMessage);
-            for (User u : guild.getMembers()) {
-                Player p = this.plugin.getServer().getPlayer(u.getName());
-                if (p != null) {
-                    p.sendMessage(format);
-                }
-            }
+            this.sendMessageToGuild(guild, player, format);
             this.spy(player, message);
             event.setCancelled(true);
             return true;
@@ -108,12 +103,7 @@ public class PlayerChat implements Listener {
                 }
             }
             for (Guild g : guild.getAllies()) {
-                for (User u : g.getMembers()) {
-                    Player p = this.plugin.getServer().getPlayer(u.getName());
-                    if (p != null) {
-                        p.sendMessage(format);
-                    }
-                }
+                this.sendMessageToGuild(g, player, format);
             }
             event.setCancelled(true);
             return true;
@@ -132,17 +122,27 @@ public class PlayerChat implements Listener {
             this.spy(player, subMessage);
             format = StringUtils.replace(format, "{MESSAGE}", subMessage);
             for (Guild g : GuildUtils.getGuilds()) {
-                for (User u : g.getMembers()) {
-                    Player p = this.plugin.getServer().getPlayer(u.getName());
-                    if (p != null) {
-                        p.sendMessage(format);
-                    }
-                }
+                this.sendMessageToGuild(g, player, format);
             }
             this.spy(player, message);
             event.setCancelled(true);
             return true;
         }
         return false;
+    }
+
+    private void sendMessageToGuild(Guild guild, Player player, String message) {
+        for (User user : guild.getMembers()) {
+            Player loopedPlayer = this.plugin.getServer().getPlayer(user.getName());
+            if (loopedPlayer != null) {
+                if (user.getPlayer().equals(player)) {
+                    if (!user.isSpy()) {
+                        loopedPlayer.sendMessage(message);
+                    }
+                } else {
+                    loopedPlayer.sendMessage(message);
+                }
+            }
+        }
     }
 }
