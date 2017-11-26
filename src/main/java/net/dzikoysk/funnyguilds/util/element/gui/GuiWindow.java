@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class GuiWindow {
+    
     private static final Map<String, GuiWindow> windows = new HashMap<>();
 
     private final Inventory inv;

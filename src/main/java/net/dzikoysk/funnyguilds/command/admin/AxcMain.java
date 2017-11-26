@@ -37,5 +37,4 @@ public class AxcMain implements Executor {
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.name + " [tag] [nazwa] " + ChatColor.GRAY + "- Zmienia nazwe gildii");
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.spy + " " + ChatColor.GRAY + "- Szpieguje czat gildii");
     }
-
 }

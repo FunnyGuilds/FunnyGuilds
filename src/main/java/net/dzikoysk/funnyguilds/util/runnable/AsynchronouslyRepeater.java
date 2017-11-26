@@ -14,16 +14,12 @@ public class AsynchronouslyRepeater implements Runnable {
     private static AsynchronouslyRepeater instance;
     private final FunnyGuilds plugin;
     private volatile BukkitTask repeater;
-    private int player_list;
     private int ban_system;
     private int validity_system;
-    /*private int funnyguilds_stats;*/
-    private int player_list_time;
 
     public AsynchronouslyRepeater(FunnyGuilds plugin) {
         this.plugin = plugin;
         instance = this;
-        player_list_time = Settings.getConfig().playerlistInterval;
     }
 
     public static AsynchronouslyRepeater getInstance() {
@@ -49,10 +45,8 @@ public class AsynchronouslyRepeater implements Runnable {
 
     @Override
     public void run() {
-        player_list++;
         ban_system++;
         validity_system++;
-        /*funnyguilds_stats++;*/
 
         if (validity_system >= 10) {
             validitySystem();
@@ -70,10 +64,6 @@ public class AsynchronouslyRepeater implements Runnable {
                 tablist.send();
             }
         }
-
-        /*if (funnyguilds_stats >= 10) {
-            funnyguildsStats();
-        }*/
     }
 
     private void validitySystem() {
@@ -81,18 +71,9 @@ public class AsynchronouslyRepeater implements Runnable {
         validity_system = 0;
     }
 
-    /*private void funnyguildsStats() {
-        MetricsCollector.getMetrics();
-        funnyguilds_stats = 0;
-    }*/
-
     private void banSystem() {
         BanSystem.getInstance().run();
         ban_system = 0;
-    }
-
-    public void reload() {
-        player_list_time = Settings.getConfig().playerlistInterval;
     }
 
     public void stop() {
@@ -101,5 +82,4 @@ public class AsynchronouslyRepeater implements Runnable {
             repeater = null;
         }
     }
-
 }

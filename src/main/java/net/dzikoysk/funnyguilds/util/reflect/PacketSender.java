@@ -13,20 +13,12 @@ import java.util.List;
 
 public class PacketSender {
 
-    private static Class<?> craftPlayerClass;
-    private static Class<?> entityPlayerClass;
-    private static Class<?> playerConnectionClass;
-
     private static Method getHandle;
     private static Field playerConnection;
     private static Method sendPacket;
 
     static {
         try {
-            craftPlayerClass = Reflections.getBukkitClass("entity.CraftPlayer");
-            entityPlayerClass = Reflections.getCraftClass("EntityPlayer");
-            playerConnectionClass = Reflections.getCraftClass("PlayerConnection");
-
             getHandle = Reflections.getMethod(Reflections.getBukkitClass("entity.CraftPlayer"), "getHandle");
             sendPacket = Reflections.getMethod(Reflections.getCraftClass("PlayerConnection"), "sendPacket");
             playerConnection = Reflections.getField(Reflections.getCraftClass("EntityPlayer"), "playerConnection");
@@ -50,26 +42,6 @@ public class PacketSender {
             sendPacket(player, packetList);
         }
     }
-
-//    public static void sendPacket(Collection<? extends Player> players, Object... os) {
-//        try {
-//            for (Player p : players) {
-//                Object handle = getHandle.invoke(p);
-//                Object connection = playerConnection.get(handle);
-//
-//                for (Object o : os) {
-//                    if (o == null) {
-//                        continue;
-//                    }
-//                    sendPacket.invoke(connection, o);
-//                }
-//            }
-//        } catch (Exception e) {
-//            if (FunnyGuilds.exception(e.getCause())) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
 
     public static void sendPacket(final Object... packets) {
         sendPacket(Arrays.asList(packets));

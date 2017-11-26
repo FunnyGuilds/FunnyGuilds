@@ -1,14 +1,14 @@
 package net.dzikoysk.funnyguilds.util;
 
-import org.apache.commons.lang.StringUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ItemBuilder {
 
@@ -40,28 +40,24 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setName(String name, boolean color) {
-        this.itemMeta.setDisplayName(color ? net.dzikoysk.funnyguilds.util.StringUtils.colored(name) : name);
+        this.itemMeta.setDisplayName(color ? StringUtils.colored(name) : name);
+        this.refreshMeta();
         return this;
     }
 
     public ItemBuilder setLore(List<String> lore) {
         final List<String> formatted = new ArrayList<>();
         for (String str : lore) {
-            formatted.add(StringUtils.replace(str, "&", "§"));
+            formatted.add(StringUtils.colored(str));
         }
+        
         this.itemMeta.setLore(formatted);
         this.refreshMeta();
         return this;
     }
 
     public ItemBuilder setLore(String... lore) {
-        final List<String> formatted = new ArrayList<>();
-        for (String str : lore) {
-            formatted.add(StringUtils.replace(str, "&", "§"));
-        }
-        this.itemMeta.setLore(formatted);
-        this.refreshMeta();
-        return this;
+        return setLore(Arrays.asList(lore));
     }
 
     public ItemBuilder addEnchant(Enchantment enchant, int level) {

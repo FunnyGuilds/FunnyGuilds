@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 
 public class AxcSpy implements Executor {
 
@@ -26,10 +25,10 @@ public class AxcSpy implements Executor {
 
         if (user.isSpy()) {
             user.setSpy(false);
-            sender.sendMessage(ChatColor.RED + "Juz nie szpiegujesz graczy.");
+            sender.sendMessage(ChatColor.RED + "Juz nie szpiegujesz graczy");
         } else {
             user.setSpy(true);
-            sender.sendMessage(ChatColor.GREEN + "Od teraz szpiegujesz graczy.");
+            sender.sendMessage(ChatColor.GREEN + "Od teraz szpiegujesz graczy");
         }
     }
 }
