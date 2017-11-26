@@ -99,7 +99,7 @@ public class PluginConfig {
     @CfgName("gui-items")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> guiItems_ = Arrays.asList("1 stained_glass_pane name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
-                    "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy na gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
+                    "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
                     "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
     
     @CfgExclude
@@ -116,7 +116,7 @@ public class PluginConfig {
     @CfgName("gui-items-vip")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> guiItemsVip_ = Arrays.asList("1 stained_glass_pane name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
-                    "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy na gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
+                    "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
                     "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
 
     @CfgExclude
@@ -603,17 +603,17 @@ public class PluginConfig {
             
             if (var.contains("GUI-")) {
                 item = gui.getItem(Parser.getIndex(var) - 1);
-            } else if (var.contains("ITEM-")) {
-                try {
-                    item = new GuiItem(createItems.get(Parser.getIndex(var) - 1));
-                } catch(IndexOutOfBoundsException e) {
-                    FunnyGuilds.parser("Index given in " + var + "is > " + createItems.size() + "or <= 0");
-                }
             } else if (var.contains("VIPITEM-")) {
                 try {
                     item = new GuiItem(createItemsVip.get(Parser.getIndex(var) - 1));
                 } catch(IndexOutOfBoundsException e) {
                     FunnyGuilds.parser("Index given in " + var + "is > " + createItemsVip.size() + "or <= 0");
+                }
+            }  else if (var.contains("ITEM-")) {
+                try {
+                    item = new GuiItem(createItems.get(Parser.getIndex(var) - 1));
+                } catch(IndexOutOfBoundsException e) {
+                    FunnyGuilds.parser("Index given in " + var + "is > " + createItems.size() + "or <= 0");
                 }
             } else {
                 item = new GuiItem(Parser.parseItem(var));
