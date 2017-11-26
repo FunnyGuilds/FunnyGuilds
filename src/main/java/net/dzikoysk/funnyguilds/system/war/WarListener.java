@@ -13,7 +13,7 @@ import java.util.Map;
 // Temp class
 public final class WarListener {
 
-    private static final Class USE_ENTITY_CLASS;
+    private static final Class<?> USE_ENTITY_CLASS;
     private static final Field PACKET_ID_FIELD;
     private static final Field PACKET_ACTION_FIELD;
 

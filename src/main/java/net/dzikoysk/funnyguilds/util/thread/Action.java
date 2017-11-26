@@ -78,6 +78,12 @@ public class Action {
             case PACKET_PLAY_IN_USE_ENTITY:
                 WarListener.use((Player) values[0], values[1]);
                 break;
+            case PLAYERLIST_GLOBAL_UPDATE:
+                break;
+            case PLAYERLIST_SEND:
+                break;
+            default:
+                break;
         }
     }
 

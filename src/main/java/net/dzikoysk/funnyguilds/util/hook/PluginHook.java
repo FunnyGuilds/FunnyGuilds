@@ -10,7 +10,6 @@ public final class PluginHook {
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
-    @SuppressWarnings("Convert2MethodRef")
     public static void init() {
         tryInit(PLUGIN_WORLDGUARD, () -> {
             try {

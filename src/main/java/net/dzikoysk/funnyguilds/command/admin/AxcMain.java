@@ -35,7 +35,6 @@ public class AxcMain implements Executor {
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.move + " [tag]" + ChatColor.GRAY + "- Przenosi teren gildii");
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.validity + " [tag] [czas] " + ChatColor.GRAY + "- Przedluza waznosc gildii o podany czas");
         player.sendMessage(ChatColor.AQUA + "/" + commands.admin.name + " [tag] [nazwa] " + ChatColor.GRAY + "- Zmienia nazwe gildii");
-        player.sendMessage(ChatColor.AQUA + "/" + commands.admin.spy + " " + ChatColor.GRAY + "- Szpieguje czat gildii");
     }
 
 }

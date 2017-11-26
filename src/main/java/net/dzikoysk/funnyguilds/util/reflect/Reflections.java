@@ -268,6 +268,7 @@ public class Reflections {
         public Void invalidFieldMarker;
 
         public void invalidMethodMaker() {
+            
         }
     }
 }
