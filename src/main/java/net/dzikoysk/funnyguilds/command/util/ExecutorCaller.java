@@ -22,14 +22,16 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     private List<String> aliases;
     private String[] secondary;
     private List<ExecutorCaller> executors = new ArrayList<>();
+    private boolean playerOnly;
 
-    public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases) {
+    public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases, boolean playerOnly) {
         if (exc == null || command == null) {
             return;
         }
 
         this.executor = exc;
         this.permission = perm;
+        this.playerOnly = playerOnly;
         if (aliases != null && aliases.size() > 0) {
             this.aliases = aliases;
         } else {
@@ -54,6 +56,10 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         this.register();
         executors.add(this);
         ecs.add(this);
+    }
+
+    public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases) {
+        this(exc, command, perm, aliases, true);
     }
 
     private boolean call(CommandSender sender, Command cmd, String[] args) {
@@ -115,7 +121,11 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        return !(sender instanceof Player) || call(sender, cmd, args);
+        if (this.playerOnly && !(sender instanceof Player)) {
+            sender.sendMessage(Messages.getInstance().playerOnly);
+            return true;
+        }
+        return call(sender, cmd, args);
     }
 
     @Override
