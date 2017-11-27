@@ -10,6 +10,7 @@ public class MessagesConfig {
     @CfgComment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";
     public String blockedWorld = "&cZarzadzanie gildiami jest zablokowane na tym swiecie!";
+    public String playerOnly = "&cKomenda dostepna tylko dla graczy!";
 
     @CfgComment("<------- Rank Messages -------> #")
     public String rankAddressAttacker = "&7Wykryto ten sam &cadres&7, punkty nie zostaja naliczone!";
