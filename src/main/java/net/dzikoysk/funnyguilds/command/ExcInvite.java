@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.command;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
@@ -9,17 +12,13 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class ExcInvite implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User lp = User.get(p);
 
         if (!lp.hasGuild()) {
@@ -48,36 +47,32 @@ public class ExcInvite implements Executor {
             return;
         }
 
-        OfflinePlayer oi = Bukkit.getOfflinePlayer(args[0]);
-        User ip = User.get(args[0]);
+        User iu = User.get(args[0]);
+        Player ip = iu.getPlayer();
 
-        if (InvitationList.hasInvitationFrom(ip, guild)) {
-            InvitationList.expireInvitation(guild, ip);
+        if (InvitationList.hasInvitationFrom(iu, guild)) {
+            InvitationList.expireInvitation(guild, iu);
             p.sendMessage(m.inviteCancelled);
-            if (oi == null || !oi.isOnline()) {
-                Player inp = oi.getPlayer();
-                inp.sendMessage(m.inviteCancelledToInvited.replace("{OWNER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+            
+            if (ip != null) {
+                ip.sendMessage(m.inviteCancelledToInvited.replace("{OWNER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             }
+            
             return;
         }
 
-        if (oi == null || !oi.isOnline()) {
+        if (ip == null) {
             p.sendMessage(m.invitePlayerExists);
             return;
         }
 
-        Player invited = oi.getPlayer();
-
-        if (ip.hasGuild()) {
+        if (iu.hasGuild()) {
             p.sendMessage(m.inviteHasGuild);
             return;
         }
 
-        InvitationList.createInvitation(guild, invited);
-
-        p.sendMessage(m.inviteToOwner.replace("{PLAYER}", invited.getName()));
-
-        invited.sendMessage(m.inviteToInvited.replace("{OWNER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        InvitationList.createInvitation(guild, ip);
+        p.sendMessage(m.inviteToOwner.replace("{PLAYER}", ip.getName()));
+        ip.sendMessage(m.inviteToInvited.replace("{OWNER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
-
 }

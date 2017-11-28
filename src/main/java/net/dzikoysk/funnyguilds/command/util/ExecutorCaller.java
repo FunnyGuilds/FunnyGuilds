@@ -1,28 +1,33 @@
 package net.dzikoysk.funnyguilds.command.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.Messages;
-import org.bukkit.Bukkit;
-import org.bukkit.command.*;
-import org.bukkit.entity.Player;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandMap;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
+
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.Messages;
+
 public class ExecutorCaller implements CommandExecutor, TabExecutor {
 
     private static final List<ExecutorCaller> ecs = new ArrayList<>();
 
-    private String overriding;
     private Executor executor;
-    private String permission;
-    private List<String> aliases;
-    private String[] secondary;
-    private List<ExecutorCaller> executors = new ArrayList<>();
     private boolean playerOnly;
+    private String overriding;
+    private String permission;
+    private String[] secondary;
+    private List<String> aliases;
+    private List<ExecutorCaller> executors = new ArrayList<>();
 
     public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases, boolean playerOnly) {
         if (exc == null || command == null) {
@@ -32,6 +37,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         this.executor = exc;
         this.permission = perm;
         this.playerOnly = playerOnly;
+        
         if (aliases != null && aliases.size() > 0) {
             this.aliases = aliases;
         } else {
@@ -53,25 +59,24 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
                 return;
             }
         }
+        
         this.register();
         executors.add(this);
         ecs.add(this);
-    }
-
-    public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases) {
-        this(exc, command, perm, aliases, true);
     }
 
     private boolean call(CommandSender sender, Command cmd, String[] args) {
         if (!cmd.getName().equalsIgnoreCase(this.overriding)) {
             return false;
         }
+        
         ExecutorCaller main = null;
         for (ExecutorCaller ec : this.executors) {
             if (ec.secondary != null) {
                 if (ec.secondary.length > args.length) {
                     continue;
                 }
+                
                 boolean sec = false;
                 for (int i = 0; i < ec.secondary.length; i++) {
                     if (!ec.secondary[i].equalsIgnoreCase(args[i])) {
@@ -79,23 +84,28 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
                         break;
                     }
                 }
+                
                 if (sec) {
                     continue;
                 }
+                
                 args = Arrays.copyOfRange(args, ec.secondary.length, args.length);
             } else {
                 main = ec;
                 continue;
             }
+            
             if (sender instanceof Player) {
                 if (ec.permission != null && !sender.hasPermission(ec.permission)) {
                     sender.sendMessage(Messages.getInstance().permission);
                     return true;
                 }
             }
+            
             ec.executor.execute(sender, args);
             return true;
         }
+        
         main.executor.execute(sender, args);
         return true;
     }
@@ -106,9 +116,11 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             if (this.aliases != null) {
                 p.setAliases(this.aliases);
             }
+            
             p.setPermissionMessage(Messages.getInstance().permission);
             Field f = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             f.setAccessible(true);
+            
             CommandMap cmap = (CommandMap) f.get(Bukkit.getServer());
             cmap.register("", p);
             p.setExecutor(this);
@@ -125,6 +137,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             sender.sendMessage(Messages.getInstance().playerOnly);
             return true;
         }
+        
         return call(sender, cmd, args);
     }
 
@@ -133,6 +146,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         if (!(sender instanceof Player)) {
             return Collections.emptyList();
         }
+        
         if (this.secondary != null) {
             return Arrays.asList(this.secondary);
         } else {

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +22,7 @@ import com.google.common.collect.ImmutableMap;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.RankSystem;
+import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.gui.GuiItem;
@@ -37,6 +39,9 @@ import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfig {
 
+    @CfgExclude
+    public SimpleDateFormat dateFormat;
+    
     @CfgComment("Wyswietlana nazwa pluginu")
     @CfgName("plugin-name")
     public String pluginName = "FunnyGuilds";
@@ -70,6 +75,7 @@ public class PluginConfig {
     @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant]")
     @CfgComment("Spacja = _ ")
     @CfgComment("Nowa linia lore = #")
+    @CfgComment("Aby w lore uzyc znaku # wstaw {HASH}")
     @CfgName("items")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> items_ = Arrays.asList("5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!", "5 dirt", "5 tnt");
@@ -626,6 +632,8 @@ public class PluginConfig {
     }
     
     public void reload() {
+        this.dateFormat = new SimpleDateFormat(Messages.getInstance().dateFormat);
+        
         this.createItems = loadItemStackList(this.items_);
         this.createItemsVip = loadItemStackList(this.itemsVip_);
         
@@ -748,8 +756,7 @@ public class PluginConfig {
             @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
             public List<String> aliases;
 
-            public Command() {
-            }
+            public Command() {}
 
             public Command(String name) {
                 this(name, Collections.emptyList());
@@ -784,8 +791,7 @@ public class PluginConfig {
         public boolean flat;
         public boolean mysql;
 
-        public DataType() {
-        }
+        public DataType() {}
 
         public DataType(boolean flat, boolean mysql) {
             this.flat = flat;

@@ -52,5 +52,4 @@ public class MxcBase implements Executor {
 
         p.sendMessage(m.setbaseDone);
     }
-
 }

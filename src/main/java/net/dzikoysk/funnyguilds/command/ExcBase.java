@@ -1,5 +1,14 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -10,24 +19,15 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcBase implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
-        final PluginConfig c = Settings.getConfig();
-        final MessagesConfig m = Messages.getInstance();
-        final Player p = (Player) s;
-        final User user = User.get(p);
+    public void execute(CommandSender sender, String[] args) {
+        PluginConfig c = Settings.getConfig();
+        MessagesConfig m = Messages.getInstance();
+        Player p = (Player) sender;
+        User user = User.get(p);
 
         if (!c.baseEnable) {
             p.sendMessage(m.baseTeleportationDisabled);
@@ -39,43 +39,47 @@ public class ExcBase implements Executor {
             return;
         }
 
-        final Guild guild = user.getGuild();
+        Guild guild = user.getGuild();
 
         if (user.getTeleportation() != null) {
             p.sendMessage(m.baseIsTeleportation);
             return;
         }
 
-        List<ItemStack> itemsList = Settings.getConfig().baseItems;
-        final ItemStack[] items = itemsList.toArray(new ItemStack[0]);
-        for (int i = 0; i < items.length; i++) {
-            if (!p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
+        ItemStack[] items = Settings.getConfig().baseItems.toArray(new ItemStack[0]);
+        
+        for (ItemStack is : items) {
+            if (!p.getInventory().containsAtLeast(is, is.getAmount())) {
                 String msg = m.baseItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(items[i].getAmount());
+                    sb.append(is.getAmount());
                     sb.append(" ");
-                    sb.append(items[i].getType().toString().toLowerCase());
+                    sb.append(is.getType().toString().toLowerCase());
                     msg = msg.replace("{ITEM}", sb.toString());
                 }
+                
                 if (msg.contains("{ITEMS}")) {
                     ArrayList<String> list = new ArrayList<String>();
-                    for (ItemStack it : itemsList) {
+                    for (ItemStack it : items) {
                         StringBuilder sb = new StringBuilder();
                         sb.append(it.getAmount());
                         sb.append(" ");
                         sb.append(it.getType().toString().toLowerCase());
                         list.add(sb.toString());
                     }
+                    
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
                 }
+                
                 p.sendMessage(msg);
                 return;
             }
         }
+        
         p.getInventory().removeItem(items);
 
-        final int time = Settings.getConfig().baseDelay;
+        int time = Settings.getConfig().baseDelay;
         if (time < 1) {
             p.teleport(guild.getHome());
             p.sendMessage(m.baseTeleport);
@@ -106,5 +110,4 @@ public class ExcBase implements Executor {
             }
         }, 0L, 20L));
     }
-
 }

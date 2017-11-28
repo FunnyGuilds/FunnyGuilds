@@ -13,22 +13,23 @@ import org.bukkit.entity.Player;
 public class ExcPlayer implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig msg = Messages.getInstance();
-        Player p = (Player) s;
-        String name = p.getName();
-
-        if (args.length > 0) {
-            name = args[0];
+        
+        if (args.length == 0 && !(sender instanceof Player)) {
+            sender.sendMessage(Messages.getInstance().playerOnly);
+            return;
         }
+        
+        String name = args.length == 0 ? ((Player) sender).getName() : args[0];
         if (!UserUtils.playedBefore(name)) {
-            s.sendMessage(msg.playerInfoExists);
+            sender.sendMessage(msg.playerInfoExists);
             return;
         }
 
         User user = User.get(name);
         if (user.getUUID() == null) {
-            s.sendMessage(msg.playerInfoExists);
+            sender.sendMessage(msg.playerInfoExists);
             return;
         }
 
@@ -40,13 +41,14 @@ public class ExcPlayer implements Executor {
                 m = StringUtils.replace(m, "{GUILD}", "Brak");
                 m = StringUtils.replace(m, "{TAG}", "Brak");
             }
+            
             m = StringUtils.replace(m, "{PLAYER}", user.getName());
             m = StringUtils.replace(m, "{POINTS}", Integer.toString(user.getRank().getPoints()));
             m = StringUtils.replace(m, "{KILLS}", Integer.toString(user.getRank().getKills()));
             m = StringUtils.replace(m, "{DEATHS}", Integer.toString(user.getRank().getDeaths()));
             m = StringUtils.replace(m, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user)));
-            s.sendMessage(m);
+            
+            sender.sendMessage(m);
         }
     }
-
 }

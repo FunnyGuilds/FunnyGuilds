@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import org.bukkit.command.CommandSender;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -13,60 +15,47 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
-import net.dzikoysk.funnyguilds.util.StringUtils;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class AxcName implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player player = (Player) sender;
-
-        if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.permission);
-            return;
-        }
 
         if (args.length < 1) {
-            player.sendMessage(StringUtils.colored("&cPodaj tag gildii!"));
+            sender.sendMessage(m.adminNoTagGiven);
             return;
         } else if (args.length < 2) {
-            player.sendMessage(StringUtils.colored("&cPodaj nowa nazwe!"));
+            sender.sendMessage(m.adminNoNewNameGiven);
             return;
         }
 
-        String tag = args[0];
-        String name = args[1];
-
-        if (!GuildUtils.tagExists(tag)) {
-            player.sendMessage(StringUtils.colored("&cGildia o takim tagu nie istnieje!"));
+        if (!GuildUtils.tagExists(args[0])) {
+            sender.sendMessage(m.adminNoGuildFound);
             return;
         }
 
-        Guild guild = GuildUtils.byTag(tag);
+        Guild guild = GuildUtils.byTag(args[0]);
         Region region = RegionUtils.get(guild.getRegion());
 
-        final PluginConfig.DataType s = Settings.getConfig().dataType;
-
+        PluginConfig.DataType dt = Settings.getConfig().dataType;
         Manager.getInstance().stop();
-        if (s.flat) {
+        
+        if (dt.flat) {
             Flat.getGuildFile(guild).delete();
             Flat.getRegionFile(region).delete();
         }
-        if (s.mysql) {
+        
+        if (dt.mysql) {
             new DatabaseGuild(guild).delete();
             new DatabaseRegion(region).delete();
         }
-        guild.getRegions().remove(region.getName());
-        guild.setName(name);
-        region.setName(name);
-        guild.setRegion(name);
-        guild.getRegions().add(name);
+        
+        guild.setName(args[1]);
+        region.setName(args[1]);
+        
         Manager.getInstance().start();
 
-        player.sendMessage(StringUtils.colored("&7Zmieniono nazwe gildii na &b" + guild.getName() + "&7!"));
+        sender.sendMessage(m.adminNameChanged.replace("{GUILD}", guild.getName()));
     }
-
 }

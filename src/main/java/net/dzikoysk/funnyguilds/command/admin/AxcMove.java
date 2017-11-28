@@ -1,5 +1,14 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -10,67 +19,53 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
-import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class AxcMove implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player player = (Player) sender;
-
-        if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.permission);
-            return;
-        }
+        Player p = (Player) sender;
 
         if (args.length < 1) {
-            player.sendMessage(StringUtils.colored("&cPodaj tag gildii!"));
+            p.sendMessage(m.adminNoTagGiven);
             return;
         }
 
-        String tag = args[0];
-        if (!GuildUtils.tagExists(tag)) {
-            player.sendMessage(StringUtils.colored("&cGildia o takim tagu nie istnieje!"));
+        if (!GuildUtils.tagExists(args[0])) {
+            p.sendMessage(m.adminNoGuildFound);
             return;
         }
 
-        PluginConfig s = Settings.getConfig();
-        Location loc = player.getLocation();
-        if (s.createCenterY != 0) {
-            loc.setY(s.createCenterY);
+        PluginConfig pc = Settings.getConfig();
+        Location loc = p.getLocation();
+        if (pc.createCenterY != 0) {
+            loc.setY(pc.createCenterY);
         }
 
-        int d = s.regionSize + s.createDistance;
-        if (s.enlargeItems != null) {
-            d = s.enlargeItems.size() * s.enlargeSize + d;
+        int d = pc.regionSize + pc.createDistance;
+        if (pc.enlargeItems != null) {
+            d = pc.enlargeItems.size() * pc.enlargeSize + d;
         }
 
-        if (d > player.getWorld().getSpawnLocation().distance(loc)) {
-            player.sendMessage(m.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
+        if (d > p.getWorld().getSpawnLocation().distance(loc)) {
+            p.sendMessage(m.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
             return;
         }
 
         if (RegionUtils.isNear(loc)) {
-            player.sendMessage(StringUtils.colored("&cW poblizu znajduje sie jakas gildia, musisz poszukac innego miejsca!"));
+            p.sendMessage(m.createIsNear);
             return;
         }
 
-        Guild guild = GuildUtils.byTag(tag);
+        Guild guild = GuildUtils.byTag(args[0]);
         Region region = RegionUtils.get(guild.getRegion());
+        
         if (region == null) {
-            region = new Region(guild, loc, s.regionSize);
+            region = new Region(guild, loc, pc.regionSize);
         } else {
-            if (s.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+            if (pc.createStringMaterial.equalsIgnoreCase("ender crystal")) {
                 EntityUtil.despawn(guild);
             } else {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
@@ -78,9 +73,11 @@ public class AxcMove implements Executor {
                     block.setType(Material.AIR);
                 }
             }
+            
             region.setCenter(loc);
         }
-        if (s.createCenterSphere) {
+        
+        if (pc.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
             for (Location l : sphere) {
                 if (l.getBlock().getType() != Material.BEDROCK) {
@@ -88,13 +85,13 @@ public class AxcMove implements Executor {
                 }
             }
         }
-        if (s.createMaterial != null && s.createMaterial != Material.AIR) {
-            loc.getBlock().getRelative(BlockFace.DOWN).setType(s.createMaterial);
-        } else if (s.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        
+        if (pc.createMaterial != null && pc.createMaterial != Material.AIR) {
+            loc.getBlock().getRelative(BlockFace.DOWN).setType(pc.createMaterial);
+        } else if (pc.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
 
-        player.sendMessage(StringUtils.colored("&7Przeniesiono teren gildii &a" + guild.getName() + "&7!"));
+        p.sendMessage(m.adminGuildRelocated.replace("{GUILD}", guild.getName()));
     }
-
 }

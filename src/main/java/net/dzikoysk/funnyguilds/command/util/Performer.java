@@ -18,6 +18,7 @@ public class Performer extends Command {
         if (this.caller == null) {
             return false;
         }
+        
         return this.caller.onCommand(sender, this, commandLabel, args);
     }
 
@@ -26,6 +27,7 @@ public class Performer extends Command {
         if (this.caller == null) {
             return null;
         }
+        
         return caller.onTabComplete(sender, this, alias, args);
     }
 

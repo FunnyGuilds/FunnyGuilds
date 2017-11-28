@@ -27,8 +27,7 @@ public class MxcPvP implements Executor {
         }
 
         Guild guild = user.getGuild();
-        boolean b = guild.getPvP();
-        if (b) {
+        if (guild.getPvP()) {
             guild.setPvP(false);
             p.sendMessage(m.pvpOff);
         } else {
@@ -36,5 +35,4 @@ public class MxcPvP implements Executor {
             p.sendMessage(m.pvpOn);
         }
     }
-
 }

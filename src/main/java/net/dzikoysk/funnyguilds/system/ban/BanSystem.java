@@ -7,7 +7,7 @@ public class BanSystem {
 
     private static BanSystem instance;
 
-    public BanSystem() {
+    private BanSystem() {
         instance = this;
     }
 
@@ -15,6 +15,7 @@ public class BanSystem {
         if (instance == null) {
             new BanSystem();
         }
+        
         return instance;
     }
 

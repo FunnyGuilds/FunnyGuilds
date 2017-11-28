@@ -1,25 +1,26 @@
 package net.dzikoysk.funnyguilds.basic;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.Scoreboard;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.Dummy;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.Scoreboard;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 public class User implements Basic {
 
@@ -106,6 +107,7 @@ public class User implements Basic {
         if (c) {
             this.changes = false;
         }
+        
         return c;
     }
 
@@ -122,6 +124,7 @@ public class User implements Basic {
         if (!hasGuild()) {
             return false;
         }
+        
         return this.guild.getOwner().equals(this);
     }
 
@@ -129,9 +132,11 @@ public class User implements Basic {
         if (!hasGuild()) {
             return false;
         }
+        
         if (this.guild.getDeputy() == null) {
             return false;
         }
+        
         return this.guild.getDeputy().equals(this);
     }
 
@@ -139,14 +144,17 @@ public class User implements Basic {
         if (this.name == null) {
             return false;
         }
+        
         if (!ONLINE_USERS_CACHE.contains(this.uuid)) {
             final Player player = Bukkit.getPlayer(this.uuid);
             if (player != null) {
                 ONLINE_USERS_CACHE.add(player.getUniqueId());
                 return true;
             }
+            
             return false;
         }
+        
         return true;
     }
 
@@ -181,6 +189,7 @@ public class User implements Basic {
         if (this.scoreboard == null) {
             this.scoreboard = ScoreboardStack.pull();
         }
+        
         return this.scoreboard;
     }
 
@@ -192,6 +201,7 @@ public class User implements Basic {
         if (this.prefix == null) {
             new IndividualPrefix(this);
         }
+        
         return this.prefix;
     }
 
@@ -203,6 +213,7 @@ public class User implements Basic {
         if (this.dummy == null) {
             this.dummy = new Dummy(this);
         }
+        
         return this.dummy;
     }
 
@@ -214,9 +225,11 @@ public class User implements Basic {
         if (this.rank != null) {
             return this.rank;
         }
+        
         this.rank = new Rank(this);
         RankManager.getInstance().update(this);
         this.changes();
+        
         return this.rank;
     }
 
@@ -236,8 +249,9 @@ public class User implements Basic {
 
     public String getReason() {
         if (this.reason != null) {
-            return ChatColor.translateAlternateColorCodes('&', this.reason);
+            return StringUtils.colored(this.reason);
         }
+        
         return "";
     }
 
@@ -300,6 +314,7 @@ public class User implements Basic {
         if (!isOnline()) {
             return null;
         }
+        
         return Bukkit.getPlayer(this.name);
     }
 
@@ -318,9 +333,11 @@ public class User implements Basic {
     public int getPing() {
         int ping = 0;
         Player p = getPlayer();
+        
         if (p == null) {
             return ping;
         }
+        
         try {
             Class<?> craftPlayer = Reflections.getBukkitClass("entity.CraftPlayer");
             Object cp = craftPlayer.cast(p);
@@ -331,11 +348,12 @@ public class User implements Basic {
                 e.printStackTrace();
             }
         }
+        
         return ping;
     }
 
     public boolean isSpy() {
-        return spy;
+        return this.spy;
     }
 
     public void setSpy(boolean spy) {
@@ -355,8 +373,8 @@ public class User implements Basic {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        result = prime * result + (name == null ? 0 : name.hashCode());
+        result = prime * result + (uuid == null ? 0 : uuid.hashCode());
         return result;
     }
 
@@ -365,14 +383,17 @@ public class User implements Basic {
         if (o == null) {
             return false;
         }
+        
         if (o.getClass() != this.getClass()) {
             return false;
         }
+        
         User u = (User) o;
-        if (u.getUUID() != this.uuid) {
+        if (!u.getUUID().equals(this.uuid)) {
             return false;
         }
-        return u.getName() == this.name;
+        
+        return u.getName().equals(this.name);
     }
 
     @Override

@@ -17,8 +17,6 @@ public final class FightUtils {
     public boolean check(User user) {
         return FIGHT_CACHE_MAP.getOrDefault(user.getUUID(), 0L) > System.currentTimeMillis();
     }
-
-    private FightUtils() {
-
-    }
+    
+    private FightUtils() {}
 }

@@ -20,20 +20,6 @@ public final class Version {
                     player.sendMessage(ChatColor.GRAY + "Najnowsza: " + ChatColor.AQUA + latest);
                     player.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
                     player.sendMessage("");
-
-                    /*int interval = 225;
-                    for (int i = 0; i < 4; i++) {
-                        try {
-                            NotePitch.play(player, 3, Tone.C);
-                            NotePitch.play(player, 4, Tone.C);
-                            Thread.sleep(interval);
-                        } catch (Exception e) {
-                            if (FunnyGuilds.exception(e.getCause())) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                    NotePitch.play(player, 3, Tone.G);*/
                 }
             });
         }

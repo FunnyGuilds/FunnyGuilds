@@ -30,9 +30,9 @@ import java.util.List;
 public class ExcCreate implements Executor {
 
     @Override
-    public void execute(final CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User u = User.get(p);
 
         boolean bool = this.checkWorld(p);
@@ -122,28 +122,23 @@ public class ExcCreate implements Executor {
             return;
         }
 
-        List<ItemStack> itemsList;
-        if (p.hasPermission("funnyguilds.vip")) {
-            itemsList = c.createItemsVip;
-        } else {
-            itemsList = c.createItems;
-        }
-
-        ItemStack[] items = itemsList.toArray(new ItemStack[0]);
+        List<ItemStack> itemsList = p.hasPermission("funnyguilds.vip") ? c.createItemsVip : c.createItems;
 
         if (!u.getBypass()) {
-            for (int i = 0; i < items.length; i++) {
-                if (p.getInventory().containsAtLeast(items[i], items[i].getAmount())) {
+            for (ItemStack is : itemsList) {
+                if (p.getInventory().containsAtLeast(is, is.getAmount())) {
                     continue;
                 }
+                
                 String msg = m.createItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(items[i].getAmount());
+                    sb.append(is.getAmount());
                     sb.append(" ");
-                    sb.append(items[i].getType().toString().toLowerCase());
+                    sb.append(is.getType().toString().toLowerCase());
                     msg = msg.replace("{ITEM}", sb.toString());
                 }
+                
                 if (msg.contains("{ITEMS}")) {
                     ArrayList<String> list = new ArrayList<String>();
                     for (ItemStack it : itemsList) {
@@ -153,8 +148,10 @@ public class ExcCreate implements Executor {
                         sb.append(it.getType().toString().toLowerCase());
                         list.add(sb.toString());
                     }
+                    
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
                 }
+                
                 p.sendMessage(msg);
                 return;
             }
@@ -173,7 +170,7 @@ public class ExcCreate implements Executor {
         if (u.getBypass()) {
             u.setBypass(false);
         } else {
-            p.getInventory().removeItem(items);
+            p.getInventory().removeItem(itemsList.toArray(new ItemStack[0]));
         }
 
         Manager.getInstance().stop();
@@ -221,8 +218,6 @@ public class ExcCreate implements Executor {
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, u.getOfflineUser());
 
         p.sendMessage(m.createGuild.replace("{GUILD}", name).replace("{PLAYER}", p.getName()).replace("{TAG}", tag));
-
         Bukkit.getServer().broadcastMessage(m.broadcastCreate.replace("{GUILD}", name).replace("{PLAYER}", p.getName()).replace("{TAG}", tag));
     }
-
 }

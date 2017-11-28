@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -13,22 +12,15 @@ public class AxcSpy implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-
         MessagesConfig m = Messages.getInstance();
-        Player player = (Player) sender;
-        User user = User.get(player);
-
-        if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.permission);
-            return;
-        }
+        User user = User.get((Player) sender);
 
         if (user.isSpy()) {
             user.setSpy(false);
-            sender.sendMessage(ChatColor.RED + "Juz nie szpiegujesz graczy");
+            sender.sendMessage(m.adminStopSpy);
         } else {
             user.setSpy(true);
-            sender.sendMessage(ChatColor.GREEN + "Od teraz szpiegujesz graczy");
+            sender.sendMessage(m.adminStartSpy);
         }
     }
 }

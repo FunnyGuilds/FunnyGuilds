@@ -22,9 +22,9 @@ import java.util.List;
 public class ExcJoin implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User user = User.get(p);
 
         if (user.hasGuild()) {
@@ -39,12 +39,11 @@ public class ExcJoin implements Executor {
         }
 
         if (args.length < 1) {
-            List<String> list = m.joinInvitationList;
-            String[] msgs = list.toArray(new String[list.size()]);
             String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(p), false);
-            for (String msg : msgs) {
+            for (String msg : m.joinInvitationList) {
                 p.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
+            
             return;
         }
 
@@ -70,6 +69,7 @@ public class ExcJoin implements Executor {
                     sb.append(itemStack.getType().toString().toLowerCase());
                     msg = msg.replace("{ITEM}", sb.toString());
                 }
+                
                 if (msg.contains("{ITEMS}")) {
                     ArrayList<String> list = new ArrayList<String>();
                     for (ItemStack it : itemsList) {
@@ -79,11 +79,14 @@ public class ExcJoin implements Executor {
                         sb.append(it.getType().toString().toLowerCase());
                         list.add(sb.toString());
                     }
+                    
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
                 }
+                
                 p.sendMessage(msg);
                 return;
             }
+            
             p.getInventory().removeItem(itemStack);
         }
 
@@ -95,15 +98,13 @@ public class ExcJoin implements Executor {
         user.setGuild(guild);
 
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
-
         p.sendMessage(m.joinToMember.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
 
-        Player owner = Bukkit.getPlayer(guild.getOwner().getName());
+        Player owner = guild.getOwner().getPlayer();
         if (owner != null) {
             owner.sendMessage(m.joinToOwner.replace("{PLAYER}", p.getName()));
         }
 
         Bukkit.broadcastMessage(m.broadcastJoin.replace("{PLAYER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", tag));
     }
-
 }

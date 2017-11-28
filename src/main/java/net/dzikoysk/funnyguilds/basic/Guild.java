@@ -1,14 +1,19 @@
 package net.dzikoysk.funnyguilds.basic;
 
-import net.dzikoysk.funnyguilds.basic.util.*;
-import net.dzikoysk.funnyguilds.data.Settings;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
+import net.dzikoysk.funnyguilds.basic.util.BasicType;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.util.RankManager;
+import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Guild implements Basic {
 
@@ -54,6 +59,7 @@ public class Guild implements Basic {
                 return guild;
             }
         }
+        
         return new Guild(uuid);
     }
 
@@ -63,6 +69,7 @@ public class Guild implements Basic {
                 return guild;
             }
         }
+        
         return new Guild(name);
     }
 
@@ -75,6 +82,7 @@ public class Guild implements Basic {
         if (this.members.contains(user)) {
             return;
         }
+        
         this.members.add(user);
         this.updateRank();
         this.changes();
@@ -84,6 +92,7 @@ public class Guild implements Basic {
         if (this.regions.contains(s)) {
             return;
         }
+        
         this.regions.add(s);
         this.changes();
     }
@@ -93,6 +102,7 @@ public class Guild implements Basic {
         if (this.allies.contains(guild)) {
             return;
         }
+        
         this.allies.add(guild);
     }
 
@@ -101,6 +111,7 @@ public class Guild implements Basic {
         if (this.enemies.contains(guild)) {
             return;
         }
+        
         this.enemies.add(guild);
     }
 
@@ -121,6 +132,10 @@ public class Guild implements Basic {
     }
 
     public void removeMember(User user) {
+        if(user.isDeputy()) {
+            this.deputy = null;
+        }
+        
         this.members.remove(user);
         this.updateRank();
         this.changes();
@@ -144,6 +159,7 @@ public class Guild implements Basic {
         if (this.build > System.currentTimeMillis()) {
             return false;
         }
+        
         this.build = 0;
         this.changes();
         return true;
@@ -160,6 +176,7 @@ public class Guild implements Basic {
         if (c) {
             this.changes = false;
         }
+        
         return c;
     }
 
@@ -184,10 +201,12 @@ public class Guild implements Basic {
             this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             this.changes();
         }
+        
         if (this.validity == 0) {
             this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             this.changes();
         }
+        
         return this.validity >= System.currentTimeMillis();
     }
 
@@ -195,6 +214,7 @@ public class Guild implements Basic {
         if (this.ban > System.currentTimeMillis()) {
             return true;
         }
+        
         this.ban = 0;
         this.changes();
         return false;
@@ -257,6 +277,7 @@ public class Guild implements Basic {
             Region region = Region.get(s);
             this.home = region.getCenter();
         }
+        
         this.changes();
     }
 
@@ -341,6 +362,7 @@ public class Guild implements Basic {
         } else {
             this.validity = l;
         }
+        
         this.changes();
     }
 
@@ -372,6 +394,7 @@ public class Guild implements Basic {
         } else {
             this.ban = 0;
         }
+        
         this.changes();
     }
 
@@ -388,6 +411,7 @@ public class Guild implements Basic {
         if (this.rank != null) {
             return this.rank;
         }
+        
         this.rank = new Rank(this);
         RankManager.getInstance().update(this);
         return this.rank;
@@ -424,13 +448,16 @@ public class Guild implements Basic {
         if (o == this) {
             return true;
         }
+        
         if (o.getClass() != this.getClass()) {
             return false;
         }
+        
         Guild guild = (Guild) o;
         if (guild.getName() != null && this.name != null) {
             return guild.getName().equalsIgnoreCase(this.name);
         }
+        
         return false;
     }
 
@@ -438,5 +465,4 @@ public class Guild implements Basic {
     public String toString() {
         return this.name;
     }
-
 }

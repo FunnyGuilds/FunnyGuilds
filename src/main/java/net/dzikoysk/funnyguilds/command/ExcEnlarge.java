@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.command;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
@@ -8,19 +12,14 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class ExcEnlarge implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
         PluginConfig c = Settings.getConfig();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User lp = User.get(p);
 
         if (!c.enlargeEnable) {
@@ -47,7 +46,12 @@ public class ExcEnlarge implements Executor {
 
         ItemStack need = c.enlargeItems.get(enlarge);
         if (!p.getInventory().containsAtLeast(need, need.getAmount())) {
-            p.sendMessage(m.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().name().toLowerCase()));
+            StringBuilder sb = new StringBuilder();
+            sb.append(need.getAmount());
+            sb.append(" ");
+            sb.append(need.getType().toString().toLowerCase());
+            
+            p.sendMessage(m.enlargeItem.replace("{ITEM}", sb.toString()));
             return;
         }
 
@@ -57,17 +61,12 @@ public class ExcEnlarge implements Executor {
         }
 
         p.getInventory().removeItem(need);
-        region.setEnlarge(enlarge + 1);
+        region.setEnlarge(++enlarge);
         region.setSize(region.getSize() + c.enlargeSize);
 
-        String tm = m.enlargeDone.replace("{SIZE}", region.getSize() + "").replace("{LEVEL}", region.getEnlarge() + "");
-
-        for (User user : lp.getGuild().getMembers()) {
-            OfflinePlayer of = Bukkit.getOfflinePlayer(user.getName());
-            if (of.isOnline()) {
-                of.getPlayer().sendMessage(tm);
-            }
+        String tm = m.enlargeDone.replace("{SIZE}", Integer.toString(region.getSize())).replace("{LEVEL}", Integer.toString(region.getEnlarge()));
+        for (User user : lp.getGuild().getOnlineMembers()) {
+            user.getPlayer().sendMessage(tm);
         }
     }
-
 }

@@ -1,12 +1,15 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
-import org.diorite.cfg.annotations.CfgCollectionStyle;
-import org.diorite.cfg.annotations.CfgComment;
-
 import java.util.Arrays;
 import java.util.List;
 
+import org.diorite.cfg.annotations.CfgCollectionStyle;
+import org.diorite.cfg.annotations.CfgComment;
+
 public class MessagesConfig {
+    @CfgComment("<------- Global Date Format -------> #")
+    public String dateFormat = "dd.MM.yyyy HH:mm:ss";
+    
     @CfgComment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";
     public String blockedWorld = "&cZarzadzanie gildiami jest zablokowane na tym swiecie!";
@@ -82,8 +85,27 @@ public class MessagesConfig {
             "&a/opusc &8- &7Opuszcza gildie",
             "&a/wyrzuc [gracz] &8- &7Wyrzuca gracza z gildii",
             "&a/rozwiaz [tag] &8- &7Rozwiazuje sojusz",
-            "&a/usun &8- &7Usuwa gildie");
+            "&a/usun &8- &7Usuwa gildie",
+            "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii");
 
+    @CfgComment("<------- Admin Help Messages -------> #")
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> adminHelpList = Arrays.asList(
+            "&a/ga dodaj [tag] [nick] &8- &7Dodaje gracza do gildii",
+            "&a/ga usun [tag] &8- &7Usuwa gildie",
+            "&a/ga wyrzuc [nick] &8- &7Wyrzuca gracza z gildii",
+            "&a/ga tp [tag] &8- &7Teleportuje do bazy gildii",
+            "&a/ga points [nick] [points] &8- &7Ustawia liczbe punktow gracza",
+            "&a/ga kills [nick] [kills] &8- &7Ustawia liczbe zabojstw gracza",
+            "&a/ga deaths [nick] [deaths] &8- &7Ustawia liczbe smierci gracza",
+            "&a/ga ban [tag] [czas] [powod] &8- &7Banuje gildie na okreslony czas",
+            "&a/ga unban [tag] &8- &7Odbanowywuje gildie",
+            "&a/ga zycia [tag] [zycia] &8- &7Ustawia liczbe zyc gildii",
+            "&a/ga przenies [tag] &8- &7Przenosi teren gildii",
+            "&a/ga przedluz [tag] [czas] &8- &7Przedluza waznosc gildii o podany czas",
+            "&a/ga nazwa [tag] [nazwa] &8- &7Zmienia nazwe gildii",
+            "&a/ga spy &8- &7Szpieguje czat gildii");
+    
     @CfgComment("<------- Player Info Messages -------> #")
     public String playerInfoExists = "&cTaki gracz nigdy nie byl na serwerze!";
     @CfgComment("Available variables: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {RANK}")
@@ -253,7 +275,7 @@ public class MessagesConfig {
     public String baseItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
     public String baseDontMove = "&7Nie ruszaj sie przez &c{TIME} &7sekund!";
     public String baseMove = "&cRuszyles sie, teleportacja przerwana!";
-    public String baseTeleport = "&7Teleportacja ...";
+    public String baseTeleport = "&aTeleportacja&7...";
 
     @CfgComment("<------- Ally Messages -------> #")
     public String allyHasNotGuild = "&cNie masz gildii!";
@@ -328,6 +350,7 @@ public class MessagesConfig {
     public String leaderIsNotOwner = "&cNie jestes zalozycielem gildii";
     public String leaderPlayer = "&cPodaj gracza!";
     public String leaderPlayedBefore = "&cTen gracz nigdy nie byl na serwerze!";
+    public String leaderMustBeDifferent = "&cNie mozesz sobie oddac zalozyciela!";
     public String leaderIsNotMember = "&cTen gracz nie jest czlonkiem Twojej gildii!";
     public String leaderSet = "&7Ustanowiono nowego &alidera &7gildii!";
     public String leaderOwner = "&7Zostales nowym &aliderem &7gildii!";
@@ -337,6 +360,7 @@ public class MessagesConfig {
     public String deputyIsNotOwner = "&cNie jestes zalozycielem gildii";
     public String deputyPlayer = "&cPodaj gracza!";
     public String deputyPlayedBefore = "&cTen gracz nigdy nie byl na serwerze!";
+    public String deputyMustBeDifferent = "&cNie mozesz mianowac siebie zastepca!";
     public String deputyIsNotMember = "&cTen gracz nie jest czlonkiem Twojej gildii!";
     public String deputyRemove = "&7Zdegradowno gracza z funkcji &czastepcy&7!";
     public String deputyMember = "&7Zdegradowano Cie z funkcji &czastepcy&7!";
@@ -354,4 +378,59 @@ public class MessagesConfig {
     public String pvpIsNotOwner = "&cNie jestes zalozycielem gildii!";
     public String pvpOn = "&cWlaczono &7pvp w gildii!";
     public String pvpOff = "&aWylaczono &7pvp w gildii!";
+    
+    @CfgComment("<------- Admin Messages -------> #")
+    public String adminNoTagGiven = "&cPodaj tag gildii!";
+    public String adminNoNickGiven = "&cPodaj nick gracza!";
+    public String adminUserHasGuild = "&cTen gracz ma juz gildie!";
+    public String adminNoGuildFound = "&cTaka gildia nie istnieje!";
+    
+    @CfgComment("Available variables: {ADMIN}")
+    public String adminGuildBroken = "&cTwoja gildia zostala rozwiazana przez &7{ADMIN}";
+    public String adminNoGuild = "&cTen gracz nie ma gildii!";
+    public String adminGuildOwner = "&cTen gracz jest zalozycielem gildii, nie mozna go wyrzucic!";
+    public String adminNoRegionFound = "&cGildia nie posiada terenu!";
+    
+    public String adminNoPointsGiven = "&cPodaj liczbe punktow!";
+    @CfgComment("Available variables: {ERROR}")
+    public String adminErrorInNumber = "&cNieznana jest liczba: {ERROR}";
+    @CfgComment("Available variables: {PLAYER}, {POINTS}")
+    public String adminPointsChanged = "&aUstawiono &7{POINTS} &apunktow dla gracza &7{PLAYER}";
+    
+    public String adminNoKillsGiven = "&cPodaj liczbe zabojstw!";
+    @CfgComment("Available variables: {PLAYER}, {KILLS}")
+    public String adminKillsChanged = "&aUstawiono &7{KILLS} &azabojstw dla gracza &7{PLAYER}";
+    
+    public String adminNoDeathsGiven = "&cPodaj liczbe zgonow!";
+    @CfgComment("Available variables: {PLAYER}, {DEATHS}")
+    public String adminDeathsChanged = "&aUstawiono &7{DEATHS} &azgonow dla gracza &7{PLAYER}";
+    
+    public String adminNoBanTimeGiven = "&cPodaj czas na jaki ma byc zbanowana gildia!";
+    public String adminNoReasonGiven = "&cPodaj powod!";
+    public String adminGuildBanned = "&cTa gildia jest juz zbanowana!";
+    public String adminTimeError = "&cPodano nieprawidlowy czas!";
+    @CfgComment("Available variables: {GUILD}, {TIME}")
+    public String adminGuildBan = "&aZbanowano gildie &a{GUILD} &7na okres &a{TIME}&7!";
+    
+    public String adminGuildNotBanned = "&cTa gildia nie jest zbanowana!";
+    @CfgComment("Available variables: {GUILD}")
+    public String adminGuildUnban = "&aOdbanowano gildie &7{GUILD}&a!";
+    
+    public String adminNoLivesGiven = "&cPodaj liczbe zyc!";
+    @CfgComment("Available variables: {GUILD}, {LIVES}")
+    public String adminLivesChanged = "&aUstawiono &7{LIVES} &azyc dla gildii &7{GUILD}&a!";
+    
+    @CfgComment("Available variables: {GUILD}")
+    public String adminGuildRelocated = "&aPrzeniesiono teren gildii &7{GUILD}&a!";
+    
+    public String adminNoValidityTimeGiven = "&cPodaj czas o jaki ma byc przedluzona waznosc gildii!";
+    @CfgComment("Available variables: {GUILD}, {VALIDITY}")
+    public String adminNewValidity = "&aPrzedluzono waznosc gildii &a{GUILD} &7do &a{VALIDITY}&7!";
+    
+    public String adminNoNewNameGiven = "&cPodaj nowa nazwe!";
+    @CfgComment("Available variables: {GUILD}")
+    public String adminNameChanged = "&aZmieniono nazwe gildii na &7{GUILD}&a!";
+    
+    public String adminStopSpy = "&cJuz nie szpiegujesz graczy!";
+    public String adminStartSpy = "&aOd teraz szpiegujesz graczy!";
 }
