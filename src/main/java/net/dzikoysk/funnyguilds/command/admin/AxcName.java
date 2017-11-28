@@ -19,19 +19,19 @@ import net.dzikoysk.funnyguilds.data.flat.Flat;
 public class AxcName implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
-            s.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(m.adminNoTagGiven);
             return;
         } else if (args.length < 2) {
-            s.sendMessage(m.adminNoNewNameGiven);
+            sender.sendMessage(m.adminNoNewNameGiven);
             return;
         }
 
         if (!GuildUtils.tagExists(args[0])) {
-            s.sendMessage(m.adminNoGuildFound);
+            sender.sendMessage(m.adminNoGuildFound);
             return;
         }
 
@@ -56,6 +56,6 @@ public class AxcName implements Executor {
         
         Manager.getInstance().start();
 
-        s.sendMessage(m.adminNameChanged.replace("{GUILD}", guild.getName()));
+        sender.sendMessage(m.adminNameChanged.replace("{GUILD}", guild.getName()));
     }
 }

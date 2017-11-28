@@ -10,8 +10,8 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 public class ExcItems implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
-        Player p = (Player) s;
+    public void execute(CommandSender sender, String[] args) {
+        Player p = (Player) sender;
         PluginConfig c = Settings.getConfig();
 
         if (!c.useCommonGUI && p.hasPermission("funnyguilds.vip")) {

@@ -20,11 +20,11 @@ import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 public class ExcFunnyGuilds implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
-                if (!s.hasPermission("funnyguilds.reload")) {
-                    s.sendMessage(Messages.getInstance().permission);
+                if (!sender.hasPermission("funnyguilds.reload")) {
+                    sender.sendMessage(Messages.getInstance().permission);
                     return;
                 }
 
@@ -45,28 +45,28 @@ public class ExcFunnyGuilds implements Executor {
                         }
                     }
                     
-                    s.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano!");
+                    sender.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano!");
                 });
 
-                s.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
+                sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
                 thread.start();
                 
                 return;
             } else if (args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")) {
-                if (s instanceof Player) {
-                    Version.isNewAvailable((Player) s);
+                if (sender instanceof Player) {
+                    Version.isNewAvailable((Player) sender);
                 } else {
                     FunnyGuilds.info(Messages.getInstance().playerOnly);
                 }
                 
                 return;
             } else if (args[0].equalsIgnoreCase("save-all")) {
-                if (!s.hasPermission("funnyguilds.admin")) {
-                    s.sendMessage(Messages.getInstance().permission);
+                if (!sender.hasPermission("funnyguilds.admin")) {
+                    sender.sendMessage(Messages.getInstance().permission);
                     return;
                 }
                 
-                s.sendMessage(ChatColor.GRAY + "Zapisywanie...");
+                sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
                 long l = System.currentTimeMillis();
                 
                 if (Settings.getConfig().dataType.flat) {
@@ -92,11 +92,11 @@ public class ExcFunnyGuilds implements Executor {
                 }
                 
                 Data.getInstance().save();
-                s.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - l) / 1000.0F + "s" + ChatColor.GRAY + ")!");
+                sender.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - l) / 1000.0F + "s" + ChatColor.GRAY + ")!");
                 return;
             }
         }
         
-        s.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + FunnyGuilds.getVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "Dzikoysk");
+        sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + FunnyGuilds.getVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "Dzikoysk");
     }
 }

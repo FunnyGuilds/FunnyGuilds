@@ -15,9 +15,9 @@ import org.bukkit.entity.Player;
 public class ExcKick implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User u = User.get(p);
 
         if (!u.hasGuild()) {

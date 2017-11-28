@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -22,10 +21,10 @@ import net.dzikoysk.funnyguilds.util.TimeUtils;
 public class ExcValidity implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         PluginConfig pc = Settings.getConfig();
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User user = User.get(p);
         Guild guild = user.getGuild();
 
@@ -90,6 +89,6 @@ public class ExcValidity implements Executor {
         c += pc.validityTime;
         guild.setValidity(c);
 
-        p.sendMessage(m.validityDone.replace("{DATE}", FunnyGuilds.DATE_FORMAT.format(new Date(c))));
+        p.sendMessage(m.validityDone.replace("{DATE}", pc.dateFormat.format(new Date(c))));
     }
 }

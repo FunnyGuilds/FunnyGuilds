@@ -18,9 +18,9 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 public class ExcBreak implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User lp = User.get(p);
 
         if (!lp.hasGuild()) {

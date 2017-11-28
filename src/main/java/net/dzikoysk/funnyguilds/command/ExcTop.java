@@ -8,10 +8,10 @@ import org.bukkit.command.CommandSender;
 public class ExcTop implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         for (String m : Messages.getInstance().topList) {
             String r = Parser.parseRank(m);
-            s.sendMessage(r == null ? m : r);
+            sender.sendMessage(r == null ? m : r);
         }
     }
 }

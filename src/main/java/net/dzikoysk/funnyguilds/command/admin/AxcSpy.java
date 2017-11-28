@@ -11,16 +11,16 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 public class AxcSpy implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        User user = User.get((Player) s);
+        User user = User.get((Player) sender);
 
         if (user.isSpy()) {
             user.setSpy(false);
-            s.sendMessage(m.adminStopSpy);
+            sender.sendMessage(m.adminStopSpy);
         } else {
             user.setSpy(true);
-            s.sendMessage(m.adminStartSpy);
+            sender.sendMessage(m.adminStartSpy);
         }
     }
 }

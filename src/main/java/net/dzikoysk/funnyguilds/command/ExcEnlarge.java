@@ -16,10 +16,10 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 public class ExcEnlarge implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
         PluginConfig c = Settings.getConfig();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User lp = User.get(p);
 
         if (!c.enlargeEnable) {

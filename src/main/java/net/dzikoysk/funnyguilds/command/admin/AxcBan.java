@@ -15,17 +15,17 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 public class AxcBan implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
-            s.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(m.adminNoTagGiven);
             return;
         } else if (args.length < 2) {
-            s.sendMessage(m.adminNoBanTimeGiven);
+            sender.sendMessage(m.adminNoBanTimeGiven);
             return;
         } else if (args.length < 3) {
-            s.sendMessage(m.adminNoReasonGiven);
+            sender.sendMessage(m.adminNoReasonGiven);
             return;
         }
 
@@ -38,24 +38,24 @@ public class AxcBan implements Executor {
         String reason = sb.toString();
         
         if (!GuildUtils.tagExists(args[0])) {
-            s.sendMessage(m.adminNoGuildFound);
+            sender.sendMessage(m.adminNoGuildFound);
             return;
         }
 
         Guild guild = GuildUtils.byTag(args[0]);
         if (guild.isBanned()) {
-            s.sendMessage(m.adminGuildBanned);
+            sender.sendMessage(m.adminGuildBanned);
             return;
         }
 
         long time = Parser.parseTime(args[1]);
         if (time < 1) {
-            s.sendMessage(m.adminTimeError);
+            sender.sendMessage(m.adminTimeError);
             return;
         }
 
         BanUtils.ban(guild, time, reason);
-        s.sendMessage(m.adminGuildBan.replace("{GUILD}", guild.getName()).replace("{TIME}", args[1]));
+        sender.sendMessage(m.adminGuildBan.replace("{GUILD}", guild.getName()).replace("{TIME}", args[1]));
         Bukkit.broadcastMessage(Messages.getInstance().broadcastBan.replace("{GUILD}", guild.getName())
                         .replace("{TAG}", guild.getTag()).replace("{REASON}", StringUtils.colored(reason)).replace("{TIME}", args[1]));
     }

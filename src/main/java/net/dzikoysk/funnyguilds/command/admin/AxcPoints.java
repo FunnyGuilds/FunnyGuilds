@@ -11,16 +11,16 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 public class AxcPoints implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
-            s.sendMessage(m.adminNoNickGiven);
+            sender.sendMessage(m.adminNoNickGiven);
             return;
         }
 
         if (args.length < 2) {
-            s.sendMessage(m.adminNoPointsGiven);
+            sender.sendMessage(m.adminNoPointsGiven);
             return;
         }
 
@@ -28,7 +28,7 @@ public class AxcPoints implements Executor {
         try {
             points = Integer.valueOf(args[1]);
         } catch (NumberFormatException e) {
-            s.sendMessage(m.adminErrorInNumber.replace("{ERROR}", args[1]));
+            sender.sendMessage(m.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }
 
@@ -36,6 +36,6 @@ public class AxcPoints implements Executor {
         user.getRank().setPoints(points);
         RankManager.getInstance().update(user);
 
-        s.sendMessage(m.adminPointsChanged.replace("{PLAYER}", user.getName()).replace("{POINTS}", Integer.toString(points)));
+        sender.sendMessage(m.adminPointsChanged.replace("{PLAYER}", user.getName()).replace("{POINTS}", Integer.toString(points)));
     }
 }

@@ -24,9 +24,9 @@ import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 public class AxcMove implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) s;
+        Player p = (Player) sender;
 
         if (args.length < 1) {
             p.sendMessage(m.adminNoTagGiven);

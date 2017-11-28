@@ -13,28 +13,28 @@ import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 public class AxcUnban implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
-            s.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(m.adminNoTagGiven);
             return;
         }
 
         String tag = args[0];
         if (!GuildUtils.tagExists(tag)) {
-            s.sendMessage(m.adminNoGuildFound);
+            sender.sendMessage(m.adminNoGuildFound);
             return;
         }
 
         Guild guild = GuildUtils.byTag(tag);
         if (!guild.isBanned()) {
-            s.sendMessage(m.adminGuildNotBanned);
+            sender.sendMessage(m.adminGuildNotBanned);
             return;
         }
 
         BanUtils.unban(guild);
-        s.sendMessage(m.adminGuildUnban.replace("{GUILD}", guild.getName()));
+        sender.sendMessage(m.adminGuildUnban.replace("{GUILD}", guild.getName()));
         Bukkit.broadcastMessage(Messages.getInstance().broadcastUnban.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 }

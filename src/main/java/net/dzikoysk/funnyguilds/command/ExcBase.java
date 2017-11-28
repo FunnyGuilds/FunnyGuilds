@@ -23,10 +23,10 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 public class ExcBase implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         PluginConfig c = Settings.getConfig();
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) s;
+        Player p = (Player) sender;
         User user = User.get(p);
 
         if (!c.baseEnable) {

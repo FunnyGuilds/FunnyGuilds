@@ -16,28 +16,28 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 public class AxcAdd implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
-            s.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(m.adminNoTagGiven);
             return;
         }
 
         if (args.length < 2) {
-            s.sendMessage(m.adminNoNickGiven);
+            sender.sendMessage(m.adminNoNickGiven);
             return;
         }
 
         User user = User.get(args[1]);
         if (user.hasGuild()) {
-            s.sendMessage(m.adminUserHasGuild);
+            sender.sendMessage(m.adminUserHasGuild);
             return;
         }
 
         Guild guild = GuildUtils.byTag(args[0]);
         if (guild == null) {
-            s.sendMessage(m.adminNoGuildFound);
+            sender.sendMessage(m.adminNoGuildFound);
             return;
         }
 

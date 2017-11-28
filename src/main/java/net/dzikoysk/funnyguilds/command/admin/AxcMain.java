@@ -8,9 +8,9 @@ import net.dzikoysk.funnyguilds.data.Messages;
 public class AxcMain implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         for (String line : Messages.getInstance().adminHelpList) {
-            s.sendMessage(line);
+            sender.sendMessage(line);
         }
     }
 }

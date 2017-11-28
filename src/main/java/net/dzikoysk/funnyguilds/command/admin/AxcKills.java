@@ -10,16 +10,16 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 public class AxcKills implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
-            s.sendMessage(m.adminNoNickGiven);
+            sender.sendMessage(m.adminNoNickGiven);
             return;
         }
 
         if (args.length < 2) {
-            s.sendMessage(m.adminNoKillsGiven);
+            sender.sendMessage(m.adminNoKillsGiven);
             return;
         }
 
@@ -27,12 +27,12 @@ public class AxcKills implements Executor {
         try {
             kills = Integer.valueOf(args[1]);
         } catch (NumberFormatException e) {
-            s.sendMessage(m.adminErrorInNumber.replace("{ERROR}", args[1]));
+            sender.sendMessage(m.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }
 
         User user = User.get(args[0]);
         user.getRank().setKills(kills);
-        s.sendMessage(m.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(kills)));
+        sender.sendMessage(m.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(kills)));
     }
 }

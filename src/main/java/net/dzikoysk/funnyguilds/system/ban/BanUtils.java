@@ -5,10 +5,10 @@ import java.util.Date;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
 public final class BanUtils {
@@ -55,7 +55,7 @@ public final class BanUtils {
     public static String getBanMessage(User user) {
         String message = Messages.getInstance().banMessage;
         message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
-        message = StringUtils.replace(message, "{DATE}", FunnyGuilds.DATE_FORMAT.format(new Date(user.getBan())));
+        message = StringUtils.replace(message, "{DATE}", Settings.getConfig().dateFormat.format(new Date(user.getBan())));
         message = StringUtils.replace(message, "{REASON}", user.getReason());
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
         return ChatColor.translateAlternateColorCodes('&', message);

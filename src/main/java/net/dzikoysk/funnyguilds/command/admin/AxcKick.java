@@ -15,23 +15,23 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 public class AxcKick implements Executor {
 
     @Override
-    public void execute(CommandSender s, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
-            s.sendMessage(m.adminNoNickGiven);
+            sender.sendMessage(m.adminNoNickGiven);
             return;
         }
 
         User user = User.get(args[0]);
 
         if (!user.hasGuild()) {
-            s.sendMessage(m.adminNoGuild);
+            sender.sendMessage(m.adminNoGuild);
             return;
         }
 
         if (user.isOwner()) {
-            s.sendMessage(m.adminGuildOwner);
+            sender.sendMessage(m.adminGuildOwner);
             return;
         }
 
@@ -47,7 +47,7 @@ public class AxcKick implements Executor {
             p.sendMessage(m.kickToPlayer.replace("{GUILD}", guild.getName()));
         }
 
-        s.sendMessage(m.kickToOwner.replace("{PLAYER}", user.getName()));
+        sender.sendMessage(m.kickToOwner.replace("{PLAYER}", user.getName()));
         Bukkit.broadcastMessage(m.broadcastKick.replace("{PLAYER}", user.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 }
