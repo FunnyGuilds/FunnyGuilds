@@ -24,7 +24,7 @@ public class Commands {
 
     public void register() {
         final PluginConfig.Commands commands = Settings.getConfig().commands;
-        new ExecutorCaller(new ExcFunnyGuilds(), commands.funnyguilds.name, null, commands.funnyguilds.aliases);
+        new ExecutorCaller(new ExcFunnyGuilds(), commands.funnyguilds.name, null, commands.funnyguilds.aliases, false);
         new ExecutorCaller(new ExcCreate(), commands.create.name, "funnyguilds.create", commands.create.aliases);
         new ExecutorCaller(new ExcDelete(), commands.delete.name, "funnyguilds.delete", commands.delete.aliases);
         new ExecutorCaller(new ExcConfirm(), commands.confirm.name, "funnyguilds.delete", commands.confirm.aliases);
