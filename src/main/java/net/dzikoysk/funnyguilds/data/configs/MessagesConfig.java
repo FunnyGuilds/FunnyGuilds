@@ -7,6 +7,9 @@ import org.diorite.cfg.annotations.CfgCollectionStyle;
 import org.diorite.cfg.annotations.CfgComment;
 
 public class MessagesConfig {
+    @CfgComment("<------- Global Date Format -------> #")
+    public String dateFormat = "dd.MM.yyyy HH:mm:ss";
+    
     @CfgComment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";
     public String blockedWorld = "&cZarzadzanie gildiami jest zablokowane na tym swiecie!";

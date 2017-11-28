@@ -60,4 +60,6 @@ public final class BanUtils {
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
         return ChatColor.translateAlternateColorCodes('&', message);
     }
+    
+    private BanUtils() {}
 }

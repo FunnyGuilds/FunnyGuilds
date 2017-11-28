@@ -22,6 +22,7 @@ public class Messages {
                 if (field.getType() == String.class) {
                     field.set(instance, StringUtils.colored((String) field.get(instance)));
                 }
+                
                 if (field.getType() == List.class) {
                     @SuppressWarnings("unchecked") final List<String> list = (List<String>) field.get(instance);
                     for (int i = 0; i < list.size(); i++) {
@@ -38,6 +39,7 @@ public class Messages {
         if (instance == null) {
             new Messages();
         }
+        
         return instance;
     }
 

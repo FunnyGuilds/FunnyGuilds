@@ -34,4 +34,6 @@ public final class ProtectionUtils {
                 return false;
         }
     }
+    
+    private ProtectionUtils() {}
 }
