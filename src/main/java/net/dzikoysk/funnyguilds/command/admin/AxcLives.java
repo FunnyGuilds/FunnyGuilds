@@ -1,39 +1,32 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import org.bukkit.command.CommandSender;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class AxcLives implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender s, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player player = (Player) sender;
-
-        if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.permission);
-            return;
-        }
 
         if (args.length < 1) {
-            player.sendMessage(ChatColor.RED + "Podaj tag gildii!");
+            s.sendMessage(m.adminNoTagGiven);
             return;
         }
 
         if (args.length < 2) {
-            player.sendMessage(ChatColor.RED + "Podaj ilosc zyc!");
+            s.sendMessage(m.adminNoLivesGiven);
             return;
         }
 
         Guild guild = GuildUtils.byTag(args[0]);
         if (guild == null) {
-            player.sendMessage(ChatColor.RED + "Nie ma gildii o takim tagu!");
+            s.sendMessage(m.adminNoGuildFound);
             return;
         }
 
@@ -41,12 +34,11 @@ public class AxcLives implements Executor {
         try {
             lives = Integer.valueOf(args[1]);
         } catch (NumberFormatException e) {
-            player.sendMessage(ChatColor.RED + "Nieprawidlowa ilosc zyc! Nieznana jest liczba: " + ChatColor.DARK_RED + args[1]);
+            s.sendMessage(m.adminErrorInNumber.replace("{ERROR}", args[1]));;
             return;
         }
 
         guild.setLives(lives);
-        player.sendMessage(ChatColor.GRAY + "Ustawiono " + ChatColor.AQUA + lives + " zyc " + ChatColor.GRAY + "dla gildii " + ChatColor.AQUA + guild.getTag());
+        s.sendMessage(m.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives)));
     }
-
 }

@@ -11,6 +11,7 @@ public final class ProtectionUtils {
         if (action == Action.RIGHT_CLICK_BLOCK) {
             return checkBlock(block);
         }
+        
         return false;
     }
 
@@ -32,9 +33,5 @@ public final class ProtectionUtils {
             default:
                 return false;
         }
-    }
-
-    private ProtectionUtils() {
-
     }
 }

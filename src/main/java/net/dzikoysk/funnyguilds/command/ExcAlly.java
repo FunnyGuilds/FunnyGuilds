@@ -1,7 +1,11 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.util.List;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -11,26 +15,22 @@ import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class ExcAlly implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender s, String[] args) {
         MessagesConfig messages = Messages.getInstance();
-        Player player = (Player) sender;
-        User user = User.get(player);
+        Player p = (Player) s;
+        User user = User.get(p);
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.allyHasNotGuild);
+            p.sendMessage(messages.allyHasNotGuild);
             return;
         }
 
         if (!user.isOwner()) {
-            player.sendMessage(messages.allyIsNotOwner);
+            p.sendMessage(messages.allyIsNotOwner);
             return;
         }
 
@@ -39,37 +39,34 @@ public class ExcAlly implements Executor {
 
         if (args.length < 1) {
             if (invitations.size() == 0) {
-                player.sendMessage(messages.allyHasNotInvitation);
+                p.sendMessage(messages.allyHasNotInvitation);
                 return;
             }
 
             List<String> list = messages.allyInvitationList;
-            String[] msgs = list.toArray(new String[list.size()]);
             String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
-            for (String msg : msgs) {
-                player.sendMessage(msg.replace("{GUILDS}", guildNames));
+            for (String msg : list) {
+                p.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
 
             return;
         }
 
         String tag = args[0];
-
         if (!GuildUtils.tagExists(tag)) {
-            player.sendMessage(StringUtils.replace(messages.allyGuildExists, "{TAG}", tag));
+            p.sendMessage(StringUtils.replace(messages.allyGuildExists, "{TAG}", tag));
             return;
         }
 
         Guild invitedGuild = GuildUtils.byTag(tag);
-
         if (guild.equals(invitedGuild)) {
-            player.sendMessage(messages.allySame);
+            p.sendMessage(messages.allySame);
             return;
         }
 
         if (guild.getAllies().contains(invitedGuild)) {
-            player.sendMessage(messages.allyAlly);
+            p.sendMessage(messages.allyAlly);
             return;
         }
 
@@ -78,13 +75,11 @@ public class ExcAlly implements Executor {
 
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
+            p.sendMessage(StringUtils.replace(messages.allyDone, "{GUILD}", invitedGuild.getName()));
 
-            player.sendMessage(StringUtils.replace(messages.allyDone, "{GUILD}", invitedGuild.getName()));
-
-            OfflineUser of = invitedGuild.getOwner().getOfflineUser();
-
-            if (of.isOnline()) {
-                of.getPlayer().sendMessage(messages.allyIDone.replace("{GUILD}", guild.getName()));
+            Player owner = invitedGuild.getOwner().getPlayer();
+            if (owner !=null) {
+                owner.sendMessage(messages.allyIDone.replace("{GUILD}", guild.getName()));
             }
 
             for (User u : guild.getMembers()) {
@@ -100,25 +95,22 @@ public class ExcAlly implements Executor {
 
         if (InvitationList.hasInvitationFrom(invitedGuild, guild)) {
             InvitationList.expireInvitation(guild, invitedGuild);
-            player.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
+            p.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
 
-            OfflineUser of = invitedGuild.getOwner().getOfflineUser();
-            if (of.isOnline()) {
-                of.getPlayer().sendMessage(messages.allyIReturn.replace("{GUILD}", guild.getName()));
+            Player owner = invitedGuild.getOwner().getPlayer();
+            if (owner !=null) {
+                owner.sendMessage(messages.allyIReturn.replace("{GUILD}", guild.getName()));
             }
 
             return;
         }
 
         InvitationList.createInvitation(guild, invitedGuild);
+        p.sendMessage(messages.allyInviteDone.replace("{GUILD}", invitedGuild.getName()));
 
-        player.sendMessage(messages.allyInviteDone.replace("{GUILD}", invitedGuild.getName()));
-
-        OfflineUser of = invitedGuild.getOwner().getOfflineUser();
-
-        if (of.isOnline()) {
-            of.getPlayer().sendMessage(messages.allyToInvited.replace("{GUILD}", guild.getName()));
+        Player owner = invitedGuild.getOwner().getPlayer();
+        if (owner !=null) {
+            owner.sendMessage(messages.allyToInvited.replace("{GUILD}", guild.getName()));
         }
     }
-
 }

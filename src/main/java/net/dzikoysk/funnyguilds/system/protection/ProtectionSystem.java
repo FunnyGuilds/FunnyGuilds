@@ -20,31 +20,34 @@ public final class ProtectionSystem {
         if (region == null) {
             return false;
         }
-        return region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector()
-                .equals(loc.getBlock().getLocation().toVector());
+        
+        return region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector().equals(loc.getBlock().getLocation().toVector());
     }
 
     public static boolean build(Player player, Location location, boolean build) {
         if (player == null || location == null) {
             return false;
         }
+        
         if (player.hasPermission("funnyguilds.admin.build")) {
             return false;
         }
+        
         Region region = RegionUtils.getAt(location);
         if (region == null) {
             return false;
         }
+        
         Guild guild = region.getGuild();
         if (guild == null || guild.getName() == null) {
             return false;
         }
+        
         User user = User.get(player);
         if (guild.getMembers().contains(user)) {
             if (build && !guild.canBuild()) {
                 player.sendMessage(Messages.getInstance().regionExplodeInteract.replace("{TIME}",
-                        Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))
-                ));
+                        Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))));
                 return true;
             } else if (location.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
                 Material m = Settings.getConfig().createMaterial;
@@ -52,8 +55,10 @@ public final class ProtectionSystem {
                     return true;
                 }
             }
+            
             return false;
         }
+        
         player.sendMessage(Messages.getInstance().regionOther);
         return true;
     }

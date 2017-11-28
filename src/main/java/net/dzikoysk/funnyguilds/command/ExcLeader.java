@@ -1,15 +1,14 @@
 package net.dzikoysk.funnyguilds.command;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.util.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class ExcLeader implements Executor {
 
@@ -35,21 +34,18 @@ public class ExcLeader implements Executor {
         }
 
         String name = args[0];
-
         if (!UserUtils.playedBefore(name)) {
             p.sendMessage(m.leaderPlayedBefore);
             return;
         }
 
         User user = User.get(name);
-
         if (owner.equals(user)) {
-            p.sendMessage(StringUtils.colored("&cNie mozesz sobie oddac zalozyciela!"));
+            p.sendMessage(m.leaderMustBeDifferent);
             return;
         }
 
         Guild guild = owner.getGuild();
-
         if (!guild.getMembers().contains(user)) {
             p.sendMessage(m.leaderIsNotMember);
             return;
@@ -57,8 +53,8 @@ public class ExcLeader implements Executor {
 
         guild.setOwner(user);
         p.sendMessage(m.leaderSet);
-        Player o = Bukkit.getPlayer(user.getName());
-
+        
+        Player o = user.getPlayer();
         if (o != null) {
             o.sendMessage(m.leaderOwner);
         }

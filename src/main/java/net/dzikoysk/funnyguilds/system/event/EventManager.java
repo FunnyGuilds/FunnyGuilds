@@ -17,6 +17,7 @@ public class EventManager {
         if (instance == null) {
             new EventManager();
         }
+        
         return instance;
     }
 

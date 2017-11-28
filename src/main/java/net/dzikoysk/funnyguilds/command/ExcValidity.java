@@ -1,5 +1,14 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -9,23 +18,14 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.TimeUtils;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class ExcValidity implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        PluginConfig s = Settings.getConfig();
+    public void execute(CommandSender s, String[] args) {
+        PluginConfig pc = Settings.getConfig();
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
+        Player p = (Player) s;
         User user = User.get(p);
         Guild guild = user.getGuild();
 
@@ -39,17 +39,18 @@ public class ExcValidity implements Executor {
             return;
         }
 
-        if (s.validityWhen != 0) {
+        if (pc.validityWhen != 0) {
             long c = guild.getValidity();
             long d = c - System.currentTimeMillis();
-            if (d > s.validityWhen) {
-                long when = d - s.validityWhen;
+            
+            if (d > pc.validityWhen) {
+                long when = d - pc.validityWhen;
                 p.sendMessage(m.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(when)));
                 return;
             }
         }
 
-        List<ItemStack> itemsList = s.validityItems;
+        List<ItemStack> itemsList = pc.validityItems;
         for (ItemStack itemStack : itemsList) {
             if (!p.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
                 String msg = m.validityItems;
@@ -60,6 +61,7 @@ public class ExcValidity implements Executor {
                     sb.append(itemStack.getType().toString().toLowerCase());
                     msg = msg.replace("{ITEM}", sb.toString());
                 }
+                
                 if (msg.contains("{ITEMS}")) {
                     ArrayList<String> list = new ArrayList<String>();
                     for (ItemStack it : itemsList) {
@@ -69,11 +71,14 @@ public class ExcValidity implements Executor {
                         sb.append(it.getType().toString().toLowerCase());
                         list.add(sb.toString());
                     }
+                    
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
                 }
+                
                 p.sendMessage(msg);
                 return;
             }
+            
             p.getInventory().removeItem(itemStack);
         }
 
@@ -82,13 +87,9 @@ public class ExcValidity implements Executor {
             c = System.currentTimeMillis();
         }
 
-        c += Settings.getConfig().validityTime;
+        c += pc.validityTime;
         guild.setValidity(c);
 
-        DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        Date v = new Date(c);
-
-        p.sendMessage(m.validityDone.replace("{DATE}", date.format(v)));
+        p.sendMessage(m.validityDone.replace("{DATE}", FunnyGuilds.DATE_FORMAT.format(new Date(c))));
     }
-
 }

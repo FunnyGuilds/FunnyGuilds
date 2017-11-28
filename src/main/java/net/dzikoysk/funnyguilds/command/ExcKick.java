@@ -54,7 +54,6 @@ public class ExcKick implements Executor {
         }
 
         Guild guild = u.getGuild();
-
         IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, up);
 
         guild.removeMember(uk);
@@ -66,12 +65,11 @@ public class ExcKick implements Executor {
 
         p.sendMessage(m.kickToOwner.replace("{PLAYER}", uk.getName()));
 
-        Player pk = Bukkit.getPlayer(uk.getName());
+        Player pk = uk.getPlayer();
         if (pk != null) {
             pk.sendMessage(m.kickToPlayer.replace("{GUILD}", guild.getName()));
         }
 
         Bukkit.broadcastMessage(m.broadcastKick.replace("{PLAYER}", uk.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
-
 }

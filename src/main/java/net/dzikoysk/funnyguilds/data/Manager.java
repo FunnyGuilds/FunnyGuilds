@@ -21,11 +21,13 @@ public class Manager {
         instance = this;
         Messages.getInstance();
         Settings.getConfig();
+        
         if (Settings.getConfig().dataType.mysql) {
             DatabaseBasic.getInstance().load();
         } else {
             Flat.getInstance().load();
         }
+        
         Data.getInstance();
     }
 
@@ -33,6 +35,7 @@ public class Manager {
         if (instance != null) {
             return instance;
         }
+        
         new Manager().start();
         return instance;
     }

@@ -22,11 +22,13 @@ public final class RegionUtils {
         if (name == null) {
             return null;
         }
+        
         for (Region region : REGION_LIST) {
             if (region != null && region.getName() != null && region.getName().equalsIgnoreCase(name)) {
                 return region;
             }
         }
+        
         return null;
     }
 
@@ -36,6 +38,7 @@ public final class RegionUtils {
                 return true;
             }
         }
+        
         return false;
     }
 
@@ -45,6 +48,7 @@ public final class RegionUtils {
                 return region;
             }
         }
+        
         return null;
     }
 
@@ -52,26 +56,32 @@ public final class RegionUtils {
         if (center == null) {
             return false;
         }
+        
         PluginConfig s = Settings.getConfig();
         int i = s.regionSize;
         if (s.enlargeItems != null) {
             i += (s.enlargeItems.size() * s.enlargeSize);
         }
+        
         int requiredDistance = (2 * i) + s.regionMinDistance;
         for (Region region : REGION_LIST) {
             if (region.getCenter() == null) {
                 continue;
             }
+            
             if (region.getCenter().equals(center)) {
                 continue;
             }
+            
             if (!center.getWorld().equals(region.getCenter().getWorld())) {
                 continue;
             }
+            
             if (center.distance(region.getCenter()) < requiredDistance) {
                 return true;
             }
         }
+        
         return false;
     }
 
@@ -79,9 +89,11 @@ public final class RegionUtils {
         if (Settings.getConfig().dataType.flat) {
             Flat.getRegionFile(region).delete();
         }
+        
         if (Settings.getConfig().dataType.mysql) {
             new DatabaseRegion(region).delete();
         }
+        
         region.delete();
     }
 
@@ -90,11 +102,13 @@ public final class RegionUtils {
         if (lsg == null) {
             return list;
         }
+        
         for (Region r : lsg) {
             if (r != null && r.getName() != null) {
                 list.add(r.getName());
             }
         }
+        
         return list;
     }
 

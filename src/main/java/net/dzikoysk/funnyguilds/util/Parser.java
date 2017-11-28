@@ -45,17 +45,16 @@ public class Parser {
             String str = split[i];
 
             if (str.contains("name")) {
-                String[] split0 = str.split(":");
-                String itemName = StringUtils.replace(split0[1], "_", " ");
-                item.setName(itemName, true);
+                String[] splitName = str.split(":");
+                item.setName(StringUtils.replace(StringUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_", " "), true);
             } else if (str.contains("lore")) {
-                String[] split0 = str.split(":");
-                String loreArgs = String.join("", Arrays.copyOfRange(split0, 1, split0.length));
+                String[] splitLore = str.split(":");
+                String loreArgs = String.join(":", Arrays.copyOfRange(splitLore, 1, splitLore.length));
                 String[] lores = loreArgs.split("#");
-                List<String> lore = new ArrayList<>();
+                List<String> lore = new ArrayList<String>();
 
                 for (String s : lores) {
-                    lore.add(StringUtils.replace(StringUtils.colored(s), "_", " "));
+                    lore.add(StringUtils.replace(StringUtils.replace(StringUtils.colored(s), "_", " "), "{HASH}", "#"));
                 }
                 
                 item.setLore(lore);

@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -8,63 +11,52 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class AxcBan implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender s, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player player = (Player) sender;
-
-        if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.permission);
-            return;
-        }
 
         if (args.length < 1) {
-            player.sendMessage(StringUtils.colored("&cPodaj tag gildii!"));
+            s.sendMessage(m.adminNoTagGiven);
             return;
         } else if (args.length < 2) {
-            player.sendMessage(StringUtils.colored("&cPodaj czas na jaki ma byc zbanowana gildia!"));
+            s.sendMessage(m.adminNoBanTimeGiven);
             return;
         } else if (args.length < 3) {
-            player.sendMessage(StringUtils.colored("&cPodaj powod!"));
+            s.sendMessage(m.adminNoReasonGiven);
             return;
         }
-
-        String tag = args[0];
-        String ts = args[1];
 
         StringBuilder sb = new StringBuilder();
         for (int i = 2; i < args.length; i++) {
             sb.append(args[i]);
             sb.append(" ");
         }
+        
         String reason = sb.toString();
-
-        if (!GuildUtils.tagExists(tag)) {
-            player.sendMessage(StringUtils.colored("&cGildia o takim tagu nie istnieje!"));
+        
+        if (!GuildUtils.tagExists(args[0])) {
+            s.sendMessage(m.adminNoGuildFound);
             return;
         }
 
-        Guild guild = GuildUtils.byTag(tag);
+        Guild guild = GuildUtils.byTag(args[0]);
         if (guild.isBanned()) {
-            player.sendMessage(StringUtils.colored("&cTa gildia jest juz zbanowana!"));
+            s.sendMessage(m.adminGuildBanned);
             return;
         }
 
-        long time = Parser.parseTime(ts);
+        long time = Parser.parseTime(args[1]);
         if (time < 1) {
-            player.sendMessage(StringUtils.colored("&cPodano nieprawidlowy czas!"));
+            s.sendMessage(m.adminTimeError);
             return;
         }
 
         BanUtils.ban(guild, time, reason);
-        player.sendMessage(StringUtils.colored("&7Zbanowano gildie &b" + guild.getName() + " &7na okres &b" + ts + "&7!"));
-        Bukkit.broadcastMessage(Messages.getInstance().broadcastBan.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()).replace("{REASON}", StringUtils.colored(reason)).replace("{TIME}", ts));
+        s.sendMessage(m.adminGuildBan.replace("{GUILD}", guild.getName()).replace("{TIME}", args[1]));
+        Bukkit.broadcastMessage(Messages.getInstance().broadcastBan.replace("{GUILD}", guild.getName())
+                        .replace("{TAG}", guild.getTag()).replace("{REASON}", StringUtils.colored(reason)).replace("{TIME}", args[1]));
     }
-
 }

@@ -16,9 +16,9 @@ import org.bukkit.entity.Player;
 public class MxcBase implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender s, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
+        Player p = (Player) s;
         User user = User.get(p);
 
         if (!user.hasGuild()) {
@@ -52,5 +52,4 @@ public class MxcBase implements Executor {
 
         p.sendMessage(m.setbaseDone);
     }
-
 }

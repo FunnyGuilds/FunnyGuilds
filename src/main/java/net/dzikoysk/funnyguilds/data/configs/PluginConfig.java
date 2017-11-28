@@ -70,6 +70,7 @@ public class PluginConfig {
     @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant]")
     @CfgComment("Spacja = _ ")
     @CfgComment("Nowa linia lore = #")
+    @CfgComment("Aby w lore uzyc znaku # wstaw {HASH}")
     @CfgName("items")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> items_ = Arrays.asList("5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!", "5 dirt", "5 tnt");
@@ -784,8 +785,7 @@ public class PluginConfig {
         public boolean flat;
         public boolean mysql;
 
-        public DataType() {
-        }
+        public DataType() {}
 
         public DataType(boolean flat, boolean mysql) {
             this.flat = flat;

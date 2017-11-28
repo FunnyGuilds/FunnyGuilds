@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 public class ExcConfirm implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender s, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
+        Player p = (Player) s;
         User lp = User.get(p);
 
         if (!lp.hasGuild()) {
@@ -29,7 +29,7 @@ public class ExcConfirm implements Executor {
             return;
         }
 
-        if (Settings.getConfig().regionDeleteIfNear && lp.getGuild().isSomeoneInRegion()) {
+        if (!Settings.getConfig().regionDeleteIfNear && lp.getGuild().isSomeoneInRegion()) {
             p.sendMessage(m.deleteSomeoneIsNear);
             return;
         }
@@ -45,8 +45,6 @@ public class ExcConfirm implements Executor {
         GuildUtils.deleteGuild(lp.getGuild());
 
         p.sendMessage(m.deleteSuccessful.replace("{GUILD}", name).replace("{TAG}", tag));
-
         Bukkit.getServer().broadcastMessage(m.broadcastDelete.replace("{PLAYER}", p.getName()).replace("{GUILD}", name).replace("{TAG}", tag));
     }
-
 }

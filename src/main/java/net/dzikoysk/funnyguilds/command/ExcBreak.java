@@ -1,7 +1,11 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.util.List;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -10,10 +14,6 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class ExcBreak implements Executor {
 
@@ -34,7 +34,6 @@ public class ExcBreak implements Executor {
         }
 
         Guild guild = lp.getGuild();
-
         if (guild.getAllies() == null || guild.getAllies().isEmpty()) {
             p.sendMessage(m.breakHasNotAllies);
             return;
@@ -42,23 +41,22 @@ public class ExcBreak implements Executor {
 
         if (args.length < 1) {
             List<String> list = m.breakAlliesList;
-            String[] msgs = list.toArray(new String[list.size()]);
             String iss = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
-            for (String msg : msgs) {
+            
+            for (String msg : list) {
                 p.sendMessage(msg.replace("{GUILDS}", iss));
             }
+            
             return;
         }
 
         String tag = args[0];
-
         if (!GuildUtils.tagExists(tag)) {
             p.sendMessage(m.breakGuildExists.replace("{TAG}", tag));
             return;
         }
 
         Guild tb = GuildUtils.byTag(tag);
-
         if (!guild.getAllies().contains(tb)) {
             p.sendMessage(m.breakAllyExists.replace("{GUILD}", tb.getName()).replace("{TAG}", tag));
         }
@@ -69,16 +67,16 @@ public class ExcBreak implements Executor {
         for (User u : guild.getMembers()) {
             IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, tb);
         }
+        
         for (User u : tb.getMembers()) {
             IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, guild);
         }
 
         p.sendMessage(m.breakDone.replace("{GUILD}", tb.getName()).replace("{TAG}", tb.getTag()));
 
-        OfflineUser of = tb.getOwner().getOfflineUser();
-        if (of.isOnline()) {
-            of.getPlayer().sendMessage(m.allyIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        Player owner = tb.getOwner().getPlayer();
+        if (owner !=null) {
+            owner.sendMessage(m.allyIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
         }
     }
-
 }

@@ -16,11 +16,13 @@ public class ExcPlayer implements Executor {
     public void execute(CommandSender s, String[] args) {
         MessagesConfig msg = Messages.getInstance();
         Player p = (Player) s;
-        String name = p.getName();
 
-        if (args.length > 0) {
-            name = args[0];
+        if (args.length == 0 && !(s instanceof Player)) {
+            s.sendMessage(Messages.getInstance().playerOnly);
+            return;
         }
+        
+        String name = p.getName();
         if (!UserUtils.playedBefore(name)) {
             s.sendMessage(msg.playerInfoExists);
             return;
@@ -40,13 +42,14 @@ public class ExcPlayer implements Executor {
                 m = StringUtils.replace(m, "{GUILD}", "Brak");
                 m = StringUtils.replace(m, "{TAG}", "Brak");
             }
+            
             m = StringUtils.replace(m, "{PLAYER}", user.getName());
             m = StringUtils.replace(m, "{POINTS}", Integer.toString(user.getRank().getPoints()));
             m = StringUtils.replace(m, "{KILLS}", Integer.toString(user.getRank().getKills()));
             m = StringUtils.replace(m, "{DEATHS}", Integer.toString(user.getRank().getDeaths()));
             m = StringUtils.replace(m, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user)));
+            
             s.sendMessage(m);
         }
     }
-
 }

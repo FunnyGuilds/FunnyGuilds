@@ -31,11 +31,13 @@ public class EventSettings {
         Manager.loadDefaultFiles(new String[]{"events.yml"});
         PandaConfiguration pc = new PandaConfiguration(FILE);
         String version = pc.getString("version");
+        
         if (version == null || !version.equals(VERSION)) {
             FILE.delete();
             Manager.loadDefaultFiles(new String[]{"events.yml"});
             pc = new PandaConfiguration(FILE);
         }
+        
         christmasEvent = pc.getBoolean("christmas-event");
         newYearEvent = pc.getBoolean("newYear-event");
     }

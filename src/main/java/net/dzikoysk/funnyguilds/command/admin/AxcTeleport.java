@@ -1,50 +1,41 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class AxcTeleport implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-
+    public void execute(CommandSender s, String[] args) {
         MessagesConfig m = Messages.getInstance();
-        Player player = (Player) sender;
-
-        if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(m.permission);
-            return;
-        }
+        Player p = (Player) s;
 
         if (args.length < 1) {
-            player.sendMessage(ChatColor.RED + "Podaj tag gildii!");
+            p.sendMessage(m.adminNoTagGiven);
             return;
         }
 
-        String tag = args[0];
-
-        if (!GuildUtils.tagExists(tag)) {
-            player.sendMessage(ChatColor.RED + "Nie ma gildii o takim tagu!");
+        if (!GuildUtils.tagExists(args[0])) {
+            p.sendMessage(m.adminNoGuildFound);
             return;
         }
 
-        String rs = GuildUtils.byTag(tag).getRegion();
+        String rs = GuildUtils.byTag(args[0]).getRegion();
         Region region = RegionUtils.get(rs);
 
         if (region == null || region.getCenter() == null) {
-            player.sendMessage(ChatColor.RED + "Gildia nie posiada terenu!");
+            p.sendMessage(m.adminNoRegionFound);
             return;
         }
 
-        player.sendMessage(ChatColor.AQUA + "Teleportacja" + ChatColor.GRAY + "...");
-        player.teleport(region.getCenter());
+        p.sendMessage(m.baseTeleport);
+        p.teleport(region.getCenter());
     }
-
 }

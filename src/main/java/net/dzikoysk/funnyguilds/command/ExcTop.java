@@ -11,13 +11,7 @@ public class ExcTop implements Executor {
     public void execute(CommandSender s, String[] args) {
         for (String m : Messages.getInstance().topList) {
             String r = Parser.parseRank(m);
-
-            if (r != null) {
-                m = r;
-            }
-
-            s.sendMessage(m);
+            s.sendMessage(r == null ? m : r);
         }
     }
-
 }

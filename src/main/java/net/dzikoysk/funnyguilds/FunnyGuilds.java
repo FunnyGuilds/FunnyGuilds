@@ -30,9 +30,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 public class FunnyGuilds extends JavaPlugin {
 
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    
     private static FunnyGuilds funnyguilds;
     private static Thread thread;
     private static String version;

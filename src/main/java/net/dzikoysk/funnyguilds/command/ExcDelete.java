@@ -35,5 +35,4 @@ public class ExcDelete implements Executor {
         ConfirmationList.add(u.getUUID());
         p.sendMessage(m.deleteConfirm);
     }
-
 }

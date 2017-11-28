@@ -1,15 +1,15 @@
 package net.dzikoysk.funnyguilds.system.ban;
 
+import java.util.Date;
+
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public final class BanUtils {
 
@@ -17,6 +17,7 @@ public final class BanUtils {
         guild.setBan(time + System.currentTimeMillis());
         for (User user : guild.getMembers()) {
             ban(user, time, reason);
+            
             Player p = user.getPlayer();
             if (p != null && p.isOnline()) {
                 p.kickPlayer(ChatColor.GRAY + "Otrzymano bana za: " + ChatColor.RED + user.getReason());
@@ -45,23 +46,18 @@ public final class BanUtils {
         if (System.currentTimeMillis() < user.getBan()) {
             return true;
         }
+        
         user.setBan(0);
         user.setReason(null);
         return false;
     }
 
     public static String getBanMessage(User user) {
-        DateFormat date = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-        Date ban = new Date(user.getBan());
         String message = Messages.getInstance().banMessage;
         message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
-        message = StringUtils.replace(message, "{DATE}", date.format(ban));
+        message = StringUtils.replace(message, "{DATE}", FunnyGuilds.DATE_FORMAT.format(new Date(user.getBan())));
         message = StringUtils.replace(message, "{REASON}", user.getReason());
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
         return ChatColor.translateAlternateColorCodes('&', message);
-    }
-
-    private BanUtils() {
-
     }
 }

@@ -1,7 +1,10 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -9,63 +12,49 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class AxcAdd implements Executor {
 
     @Override
-    public void execute(CommandSender sender, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
-        Player player = (Player) sender;
-
-        if (!player.hasPermission("funnyguilds.admin")) {
-            player.sendMessage(messages.permission);
-            return;
-        }
+    public void execute(CommandSender s, String[] args) {
+        MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
-            player.sendMessage(ChatColor.RED + "Podaj tag gildii!");
+            s.sendMessage(m.adminNoTagGiven);
             return;
         }
 
         if (args.length < 2) {
-            player.sendMessage(ChatColor.RED + "Podaj nick gracza!");
+            s.sendMessage(m.adminNoNickGiven);
             return;
         }
 
-        String tag = args[0];
         User user = User.get(args[1]);
-        OfflineUser offline = user.getOfflineUser();
-
         if (user.hasGuild()) {
-            player.sendMessage(ChatColor.RED + "Ten gracz ma juz gildie!");
+            s.sendMessage(m.adminUserHasGuild);
             return;
         }
 
-        Guild guild = GuildUtils.byTag(tag);
+        Guild guild = GuildUtils.byTag(args[0]);
         if (guild == null) {
-            player.sendMessage(ChatColor.RED + "Taka gildia nie istnieje!");
+            s.sendMessage(m.adminNoGuildFound);
             return;
         }
 
         guild.addMember(user);
         user.setGuild(guild);
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
 
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, offline);
-
-        if (offline.isOnline()) {
-            Bukkit.getPlayer(user.getName()).sendMessage(messages.joinToMember.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        Player p = user.getPlayer();
+        if (p !=null) {
+            p.sendMessage(m.joinToMember.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
         }
 
-        Player owner = Bukkit.getPlayer(guild.getOwner().getName());
+        Player owner = guild.getOwner().getPlayer();
         if (owner != null) {
-            owner.sendMessage(messages.joinToOwner.replace("{PLAYER}", user.getName()));
+            owner.sendMessage(m.joinToOwner.replace("{PLAYER}", user.getName()));
         }
 
-        Bukkit.broadcastMessage(messages.broadcastJoin.replace("{PLAYER}", user.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", tag));
+        Bukkit.broadcastMessage(m.broadcastJoin.replace("{PLAYER}", user.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
-
 }
