@@ -22,8 +22,7 @@ public class Menu {
     private Map<Integer, Boolean> cancelled = new HashMap<>();
     private Map<Integer, Boolean> closed = new HashMap<>();
 
-    public Menu() {
-    }
+    public Menu() {}
 
     public void setItem(int slot, ItemStack item) {
         this.item.put(slot, item);
@@ -68,21 +67,26 @@ public class Menu {
                 int slot = entry.getKey() - 1;
                 ItemStack item = entry.getValue();
                 ItemMeta im = item.getItemMeta();
+                
                 if (slot <= slots || item != null) {
                     String l = this.lore.get(slot);
                     if (l != null) {
                         String[] table = l.split(";");
                         ArrayList<String> lore = new ArrayList<String>();
+                        
                         for (String line : table) {
                             lore.add(line);
                         }
+                        
                         im.setLore(lore);
                         item.setItemMeta(im);
                     }
+                    
                     inv.setItem(slot, item);
                 }
             }
         }
+        
         this.inv = inv;
     }
 
@@ -102,6 +106,7 @@ public class Menu {
         if (this.item.containsKey(i)) {
             return this.item.get(i);
         }
+        
         return null;
     }
 
@@ -109,6 +114,7 @@ public class Menu {
         if (this.lore.containsKey(i)) {
             return this.lore.get(i);
         }
+        
         return null;
     }
 
@@ -116,6 +122,7 @@ public class Menu {
         if (this.command.containsKey(i)) {
             return this.command.get(i);
         }
+        
         return null;
     }
 
@@ -123,6 +130,7 @@ public class Menu {
         if (this.cancelled.containsKey(i)) {
             return this.cancelled.get(i);
         }
+        
         return true;
     }
 
@@ -130,6 +138,7 @@ public class Menu {
         if (this.closed.containsKey(i)) {
             return this.closed.get(i);
         }
+        
         return true;
     }
 
@@ -159,6 +168,7 @@ public class Menu {
                 return i;
             }
         }
+        
         return 0;
     }
 }

@@ -6,19 +6,18 @@ import org.bukkit.inventory.ItemStack;
 import java.util.function.Consumer;
 
 public class GuiItem {
+    
     private final ItemStack item;
     private final Consumer<InventoryClickEvent> consumer;
 
     public GuiItem(final ItemStack item) {
         this.item = item;
-        this.consumer = ignored -> {
-        };
+        this.consumer = ignored -> {};
     }
 
     public GuiItem(final ItemStack item, final Consumer<InventoryClickEvent> consumer) {
         this.item = item;
-        this.consumer = consumer != null ? consumer : a -> {
-        };
+        this.consumer = consumer != null ? consumer : a -> {};
     }
 
     public ItemStack wrap() {
