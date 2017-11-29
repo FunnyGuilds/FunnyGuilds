@@ -599,9 +599,6 @@ public class PluginConfig {
 
     private GuiWindow loadGUI(List<String> contents, String title) {
         GuiWindow gui = new GuiWindow(StringUtils.colored(title), contents.size() / 9 + (contents.size() % 9 !=0 ? 1 : 0));
-        gui.setCloseEvent(close -> {
-            gui.unregister();
-        });
         
         for (int i=0; i < contents.size(); i++) {
             String var = contents.get(i);

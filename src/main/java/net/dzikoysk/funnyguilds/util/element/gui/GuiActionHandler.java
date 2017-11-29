@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.*;
 
 public class GuiActionHandler implements Listener {
+    
     @EventHandler
     public void onClick(final InventoryClickEvent e) {
         if (e.getInventory() != null && e.getInventory().getType().equals(InventoryType.CHEST)) {
@@ -15,6 +16,7 @@ public class GuiActionHandler implements Listener {
                 if (item != null) {
                     item.handleClick(e);
                 }
+                
                 e.setResult(Event.Result.DENY);
                 e.setCancelled(true);
             }
