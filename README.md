@@ -1,6 +1,7 @@
 FunnyGuilds
 [![Build Status](https://travis-ci.org/FunnyGuilds/FunnyGuilds.svg?branch=master)](https://travis-ci.org/FunnyGuilds/FunnyGuilds)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/93cfd46fda3e405989cb228295fe09ab)](https://www.codacy.com/app/dzikoysk/FunnyGuilds?utm_source=github.com&utm_medium=referral&utm_content=FunnyGuilds/FunnyGuilds&utm_campaign=badger)
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open")
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Average time to resolve an issue")
 [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u)
 ===========
 
