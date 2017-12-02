@@ -83,7 +83,7 @@ public class PluginConfig {
     @CfgExclude
     public List<ItemStack> createItems;
 
-    @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip")
+    @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @CfgName("items-vip")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> itemsVip_ = Collections.singletonList("1 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!");
@@ -99,7 +99,7 @@ public class PluginConfig {
     @CfgName("rank-create")
     public int rankCreate = 1000;
 
-    @CfgComment("Minimalny ranking wymagany do zalozenia gildi dla osoby z uprawnieniem funnyguilds.vip")
+    @CfgComment("Minimalny ranking wymagany do zalozenia gildi dla osoby z uprawnieniem funnyguilds.vip.rank")
     @CfgName("rank-create-vip")
     public int rankCreateVip = 800;
 
@@ -108,8 +108,8 @@ public class PluginConfig {
     @CfgName("use-common-gui")
     public boolean useCommonGUI = false;
     
-    @CfgComment("GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip")
-    @CfgComment("Jesli wlaczone jest use-common-gui - ponizsze GUI jest uzywane takze dla osob z uprawnieniem funnyguilds.vip")
+    @CfgComment("GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
+    @CfgComment("Jesli wlaczone jest use-common-gui - ponizsze GUI jest uzywane takze dla osob z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Kazda linijka listy oznacza jeden slot, liczba slotow powinna byc wielokrotnoscia liczby 9 i nie powinna byc wieksza niz 54")
     @CfgComment("Aby uzyc przedmiotu stworzonego w jednym slocie w innym mozna uzyc {GUI-nr}, np. {GUI-1} wstawi ten sam przedmiot, ktory jest w pierwszym slocie")
     @CfgComment("Aby wstawic przedmiot na gildie nalezy uzyc {ITEM-nr}, np. {ITEM-1} wstawi pierwszy przedmiot na gildie")
@@ -123,12 +123,12 @@ public class PluginConfig {
     @CfgExclude
     public GuiWindow guiItems;
     
-    @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip")
+    @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
     @CfgComment("Nazwa moze zawierac max. 32 znaki (wliczajac w to kody kolorow)")
     @CfgName("gui-items-title")
     public String guiItemsTitle = "&5&lPrzedmioty na gildie";
     
-    @CfgComment("GUI z itemami na gildie dla osob z uprawnieniem funnyguilds.vip")
+    @CfgComment("GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
     @CfgComment("Ponizsze GUI bedzie ignorowane jesli wlaczone jest use-common-gui")
     @CfgName("gui-items-vip")
@@ -140,7 +140,7 @@ public class PluginConfig {
     @CfgExclude
     public GuiWindow guiItemsVip;
     
-    @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip")
+    @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Nazwa moze zawierac max. 32 znaki (wliczajac w to kody kolorow)")
     @CfgName("gui-items-vip-title")
     public String guiItemsVipTitle = "&5&lPrzedmioty na gildie (VIP)";
