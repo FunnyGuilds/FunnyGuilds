@@ -22,6 +22,7 @@ public class ExcValidity implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         PluginConfig pc = Settings.getConfig();
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
@@ -39,6 +40,7 @@ public class ExcValidity implements Executor {
         }
 
         if (pc.validityWhen != 0) {
+
             long c = guild.getValidity();
             long d = c - System.currentTimeMillis();
             
@@ -52,23 +54,19 @@ public class ExcValidity implements Executor {
         List<ItemStack> itemsList = pc.validityItems;
         for (ItemStack itemStack : itemsList) {
             if (!p.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
+
                 String msg = m.validityItems;
+
                 if (msg.contains("{ITEM}")) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(itemStack.getAmount());
-                    sb.append(" ");
-                    sb.append(itemStack.getType().toString().toLowerCase());
-                    msg = msg.replace("{ITEM}", sb.toString());
+                    msg = msg.replace("{ITEM}", itemStack.getAmount() + " " + itemStack.getType().toString().toLowerCase());
                 }
                 
                 if (msg.contains("{ITEMS}")) {
-                    ArrayList<String> list = new ArrayList<String>();
+
+                    ArrayList<String> list = new ArrayList<>();
+
                     for (ItemStack it : itemsList) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(it.getAmount());
-                        sb.append(" ");
-                        sb.append(it.getType().toString().toLowerCase());
-                        list.add(sb.toString());
+                        list.add(it.getAmount() + " " + it.getType().toString().toLowerCase());
                     }
                     
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));

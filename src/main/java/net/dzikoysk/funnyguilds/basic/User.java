@@ -73,22 +73,22 @@ public class User implements Basic {
 
     public static User get(UUID uuid) {
         User u = UserUtils.get(uuid);
-        return u != null ? u : new User(uuid);
+        return (u != null) ? u : new User(uuid);
     }
 
     public static User get(Player player) {
         User u = UserUtils.get(player.getUniqueId());
-        return u != null ? u : new User(player);
+        return (u != null) ? u : new User(player);
     }
 
     public static User get(OfflinePlayer offline) {
         User u = UserUtils.get(offline.getName());
-        return u != null ? u : new User(offline.getName());
+        return (u != null) ? u : new User(offline.getName());
     }
 
     public static User get(String name) {
         User u = UserUtils.get(name);
-        return u != null ? u : new User(name);
+        return (u != null) ? u : new User(name);
     }
 
     public void removeGuild() {
@@ -103,7 +103,9 @@ public class User implements Basic {
 
     @Override
     public boolean changed() {
+
         boolean c = changes;
+
         if (c) {
             this.changes = false;
         }
@@ -121,14 +123,12 @@ public class User implements Basic {
     }
 
     public boolean isOwner() {
-        if (!hasGuild()) {
-            return false;
-        }
-        
-        return this.guild.getOwner().equals(this);
+        return hasGuild() && this.guild.getOwner().equals(this);
+
     }
 
     public boolean isDeputy() {
+
         if (!hasGuild()) {
             return false;
         }
@@ -141,12 +141,15 @@ public class User implements Basic {
     }
 
     public boolean isOnline() {
+
         if (this.name == null) {
             return false;
         }
         
         if (!ONLINE_USERS_CACHE.contains(this.uuid)) {
-            final Player player = Bukkit.getPlayer(this.uuid);
+
+            Player player = Bukkit.getPlayer(this.uuid);
+
             if (player != null) {
                 ONLINE_USERS_CACHE.add(player.getUniqueId());
                 return true;
@@ -186,6 +189,7 @@ public class User implements Basic {
     }
 
     public synchronized Scoreboard getScoreboard() {
+
         if (this.scoreboard == null) {
             this.scoreboard = ScoreboardStack.pull();
         }
@@ -198,6 +202,7 @@ public class User implements Basic {
     }
 
     public IndividualPrefix getIndividualPrefix() {
+
         if (this.prefix == null) {
             new IndividualPrefix(this);
         }
@@ -210,6 +215,7 @@ public class User implements Basic {
     }
 
     public Dummy getDummy() {
+
         if (this.dummy == null) {
             this.dummy = new Dummy(this);
         }
@@ -222,6 +228,7 @@ public class User implements Basic {
     }
 
     public Rank getRank() {
+
         if (this.rank != null) {
             return this.rank;
         }
@@ -248,6 +255,7 @@ public class User implements Basic {
     }
 
     public String getReason() {
+
         if (this.reason != null) {
             return StringUtils.colored(this.reason);
         }
@@ -311,6 +319,7 @@ public class User implements Basic {
     }
 
     public Player getPlayer() {
+
         if (!isOnline()) {
             return null;
         }
@@ -331,6 +340,7 @@ public class User implements Basic {
     }
 
     public int getPing() {
+
         int ping = 0;
         Player p = getPlayer();
         
@@ -371,28 +381,30 @@ public class User implements Basic {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
-        result = prime * result + (name == null ? 0 : name.hashCode());
-        result = prime * result + (uuid == null ? 0 : uuid.hashCode());
+        result = (prime * result) + ((name == null) ? 0 : name.hashCode());
+        result = (prime * result) + ((uuid == null) ? 0 : uuid.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (o == null) {
             return false;
         }
-        
+
         if (o.getClass() != this.getClass()) {
             return false;
         }
-        
+
         User u = (User) o;
+
         if (!u.getUUID().equals(this.uuid)) {
             return false;
         }
-        
+
         return u.getName().equals(this.name);
     }
 

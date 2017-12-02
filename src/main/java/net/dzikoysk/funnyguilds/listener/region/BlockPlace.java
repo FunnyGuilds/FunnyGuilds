@@ -9,9 +9,9 @@ public class BlockPlace implements Listener {
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
+
         if (ProtectionSystem.build(e.getPlayer(), e.getBlock().getLocation(), true)) {
             e.setCancelled(true);
         }
     }
-
 }

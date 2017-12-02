@@ -17,6 +17,7 @@ public class ExcInvite implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User lp = User.get(p);
@@ -35,8 +36,8 @@ public class ExcInvite implements Executor {
             p.sendMessage(m.invitePlayer);
             return;
         }
-        Guild guild = lp.getGuild();
 
+        Guild guild = lp.getGuild();
         if (guild.getMembers().size() >= Settings.getConfig().inviteMembers) {
             p.sendMessage(m.inviteAmount.replace("{AMOUNT}", Integer.toString(Settings.getConfig().inviteMembers)));
             return;

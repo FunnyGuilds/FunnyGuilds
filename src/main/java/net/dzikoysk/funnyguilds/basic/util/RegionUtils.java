@@ -19,12 +19,13 @@ public final class RegionUtils {
     }
 
     public static Region get(String name) {
+
         if (name == null) {
             return null;
         }
         
         for (Region region : REGION_LIST) {
-            if (region != null && region.getName() != null && region.getName().equalsIgnoreCase(name)) {
+            if ((region != null) && (region.getName() != null) && region.getName().equalsIgnoreCase(name)) {
                 return region;
             }
         }
@@ -33,6 +34,7 @@ public final class RegionUtils {
     }
 
     public static boolean isIn(Location loc) {
+
         for (Region region : REGION_LIST) {
             if (region.isIn(loc)) {
                 return true;
@@ -43,6 +45,7 @@ public final class RegionUtils {
     }
 
     public static Region getAt(Location loc) {
+
         for (Region region : REGION_LIST) {
             if (region.isIn(loc)) {
                 return region;
@@ -53,6 +56,7 @@ public final class RegionUtils {
     }
 
     public static boolean isNear(Location center) {
+
         if (center == null) {
             return false;
         }
@@ -62,9 +66,11 @@ public final class RegionUtils {
         if (s.enlargeItems != null) {
             i += (s.enlargeItems.size() * s.enlargeSize);
         }
-        
+
         int requiredDistance = (2 * i) + s.regionMinDistance;
+
         for (Region region : REGION_LIST) {
+
             if (region.getCenter() == null) {
                 continue;
             }
@@ -86,6 +92,7 @@ public final class RegionUtils {
     }
 
     public static void delete(Region region) {
+
         if (Settings.getConfig().dataType.flat) {
             Flat.getRegionFile(region).delete();
         }
@@ -98,13 +105,15 @@ public final class RegionUtils {
     }
 
     public static List<String> getNames(List<Region> lsg) {
+
         List<String> list = new ArrayList<>();
+
         if (lsg == null) {
             return list;
         }
         
         for (Region r : lsg) {
-            if (r != null && r.getName() != null) {
+            if ((r != null) && (r.getName() != null)) {
                 list.add(r.getName());
             }
         }

@@ -31,6 +31,7 @@ public class ExcCreate implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User u = User.get(p);
@@ -53,7 +54,7 @@ public class ExcCreate implements Executor {
             } else if (args.length == 1) {
                 p.sendMessage(m.createName);
                 return;
-            } else if (args.length > 2) {
+            } else {
                 p.sendMessage(m.createMore);
                 return;
             }
@@ -139,27 +140,22 @@ public class ExcCreate implements Executor {
 
         if (!u.getBypass()) {
             for (ItemStack is : itemsList) {
+
                 if (p.getInventory().containsAtLeast(is, is.getAmount())) {
                     continue;
                 }
                 
                 String msg = m.createItems;
                 if (msg.contains("{ITEM}")) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(is.getAmount());
-                    sb.append(" ");
-                    sb.append(is.getType().toString().toLowerCase());
-                    msg = msg.replace("{ITEM}", sb.toString());
+                    msg = msg.replace("{ITEM}", is.getAmount() + " " + (is.getType().name()).toLowerCase());
                 }
                 
                 if (msg.contains("{ITEMS}")) {
-                    ArrayList<String> list = new ArrayList<String>();
+
+                    ArrayList<String> list = new ArrayList<>();
+
                     for (ItemStack it : itemsList) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(it.getAmount());
-                        sb.append(" ");
-                        sb.append(it.getType().toString().toLowerCase());
-                        list.add(sb.toString());
+                        list.add(it.getAmount() + " " + (it.getType().name()).toLowerCase());
                     }
                     
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
@@ -194,7 +190,7 @@ public class ExcCreate implements Executor {
         guild.setLives(c.warLives);
         guild.setBorn(System.currentTimeMillis());
         guild.setValidity(System.currentTimeMillis() + c.validityStart);
-        guild.setAttacked(System.currentTimeMillis() - c.warWait + c.warProtection);
+        guild.setAttacked((System.currentTimeMillis() - c.warWait) + c.warProtection);
         guild.setPvP(c.damageGuild);
 
         Region region = new Region(guild, loc, c.regionSize);
@@ -217,9 +213,9 @@ public class ExcCreate implements Executor {
             }
         }
 
-        if (c.createMaterial != null && c.createMaterial != Material.AIR) {
+        if ((c.createMaterial != null) && (c.createMaterial != Material.AIR)) {
             loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
-        } else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        } else if ("ender crystal".equalsIgnoreCase(c.createStringMaterial)) {
             EntityUtil.spawn(guild);
         }
 

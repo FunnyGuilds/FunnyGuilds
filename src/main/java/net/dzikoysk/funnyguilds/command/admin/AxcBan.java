@@ -16,6 +16,7 @@ public class AxcBan implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
@@ -36,7 +37,6 @@ public class AxcBan implements Executor {
         }
         
         String reason = sb.toString();
-        
         if (!GuildUtils.tagExists(args[0])) {
             sender.sendMessage(m.adminNoGuildFound);
             return;
@@ -56,7 +56,10 @@ public class AxcBan implements Executor {
 
         BanUtils.ban(guild, time, reason);
         sender.sendMessage(m.adminGuildBan.replace("{GUILD}", guild.getName()).replace("{TIME}", args[1]));
-        Bukkit.broadcastMessage(Messages.getInstance().broadcastBan.replace("{GUILD}", guild.getName())
-                        .replace("{TAG}", guild.getTag()).replace("{REASON}", StringUtils.colored(reason)).replace("{TIME}", args[1]));
+        Bukkit.broadcastMessage(Messages.getInstance().broadcastBan
+                .replace("{GUILD}", guild.getName())
+                .replace("{TAG}", guild.getTag())
+                .replace("{REASON}", StringUtils.colored(reason))
+                .replace("{TIME}", args[1]));
     }
 }

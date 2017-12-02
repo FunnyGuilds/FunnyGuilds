@@ -24,9 +24,11 @@ public class DatabaseGuild {
     }
 
     public static Guild deserialize(ResultSet rs) {
+
         if (rs == null) {
             return null;
         }
+
         try {
             String id = rs.getString("uuid");
             String name = rs.getString("name");
@@ -46,7 +48,7 @@ public class DatabaseGuild {
             long ban = rs.getLong("ban");
             int lives = rs.getInt("lives");
 
-            if (name == null || tag == null || os == null) {
+            if ((name == null) || (tag == null) || (os == null)) {
                 FunnyGuilds.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
                 return null;
             }
@@ -61,26 +63,31 @@ public class DatabaseGuild {
             if (dp != null) {
                 deputy = User.get(dp);
             }
+
             List<User> members = new ArrayList<>();
-            if (m != null && !m.equals("")) {
+            if ((m != null) && !"".equals(m)) {
                 members = UserUtils.getUsers(StringUtils.fromString(m));
             }
+
             List<String> regions = StringUtils.fromString(rgs);
             List<Guild> allies = new ArrayList<>();
-            if (als != null && !als.equals("")) {
+            if ((als != null) && !"".equals(als)) {
                 allies = GuildUtils.getGuilds(StringUtils.fromString(als));
             }
+
             List<Guild> enemies = new ArrayList<>();
-            if (ens != null && !ens.equals("")) {
+            if ((ens != null) && !"".equals(ens)) {
                 enemies = GuildUtils.getGuilds(StringUtils.fromString(ens));
             }
 
             if (born == 0) {
                 born = System.currentTimeMillis();
             }
+
             if (validity == 0) {
                 validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             }
+
             if (lives == 0) {
                 lives = Settings.getConfig().warLives;
             }
@@ -110,11 +117,14 @@ public class DatabaseGuild {
                 e.printStackTrace();
             }
         }
+
         return null;
     }
 
     public void save(Database db) {
+
         String update = getInsert();
+
         if (update != null) {
             for (String query : update.split(";")) {
                 db.executeUpdate(query);
@@ -123,9 +133,11 @@ public class DatabaseGuild {
     }
 
     public void delete() {
+
         if (guild == null) {
             return;
         }
+
         if (guild.getUUID() != null) {
             Database db = Database.getInstance();
             StringBuilder update = new StringBuilder();
@@ -155,6 +167,7 @@ public class DatabaseGuild {
     }
 
     public String getInsert() {
+
         StringBuilder sb = new StringBuilder();
         String members = StringUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String regions = StringUtils.toString(guild.getRegions(), false);
@@ -171,6 +184,7 @@ public class DatabaseGuild {
         sb.append("`region`='%region%',`members`='%members%',`regions`='%regions%',`allies`='%allies%',");
         sb.append("`enemies`='%enemies%',`points`=%points%,`born`=%born%,`validity`=%validity%,");
         sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%");
+
         if (guild.getDeputy() != null) {
             sb.append("; UPDATE `guilds` SET `deputy`='");
             sb.append(guild.getDeputy().getName());
@@ -182,6 +196,7 @@ public class DatabaseGuild {
             sb.append(guild.getUUID().toString());
             sb.append("'");
         }
+
         String is = sb.toString();
         is = StringUtils.replace(is, "%uuid%", guild.getUUID().toString());
         is = StringUtils.replace(is, "%name%", guild.getName());

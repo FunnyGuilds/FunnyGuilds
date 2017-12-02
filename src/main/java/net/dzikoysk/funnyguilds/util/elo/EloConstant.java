@@ -13,7 +13,7 @@ public class EloConstant {
     }
 
     public boolean isInRange(int rank) {
-        return rank >= this.minRank && rank <= this.maxRank;
+        return (rank >= this.minRank) && (rank <= this.maxRank);
     }
 
     public int getConstant() {

@@ -28,6 +28,7 @@ public class PacketExtension {
     }
 
     private static Channel getChannel(Player p) {
+
         try {
             Object eP = handleMethod.invoke(p);
             return clientChannel.get(networkManager.get(playerConnection.get(eP)));
@@ -37,7 +38,7 @@ public class PacketExtension {
         }
     }
 
-    public static void registerPlayer(final Player p) {
+    public static void registerPlayer(Player p) {
         try {
             Channel c = getChannel(p);
             ChannelHandler handler = new ChannelDuplexHandler() {
@@ -84,5 +85,4 @@ public class PacketExtension {
 
     public static void unregisterFunnyGuildsChannel() {
     }
-
 }

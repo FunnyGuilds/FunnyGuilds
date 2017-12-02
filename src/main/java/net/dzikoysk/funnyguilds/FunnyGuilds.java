@@ -62,9 +62,11 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static String getVersion() {
+
         if (version != null) {
             return version;
         }
+
         String[] array = funnyguilds.getDescription().getVersion().split("-");
         if (array.length != 2) {
             return version = funnyguilds.getDescription().getVersion();
@@ -74,9 +76,11 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static FunnyGuilds getInstance() {
+
         if (funnyguilds == null) {
             return new FunnyGuilds();
         }
+
         return funnyguilds;
     }
 
@@ -101,10 +105,11 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static boolean exception(Throwable cause) {
-        return cause == null || exception(cause.getMessage(), cause.getStackTrace());
+        return (cause == null) || exception(cause.getMessage(), cause.getStackTrace());
     }
 
     public static boolean exception(String cause, StackTraceElement[] ste) {
+
         error("");
         error("[FunnyGuilds] Severe error:");
         error("");
@@ -113,18 +118,21 @@ public class FunnyGuilds extends JavaPlugin {
         error("  Bukkit: " + Bukkit.getBukkitVersion());
         error("  Java: " + System.getProperty("java.version"));
         error("  Thread: " + Thread.currentThread());
-        error("  Running CraftBukkit: " + Bukkit.getServer().getClass().getName().equals("org.bukkit.craftbukkit.CraftServer"));
+        error("  Running CraftBukkit: " + "org.bukkit.craftbukkit.CraftServer".equals(Bukkit.getServer().getClass().getName()));
         error("");
-        if (cause == null || ste == null || ste.length < 1) {
+
+        if ((cause == null) || (ste == null) || (ste.length < 1)) {
             error("Stack trace: no/empty exception given, dumping current stack trace instead!");
             return true;
         } else {
             error("Stack trace: ");
         }
+
         error("Caused by: " + cause);
         for (StackTraceElement st : ste) {
             error("    at " + st.toString());
         }
+
         error("");
         error("End of Error.");
         error("");
@@ -133,6 +141,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onLoad() {
+
         if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
@@ -151,6 +160,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         new ScoreboardStack(this).start();
         new IndependentThread().start();
         new Manager().start();
@@ -194,6 +204,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
         disabling = true;
 
         EntityUtil.despawn();
@@ -208,12 +219,16 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void update() {
+
         this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
+
             String latest = IOUtils.getContent(Version.VERSION_FILE_URL);
-            if (latest == null || latest.isEmpty()) {
+
+            if ((latest == null) || latest.isEmpty()) {
                 update("Failed to check the newest version of FunnyGuilds..");
                 return;
             }
+
             latest = latest.trim();
             String current = getVersion().trim();
 
@@ -230,9 +245,10 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void patch() {
+
         PluginConfig config = Settings.getConfig();
 
-        for (final Player player : this.getServer().getOnlinePlayers()) {
+        for (Player player : this.getServer().getOnlinePlayers()) {
             this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
 
             User user = User.get(player);
@@ -246,6 +262,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         for (Guild guild : GuildUtils.getGuilds()) {
+
             if (config.createMaterial == Material.DRAGON_EGG) {
                 EntityUtil.spawn(guild);
             }

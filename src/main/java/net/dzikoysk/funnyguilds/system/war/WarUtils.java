@@ -9,9 +9,14 @@ import org.bukkit.entity.Player;
 
 public final class WarUtils {
 
+    private WarUtils() {
+    }
+
     public static void message(Player player, int i, Object... values) {
+
         MessagesConfig m = Messages.getInstance();
         String message = null;
+
         switch (i) {
             case 0:
                 message = m.warHasNotGuild;
@@ -41,25 +46,18 @@ public final class WarUtils {
     public static String getWinMessage(Guild conqueror, Guild loser) {
         return Messages.getInstance().warWin
                 .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag())
-                ;
+                .replace("{LOSER}", loser.getTag());
     }
 
     public static String getLoseMessage(Guild conqueror, Guild loser) {
         return Messages.getInstance().warLose
                 .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag())
-                ;
+                .replace("{LOSER}", loser.getTag());
     }
 
     public static String getBroadcastMessage(Guild conqueror, Guild loser) {
         return Messages.getInstance().broadcastWar
                 .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag())
-                ;
-    }
-
-    private WarUtils() {
-
+                .replace("{LOSER}", loser.getTag());
     }
 }

@@ -17,16 +17,20 @@ public final class WorldGuardHook {
     }
 
     public static boolean isOnNonPointsRegion(Location location) {
+
         if (location == null) {
             return false;
         }
+
         if (worldGuard == null) {
             return false;
         }
+
         RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
         if (regionManager == null) {
             return false;
         }
+
         for (ProtectedRegion region : regionManager.getApplicableRegions(location)) {
             if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
                 return true;
@@ -37,12 +41,15 @@ public final class WorldGuardHook {
     }
 
     public static boolean isOnRegion(Location location) {
+
         if (location == null) {
             return false;
         }
+
         if (worldGuard == null) {
             return false;
         }
+
         RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
 
         if (regionManager == null) {

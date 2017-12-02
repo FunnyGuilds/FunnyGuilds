@@ -51,18 +51,18 @@ public final class WarListener {
     }
 
     private static void call(Player player, int id, String action) {
-        for (final Map.Entry<Guild, Integer> entry : EntityUtil.getEntitesMap().entrySet()) {
+        for (Map.Entry<Guild, Integer> entry : EntityUtil.getEntitesMap().entrySet()) {
+
             if (!entry.getValue().equals(id)) {
                 continue;
             }
 
             Guild guild = entry.getKey();
-
             if (SecuritySystem.getSecurity().checkPlayer(player, guild)) {
                 return;
             }
 
-            if (action.equalsIgnoreCase("ATTACK")) {
+            if ("ATTACK".equalsIgnoreCase(action)) {
                 WarSystem.getInstance().attack(player, entry.getKey());
             } else {
                 ExcInfo excInfo = new ExcInfo();
@@ -72,5 +72,4 @@ public final class WarListener {
             }
         }
     }
-
 }

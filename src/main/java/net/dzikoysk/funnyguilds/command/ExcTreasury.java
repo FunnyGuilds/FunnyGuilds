@@ -9,5 +9,4 @@ public class ExcTreasury implements Executor {
     public void execute(CommandSender sender, String[] args) {
         // TODO Auto-generated method stub
     }
-
 }

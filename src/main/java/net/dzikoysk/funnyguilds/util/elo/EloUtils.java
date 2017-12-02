@@ -9,11 +9,14 @@ import java.util.List;
 
 public class EloUtils {
 
-    private static List<EloConstant> constants = new ArrayList<EloConstant>();
+    private static List<EloConstant> constants = new ArrayList<>();
 
     public static void parseData(List<String> eloConstants) {
+
         constants.clear();
+
         for (String s : eloConstants) {
+
             String[] split = s.split(" ");
             if (split.length < 2) {
                 FunnyGuilds.exception(new IllegalArgumentException("\"" + s + "\" is not a valid constant String!"));
@@ -65,6 +68,7 @@ public class EloUtils {
     }
 
     private static int getConstantForRank(int rank) {
+
         for (EloConstant c : constants) {
             if (c.isInRange(rank)) {
                 return c.getConstant();
@@ -75,6 +79,7 @@ public class EloUtils {
     }
 
     public static int[] getRankChanges(Rank attacker, Rank victim) {
+
         int aP = attacker.getPoints();
         int vP = victim.getPoints();
 
@@ -83,5 +88,4 @@ public class EloUtils {
                 (int) Math.round(EloUtils.getConstantForRank(vP) * (0 - (1.0D / (1.0D + Math.pow(Settings.getConfig().eloExponent, (aP - vP) / Settings.getConfig().eloDivider)))) * -1)
         };
     }
-
 }

@@ -83,7 +83,7 @@ public class FlatGuild {
             home = Parser.parseLocation(hs);
         }
 
-        if (ms == null || ms.isEmpty()) {
+        if ((ms == null) || ms.isEmpty()) {
             ms = new ArrayList<>();
             ms.add(os);
         }
@@ -115,9 +115,11 @@ public class FlatGuild {
         if (born == 0) {
             born = System.currentTimeMillis();
         }
+
         if (validity == 0) {
             validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
         }
+
         if (lives == 0) {
             lives = Settings.getConfig().warLives;
         }
@@ -140,10 +142,12 @@ public class FlatGuild {
         values[14] = ban;
         values[15] = deputy;
         values[16] = pvp;
+
         return DeserializationUtils.deserializeGuild(values);
     }
 
     public boolean serialize() {
+
         if (guild.getName() == null) {
             FunnyGuilds.error("[Serialize] Cannot serialize guild! Caused by: name is null");
             return false;
@@ -179,9 +183,11 @@ public class FlatGuild {
         pc.set("lives", guild.getLives());
         pc.set("ban", guild.getBan());
         pc.set("pvp", guild.getPvP());
+
         if (guild.getDeputy() != null) {
             pc.set("deputy", guild.getDeputy().getName());
         }
+
         pc.save();
         pc = null;
         return true;

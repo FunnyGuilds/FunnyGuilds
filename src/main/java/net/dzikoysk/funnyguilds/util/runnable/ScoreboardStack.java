@@ -53,14 +53,18 @@ public class ScoreboardStack implements Runnable {
     }
 
     private void fill() {
+
         int required = Bukkit.getMaxPlayers() * 2;
+
         if (stack.size() < required) {
+
             ScoreboardManager sm = Bukkit.getScoreboardManager();
             if (sm == null) {
                 FunnyGuilds.error("[ScoreboardStack] ScoreboardManager is null!");
                 return;
             }
-            int loop = Bukkit.getMaxPlayers() * 2 - stack.size();
+
+            int loop = (Bukkit.getMaxPlayers() * 2) - stack.size();
             for (int i = 0; i < loop; i++) {
                 stack.push(sm.getNewScoreboard());
             }

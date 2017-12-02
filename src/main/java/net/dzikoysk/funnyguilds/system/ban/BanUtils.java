@@ -13,13 +13,19 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 
 public final class BanUtils {
 
+    private BanUtils() {
+    }
+
     public static void ban(Guild guild, long time, String reason) {
+
         guild.setBan(time + System.currentTimeMillis());
+
         for (User user : guild.getMembers()) {
+
             ban(user, time, reason);
             
             Player p = user.getPlayer();
-            if (p != null && p.isOnline()) {
+            if ((p != null) && p.isOnline()) {
                 p.kickPlayer(ChatColor.GRAY + "Otrzymano bana za: " + ChatColor.RED + user.getReason());
             }
         }
@@ -32,6 +38,7 @@ public final class BanUtils {
     }
 
     public static void unban(Guild guild) {
+
         for (User user : guild.getMembers()) {
             unban(user);
         }
@@ -43,6 +50,7 @@ public final class BanUtils {
     }
 
     public static boolean check(User user) {
+
         if (System.currentTimeMillis() < user.getBan()) {
             return true;
         }
@@ -60,6 +68,4 @@ public final class BanUtils {
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
         return ChatColor.translateAlternateColorCodes('&', message);
     }
-    
-    private BanUtils() {}
 }

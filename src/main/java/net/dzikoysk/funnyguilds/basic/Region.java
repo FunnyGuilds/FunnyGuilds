@@ -37,25 +37,32 @@ public class Region implements Basic {
     }
 
     public static Region get(String name) {
+
         for (Region region : RegionUtils.getRegions()) {
-            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
+            if ((region.getName() != null) && region.getName().equalsIgnoreCase(name)) {
                 return region;
             }
         }
+
         return new Region(name);
     }
 
     public void update() {
+
         if (this.center == null) {
             return;
         }
+
         if (this.size < 1) {
             return;
         }
+
         if (this.world == null) {
             this.world = Bukkit.getWorlds().get(0);
         }
+
         if (this.world != null) {
+
             int lx = this.center.getBlockX() + this.size;
             int lz = this.center.getBlockZ() + this.size;
 
@@ -68,6 +75,7 @@ public class Region implements Basic {
             this.l = l.toLocation(this.world);
             this.p = p.toLocation(this.world);
         }
+
         this.changes();
     }
 
@@ -81,29 +89,37 @@ public class Region implements Basic {
     }
 
     public boolean isIn(Location loc) {
+
         this.update();
-        if (loc == null || this.l == null || this.p == null) {
+
+        if ((loc == null) || (this.l == null) || (this.p == null)) {
             return false;
         }
+
         if (!this.center.getWorld().equals(loc.getWorld())) {
             return false;
         }
-        if (loc.getBlockX() > this.getLowerX() && loc.getBlockX() < this.getUpperX()) {
-            if (loc.getBlockY() > this.getLowerY() && loc.getBlockY() < this.getUpperY()) {
-                if (loc.getBlockZ() > this.getLowerZ() && loc.getBlockZ() < this.getUpperZ()) {
+
+        if ((loc.getBlockX() > this.getLowerX()) && (loc.getBlockX() < this.getUpperX())) {
+            if ((loc.getBlockY() > this.getLowerY()) && (loc.getBlockY() < this.getUpperY())) {
+                if ((loc.getBlockZ() > this.getLowerZ()) && (loc.getBlockZ() < this.getUpperZ())) {
                     return true;
                 }
             }
         }
+
         return false;
     }
 
     @Override
     public boolean changed() {
+
         boolean c = changes;
+
         if (c) {
             this.changes = false;
         }
+
         return c;
     }
 
@@ -189,56 +205,74 @@ public class Region implements Basic {
     }
 
     public int getUpperX() {
+
         int x = this.l.getBlockX();
         int y = this.p.getBlockX();
+
         if (y < x) {
             return x;
         }
+
         return y;
     }
 
     public int getUpperY() {
+
         int x = this.l.getBlockY();
         int y = this.p.getBlockY();
+
         if (y < x) {
             return x;
         }
+
         return y;
     }
 
     public int getUpperZ() {
+
         int x = this.l.getBlockZ();
         int y = this.p.getBlockZ();
+
         if (y < x) {
             return x;
         }
+
         return y;
     }
 
     public int getLowerX() {
+
         int x = this.l.getBlockX();
         int y = this.p.getBlockX();
+
         if (x > y) {
             return y;
         }
+
         return x;
     }
 
     public int getLowerY() {
+
         int x = this.l.getBlockY();
         int y = this.p.getBlockY();
+
         if (x > y) {
             return y;
         }
+
         return x;
     }
 
     public int getLowerZ() {
+
         int x = this.l.getBlockZ();
         int y = this.p.getBlockZ();
+
         if (x > y) {
             return y;
         }
+
         return x;
     }
 

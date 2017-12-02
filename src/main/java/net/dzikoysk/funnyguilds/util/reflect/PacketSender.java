@@ -30,39 +30,41 @@ public class PacketSender {
         }
     }
 
-    public static void sendPacket(final Collection<? extends Player> players, final Object... packets) {
-        final List<Object> packetList = Arrays.asList(packets);
+    public static void sendPacket(Collection<? extends Player> players, Object... packets) {
+        List<Object> packetList = Arrays.asList(packets);
         players.forEach(p -> sendPacket(p, packetList));
     }
 
-    public static void sendPacket(final Player[] players, final Object... packets) {
-        final List<Object> packetList = Arrays.asList(packets);
+    public static void sendPacket(Player[] players, Object... packets) {
+
+        List<Object> packetList = Arrays.asList(packets);
 
         for (Player player : players) {
             sendPacket(player, packetList);
         }
     }
 
-    public static void sendPacket(final Object... packets) {
+    public static void sendPacket(Object... packets) {
         sendPacket(Arrays.asList(packets));
     }
 
-    public static void sendPacket(final Player target, final Object... packets) {
+    public static void sendPacket(Player target, Object... packets) {
         sendPacket(target, Arrays.asList(packets));
     }
 
-    public static void sendPacket(final List<Object> packets) {
+    public static void sendPacket(List<Object> packets) {
         Bukkit.getOnlinePlayers().forEach(p -> sendPacket(p, packets));
     }
 
-    public static void sendPacket(final Player target, final List<Object> packets) {
+    public static void sendPacket(Player target, List<Object> packets) {
+
         if (target == null) {
             return;
         }
 
         try {
-            final Object handle = getHandle.invoke(target);
-            final Object connection = playerConnection.get(handle);
+            Object handle = getHandle.invoke(target);
+            Object connection = playerConnection.get(handle);
             for (Object packet : packets) {
                 sendPacket.invoke(connection, packet);
             }

@@ -24,6 +24,7 @@ public class IndividualPrefix {
     }
 
     protected void addPlayer(OfflinePlayer player) {
+
         if (player == null) {
             return;
         }
@@ -59,6 +60,7 @@ public class IndividualPrefix {
     }
 
     public void addGuild(Guild to) {
+
         if (to == null) {
             return;
         }
@@ -66,6 +68,7 @@ public class IndividualPrefix {
         Scoreboard scoreboard = getUser().getScoreboard();
         Guild guild = getUser().getGuild();
         if (guild != null) {
+
             if (guild.equals(to)) {
                 initialize();
                 return;
@@ -99,6 +102,7 @@ public class IndividualPrefix {
             
             team.setPrefix(prefix);
         } else {
+
             Team team = scoreboard.getTeam(to.getTag());
             if (team == null) {
                 team = scoreboard.registerNewTeam(to.getTag());
@@ -120,6 +124,7 @@ public class IndividualPrefix {
     }
 
     protected void removePlayer(OfflinePlayer op) {
+
         if (op == null) {
             return;
         }
@@ -134,7 +139,8 @@ public class IndividualPrefix {
     }
 
     protected void removeGuild(Guild guild) {
-        if (guild == null || guild.getTag() == null || guild.getTag().isEmpty()) {
+
+        if ((guild == null) || (guild.getTag() == null) || guild.getTag().isEmpty()) {
             return;
         }
         
@@ -145,6 +151,7 @@ public class IndividualPrefix {
     }
 
     private void initialize() {
+
         if (getUser() == null) {
             return;
         }
@@ -168,6 +175,7 @@ public class IndividualPrefix {
             }
             
             for (User u : guild.getMembers()) {
+
                 if (u.getName() == null) {
                     continue;
                 }
@@ -180,7 +188,8 @@ public class IndividualPrefix {
             
             team.setPrefix(replace(our, "{TAG}", guild.getTag()));
             for (Guild one : guilds) {
-                if (one == null || one.getTag() == null) {
+
+                if ((one == null) || (one.getTag() == null)) {
                     continue;
                 }
                 
@@ -190,6 +199,7 @@ public class IndividualPrefix {
                 }
                 
                 for (User u : one.getMembers()) {
+
                     if (u.getName() == null) {
                         continue;
                     }
@@ -209,9 +219,10 @@ public class IndividualPrefix {
                 }
             }
         } else {
+
             String other = Settings.getConfig().prefixOther;
             for (Guild one : guilds) {
-                if (one == null || one.getTag() == null) {
+                if ((one == null) || (one.getTag() == null)) {
                     continue;
                 }
                 
@@ -221,6 +232,7 @@ public class IndividualPrefix {
                 }
                 
                 for (User u : one.getMembers()) {
+
                     if (u.getName() == null) {
                         continue;
                     }
@@ -237,6 +249,7 @@ public class IndividualPrefix {
     }
 
     private String replace(String f, String r, String t) {
+
         String s = f.replace(r, t);
         
         if (s.length() > 16) {

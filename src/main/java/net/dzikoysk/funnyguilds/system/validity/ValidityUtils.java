@@ -9,15 +9,18 @@ import org.bukkit.Bukkit;
 public class ValidityUtils {
 
     public static void broadcast(Guild guild) {
-        if (guild == null || guild.getName() == null) {
+
+        if ((guild == null) || (guild.getName() == null)) {
             return;
         }
+
         Region region = RegionUtils.get(guild.getRegion());
         String message = Messages.getInstance().broadcastValidity
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", guild.getTag())
                 .replace("{GUILD}", guild.getName());
-        if (region != null && region.getCenter() != null) {
+
+        if ((region != null) && (region.getCenter() != null)) {
             message = message
                     .replace("{X}", Integer.toString(region.getCenter().getBlockX()))
                     .replace("{Y}", Integer.toString(region.getCenter().getBlockY()))
@@ -28,7 +31,7 @@ public class ValidityUtils {
                     .replace("{Y}", "Brak informacji")
                     .replace("{Z}", "Brak informacji");
         }
+
         Bukkit.broadcastMessage(message);
     }
-
 }

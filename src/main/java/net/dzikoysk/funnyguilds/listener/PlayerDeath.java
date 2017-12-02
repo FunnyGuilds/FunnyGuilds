@@ -19,6 +19,7 @@ public class PlayerDeath implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
+
         Player v = event.getEntity();
         Player a = event.getEntity().getKiller();
 
@@ -38,15 +39,15 @@ public class PlayerDeath implements Listener {
         }
 
         if (Settings.getConfig().rankFarmingProtect) {
-            if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
-                if (attacker.getLastVictimTime() + (Settings.getConfig().rankFarmingCooldown * 1000) > System.currentTimeMillis()) {
+            if ((attacker.getLastVictim() != null) && attacker.getLastVictim().equals(victim)) {
+                if ((attacker.getLastVictimTime() + (Settings.getConfig().rankFarmingCooldown * 1000)) > System.currentTimeMillis()) {
                     v.sendMessage(Messages.getInstance().rankLastVictimV);
                     a.sendMessage(Messages.getInstance().rankLastVictimA);
                     event.setDeathMessage(null);
                     return;
                 }
-            } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
-                if (victim.getLastVictimTime() + (Settings.getConfig().rankFarmingCooldown * 1000) > System.currentTimeMillis()) {
+            } else if ((victim.getLastAttacker() != null) && victim.getLastAttacker().equals(attacker)) {
+                if ((victim.getLastVictimTime() + (Settings.getConfig().rankFarmingCooldown * 1000)) > System.currentTimeMillis()) {
                     v.sendMessage(Messages.getInstance().rankLastAttackerV);
                     a.sendMessage(Messages.getInstance().rankLastAttackerA);
                     event.setDeathMessage(null);

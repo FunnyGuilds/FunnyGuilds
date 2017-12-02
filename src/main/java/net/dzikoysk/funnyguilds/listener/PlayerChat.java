@@ -26,6 +26,7 @@ public class PlayerChat implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
+
         Player player = event.getPlayer();
         User user = User.get(player);
         PluginConfig c = Settings.getConfig();
@@ -52,6 +53,7 @@ public class PlayerChat implements Listener {
     }
 
     private boolean chat(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
+
         if (global(event, message, c, player, guild)) {
             return true;
         }
@@ -64,7 +66,9 @@ public class PlayerChat implements Listener {
     }
 
     private void spy(Player player, String message) {
+
         String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
+
         for (Player looped : plugin.getServer().getOnlinePlayers()) {
             if (User.get(looped).isSpy()) {
                 looped.sendMessage(spyMessage);
@@ -73,9 +77,12 @@ public class PlayerChat implements Listener {
     }
 
     private boolean priv(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
+
         String priv = c.chatPriv;
         int length = priv.length();
-        if (message.length() > length && message.substring(0, length).equals(priv)) {
+
+        if ((message.length() > length) && message.substring(0, length).equals(priv)) {
+
             String format = c.chatPrivDesign;
             
             format = StringUtils.replace(format, "{PLAYER}", player.getName());
@@ -95,17 +102,20 @@ public class PlayerChat implements Listener {
     }
 
     private boolean ally(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
+
         String ally = c.chatAlly;
         int length = ally.length();
-        if (message.length() > length && message.substring(0, length).equals(ally)) {
+
+        if ((message.length() > length) && message.substring(0, length).equals(ally)) {
+
             String format = c.chatAllyDesign;
-            
+
             format = StringUtils.replace(format, "{PLAYER}", player.getName());
             format = StringUtils.replace(format, "{TAG}", guild.getTag());
-            
+
             String subMessage = event.getMessage().substring(length);
             this.spy(player, subMessage);
-            
+
             format = StringUtils.replace(format, "{MESSAGE}", subMessage);
             for (User u : guild.getMembers()) {
                 Player p = this.plugin.getServer().getPlayer(u.getName());
@@ -113,11 +123,11 @@ public class PlayerChat implements Listener {
                     p.sendMessage(format);
                 }
             }
-            
+
             for (Guild g : guild.getAllies()) {
                 this.sendMessageToGuild(g, player, format);
             }
-            
+
             event.setCancelled(true);
             return true;
         }
@@ -125,9 +135,12 @@ public class PlayerChat implements Listener {
     }
 
     private boolean global(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
+
         String global = c.chatGlobal;
         int length = global.length();
-        if (message.length() > length && message.substring(0, length).equals(global)) {
+
+        if ((message.length() > length) && message.substring(0, length).equals(global)) {
+
             String format = c.chatGlobalDesign;
             
             format = StringUtils.replace(format, "{PLAYER}", player.getName());
@@ -150,7 +163,9 @@ public class PlayerChat implements Listener {
     }
 
     private void sendMessageToGuild(Guild guild, Player player, String message) {
+
         for (User user : guild.getOnlineMembers()) {
+
             Player p = user.getPlayer();
             
             if(!p.equals(player) || !user.isSpy()) {

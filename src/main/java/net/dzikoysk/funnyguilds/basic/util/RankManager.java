@@ -19,13 +19,16 @@ public class RankManager {
     }
 
     public static RankManager getInstance() {
+
         if (instance == null) {
             new RankManager();
         }
+
         return instance;
     }
 
     public void update(User user) {
+
         if (!this.users.contains(user.getRank())) {
             this.users.add(user.getRank());
         }
@@ -43,9 +46,12 @@ public class RankManager {
     }
 
     public void update(Guild guild) {
+
         if (!this.guilds.contains(guild.getRank())) {
             this.guilds.add(guild.getRank());
-        } else {
+        }
+        else {
+
             Collections.sort(guilds);
 
             for (int i = 0; i < guilds.size(); i++) {
@@ -64,16 +70,20 @@ public class RankManager {
     }
 
     public User getUser(int i) {
-        if (i - 1 < this.users.size()) {
+
+        if ((i - 1) < this.users.size()) {
             return (this.users.get(i - 1)).getUser();
         }
+
         return null;
     }
 
     public Guild getGuild(int i) {
-        if (i - 1 < this.guilds.size()) {
+
+        if ((i - 1) < this.guilds.size()) {
             return (this.guilds.get(i - 1)).getGuild();
         }
+
         return null;
     }
 
@@ -94,5 +104,4 @@ public class RankManager {
         this.guilds.remove(guild.getRank());
         Collections.sort(this.guilds);
     }
-
 }

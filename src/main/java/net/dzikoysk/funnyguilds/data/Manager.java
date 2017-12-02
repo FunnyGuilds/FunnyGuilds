@@ -18,6 +18,7 @@ public class Manager {
     private volatile BukkitTask task = null;
 
     public Manager() {
+
         instance = this;
         Messages.getInstance();
         Settings.getConfig();
@@ -32,6 +33,7 @@ public class Manager {
     }
 
     public static Manager getInstance() {
+
         if (instance != null) {
             return instance;
         }
@@ -41,6 +43,7 @@ public class Manager {
     }
 
     public static void loadDefaultFiles(String[] files) {
+
         for (String file : files) {
             File cfg = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + file);
             if (!cfg.exists()) {
@@ -50,6 +53,7 @@ public class Manager {
     }
 
     public void save() {
+
         if (Settings.getConfig().dataType.flat) {
             try {
                 Flat.getInstance().save(false);
@@ -60,6 +64,7 @@ public class Manager {
                 }
             }
         }
+
         if (Settings.getConfig().dataType.mysql) {
             try {
                 DatabaseBasic.getInstance().save(false);
@@ -70,16 +75,20 @@ public class Manager {
                 }
             }
         }
+
         Data.getInstance().save();
     }
 
     public void start() {
+
         if (FunnyGuilds.getInstance().isDisabling()) {
             return;
         }
+
         if (this.task != null) {
             return;
         }
+
         this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
             public void run() {
                 IndependentThread.action(ActionType.SAVE_DATA);
@@ -88,6 +97,7 @@ public class Manager {
     }
 
     public void stop() {
+
         if (this.task != null) {
             this.task.cancel();
             this.task = null;

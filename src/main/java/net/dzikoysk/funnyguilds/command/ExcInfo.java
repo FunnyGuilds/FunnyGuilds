@@ -21,6 +21,7 @@ public class ExcInfo implements Executor {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig msg = Messages.getInstance();
         String tag = null;
 
@@ -33,7 +34,7 @@ public class ExcInfo implements Executor {
             }
         }
 
-        if (tag == null || tag.isEmpty()) {
+        if ((tag == null) || tag.isEmpty()) {
             sender.sendMessage(msg.infoTag);
             return;
         }
@@ -62,7 +63,7 @@ public class ExcInfo implements Executor {
             m = StringUtils.replace(m, "{VALIDITY}", validity);
             m = StringUtils.replace(m, "{LIVES}", Integer.toString(guild.getLives()));
             
-            if (guild.getAllies().size() > 0) {
+            if (!guild.getAllies().isEmpty()) {
                 m = StringUtils.replace(m, "{ALLIES}", StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
             } else {
                 m = StringUtils.replace(m, "{ALLIES}", "Brak");

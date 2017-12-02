@@ -20,6 +20,7 @@ public class FlatRegion {
     }
 
     public static Region deserialize(File file) {
+
         Yamler pc = new Yamler(file);
         String name = pc.getString("name");
         String cs = pc.getString("center");
@@ -27,7 +28,7 @@ public class FlatRegion {
         int enlarge = pc.getInt("enlarge");
         pc = null;
 
-        if (name == null || cs == null) {
+        if ((name == null) || (cs == null)) {
             FunnyGuilds.error("Cannot deserialize region! Caused by: name/center is null");
             return null;
         }

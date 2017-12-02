@@ -30,7 +30,8 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     private List<ExecutorCaller> executors = new ArrayList<>();
 
     public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases, boolean playerOnly) {
-        if (exc == null || command == null) {
+
+        if ((exc == null) || (command == null)) {
             return;
         }
 
@@ -38,13 +39,14 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         this.permission = perm;
         this.playerOnly = playerOnly;
         
-        if (aliases != null && aliases.size() > 0) {
+        if ((aliases != null) && (aliases.size() > 0)) {
             this.aliases = aliases;
         } else {
             this.aliases = null;
         }
 
         String[] splited = command.split("\\s+");
+
         this.overriding = splited[0];
         if (splited.length > 1) {
             this.secondary = new String[splited.length - 1];
@@ -66,18 +68,22 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     }
 
     private boolean call(CommandSender sender, Command cmd, String[] args) {
+
         if (!cmd.getName().equalsIgnoreCase(this.overriding)) {
             return false;
         }
         
         ExecutorCaller main = null;
+
         for (ExecutorCaller ec : this.executors) {
             if (ec.secondary != null) {
+
                 if (ec.secondary.length > args.length) {
                     continue;
                 }
                 
                 boolean sec = false;
+
                 for (int i = 0; i < ec.secondary.length; i++) {
                     if (!ec.secondary[i].equalsIgnoreCase(args[i])) {
                         sec = true;
@@ -96,7 +102,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             }
             
             if (sender instanceof Player) {
-                if (ec.permission != null && !sender.hasPermission(ec.permission)) {
+                if ((ec.permission != null) && !sender.hasPermission(ec.permission)) {
                     sender.sendMessage(Messages.getInstance().permission);
                     return true;
                 }
@@ -133,6 +139,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
         if (this.playerOnly && !(sender instanceof Player)) {
             sender.sendMessage(Messages.getInstance().playerOnly);
             return true;
@@ -143,6 +150,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+
         if (!(sender instanceof Player)) {
             return Collections.emptyList();
         }

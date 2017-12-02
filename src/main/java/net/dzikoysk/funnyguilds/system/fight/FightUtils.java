@@ -8,6 +8,9 @@ import java.util.UUID;
 
 public final class FightUtils {
 
+    private FightUtils() {
+    }
+
     private static final Map<UUID, Long> FIGHT_CACHE_MAP = new HashMap<>();
 
     public static void attacked(User victim) {
@@ -17,6 +20,4 @@ public final class FightUtils {
     public boolean check(User user) {
         return FIGHT_CACHE_MAP.getOrDefault(user.getUUID(), 0L) > System.currentTimeMillis();
     }
-    
-    private FightUtils() {}
 }

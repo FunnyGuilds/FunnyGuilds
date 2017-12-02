@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Reflections {
+
     private static final Map<String, Class<?>> classCache = new HashMap<>();
     private static final Map<String, Field> fieldCache = new HashMap<>();
     private static final Map<String, FieldAccessor<?>> fieldAccessorCache = new HashMap<>();
@@ -38,21 +39,25 @@ public class Reflections {
     }
 
     public static Class<?> getClass(String className) {
+
         Class<?> c = classCache.get(className);
 
         if (c != null) {
-            return c != INVALID_CLASS ? c : null;
+            return (c != INVALID_CLASS) ? c : null;
         }
 
         try {
             c = Class.forName(className);
             classCache.put(className, c);
         } catch (Exception e) {
+
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
             }
+
             classCache.put(className, INVALID_CLASS);
         }
+
         return c;
     }
 
@@ -91,12 +96,12 @@ public class Reflections {
     }
 
     public static Field getField(Class<?> cl, String fieldName) {
-        String cacheKey = constructFieldCacheKey(cl, fieldName);
 
+        String cacheKey = constructFieldCacheKey(cl, fieldName);
         Field field = fieldCache.get(cacheKey);
 
         if (field != null) {
-            return field != INVALID_FIELD ? field : null;
+            return (field != INVALID_FIELD) ? field : null;
         }
 
         try {
@@ -117,8 +122,8 @@ public class Reflections {
     }
 
     private static <T> FieldAccessor<T> getField(Class<?> target, String name, Class<T> fieldType, int index) {
-        final String cacheKey = target.getName() + "." + (name != null ? name : "NONE") + "." + fieldType.getName() + "." + index;
 
+        String cacheKey = target.getName() + "." + (name != null ? name : "NONE") + "." + fieldType.getName() + "." + index;
         FieldAccessor<T> output = (FieldAccessor<T>) fieldAccessorCache.get(cacheKey);
 
         if (output != null) {
@@ -129,8 +134,8 @@ public class Reflections {
             return output;
         }
 
-        for (final Field field : target.getDeclaredFields()) {
-            if ((name == null || field.getName().equals(name)) && fieldType.isAssignableFrom(field.getType()) && index-- <= 0) {
+        for (Field field : target.getDeclaredFields()) {
+            if (((name == null) || field.getName().equals(name)) && fieldType.isAssignableFrom(field.getType()) && (index-- <= 0)) {
                 field.setAccessible(true);
 
                 output = new FieldAccessor<T>() {
@@ -163,11 +168,11 @@ public class Reflections {
             }
         }
 
-        if (output == null && target.getSuperclass() != null) {
+        if ((output == null) && (target.getSuperclass() != null)) {
             output = getField(target.getSuperclass(), name, fieldType, index);
         }
 
-        fieldAccessorCache.put(cacheKey, output != null ? output : INVALID_FIELD_ACCESSOR);
+        fieldAccessorCache.put(cacheKey, (output != null) ? output : INVALID_FIELD_ACCESSOR);
 
         if (output == null) {
             throw new IllegalArgumentException("Cannot find field with type " + fieldType);
@@ -177,12 +182,12 @@ public class Reflections {
     }
 
     public static Field getPrivateField(Class<?> cl, String fieldName) {
-        String cacheKey = constructFieldCacheKey(cl, fieldName);
 
+        String cacheKey = constructFieldCacheKey(cl, fieldName);
         Field c = fieldCache.get(cacheKey);
 
         if (c != null) {
-            return c != INVALID_FIELD ? c : null;
+            return (c != INVALID_FIELD) ? c : null;
         }
 
         try {
@@ -190,9 +195,11 @@ public class Reflections {
             c.setAccessible(true);
             fieldCache.put(cacheKey, c);
         } catch (Exception e) {
+
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
             }
+
             fieldCache.put(cacheKey, INVALID_FIELD);
         }
 
@@ -200,31 +207,32 @@ public class Reflections {
     }
 
     public static Method getMethod(Class<?> cl, String method, Class<?>... args) {
-        String cacheKey = cl.getName() + "." + method + "." + (args == null ? "NONE" : Arrays.toString(args));
 
+        String cacheKey = cl.getName() + "." + method + "." + (args == null ? "NONE" : Arrays.toString(args));
         Method output = methodCache.get(cacheKey);
 
         if (output != null) {
-            return output != INVALID_METHOD ? output : null;
+            return (output != INVALID_METHOD) ? output : null;
         }
 
         for (Method m : cl.getMethods()) {
-            if (m.getName().equals(method) && (args == null || classListEqual(args, m.getParameterTypes()))) {
+            if (m.getName().equals(method) && ((args == null) || classListEqual(args, m.getParameterTypes()))) {
                 output = m;
                 break;
             }
         }
 
-        methodCache.put(cacheKey, output == null ? INVALID_METHOD : output);
+        methodCache.put(cacheKey, (output == null) ? INVALID_METHOD : output);
 
         return output;
     }
 
     public static Method getMethod(Class<?> cl, String method) {
-        return getMethod(cl, method, null);
+        return getMethod(cl, method, (Class<?>) null);
     }
 
     public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... arguments) {
+
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
             if (Arrays.equals(constructor.getParameterTypes(), arguments)) {
                 return constructor;
@@ -235,6 +243,7 @@ public class Reflections {
     }
 
     public static boolean classListEqual(Class<?>[] l1, Class<?>[] l2) {
+
         if (l1.length != l2.length) {
             return false;
         }
@@ -257,6 +266,7 @@ public class Reflections {
     }
 
     public interface FieldAccessor<T> {
+
         T get(Object target);
 
         void set(Object target, Object value);
@@ -265,10 +275,10 @@ public class Reflections {
     }
 
     private static class InvalidMarker {
+
         public Void invalidFieldMarker;
 
         public void invalidMethodMaker() {
-            
         }
     }
 }

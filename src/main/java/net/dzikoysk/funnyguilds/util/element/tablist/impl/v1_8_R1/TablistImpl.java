@@ -62,7 +62,7 @@ public class TablistImpl extends AbstractTablist {
                     UUID.class,
                     String.class
             );
-        } catch (final NoSuchMethodException ex) {
+        } catch (NoSuchMethodException ex) {
             ex.printStackTrace();
         }
 
@@ -70,21 +70,22 @@ public class TablistImpl extends AbstractTablist {
 
     private final Object[] profileCache = new Object[80];
 
-    public TablistImpl(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
+    public TablistImpl(Map<Integer, String> tablistPattern, String header, String footer, int ping, Player player) {
         super(tablistPattern, header, footer, ping, player);
     }
 
     @Override
     public void send() {
-        final List<Object> packets = Lists.newArrayList();
-        final List<Object> addPlayerList = Lists.newArrayList();
-        final List<Object> updatePlayerList = Lists.newArrayList();
+        List<Object> packets = Lists.newArrayList();
+        List<Object> addPlayerList = Lists.newArrayList();
+        List<Object> updatePlayerList = Lists.newArrayList();
 
         try {
-            final Object addPlayerPacket = PLAYER_INFO_CLASS.newInstance();
-            final Object updatePlayerPacket = PLAYER_INFO_CLASS.newInstance();
+            Object addPlayerPacket = PLAYER_INFO_CLASS.newInstance();
+            Object updatePlayerPacket = PLAYER_INFO_CLASS.newInstance();
 
             for (int i = 0; i < 80; i++) {
+
                 if (profileCache[i] == null) {
                     profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, StringUtils.appendDigit(i))), TOKEN + StringUtils.appendDigit(i));
                 }
@@ -130,7 +131,7 @@ public class TablistImpl extends AbstractTablist {
             Object footer = this.createBaseComponent(this.putVars(super.footer), true);
 
             if (this.shouldUseHeaderAndFooter()) {
-                final Object headerFooterPacket = PLAYER_LIST_HEADER_FOOTER_CLASS.newInstance();
+                Object headerFooterPacket = PLAYER_LIST_HEADER_FOOTER_CLASS.newInstance();
                 HEADER_FIELD.set(headerFooterPacket, header);
                 FOOTER_FIELD.set(headerFooterPacket, footer);
                 packets.add(headerFooterPacket);

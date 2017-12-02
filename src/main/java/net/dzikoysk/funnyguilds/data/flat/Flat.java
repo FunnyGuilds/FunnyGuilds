@@ -25,9 +25,11 @@ public class Flat {
     }
 
     public static Flat getInstance() {
+
         if (instance == null) {
             new Flat();
         }
+
         return instance;
     }
 
@@ -88,28 +90,33 @@ public class Flat {
     }
 
     private void saveUsers(boolean b) {
+
         if (UserUtils.getUsers().isEmpty()) {
             return;
         }
+
         for (User user : UserUtils.getUsers()) {
-            if (user.getUUID() != null && user.getName() != null) {
+            if ((user.getUUID() != null) && (user.getName() != null)) {
+
                 if (!b) {
                     if (!user.changed()) {
                         continue;
                     }
                 }
+
                 new FlatUser(user).serialize();
             }
         }
     }
 
     private void loadUsers() {
+
         int i = 0;
         File[] path = USERS.listFiles();
 
         if (path != null) {
             for (File file : path) {
-                if (file.isDirectory() || file.length() == 0) {
+                if (file.isDirectory() || (file.length() == 0)) {
                     file.delete();
                     i++;
                     continue;
@@ -134,7 +141,9 @@ public class Flat {
     }
 
     private void saveRegions(boolean b) {
+
         int i = 0;
+
         for (Region region : RegionUtils.getRegions()) {
             if (!b) {
                 if (!region.changed()) {
@@ -146,13 +155,16 @@ public class Flat {
                 i++;
             }
         }
+
         if (i > 0) {
             FunnyGuilds.warning("Deleted defective regions: " + i);
         }
     }
 
     private void loadRegions() {
+
         File[] path = REGIONS.listFiles();
+
         if (path != null) {
             for (File file : path) {
                 Region region = FlatRegion.deserialize(file);
@@ -163,30 +175,38 @@ public class Flat {
                 }
             }
         }
+
         FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
     }
 
     private void saveGuilds(boolean b) {
+
         int i = 0;
+
         for (Guild guild : GuildUtils.getGuilds()) {
+
             if (!b) {
                 if (!guild.changed()) {
                     continue;
                 }
             }
+
             if (!new FlatGuild(guild).serialize()) {
                 GuildUtils.deleteGuild(guild);
                 i++;
             }
         }
+
         if (i > 0) {
             FunnyGuilds.warning("Deleted defective guild: " + i);
         }
     }
 
     private void loadGuilds() {
+
         GuildUtils.getGuilds().clear();
         File[] path = GUILDS.listFiles();
+
         if (path != null) {
             for (File file : path) {
                 Guild guild = FlatGuild.deserialize(file);
@@ -200,6 +220,7 @@ public class Flat {
 
         // TODO
         for (Guild guild : GuildUtils.getGuilds()) {
+
             if (guild.getOwner() != null) {
                 continue;
             }
@@ -210,5 +231,4 @@ public class Flat {
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
         FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
-
 }

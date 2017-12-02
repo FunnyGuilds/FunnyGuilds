@@ -9,9 +9,9 @@ public class PlayerInteract implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
+
         if (ProtectionUtils.action(event.getAction(), event.getClickedBlock())) {
             event.setCancelled(false);
         }
     }
-
 }

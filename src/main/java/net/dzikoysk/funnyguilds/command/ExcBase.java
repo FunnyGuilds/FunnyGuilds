@@ -24,6 +24,7 @@ public class ExcBase implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         PluginConfig c = Settings.getConfig();
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;

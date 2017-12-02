@@ -21,10 +21,10 @@ public class NotificationBar {
         }
     }
 
-    public static void set(final Player player, String text, float percent, int time) {
+    public static void set(Player player, String text, float percent, int time) {
 
         remove(player);
-        FakeDragon dragon = DRAGONBAR_CACHE.containsKey(player) ? DRAGONBAR_CACHE.get(player) : null;
+        FakeDragon dragon = DRAGONBAR_CACHE.getOrDefault(player, null);
 
         if (text.length() > 64) {
             text = text.substring(0, 63);
@@ -36,7 +36,7 @@ public class NotificationBar {
             percent = 0.05f;
         }
 
-        if (text.isEmpty() && dragon != null) {
+        if (text.isEmpty() && (dragon != null)) {
             remove(player);
         }
 
@@ -60,7 +60,7 @@ public class NotificationBar {
     }
 
     public static boolean has(Player player) {
-        return DRAGONBAR_CACHE.containsKey(player) && DRAGONBAR_CACHE.get(player) != null;
+        return DRAGONBAR_CACHE.containsKey(player) && (DRAGONBAR_CACHE.get(player) != null);
     }
 
     private static void sendPacket(Player player, Object packet) {
@@ -122,7 +122,7 @@ public class NotificationBar {
             try {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityTeleport");
                 return packetClass.getConstructor(new Class<?>[]{int.class, int.class, int.class, int.class, byte.class, byte.class}).newInstance(
-                        this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
+                        this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) (((int) loc.getYaw() * 256) / 360), (byte) ((int) loc.getPitch() * 256 / 360));
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
@@ -171,7 +171,7 @@ public class NotificationBar {
         public Object getDestroyPacket() {
             try {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
+                return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance((Object) new int[]{id});
             } catch (Exception e) {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
@@ -282,12 +282,15 @@ public class NotificationBar {
         }
 
         public V remove(Object key) {
+
             if (key instanceof Player) {
                 return contents.remove(((Player) key).getName());
             }
+
             if (key instanceof String) {
                 return contents.remove(key);
             }
+
             return null;
         }
 

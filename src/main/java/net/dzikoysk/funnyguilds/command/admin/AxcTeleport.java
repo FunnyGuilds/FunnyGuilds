@@ -14,6 +14,7 @@ public class AxcTeleport implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
 
@@ -30,7 +31,7 @@ public class AxcTeleport implements Executor {
         String rs = GuildUtils.byTag(args[0]).getRegion();
         Region region = RegionUtils.get(rs);
 
-        if (region == null || region.getCenter() == null) {
+        if ((region == null) || (region.getCenter() == null)) {
             p.sendMessage(m.adminNoRegionFound);
             return;
         }

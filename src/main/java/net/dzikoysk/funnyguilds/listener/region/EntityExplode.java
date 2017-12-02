@@ -32,6 +32,7 @@ public class EntityExplode implements Listener {
 
     @EventHandler
     public void onExplode(EntityExplodeEvent event) {
+
         List<Block> destroyed = event.blockList();
         Location loc = event.getLocation();
         PluginConfig s = Settings.getConfig();
@@ -41,7 +42,7 @@ public class EntityExplode implements Listener {
 
         destroyed.removeIf(blocks -> {
             Region region = RegionUtils.getAt(blocks.getLocation());
-            return region != null && region.getGuild() != null && !region.getGuild().canBeAttacked();
+            return (region != null) && (region.getGuild() != null) && !region.getGuild().canBeAttacked();
         });
 
         Region region = RegionUtils.getAt(loc);
@@ -58,7 +59,7 @@ public class EntityExplode implements Listener {
 
             destroyed.removeIf(block -> block.getLocation().equals(protect));
 
-            guild.setBuild(System.currentTimeMillis() + Settings.getConfig().regionExplode * 1000L);
+            guild.setBuild(System.currentTimeMillis() + (Settings.getConfig().regionExplode * 1000L));
             for (User user : guild.getMembers()) {
                 Player player = this.plugin.getServer().getPlayer(user.getName());
                 if (player != null) {
@@ -69,10 +70,12 @@ public class EntityExplode implements Listener {
 
         for (Location l : sphere) {
             Material material = l.getBlock().getType();
+
             if (!materials.containsKey(material)) {
                 continue;
             }
-            if (material == Material.WATER || material == Material.LAVA) {
+
+            if ((material == Material.WATER) || (material == Material.LAVA)) {
                 if (RandomizationUtils.chance(materials.get(material))) {
                     l.getBlock().setType(Material.AIR);
                 }
@@ -83,5 +86,4 @@ public class EntityExplode implements Listener {
             }
         }
     }
-
 }

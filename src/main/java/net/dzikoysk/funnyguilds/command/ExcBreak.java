@@ -19,6 +19,7 @@ public class ExcBreak implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User lp = User.get(p);
@@ -34,7 +35,7 @@ public class ExcBreak implements Executor {
         }
 
         Guild guild = lp.getGuild();
-        if (guild.getAllies() == null || guild.getAllies().isEmpty()) {
+        if ((guild.getAllies() == null) || guild.getAllies().isEmpty()) {
             p.sendMessage(m.breakHasNotAllies);
             return;
         }

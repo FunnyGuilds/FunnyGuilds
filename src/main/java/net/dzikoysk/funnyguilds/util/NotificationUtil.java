@@ -17,8 +17,10 @@ public final class NotificationUtil {
     private static final Class<?> PACKET_PLAY_OUT_CHAT_CLASS;
     private static final Class<?> TITLE_ACTION_CLASS;
     private static final Class<?> CHAT_MESSAGE_TYPE_CLASS;
-
     private static final Method CREATE_BASE_COMPONENT;
+
+    private NotificationUtil() {
+    }
 
     static {
         PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getCraftClass("PacketPlayOutTitle");
@@ -34,6 +36,7 @@ public final class NotificationUtil {
     }
 
     public static List<Object> createTitleNotification(String text, String subText, int fadeIn, int stay, int fadeOut) {
+
         List<Object> packets = Lists.newArrayList();
 
         Object titlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS)
@@ -65,7 +68,9 @@ public final class NotificationUtil {
     }
 
     public static Object createBaseComponent(String text, boolean keepNewLines) {
-        String text0 = text != null ? text : "";
+
+        String text0 = (text != null) ? text : "";
+
         try {
             return Array.get(CREATE_BASE_COMPONENT.invoke(null, text0, keepNewLines), 0);
         } catch (IllegalAccessException | InvocationTargetException ex) {
@@ -75,6 +80,7 @@ public final class NotificationUtil {
     }
 
     public static Object createActionbarNotification(String text) {
+
         Object actionbarPacket;
 
         if (CHAT_MESSAGE_TYPE_CLASS != null) {
@@ -92,9 +98,5 @@ public final class NotificationUtil {
         }
 
         return actionbarPacket;
-    }
-
-    private NotificationUtil() {
-
     }
 }

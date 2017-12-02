@@ -15,6 +15,7 @@ public class Performer extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+
         if (this.caller == null) {
             return false;
         }
@@ -24,6 +25,7 @@ public class Performer extends Command {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) {
+
         if (this.caller == null) {
             return null;
         }

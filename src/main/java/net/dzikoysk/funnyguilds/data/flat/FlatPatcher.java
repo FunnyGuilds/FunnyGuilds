@@ -8,6 +8,7 @@ import java.io.File;
 public class FlatPatcher {
 
     public void patch() {
+
         File guilds = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "guilds");
         File regions = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "regions");
 
@@ -25,10 +26,11 @@ public class FlatPatcher {
             File[] guildsList = guilds.listFiles();
             File[] regionsList = regions.listFiles();
 
-            if (g && guildsList != null) {
+            if (g && (guildsList != null)) {
                 tg += guildsList.length;
             }
-            if (r && regionsList != null) {
+
+            if (r && (regionsList != null)) {
                 tr += regionsList.length;
             }
 
@@ -46,10 +48,11 @@ public class FlatPatcher {
             guildsList = guilds.listFiles();
             regionsList = regions.listFiles();
 
-            if (guildsList == null || guildsList.length == 0) {
+            if ((guildsList == null) || (guildsList.length == 0)) {
                 IOUtils.delete(guilds);
             }
-            if (regionsList == null || regionsList.length == 0) {
+
+            if ((regionsList == null) || (regionsList.length == 0)) {
                 IOUtils.delete(regions);
             }
 

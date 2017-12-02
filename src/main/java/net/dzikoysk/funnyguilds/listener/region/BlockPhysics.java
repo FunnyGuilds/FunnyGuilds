@@ -14,14 +14,16 @@ public class BlockPhysics implements Listener {
 
     @EventHandler
     public void onPhysics(BlockPhysicsEvent event) {
+
         Material m = Settings.getConfig().createMaterial;
-        if (m == null || event.getBlock().getType() != m) {
+
+        if ((m == null) || (event.getBlock().getType() != m)) {
             return;
         }
 
         Location loc = event.getBlock().getLocation();
-
         Region region = RegionUtils.getAt(loc);
+
         if (region == null) {
             return;
         }

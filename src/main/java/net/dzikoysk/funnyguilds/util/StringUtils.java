@@ -8,8 +8,12 @@ import java.util.List;
 
 public final class StringUtils {
 
+    private StringUtils() {
+    }
+
     public static String replace(String text, String searchString, String replacement) {
-        if (text == null || text.isEmpty() || searchString.isEmpty()) {
+
+        if ((text == null) || text.isEmpty() || searchString.isEmpty()) {
             return text;
         }
 
@@ -27,7 +31,7 @@ public final class StringUtils {
 
         int replLength = searchString.length();
         int increase = replacement.length() - replLength;
-        increase = (increase < 0 ? 0 : increase);
+        increase = ((increase < 0) ? 0 : increase);
         increase *= 16;
         StringBuilder sb = new StringBuilder(text.length() + increase);
 
@@ -47,10 +51,11 @@ public final class StringUtils {
     }
 
     public static String colored(String s) {
-        return s != null ? ChatColor.translateAlternateColorCodes('&', s) : null;
+        return (s != null) ? ChatColor.translateAlternateColorCodes('&', s) : null;
     }
 
     public static String toString(List<String> list, boolean send) {
+
         StringBuilder sb = new StringBuilder();
 
         for (String s : list) {
@@ -75,9 +80,10 @@ public final class StringUtils {
     }
 
     public static List<String> fromString(String s) {
+
         List<String> list = new ArrayList<>();
 
-        if (s == null || s.isEmpty()) {
+        if ((s == null) || s.isEmpty()) {
             return list;
         }
 
@@ -86,10 +92,6 @@ public final class StringUtils {
     }
 
     public static String appendDigit(int number) {
-        return number > 9 ? "" + number : "0" + number;
-    }
-
-    private StringUtils() {
-
+        return (number > 9) ? ("" + number) : ("0" + number);
     }
 }

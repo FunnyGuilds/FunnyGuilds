@@ -26,26 +26,29 @@ public class GuildUtils {
         return new ArrayList<>(guilds);
     }
 
-    public static void deleteGuild(final Guild guild) {
+    public static void deleteGuild(Guild guild) {
+
         if (guild == null) {
             return;
         }
 
         Manager.getInstance().stop();
         guild.delete();
-        final Region region = RegionUtils.get(guild.getRegion());
+        Region region = RegionUtils.get(guild.getRegion());
 
         if (region != null) {
-            if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+
+            if ("ender crystal".equalsIgnoreCase(Settings.getConfig().createStringMaterial)) {
                 EntityUtil.despawn(guild);
-            } else if (Settings.getConfig().createMaterial != Material.AIR) {
-                Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-                        if (block.getLocation().getBlockY() > 1) {
-                            block.setType(Material.AIR);
-                        }
+            }
+
+            else if (Settings.getConfig().createMaterial != Material.AIR) {
+                Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
+
+                    Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
+
+                    if (block.getLocation().getBlockY() > 1) {
+                        block.setType(Material.AIR);
                     }
                 });
             }
@@ -86,46 +89,57 @@ public class GuildUtils {
     }
 
     public static Guild get(String name) {
+
         for (Guild guild : guilds) {
-            if (guild.getName() != null && guild.getName().equalsIgnoreCase(name)) {
+            if ((guild.getName() != null) && guild.getName().equalsIgnoreCase(name)) {
                 return guild;
             }
         }
+
         return null;
     }
 
     public static Guild byTag(String tag) {
+
         for (Guild guild : guilds) {
-            if (guild.getTag() != null && guild.getTag().equalsIgnoreCase(tag.toLowerCase())) {
+            if ((guild.getTag() != null) && guild.getTag().equalsIgnoreCase(tag.toLowerCase())) {
                 return guild;
             }
         }
+
         return null;
     }
 
     public static boolean isExists(String name) {
+
         for (Guild guild : guilds) {
-            if (guild.getName() != null && guild.getName().equalsIgnoreCase(name)) {
+            if ((guild.getName() != null) && guild.getName().equalsIgnoreCase(name)) {
                 return true;
             }
         }
+
         return false;
     }
 
     public static boolean tagExists(String tag) {
+
         for (Guild guild : guilds) {
-            if (guild.getTag() != null && guild.getTag().equalsIgnoreCase(tag)) {
+            if ((guild.getTag() != null) && guild.getTag().equalsIgnoreCase(tag)) {
                 return true;
             }
         }
+
         return false;
     }
 
     public static List<String> getNames(List<Guild> lsg) {
+
         List<String> list = new ArrayList<>();
+
         if (lsg == null) {
             return list;
         }
+
         for (Guild g : lsg) {
             if (g == null) {
                 continue;
@@ -134,23 +148,28 @@ public class GuildUtils {
                 list.add(g.getName());
             }
         }
+
         return list;
     }
 
     public static List<String> getTags(List<Guild> lsg) {
+
         if (lsg == null) {
             return null;
         }
+
         List<String> list = new ArrayList<>();
         for (Guild g : lsg) {
             if (g.getName() != null) {
                 list.add(g.getTag());
             }
         }
+
         return list;
     }
 
     public static List<Guild> getGuilds(List<String> names) {
+
         if (names == null) {
             return null;
         }
@@ -169,9 +188,11 @@ public class GuildUtils {
     }
 
     public static void addGuild(Guild guild) {
-        if (guild == null || guild.getName() == null) {
+
+        if ((guild == null) || (guild.getName() == null)) {
             return;
         }
+
         if (get(guild.getName()) == null) {
             guilds.add(guild);
         }
@@ -180,5 +201,4 @@ public class GuildUtils {
     public static void removeGuild(Guild guild) {
         guilds.remove(guild);
     }
-
 }

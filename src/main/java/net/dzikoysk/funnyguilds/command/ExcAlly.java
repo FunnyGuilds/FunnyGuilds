@@ -20,6 +20,7 @@ public class ExcAlly implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig messages = Messages.getInstance();
         Player p = (Player) sender;
         User user = User.get(p);
@@ -38,7 +39,7 @@ public class ExcAlly implements Executor {
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            if (invitations.size() == 0) {
+            if (invitations.isEmpty()) {
                 p.sendMessage(messages.allyHasNotInvitation);
                 return;
             }
@@ -94,6 +95,7 @@ public class ExcAlly implements Executor {
         }
 
         if (InvitationList.hasInvitationFrom(invitedGuild, guild)) {
+
             InvitationList.expireInvitation(guild, invitedGuild);
             p.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
 

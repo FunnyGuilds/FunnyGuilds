@@ -15,6 +15,7 @@ public class Messages {
     private static File messages = new File(FunnyGuilds.getInstance().getDataFolder(), "messages.yml");
 
     public Messages() {
+
         instance = ConfigUtils.loadConfig(messages, MessagesConfig.class);
 
         try {
@@ -24,7 +25,7 @@ public class Messages {
                 }
                 
                 if (field.getType() == List.class) {
-                    @SuppressWarnings("unchecked") final List<String> list = (List<String>) field.get(instance);
+                    @SuppressWarnings("unchecked") List<String> list = (List<String>) field.get(instance);
                     for (int i = 0; i < list.size(); i++) {
                         list.set(i, StringUtils.colored(list.get(i)));
                     }
@@ -36,6 +37,7 @@ public class Messages {
     }
 
     public static MessagesConfig getInstance() {
+
         if (instance == null) {
             new Messages();
         }

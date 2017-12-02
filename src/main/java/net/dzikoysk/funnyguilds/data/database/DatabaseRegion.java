@@ -17,9 +17,11 @@ public class DatabaseRegion {
     }
 
     public static Region deserialize(ResultSet rs) {
+
         if (rs == null) {
             return null;
         }
+
         try {
             String name = rs.getString("name");
             String center = rs.getString("center");
@@ -40,17 +42,21 @@ public class DatabaseRegion {
             values[1] = loc;
             values[2] = size;
             values[3] = enlarge;
+
             return DeserializationUtils.deserializeRegion(values);
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
+
         return null;
     }
 
     public void save(Database db) {
+
         String update = getInsert();
+
         if (update != null) {
             db.executeUpdate(update);
         }

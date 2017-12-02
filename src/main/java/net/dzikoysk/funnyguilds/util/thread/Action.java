@@ -97,26 +97,30 @@ public class Action {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
-        result = prime * result + ((action == null) ? 0 : action.hashCode());
-        result = prime * result + Arrays.hashCode(values);
+        result = (prime * result) + ((action == null) ? 0 : action.hashCode());
+        result = (prime * result) + Arrays.hashCode(values);
         return result;
     }
 
     @Override
     public boolean equals(Object o) {
+
         if (o == null) {
             return false;
         }
+
         if (this.getClass() != o.getClass()) {
             return false;
         }
+
         Action a = (Action) o;
         if (action != a.getActionType()) {
             return false;
         }
-        return values == null && a.getValues() == null;
+
+        return (values == null) && (a.getValues() == null);
     }
 
 }

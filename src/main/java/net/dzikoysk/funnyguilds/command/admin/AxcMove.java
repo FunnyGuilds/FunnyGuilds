@@ -25,6 +25,7 @@ public class AxcMove implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
 
@@ -46,7 +47,7 @@ public class AxcMove implements Executor {
 
         int d = pc.regionSize + pc.createDistance;
         if (pc.enlargeItems != null) {
-            d = pc.enlargeItems.size() * pc.enlargeSize + d;
+            d = (pc.enlargeItems.size() * pc.enlargeSize) + d;
         }
 
         if (d > p.getWorld().getSpawnLocation().distance(loc)) {
@@ -64,8 +65,10 @@ public class AxcMove implements Executor {
         
         if (region == null) {
             region = new Region(guild, loc, pc.regionSize);
-        } else {
-            if (pc.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        }
+        else {
+
+            if ("ender crystal".equalsIgnoreCase(pc.createStringMaterial)) {
                 EntityUtil.despawn(guild);
             } else {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
@@ -86,9 +89,10 @@ public class AxcMove implements Executor {
             }
         }
         
-        if (pc.createMaterial != null && pc.createMaterial != Material.AIR) {
+        if ((pc.createMaterial != null) && (pc.createMaterial != Material.AIR)) {
             loc.getBlock().getRelative(BlockFace.DOWN).setType(pc.createMaterial);
-        } else if (pc.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        }
+        else if ("ender crystal".equalsIgnoreCase(pc.createStringMaterial)) {
             EntityUtil.spawn(guild);
         }
 
