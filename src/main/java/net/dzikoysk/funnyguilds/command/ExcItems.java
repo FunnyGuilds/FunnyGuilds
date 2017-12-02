@@ -14,7 +14,7 @@ public class ExcItems implements Executor {
         Player p = (Player) sender;
         PluginConfig c = Settings.getConfig();
 
-        if (!c.useCommonGUI && p.hasPermission("funnyguilds.vip")) {
+        if (!c.useCommonGUI && p.hasPermission("funnyguilds.vip.items")) {
             c.guiItemsVip.open(p);
             return;
         }
