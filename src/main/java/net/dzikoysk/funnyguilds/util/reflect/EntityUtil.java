@@ -25,11 +25,11 @@ public class EntityUtil {
     private static final Map<Integer, Object> ID_MAP = new HashMap<>();
 
     static {
-        final Class<?> entityClass = Reflections.getCraftClass("Entity");
-        final Class<?> enderCrystalClass = Reflections.getCraftClass("EntityEnderCrystal");
-        final Class<?> spawnEntityClass = Reflections.getCraftClass("PacketPlayOutSpawnEntity");
-        final Class<?> despawnEntityClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-        final Class<?> craftWorldClass = Reflections.getCraftClass("World");
+        Class<?> entityClass = Reflections.getCraftClass("Entity");
+        Class<?> enderCrystalClass = Reflections.getCraftClass("EntityEnderCrystal");
+        Class<?> spawnEntityClass = Reflections.getCraftClass("PacketPlayOutSpawnEntity");
+        Class<?> despawnEntityClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
+        Class<?> craftWorldClass = Reflections.getCraftClass("World");
 
         SPAWN_ENTITY_CONSTRUCTOR = Reflections.getConstructor(spawnEntityClass, entityClass, int.class);
         DESPAWN_ENTITY_CONSTRUCTOR = Reflections.getConstructor(despawnEntityClass, int[].class);
@@ -54,24 +54,29 @@ public class EntityUtil {
     }
 
     private static Object despawnPacket(int id) throws Exception {
-        return DESPAWN_ENTITY_CONSTRUCTOR.newInstance(new int[]{id});
+        return DESPAWN_ENTITY_CONSTRUCTOR.newInstance((Object) new int[]{id});
     }
 
     public static void spawn(Guild guild) {
         try {
-            Object o = null;
+            Object o;
+
             if (!ENTITY_MAP.containsKey(guild)) {
+
                 Location center = Region.get(guild.getRegion()).getCenter();
                 if (center == null) {
                     return;
                 }
+
                 Location loc = new Location(center.getWorld(), center.getX() + 0.5D, center.getY() - 1.0D, center.getZ() + 0.5D);
                 int id = spawnPacket(loc);
                 o = ID_MAP.get(id);
                 ENTITY_MAP.put(guild, id);
-            } else {
+            }
+            else {
                 o = ID_MAP.get(ENTITY_MAP.get(guild));
             }
+
             PacketSender.sendPacket(Bukkit.getOnlinePlayers(), o);
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,19 +85,24 @@ public class EntityUtil {
 
     public static void spawn(Guild guild, Player... players) {
         try {
-            Object o = null;
+            Object o;
+
             if (!ENTITY_MAP.containsKey(guild)) {
+
                 Location center = Region.get(guild.getRegion()).getCenter();
                 if (center == null) {
                     return;
                 }
+
                 Location loc = new Location(center.getWorld(), center.getX() + 0.5D, center.getY() - 1.0D, center.getZ() + 0.5D);
                 int id = spawnPacket(loc);
                 o = ID_MAP.get(id);
                 ENTITY_MAP.put(guild, id);
-            } else {
+            }
+            else {
                 o = ID_MAP.get(ENTITY_MAP.get(guild));
             }
+
             PacketSender.sendPacket(players, o);
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,14 +112,17 @@ public class EntityUtil {
 
     public static void despawn(Guild guild) {
         try {
+
             if (!ENTITY_MAP.containsKey(guild)) {
                 return;
             }
+
             int id = ENTITY_MAP.get(guild);
             ID_MAP.remove(id);
             ENTITY_MAP.remove(guild);
             Object o = despawnPacket(id);
             PacketSender.sendPacket(Bukkit.getOnlinePlayers(), o);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -117,12 +130,15 @@ public class EntityUtil {
 
     public static void despawn(Guild guild, Player... players) {
         try {
+
             if (!ENTITY_MAP.containsKey(guild)) {
                 return;
             }
+
             int id = ENTITY_MAP.get(guild);
             Object o = despawnPacket(id);
             PacketSender.sendPacket(players, o);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -134,6 +150,7 @@ public class EntityUtil {
                 if (!ENTITY_MAP.containsKey(guild)) {
                     return;
                 }
+
                 int id = ENTITY_MAP.get(guild);
                 ID_MAP.remove(id);
                 ENTITY_MAP.remove(guild);
@@ -144,5 +161,4 @@ public class EntityUtil {
             }
         }
     }
-
 }

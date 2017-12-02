@@ -21,5 +21,4 @@ public class PlayerQuit implements Listener {
         user.removeFromCache();
         AbstractTablist.removeTablist(player);
     }
-
 }

@@ -16,6 +16,7 @@ public class FlatUser {
     }
 
     public static User deserialize(File file) {
+
         if (file.isDirectory()) {
             return null;
         }
@@ -34,6 +35,7 @@ public class FlatUser {
         if (name == null) {
             return null;
         }
+
         if (id == null) {
             id = new OfflineUser(name).getUniqueId().toString();
         }
@@ -46,13 +48,15 @@ public class FlatUser {
         values[4] = deaths;
         values[5] = ban;
         values[6] = reason;
+
         return DeserializationUtils.deserializeUser(values);
     }
 
-    public boolean serialize() {
+    public void serialize() {
+
         File file = Flat.getUserFile(user);
         if (file.isDirectory()) {
-            return false;
+            return;
         }
 
         Yamler pc = new Yamler(file);
@@ -65,6 +69,5 @@ public class FlatUser {
         pc.set("reason", user.getReason());
         pc.save();
         pc = null;
-        return true;
     }
 }

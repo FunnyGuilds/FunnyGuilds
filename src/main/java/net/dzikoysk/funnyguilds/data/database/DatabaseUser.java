@@ -15,9 +15,11 @@ public class DatabaseUser {
     }
 
     public static User deserialize(ResultSet rs) {
+
         if (rs == null) {
             return null;
         }
+
         try {
             String uuid = rs.getString("uuid");
             String name = rs.getString("name");
@@ -35,6 +37,7 @@ public class DatabaseUser {
             values[4] = deaths;
             values[5] = ban;
             values[6] = reason;
+
             return DeserializationUtils.deserializeUser(values);
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
@@ -45,7 +48,9 @@ public class DatabaseUser {
     }
 
     public void save(Database db) {
+
         String update = getInsert();
+
         if (update != null) {
             for (String query : update.split(";")) {
                 try {
@@ -72,9 +77,11 @@ public class DatabaseUser {
     }
 
     public String getInsert() {
+
         if (user.getUUID() == null) {
             return null;
         }
+
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO `users` (`uuid`, `name`, `points`, `kills`, `deaths`, `ban`, `reason`) VALUES (");
         sb.append("'" + user.getUUID().toString() + "',");
@@ -91,6 +98,7 @@ public class DatabaseUser {
         sb.append("`deaths`='" + user.getRank().getDeaths() + "',");
         sb.append("`ban`='" + user.getBan() + "',");
         sb.append("`reason`='" + user.getReason() + "'");
+
         if (user.hasGuild()) {
             sb.append("; UPDATE `users` SET `guild`='");
             sb.append(user.getGuild().getName());
@@ -102,6 +110,7 @@ public class DatabaseUser {
             sb.append(user.getUUID().toString());
             sb.append("'");
         }
+
         return sb.toString();
     }
 }

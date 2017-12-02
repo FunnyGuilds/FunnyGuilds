@@ -16,6 +16,7 @@ public class AxcKick implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
@@ -24,7 +25,6 @@ public class AxcKick implements Executor {
         }
 
         User user = User.get(args[0]);
-
         if (!user.hasGuild()) {
             sender.sendMessage(m.adminNoGuild);
             return;

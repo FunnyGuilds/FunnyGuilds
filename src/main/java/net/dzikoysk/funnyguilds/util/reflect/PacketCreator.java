@@ -18,6 +18,7 @@ public final class PacketCreator {
     private Object packetInstance;
 
     private PacketCreator(Class<?> packetClass) {
+
         this.packetClass = packetClass;
         this.packetFields = new HashMap<>(this.packetClass.getDeclaredFields().length);
 
@@ -28,6 +29,7 @@ public final class PacketCreator {
     }
 
     public static PacketCreator of(String packetClassName) {
+
         ThreadLocal<PacketCreator> creator = PACKET_CREATOR_CACHE.get(packetClassName);
 
         if (creator == null) {
@@ -40,6 +42,7 @@ public final class PacketCreator {
     }
 
     public static PacketCreator of(Class<?> packetClass) {
+
         ThreadLocal<PacketCreator> creator = PACKET_CREATOR_CACHE.get(packetClass.getName());
 
         if (creator == null) {
@@ -51,9 +54,10 @@ public final class PacketCreator {
     }
 
     public PacketCreator create() {
+
         try {
             this.packetInstance = this.packetClass.newInstance();
-        } catch (final InstantiationException | IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
@@ -61,14 +65,17 @@ public final class PacketCreator {
     }
 
     public PacketCreator withField(String fieldName, Object value) {
+
         Validate.notNull(value, "Value cannot be NULL!");
+
         if (this.packetInstance == null) {
             throw new RuntimeException("Tried to set field on non-existing packet instance!");
         }
+
         try {
             Field field = this.packetFields.get(fieldName);
             field.set(this.packetInstance, value);
-        } catch (final IllegalAccessException ex) {
+        } catch (IllegalAccessException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
         }
 
@@ -76,10 +83,13 @@ public final class PacketCreator {
     }
 
     public PacketCreator withField(String fieldName, Object value, Class<?> fieldType) {
+
         Validate.notNull(value, "Value cannot be NULL!");
+
         if (this.packetInstance == null) {
             throw new RuntimeException("Tried to set field on non-existing packet instance!");
         }
+
         try {
             Field field = this.packetFields.get(fieldName);
 
@@ -88,14 +98,14 @@ public final class PacketCreator {
             }
 
             field.set(this.packetInstance, value);
-        } catch (final IllegalAccessException ex) {
+        } catch (IllegalAccessException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
         }
 
         return this;
     }
 
-    public void send(final Collection<? extends Player> players) {
+    public void send(Collection<? extends Player> players) {
         PacketSender.sendPacket(players, this.getPacket());
     }
 

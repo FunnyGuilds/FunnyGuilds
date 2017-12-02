@@ -28,8 +28,8 @@ public final class InvitationList {
         INVITATION_LIST.add(invitation);
     }
 
-
     public static void expireInvitation(Guild from, Player to) {
+
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToGuild() && invitation.getFrom().equals(from.getUUID()) && invitation.getFor().equals(to.getUniqueId())) {
                 INVITATION_LIST.remove(invitation);
@@ -37,7 +37,9 @@ public final class InvitationList {
             }
         }
     }
+
     public static void expireInvitation(Guild from, User to) {
+
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToGuild() && invitation.getFrom().equals(from.getUUID()) && invitation.getFor().equals(to.getUUID())) {
                 INVITATION_LIST.remove(invitation);
@@ -47,6 +49,7 @@ public final class InvitationList {
     }
 
     public static void expireInvitation(Guild from, Guild to) {
+
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToAlly() && invitation.getFrom().equals(from.getUUID()) && invitation.getFor().equals(to.getUUID())) {
                 INVITATION_LIST.remove(invitation);
@@ -56,6 +59,7 @@ public final class InvitationList {
     }
 
     public static boolean hasInvitation(Player player) {
+
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToGuild() && invitation.getFor().equals(player.getUniqueId())) {
                 return true;
@@ -66,6 +70,7 @@ public final class InvitationList {
     }
 
     public static boolean hasInvitationFrom(Player player, Guild from) {
+
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToGuild() && invitation.getFrom().equals(from.getUUID()) && invitation.getFor().equals(player.getUniqueId())) {
                 return true;
@@ -76,6 +81,7 @@ public final class InvitationList {
     }
 
     public static boolean hasInvitationFrom(User player, Guild from) {
+
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToGuild() && invitation.getFrom().equals(from.getUUID()) && invitation.getFor().equals(player.getUUID())) {
                 return true;
@@ -86,6 +92,7 @@ public final class InvitationList {
     }
 
     public static boolean hasInvitationFrom(Guild guild, Guild from) {
+
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToAlly() && invitation.getFrom().equals(from.getUUID()) && invitation.getFor().equals(guild.getUUID())) {
                 return true;
@@ -96,6 +103,7 @@ public final class InvitationList {
     }
 
     public static boolean hasInvitation(Guild guild) {
+
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToAlly() && invitation.getFor().equals(guild.getUUID())) {
                 return true;
@@ -131,6 +139,7 @@ public final class InvitationList {
     }
 
     public static List<String> getInvitationGuildNames(Player player) {
+
         List<String> guildNames = new ArrayList<>();
 
         for (Invitation invitation : INVITATION_LIST) {
@@ -143,6 +152,7 @@ public final class InvitationList {
     }
 
     public static List<String> getInvitationGuildNames(Guild guild) {
+
         List<String> guildNames = new ArrayList<>();
 
         for (Invitation invitation : INVITATION_LIST) {
@@ -200,14 +210,17 @@ public final class InvitationList {
 
         @Override
         public boolean equals(Object o) {
+
             if (this == o) {
                 return true;
             }
-            if (o == null || getClass() != o.getClass()) {
+
+            if ((o == null) || (getClass() != o.getClass())) {
                 return false;
             }
+
             Invitation that = (Invitation) o;
-            return Objects.equals(from, that.from) && Objects.equals(to, that.to) && type == that.type;
+            return Objects.equals(from, that.from) && Objects.equals(to, that.to) && (type == that.type);
         }
 
         @Override

@@ -15,22 +15,22 @@ public class ItemBuilder {
     private final ItemStack itemStack;
     private final ItemMeta itemMeta;
 
-    public ItemBuilder(final Material material) {
+    public ItemBuilder(Material material) {
         this.itemStack = new ItemStack(material);
         this.itemMeta = itemStack.getItemMeta();
     }
 
-    public ItemBuilder(final Material material, int stack) {
+    public ItemBuilder(Material material, int stack) {
         this.itemStack = new ItemStack(material, stack);
         this.itemMeta = itemStack.getItemMeta();
     }
 
-    public ItemBuilder(final Material material, int stack, int data) {
+    public ItemBuilder(Material material, int stack, int data) {
         this.itemStack = new ItemStack(material, stack, (short) data);
         this.itemMeta = itemStack.getItemMeta();
     }
 
-    public ItemBuilder(final ItemStack itemStack) {
+    public ItemBuilder(ItemStack itemStack) {
         this.itemStack = itemStack;
         this.itemMeta = itemStack.getItemMeta();
     }
@@ -46,7 +46,9 @@ public class ItemBuilder {
     }
 
     public ItemBuilder setLore(List<String> lore) {
-        final List<String> formatted = new ArrayList<>();
+
+        List<String> formatted = new ArrayList<>();
+
         for (String str : lore) {
             formatted.add(StringUtils.colored(str));
         }

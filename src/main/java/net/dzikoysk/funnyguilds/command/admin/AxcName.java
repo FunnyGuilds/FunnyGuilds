@@ -20,6 +20,7 @@ public class AxcName implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {
@@ -55,7 +56,6 @@ public class AxcName implements Executor {
         region.setName(args[1]);
         
         Manager.getInstance().start();
-
         sender.sendMessage(m.adminNameChanged.replace("{GUILD}", guild.getName()));
     }
 }

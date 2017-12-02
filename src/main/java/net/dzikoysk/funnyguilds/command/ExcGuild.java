@@ -8,6 +8,7 @@ public class ExcGuild implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         for (String line : Messages.getInstance().helpList) {
             sender.sendMessage(line);
         }

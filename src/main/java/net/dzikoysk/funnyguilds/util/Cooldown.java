@@ -5,16 +5,21 @@ import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class Cooldown<T> {
+
     private final Map<T, Long> cooldowns = new WeakHashMap<>(32);
 
     public boolean isOnCooldown(T key) {
-        final Long cooldown = cooldowns.get(key);
+
+        Long cooldown = cooldowns.get(key);
+
         if (cooldown == null) {
             return false;
         }
+
         if (cooldown > System.currentTimeMillis()) {
             return true;
         }
+
         cooldowns.remove(key);
         return false;
     }
@@ -32,6 +37,7 @@ public class Cooldown<T> {
     }
 
     public boolean cooldown(T key, long cooldown) {
+
         if (isOnCooldown(key)) {
             return true;
         }

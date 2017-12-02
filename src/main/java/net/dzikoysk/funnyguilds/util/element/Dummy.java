@@ -21,13 +21,15 @@ public class Dummy {
     }
 
     public void updateScore(User user) {
+
         if (!Settings.getConfig().dummyEnable) {
             return;
         }
         
         Scoreboard scoreboard = this.user.getScoreboard();
         Objective objective = scoreboard.getObjective(name);
-        if (objective == null || !objective.getName().equals(name)) {
+
+        if ((objective == null) || !objective.getName().equals(name)) {
             initialize();
         } else {
             OfflineUser offline = user.getOfflineUser();
@@ -36,18 +38,20 @@ public class Dummy {
     }
 
     private void initialize() {
+
         if (!Settings.getConfig().dummyEnable) {
             return;
         }
-        
+
         Scoreboard scoreboard = this.user.getScoreboard();
         Objective objective = scoreboard.getObjective(name);
-        if (objective == null || !objective.getName().equals(name)) {
+
+        if ((objective == null) || !objective.getName().equals(name)) {
             objective = scoreboard.registerNewObjective(name, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
             objective.setDisplayName(Settings.getConfig().dummySuffix);
         }
-        
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             User user = User.get(player);
             Score score = objective.getScore(user.getOfflineUser());

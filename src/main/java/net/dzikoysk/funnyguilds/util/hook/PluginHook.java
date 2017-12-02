@@ -7,22 +7,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class PluginHook {
+
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
     public static void init() {
+
         tryInit(PLUGIN_WORLDGUARD, () -> {
             try {
                 Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
                 Class.forName("com.sk89q.worldguard.protection.flags.Flag");
                 WorldGuardHook.initWorldGuard();
-            } catch (final ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 FunnyGuilds.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
             }
         });
     }
 
     public static void tryInit(String plugin, Runnable init) {
+
         try {
             if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
                 init.run();

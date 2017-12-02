@@ -46,8 +46,9 @@ public enum NotePitch {
     }
 
     public static float getPitch(int octave, Tone tone) {
+
         for (NotePitch note : values()) {
-            if (note.octave == octave && note.tone == tone) {
+            if ((note.octave == octave) && (note.tone == tone)) {
                 return note.pitch;
             }
         }
@@ -56,7 +57,8 @@ public enum NotePitch {
     }
 
     public static void play(Player player, int octave, Tone tone) {
-        Sound s = null;
+
+        Sound s;
 
         try {
             s = Sound.valueOf("NOTE_PIANO");

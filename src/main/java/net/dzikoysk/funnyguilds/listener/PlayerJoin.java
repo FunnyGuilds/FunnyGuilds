@@ -27,9 +27,10 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        final Player player = e.getPlayer();
-        final User user = User.get(player);
-        final PluginConfig config = Settings.getConfig();
+
+        Player player = e.getPlayer();
+        User user = User.get(player);
+        PluginConfig config = Settings.getConfig();
 
         if (config.playerlistEnable) {
             if (!AbstractTablist.hasTablist(player)) {
@@ -48,10 +49,11 @@ public class PlayerJoin implements Listener {
             Version.isNewAvailable(player);
 
             Region region = RegionUtils.getAt(player.getLocation());
-            if (region == null || region.getGuild() == null) {
+            if ((region == null) || (region.getGuild() == null)) {
                 return;
             }
-            if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+
+            if ("ender crystal".equalsIgnoreCase(Settings.getConfig().createStringMaterial)) {
                 EntityUtil.spawn(region.getGuild(), player);
             }
         }, 30L);

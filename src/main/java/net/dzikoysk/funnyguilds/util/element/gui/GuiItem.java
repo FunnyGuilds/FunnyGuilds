@@ -10,21 +10,21 @@ public class GuiItem {
     private final ItemStack item;
     private final Consumer<InventoryClickEvent> consumer;
 
-    public GuiItem(final ItemStack item) {
+    public GuiItem(ItemStack item) {
         this.item = item;
         this.consumer = ignored -> {};
     }
 
-    public GuiItem(final ItemStack item, final Consumer<InventoryClickEvent> consumer) {
+    public GuiItem(ItemStack item, Consumer<InventoryClickEvent> consumer) {
         this.item = item;
-        this.consumer = consumer != null ? consumer : a -> {};
+        this.consumer = (consumer != null) ? consumer : a -> { };
     }
 
     public ItemStack wrap() {
         return this.item;
     }
 
-    public void handleClick(final InventoryClickEvent e) {
+    public void handleClick(InventoryClickEvent e) {
         this.consumer.accept(e);
     }
 }

@@ -22,13 +22,16 @@ public class DatabaseBasic {
     }
 
     public static DatabaseBasic getInstance() {
+
         if (instance != null) {
             return instance;
         }
+
         return new DatabaseBasic();
     }
 
     public void load() {
+
         Database db = Database.getInstance();
 
         usersTable(db);

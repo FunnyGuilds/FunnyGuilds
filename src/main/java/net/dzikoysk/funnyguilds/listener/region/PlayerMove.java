@@ -21,24 +21,27 @@ public class PlayerMove implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        final Location from = event.getFrom();
-        final Location to = event.getTo();
-        final Player player = event.getPlayer();
+
+        Location from = event.getFrom();
+        Location to = event.getTo();
+        Player player = event.getPlayer();
 
         Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
-            if (from == null || to == null) {
+
+            if ((from == null) || (to == null)) {
                 return;
             }
             
-            if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) {
+            if ((from.getBlockX() == to.getBlockX()) && (from.getBlockZ() == to.getBlockZ())) {
                 return;
             }
 
             MessagesConfig m = Messages.getInstance();
             User user = User.get(player);
-
             Region region = RegionUtils.getAt(to);
-            if (region == null && user.getEnter()) {
+
+            if ((region == null) && user.getEnter()) {
+
                 user.setEnter(false);
                 region = RegionUtils.getAt(from);
                 
@@ -46,20 +49,22 @@ public class PlayerMove implements Listener {
                     Guild guild = region.getGuild();
                     player.sendMessage(m.regionLeave.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
                     FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
-                        if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                        if ("ender crystal".equalsIgnoreCase(Settings.getConfig().createStringMaterial)) {
                             EntityUtil.despawn(guild, player);
                         }
                     }, 40L);
                 }
-            } else if (!user.getEnter() && region != null) {
+            } else if (!user.getEnter() && (region != null)) {
+
                 Guild guild = region.getGuild();
-                if (guild == null || guild.getName() == null) {
+
+                if ((guild == null) || (guild.getName() == null)) {
                     return;
                 }
                 
                 user.setEnter(true);
                 FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
-                    if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                    if ("ender crystal".equalsIgnoreCase(Settings.getConfig().createStringMaterial)) {
                         EntityUtil.spawn(guild, player);
                     }
                 }, 40L);
@@ -76,11 +81,12 @@ public class PlayerMove implements Listener {
                     return;
                 }
                 
-                if (user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime()) {
+                if ((user.getNotificationTime() > 0) && (System.currentTimeMillis() < user.getNotificationTime())) {
                     return;
                 }
 
                 for (User u : guild.getOnlineMembers()) {
+
                     if (u.getName() == null) {
                         continue;
                     }
@@ -91,7 +97,7 @@ public class PlayerMove implements Listener {
                     NotificationBar.set(member, m.notificationMember.replace("{PLAYER}", player.getName()), 1, Settings.getConfig().regionNotificationTime);
                 }
                 
-                user.setNotificationTime(System.currentTimeMillis() + 1000 * Settings.getConfig().regionNotificationCooldown);
+                user.setNotificationTime(System.currentTimeMillis() + (1000 * Settings.getConfig().regionNotificationCooldown));
             }
         });
     }

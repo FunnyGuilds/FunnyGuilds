@@ -28,10 +28,13 @@ public class Rank implements Comparable<Rank> {
     }
 
     public void removePoints(int i) {
+
         this.points -= i;
+
         if (this.points < 1) {
             this.points = 0;
         }
+
         this.basic.changes();
     }
 
@@ -52,43 +55,50 @@ public class Rank implements Comparable<Rank> {
 
     @Override
     public int compareTo(Rank rank) {
+
         int i = Integer.compare(rank.getPoints(), getPoints());
+
         if (i == 0) {
+
             if (idns == null) {
                 return -1;
             }
+
             if (rank.getIDNS() == null) {
                 return 1;
             }
+
             i = idns.compareTo(rank.getIDNS());
         }
+
         return i;
     }
 
     public int getPoints() {
+
         if (this.type == BasicType.USER) {
             return this.points;
-        } else {
-            double points = 0;
-            int size = guild.getMembers().size();
-
-            if (size == 0) {
-                return 0;
-            }
-
-            for (User user : guild.getMembers()) {
-                points += user.getRank().getPoints();
-            }
-
-            double calc = points / size;
-
-            if (calc != this.points) {
-                this.points = (int) calc;
-                this.basic.changes();
-            }
-
-            return this.points;
         }
+
+        double points = 0;
+        int size = guild.getMembers().size();
+
+        if (size == 0) {
+            return 0;
+        }
+
+        for (User user : guild.getMembers()) {
+            points += user.getRank().getPoints();
+        }
+
+        double calc = points / size;
+
+        if (calc != this.points) {
+            this.points = (int) calc;
+            this.basic.changes();
+        }
+
+        return this.points;
     }
 
     public void setPoints(int i) {
@@ -144,6 +154,7 @@ public class Rank implements Comparable<Rank> {
 
     @Override
     public boolean equals(Object o) {
+
         if (o == null) {
             return false;
         }
@@ -165,5 +176,4 @@ public class Rank implements Comparable<Rank> {
     public String toString() {
         return Integer.toString(getPoints());
     }
-
 }

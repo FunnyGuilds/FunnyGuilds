@@ -595,12 +595,17 @@ public class PluginConfig {
     public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 16);
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
+
         List<ItemStack> items = new ArrayList<>();
+
         for (String item : strings) {
-            if (item == null || "".equals(item)) {
+
+            if ((item == null) || "".equals(item)) {
                 continue;
             }
+
             ItemStack itemstack = Parser.parseItem(item);
+
             if (itemstack != null) {
                 items.add(itemstack);
             }
@@ -610,30 +615,37 @@ public class PluginConfig {
     }
 
     private GuiWindow loadGUI(List<String> contents, String title) {
-        GuiWindow gui = new GuiWindow(StringUtils.colored(title), contents.size() / 9 + (contents.size() % 9 !=0 ? 1 : 0));
+
+        GuiWindow gui = new GuiWindow(StringUtils.colored(title), (contents.size() / 9) + (((contents.size() % 9) != 0) ? 1 : 0));
         
         for (int i=0; i < contents.size(); i++) {
+
             String var = contents.get(i);
             GuiItem item = null;
-            
+
             if (var.contains("GUI-")) {
                 item = gui.getItem(Parser.getIndex(var) - 1);
-            } else if (var.contains("VIPITEM-")) {
+            }
+            else if (var.contains("VIPITEM-")) {
+
                 try {
                     item = new GuiItem(createItemsVip.get(Parser.getIndex(var) - 1));
                 } catch(IndexOutOfBoundsException e) {
                     FunnyGuilds.parser("Index given in " + var + "is > " + createItemsVip.size() + "or <= 0");
                 }
-            }  else if (var.contains("ITEM-")) {
+
+            } else if (var.contains("ITEM-")) {
+
                 try {
                     item = new GuiItem(createItems.get(Parser.getIndex(var) - 1));
                 } catch(IndexOutOfBoundsException e) {
                     FunnyGuilds.parser("Index given in " + var + "is > " + createItems.size() + "or <= 0");
                 }
+
             } else {
                 item = new GuiItem(Parser.parseItem(var));
             }
-            
+
             gui.setItem(i, item);
         }
         
@@ -641,8 +653,8 @@ public class PluginConfig {
     }
     
     public void reload() {
+
         this.dateFormat = new SimpleDateFormat(Messages.getInstance().dateFormat);
-        
         this.createItems = loadItemStackList(this.items_);
         this.createItemsVip = loadItemStackList(this.itemsVip_);
         
@@ -653,7 +665,7 @@ public class PluginConfig {
         
         this.createMaterial = Parser.parseMaterial(this.createStringMaterial);
 
-        if (this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG) {
+        if ((this.createMaterial != null) && (this.createMaterial == Material.DRAGON_EGG)) {
             this.eventPhysics = true;
         }
 
@@ -676,26 +688,35 @@ public class PluginConfig {
         }
 
         HashMap<Material, Double> map = new HashMap<>();
+
         for (Map.Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
+
             Material material = Parser.parseMaterial(entry.getKey());
-            if (material == null || material == Material.AIR) {
+
+            if ((material == null) || (material == Material.AIR)) {
                 continue;
             }
+
             double chance = entry.getValue();
+
             if (chance == 0) {
                 continue;
             }
+
             map.put(material, chance);
         }
 
         this.explodeMaterials = map;
-
         this.translatedMaterials = new HashMap<>();
+
         for (String materialName : translatedMaterials_.keySet()) {
+
             Material material = Material.matchMaterial(materialName.toUpperCase());
+
             if (material == null) {
                 continue;
             }
+
             translatedMaterials.put(material, translatedMaterials_.get(materialName));
         }
 
@@ -797,6 +818,7 @@ public class PluginConfig {
     }
 
     public static class DataType {
+
         public boolean flat;
         public boolean mysql;
 
@@ -809,15 +831,13 @@ public class PluginConfig {
     }
 
     public static class MySQL {
+
         public String hostname;
         public int port;
         public String database;
         public String user;
         public String password;
         public int poolSize;
-
-        public MySQL() {
-        }
 
         public MySQL(String hostname, int port, String database, String user, String password, int poolSize) {
             this.hostname = hostname;

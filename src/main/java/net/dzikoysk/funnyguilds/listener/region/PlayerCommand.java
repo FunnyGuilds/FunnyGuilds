@@ -15,7 +15,9 @@ public class PlayerCommand implements Listener {
 
     @EventHandler
     public void onCommand(PlayerCommandPreprocessEvent event) {
+
         Player player = event.getPlayer();
+
         if (player.hasPermission("funnyguilds.admin")) {
             return;
         }
@@ -24,6 +26,7 @@ public class PlayerCommand implements Listener {
         if (splited.length == 0) {
             return;
         }
+
         String command = splited[0];
         for (String s : Settings.getConfig().regionCommands) {
             if (("/" + s).equalsIgnoreCase(command)) {
@@ -31,6 +34,7 @@ public class PlayerCommand implements Listener {
                 break;
             }
         }
+
         if (command != null) {
             return;
         }
@@ -49,5 +53,4 @@ public class PlayerCommand implements Listener {
         event.setCancelled(true);
         player.sendMessage(Messages.getInstance().regionCommand);
     }
-
 }

@@ -20,6 +20,7 @@ public class Database {
     private final HikariDataSource dataSource;
 
     public Database() {
+
         instance = this;
 
         this.dataSource = new HikariDataSource();
@@ -30,7 +31,8 @@ public class Database {
 
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database);
         this.dataSource.setUsername(c.user);
-        if (c.password != null && !c.password.isEmpty()) {
+
+        if ((c.password != null) && !c.password.isEmpty()) {
             this.dataSource.setPassword(c.password);
         }
 
@@ -97,13 +99,16 @@ public class Database {
     }*/
 
     public static Database getInstance() {
+
         if (instance == null) {
             return new Database();
         }
+
         return instance;
     }
 
     public ResultSet executeQuery(String query) {
+
         try {
             Connection connection = this.dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
@@ -113,25 +118,26 @@ public class Database {
                 e.printStackTrace();
             }
         }
+
         return null;
     }
 
-    public int executeUpdate(String query) {
+    public void executeUpdate(String query) {
         try {
             Connection connection = this.dataSource.getConnection();
             PreparedStatement statement = connection.prepareStatement(query);
+
             if (statement == null) {
-                return 0;
+                return;
             }
-            int result = statement.executeUpdate();
+
             statement.close();
             connection.close();
-            return result;
+
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
-        return 0;
     }
 }

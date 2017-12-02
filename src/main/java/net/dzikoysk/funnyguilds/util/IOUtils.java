@@ -8,7 +8,11 @@ import java.net.URLConnection;
 
 public final class IOUtils {
 
+    private IOUtils() {
+    }
+
     public static File initialize(File file, boolean b) {
+
         if (!file.exists()) {
             try {
                 file.getParentFile().mkdirs();
@@ -23,10 +27,12 @@ public final class IOUtils {
                 }
             }
         }
+
         return file;
     }
 
     public static String getContent(String s) {
+
         String body = null;
         InputStream in = null;
 
@@ -36,7 +42,7 @@ public final class IOUtils {
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
             in = con.getInputStream();
             String encoding = con.getContentEncoding();
-            encoding = encoding == null ? "UTF-8" : encoding;
+            encoding = (encoding == null) ? "UTF-8" : encoding;
             body = IOUtils.toString(in, encoding);
             in.close();
         } catch (Exception e) {
@@ -49,7 +55,9 @@ public final class IOUtils {
     }
 
     public static File getFile(String s, boolean folder) {
+
         File file = new File(s);
+
         try {
             if (!file.exists()) {
                 if (folder) {
@@ -62,18 +70,22 @@ public final class IOUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return file;
     }
 
     public static void delete(File f) {
+
         if (!f.exists()) {
             return;
         }
+
         if (f.isDirectory()) {
             for (File c : f.listFiles()) {
                 delete(c);
             }
         }
+
         if (!f.delete()) {
             try {
                 throw new FileNotFoundException("Failed to delete file: " + f);
@@ -84,16 +96,20 @@ public final class IOUtils {
     }
 
     public static String toString(InputStream in, String encoding) throws Exception {
+
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[8192];
-        int len = 0;
+        int len;
+
         while ((len = in.read(buf)) != -1) {
             baos.write(buf, 0, len);
         }
+
         return new String(baos.toByteArray(), encoding);
     }
 
     public static void close(Closeable closeable) {
+
         if (closeable == null) {
             return;
         }
@@ -103,9 +119,5 @@ public final class IOUtils {
         } catch (IOException exception) {
             exception.printStackTrace();
         }
-    }
-
-    private IOUtils() {
-
     }
 }

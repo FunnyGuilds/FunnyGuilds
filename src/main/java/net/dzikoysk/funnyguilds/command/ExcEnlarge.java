@@ -17,6 +17,7 @@ public class ExcEnlarge implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         PluginConfig c = Settings.getConfig();
         Player p = (Player) sender;
@@ -39,19 +40,14 @@ public class ExcEnlarge implements Executor {
         Region region = Region.get(lp.getGuild().getRegion());
         int enlarge = region.getEnlarge();
 
-        if (enlarge > c.enlargeItems.size() - 1) {
+        if (enlarge > (c.enlargeItems.size() - 1)) {
             p.sendMessage(m.enlargeMaxSize);
             return;
         }
 
         ItemStack need = c.enlargeItems.get(enlarge);
         if (!p.getInventory().containsAtLeast(need, need.getAmount())) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(need.getAmount());
-            sb.append(" ");
-            sb.append(need.getType().toString().toLowerCase());
-            
-            p.sendMessage(m.enlargeItem.replace("{ITEM}", sb.toString()));
+            p.sendMessage(m.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
             return;
         }
 
@@ -64,7 +60,10 @@ public class ExcEnlarge implements Executor {
         region.setEnlarge(++enlarge);
         region.setSize(region.getSize() + c.enlargeSize);
 
-        String tm = m.enlargeDone.replace("{SIZE}", Integer.toString(region.getSize())).replace("{LEVEL}", Integer.toString(region.getEnlarge()));
+        String tm = m.enlargeDone
+                .replace("{SIZE}", Integer.toString(region.getSize()))
+                .replace("{LEVEL}", Integer.toString(region.getEnlarge()));
+
         for (User user : lp.getGuild().getOnlineMembers()) {
             user.getPlayer().sendMessage(tm);
         }

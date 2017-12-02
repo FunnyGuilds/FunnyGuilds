@@ -21,18 +21,21 @@ public class EventSettings {
     }
 
     public static EventSettings getInstance() {
+
         if (instance == null) {
             new EventSettings();
         }
+
         return instance;
     }
 
     protected void load() {
-        Manager.loadDefaultFiles(new String[]{"events.yml"});
+
+        Manager.loadDefaultFiles(new String[]{});
         PandaConfiguration pc = new PandaConfiguration(FILE);
         String version = pc.getString("version");
         
-        if (version == null || !version.equals(VERSION)) {
+        if ((version == null) || !version.equals(VERSION)) {
             FILE.delete();
             Manager.loadDefaultFiles(new String[]{"events.yml"});
             pc = new PandaConfiguration(FILE);

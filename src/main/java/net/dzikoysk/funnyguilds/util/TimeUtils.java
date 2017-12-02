@@ -4,7 +4,11 @@ import java.util.concurrent.TimeUnit;
 
 public final class TimeUtils {
 
+    private TimeUtils() {
+    }
+
     public static String getDurationBreakdown(long millis) {
+
         if (millis == 0) {
             return "0";
         }
@@ -41,6 +45,7 @@ public final class TimeUtils {
                 sb.append(" dni ");
             }
         }
+
         if (hours > 0) {
             sb.append(hours);
             long i = hours % 10;
@@ -53,6 +58,7 @@ public final class TimeUtils {
                 sb.append(" godzin ");
             }
         }
+
         if (minutes > 0) {
             sb.append(minutes);
             long i = minutes % 10;
@@ -65,6 +71,7 @@ public final class TimeUtils {
                 sb.append(" minut ");
             }
         }
+
         if (seconds > 0) {
             sb.append(seconds);
             long i = seconds % 10;
@@ -79,9 +86,5 @@ public final class TimeUtils {
         }
 
         return (sb.toString());
-    }
-
-    private TimeUtils() {
-
     }
 }

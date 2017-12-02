@@ -37,30 +37,36 @@ public class AsynchronouslyRepeater implements Runnable {
     }
 
     public void start() {
+
         if (this.repeater != null) {
             return;
         }
+
         this.repeater = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, this, 100, 20);
     }
 
     @Override
     public void run() {
+
         ban_system++;
         validity_system++;
 
         if (validity_system >= 10) {
             validitySystem();
         }
+
         if (ban_system >= 7) {
             banSystem();
         }
 
         if (Settings.getConfig().playerlistEnable) {
             for (Player player : Bukkit.getOnlinePlayers()) {
+
                 if (!AbstractTablist.hasTablist(player)) {
                     AbstractTablist.createTablist(Settings.getConfig().playerList, Settings.getConfig().playerListHeader, Settings.getConfig().playerListFooter, Settings.getConfig().playerListPing, player);
                 }
-                final AbstractTablist tablist = AbstractTablist.getTablist(player);
+
+                AbstractTablist tablist = AbstractTablist.getTablist(player);
                 tablist.send();
             }
         }

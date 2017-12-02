@@ -21,12 +21,13 @@ import java.util.Stack;
 public class Parser {
 
     public static ItemStack parseItem(String string) {
+
         String[] split = string.split(" ");
         String[] typeSplit = split[1].split(":");
-        String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
-        
+        String subtype = (typeSplit.length > 1) ? typeSplit[1] : "0";
+
         Material mat = parseMaterial(typeSplit[0]);
-        
+
         int stack;
         int data;
 
@@ -56,9 +57,10 @@ public class Parser {
                 for (String s : lores) {
                     lore.add(StringUtils.replace(StringUtils.replace(StringUtils.colored(s), "_", " "), "{HASH}", "#"));
                 }
-                
+
                 item.setLore(lore);
             } else if (str.contains("enchant")) {
+
                 String[] parse = str.split(":");
                 String enchantName = parse[1];
                 int level;
@@ -84,27 +86,31 @@ public class Parser {
     }
 
     public static Material parseMaterial(String string) {
+
         if (string == null) {
             FunnyGuilds.parser("Unknown material: null");
             return Material.AIR;
         }
-        
+
         String m = string;
         m = m.toUpperCase();
         m = m.replaceAll(" ", "_");
         Material material = Material.getMaterial(m);
-        
+
         if (material == null) {
-            if (!string.equalsIgnoreCase("ender crystal")) {
+
+            if (!"ender crystal".equalsIgnoreCase(string)) {
                 FunnyGuilds.parser("Unknown material: " + string);
             }
+
             return Material.AIR;
         }
-        
+
         return material;
     }
 
     public static Location parseLocation(String string) {
+
         if (string == null) {
             return null;
         }
@@ -125,12 +131,13 @@ public class Parser {
     }
 
     public static String parseRank(String var) {
+
         if (!var.contains("TOP-")) {
             return null;
         }
 
         int i = getIndex(var);
-        if(i <= 0) {
+        if (i <= 0) {
             FunnyGuilds.error("Index in TOP- must be greater or equal to 1!");
             return null;
         }
@@ -139,9 +146,10 @@ public class Parser {
         List<Guild> rankedGuilds = new ArrayList<>();
 
         for (int in = 1; in <= RankManager.getInstance().guilds(); in++) {
+
             Guild guild = RankManager.getInstance().getGuild(in);
-            
-            if (guild != null && guild.getMembers().size() >= c.minMembersToInclude) {
+
+            if ((guild != null) && (guild.getMembers().size() >= c.minMembersToInclude)) {
                 rankedGuilds.add(guild);
             }
         }
@@ -149,36 +157,39 @@ public class Parser {
         if (var.contains("GTOP")) {
             if (rankedGuilds.isEmpty()) {
                 return StringUtils.replace(var, "{GTOP-" + i + '}', "Brak");
-            } else if (i - 1 >= rankedGuilds.size()) {
+            } else if ((i - 1) >= rankedGuilds.size()) {
                 return StringUtils.replace(var, "{GTOP-" + i + '}', "Brak");
             } else {
                 Guild guild = rankedGuilds.get(i - 1);
 
                 return StringUtils.replace(var, "{GTOP-" + i + '}',
-                                guild.getTag() + " " + StringUtils.replace(Settings.getConfig().playerlistPoints,
-                                                "{POINTS}", Integer.toString(guild.getRank().getPoints()))
-                                );
+                        guild.getTag() + " " + StringUtils.replace(Settings.getConfig().playerlistPoints,
+                                "{POINTS}", Integer.toString(guild.getRank().getPoints()))
+                );
             }
         } else if (var.contains("PTOP")) {
+
             User user = RankManager.getInstance().getUser(i);
-            
+
             if (user != null) {
                 return StringUtils.replace(var, "{PTOP-" + i + '}', user.getName());
             } else {
                 return StringUtils.replace(var, "{PTOP-" + i + '}', "Brak");
             }
         }
-        
+
         return null;
     }
 
     public static int getIndex(String var) {
+
         StringBuilder sb = new StringBuilder();
         boolean open = false;
         boolean start = false;
         int result = -1;
 
         for (char c : var.toCharArray()) {
+
             boolean end = false;
 
             switch (c) {
@@ -201,18 +212,19 @@ public class Parser {
                 break;
             }
         }
-        
+
         try {
             result = Integer.parseInt(sb.toString());
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             FunnyGuilds.parser(var + " contains an invalid number: " + sb.toString());
         }
-        
+
         return result;
     }
-    
+
     public static long parseTime(String string) {
-        if (string == null || string.isEmpty()) {
+
+        if ((string == null) || string.isEmpty()) {
             return 0;
         }
 
@@ -228,6 +240,7 @@ public class Parser {
                 case 'h':
                 case 'm':
                 case 's':
+
                     if (!calc) {
                         type.push(c);
                     }
@@ -266,20 +279,11 @@ public class Parser {
     }
 
     public static String toString(Location loc) {
+
         if (loc == null) {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(loc.getWorld().getName());
-        sb.append(",");
-        sb.append(loc.getBlockX());
-        sb.append(",");
-        sb.append(loc.getBlockY());
-        sb.append(",");
-        sb.append(loc.getBlockZ());
-
-        return sb.toString();
+        return loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
     }
-
 }

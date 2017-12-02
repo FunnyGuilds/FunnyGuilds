@@ -25,15 +25,17 @@ public class GuiWindow {
     private Consumer<InventoryCloseEvent> closeHandler = null;
 
     public GuiWindow(String name, int rows) {
+
         name = getValidName(name);
 
-        this.inv = Bukkit.createInventory(null, rows > 6 ? 6 * 9 : rows * 9, name);
-        this.items = new HashMap<>(rows > 6 ? 6 * 9 : rows * 9);
+        this.inv = Bukkit.createInventory(null, (rows > 6) ? (6 * 9) : (rows * 9), name);
+        this.items = new HashMap<>((rows > 6) ? (6 * 9) : (rows * 9));
 
         windows.put(name, this);
     }
 
     public GuiWindow(String name, List<ItemStack> items) {
+
         name = this.getValidName(name);
 
         this.inv = Bukkit.createInventory(null, this.roundUp(items.size()), name);
@@ -52,10 +54,11 @@ public class GuiWindow {
     }
 
     public void setItem(int x, int y, GuiItem item) {
-        setItem(x + y * 9, item);
+        setItem(x + (y * 9), item);
     }
 
     public void setToNextFree(GuiItem item) {
+
         for (int i = 0; i < inv.getSize(); i++) {
             if (inv.getItem(i) == null) {
                 this.items.put(i, item);
@@ -65,7 +68,7 @@ public class GuiWindow {
         }
     }
 
-    public void setToNextFree(final GuiItem item, int start) {
+    public void setToNextFree(GuiItem item, int start) {
         for (int i = start; i < inv.getSize(); i++) {
             if (inv.getItem(i) == null) {
                 this.items.put(i, item);
@@ -80,24 +83,26 @@ public class GuiWindow {
     }
 
     public GuiItem getItem(int x, int y) {
-        return getItem(x * 9 + y);
+        return getItem((x * 9) + y);
     }
 
-    public void setOpenEvent(final Consumer<InventoryOpenEvent> e) {
+    public void setOpenEvent(Consumer<InventoryOpenEvent> e) {
         this.openHandler = e;
     }
 
-    public void setCloseEvent(final Consumer<InventoryCloseEvent> e) {
+    public void setCloseEvent(Consumer<InventoryCloseEvent> e) {
         this.closeHandler = e;
     }
 
-    public void handleOpen(final InventoryOpenEvent e) {
+    public void handleOpen(InventoryOpenEvent e) {
+
         if (this.openHandler != null) {
             this.openHandler.accept(e);
         }
     }
 
-    public void handleClose(final InventoryCloseEvent e) {
+    public void handleClose(InventoryCloseEvent e) {
+
         if (this.closeHandler != null) {
             this.closeHandler.accept(e);
         }
@@ -126,8 +131,10 @@ public class GuiWindow {
         }
     }
 
-    public void fillEmpty(final ItemStack itemStack) {
+    public void fillEmpty(ItemStack itemStack) {
+
         Validate.notNull(itemStack, "ItemStack cannot be NULL!");
+
         for (int i = 0; i < inv.getSize(); i++) {
             if (inv.getItem(i) == null) {
                 inv.setItem(i, itemStack);
@@ -135,8 +142,10 @@ public class GuiWindow {
         }
     }
 
-    public void fillEmpty(final Material material) {
+    public void fillEmpty(Material material) {
+
         Validate.notNull(material, "Material cannot be NULL!");
+
         for (int i = 0; i < inv.getSize(); i++) {
             if (inv.getItem(i) == null) {
                 inv.setItem(i, new ItemStack(material, 1, (short) 15));
@@ -145,7 +154,7 @@ public class GuiWindow {
     }
 
     private int roundUp(int size) {
-        return (size + 8) / 9 * 9 > 54 ? 54 : (size + 8) / 9 * 9;
+        return ((((size + 8) / 9) * 9) > 54) ? 54 : (((size + 8) / 9) * 9);
     }
 
 }

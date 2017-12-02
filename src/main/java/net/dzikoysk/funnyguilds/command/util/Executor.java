@@ -13,6 +13,6 @@ public interface Executor {
 
     default boolean checkWorld(Player player) {
         List<String> blockedWorlds = Settings.getConfig().blockedWorlds;
-        return blockedWorlds != null && blockedWorlds.size() > 0 && blockedWorlds.contains(player.getWorld().getName());
+        return (blockedWorlds != null) && (!blockedWorlds.isEmpty()) && blockedWorlds.contains(player.getWorld().getName());
     }
 }

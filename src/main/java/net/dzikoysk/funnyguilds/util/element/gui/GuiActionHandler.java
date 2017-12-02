@@ -8,10 +8,14 @@ import org.bukkit.event.inventory.*;
 public class GuiActionHandler implements Listener {
     
     @EventHandler
-    public void onClick(final InventoryClickEvent e) {
-        if (e.getInventory() != null && e.getInventory().getType().equals(InventoryType.CHEST)) {
+    public void onClick(InventoryClickEvent e) {
+
+        if ((e.getInventory() != null) && (e.getInventory().getType() == InventoryType.CHEST)) {
+
             GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+
             if (window != null) {
+
                 GuiItem item = window.getItem(e.getSlot());
                 if (item != null) {
                     item.handleClick(e);
@@ -24,25 +28,30 @@ public class GuiActionHandler implements Listener {
     }
 
     @EventHandler
-    public void onOpen(final InventoryOpenEvent e) {
+    public void onOpen(InventoryOpenEvent e) {
+
         GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+
         if (window != null) {
             window.handleOpen(e);
         }
     }
 
     @EventHandler
-    public void onClose(final InventoryCloseEvent e) {
+    public void onClose(InventoryCloseEvent e) {
+
         GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+
         if (window != null) {
             window.handleClose(e);
         }
     }
 
     @EventHandler
-    public void onInteract(final InventoryInteractEvent e) {
+    public void onInteract(InventoryInteractEvent e) {
+
         if (GuiWindow.getWindow(e.getInventory().getTitle()) != null) {
-            if (e.getInventory().getType().equals(InventoryType.CHEST)) {
+            if (e.getInventory().getType() == InventoryType.CHEST) {
                 e.setResult(Event.Result.DENY);
                 e.setCancelled(true);
             }

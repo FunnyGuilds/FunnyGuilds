@@ -23,6 +23,7 @@ public class ExcJoin implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User user = User.get(p);
@@ -33,7 +34,7 @@ public class ExcJoin implements Executor {
         }
 
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(p);
-        if (invitations.size() == 0) {
+        if (invitations.isEmpty()) {
             p.sendMessage(m.joinHasNotInvitation);
             return;
         }
@@ -61,23 +62,19 @@ public class ExcJoin implements Executor {
         List<ItemStack> itemsList = Settings.getConfig().joinItems;
         for (ItemStack itemStack : itemsList) {
             if (!p.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
+
                 String msg = m.joinItems;
+
                 if (msg.contains("{ITEM}")) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(itemStack.getAmount());
-                    sb.append(" ");
-                    sb.append(itemStack.getType().toString().toLowerCase());
-                    msg = msg.replace("{ITEM}", sb.toString());
+                    msg = msg.replace("{ITEM}", itemStack.getAmount() + " " + itemStack.getType().toString().toLowerCase());
                 }
-                
+
                 if (msg.contains("{ITEMS}")) {
-                    ArrayList<String> list = new ArrayList<String>();
+
+                    ArrayList<String> list = new ArrayList<>();
+
                     for (ItemStack it : itemsList) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(it.getAmount());
-                        sb.append(" ");
-                        sb.append(it.getType().toString().toLowerCase());
-                        list.add(sb.toString());
+                        list.add(it.getAmount() + " " + it.getType().toString().toLowerCase());
                     }
                     
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));

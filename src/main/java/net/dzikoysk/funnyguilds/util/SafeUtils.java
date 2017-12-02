@@ -4,6 +4,9 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class SafeUtils {
 
+    private SafeUtils() {
+    }
+
     private static void reportUnsafe(Throwable t) {
         FunnyGuilds.exception(t);
     }
@@ -20,9 +23,5 @@ public final class SafeUtils {
     @FunctionalInterface
     public interface SafeInitializer<T> {
         T initialize() throws Exception;
-    }
-
-    private SafeUtils() {
-
     }
 }

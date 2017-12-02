@@ -14,6 +14,7 @@ public class AxcDelete implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
 
         if (args.length < 1) {

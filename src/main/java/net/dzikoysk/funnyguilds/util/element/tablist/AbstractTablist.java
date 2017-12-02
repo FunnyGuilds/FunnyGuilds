@@ -31,7 +31,7 @@ public abstract class AbstractTablist {
     protected final int ping;
     protected boolean firstPacket = true;
 
-    public AbstractTablist(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
+    public AbstractTablist(Map<Integer, String> tablistPattern, String header, String footer, int ping, Player player) {
         this.tablistPattern = tablistPattern;
         this.header = header;
         this.footer = footer;
@@ -43,7 +43,8 @@ public abstract class AbstractTablist {
         TABLIST_CACHE.clear();
     }
 
-    public static AbstractTablist createTablist(final Map<Integer, String> pattern, final String header, final String footer, final int ping, final Player player) {
+    public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, Player player) {
+
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return tablist;
@@ -51,18 +52,18 @@ public abstract class AbstractTablist {
         }
 
         if ("v1_8_R1".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
+            AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
         }
         if ("v1_8_R2".equals(Reflections.getFixedVersion()) || "v1_8_R3".equals(Reflections.getFixedVersion()) || "v1_9_R1".equals(Reflections.getFixedVersion()) || "v1_9_R2".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
+            AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
         } else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
+            AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
@@ -71,7 +72,8 @@ public abstract class AbstractTablist {
         }
     }
 
-    public static AbstractTablist getTablist(final Player player) {
+    public static AbstractTablist getTablist(Player player) {
+
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return tablist;
@@ -81,7 +83,8 @@ public abstract class AbstractTablist {
         throw new IllegalStateException("Given player's tablist does not exist!");
     }
 
-    public static void removeTablist(final Player player) {
+    public static void removeTablist(Player player) {
+
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 TABLIST_CACHE.remove(tablist);
@@ -90,19 +93,22 @@ public abstract class AbstractTablist {
         }
     }
 
-    public static boolean hasTablist(final Player player) {
+    public static boolean hasTablist(Player player) {
+
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return true;
             }
         }
+
         return false;
     }
 
     public abstract void send();
 
-    protected void sendPackets(final List<Object> packets) {
-        final Player target = Bukkit.getPlayer(player);
+    protected void sendPackets(List<Object> packets) {
+
+        Player target = Bukkit.getPlayer(player);
 
         if (target == null) {
             return;
@@ -116,26 +122,31 @@ public abstract class AbstractTablist {
     }
 
     protected String putVars(String cell) {
+
         String formatted = cell;
-        final User user = User.get(player);
+        User user = User.get(player);
 
         if (user == null) {
             throw new IllegalStateException("Given player is null!");
         }
+
         Calendar time = Calendar.getInstance();
         int hour = time.get(Calendar.HOUR_OF_DAY);
         int minute = time.get(Calendar.MINUTE);
         int second = time.get(Calendar.SECOND);
+
         if (hour < 10) {
             formatted = StringUtils.replace(formatted, "{HOUR}", "0" + String.valueOf(hour));
         } else {
             formatted = StringUtils.replace(formatted, "{HOUR}", String.valueOf(hour));
         }
+
         if (minute < 10) {
             formatted = StringUtils.replace(formatted, "{MINUTE}", "0" + String.valueOf(minute));
         } else {
             formatted = StringUtils.replace(formatted, "{MINUTE}", String.valueOf(minute));
         }
+
         if (second < 10) {
             formatted = StringUtils.replace(formatted, "{SECOND}", "0" + String.valueOf(second));
         } else {
@@ -154,8 +165,8 @@ public abstract class AbstractTablist {
             formatted = StringUtils.replace(formatted, "{G-DEATHS}", String.valueOf(guild.getRank().getDeaths()));
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ONLINE}", String.valueOf(guild.getOnlineMembers().size()));
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ALL}", String.valueOf(guild.getMembers().size()));
-            formatted = StringUtils.replace(formatted, "{G-POSITION}", guild.getMembers().size() >= Settings.getConfig().minMembersToInclude
-                            ? String.valueOf(guild.getRank().getPosition()) : Settings.getConfig().minMembersPositionString);
+            formatted = StringUtils.replace(formatted, "{G-POSITION}", (guild.getMembers().size() >= Settings.getConfig().minMembersToInclude)
+                    ? String.valueOf(guild.getRank().getPosition()) : Settings.getConfig().minMembersPositionString);
         } else {
             formatted = StringUtils.replace(formatted, "{G-NAME}", "Brak");
             formatted = StringUtils.replace(formatted, "{G-TAG}", "Brak");
@@ -192,9 +203,9 @@ public abstract class AbstractTablist {
 
     @Deprecated
     protected String putHeaderFooterVars(String text) {
-        String formatted = text;
 
-        final Calendar time = Calendar.getInstance();
+        String formatted = text;
+        Calendar time = Calendar.getInstance();
         int hour = time.get(Calendar.HOUR_OF_DAY);
         int minute = time.get(Calendar.MINUTE);
         int second = time.get(Calendar.SECOND);
@@ -204,11 +215,13 @@ public abstract class AbstractTablist {
         } else {
             formatted = StringUtils.replace(formatted, "{HOUR}", String.valueOf(hour));
         }
+
         if (minute < 10) {
             formatted = StringUtils.replace(formatted, "{MINUTE}", "0" + String.valueOf(minute));
         } else {
             formatted = StringUtils.replace(formatted, "{MINUTE}", String.valueOf(minute));
         }
+
         if (second < 10) {
             formatted = StringUtils.replace(formatted, "{SECOND}", "0" + String.valueOf(second));
         } else {

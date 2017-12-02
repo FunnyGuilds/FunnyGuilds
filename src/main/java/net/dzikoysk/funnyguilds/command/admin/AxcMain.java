@@ -9,6 +9,7 @@ public class AxcMain implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         for (String line : Messages.getInstance().adminHelpList) {
             sender.sendMessage(line);
         }

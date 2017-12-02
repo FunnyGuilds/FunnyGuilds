@@ -14,10 +14,12 @@ public class DeserializationUtils {
 
     @SuppressWarnings("unchecked")
     public static Guild deserializeGuild(Object[] values) {
+
         if (values == null) {
             FunnyGuilds.error("[Deserialize] Cannot deserialize guild! Caused by: null");
             return null;
         }
+
         Guild guild = Guild.get((String) values[1]);
         guild.setUUID((UUID) values[0]);
         guild.setTag(Settings.getConfig().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase());
@@ -35,14 +37,17 @@ public class DeserializationUtils {
         guild.setBan((long) values[14]);
         guild.setDeputy((User) values[15]);
         guild.deserializationUpdate();
+
         return guild;
     }
 
     public static Region deserializeRegion(Object[] values) {
+
         if (values == null) {
             FunnyGuilds.error("Cannot deserialize region! Caused by: null");
             return null;
         }
+
         Region region = Region.get((String) values[0]);
         region.setCenter((Location) values[1]);
         region.setSize((int) values[2]);

@@ -14,6 +14,7 @@ public class EventManager {
     }
 
     public static EventManager getEventManager() {
+
         if (instance == null) {
             new EventManager();
         }
@@ -22,18 +23,21 @@ public class EventManager {
     }
 
     public final void load() {
+
         for (EventExtension ee : extensions) {
             ee.onLoad();
         }
     }
 
     public final void enable() {
+
         for (EventExtension ee : extensions) {
             ee.onEnable();
         }
     }
 
     public final void disable() {
+
         for (EventExtension ee : extensions) {
             ee.onDisable();
         }

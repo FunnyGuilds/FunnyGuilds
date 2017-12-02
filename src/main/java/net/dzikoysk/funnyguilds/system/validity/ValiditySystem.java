@@ -12,13 +12,16 @@ public class ValiditySystem {
     }
 
     public static ValiditySystem getInstance() {
+
         if (instance == null) {
             new ValiditySystem();
         }
+
         return instance;
     }
 
     public void run() {
+
         for (Guild guild : GuildUtils.getGuilds()) {
             if (!guild.isValid()) {
                 ValidityUtils.broadcast(guild);

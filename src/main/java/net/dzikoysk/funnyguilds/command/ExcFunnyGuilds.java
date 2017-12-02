@@ -22,7 +22,8 @@ public class ExcFunnyGuilds implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
+            if ("reload".equalsIgnoreCase(args[0]) || "rl".equalsIgnoreCase(args[0])) {
+
                 if (!sender.hasPermission("funnyguilds.reload")) {
                     sender.sendMessage(Messages.getInstance().permission);
                     return;
@@ -52,7 +53,8 @@ public class ExcFunnyGuilds implements Executor {
                 thread.start();
                 
                 return;
-            } else if (args[0].equalsIgnoreCase("check") || args[0].equalsIgnoreCase("update")) {
+            } else if ("check".equalsIgnoreCase(args[0]) || "update".equalsIgnoreCase(args[0])) {
+
                 if (sender instanceof Player) {
                     Version.isNewAvailable((Player) sender);
                 } else {
@@ -60,7 +62,8 @@ public class ExcFunnyGuilds implements Executor {
                 }
                 
                 return;
-            } else if (args[0].equalsIgnoreCase("save-all")) {
+            } else if ("save-all".equalsIgnoreCase(args[0])) {
+
                 if (!sender.hasPermission("funnyguilds.admin")) {
                     sender.sendMessage(Messages.getInstance().permission);
                     return;

@@ -12,6 +12,7 @@ public class MxcPvP implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User user = User.get(p);
@@ -27,6 +28,7 @@ public class MxcPvP implements Executor {
         }
 
         Guild guild = user.getGuild();
+
         if (guild.getPvP()) {
             guild.setPvP(false);
             p.sendMessage(m.pvpOff);

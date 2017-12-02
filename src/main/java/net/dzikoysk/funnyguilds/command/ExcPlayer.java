@@ -14,14 +14,15 @@ public class ExcPlayer implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig msg = Messages.getInstance();
         
-        if (args.length == 0 && !(sender instanceof Player)) {
+        if ((args.length == 0) && !(sender instanceof Player)) {
             sender.sendMessage(Messages.getInstance().playerOnly);
             return;
         }
         
-        String name = args.length == 0 ? ((Player) sender).getName() : args[0];
+        String name = (args.length == 0) ? sender.getName() : args[0];
         if (!UserUtils.playedBefore(name)) {
             sender.sendMessage(msg.playerInfoExists);
             return;

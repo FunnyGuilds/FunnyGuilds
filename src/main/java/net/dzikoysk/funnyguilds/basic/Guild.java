@@ -64,6 +64,7 @@ public class Guild implements Basic {
     }
 
     public static Guild get(String name) {
+
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getName().equalsIgnoreCase(name)) {
                 return guild;
@@ -79,6 +80,7 @@ public class Guild implements Basic {
     }
 
     public void addMember(User user) {
+
         if (this.members.contains(user)) {
             return;
         }
@@ -89,6 +91,7 @@ public class Guild implements Basic {
     }
 
     public void addRegion(String s) {
+
         if (this.regions.contains(s)) {
             return;
         }
@@ -98,7 +101,9 @@ public class Guild implements Basic {
     }
 
     public void addAlly(Guild guild) {
+
         this.changes();
+
         if (this.allies.contains(guild)) {
             return;
         }
@@ -107,7 +112,9 @@ public class Guild implements Basic {
     }
 
     public void addEnemy(Guild guild) {
+
         this.changes();
+
         if (this.enemies.contains(guild)) {
             return;
         }
@@ -116,8 +123,10 @@ public class Guild implements Basic {
     }
 
     public void deserializationUpdate() {
+
         this.owner.setGuild(this);
         UserUtils.setGuild(this.members, this);
+
         for (String r : this.regions) {
             Region region = RegionUtils.get(r);
             if (region != null) {
@@ -132,6 +141,7 @@ public class Guild implements Basic {
     }
 
     public void removeMember(User user) {
+
         if(user.isDeputy()) {
             this.deputy = null;
         }
@@ -156,6 +166,7 @@ public class Guild implements Basic {
     }
 
     public boolean canBuild() {
+
         if (this.build > System.currentTimeMillis()) {
             return false;
         }
@@ -172,7 +183,9 @@ public class Guild implements Basic {
 
     @Override
     public boolean changed() {
+
         boolean c = changes;
+
         if (c) {
             this.changes = false;
         }
@@ -186,17 +199,18 @@ public class Guild implements Basic {
     }
 
     public boolean canBeAttacked() {
-        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getConfig().warWait > System.currentTimeMillis());
+        return !((this.getAttacked() != 0) && ((this.getAttacked() + Settings.getConfig().warWait) > System.currentTimeMillis()));
     }
 
     public boolean isSomeoneInRegion() {
         return Bukkit.getOnlinePlayers().stream()
                 .filter(player -> User.get(player).getGuild() != this)
                 .map(player -> RegionUtils.getAt(player.getLocation()))
-                .anyMatch(region -> region != null && region.getGuild() == this);
+                .anyMatch(region -> (region != null) && (region.getGuild() == this));
     }
 
     public boolean isValid() {
+
         if (this.validity == this.born) {
             this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             this.changes();
@@ -211,6 +225,7 @@ public class Guild implements Basic {
     }
 
     public boolean isBanned() {
+
         if (this.ban > System.currentTimeMillis()) {
             return true;
         }
@@ -272,7 +287,9 @@ public class Guild implements Basic {
     }
 
     public void setRegion(String s) {
+
         this.region = s;
+
         if (this.home == null) {
             Region region = Region.get(s);
             this.home = region.getCenter();
@@ -357,6 +374,7 @@ public class Guild implements Basic {
     }
 
     public void setValidity(long l) {
+
         if (l == this.born) {
             this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
         } else {
@@ -389,6 +407,7 @@ public class Guild implements Basic {
     }
 
     public void setBan(long l) {
+
         if (l > System.currentTimeMillis()) {
             this.ban = l;
         } else {
@@ -437,9 +456,9 @@ public class Guild implements Basic {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
+        int prime = 31;
         int result = 1;
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        result = (prime * result) + ((uuid == null) ? 0 : uuid.hashCode());
         return result;
     }
 
@@ -454,7 +473,7 @@ public class Guild implements Basic {
         }
         
         Guild guild = (Guild) o;
-        if (guild.getName() != null && this.name != null) {
+        if ((guild.getName() != null) && (this.name != null)) {
             return guild.getName().equalsIgnoreCase(this.name);
         }
         

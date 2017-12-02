@@ -16,6 +16,7 @@ public class ExcLeave implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+
         MessagesConfig m = Messages.getInstance();
         Player p = (Player) sender;
         User u = User.get(p);

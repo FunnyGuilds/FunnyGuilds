@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,34 +51,37 @@ public class Menu {
     }
 
     public void updateInv() {
+
         String title = this.name;
         int slots = 9 * this.row;
 
         if (title == null) {
             return;
         }
-        if (this.row > 6 || this.row < 1) {
+
+        if ((this.row > 6) || (this.row < 1)) {
             return;
         }
 
         Inventory inv = Bukkit.createInventory(null, slots, title);
 
-        if (this.item != null && !this.item.isEmpty()) {
+        if ((this.item != null) && !this.item.isEmpty()) {
             for (Entry<Integer, ItemStack> entry : this.item.entrySet()) {
+
                 int slot = entry.getKey() - 1;
                 ItemStack item = entry.getValue();
                 ItemMeta im = item.getItemMeta();
                 
-                if (slot <= slots || item != null) {
+                if ((slot <= slots) || (item != null)) {
+
                     String l = this.lore.get(slot);
+
                     if (l != null) {
+
                         String[] table = l.split(";");
-                        ArrayList<String> lore = new ArrayList<String>();
-                        
-                        for (String line : table) {
-                            lore.add(line);
-                        }
-                        
+                        ArrayList<String> lore = new ArrayList<>();
+                        lore.addAll(Arrays.asList(table));
+
                         im.setLore(lore);
                         item.setItemMeta(im);
                     }
@@ -103,6 +107,7 @@ public class Menu {
     }
 
     public ItemStack getItem(int i) {
+
         if (this.item.containsKey(i)) {
             return this.item.get(i);
         }
@@ -111,6 +116,7 @@ public class Menu {
     }
 
     public String getLore(int i) {
+
         if (this.lore.containsKey(i)) {
             return this.lore.get(i);
         }
@@ -119,6 +125,7 @@ public class Menu {
     }
 
     public String getCommand(int i) {
+
         if (this.command.containsKey(i)) {
             return this.command.get(i);
         }
@@ -127,6 +134,7 @@ public class Menu {
     }
 
     public boolean getCancelled(int i) {
+
         if (this.cancelled.containsKey(i)) {
             return this.cancelled.get(i);
         }
@@ -135,6 +143,7 @@ public class Menu {
     }
 
     public boolean getClosed(int i) {
+
         if (this.closed.containsKey(i)) {
             return this.closed.get(i);
         }
@@ -163,7 +172,8 @@ public class Menu {
     }
 
     public int getFirstEmpty() {
-        for (int i = 1; i < this.row * 9 + 1; i++) {
+
+        for (int i = 1; i < ((this.row * 9) + 1); i++) {
             if (!this.item.containsKey(i)) {
                 return i;
             }

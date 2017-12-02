@@ -26,5 +26,4 @@ public enum ActionType {
     DUMMY_GLOBAL_UPDATE_USER,
 
     PACKET_PLAY_IN_USE_ENTITY
-
 }

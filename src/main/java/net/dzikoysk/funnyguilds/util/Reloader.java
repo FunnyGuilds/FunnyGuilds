@@ -17,6 +17,7 @@ public class Reloader {
     }
 
     public static boolean wasReloaded() {
+
         if (!init) {
             Reloader reloader = new Reloader();
             reloader.init();
@@ -26,6 +27,7 @@ public class Reloader {
     }
 
     public void init() {
+
         PandaConfiguration pc = new PandaConfiguration(new File(Data.getDataFolder(), "funnyguilds.dat"));
         int before = pc.getInt("played-before");
         int actual = Bukkit.getOnlinePlayers().size();

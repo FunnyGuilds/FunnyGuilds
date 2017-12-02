@@ -12,6 +12,7 @@ public class BanSystem {
     }
 
     public static BanSystem getInstance() {
+
         if (instance == null) {
             new BanSystem();
         }
@@ -20,6 +21,7 @@ public class BanSystem {
     }
 
     public void run() {
+
         for (Guild guild : GuildUtils.getGuilds()) {
             guild.isBanned();
         }

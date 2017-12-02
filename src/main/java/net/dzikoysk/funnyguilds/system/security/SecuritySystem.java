@@ -20,43 +20,54 @@ public final class SecuritySystem {
     }
 
     public static SecuritySystem getSecurity() {
+
         if (instance == null) {
             new SecuritySystem();
         }
+
         return instance;
     }
 
     public boolean checkPlayer(Player player, Object... values) {
+
         for (SecurityType type : SecurityType.values()) {
             if (checkPlayer(player, type, values)) {
                 return true;
             }
         }
+
         return false;
     }
 
     public boolean checkPlayer(Player player, SecurityType type, Object... values) {
+
         if (isBanned(User.get(player))) {
             return true;
         }
+
         switch (type) {
             case FREECAM:
+
                 Guild guild = null;
-                for (int i = 0; i < values.length; i++) {
-                    if (values[i] instanceof Guild) {
-                        guild = (Guild) values[i];
+
+                for (Object value : values) {
+                    if (value instanceof Guild) {
+                        guild = (Guild) value;
                     }
                 }
+
                 int dis = (int) RegionUtils.get(guild.getRegion()).getCenter().distance(player.getLocation());
                 if (dis < 6) {
                     return false;
                 }
+
                 for (Player w : Bukkit.getOnlinePlayers()) {
                     if (w.isOp()) {
                         w.sendMessage(SecurityUtils.getBustedMessage(player.getName(), "FreeCam"));
                         w.sendMessage(SecurityUtils.getNoteMessage("Zaatakowal krysztal z odleglosci &c" + dis + " kratek"));
                     }
                 }
+
                 blocked.add(User.get(player));
                 return true;
             case EVERYTHING:
@@ -64,6 +75,7 @@ public final class SecuritySystem {
             default:
                 break;
         }
+
         return false;
     }
 
