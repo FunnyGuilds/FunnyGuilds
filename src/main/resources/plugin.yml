@@ -42,6 +42,11 @@ permissions:
             funnyguilds.ranking: true
             funnyguilds.manage: true
             funnyguilds.items: true
+    funnyguilds.vip:
+        default: op
+        children:
+            funnyguilds.vip.items: true
+            funnyguilds.vip.rank: true
     funnyguilds.reload:
         default: op
     funnyguilds.admin.build:

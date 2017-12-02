@@ -122,7 +122,20 @@ public class ExcCreate implements Executor {
             return;
         }
 
-        List<ItemStack> itemsList = p.hasPermission("funnyguilds.vip") ? c.createItemsVip : c.createItems;
+        if (c.rankCreateEnable) {
+            int requiredRank = p.hasPermission("funnyguilds.vip.rank") ? c.rankCreateVip : c.rankCreate;
+            int points = u.getRank().getPoints();
+
+            if (points < requiredRank) {
+                String msg = m.createRank;
+                msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
+                msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
+                p.sendMessage(msg);
+                return;
+            }
+        }
+
+        List<ItemStack> itemsList = p.hasPermission("funnyguilds.vip.items") ? c.createItemsVip : c.createItems;
 
         if (!u.getBypass()) {
             for (ItemStack is : itemsList) {
