@@ -90,7 +90,19 @@ public class PluginConfig {
 
     @CfgExclude
     public List<ItemStack> createItemsVip;
-    
+
+    @CfgComment("Czy opcja wymaganego rankingu do zalozenia gildi ma byc wlaczona?")
+    @CfgName("rank-create-enable")
+    public boolean rankCreateEnable = true;
+
+    @CfgComment("Minimalny ranking wymagany do zalozenia gildi")
+    @CfgName("rank-create")
+    public int rankCreate = 1000;
+
+    @CfgComment("Minimalny ranking wymagany do zalozenia gildi dla osoby z uprawnieniem funnyguilds.vip")
+    @CfgName("rank-create-vip")
+    public int rankCreateVip = 800;
+
     @CfgComment("Czy GUI z przedmiotami na gildie ma byc wspolne dla wszystkich?")
     @CfgComment("Jesli wlaczone - wszyscy gracze beda widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip bedzie ignorowane")
     @CfgName("use-common-gui")

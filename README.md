@@ -1,5 +1,6 @@
 FunnyGuilds
 [![Build Status](https://travis-ci.org/FunnyGuilds/FunnyGuilds.svg?branch=master)](https://travis-ci.org/FunnyGuilds/FunnyGuilds)
+[![Coverage Status](https://coveralls.io/repos/github/FunnyGuilds/FunnyGuilds/badge.svg?branch=master)](https://coveralls.io/github/FunnyGuilds/FunnyGuilds?branch=master)
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open")
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Average time to resolve an issue")
 [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u)

@@ -189,6 +189,8 @@ public class MessagesConfig {
     @CfgComment("Available variables: {DISTANCE}")
     public String createSpawn = "&7Jestes zbyt blisko spawnu! Minimalna odleglosc to &c{DISTANCE}";
     public String createIsNear = "&cW poblizu znajduje sie jakas gildia, poszukaj innego miejsca!";
+    @CfgComment("Available variables: {POINTS}, {REQUIRED}")
+    public String createRank = "&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED}&cpunktow.";
     @CfgComment("Available variables: {ITEM}, {ITEMS}")
     public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
     @CfgComment("Available variables: {PLAYER}, {GUILD}, {TAG}")

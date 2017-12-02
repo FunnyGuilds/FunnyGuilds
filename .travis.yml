@@ -1,15 +1,17 @@
 language: java
 sudo: required
 
-addons:
-  apt:
-    packages:
-      - oracle-java9-installer
-
 matrix:
   include:
     - jdk: oraclejdk8
     - jdk: oraclejdk9
+      addons:
+        apt:
+          packages:
+            - oracle-java9-installer
+
+after_success:
+  - mvn clean test jacoco:report coveralls:report
 
 notifications:
   email: false
