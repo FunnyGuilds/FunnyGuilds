@@ -91,6 +91,10 @@ public class PluginConfig {
     @CfgExclude
     public List<ItemStack> createItemsVip;
 
+    @CfgComment("Czy opcja wymaganego rankingu do zalozenia gildi ma byc wlaczona?")
+    @CfgName("rank-create-enable")
+    public boolean rankCreateEnable = true;
+
     @CfgComment("Minimalny ranking wymagany do zalozenia gildi")
     @CfgName("rank-create")
     public int rankCreate = 1000;
