@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command;
 
 import java.util.Date;
+import java.util.Locale;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -58,6 +59,7 @@ public class ExcInfo implements Executor {
             m = StringUtils.replace(m, "{POINTS}", Integer.toString(guild.getRank().getPoints()));
             m = StringUtils.replace(m, "{KILLS}", Integer.toString(guild.getRank().getKills()));
             m = StringUtils.replace(m, "{DEATHS}", Integer.toString(guild.getRank().getDeaths()));
+            m = StringUtils.replace(m, "{KDR}", String.format(Locale.US, "%.2f", guild.getRank().getKDR()));
             m = StringUtils.replace(m, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(guild)));
             m = StringUtils.replace(m, "{VALIDITY}", validity);
             m = StringUtils.replace(m, "{LIVES}", Integer.toString(guild.getLives()));

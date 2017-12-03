@@ -86,7 +86,8 @@ public class MessagesConfig {
             "&a/wyrzuc [gracz] &8- &7Wyrzuca gracza z gildii",
             "&a/rozwiaz [tag] &8- &7Rozwiazuje sojusz",
             "&a/usun &8- &7Usuwa gildie",
-            "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii");
+            "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii",
+            "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii");
 
     @CfgComment("<------- Admin Help Messages -------> #")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
@@ -108,7 +109,7 @@ public class MessagesConfig {
     
     @CfgComment("<------- Player Info Messages -------> #")
     public String playerInfoExists = "&cTaki gracz nigdy nie byl na serwerze!";
-    @CfgComment("Available variables: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {RANK}")
+    @CfgComment("Available variables: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> playerInfoList = Arrays.asList(
             "&8--------------.-----------------",
@@ -117,13 +118,14 @@ public class MessagesConfig {
             "&7Miejsce: &a{RANK} &8(&a{POINTS}&8)",
             "&7Zabojstwa: &a{KILLS}",
             "&7Smierci: &a{DEATHS}",
+            "&7KDR: &a{KDR}",
             "&8-------------.------------------");
 
     @CfgComment("<------- Info Messages -------> #")
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
     @CfgComment("Available variables: {GUILD}, {TAG}, {OWNER}, {MEMBERS}, ")
-    @CfgComment("{POINTS}, {KILLS}, {DEATHS}, {ALLIES}, {RANK}, {VALIDITY},")
+    @CfgComment("{POINTS}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY},")
     @CfgComment("{LIVES}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> infoList = Arrays.asList(
@@ -169,6 +171,21 @@ public class MessagesConfig {
             "&79&8. &c{PTOP-9}",
             "&710&8. &c{PTOP-10}");
 
+    @CfgComment("<------- Escape Messages -------> #")
+    public String escapeDisabled = "&cPrzykro mi, ucieczki sa wylaczone!";
+    @CfgComment("Available variables: {TIME}")
+    public String escapeStartedUser = "&aDobrze, jesli nikt ci nie przeszkodzi - za {TIME} sekund uda ci sie uciec!";
+    @CfgComment("Available variables: {TIME}, {X}, {Y}, {Z}, {PLAYER}")
+    public String escapeStartedOpponents = "&cGracz {PLAYER} probuje uciec z terenu twojej gildii! ({X}  {Y}  {Z})";
+    public String escapeCancelled = "&cUcieczka zostala przerwana!";
+    public String escapeInProgress = "&cUcieczka juz trwa!";
+    public String escapeSuccessfulUser = "&aUdalo ci sie uciec!";
+    @CfgComment("Available variables: {PLAYER}")
+    public String escapeSuccessfulOpponents = "&cGraczowi {PLAYER} udalo sie uciec z terenu twojej gildii!";
+    public String escapeNoUserGuild = "&cNie masz gildii do ktorej moglbys uciekac!";
+    public String escapeNoNeedToRun = "&cNie znajdujesz sie na terenie zadnej gildii, po co uciekac?";
+    public String escapeOnYourRegion = "&cZnajdujesz sie na terenie wlasnej gildii, dokad chcesz uciekac?";
+    
     @CfgComment("<------- Create Guild Messages -------> #")
     public String createHasGuild = "&cMasz juz gildie!";
     public String createName = "&cPodaj nazwe gildii!";

@@ -89,11 +89,15 @@ public class ExcBase implements Executor {
         p.sendMessage(m.baseDontMove.replace("{TIME}", Integer.toString(time)));
 
         Location before = p.getLocation();
-        AtomicInteger i = new AtomicInteger(0);
+        AtomicInteger i = new AtomicInteger(1);
 
         user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
-            i.getAndIncrement();
-
+            if (!p.isOnline()) {
+                user.getTeleportation().cancel();
+                user.setTeleportation(null);
+                return;
+            }
+            
             if (!LocationUtils.equals(p.getLocation(), before)) {
                 user.getTeleportation().cancel();
                 p.sendMessage(m.baseMove);
@@ -102,7 +106,7 @@ public class ExcBase implements Executor {
                 return;
             }
 
-            if (i.get() > time) {
+            if (i.getAndIncrement() > time) {
                 user.getTeleportation().cancel();
                 p.sendMessage(m.baseTeleport);
                 p.teleport(guild.getHome());
