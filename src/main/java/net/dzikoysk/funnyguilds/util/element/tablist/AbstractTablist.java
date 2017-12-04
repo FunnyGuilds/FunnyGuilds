@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.util.element.tablist;
 import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -152,6 +153,7 @@ public abstract class AbstractTablist {
             formatted = StringUtils.replace(formatted, "{G-POINTS}", String.valueOf(guild.getRank().getPoints()));
             formatted = StringUtils.replace(formatted, "{G-KILLS}", String.valueOf(guild.getRank().getKills()));
             formatted = StringUtils.replace(formatted, "{G-DEATHS}", String.valueOf(guild.getRank().getDeaths()));
+            formatted = StringUtils.replace(formatted, "{KDR}", String.format(Locale.US, "%.2f", guild.getRank().getKDR()));
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ONLINE}", String.valueOf(guild.getOnlineMembers().size()));
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ALL}", String.valueOf(guild.getMembers().size()));
             formatted = StringUtils.replace(formatted, "{G-POSITION}", guild.getMembers().size() >= Settings.getConfig().minMembersToInclude
@@ -165,6 +167,7 @@ public abstract class AbstractTablist {
             formatted = StringUtils.replace(formatted, "{G-POINTS}", "0");
             formatted = StringUtils.replace(formatted, "{G-KILLS}", "0");
             formatted = StringUtils.replace(formatted, "{G-DEATHS}", "0");
+            formatted = StringUtils.replace(formatted, "{KDR}", "0.00");
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ONLINE}", "0");
             formatted = StringUtils.replace(formatted, "{G-MEMBERS-ALL}", "0");
             formatted = StringUtils.replace(formatted, "{G-POSITION}", Settings.getConfig().minMembersPositionString);
@@ -176,6 +179,7 @@ public abstract class AbstractTablist {
         formatted = StringUtils.replace(formatted, "{POSITION}", String.valueOf(user.getRank().getPosition()));
         formatted = StringUtils.replace(formatted, "{KILLS}", String.valueOf(user.getRank().getKills()));
         formatted = StringUtils.replace(formatted, "{DEATHS}", String.valueOf(user.getRank().getDeaths()));
+        formatted = StringUtils.replace(formatted, "{KDR}", String.format(Locale.US, "%.2f", user.getRank().getKDR()));
 
         formatted = StringUtils.replace(formatted, "{ONLINE}", String.valueOf(Bukkit.getOnlinePlayers().size()));
         formatted = StringUtils.replace(formatted, "{TPS}", Ticker.getRecentTPS(0));

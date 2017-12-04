@@ -51,6 +51,7 @@ public class PlayerJoin implements Listener {
             if (region == null || region.getGuild() == null) {
                 return;
             }
+            
             if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
                 EntityUtil.spawn(region.getGuild(), player);
             }

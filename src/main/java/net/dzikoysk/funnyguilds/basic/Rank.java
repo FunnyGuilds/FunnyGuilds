@@ -122,6 +122,14 @@ public class Rank implements Comparable<Rank> {
         this.basic.changes();
     }
 
+    public float getKDR() {
+        if (this.deaths == 0) {
+            return this.kills;
+        }
+        
+        return 1.0F * this.kills / this.deaths;
+    }
+    
     public String getIDNS() {
         return idns;
     }

@@ -62,7 +62,7 @@ public class PluginConfig {
     @CfgName("tag-min-length")
     public int createTagMinLength = 2;
 
-    @CfgComment("Minimalna ilosc graczy w gildii aby zaliczala sie do rankingu")
+    @CfgComment("Minimalna liczba graczy w gildii aby zaliczala sie do rankingu")
     @CfgName("guild-min-members")
     public int minMembersToInclude = 3;
     
@@ -165,7 +165,7 @@ public class PluginConfig {
     @CfgName("create-center-sphere")
     public boolean createCenterSphere = true;
 
-    @CfgComment("Maksymalna ilosc czlonkow w gildii")
+    @CfgComment("Maksymalna liczba czlonkow w gildii")
     @CfgName("max-members")
     public int inviteMembers = 15;
 
@@ -174,6 +174,15 @@ public class PluginConfig {
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> blockedWorlds = Collections.singletonList("some_world");
 
+    @CfgComment("Mozliwosc ucieczki z terenu innej gildii")
+    @CfgComment("Funkcja niedostepna jesli mozliwosc teleportacji do gildii jest wylaczona")
+    @CfgName("escape-enable")
+    public boolean escapeEnable = true;
+    
+    @CfgComment("Czas, w sekundach, jaki musi uplynac od wlaczenia ucieczki do teleportacji")
+    @CfgName("escape-delay")
+    public int escapeDelay = 120;
+    
     @CfgComment("Mozliwosc teleportacji do gildii")
     @CfgName("base-enable")
     public boolean baseEnable = true;
@@ -483,6 +492,7 @@ public class PluginConfig {
     @CfgComment("{POSITION} - pozycja gracza w rankingu")
     @CfgComment("{KILLS} - liczba zabojstw gracza")
     @CfgComment("{DEATHS} - liczba smierci gracza")
+    @CfgComment("{KDR} - stosunek zabojstw do smierci gracza")
     @CfgComment("> Spis zmiennych gildyjnych:")
     @CfgComment("{G-NAME} - nazwa gildii do ktorej nalezy gracz")
     @CfgComment("{G-TAG} - tag gildii gracza")
@@ -493,8 +503,8 @@ public class PluginConfig {
     @CfgComment("{G-POSITION} - pozycja gildii gracza w rankingu")
     @CfgComment("{G-KILLS} - suma zabojstw czlonkow gildii")
     @CfgComment("{G-DEATHS} - suma smierci czlonkow gildii")
-    @CfgComment("{G-MEMBERS-ONLINE} - ilosc czlonkow gildii online")
-    @CfgComment("{G-MEMBERS-ALL} - ilosc wszystkich czlonkow gildii")
+    @CfgComment("{G-MEMBERS-ONLINE} - liczba czlonkow gildii online")
+    @CfgComment("{G-MEMBERS-ALL} - liczba wszystkich czlonkow gildii")
     @CfgComment("> Spis pozostalych zmiennych:")
     @CfgComment("{ONLINE} - liczba graczy online")
     @CfgComment("{TPS} - TPS serwera")
@@ -510,11 +520,12 @@ public class PluginConfig {
             .put(3, "&7Punkty: &b{POINTS}")
             .put(4, "&7Zabojstwa: &b{KILLS}")
             .put(5, "&7Smierci: &b{DEATHS}")
+            .put(6, "&7KDR: &b{KDR}")
             .put(7, "&7Gildia: &b{G-NAME}")
-            .put(8, "&7TAG: &b{G-TAG}")
-            .put(9, "&7Punkty gildii: &b{G-POINTS}")
-            .put(10, "&7Pozycja gildii: &b{G-POSITION}")
-            .put(11, "&7Ilosc graczy online: &b{G-MEMBERS-ONLINE}")
+            .put(9, "&7TAG: &b{G-TAG}")
+            .put(10, "&7Punkty gildii: &b{G-POINTS}")
+            .put(11, "&7Pozycja gildii: &b{G-POSITION}")
+            .put(12, "&7Liczba graczy online: &b{G-MEMBERS-ONLINE}")
             .put(21, "&7Online: &b{ONLINE}")
             .put(22, "&7TPS: &b{TPS}")
             .put(41, "&bTop 3 Gildii")
@@ -535,7 +546,7 @@ public class PluginConfig {
     @CfgName("player-list-footer")
     public String playerListFooter = "&7O, dziala! &8{HOUR}:{MINUTE}:{SECOND}";
 
-    @CfgComment("Ilosc pingu pokazana przy kazdej komorce.")
+    @CfgComment("Liczba pingu pokazana przy kazdej komorce.")
     @CfgName("player-list-ping")
     public int playerListPing = 0;
 
@@ -745,6 +756,7 @@ public class PluginConfig {
         public Command enlarge = new Command("powieksz");
         public Command ally = new Command("sojusz");
         public Command items = new Command("przedmioty");
+        public Command escape = new Command("ucieczka", Arrays.asList("escape"));
         @CfgName("break")
         public Command break_ = new Command("rozwiaz");
         public Command info = new Command("info");

@@ -7,6 +7,9 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+
+import java.util.Locale;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -46,6 +49,7 @@ public class ExcPlayer implements Executor {
             m = StringUtils.replace(m, "{POINTS}", Integer.toString(user.getRank().getPoints()));
             m = StringUtils.replace(m, "{KILLS}", Integer.toString(user.getRank().getKills()));
             m = StringUtils.replace(m, "{DEATHS}", Integer.toString(user.getRank().getDeaths()));
+            m = StringUtils.replace(m, "{KDR}", String.format(Locale.US, "%.2f", user.getRank().getKDR()));
             m = StringUtils.replace(m, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user)));
             
             sender.sendMessage(m);
