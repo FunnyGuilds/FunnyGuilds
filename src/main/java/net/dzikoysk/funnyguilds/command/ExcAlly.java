@@ -1,10 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -15,22 +10,26 @@ import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class ExcAlly implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
-        Player p = (Player) sender;
-        User user = User.get(p);
+        Player player = (Player) sender;
+        User user = User.get(player);
 
         if (!user.hasGuild()) {
-            p.sendMessage(messages.allyHasNotGuild);
+            player.sendMessage(messages.allyHasNotGuild);
             return;
         }
 
         if (!user.isOwner()) {
-            p.sendMessage(messages.allyIsNotOwner);
+            player.sendMessage(messages.allyIsNotOwner);
             return;
         }
 
@@ -39,7 +38,7 @@ public class ExcAlly implements Executor {
 
         if (args.length < 1) {
             if (invitations.size() == 0) {
-                p.sendMessage(messages.allyHasNotInvitation);
+                player.sendMessage(messages.allyHasNotInvitation);
                 return;
             }
 
@@ -47,7 +46,7 @@ public class ExcAlly implements Executor {
             String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
             for (String msg : list) {
-                p.sendMessage(msg.replace("{GUILDS}", guildNames));
+                player.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
 
             return;
@@ -55,18 +54,18 @@ public class ExcAlly implements Executor {
 
         String tag = args[0];
         if (!GuildUtils.tagExists(tag)) {
-            p.sendMessage(StringUtils.replace(messages.allyGuildExists, "{TAG}", tag));
+            player.sendMessage(StringUtils.replace(messages.allyGuildExists, "{TAG}", tag));
             return;
         }
 
         Guild invitedGuild = GuildUtils.byTag(tag);
         if (guild.equals(invitedGuild)) {
-            p.sendMessage(messages.allySame);
+            player.sendMessage(messages.allySame);
             return;
         }
 
         if (guild.getAllies().contains(invitedGuild)) {
-            p.sendMessage(messages.allyAlly);
+            player.sendMessage(messages.allyAlly);
             return;
         }
 
@@ -75,7 +74,7 @@ public class ExcAlly implements Executor {
 
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
-            p.sendMessage(StringUtils.replace(messages.allyDone, "{GUILD}", invitedGuild.getName()));
+            player.sendMessage(StringUtils.replace(messages.allyDone, "{GUILD}", invitedGuild.getName()));
 
             Player owner = invitedGuild.getOwner().getPlayer();
             if (owner !=null) {
@@ -95,7 +94,7 @@ public class ExcAlly implements Executor {
 
         if (InvitationList.hasInvitationFrom(invitedGuild, guild)) {
             InvitationList.expireInvitation(guild, invitedGuild);
-            p.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
+            player.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
 
             Player owner = invitedGuild.getOwner().getPlayer();
             if (owner !=null) {
@@ -106,11 +105,12 @@ public class ExcAlly implements Executor {
         }
 
         InvitationList.createInvitation(guild, invitedGuild);
-        p.sendMessage(messages.allyInviteDone.replace("{GUILD}", invitedGuild.getName()));
+        player.sendMessage(messages.allyInviteDone.replace("{GUILD}", invitedGuild.getName()));
 
         Player owner = invitedGuild.getOwner().getPlayer();
         if (owner !=null) {
             owner.sendMessage(messages.allyToInvited.replace("{GUILD}", guild.getName()));
         }
     }
+
 }

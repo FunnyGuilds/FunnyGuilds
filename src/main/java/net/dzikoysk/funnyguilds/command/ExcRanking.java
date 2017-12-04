@@ -9,9 +9,10 @@ public class ExcRanking implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        for (String m : Messages.getInstance().rankingList) {
-            String r = Parser.parseRank(m);
-            sender.sendMessage(r == null ? m : r);
+        for (String messageLine : Messages.getInstance().rankingList) {
+            String parsedRank = Parser.parseRank(messageLine);
+            sender.sendMessage(parsedRank == null ? messageLine : parsedRank);
         }
     }
+
 }

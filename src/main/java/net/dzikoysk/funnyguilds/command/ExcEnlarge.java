@@ -17,56 +17,58 @@ public class ExcEnlarge implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        PluginConfig c = Settings.getConfig();
-        Player p = (Player) sender;
-        User lp = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        PluginConfig config = Settings.getConfig();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
-        if (!c.enlargeEnable) {
+        if (!config.enlargeEnable) {
             return;
         }
 
-        if (!lp.hasGuild()) {
-            p.sendMessage(m.enlargeHasNotGuild);
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.enlargeHasNotGuild);
             return;
         }
 
-        if (!lp.isOwner() && !lp.isDeputy()) {
-            p.sendMessage(m.enlargeIsNotOwner);
+        if (!user.isOwner() && !user.isDeputy()) {
+            player.sendMessage(messages.enlargeIsNotOwner);
             return;
         }
 
-        Region region = Region.get(lp.getGuild().getRegion());
+        Region region = Region.get(user.getGuild().getRegion());
         int enlarge = region.getEnlarge();
 
-        if (enlarge > c.enlargeItems.size() - 1) {
-            p.sendMessage(m.enlargeMaxSize);
+        if (enlarge > config.enlargeItems.size() - 1) {
+            player.sendMessage(messages.enlargeMaxSize);
             return;
         }
 
-        ItemStack need = c.enlargeItems.get(enlarge);
-        if (!p.getInventory().containsAtLeast(need, need.getAmount())) {
-            StringBuilder sb = new StringBuilder();
-            sb.append(need.getAmount());
-            sb.append(" ");
-            sb.append(need.getType().toString().toLowerCase());
-            
-            p.sendMessage(m.enlargeItem.replace("{ITEM}", sb.toString()));
+        ItemStack need = config.enlargeItems.get(enlarge);
+
+        if (!player.getInventory().containsAtLeast(need, need.getAmount())) {
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append(need.getAmount());
+            messageBuilder.append(" ");
+            messageBuilder.append(need.getType().toString().toLowerCase());
+
+            player.sendMessage(messages.enlargeItem.replace("{ITEM}", messageBuilder.toString()));
             return;
         }
 
         if (RegionUtils.isNear(region.getCenter())) {
-            p.sendMessage(m.enlargeIsNear);
+            player.sendMessage(messages.enlargeIsNear);
             return;
         }
 
-        p.getInventory().removeItem(need);
+        player.getInventory().removeItem(need);
         region.setEnlarge(++enlarge);
-        region.setSize(region.getSize() + c.enlargeSize);
+        region.setSize(region.getSize() + config.enlargeSize);
 
-        String tm = m.enlargeDone.replace("{SIZE}", Integer.toString(region.getSize())).replace("{LEVEL}", Integer.toString(region.getEnlarge()));
-        for (User user : lp.getGuild().getOnlineMembers()) {
-            user.getPlayer().sendMessage(tm);
-        }
+        String enlargeDoneMessage = messages.enlargeDone
+                .replace("{SIZE}", Integer.toString(region.getSize()))
+                .replace("{LEVEL}", Integer.toString(region.getEnlarge()));
+
+        user.getGuild().broadcast(enlargeDoneMessage);
     }
 }

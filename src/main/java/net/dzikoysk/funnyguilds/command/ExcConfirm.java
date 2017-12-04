@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -7,6 +8,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,36 +17,42 @@ public class ExcConfirm implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User lp = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
-        if (!lp.hasGuild()) {
-            p.sendMessage(m.deleteHasNotGuild);
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.deleteHasNotGuild);
             return;
         }
 
-        if (!lp.isOwner()) {
-            p.sendMessage(m.deleteIsNotOwner);
+        if (!user.isOwner()) {
+            player.sendMessage(messages.deleteIsNotOwner);
             return;
         }
 
-        if (!Settings.getConfig().regionDeleteIfNear && lp.getGuild().isSomeoneInRegion()) {
-            p.sendMessage(m.deleteSomeoneIsNear);
+        if (!Settings.getConfig().regionDeleteIfNear && user.getGuild().isSomeoneInRegion()) {
+            player.sendMessage(messages.deleteSomeoneIsNear);
             return;
         }
 
-        if (!ConfirmationList.contains(lp.getUUID())) {
-            p.sendMessage(m.deleteToConfirm);
+        if (!ConfirmationList.contains(user.getUUID())) {
+            player.sendMessage(messages.deleteToConfirm);
             return;
         }
 
-        ConfirmationList.remove(lp.getUUID());
-        String name = lp.getGuild().getName();
-        String tag = lp.getGuild().getTag();
-        GuildUtils.deleteGuild(lp.getGuild());
+        ConfirmationList.remove(user.getUUID());
 
-        p.sendMessage(m.deleteSuccessful.replace("{GUILD}", name).replace("{TAG}", tag));
-        Bukkit.getServer().broadcastMessage(m.broadcastDelete.replace("{PLAYER}", p.getName()).replace("{GUILD}", name).replace("{TAG}", tag));
+        Guild guild = user.getGuild();
+        GuildUtils.deleteGuild(user.getGuild());
+
+        MessageTranslator translator = new MessageTranslator()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{PLAYER}", player.getName());
+
+        player.sendMessage(translator.translate(messages.deleteSuccessful));
+        Bukkit.getServer().broadcastMessage(translator.translate(messages.broadcastDelete));
     }
+
 }

@@ -13,26 +13,27 @@ public class ExcDelete implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User u = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
-        if (!u.hasGuild()) {
-            p.sendMessage(m.deleteHasNotGuild);
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.deleteHasNotGuild);
             return;
         }
 
-        if (!u.isOwner()) {
-            p.sendMessage(m.deleteIsNotOwner);
+        if (!user.isOwner()) {
+            player.sendMessage(messages.deleteIsNotOwner);
             return;
         }
 
-        if (Settings.getConfig().regionDeleteIfNear && u.getGuild().isSomeoneInRegion()) {
-            p.sendMessage(m.deleteSomeoneIsNear);
+        if (Settings.getConfig().regionDeleteIfNear && user.getGuild().isSomeoneInRegion()) {
+            player.sendMessage(messages.deleteSomeoneIsNear);
             return;
         }
 
-        ConfirmationList.add(u.getUUID());
-        p.sendMessage(m.deleteConfirm);
+        ConfirmationList.add(user.getUUID());
+        player.sendMessage(messages.deleteConfirm);
     }
+
 }

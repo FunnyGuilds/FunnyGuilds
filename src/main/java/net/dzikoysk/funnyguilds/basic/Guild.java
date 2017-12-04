@@ -1,19 +1,14 @@
 package net.dzikoysk.funnyguilds.basic;
 
+import net.dzikoysk.funnyguilds.basic.util.*;
+import net.dzikoysk.funnyguilds.data.Settings;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-
-import net.dzikoysk.funnyguilds.basic.util.BasicType;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.RankManager;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
-import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Guild implements Basic {
 
@@ -71,6 +66,12 @@ public class Guild implements Basic {
         }
         
         return new Guild(name);
+    }
+
+    public void broadcast(String message) {
+        for (User user : this.getOnlineMembers()) {
+            user.getPlayer().sendMessage(message);
+        }
     }
 
     public void addLive() {
@@ -448,16 +449,16 @@ public class Guild implements Basic {
         if (o == this) {
             return true;
         }
-        
+
         if (o.getClass() != this.getClass()) {
             return false;
         }
-        
+
         Guild guild = (Guild) o;
         if (guild.getName() != null && this.name != null) {
             return guild.getName().equalsIgnoreCase(this.name);
         }
-        
+
         return false;
     }
 
@@ -465,4 +466,5 @@ public class Guild implements Basic {
     public String toString() {
         return this.name;
     }
+
 }

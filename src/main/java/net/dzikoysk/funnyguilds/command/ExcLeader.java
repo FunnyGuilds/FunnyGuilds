@@ -14,49 +14,53 @@ public class ExcLeader implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User owner = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User owner = User.get(player);
 
         if (!owner.hasGuild()) {
-            p.sendMessage(m.leaderHasNotGuild);
+            player.sendMessage(messages.leaderHasNotGuild);
             return;
         }
 
         if (!owner.isOwner()) {
-            p.sendMessage(m.leaderIsNotOwner);
+            player.sendMessage(messages.leaderIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            p.sendMessage(m.leaderPlayer);
+            player.sendMessage(messages.leaderPlayer);
             return;
         }
 
         String name = args[0];
+
         if (!UserUtils.playedBefore(name)) {
-            p.sendMessage(m.leaderPlayedBefore);
+            player.sendMessage(messages.leaderPlayedBefore);
             return;
         }
 
-        User user = User.get(name);
-        if (owner.equals(user)) {
-            p.sendMessage(m.leaderMustBeDifferent);
+        User leaderUser = User.get(name);
+
+        if (owner.equals(leaderUser)) {
+            player.sendMessage(messages.leaderMustBeDifferent);
             return;
         }
 
         Guild guild = owner.getGuild();
-        if (!guild.getMembers().contains(user)) {
-            p.sendMessage(m.leaderIsNotMember);
+
+        if (!guild.getMembers().contains(leaderUser)) {
+            player.sendMessage(messages.leaderIsNotMember);
             return;
         }
 
-        guild.setOwner(user);
-        p.sendMessage(m.leaderSet);
-        
-        Player o = user.getPlayer();
-        if (o != null) {
-            o.sendMessage(m.leaderOwner);
+        Player leaderPlayer = leaderUser.getPlayer();
+        guild.setOwner(leaderUser);
+        player.sendMessage(messages.leaderSet);
+
+        if (leaderPlayer != null) {
+            leaderPlayer.sendMessage(messages.leaderOwner);
         }
     }
+
 }

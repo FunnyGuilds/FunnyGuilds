@@ -11,14 +11,14 @@ public class ExcItems implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Player p = (Player) sender;
-        PluginConfig c = Settings.getConfig();
+        Player player = (Player) sender;
+        PluginConfig config = Settings.getConfig();
 
-        if (!c.useCommonGUI && p.hasPermission("funnyguilds.vip.items")) {
-            c.guiItemsVip.open(p);
+        if (!config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
+            config.guiItemsVip.open(player);
             return;
         }
         
-        c.guiItems.open(p);
+        config.guiItems.open(player);
     }
 }

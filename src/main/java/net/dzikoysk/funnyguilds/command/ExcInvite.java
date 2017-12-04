@@ -17,62 +17,63 @@ public class ExcInvite implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User lp = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
-        if (!lp.hasGuild()) {
-            p.sendMessage(m.inviteHasNotGuild);
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.inviteHasNotGuild);
             return;
         }
 
-        if (!lp.isOwner() && !lp.isDeputy()) {
-            p.sendMessage(m.inviteIsNotOwner);
+        if (!user.isOwner() && !user.isDeputy()) {
+            player.sendMessage(messages.inviteIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            p.sendMessage(m.invitePlayer);
+            player.sendMessage(messages.invitePlayer);
             return;
         }
-        Guild guild = lp.getGuild();
+
+        Guild guild = user.getGuild();
 
         if (guild.getMembers().size() >= Settings.getConfig().inviteMembers) {
-            p.sendMessage(m.inviteAmount.replace("{AMOUNT}", Integer.toString(Settings.getConfig().inviteMembers)));
+            player.sendMessage(messages.inviteAmount.replace("{AMOUNT}", Integer.toString(Settings.getConfig().inviteMembers)));
             return;
         }
 
         if (!UserUtils.playedBefore(args[0])) {
-            p.sendMessage(StringUtils.colored("&cTen gracz nie byl nigdy na serwerze!"));
+            player.sendMessage(StringUtils.colored("&cTen gracz nie byl nigdy na serwerze!"));
             return;
         }
 
-        User iu = User.get(args[0]);
-        Player ip = iu.getPlayer();
+        User invitedUser = User.get(args[0]);
+        Player invitedPlayer = invitedUser.getPlayer();
 
-        if (InvitationList.hasInvitationFrom(iu, guild)) {
-            InvitationList.expireInvitation(guild, iu);
-            p.sendMessage(m.inviteCancelled);
+        if (InvitationList.hasInvitationFrom(invitedUser, guild)) {
+            InvitationList.expireInvitation(guild, invitedUser);
+            player.sendMessage(messages.inviteCancelled);
             
-            if (ip != null) {
-                ip.sendMessage(m.inviteCancelledToInvited.replace("{OWNER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+            if (invitedPlayer != null) {
+                invitedPlayer.sendMessage(messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             }
             
             return;
         }
 
-        if (ip == null) {
-            p.sendMessage(m.invitePlayerExists);
+        if (invitedPlayer == null) {
+            player.sendMessage(messages.invitePlayerExists);
             return;
         }
 
-        if (iu.hasGuild()) {
-            p.sendMessage(m.inviteHasGuild);
+        if (invitedUser.hasGuild()) {
+            player.sendMessage(messages.inviteHasGuild);
             return;
         }
 
-        InvitationList.createInvitation(guild, ip);
-        p.sendMessage(m.inviteToOwner.replace("{PLAYER}", ip.getName()));
-        ip.sendMessage(m.inviteToInvited.replace("{OWNER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        InvitationList.createInvitation(guild, invitedPlayer);
+        player.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
+        invitedPlayer.sendMessage(messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 }

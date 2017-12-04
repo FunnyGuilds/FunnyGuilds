@@ -7,52 +7,53 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-
-import java.util.Locale;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Locale;
 
 public class ExcPlayer implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig msg = Messages.getInstance();
+        MessagesConfig messages = Messages.getInstance();
         
         if (args.length == 0 && !(sender instanceof Player)) {
             sender.sendMessage(Messages.getInstance().playerOnly);
             return;
         }
         
-        String name = args.length == 0 ? ((Player) sender).getName() : args[0];
+        String name = args.length == 0 ? sender.getName() : args[0];
+
         if (!UserUtils.playedBefore(name)) {
-            sender.sendMessage(msg.playerInfoExists);
+            sender.sendMessage(messages.playerInfoExists);
             return;
         }
 
         User user = User.get(name);
+
         if (user.getUUID() == null) {
-            sender.sendMessage(msg.playerInfoExists);
+            sender.sendMessage(messages.playerInfoExists);
             return;
         }
 
-        for (String m : msg.playerInfoList) {
+        for (String messageLine : messages.playerInfoList) {
             if (user.hasGuild()) {
-                m = StringUtils.replace(m, "{GUILD}", user.getGuild().getName());
-                m = StringUtils.replace(m, "{TAG}", user.getGuild().getTag());
+                messageLine = StringUtils.replace(messageLine, "{GUILD}", user.getGuild().getName());
+                messageLine = StringUtils.replace(messageLine, "{TAG}", user.getGuild().getTag());
             } else {
-                m = StringUtils.replace(m, "{GUILD}", "Brak");
-                m = StringUtils.replace(m, "{TAG}", "Brak");
+                messageLine = StringUtils.replace(messageLine, "{GUILD}", "Brak");
+                messageLine = StringUtils.replace(messageLine, "{TAG}", "Brak");
             }
             
-            m = StringUtils.replace(m, "{PLAYER}", user.getName());
-            m = StringUtils.replace(m, "{POINTS}", Integer.toString(user.getRank().getPoints()));
-            m = StringUtils.replace(m, "{KILLS}", Integer.toString(user.getRank().getKills()));
-            m = StringUtils.replace(m, "{DEATHS}", Integer.toString(user.getRank().getDeaths()));
-            m = StringUtils.replace(m, "{KDR}", String.format(Locale.US, "%.2f", user.getRank().getKDR()));
-            m = StringUtils.replace(m, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user)));
+            messageLine = StringUtils.replace(messageLine, "{PLAYER}", user.getName());
+            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(user.getRank().getPoints()));
+            messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(user.getRank().getKills()));
+            messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(user.getRank().getDeaths()));
+            messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", user.getRank().getKDR()));
+            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user)));
             
-            sender.sendMessage(m);
+            sender.sendMessage(messageLine);
         }
     }
 }

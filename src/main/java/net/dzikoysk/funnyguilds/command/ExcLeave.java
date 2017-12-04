@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -16,28 +17,34 @@ public class ExcLeave implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User u = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
-        if (!u.hasGuild()) {
-            p.sendMessage(m.leaveHasNotGuild);
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.leaveHasNotGuild);
             return;
         }
 
-        if (u.isOwner()) {
-            p.sendMessage(m.leaveIsOwner);
+        if (user.isOwner()) {
+            player.sendMessage(messages.leaveIsOwner);
             return;
         }
 
-        Guild guild = u.getGuild();
-        guild.removeMember(u);
-        u.removeGuild();
+        Guild guild = user.getGuild();
+        guild.removeMember(user);
+        user.removeGuild();
         
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, u.getOfflineUser());
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, p);
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, user.getOfflineUser());
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
 
-        p.sendMessage(m.leaveToUser.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-        Bukkit.broadcastMessage(m.broadcastLeave.replace("{PLAYER}", u.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        MessageTranslator translator = new MessageTranslator()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{PLAYER}", user.getName());
+
+        player.sendMessage(translator.translate(messages.leaveToUser));
+        Bukkit.broadcastMessage(translator.translate(messages.broadcastLeave));
     }
+
 }

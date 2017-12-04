@@ -1,12 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
@@ -18,95 +11,105 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.LocationUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcEscape implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PluginConfig pc = Settings.getConfig();
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
+        PluginConfig config = Settings.getConfig();
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
 
-        if (!pc.escapeEnable || !pc.baseEnable) {
-            p.sendMessage(m.escapeDisabled);
+        if (!config.escapeEnable || !config.baseEnable) {
+            player.sendMessage(messages.escapeDisabled);
             return;
         }
         
-        
-        User u = User.get(p);
-        if (!u.hasGuild()) {
-            p.sendMessage(m.escapeNoUserGuild);
+        User user = User.get(player);
+
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.escapeNoUserGuild);
             return;
         }
 
-        if (u.getTeleportation() != null) {
-            p.sendMessage(m.escapeInProgress);
+        if (user.getTeleportation() != null) {
+            player.sendMessage(messages.escapeInProgress);
             return;
         }
         
-        Location loc = p.getLocation();
-        Region r = RegionUtils.getAt(loc);     
-        if (r == null) {
-            p.sendMessage(m.escapeNoNeedToRun);
+        Location playerLocation = player.getLocation();
+        Region region = RegionUtils.getAt(playerLocation);
+
+        if (region == null) {
+            player.sendMessage(messages.escapeNoNeedToRun);
             return;
         }
         
-        Guild guild = u.getGuild();
-        if (guild.equals(r.getGuild())) {
-            p.sendMessage(m.escapeOnYourRegion);
+        Guild guild = user.getGuild();
+
+        if (guild.equals(region.getGuild())) {
+            player.sendMessage(messages.escapeOnYourRegion);
             return;
         }
 
         int time = Settings.getConfig().escapeDelay;
+
         if (time < 1) {
-            p.teleport(guild.getHome());
-            p.sendMessage(m.escapeSuccessfulUser);
+            player.teleport(guild.getHome());
+            player.sendMessage(messages.escapeSuccessfulUser);
             
-            for (User member : r.getGuild().getOnlineMembers()) {
-                member.getPlayer().sendMessage(m.escapeSuccessfulOpponents.replace("{PLAYER}", p.getName()));
+            for (User member : region.getGuild().getOnlineMembers()) {
+                member.getPlayer().sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName()));
             }
             
             return;
         }
 
-        p.sendMessage(m.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
+        player.sendMessage(messages.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
 
-        String msg = m.escapeStartedOpponents.replace("{TIME}", Integer.toString(time)).replace("{PLAYER}", p.getName())
-                        .replace("{X}", Integer.toString(loc.getBlockX())).replace("{Y}", Integer.toString(loc.getBlockY()))
-                        .replace("{Z}", Integer.toString(loc.getBlockZ()));
+        String msg = messages.escapeStartedOpponents.replace("{TIME}", Integer.toString(time)).replace("{PLAYER}", player.getName())
+                        .replace("{X}", Integer.toString(playerLocation.getBlockX())).replace("{Y}", Integer.toString(playerLocation.getBlockY()))
+                        .replace("{Z}", Integer.toString(playerLocation.getBlockZ()));
         
-        for (User member : r.getGuild().getOnlineMembers()) {
+        for (User member : region.getGuild().getOnlineMembers()) {
             member.getPlayer().sendMessage(msg);
         }
         
-        Location before = p.getLocation();
+        Location before = player.getLocation();
         AtomicInteger i = new AtomicInteger(0);
 
-        u.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
-            if (!p.isOnline()) {
-                u.getTeleportation().cancel();
-                u.setTeleportation(null);
+        user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
+            if (!player.isOnline()) {
+                user.getTeleportation().cancel();
+                user.setTeleportation(null);
                 return;
             }
             
-            if (!LocationUtils.equals(p.getLocation(), before)) {
-                u.getTeleportation().cancel();
-                p.sendMessage(m.escapeCancelled);
-                u.setTeleportation(null);
+            if (!LocationUtils.equals(player.getLocation(), before)) {
+                user.getTeleportation().cancel();
+                player.sendMessage(messages.escapeCancelled);
+                user.setTeleportation(null);
                 return;
             }
 
             if (i.getAndIncrement() > time) {
-                u.getTeleportation().cancel();
-                p.teleport(guild.getHome());
-                p.sendMessage(m.escapeSuccessfulUser);
+                user.getTeleportation().cancel();
+                player.teleport(guild.getHome());
+                player.sendMessage(messages.escapeSuccessfulUser);
                 
-                for (User member : r.getGuild().getOnlineMembers()) {
-                    member.getPlayer().sendMessage(m.escapeSuccessfulOpponents.replace("{PLAYER}", p.getName()));
+                for (User member : region.getGuild().getOnlineMembers()) {
+                    member.getPlayer().sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName()));
                 }
                 
-                u.setTeleportation(null);
+                user.setTeleportation(null);
             }
         }, 0L, 20L));
     }
+
 }

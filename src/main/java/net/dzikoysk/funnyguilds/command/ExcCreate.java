@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -31,129 +32,128 @@ public class ExcCreate implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User u = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
-        boolean bool = this.checkWorld(p);
+        boolean bool = this.checkWorld(player);
         if (bool) {
-            p.sendMessage(m.blockedWorld);
+            player.sendMessage(messages.blockedWorld);
             return;
         }
 
-        if (u.hasGuild()) {
-            p.sendMessage(m.createHasGuild);
+        if (user.hasGuild()) {
+            player.sendMessage(messages.createHasGuild);
             return;
         }
 
-        if (!(args.length == 2)) {
+        if (args.length != 2) {
             if (args.length == 0) {
-                p.sendMessage(m.createTag);
+                player.sendMessage(messages.createTag);
                 return;
             } else if (args.length == 1) {
-                p.sendMessage(m.createName);
+                player.sendMessage(messages.createName);
                 return;
             } else if (args.length > 2) {
-                p.sendMessage(m.createMore);
+                player.sendMessage(messages.createMore);
                 return;
             }
         }
 
-        PluginConfig c = Settings.getConfig();
+        PluginConfig config = Settings.getConfig();
         String tag = args[0];
         tag = Settings.getConfig().guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
         String name = args[1];
 
-        if (tag.length() > c.createTagLength) {
-            p.sendMessage(m.createTagLength.replace("{LENGTH}", Integer.toString(c.createTagLength)));
+        if (tag.length() > config.createTagLength) {
+            player.sendMessage(messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
             return;
         }
 
-        if (tag.length() < c.createTagMinLength) {
-            p.sendMessage(m.createTagMinLength.replace("{LENGTH}", Integer.toString(c.createTagMinLength)));
+        if (tag.length() < config.createTagMinLength) {
+            player.sendMessage(messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
             return;
         }
 
-        if (name.length() > c.createNameLength) {
-            p.sendMessage(m.createNameLength.replace("{LENGTH}", Integer.toString(c.createNameLength)));
+        if (name.length() > config.createNameLength) {
+            player.sendMessage(messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
             return;
         }
 
-        if (name.length() < c.createNameMinLength) {
-            p.sendMessage(m.createNameMinLength.replace("{LENGTH}", Integer.toString(c.createNameMinLength)));
+        if (name.length() < config.createNameMinLength) {
+            player.sendMessage(messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
             return;
         }
 
         if (!tag.matches("[a-zA-Z]+")) {
-            p.sendMessage(m.createOLTag);
+            player.sendMessage(messages.createOLTag);
             return;
         }
 
         if (!name.matches("[a-zA-Z]+")) {
-            p.sendMessage(m.createOLName);
+            player.sendMessage(messages.createOLName);
             return;
         }
 
         if (GuildUtils.isExists(name)) {
-            p.sendMessage(m.createNameExists);
+            player.sendMessage(messages.createNameExists);
             return;
         }
 
         if (GuildUtils.tagExists(tag)) {
-            p.sendMessage(m.createTagExists);
+            player.sendMessage(messages.createTagExists);
             return;
         }
 
-        Location loc = p.getLocation();
-        loc = loc.getBlock().getLocation();
+        Location guildLocation = player.getLocation().getBlock().getLocation();
 
-        if (c.createCenterY != 0) {
-            loc.setY(c.createCenterY);
+        if (config.createCenterY != 0) {
+            guildLocation.setY(config.createCenterY);
         }
 
-        int d = c.regionSize + c.createDistance;
+        int d = config.regionSize + config.createDistance;
 
-        if (c.enlargeItems != null) {
-            d += c.enlargeItems.size() * c.enlargeSize;
+        if (config.enlargeItems != null) {
+            d += config.enlargeItems.size() * config.enlargeSize;
         }
 
-        if (d > p.getWorld().getSpawnLocation().distance(loc)) {
-            p.sendMessage(m.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
+        if (d > player.getWorld().getSpawnLocation().distance(guildLocation)) {
+            player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
             return;
         }
 
-        if (c.rankCreateEnable) {
-            int requiredRank = p.hasPermission("funnyguilds.vip.rank") ? c.rankCreateVip : c.rankCreate;
-            int points = u.getRank().getPoints();
+        if (config.rankCreateEnable) {
+            int requiredRank = player.hasPermission("funnyguilds.vip.rank") ? config.rankCreateVip : config.rankCreate;
+            int points = user.getRank().getPoints();
 
             if (points < requiredRank) {
-                String msg = m.createRank;
+                String msg = messages.createRank;
                 msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
                 msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
-                p.sendMessage(msg);
+                player.sendMessage(msg);
                 return;
             }
         }
 
-        List<ItemStack> itemsList = p.hasPermission("funnyguilds.vip.items") ? c.createItemsVip : c.createItems;
+        List<ItemStack> itemsList = player.hasPermission("funnyguilds.vip.items") ? config.createItemsVip : config.createItems;
 
-        if (!u.getBypass()) {
+        if (!user.getBypass()) {
             for (ItemStack is : itemsList) {
-                if (p.getInventory().containsAtLeast(is, is.getAmount())) {
+                if (player.getInventory().containsAtLeast(is, is.getAmount())) {
                     continue;
                 }
                 
-                String msg = m.createItems;
+                String msg = messages.createItems;
                 if (msg.contains("{ITEM}")) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(is.getAmount());
-                    sb.append(" ");
-                    sb.append(is.getType().toString().toLowerCase());
-                    msg = msg.replace("{ITEM}", sb.toString());
+                    StringBuilder messageBuilder = new StringBuilder();
+                    messageBuilder.append(is.getAmount());
+                    messageBuilder.append(" ");
+                    messageBuilder.append(is.getType().toString().toLowerCase());
+                    msg = msg.replace("{ITEM}", messageBuilder.toString());
                 }
                 
                 if (msg.contains("{ITEMS}")) {
-                    ArrayList<String> list = new ArrayList<String>();
+                    ArrayList<String> list = new ArrayList<>();
                     for (ItemStack it : itemsList) {
                         StringBuilder sb = new StringBuilder();
                         sb.append(it.getAmount());
@@ -165,72 +165,78 @@ public class ExcCreate implements Executor {
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
                 }
                 
-                p.sendMessage(msg);
+                player.sendMessage(msg);
                 return;
             }
         }
 
-        if (RegionUtils.isIn(loc)) {
-            p.sendMessage(m.createIsNear);
+        if (RegionUtils.isIn(guildLocation)) {
+            player.sendMessage(messages.createIsNear);
             return;
         }
 
-        if (RegionUtils.isNear(loc)) {
-            p.sendMessage(m.createIsNear);
+        if (RegionUtils.isNear(guildLocation)) {
+            player.sendMessage(messages.createIsNear);
             return;
         }
 
-        if (u.getBypass()) {
-            u.setBypass(false);
+        if (user.getBypass()) {
+            user.setBypass(false);
         } else {
-            p.getInventory().removeItem(itemsList.toArray(new ItemStack[0]));
+            player.getInventory().removeItem(itemsList.toArray(new ItemStack[0]));
         }
 
         Manager.getInstance().stop();
 
         Guild guild = new Guild(name);
         guild.setTag(tag);
-        guild.setOwner(u);
-        guild.setLives(c.warLives);
+        guild.setOwner(user);
+        guild.setLives(config.warLives);
         guild.setBorn(System.currentTimeMillis());
-        guild.setValidity(System.currentTimeMillis() + c.validityStart);
-        guild.setAttacked(System.currentTimeMillis() - c.warWait + c.warProtection);
-        guild.setPvP(c.damageGuild);
+        guild.setValidity(System.currentTimeMillis() + config.validityStart);
+        guild.setAttacked(System.currentTimeMillis() - config.warWait + config.warProtection);
+        guild.setPvP(config.damageGuild);
 
-        Region region = new Region(guild, loc, c.regionSize);
+        Region region = new Region(guild, guildLocation, config.regionSize);
         guild.setRegion(region.getName());
         guild.addRegion(region.getName());
 
-        u.setGuild(guild);
+        user.setGuild(guild);
 
-        if (c.createCenterSphere) {
-            for (Location l : SpaceUtils.sphere(loc, 4, 4, false, true, 0)) {
+        if (config.createCenterSphere) {
+            for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
                 if (l.getBlock().getType() != Material.BEDROCK) {
                     l.getBlock().setType(Material.AIR);
                 }
             }
 
-            for (Location l : SpaceUtils.sphere(loc, 4, 4, true, true, 0)) {
+            for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0)) {
                 if (l.getBlock().getType() != Material.BEDROCK) {
                     l.getBlock().setType(Material.OBSIDIAN);
                 }
             }
         }
 
-        if (c.createMaterial != null && c.createMaterial != Material.AIR) {
-            loc.getBlock().getRelative(BlockFace.DOWN).setType(c.createMaterial);
-        } else if (c.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        if (config.createMaterial != null && config.createMaterial != Material.AIR) {
+            guildLocation.getBlock().getRelative(BlockFace.DOWN).setType(config.createMaterial);
+        } else if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
 
-        p.teleport(loc);
+        player.teleport(guildLocation);
         Manager.getInstance().start();
 
         IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);
         IndependentThread.actions(ActionType.PREFIX_GLOBAL_ADD_GUILD, guild);
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, u.getOfflineUser());
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
 
-        p.sendMessage(m.createGuild.replace("{GUILD}", name).replace("{PLAYER}", p.getName()).replace("{TAG}", tag));
-        Bukkit.getServer().broadcastMessage(m.broadcastCreate.replace("{GUILD}", name).replace("{PLAYER}", p.getName()).replace("{TAG}", tag));
+        MessageTranslator translator = new MessageTranslator()
+                .register("{GUILD}", name)
+                .register("{TAG}", tag)
+                .register("{PLAYER}", player.getName());
+
+        player.sendMessage(translator.translate(messages.createGuild));
+        Bukkit.getServer().broadcastMessage(translator.translate(messages.broadcastCreate));
     }
+
 }

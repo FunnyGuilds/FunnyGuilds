@@ -14,61 +14,64 @@ public class ExcDeputy implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User owner = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User owner = User.get(player);
 
         if (!owner.hasGuild()) {
-            p.sendMessage(m.deputyHasNotGuild);
+            player.sendMessage(messages.deputyHasNotGuild);
             return;
         }
 
         if (!owner.isOwner()) {
-            p.sendMessage(m.deputyIsNotOwner);
+            player.sendMessage(messages.deputyIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            p.sendMessage(m.deputyPlayer);
+            player.sendMessage(messages.deputyPlayer);
             return;
         }
 
         String name = args[0];
+        
         if (!UserUtils.playedBefore(name)) {
-            p.sendMessage(m.deputyPlayedBefore);
+            player.sendMessage(messages.deputyPlayedBefore);
             return;
         }
 
-        User user = User.get(name);
-        if (owner.equals(user)) {
-            p.sendMessage(m.deputyMustBeDifferent);
+        User deputyUser = User.get(name);
+        
+        if (owner.equals(deputyUser)) {
+            player.sendMessage(messages.deputyMustBeDifferent);
             return;
         }
 
         Guild guild = owner.getGuild();
-        if (!guild.getMembers().contains(user)) {
-            p.sendMessage(m.deputyIsNotMember);
+        Player deputyPlayer = deputyUser.getPlayer();
+
+        if (!guild.getMembers().contains(deputyUser)) {
+            player.sendMessage(messages.deputyIsNotMember);
             return;
         }
 
-        if (user.isDeputy()) {
+        if (deputyUser.isDeputy()) {
             guild.setDeputy(null);
-            p.sendMessage(m.deputyRemove);
+            player.sendMessage(messages.deputyRemove);
             
-            Player o = user.getPlayer();
-            if (o != null) {
-                o.sendMessage(m.deputyMember);
+            if (deputyPlayer != null) {
+                deputyPlayer.sendMessage(messages.deputyMember);
             }
 
             return;
         }
 
-        guild.setDeputy(user);
-        p.sendMessage(m.deputySet);
+        guild.setDeputy(deputyUser);
+        player.sendMessage(messages.deputySet);
         
-        Player o = user.getPlayer();
-        if (o != null) {
-            o.sendMessage(m.deputyOwner);
+        if (deputyPlayer != null) {
+            deputyPlayer.sendMessage(messages.deputyOwner);
         }
     }
+
 }
