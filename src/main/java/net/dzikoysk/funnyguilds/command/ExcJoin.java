@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import net.dzikoysk.funnyguilds.util.ItemUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -17,7 +18,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExcJoin implements Executor {
@@ -62,38 +62,16 @@ public class ExcJoin implements Executor {
             return;
         }
 
-        List<ItemStack> itemsList = Settings.getConfig().joinItems;
-
-        for (ItemStack itemStack : itemsList) {
-            if (!player.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
-                String msg = messages.joinItems;
-                if (msg.contains("{ITEM}")) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(itemStack.getAmount());
-                    sb.append(" ");
-                    sb.append(itemStack.getType().toString().toLowerCase());
-                    msg = msg.replace("{ITEM}", sb.toString());
-                }
-                
-                if (msg.contains("{ITEMS}")) {
-                    ArrayList<String> list = new ArrayList<String>();
-                    for (ItemStack it : itemsList) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(it.getAmount());
-                        sb.append(" ");
-                        sb.append(it.getType().toString().toLowerCase());
-                        list.add(sb.toString());
-                    }
-                    
-                    msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
-                }
-                
-                player.sendMessage(msg);
-                return;
+        List<ItemStack> requiredItems = Settings.getConfig().joinItems;
+        for (ItemStack requiredItem : requiredItems) {
+            if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
+                continue;
             }
-            
-            player.getInventory().removeItem(itemStack);
+
+            String msg = ItemUtils.translatePlaceholder(messages.joinItems, requiredItems, requiredItem);
+            player.sendMessage(msg);
         }
+        player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
         InvitationList.expireInvitation(guild, player);
         guild.addMember(user);

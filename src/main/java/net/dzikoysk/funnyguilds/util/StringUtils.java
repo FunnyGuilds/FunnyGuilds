@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public final class StringUtils {
@@ -50,23 +51,25 @@ public final class StringUtils {
         return s != null ? ChatColor.translateAlternateColorCodes('&', s) : null;
     }
 
-    public static String toString(List<String> list, boolean send) {
-        StringBuilder sb = new StringBuilder();
+    public static String toString(Collection<String> list, boolean send) {
+        StringBuilder builder = new StringBuilder();
 
         for (String s : list) {
-            sb.append(s);
-            sb.append(',');
+            builder.append(s);
+            builder.append(',');
+
             if (send) {
-                sb.append(' ');
+                builder.append(' ');
             }
         }
 
-        String s = sb.toString();
+        String s = builder.toString();
 
         if (send) {
             if (s.length() > 2) {
                 s = s.substring(0, s.length() - 2);
-            } else if (s.length() > 1) {
+            }
+            else if (s.length() > 1) {
                 s = s.substring(0, s.length() - 1);
             }
         }
@@ -92,4 +95,5 @@ public final class StringUtils {
     private StringUtils() {
 
     }
+
 }

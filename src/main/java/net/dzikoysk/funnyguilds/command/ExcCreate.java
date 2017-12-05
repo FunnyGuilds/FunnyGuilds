@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import net.dzikoysk.funnyguilds.util.ItemUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -25,7 +26,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ExcCreate implements Executor {
@@ -141,36 +141,15 @@ public class ExcCreate implements Executor {
             }
         }
 
-        List<ItemStack> itemsList = player.hasPermission("funnyguilds.vip.items") ? config.createItemsVip : config.createItems;
+        List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items") ? config.createItemsVip : config.createItems;
 
         if (!user.getBypass()) {
-            for (ItemStack is : itemsList) {
-                if (player.getInventory().containsAtLeast(is, is.getAmount())) {
+            for (ItemStack requiredItem : requiredItems) {
+                if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                     continue;
                 }
                 
-                String msg = messages.createItems;
-                if (msg.contains("{ITEM}")) {
-                    StringBuilder messageBuilder = new StringBuilder();
-                    messageBuilder.append(is.getAmount());
-                    messageBuilder.append(" ");
-                    messageBuilder.append(is.getType().toString().toLowerCase());
-                    msg = msg.replace("{ITEM}", messageBuilder.toString());
-                }
-                
-                if (msg.contains("{ITEMS}")) {
-                    ArrayList<String> list = new ArrayList<>();
-                    for (ItemStack it : itemsList) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(it.getAmount());
-                        sb.append(" ");
-                        sb.append(it.getType().toString().toLowerCase());
-                        list.add(sb.toString());
-                    }
-                    
-                    msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
-                }
-                
+                String msg = ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem);
                 player.sendMessage(msg);
                 return;
             }
@@ -189,7 +168,7 @@ public class ExcCreate implements Executor {
         if (user.getBypass()) {
             user.setBypass(false);
         } else {
-            player.getInventory().removeItem(itemsList.toArray(new ItemStack[0]));
+            player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
         }
 
         Manager.getInstance().stop();
