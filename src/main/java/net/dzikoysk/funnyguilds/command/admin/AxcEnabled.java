@@ -11,11 +11,11 @@ public class AxcEnabled implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-      PluginConfig config = Settings.getConfig();
-      MessagesConfig messages = Messages.getInstance();
+        PluginConfig config = Settings.getConfig();
+        MessagesConfig messages = Messages.getInstance();
 
-      boolean bool = config.guildsEnabled = !config.guildsEnabled;
-      sender.sendMessage(bool ? messages.guildsEnabled : messages.guildsDisabled);
+        boolean bool = config.guildsEnabled = !config.guildsEnabled;
+        sender.sendMessage(bool ? messages.guildsEnabled : messages.guildsDisabled);
     }
 
 }
