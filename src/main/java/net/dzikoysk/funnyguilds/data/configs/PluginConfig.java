@@ -34,7 +34,7 @@ import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("        4.0.1.1 Tribute         #")
+@CfgComment("         4.0.2 Tribute          #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfig {
