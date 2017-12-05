@@ -38,7 +38,7 @@ public final class ItemUtils {
     }
 
     public static ItemStack[] toArray(Collection<ItemStack> collection) {
-        return collection.toArray(new ItemStack[collection.size()]);
+        return collection.toArray(new ItemStack[0]);
     }
 
     private ItemUtils() {

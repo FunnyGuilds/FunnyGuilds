@@ -8,15 +8,15 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.ItemUtils;
 import net.dzikoysk.funnyguilds.util.LocationUtils;
-import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcBase implements Executor {
@@ -45,48 +45,28 @@ public class ExcBase implements Executor {
             return;
         }
 
-        ItemStack[] items = Settings.getConfig().baseItems.toArray(new ItemStack[0]);
-        
-        for (ItemStack is : items) {
-            if (!player.getInventory().containsAtLeast(is, is.getAmount())) {
-                String msg = messages.baseItems;
-                if (msg.contains("{ITEM}")) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(is.getAmount());
-                    sb.append(" ");
-                    sb.append(is.getType().toString().toLowerCase());
-                    msg = msg.replace("{ITEM}", sb.toString());
-                }
-                
-                if (msg.contains("{ITEMS}")) {
-                    ArrayList<String> list = new ArrayList<String>();
-                    for (ItemStack it : items) {
-                        StringBuilder sb = new StringBuilder();
-                        sb.append(it.getAmount());
-                        sb.append(" ");
-                        sb.append(it.getType().toString().toLowerCase());
-                        list.add(sb.toString());
-                    }
-                    
-                    msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
-                }
-                
-                player.sendMessage(msg);
-                return;
+        Collection<ItemStack> requiredItems = config.baseItems;
+
+        for (ItemStack requiredItem : requiredItems) {
+            if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
+                continue;
             }
+
+            String msg = ItemUtils.translatePlaceholder(messages.baseItems, requiredItems, requiredItem);
+            player.sendMessage(msg);
+            return;
         }
-        
+
+        ItemStack[] items = ItemUtils.toArray(requiredItems);
         player.getInventory().removeItem(items);
 
-        int time = Settings.getConfig().baseDelay;
-        if (time < 1) {
+        if (config.baseDelay < 1) {
             player.teleport(guild.getHome());
             player.sendMessage(messages.baseTeleport);
             return;
         }
 
-        player.sendMessage(messages.baseDontMove.replace("{TIME}", Integer.toString(time)));
-
+        int time = config.baseDelay;
         Location before = player.getLocation();
         AtomicInteger i = new AtomicInteger(1);
 
@@ -112,6 +92,8 @@ public class ExcBase implements Executor {
                 user.setTeleportation(null);
             }
         }, 0L, 20L));
+
+        player.sendMessage(messages.baseDontMove.replace("{TIME}", Integer.toString(time)));
     }
 
 }
