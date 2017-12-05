@@ -33,8 +33,15 @@ public class ExcCreate implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
+        PluginConfig config = Settings.getConfig();
+
         Player player = (Player) sender;
         User user = User.get(player);
+
+        if (!config.guildsEnabled) {
+            player.sendMessage(messages.guildsDisabled);
+            return;
+        }
 
         boolean bool = this.checkWorld(player);
         if (bool) {
@@ -60,7 +67,6 @@ public class ExcCreate implements Executor {
             }
         }
 
-        PluginConfig config = Settings.getConfig();
         String tag = args[0];
         tag = Settings.getConfig().guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
         String name = args[1];

@@ -105,7 +105,8 @@ public class MessagesConfig {
             "&a/ga przenies [tag] &8- &7Przenosi teren gildii",
             "&a/ga przedluz [tag] [czas] &8- &7Przedluza waznosc gildii o podany czas",
             "&a/ga nazwa [tag] [nazwa] &8- &7Zmienia nazwe gildii",
-            "&a/ga spy &8- &7Szpieguje czat gildii");
+            "&a/ga spy &8- &7Szpieguje czat gildii",
+            "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii");
     
     @CfgComment("<------- Player Info Messages -------> #")
     public String playerInfoExists = "&cTaki gracz nigdy nie byl na serwerze!";
@@ -452,4 +453,7 @@ public class MessagesConfig {
     
     public String adminStopSpy = "&cJuz nie szpiegujesz graczy!";
     public String adminStartSpy = "&aOd teraz szpiegujesz graczy!";
+
+    public String guildsEnabled = "&aZakladanie gildii jest wlaczone!";
+    public String guildsDisabled = "&cZakladanie gildii jest wylaczone!";
 }

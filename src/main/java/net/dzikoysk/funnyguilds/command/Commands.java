@@ -67,5 +67,6 @@ public class Commands {
         new ExecutorCaller(new AxcValidity(), commands.admin.validity, "funnyguilds.admin", null, false);
         new ExecutorCaller(new AxcName(), commands.admin.name, "funnyguilds.admin", null, false);
         new ExecutorCaller(new AxcSpy(), commands.admin.spy, "funnyguilds.admin", null, true);
+        new ExecutorCaller(new AxcEnabled(), commands.admin.enabled, "funnyguilds.admin", null, false);
     }
 }

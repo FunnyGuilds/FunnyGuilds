@@ -46,6 +46,10 @@ public class PluginConfig {
     @CfgName("plugin-name")
     public String pluginName = "FunnyGuilds";
 
+    @CfgComment("Mozliwosc zakladania gildii (mozna zmienic takze za pomoca komendy /ga enabled)")
+    @CfgName("guilds-enabled")
+    public boolean guildsEnabled = true;
+
     @CfgComment("Maksymalna dlugosc nazwy gildii")
     @CfgName("name-length")
     public int createNameLength = 22;
@@ -805,6 +809,7 @@ public class PluginConfig {
             public String validity = "ga przedluz";
             public String name = "ga nazwa";
             public String spy = "ga spy";
+            public String enabled = "ga enabled";
         }
     }
 
