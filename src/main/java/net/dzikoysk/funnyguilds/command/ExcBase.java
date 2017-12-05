@@ -1,14 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -19,38 +10,46 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcBase implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PluginConfig c = Settings.getConfig();
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User user = User.get(p);
+        PluginConfig config = Settings.getConfig();
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
-        if (!c.baseEnable) {
-            p.sendMessage(m.baseTeleportationDisabled);
+        if (!config.baseEnable) {
+            player.sendMessage(messages.baseTeleportationDisabled);
             return;
         }
 
         if (!user.hasGuild()) {
-            p.sendMessage(m.baseHasNotGuild);
+            player.sendMessage(messages.baseHasNotGuild);
             return;
         }
 
         Guild guild = user.getGuild();
 
         if (user.getTeleportation() != null) {
-            p.sendMessage(m.baseIsTeleportation);
+            player.sendMessage(messages.baseIsTeleportation);
             return;
         }
 
         ItemStack[] items = Settings.getConfig().baseItems.toArray(new ItemStack[0]);
         
         for (ItemStack is : items) {
-            if (!p.getInventory().containsAtLeast(is, is.getAmount())) {
-                String msg = m.baseItems;
+            if (!player.getInventory().containsAtLeast(is, is.getAmount())) {
+                String msg = messages.baseItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(is.getAmount());
@@ -72,46 +71,47 @@ public class ExcBase implements Executor {
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
                 }
                 
-                p.sendMessage(msg);
+                player.sendMessage(msg);
                 return;
             }
         }
         
-        p.getInventory().removeItem(items);
+        player.getInventory().removeItem(items);
 
         int time = Settings.getConfig().baseDelay;
         if (time < 1) {
-            p.teleport(guild.getHome());
-            p.sendMessage(m.baseTeleport);
+            player.teleport(guild.getHome());
+            player.sendMessage(messages.baseTeleport);
             return;
         }
 
-        p.sendMessage(m.baseDontMove.replace("{TIME}", Integer.toString(time)));
+        player.sendMessage(messages.baseDontMove.replace("{TIME}", Integer.toString(time)));
 
-        Location before = p.getLocation();
+        Location before = player.getLocation();
         AtomicInteger i = new AtomicInteger(1);
 
         user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
-            if (!p.isOnline()) {
+            if (!player.isOnline()) {
                 user.getTeleportation().cancel();
                 user.setTeleportation(null);
                 return;
             }
             
-            if (!LocationUtils.equals(p.getLocation(), before)) {
+            if (!LocationUtils.equals(player.getLocation(), before)) {
                 user.getTeleportation().cancel();
-                p.sendMessage(m.baseMove);
+                player.sendMessage(messages.baseMove);
                 user.setTeleportation(null);
-                p.getInventory().addItem(items);
+                player.getInventory().addItem(items);
                 return;
             }
 
             if (i.getAndIncrement() > time) {
                 user.getTeleportation().cancel();
-                p.sendMessage(m.baseTeleport);
-                p.teleport(guild.getHome());
+                player.sendMessage(messages.baseTeleport);
+                player.teleport(guild.getHome());
                 user.setTeleportation(null);
             }
         }, 0L, 20L));
     }
+
 }

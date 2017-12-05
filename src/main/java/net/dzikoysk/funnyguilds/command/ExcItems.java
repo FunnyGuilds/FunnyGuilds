@@ -21,4 +21,5 @@ public class ExcItems implements Executor {
         
         config.guiItems.open(player);
     }
+
 }

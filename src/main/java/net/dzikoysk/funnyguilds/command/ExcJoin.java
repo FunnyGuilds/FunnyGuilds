@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -23,45 +24,49 @@ public class ExcJoin implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User user = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
         if (user.hasGuild()) {
-            p.sendMessage(m.joinHasGuild);
+            player.sendMessage(messages.joinHasGuild);
             return;
         }
 
-        List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(p);
+        List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(player);
+
         if (invitations.size() == 0) {
-            p.sendMessage(m.joinHasNotInvitation);
+            player.sendMessage(messages.joinHasNotInvitation);
             return;
         }
 
         if (args.length < 1) {
-            String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(p), false);
-            for (String msg : m.joinInvitationList) {
-                p.sendMessage(msg.replace("{GUILDS}", guildNames));
+            String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(player), false);
+            for (String msg : messages.joinInvitationList) {
+                player.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
             
             return;
         }
 
         String tag = args[0];
-        if (!GuildUtils.tagExists(tag)) {
-            p.sendMessage(m.joinTagExists);
+        Guild guild = Guild.get(tag);
+
+        if (guild == null) {
+            player.sendMessage(messages.joinTagExists);
             return;
         }
 
-        if (!InvitationList.hasInvitationFrom(p, GuildUtils.byTag(tag))) {
-            p.sendMessage(m.joinHasNotInvitationTo);
+        if (!InvitationList.hasInvitationFrom(player, GuildUtils.byTag(tag))) {
+            player.sendMessage(messages.joinHasNotInvitationTo);
             return;
         }
 
         List<ItemStack> itemsList = Settings.getConfig().joinItems;
+
         for (ItemStack itemStack : itemsList) {
-            if (!p.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
-                String msg = m.joinItems;
+            if (!player.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
+                String msg = messages.joinItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(itemStack.getAmount());
@@ -83,28 +88,30 @@ public class ExcJoin implements Executor {
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
                 }
                 
-                p.sendMessage(msg);
+                player.sendMessage(msg);
                 return;
             }
             
-            p.getInventory().removeItem(itemStack);
+            player.getInventory().removeItem(itemStack);
         }
 
-        Guild guild = GuildUtils.byTag(tag);
-
-        InvitationList.expireInvitation(guild, p);
-
+        InvitationList.expireInvitation(guild, player);
         guild.addMember(user);
         user.setGuild(guild);
-
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
-        p.sendMessage(m.joinToMember.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+
+        MessageTranslator translator = new MessageTranslator()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{PLAYER}", player.getName());
+
+        player.sendMessage(translator.translate(messages.joinToMember));
+        Bukkit.broadcastMessage(translator.translate(messages.broadcastJoin));
 
         Player owner = guild.getOwner().getPlayer();
         if (owner != null) {
-            owner.sendMessage(m.joinToOwner.replace("{PLAYER}", p.getName()));
+            owner.sendMessage(translator.translate(messages.joinToOwner));
         }
-
-        Bukkit.broadcastMessage(m.broadcastJoin.replace("{PLAYER}", p.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", tag));
     }
+
 }

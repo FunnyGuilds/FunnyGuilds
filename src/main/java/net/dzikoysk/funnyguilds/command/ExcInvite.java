@@ -76,4 +76,5 @@ public class ExcInvite implements Executor {
         player.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
         invitedPlayer.sendMessage(messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
+
 }

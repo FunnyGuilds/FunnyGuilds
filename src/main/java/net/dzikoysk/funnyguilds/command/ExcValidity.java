@@ -1,13 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -17,42 +9,49 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.TimeUtils;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ExcValidity implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PluginConfig pc = Settings.getConfig();
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User user = User.get(p);
+        PluginConfig config = Settings.getConfig();
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
         Guild guild = user.getGuild();
 
         if (!user.hasGuild()) {
-            p.sendMessage(m.validityHasNotGuild);
+            player.sendMessage(messages.validityHasNotGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            p.sendMessage(m.validityIsNotOwner);
+            player.sendMessage(messages.validityIsNotOwner);
             return;
         }
 
-        if (pc.validityWhen != 0) {
+        if (config.validityWhen != 0) {
             long c = guild.getValidity();
             long d = c - System.currentTimeMillis();
             
-            if (d > pc.validityWhen) {
-                long when = d - pc.validityWhen;
-                p.sendMessage(m.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(when)));
+            if (d > config.validityWhen) {
+                long when = d - config.validityWhen;
+                player.sendMessage(messages.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(when)));
                 return;
             }
         }
 
-        List<ItemStack> itemsList = pc.validityItems;
+        List<ItemStack> itemsList = config.validityItems;
         for (ItemStack itemStack : itemsList) {
-            if (!p.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
-                String msg = m.validityItems;
+            if (!player.getInventory().containsAtLeast(itemStack, itemStack.getAmount())) {
+                String msg = messages.validityItems;
                 if (msg.contains("{ITEM}")) {
                     StringBuilder sb = new StringBuilder();
                     sb.append(itemStack.getAmount());
@@ -74,11 +73,11 @@ public class ExcValidity implements Executor {
                     msg = msg.replace("{ITEMS}", StringUtils.toString(list, true));
                 }
                 
-                p.sendMessage(msg);
+                player.sendMessage(msg);
                 return;
             }
             
-            p.getInventory().removeItem(itemStack);
+            player.getInventory().removeItem(itemStack);
         }
 
         long c = guild.getValidity();
@@ -86,9 +85,10 @@ public class ExcValidity implements Executor {
             c = System.currentTimeMillis();
         }
 
-        c += pc.validityTime;
+        c += config.validityTime;
         guild.setValidity(c);
 
-        p.sendMessage(m.validityDone.replace("{DATE}", pc.dateFormat.format(new Date(c))));
+        player.sendMessage(messages.validityDone.replace("{DATE}", config.dateFormat.format(new Date(c))));
     }
+
 }

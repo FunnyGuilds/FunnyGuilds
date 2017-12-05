@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
@@ -16,60 +17,66 @@ public class ExcKick implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User u = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
-        if (!u.hasGuild()) {
-            p.sendMessage(m.kickHasNotGuild);
+        if (!user.hasGuild()) {
+            player.sendMessage(messages.kickHasNotGuild);
             return;
         }
 
-        if (!u.isOwner() && !u.isDeputy()) {
-            p.sendMessage(m.kickIsNotOwner);
+        if (!user.isOwner() && !user.isDeputy()) {
+            player.sendMessage(messages.kickIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            p.sendMessage(m.kickPlayer);
+            player.sendMessage(messages.kickPlayer);
             return;
         }
 
-        User uk = User.get(args[0]);
-        OfflineUser up = uk.getOfflineUser();
+        User formerUser = User.get(args[0]);
+        OfflineUser formerOffline = formerUser.getOfflineUser();
 
-        if (!uk.hasGuild()) {
-            p.sendMessage(m.kickToHasNotGuild);
+        if (!formerUser.hasGuild()) {
+            player.sendMessage(messages.kickToHasNotGuild);
             return;
         }
 
-        if (!u.getGuild().equals(uk.getGuild())) {
-            p.sendMessage(m.kickOtherGuild);
+        if (!user.getGuild().equals(formerUser.getGuild())) {
+            player.sendMessage(messages.kickOtherGuild);
             return;
         }
 
-        if (uk.isOwner()) {
-            p.sendMessage(m.kickOwner);
+        if (formerUser.isOwner()) {
+            player.sendMessage(messages.kickOwner);
             return;
         }
 
-        Guild guild = u.getGuild();
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, up);
+        Guild guild = user.getGuild();
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, formerOffline);
 
-        guild.removeMember(uk);
-        uk.removeGuild();
+        guild.removeMember(formerUser);
+        formerUser.removeGuild();
 
-        if (up.isOnline()) {
-            IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, p);
+        if (formerOffline.isOnline()) {
+            IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
         }
 
-        p.sendMessage(m.kickToOwner.replace("{PLAYER}", uk.getName()));
+        MessageTranslator translator = new MessageTranslator()
+                .register("{PLAYER}", formerUser.getName())
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
 
-        Player pk = uk.getPlayer();
-        if (pk != null) {
-            pk.sendMessage(m.kickToPlayer.replace("{GUILD}", guild.getName()));
+        player.sendMessage(translator.translate(messages.kickToOwner));
+        Bukkit.broadcastMessage(translator.translate(messages.broadcastKick));
+
+        Player formerPlayer = formerUser.getPlayer();
+
+        if (formerPlayer != null) {
+            formerPlayer.sendMessage(translator.translate(messages.kickToPlayer));
         }
-
-        Bukkit.broadcastMessage(m.broadcastKick.replace("{PLAYER}", uk.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
+
 }
