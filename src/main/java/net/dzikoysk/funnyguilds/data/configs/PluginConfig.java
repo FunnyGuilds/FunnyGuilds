@@ -544,7 +544,7 @@ public class PluginConfig {
 
     @CfgComment("Wyglad naglowka w liscie graczy.")
     @CfgName("player-list-header")
-    public String playerListHeader = "&7FunnyGuilds &b4.0.1.1 Tribute";
+    public String playerListHeader = "&7FunnyGuilds &b4.0.2 Tribute";
 
     @CfgComment("Wyglad stopki w liscie graczy.")
     @CfgName("player-list-footer")
