@@ -22,17 +22,17 @@ public class ExcKick implements Executor {
         User user = User.get(player);
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.kickHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.kickIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            player.sendMessage(messages.kickPlayer);
+            player.sendMessage(messages.generalNoNickGiven);
             return;
         }
 
@@ -40,7 +40,7 @@ public class ExcKick implements Executor {
         OfflineUser formerOffline = formerUser.getOfflineUser();
 
         if (!formerUser.hasGuild()) {
-            player.sendMessage(messages.kickToHasNotGuild);
+            player.sendMessage(messages.generalPlayerHasNoGuild);
             return;
         }
 

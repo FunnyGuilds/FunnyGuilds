@@ -22,7 +22,7 @@ public class ExcLeave implements Executor {
         User user = User.get(player);
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.leaveHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 

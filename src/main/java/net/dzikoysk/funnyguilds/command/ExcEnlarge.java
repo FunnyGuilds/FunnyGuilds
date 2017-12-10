@@ -27,12 +27,12 @@ public class ExcEnlarge implements Executor {
         }
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.enlargeHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.enlargeIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 

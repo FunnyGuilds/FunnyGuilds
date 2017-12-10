@@ -16,41 +16,41 @@ public class AxcValidity implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
+        MessagesConfig messages = Messages.getInstance();
 
         if (args.length < 1) {
-            sender.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(messages.generalNoTagGiven);
             return;
         } else if (args.length < 2) {
-            sender.sendMessage(m.adminNoValidityTimeGiven);
+            sender.sendMessage(messages.adminNoValidityTimeGiven);
             return;
         }
 
         if (!GuildUtils.tagExists(args[0])) {
-            sender.sendMessage(m.adminNoGuildFound);
+            sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
         Guild guild = GuildUtils.byTag(args[0]);
         if (guild.isBanned()) {
-            sender.sendMessage(m.adminGuildBanned);
+            sender.sendMessage(messages.adminGuildBanned);
             return;
         }
 
         long time = Parser.parseTime(args[1]);
         if (time < 1) {
-            sender.sendMessage(m.adminTimeError);
+            sender.sendMessage(messages.adminTimeError);
             return;
         }
 
-        long c = guild.getValidity();
-        if (c == 0) {
-            c = System.currentTimeMillis();
+        long validity = guild.getValidity();
+        if (validity == 0) {
+            validity = System.currentTimeMillis();
         }
         
-        c += time;
-        guild.setValidity(c);
+        validity += time;
+        guild.setValidity(validity);
 
-        sender.sendMessage(m.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", Settings.getConfig().dateFormat.format(new Date(c))));
+        sender.sendMessage(messages.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", Settings.getConfig().dateFormat.format(new Date(validity))));
     }
 }

@@ -12,33 +12,34 @@ public class AxcLives implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
+        MessagesConfig messages = Messages.getInstance();
 
         if (args.length < 1) {
-            sender.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(messages.generalNoTagGiven);
             return;
         }
 
         if (args.length < 2) {
-            sender.sendMessage(m.adminNoLivesGiven);
+            sender.sendMessage(messages.adminNoLivesGiven);
             return;
         }
 
-        Guild guild = GuildUtils.byTag(args[0]);
-        if (guild == null) {
-            sender.sendMessage(m.adminNoGuildFound);
+        if (!GuildUtils.tagExists(args[0])) {
+            sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
+        
+        Guild guild = GuildUtils.byTag(args[0]);
 
         int lives;
         try {
             lives = Integer.valueOf(args[1]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(m.adminErrorInNumber.replace("{ERROR}", args[1]));;
+            sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));;
             return;
         }
 
         guild.setLives(lives);
-        sender.sendMessage(m.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives)));
+        sender.sendMessage(messages.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives)));
     }
 }

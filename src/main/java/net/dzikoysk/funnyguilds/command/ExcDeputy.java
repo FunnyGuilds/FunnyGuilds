@@ -19,24 +19,24 @@ public class ExcDeputy implements Executor {
         User owner = User.get(player);
 
         if (!owner.hasGuild()) {
-            player.sendMessage(messages.deputyHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!owner.isOwner()) {
-            player.sendMessage(messages.deputyIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            player.sendMessage(messages.deputyPlayer);
+            player.sendMessage(messages.generalNoNickGiven);
             return;
         }
 
         String name = args[0];
         
         if (!UserUtils.playedBefore(name)) {
-            player.sendMessage(messages.deputyPlayedBefore);
+            player.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
 
@@ -51,7 +51,7 @@ public class ExcDeputy implements Executor {
         Player deputyPlayer = deputyUser.getPlayer();
 
         if (!guild.getMembers().contains(deputyUser)) {
-            player.sendMessage(messages.deputyIsNotMember);
+            player.sendMessage(messages.generalIsNotMember);
             return;
         }
 

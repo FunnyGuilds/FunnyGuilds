@@ -810,6 +810,8 @@ public class PluginConfig {
             public String name = "ga nazwa";
             public String spy = "ga spy";
             public String enabled = "ga enabled";
+            public String leader = "ga lider";
+            public String deputy = "ga zastepca";
         }
     }
 

@@ -14,27 +14,26 @@ public class AxcUnban implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
+        MessagesConfig messages = Messages.getInstance();
 
         if (args.length < 1) {
-            sender.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(messages.generalNoTagGiven);
             return;
         }
 
-        String tag = args[0];
-        if (!GuildUtils.tagExists(tag)) {
-            sender.sendMessage(m.adminNoGuildFound);
+        if (!GuildUtils.tagExists(args[0])) {
+            sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
-        Guild guild = GuildUtils.byTag(tag);
+        Guild guild = GuildUtils.byTag(args[0]);
         if (!guild.isBanned()) {
-            sender.sendMessage(m.adminGuildNotBanned);
+            sender.sendMessage(messages.adminGuildNotBanned);
             return;
         }
 
         BanUtils.unban(guild);
-        sender.sendMessage(m.adminGuildUnban.replace("{GUILD}", guild.getName()));
+        sender.sendMessage(messages.adminGuildUnban.replace("{GUILD}", guild.getName()));
         Bukkit.broadcastMessage(Messages.getInstance().broadcastUnban.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 }

@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
-import net.dzikoysk.funnyguilds.util.StringUtils;
 
 public class ExcInvite implements Executor {
 
@@ -22,17 +21,17 @@ public class ExcInvite implements Executor {
         User user = User.get(player);
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.inviteHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.inviteIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            player.sendMessage(messages.invitePlayer);
+            player.sendMessage(messages.generalNoNickGiven);
             return;
         }
 
@@ -44,7 +43,7 @@ public class ExcInvite implements Executor {
         }
 
         if (!UserUtils.playedBefore(args[0])) {
-            player.sendMessage(StringUtils.colored("&cTen gracz nie byl nigdy na serwerze!"));
+            player.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
 
@@ -68,7 +67,7 @@ public class ExcInvite implements Executor {
         }
 
         if (invitedUser.hasGuild()) {
-            player.sendMessage(messages.inviteHasGuild);
+            player.sendMessage(messages.generalUserHasGuild);
             return;
         }
 

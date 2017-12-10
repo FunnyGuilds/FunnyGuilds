@@ -27,12 +27,12 @@ public class ExcValidity implements Executor {
         Guild guild = user.getGuild();
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.validityHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.validityIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 

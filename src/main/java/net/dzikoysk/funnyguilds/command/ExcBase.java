@@ -34,7 +34,7 @@ public class ExcBase implements Executor {
         }
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.baseHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 

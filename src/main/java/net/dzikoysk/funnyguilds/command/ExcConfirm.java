@@ -22,12 +22,12 @@ public class ExcConfirm implements Executor {
         User user = User.get(player);
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.deleteHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner()) {
-            player.sendMessage(messages.deleteIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 

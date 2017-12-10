@@ -23,12 +23,12 @@ public class ExcBreak implements Executor {
         User user = User.get(player);
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.breakHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner()) {
-            player.sendMessage(messages.breakIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 
@@ -54,7 +54,7 @@ public class ExcBreak implements Executor {
         Guild oppositeGuild = GuildUtils.byTag(tag);
 
         if (oppositeGuild == null) {
-            player.sendMessage(messages.breakGuildExists.replace("{TAG}", tag));
+            player.sendMessage(messages.generalGuildNotExists.replace("{TAG}", tag));
             return;
         }
 

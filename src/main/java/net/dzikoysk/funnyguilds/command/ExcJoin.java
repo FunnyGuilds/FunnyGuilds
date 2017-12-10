@@ -71,6 +71,7 @@ public class ExcJoin implements Executor {
             String msg = ItemUtils.translatePlaceholder(messages.joinItems, requiredItems, requiredItem);
             player.sendMessage(msg);
         }
+        
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
         InvitationList.expireInvitation(guild, player);

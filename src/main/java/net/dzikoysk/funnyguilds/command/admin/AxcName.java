@@ -20,33 +20,38 @@ public class AxcName implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
+        MessagesConfig messages = Messages.getInstance();
 
         if (args.length < 1) {
-            sender.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(messages.generalNoTagGiven);
             return;
         } else if (args.length < 2) {
-            sender.sendMessage(m.adminNoNewNameGiven);
+            sender.sendMessage(messages.adminNoNewNameGiven);
             return;
         }
 
         if (!GuildUtils.tagExists(args[0])) {
-            sender.sendMessage(m.adminNoGuildFound);
+            sender.sendMessage(messages.generalNoGuildFound);
+            return;
+        }
+        
+        if (GuildUtils.nameExists(args[1])) {
+            sender.sendMessage(messages.createNameExists);
             return;
         }
 
         Guild guild = GuildUtils.byTag(args[0]);
         Region region = RegionUtils.get(guild.getRegion());
 
-        PluginConfig.DataType dt = Settings.getConfig().dataType;
+        PluginConfig.DataType dataType = Settings.getConfig().dataType;
         Manager.getInstance().stop();
         
-        if (dt.flat) {
+        if (dataType.flat) {
             Flat.getGuildFile(guild).delete();
             Flat.getRegionFile(region).delete();
         }
         
-        if (dt.mysql) {
+        if (dataType.mysql) {
             new DatabaseGuild(guild).delete();
             new DatabaseRegion(region).delete();
         }
@@ -55,7 +60,6 @@ public class AxcName implements Executor {
         region.setName(args[1]);
         
         Manager.getInstance().start();
-
-        sender.sendMessage(m.adminNameChanged.replace("{GUILD}", guild.getName()));
+        sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
     }
 }
