@@ -24,7 +24,7 @@ public class Parser {
         String[] split = string.split(" ");
         String[] typeSplit = split[1].split(":");
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
-        
+
         Material mat = parseMaterial(typeSplit[0]);
         
         int stack;
@@ -88,10 +88,15 @@ public class Parser {
             FunnyGuilds.parser("Unknown material: null");
             return Material.AIR;
         }
-        
+
         String m = string;
         m = m.toUpperCase();
         m = m.replaceAll(" ", "_");
+
+        if (m.equalsIgnoreCase("skull")) {
+            return Material.SKULL_ITEM;
+        }
+
         Material material = Material.getMaterial(m);
         
         if (material == null) {
