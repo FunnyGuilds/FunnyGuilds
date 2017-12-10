@@ -16,16 +16,33 @@ public class AxcBan implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
+        MessagesConfig messages = Messages.getInstance();
 
         if (args.length < 1) {
-            sender.sendMessage(m.adminNoTagGiven);
+            sender.sendMessage(messages.generalNoTagGiven);
             return;
         } else if (args.length < 2) {
-            sender.sendMessage(m.adminNoBanTimeGiven);
+            sender.sendMessage(messages.adminNoBanTimeGiven);
             return;
         } else if (args.length < 3) {
-            sender.sendMessage(m.adminNoReasonGiven);
+            sender.sendMessage(messages.adminNoReasonGiven);
+            return;
+        }
+
+        if (!GuildUtils.tagExists(args[0])) {
+            sender.sendMessage(messages.generalNoGuildFound);
+            return;
+        } 
+        
+        Guild guild = GuildUtils.byTag(args[0]);
+        if (guild.isBanned()) {
+            sender.sendMessage(messages.adminGuildBanned);
+            return;
+        }
+
+        long time = Parser.parseTime(args[1]);
+        if (time < 1) {
+            sender.sendMessage(messages.adminTimeError);
             return;
         }
 
@@ -37,25 +54,8 @@ public class AxcBan implements Executor {
         
         String reason = sb.toString();
         
-        if (!GuildUtils.tagExists(args[0])) {
-            sender.sendMessage(m.adminNoGuildFound);
-            return;
-        }
-
-        Guild guild = GuildUtils.byTag(args[0]);
-        if (guild.isBanned()) {
-            sender.sendMessage(m.adminGuildBanned);
-            return;
-        }
-
-        long time = Parser.parseTime(args[1]);
-        if (time < 1) {
-            sender.sendMessage(m.adminTimeError);
-            return;
-        }
-
         BanUtils.ban(guild, time, reason);
-        sender.sendMessage(m.adminGuildBan.replace("{GUILD}", guild.getName()).replace("{TIME}", args[1]));
+        sender.sendMessage(messages.adminGuildBan.replace("{GUILD}", guild.getName()).replace("{TIME}", args[1]));
         Bukkit.broadcastMessage(Messages.getInstance().broadcastBan.replace("{GUILD}", guild.getName())
                         .replace("{TAG}", guild.getTag()).replace("{REASON}", StringUtils.colored(reason)).replace("{TIME}", args[1]));
     }

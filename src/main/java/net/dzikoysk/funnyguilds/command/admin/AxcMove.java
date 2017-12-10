@@ -25,37 +25,37 @@ public class AxcMove implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
 
         if (args.length < 1) {
-            p.sendMessage(m.adminNoTagGiven);
+            player.sendMessage(messages.generalNoTagGiven);
             return;
         }
 
         if (!GuildUtils.tagExists(args[0])) {
-            p.sendMessage(m.adminNoGuildFound);
+            player.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
-        PluginConfig pc = Settings.getConfig();
-        Location loc = p.getLocation();
-        if (pc.createCenterY != 0) {
-            loc.setY(pc.createCenterY);
+        PluginConfig config = Settings.getConfig();
+        Location location = player.getLocation();
+        if (config.createCenterY != 0) {
+            location.setY(config.createCenterY);
         }
 
-        int d = pc.regionSize + pc.createDistance;
-        if (pc.enlargeItems != null) {
-            d = pc.enlargeItems.size() * pc.enlargeSize + d;
+        int d = config.regionSize + config.createDistance;
+        if (config.enlargeItems != null) {
+            d = config.enlargeItems.size() * config.enlargeSize + d;
         }
 
-        if (d > p.getWorld().getSpawnLocation().distance(loc)) {
-            p.sendMessage(m.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
+        if (d > player.getWorld().getSpawnLocation().distance(location)) {
+            player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
             return;
         }
 
-        if (RegionUtils.isNear(loc)) {
-            p.sendMessage(m.createIsNear);
+        if (RegionUtils.isNear(location)) {
+            player.sendMessage(messages.createIsNear);
             return;
         }
 
@@ -63,9 +63,9 @@ public class AxcMove implements Executor {
         Region region = RegionUtils.get(guild.getRegion());
         
         if (region == null) {
-            region = new Region(guild, loc, pc.regionSize);
+            region = new Region(guild, location, config.regionSize);
         } else {
-            if (pc.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+            if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
                 EntityUtil.despawn(guild);
             } else {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
@@ -74,11 +74,11 @@ public class AxcMove implements Executor {
                 }
             }
             
-            region.setCenter(loc);
+            region.setCenter(location);
         }
         
-        if (pc.createCenterSphere) {
-            List<Location> sphere = SpaceUtils.sphere(loc, 3, 3, false, true, 0);
+        if (config.createCenterSphere) {
+            List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);
             for (Location l : sphere) {
                 if (l.getBlock().getType() != Material.BEDROCK) {
                     l.getBlock().setType(Material.AIR);
@@ -86,12 +86,12 @@ public class AxcMove implements Executor {
             }
         }
         
-        if (pc.createMaterial != null && pc.createMaterial != Material.AIR) {
-            loc.getBlock().getRelative(BlockFace.DOWN).setType(pc.createMaterial);
-        } else if (pc.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        if (config.createMaterial != null && config.createMaterial != Material.AIR) {
+            location.getBlock().getRelative(BlockFace.DOWN).setType(config.createMaterial);
+        } else if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
             EntityUtil.spawn(guild);
         }
 
-        p.sendMessage(m.adminGuildRelocated.replace("{GUILD}", guild.getName()));
+        player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()));
     }
 }

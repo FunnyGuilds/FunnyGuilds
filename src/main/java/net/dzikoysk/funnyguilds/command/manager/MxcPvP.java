@@ -12,27 +12,27 @@ public class MxcPvP implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User user = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
         if (!user.hasGuild()) {
-            p.sendMessage(m.pvpHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            p.sendMessage(m.pvpIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 
         Guild guild = user.getGuild();
         if (guild.getPvP()) {
             guild.setPvP(false);
-            p.sendMessage(m.pvpOff);
+            player.sendMessage(messages.pvpOff);
         } else {
             guild.setPvP(true);
-            p.sendMessage(m.pvpOn);
+            player.sendMessage(messages.pvpOn);
         }
     }
 }

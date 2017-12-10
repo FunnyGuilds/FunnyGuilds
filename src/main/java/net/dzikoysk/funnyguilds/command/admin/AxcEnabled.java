@@ -14,8 +14,7 @@ public class AxcEnabled implements Executor {
         PluginConfig config = Settings.getConfig();
         MessagesConfig messages = Messages.getInstance();
 
-        boolean bool = config.guildsEnabled = !config.guildsEnabled;
-        sender.sendMessage(bool ? messages.guildsEnabled : messages.guildsDisabled);
+        boolean enabled = config.guildsEnabled = !config.guildsEnabled;
+        sender.sendMessage(enabled ? messages.adminGuildsEnabled : messages.adminGuildsDisabled);
     }
-
 }

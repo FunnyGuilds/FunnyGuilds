@@ -103,7 +103,7 @@ public class GuildUtils {
         return null;
     }
 
-    public static boolean isExists(String name) {
+    public static boolean nameExists(String name) {
         for (Guild guild : guilds) {
             if (guild.getName() != null && guild.getName().equalsIgnoreCase(name)) {
                 return true;

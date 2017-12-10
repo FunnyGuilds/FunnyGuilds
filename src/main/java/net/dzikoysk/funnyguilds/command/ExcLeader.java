@@ -19,38 +19,34 @@ public class ExcLeader implements Executor {
         User owner = User.get(player);
 
         if (!owner.hasGuild()) {
-            player.sendMessage(messages.leaderHasNotGuild);
+            player.sendMessage(messages.generalHasGuild);
             return;
         }
 
         if (!owner.isOwner()) {
-            player.sendMessage(messages.leaderIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 
         if (args.length < 1) {
-            player.sendMessage(messages.leaderPlayer);
+            player.sendMessage(messages.generalNoNickGiven);
             return;
         }
 
-        String name = args[0];
-
-        if (!UserUtils.playedBefore(name)) {
-            player.sendMessage(messages.leaderPlayedBefore);
+        if (!UserUtils.playedBefore(args[0])) {
+            player.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
 
-        User leaderUser = User.get(name);
-
+        User leaderUser = User.get(args[0]);
         if (owner.equals(leaderUser)) {
             player.sendMessage(messages.leaderMustBeDifferent);
             return;
         }
 
         Guild guild = owner.getGuild();
-
         if (!guild.getMembers().contains(leaderUser)) {
-            player.sendMessage(messages.leaderIsNotMember);
+            player.sendMessage(messages.generalIsNotMember);
             return;
         }
 
@@ -62,5 +58,4 @@ public class ExcLeader implements Executor {
             leaderPlayer.sendMessage(messages.leaderOwner);
         }
     }
-
 }

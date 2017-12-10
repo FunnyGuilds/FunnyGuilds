@@ -24,12 +24,12 @@ public class ExcAlly implements Executor {
         User user = User.get(player);
 
         if (!user.hasGuild()) {
-            player.sendMessage(messages.allyHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner()) {
-            player.sendMessage(messages.allyIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 
@@ -54,7 +54,7 @@ public class ExcAlly implements Executor {
 
         String tag = args[0];
         if (!GuildUtils.tagExists(tag)) {
-            player.sendMessage(StringUtils.replace(messages.allyGuildExists, "{TAG}", tag));
+            player.sendMessage(StringUtils.replace(messages.generalGuildNotExists, "{TAG}", tag));
             return;
         }
 

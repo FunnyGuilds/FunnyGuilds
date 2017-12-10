@@ -106,7 +106,9 @@ public class MessagesConfig {
             "&a/ga przedluz [tag] [czas] &8- &7Przedluza waznosc gildii o podany czas",
             "&a/ga nazwa [tag] [nazwa] &8- &7Zmienia nazwe gildii",
             "&a/ga spy &8- &7Szpieguje czat gildii",
-            "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii");
+            "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii",
+            "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
+            "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii");
     
     @CfgComment("<------- Player Info Messages -------> #")
     public String playerInfoExists = "&cTaki gracz nigdy nie byl na serwerze!";
@@ -172,6 +174,21 @@ public class MessagesConfig {
             "&79&8. &c{PTOP-9}",
             "&710&8. &c{PTOP-10}");
 
+    @CfgComment("<------- General Messages -------> #")
+    public String generalHasGuild = "&cMasz juz gildie!";
+    public String generalNoNameGiven = "&cPodaj nazwe gildii!";
+    public String generalHasNoGuild = "&cNie masz gildii!";
+    public String generalIsNotOwner = "&cNie jestes zalozycielem gildii!";
+    public String generalNoTagGiven = "&cPodaj tag gildii!";
+    public String generalNoNickGiven = "&cPodaj nick gracza!";
+    public String generalUserHasGuild = "&cTen gracz ma juz gildie!";
+    public String generalNoGuildFound = "&cTaka gildia nie istnieje!";
+    public String generalNotPlayedBefore = "&cTen gracz nigdy nie byl na serwerze!";
+    @CfgComment("Available variables: {TAG}")
+    public String generalGuildNotExists = "&7Gildia o tagu &c{TAG} &7nie istnieje!";
+    public String generalIsNotMember = "&cTen gracz nie jest czlonkiem twojej gildii!";
+    public String generalPlayerHasNoGuild = "&cTen gracz nie ma gildii!";
+    
     @CfgComment("<------- Escape Messages -------> #")
     public String escapeDisabled = "&cPrzykro mi, ucieczki sa wylaczone!";
     @CfgComment("Available variables: {TIME}")
@@ -188,9 +205,6 @@ public class MessagesConfig {
     public String escapeOnYourRegion = "&cZnajdujesz sie na terenie wlasnej gildii, dokad chcesz uciekac?";
     
     @CfgComment("<------- Create Guild Messages -------> #")
-    public String createHasGuild = "&cMasz juz gildie!";
-    public String createName = "&cPodaj nazwe gildii!";
-    public String createTag = "&cPodaj tag gildii!";
     @CfgComment("Available variables: {LENGTH}")
     public String createTagLength = "&7Tag nie moze byc dluzszy niz &c{LENGTH} litery&7!";
     @CfgComment("Available variables: {LENGTH}")
@@ -215,8 +229,6 @@ public class MessagesConfig {
     public String createGuild = "&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
 
     @CfgComment("<------- Delete Guild Messages -------> #")
-    public String deleteHasNotGuild = "&cNie masz gildii!";
-    public String deleteIsNotOwner = "&cNie jestes zalozycielem gildii!";
     public String deleteConfirm = "&7Aby potwierdzic usuniecie gildii, wpisz: &c/potwierdz";
     public String deleteToConfirm = "&cNie masz zadnych dzialan do potwierdzenia!";
     public String deleteSomeoneIsNear = "&cNie mozesz usunac gildii, ktos jest w poblizu!";
@@ -224,13 +236,9 @@ public class MessagesConfig {
     public String deleteSuccessful = "&7Pomyslnie &cusunieto &7gildie!";
 
     @CfgComment("<------- Invite Messages -------> #")
-    public String inviteHasNotGuild = "&cNie masz gildii!";
-    public String inviteIsNotOwner = "&cNie jestes zalozycielem gildii!";
-    public String invitePlayer = "&cPodaj gracza!";
     public String invitePlayerExists = "&cNie ma takiego gracza na serwerze!";
     @CfgComment("Available variables: {AMOUNT}")
     public String inviteAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe czlonkow w gildii! (&c{AMOUNT})";
-    public String inviteHasGuild = "&cTen gracz ma juz gildie!";
     public String inviteCancelled = "&cCofnieto zaproszenie!";
     @CfgComment("Available variables: {OWNER}, {GUILD}, {TAG}")
     public String inviteCancelledToInvited = "&7Zaproszenie do gildii &c{GUILD} &7zostalo wycofane!";
@@ -239,7 +247,7 @@ public class MessagesConfig {
     @CfgComment("Available variables: {OWNER}, {GUILD}, {TAG}")
     public String inviteToInvited = "&aOtrzymano zaproszenie do gildii &7{TAG}&a!";
 
-    @CfgComment("<------- Invite Messages -------> #")
+    @CfgComment("<------- Join Messages -------> #")
     public String joinHasNotInvitation = "&cNie masz zaproszenia do gildii!";
     public String joinHasNotInvitationTo = "&cNie otrzymales zaproszenia do tej gildii!";
     public String joinHasGuild = "&cMasz juz gildie!";
@@ -258,16 +266,11 @@ public class MessagesConfig {
     public String joinToOwner = "&a{PLAYER} &7dolaczyl do &aTwojej &7gildii!";
 
     @CfgComment("<------- Leave Messages -------> #")
-    public String leaveHasNotGuild = "&cNie masz gildii!";
     public String leaveIsOwner = "&cZalozyciel &7nie moze opuscic gildii!";
     @CfgComment("Available variables: {GUILDS}, {TAG}")
     public String leaveToUser = "&7Opusciles gildie &a{GUILD}&7!";
 
     @CfgComment("<------- Kick Messages -------> #")
-    public String kickHasNotGuild = "&cNie masz gildii!";
-    public String kickIsNotOwner = "&cNie jestes zalozycielem gildii!";
-    public String kickPlayer = "&cPodaj gracza!";
-    public String kickToHasNotGuild = "&cTen gracz nie ma gildii!";
     public String kickOtherGuild = "&cTen gracz nie jest w Twojej gildii!";
     public String kickOwner = "&cNie mozna wyrzucic zalozyciela!";
     @CfgComment("Available variables: {PLAYER}")
@@ -276,8 +279,6 @@ public class MessagesConfig {
     public String kickToPlayer = "&cZostales wyrzucony z gildii!";
 
     @CfgComment("<------- Enlarge Messages -------> #")
-    public String enlargeHasNotGuild = "&cNie masz gildii!";
-    public String enlargeIsNotOwner = "&cNie jestes zalozycielem gildii!";
     public String enlargeMaxSize = "&cOsiagnieto juz maksymalny rozmiar terenu!";
     public String enlargeIsNear = "&cW poblizu znajduje sie jakas gildia, nie mozesz powiekszyc terenu!";
     @CfgComment("Available variables: {ITEM}")
@@ -287,7 +288,6 @@ public class MessagesConfig {
 
     @CfgComment("<------- Base Messages -------> #")
     public String baseTeleportationDisabled = "&cTeleportacja do baz gildyjnych nie jest dostepna";
-    public String baseHasNotGuild = "&cNie masz gildii!";
     public String baseHasNotRegion = "&cTwoja gildia nie posiada terenu!";
     public String baseHasNotCenter = "&cTwoja gildia nie posiada srodka regionu!";
     public String baseIsTeleportation = "&cWlasnie sie teleportujesz!";
@@ -298,8 +298,6 @@ public class MessagesConfig {
     public String baseTeleport = "&aTeleportacja&7...";
 
     @CfgComment("<------- Ally Messages -------> #")
-    public String allyHasNotGuild = "&cNie masz gildii!";
-    public String allyIsNotOwner = "&cNie jestes zalozycielem gildii!";
     public String allyHasNotInvitation = "&7Aby zaprosic gildie do sojuszy wpisz &c/sojusz [tag]";
     @CfgComment("Available variables: {GUILDS}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
@@ -307,7 +305,6 @@ public class MessagesConfig {
             "&7Otrzymano zaproszenia od gildii: &a{GUILDS}",
             "&7Aby zaakceptowac uzyj &a/sojusz [tag]");
     @CfgComment("Available variables: {TAG}")
-    public String allyGuildExists = "&7Gildia o tagu &c{TAG} &7nie istnieje!";
     public String allyAlly = "&cMasz juz sojusz z ta gildia!";
     public String allySame = "&cNie mozesz nawiazac sojuszu z wlasna gildia!";
     @CfgComment("Available variables: {GUILD}")
@@ -324,16 +321,13 @@ public class MessagesConfig {
     public String allyToInvited = "&7Otrzymano zaproszenie do sojuszu od gildii &a{GUILD}&7!";
 
     @CfgComment("<------- Break Messages -------> #")
-    public String breakHasNotGuild = "&cNie masz gildii!";
-    public String breakIsNotOwner = "&cNie jestes zalozycielem gildii!";
     public String breakHasNotAllies = "&cTwoja gildia nie posiada sojuszy!";
     @CfgComment("Available variables: {GUILDS}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> breakAlliesList = Arrays.asList(
             "&7Twoja gildia nawiazala sojusz z &a{GUILDS}",
             "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]");
-    @CfgComment("Available variables: {TAG}")
-    public String breakGuildExists = "&7Gildia o tagu &c{TAG} &7nie istnieje!";
+    
     @CfgComment("Available variables: {GUILD}, {TAG}")
     public String breakAllyExists = "&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7&c{GUILD}&7)!";
     @CfgComment("Available variables: {GUILD}, {TAG}")
@@ -342,8 +336,6 @@ public class MessagesConfig {
     public String breakIDone = "&7Gildia &c{GUILD} &7rozwiazala sojusz z Twoja gildia!";
 
     @CfgComment("<------- Validity Messages -------> #")
-    public String validityHasNotGuild = "&cNie masz gildii!";
-    public String validityIsNotOwner = "&cNie jestes zalozycielem gildii!";
     @CfgComment("Available variables: {TIME}")
     public String validityWhen = "&7Gildie mozesz przedluzyc dopiero za &c{TIME}&7!";
     @CfgComment("Available variables: {ITEM}")
@@ -366,48 +358,34 @@ public class MessagesConfig {
     public String warLose = "&7Twoja gildia &4przegrala &7wojne z gildia &4{WINNER}&7! &4Gildia zostaje zniszona&7!";
 
     @CfgComment("<------- Leader Messages -------> #")
-    public String leaderHasNotGuild = "&cNie masz gildii!";
-    public String leaderIsNotOwner = "&cNie jestes zalozycielem gildii";
-    public String leaderPlayer = "&cPodaj gracza!";
-    public String leaderPlayedBefore = "&cTen gracz nigdy nie byl na serwerze!";
     public String leaderMustBeDifferent = "&cNie mozesz sobie oddac zalozyciela!";
-    public String leaderIsNotMember = "&cTen gracz nie jest czlonkiem Twojej gildii!";
     public String leaderSet = "&7Ustanowiono nowego &alidera &7gildii!";
     public String leaderOwner = "&7Zostales nowym &aliderem &7gildii!";
+    @CfgComment("Available variables: {PLAYER}")
+    public String leaderMembers = "&7{PLAYER} zostal nowym &aliderem &7gildii!";
 
     @CfgComment("<------- Deputy Messages -------> #")
-    public String deputyHasNotGuild = "&cNie masz gildii!";
-    public String deputyIsNotOwner = "&cNie jestes zalozycielem gildii";
-    public String deputyPlayer = "&cPodaj gracza!";
-    public String deputyPlayedBefore = "&cTen gracz nigdy nie byl na serwerze!";
     public String deputyMustBeDifferent = "&cNie mozesz mianowac siebie zastepca!";
-    public String deputyIsNotMember = "&cTen gracz nie jest czlonkiem Twojej gildii!";
     public String deputyRemove = "&7Zdegradowno gracza z funkcji &czastepcy&7!";
     public String deputyMember = "&7Zdegradowano Cie z funkcji &czastepcy&7!";
     public String deputySet = "&7Ustanowiono nowego &azastepce &7gildii!";
     public String deputyOwner = "&7Zostales nowym &azastepca &7gildii!";
+    @CfgComment("Available variables: {PLAYER}")
+    public String deputyMembers = "&7{PLAYER} zostal nowym &azastepca &7gildii!";
+    @CfgComment("Available variables: {PLAYER}")
+    public String deputyNoLongerMembers = "&7{PLAYER} juz nie jest &azastepca &7gildii!";
 
     @CfgComment("<------- Setbase Messages -------> #")
-    public String setbaseHasNotGuild = "&cNie masz gildii!";
-    public String setbaseIsNotOwner = "&cNie jestes zalozycielem gildii!";
     public String setbaseOutside = "&cNie mozna ustawic domu gildii poza jej terenem!";
     public String setbaseDone = "&7Przeniesiono &adom &7gildii!";
 
     @CfgComment("<------- PvP Messages -------> #")
-    public String pvpHasNotGuild = "&cNie masz gildii!";
-    public String pvpIsNotOwner = "&cNie jestes zalozycielem gildii!";
     public String pvpOn = "&cWlaczono &7pvp w gildii!";
     public String pvpOff = "&aWylaczono &7pvp w gildii!";
     
     @CfgComment("<------- Admin Messages -------> #")
-    public String adminNoTagGiven = "&cPodaj tag gildii!";
-    public String adminNoNickGiven = "&cPodaj nick gracza!";
-    public String adminUserHasGuild = "&cTen gracz ma juz gildie!";
-    public String adminNoGuildFound = "&cTaka gildia nie istnieje!";
-    
     @CfgComment("Available variables: {ADMIN}")
     public String adminGuildBroken = "&cTwoja gildia zostala rozwiazana przez &7{ADMIN}";
-    public String adminNoGuild = "&cTen gracz nie ma gildii!";
     public String adminGuildOwner = "&cTen gracz jest zalozycielem gildii, nie mozna go wyrzucic!";
     public String adminNoRegionFound = "&cGildia nie posiada terenu!";
     
@@ -454,6 +432,10 @@ public class MessagesConfig {
     public String adminStopSpy = "&cJuz nie szpiegujesz graczy!";
     public String adminStartSpy = "&aOd teraz szpiegujesz graczy!";
 
-    public String guildsEnabled = "&aZakladanie gildii jest wlaczone!";
-    public String guildsDisabled = "&cZakladanie gildii jest wylaczone!";
+    public String adminGuildsEnabled = "&aZakladanie gildii jest wlaczone!";
+    public String adminGuildsDisabled = "&cZakladanie gildii jest wylaczone!";
+    
+    public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
+    public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
+    public String adminAlreadyDeputy = "&cTen gracz jest juz zastepca gildii!";
 }

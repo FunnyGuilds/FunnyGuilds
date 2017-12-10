@@ -39,7 +39,7 @@ public class ExcCreate implements Executor {
         User user = User.get(player);
 
         if (!config.guildsEnabled) {
-            player.sendMessage(messages.guildsDisabled);
+            player.sendMessage(messages.adminGuildsDisabled);
             return;
         }
 
@@ -50,16 +50,16 @@ public class ExcCreate implements Executor {
         }
 
         if (user.hasGuild()) {
-            player.sendMessage(messages.createHasGuild);
+            player.sendMessage(messages.generalHasGuild);
             return;
         }
 
         if (args.length != 2) {
             if (args.length == 0) {
-                player.sendMessage(messages.createTag);
+                player.sendMessage(messages.generalNoTagGiven);
                 return;
             } else if (args.length == 1) {
-                player.sendMessage(messages.createName);
+                player.sendMessage(messages.generalNoNameGiven);
                 return;
             } else if (args.length > 2) {
                 player.sendMessage(messages.createMore);
@@ -101,7 +101,7 @@ public class ExcCreate implements Executor {
             return;
         }
 
-        if (GuildUtils.isExists(name)) {
+        if (GuildUtils.nameExists(name)) {
             player.sendMessage(messages.createNameExists);
             return;
         }

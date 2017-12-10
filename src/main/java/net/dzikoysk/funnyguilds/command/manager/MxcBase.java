@@ -17,26 +17,26 @@ public class MxcBase implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
-        User user = User.get(p);
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
+        User user = User.get(player);
 
         if (!user.hasGuild()) {
-            p.sendMessage(m.setbaseHasNotGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
         if (!user.isOwner() && !user.isDeputy()) {
-            p.sendMessage(m.setbaseIsNotOwner);
+            player.sendMessage(messages.generalIsNotOwner);
             return;
         }
 
         Guild guild = user.getGuild();
         Region region = RegionUtils.get(guild.getName());
-        Location loc = p.getLocation();
+        Location loc = player.getLocation();
 
         if (!region.isIn(loc)) {
-            p.sendMessage(m.setbaseOutside);
+            player.sendMessage(messages.setbaseOutside);
             return;
         }
 
@@ -50,6 +50,6 @@ public class MxcBase implements Executor {
             }
         }
 
-        p.sendMessage(m.setbaseDone);
+        player.sendMessage(messages.setbaseDone);
     }
 }

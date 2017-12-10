@@ -89,20 +89,20 @@ public class Parser {
             return Material.AIR;
         }
 
-        String m = string;
-        m = m.toUpperCase();
-        m = m.replaceAll(" ", "_");
-
-        if (m.equalsIgnoreCase("skull")) {
-            return Material.SKULL_ITEM;
+        
+        String materialName = string.toUpperCase().replaceAll(" ", "_");
+        Material material = MaterialAliaser.getByAlias(materialName);
+        
+        if (material !=null) {
+            return material;
         }
 
-        Material material = Material.getMaterial(m);
-        
+        material = Material.getMaterial(materialName);
         if (material == null) {
             if (!string.equalsIgnoreCase("ender crystal")) {
                 FunnyGuilds.parser("Unknown material: " + string);
             }
+            
             return Material.AIR;
         }
         
@@ -286,5 +286,4 @@ public class Parser {
 
         return sb.toString();
     }
-
 }

@@ -14,28 +14,26 @@ public class AxcTeleport implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
-        Player p = (Player) sender;
+        MessagesConfig messages = Messages.getInstance();
+        Player player = (Player) sender;
 
         if (args.length < 1) {
-            p.sendMessage(m.adminNoTagGiven);
+            player.sendMessage(messages.generalNoTagGiven);
             return;
         }
 
         if (!GuildUtils.tagExists(args[0])) {
-            p.sendMessage(m.adminNoGuildFound);
+            player.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
-        String rs = GuildUtils.byTag(args[0]).getRegion();
-        Region region = RegionUtils.get(rs);
-
+        Region region = RegionUtils.get(GuildUtils.byTag(args[0]).getRegion());
         if (region == null || region.getCenter() == null) {
-            p.sendMessage(m.adminNoRegionFound);
+            player.sendMessage(messages.adminNoRegionFound);
             return;
         }
 
-        p.sendMessage(m.baseTeleport);
-        p.teleport(region.getCenter());
+        player.sendMessage(messages.baseTeleport);
+        player.teleport(region.getCenter());
     }
 }
