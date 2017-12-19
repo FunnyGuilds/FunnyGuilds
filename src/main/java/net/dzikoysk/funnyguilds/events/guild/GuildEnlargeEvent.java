@@ -7,5 +7,5 @@ public class GuildEnlargeEvent extends CancellableGuildEvent {
     public GuildEnlargeEvent(Guild guild) {
         super(guild);
     }
-    
+
 }
