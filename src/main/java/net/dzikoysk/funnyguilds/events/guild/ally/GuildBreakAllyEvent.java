@@ -7,5 +7,5 @@ public class GuildBreakAllyEvent extends CancellableGuildAllyEvent {
     public GuildBreakAllyEvent(Guild guild, Guild alliedGuild) {
         super(guild, alliedGuild);
     }
-    
+
 }
