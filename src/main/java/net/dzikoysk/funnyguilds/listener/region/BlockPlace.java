@@ -24,7 +24,7 @@ public class BlockPlace implements Listener {
                 Block targetBlock = e.getBlock();
 
                 targetBlock.setType(placedBlock.getType());
-                FunnyGuilds.getInstance().getServer().getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> targetBlock.setType(Material.AIR), 1000 * config.buggedBlocksTimer);
+                FunnyGuilds.getInstance().getServer().getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> targetBlock.setType(Material.AIR), 20 * config.buggedBlocksTimer);
             }
         }
     }
