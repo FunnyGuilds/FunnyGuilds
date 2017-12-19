@@ -9,12 +9,12 @@ public class GuildEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private final Guild target;
+    private final Guild guild;
 
-    public GuildEvent(Guild target) {
-        Validate.notNull(target);
+    public GuildEvent(Guild guild) {
+        Validate.notNull(guild);
 
-        this.target = target;
+        this.guild = guild;
     }
 
     @Override

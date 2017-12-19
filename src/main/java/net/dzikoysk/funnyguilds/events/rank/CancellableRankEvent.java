@@ -17,8 +17,8 @@ public class CancellableRankEvent extends RankEvent implements Cancellable {
     }
 
     @Override
-    public final void setCancelled(boolean b) {
-        this.cancelled = b;
+    public final void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
 }

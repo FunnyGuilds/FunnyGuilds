@@ -1,5 +1,5 @@
 ### Maven ###
-target/
+guild/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -96,7 +96,7 @@ local.properties
 .buildpath
 
 # sbteclipse plugin
-.target
+.guild
 
 # TeXlipse plugin
 .texlipse

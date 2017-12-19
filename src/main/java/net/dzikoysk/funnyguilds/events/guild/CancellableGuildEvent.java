@@ -7,8 +7,8 @@ public class CancellableGuildEvent extends GuildEvent implements Cancellable {
 
     private boolean cancelled;
 
-    public CancellableGuildEvent(Guild target) {
-        super(target);
+    public CancellableGuildEvent(Guild guild) {
+        super(guild);
     }
 
     @Override
@@ -17,8 +17,8 @@ public class CancellableGuildEvent extends GuildEvent implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean b) {
-        this.cancelled = b;
+    public void setCancelled(boolean cancelled) {
+        this.cancelled = cancelled;
     }
 
 }
