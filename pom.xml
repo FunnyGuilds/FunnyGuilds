@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.guild>1.8</maven.compiler.guild>
+        <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -165,7 +165,7 @@
                 <version>3.6.2</version>
                 <configuration>
                     <source>${maven.compiler.source}</source>
-                    <guild>${maven.compiler.guild}</guild>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
                 <dependencies>
                     <dependency>
