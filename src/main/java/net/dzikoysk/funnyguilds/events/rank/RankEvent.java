@@ -20,17 +20,17 @@ public class RankEvent extends Event {
         this.actual = actual;
     }
 
+    @Override
+    public final HandlerList getHandlers() {
+        return handlers;
+    }
+
     public Rank getOld() {
         return old;
     }
 
     public Rank getActual() {
         return actual;
-    }
-
-    @Override
-    public final HandlerList getHandlers() {
-        return handlers;
     }
 
 }
