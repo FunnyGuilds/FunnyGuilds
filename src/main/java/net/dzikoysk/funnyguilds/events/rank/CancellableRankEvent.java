@@ -12,12 +12,12 @@ public class CancellableRankEvent extends RankEvent implements Cancellable {
     }
 
     @Override
-    public boolean isCancelled() {
+    public final boolean isCancelled() {
         return cancelled;
     }
 
     @Override
-    public void setCancelled(boolean b) {
+    public final void setCancelled(boolean b) {
         this.cancelled = b;
     }
 
