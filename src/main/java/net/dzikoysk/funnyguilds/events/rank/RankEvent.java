@@ -33,4 +33,8 @@ public class RankEvent extends Event {
         return actual;
     }
 
+    public static HandlerList getHandlersList() {
+        return handlers;
+    }
+
 }

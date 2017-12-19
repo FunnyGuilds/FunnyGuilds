@@ -22,4 +22,8 @@ public class GuildEvent extends Event {
         return handlers;
     }
 
+    public static HandlerList getHandlersList() {
+        return handlers;
+    }
+
 }
