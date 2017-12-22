@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -29,34 +30,43 @@ public class AxcBan implements Executor {
             return;
         }
 
-        if (!GuildUtils.tagExists(args[0])) {
+        Guild guild = GuildUtils.get(args[0]);
+
+        if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
             return;
         } 
         
-        Guild guild = GuildUtils.byTag(args[0]);
         if (guild.isBanned()) {
             sender.sendMessage(messages.adminGuildBanned);
             return;
         }
 
         long time = Parser.parseTime(args[1]);
+
         if (time < 1) {
             sender.sendMessage(messages.adminTimeError);
             return;
         }
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder reasonBuilder = new StringBuilder();
+
         for (int i = 2; i < args.length; i++) {
-            sb.append(args[i]);
-            sb.append(" ");
+            reasonBuilder.append(args[i]);
+            reasonBuilder.append(" ");
         }
         
-        String reason = sb.toString();
-        
+        String reason = reasonBuilder.toString();
         BanUtils.ban(guild, time, reason);
-        sender.sendMessage(messages.adminGuildBan.replace("{GUILD}", guild.getName()).replace("{TIME}", args[1]));
-        Bukkit.broadcastMessage(Messages.getInstance().broadcastBan.replace("{GUILD}", guild.getName())
-                        .replace("{TAG}", guild.getTag()).replace("{REASON}", StringUtils.colored(reason)).replace("{TIME}", args[1]));
+
+        MessageTranslator translator = new MessageTranslator()
+                .register("{GUILD", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{TIME}", args[1])
+                .register("{REASON}", StringUtils.colored(reason));
+
+        sender.sendMessage(translator.translate(messages.adminGuildBan));
+        Bukkit.broadcastMessage(translator.translate(messages.broadcastBan));
     }
+
 }

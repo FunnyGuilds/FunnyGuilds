@@ -23,27 +23,35 @@ public class UserUtils {
 
     public static User get(String nickname) {
         User user = nameUserCache.getIfPresent(nickname);
+
         if (user == null) {
             user = nameUserMap.get(nickname);
+
             if (user != null) {
                 nameUserCache.put(nickname, user);
                 return user;
             }
+
             return null;
         }
+
         return user;
     }
 
     public static User get(UUID uuid) {
         User user = uuidUserCache.getIfPresent(uuid);
+
         if (user == null) {
             user = uuidUserMap.get(uuid);
+
             if (user != null) {
                 uuidUserMap.put(uuid, user);
                 return user;
             }
+
             return null;
         }
+
         return user;
     }
 
@@ -65,8 +73,8 @@ public class UserUtils {
         nameUserMap.remove(user.getName());
     }
 
-    public static boolean playedBefore(String s) {
-        return s != null && get(s) != null;
+    public static boolean playedBefore(String nickname) {
+        return nickname != null && nameUserMap.containsKey(nickname);
     }
 
     public static List<String> getNames(List<User> users) {
@@ -79,25 +87,23 @@ public class UserUtils {
 
     public static List<String> getOnlineNames(List<User> users) {
         List<String> list = new ArrayList<>();
-        for (User u : users) {
-            if (u.isOnline()) {
-                list.add("<online>" + u.getName() + "</online>");
-            } else {
-                list.add(u.getName());
-            }
+
+        for (User user : users) {
+            list.add(user.isOnline() ? "<online>" + user.getName() + "</online>" : user.getName());
         }
+
         return list;
     }
 
     public static void removeGuild(List<User> users) {
-        for (User u : users) {
-            u.removeGuild();
+        for (User user : users) {
+            user.removeGuild();
         }
     }
 
     public static void setGuild(List<User> users, Guild guild) {
-        for (User u : users) {
-            u.setGuild(guild);
+        for (User user : users) {
+            user.setGuild(guild);
         }
     }
 

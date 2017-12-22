@@ -30,7 +30,9 @@ public class AxcName implements Executor {
             return;
         }
 
-        if (!GuildUtils.tagExists(args[0])) {
+        Guild guild = GuildUtils.byTag(args[0]);
+
+        if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
@@ -40,12 +42,10 @@ public class AxcName implements Executor {
             return;
         }
 
-        Guild guild = GuildUtils.byTag(args[0]);
+        Manager.getInstance().stop();
+        PluginConfig.DataType dataType = Settings.getConfig().dataType;
         Region region = RegionUtils.get(guild.getRegion());
 
-        PluginConfig.DataType dataType = Settings.getConfig().dataType;
-        Manager.getInstance().stop();
-        
         if (dataType.flat) {
             Flat.getGuildFile(guild).delete();
             Flat.getRegionFile(region).delete();
@@ -62,4 +62,5 @@ public class AxcName implements Executor {
         Manager.getInstance().start();
         sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
     }
+
 }

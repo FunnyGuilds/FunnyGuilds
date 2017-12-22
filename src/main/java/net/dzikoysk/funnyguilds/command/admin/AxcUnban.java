@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
@@ -21,19 +22,27 @@ public class AxcUnban implements Executor {
             return;
         }
 
-        if (!GuildUtils.tagExists(args[0])) {
+        Guild guild = GuildUtils.byTag(args[0]);
+
+        if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
-        Guild guild = GuildUtils.byTag(args[0]);
         if (!guild.isBanned()) {
             sender.sendMessage(messages.adminGuildNotBanned);
             return;
         }
 
         BanUtils.unban(guild);
-        sender.sendMessage(messages.adminGuildUnban.replace("{GUILD}", guild.getName()));
-        Bukkit.broadcastMessage(Messages.getInstance().broadcastUnban.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+
+        MessageTranslator translator = new MessageTranslator()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getName())
+                .register("{ADMIN}", sender.getName());
+
+        sender.sendMessage(translator.translate(messages.adminGuildUnban));
+        Bukkit.broadcastMessage(translator.translate(messages.broadcastUnban));
     }
+
 }

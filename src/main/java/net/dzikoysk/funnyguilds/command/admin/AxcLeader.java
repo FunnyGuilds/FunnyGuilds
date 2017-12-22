@@ -21,8 +21,10 @@ public class AxcLeader implements Executor {
             sender.sendMessage(messages.generalNoTagGiven);
             return;
         }
+
+        Guild guild = GuildUtils.byTag(args[0]);
         
-        if (!GuildUtils.tagExists(args[0])) {
+        if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
@@ -37,7 +39,6 @@ public class AxcLeader implements Executor {
             return;
         }
         
-        Guild guild = GuildUtils.byTag(args[0]);
         User user = User.get(args[1]);
         
         if (!guild.getMembers().contains(user)) {
@@ -57,9 +58,12 @@ public class AxcLeader implements Executor {
         if (leaderPlayer != null) {
             leaderPlayer.sendMessage(messages.leaderOwner);
         }
-        
+
+        String message = messages.leaderMembers.replace("{PLAYER}", user.getName());
+
         for (User member : guild.getOnlineMembers()) {
-            member.getPlayer().sendMessage(messages.leaderMembers.replace("{PLAYER}", user.getName()));
+            member.getPlayer().sendMessage(message);
         }
     }
+
 }

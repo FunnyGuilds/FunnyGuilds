@@ -1,14 +1,14 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
+import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class AxcTeleport implements Executor {
 
@@ -22,12 +22,15 @@ public class AxcTeleport implements Executor {
             return;
         }
 
-        if (!GuildUtils.tagExists(args[0])) {
+        Guild guild = GuildUtils.byTag(args[0]);
+
+        if (guild == null) {
             player.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
-        Region region = RegionUtils.get(GuildUtils.byTag(args[0]).getRegion());
+        Region region = RegionUtils.get(guild.getRegion());
+
         if (region == null || region.getCenter() == null) {
             player.sendMessage(messages.adminNoRegionFound);
             return;
@@ -36,4 +39,5 @@ public class AxcTeleport implements Executor {
         player.sendMessage(messages.baseTeleport);
         player.teleport(region.getCenter());
     }
+
 }

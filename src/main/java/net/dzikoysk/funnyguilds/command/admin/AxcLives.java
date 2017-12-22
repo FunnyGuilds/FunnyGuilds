@@ -24,22 +24,23 @@ public class AxcLives implements Executor {
             return;
         }
 
-        if (!GuildUtils.tagExists(args[0])) {
+        Guild guild = GuildUtils.byTag(args[0]);
+
+        if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
-        
-        Guild guild = GuildUtils.byTag(args[0]);
 
         int lives;
         try {
             lives = Integer.valueOf(args[1]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));;
+            sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }
 
         guild.setLives(lives);
         sender.sendMessage(messages.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives)));
     }
+
 }

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,12 +42,14 @@ public class AxcAdd implements Executor {
         }
         
         User user = User.get(args[1]);
+
         if (user.hasGuild()) {
             sender.sendMessage(messages.generalUserHasGuild);
             return;
         }
 
         Guild guild = GuildUtils.byTag(args[0]);
+
         if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
             return;
@@ -56,16 +59,23 @@ public class AxcAdd implements Executor {
         user.setGuild(guild);
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
 
+        MessageTranslator translator = new MessageTranslator()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{PLAYER}", user.getName());
+
         Player player = user.getPlayer();
-        if (player !=null) {
-            player.sendMessage(messages.joinToMember.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-        }
-
         Player owner = guild.getOwner().getPlayer();
-        if (owner != null) {
-            owner.sendMessage(messages.joinToOwner.replace("{PLAYER}", user.getName()));
+
+        if (player != null) {
+            player.sendMessage(translator.translate(messages.joinToMember));
         }
 
-        Bukkit.broadcastMessage(messages.broadcastJoin.replace("{PLAYER}", user.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        if (owner != null) {
+            owner.sendMessage(translator.translate(messages.joinToOwner));
+        }
+
+        Bukkit.broadcastMessage(translator.translate(messages.broadcastJoin));
     }
+
 }

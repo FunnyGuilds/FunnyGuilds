@@ -44,4 +44,5 @@ public class AxcPoints implements Executor {
 
         sender.sendMessage(messages.adminPointsChanged.replace("{PLAYER}", user.getName()).replace("{POINTS}", Integer.toString(points)));
     }
+
 }

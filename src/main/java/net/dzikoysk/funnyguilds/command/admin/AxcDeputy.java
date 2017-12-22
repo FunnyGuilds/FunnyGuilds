@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -21,8 +22,10 @@ public class AxcDeputy implements Executor {
             sender.sendMessage(messages.generalNoTagGiven);
             return;
         }
+
+        Guild guild = GuildUtils.byTag(args[0]);
         
-        if (!GuildUtils.tagExists(args[0])) {
+        if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
@@ -37,15 +40,17 @@ public class AxcDeputy implements Executor {
             return;
         }
         
-        Guild guild = GuildUtils.byTag(args[0]);
         User user = User.get(args[1]);
-        
+        Player player = user.getPlayer();
+
         if (!guild.getMembers().contains(user)) {
             sender.sendMessage(messages.adminUserNotMemberOf);
             return;
         }
         
-        Player player = user.getPlayer();
+        MessageTranslator translator = new MessageTranslator()
+                .register("{PLAYER}", user.getName());
+
         if (user.isDeputy()) {
             guild.setDeputy(null);
             sender.sendMessage(messages.deputyRemove);
@@ -53,9 +58,11 @@ public class AxcDeputy implements Executor {
             if (player != null) {
                 player.sendMessage(messages.deputyMember);
             }
-            
+
+            String message = translator.translate(messages.deputyNoLongerMembers);
+
             for (User member : guild.getOnlineMembers()) {
-                member.getPlayer().sendMessage(messages.deputyNoLongerMembers.replace("{PLAYER}", user.getName()));
+                member.getPlayer().sendMessage(message);
             }
 
             return;
@@ -67,9 +74,12 @@ public class AxcDeputy implements Executor {
         if (player != null) {
             player.sendMessage(messages.deputyOwner);
         }
-        
+
+        String message = translator.translate(messages.deputyMembers);
+
         for (User member : guild.getOnlineMembers()) {
-            member.getPlayer().sendMessage(messages.deputyMembers.replace("{PLAYER}", user.getName()));
+            member.getPlayer().sendMessage(message);
         }
     }
+
 }

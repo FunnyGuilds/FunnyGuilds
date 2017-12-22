@@ -1,14 +1,5 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -20,12 +11,21 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class AxcMove implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
+        PluginConfig config = Settings.getConfig();
         Player player = (Player) sender;
 
         if (args.length < 1) {
@@ -33,18 +33,21 @@ public class AxcMove implements Executor {
             return;
         }
 
-        if (!GuildUtils.tagExists(args[0])) {
+        Guild guild = GuildUtils.byTag(args[0]);
+
+        if (guild == null) {
             player.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
-        PluginConfig config = Settings.getConfig();
         Location location = player.getLocation();
+
         if (config.createCenterY != 0) {
             location.setY(config.createCenterY);
         }
 
         int d = config.regionSize + config.createDistance;
+
         if (config.enlargeItems != null) {
             d = config.enlargeItems.size() * config.enlargeSize + d;
         }
@@ -59,7 +62,6 @@ public class AxcMove implements Executor {
             return;
         }
 
-        Guild guild = GuildUtils.byTag(args[0]);
         Region region = RegionUtils.get(guild.getRegion());
         
         if (region == null) {
@@ -92,6 +94,7 @@ public class AxcMove implements Executor {
             EntityUtil.spawn(guild);
         }
 
-        player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()));
+        player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
+
 }

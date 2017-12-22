@@ -17,4 +17,5 @@ public class AxcEnabled implements Executor {
         boolean enabled = config.guildsEnabled = !config.guildsEnabled;
         sender.sendMessage(enabled ? messages.adminGuildsEnabled : messages.adminGuildsDisabled);
     }
+
 }

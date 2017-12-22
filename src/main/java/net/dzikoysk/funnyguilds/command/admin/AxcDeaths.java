@@ -41,4 +41,5 @@ public class AxcDeaths implements Executor {
         user.getRank().setDeaths(deaths);
         sender.sendMessage(messages.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(deaths)));
     }
+
 }

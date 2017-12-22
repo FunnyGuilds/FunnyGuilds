@@ -12,15 +12,16 @@ public class AxcSpy implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig m = Messages.getInstance();
+        MessagesConfig messages = Messages.getInstance();
         User user = User.get((Player) sender);
 
         if (user.isSpy()) {
             user.setSpy(false);
-            sender.sendMessage(m.adminStopSpy);
+            sender.sendMessage(messages.adminStopSpy);
         } else {
             user.setSpy(true);
-            sender.sendMessage(m.adminStartSpy);
+            sender.sendMessage(messages.adminStartSpy);
         }
     }
+
 }

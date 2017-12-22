@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -21,20 +22,28 @@ public class AxcDelete implements Executor {
             return;
         }
 
-        if (!GuildUtils.tagExists(args[0])) {
+        Guild guild = GuildUtils.byTag(args[0]);
+
+        if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
-        Guild guild = GuildUtils.byTag(args[0]);
         GuildUtils.deleteGuild(guild);
-        sender.sendMessage(messages.deleteSuccessful.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-
         Player owner = guild.getOwner().getPlayer();
+
+        MessageTranslator translator = new MessageTranslator()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{ADMIN}", sender.getName())
+                .register("{PLAYER}", sender.getName());
+
         if (owner != null) {
-            owner.sendMessage(messages.adminGuildBroken.replace("{ADMIN}", sender.getName()));
+            owner.sendMessage(translator.translate(messages.adminGuildBroken));
         }
 
-        Bukkit.getServer().broadcastMessage(messages.broadcastDelete.replace("{PLAYER}", sender.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        sender.sendMessage(translator.translate(messages.deleteSuccessful));
+        Bukkit.getServer().broadcastMessage(translator.translate(messages.broadcastDelete));
     }
+
 }
