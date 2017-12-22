@@ -169,6 +169,14 @@ public class PluginConfig {
     @CfgName("create-center-sphere")
     public boolean createCenterSphere = true;
 
+    @CfgComment("Czy funkcja efeltu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
+    @CfgName("bugged-blocks")
+    public boolean buggedBlocks = false;
+
+    @CfgComment("Czas (w tickach) po ktorym 'zbugowane' klocki maja zostac usuniete (warunek wymagany: bugged-blocks = true)")
+    @CfgName("bugged-blocks-timer")
+    public int buggedBlocksTimer = 20;
+
     @CfgComment("Maksymalna liczba czlonkow w gildii")
     @CfgName("max-members")
     public int inviteMembers = 15;
@@ -677,6 +685,11 @@ public class PluginConfig {
         } else {
             this.enlargeSize = 0;
             this.enlargeItems = null;
+        }
+
+        if (this.buggedBlocksTimer <= 0) {
+            FunnyGuilds.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than or equal to zero!"));
+            this.buggedBlocksTimer = 20; // default value
         }
 
         try {
