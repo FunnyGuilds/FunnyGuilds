@@ -96,7 +96,7 @@ local.properties
 .buildpath
 
 # sbteclipse plugin
-.target
+.guild
 
 # TeXlipse plugin
 .texlipse
