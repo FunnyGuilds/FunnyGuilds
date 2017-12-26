@@ -18,7 +18,7 @@ public class Ticker {
         try {
             Class<?> minecraftServerClass = Reflections.getCraftClass("MinecraftServer");
             serverInstance = Reflections.getMethod(Reflections.getCraftClass("MinecraftServer"), "getServer").invoke(null);
-            tpsField = Reflections.getField(minecraftServerClass, "recentTps");
+            tpsField = Reflections.getFixedVersion().startsWith("v1_8") ? null : Reflections.getField(minecraftServerClass, "recentTps");
         } catch (IllegalAccessException | InvocationTargetException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
         }
@@ -27,8 +27,7 @@ public class Ticker {
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
     public static String getRecentTPS(int last) {
         try {
-            double[] tps = ((double[]) tpsField.get(serverInstance));
-            return format.format(tps[last]);
+            return tpsField != null ? format.format(Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last])) : "N/A";
         } catch (IllegalAccessException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
             return null;

@@ -47,7 +47,8 @@ public class Parser {
             if (str.contains("name")) {
                 String[] splitName = str.split(":");
                 item.setName(StringUtils.replace(StringUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_", " "), true);
-            } else if (str.contains("lore")) {
+            }
+            else if (str.contains("lore")) {
                 String[] splitLore = str.split(":");
                 String loreArgs = String.join(":", Arrays.copyOfRange(splitLore, 1, splitLore.length));
                 String[] lores = loreArgs.split("#");
@@ -58,7 +59,8 @@ public class Parser {
                 }
                 
                 item.setLore(lore);
-            } else if (str.contains("enchant")) {
+            }
+            else if (str.contains("enchant")) {
                 String[] parse = str.split(":");
                 String enchantName = parse[1];
                 int level;

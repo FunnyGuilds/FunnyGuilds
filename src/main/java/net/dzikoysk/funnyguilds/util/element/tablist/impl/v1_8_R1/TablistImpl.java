@@ -37,7 +37,7 @@ public class TablistImpl extends AbstractTablist {
     static {
         PLAYER_INFO_CLASS = Reflections.getCraftClass("PacketPlayOutPlayerInfo");
         PLAYER_LIST_HEADER_FOOTER_CLASS = Reflections.getCraftClass("PacketPlayOutPlayerListHeaderFooter");
-        PLAYER_INFO_DATA_CLASS = Reflections.getCraftClass("PacketPlayOutPlayerInfo$PlayerInfoData");
+        PLAYER_INFO_DATA_CLASS = Reflections.getCraftClass("PlayerInfoData");
         GAME_PROFILE_CLASS = Reflections.getClass("com.mojang.authlib.GameProfile");
         ENUM_GAMEMODE_CLASS = Reflections.getCraftClass("EnumGamemode");
         BASE_COMPONENT_CLASS = Reflections.getCraftClass("IChatBaseComponent");
@@ -47,8 +47,8 @@ public class TablistImpl extends AbstractTablist {
         HEADER_FIELD = Reflections.getField(PLAYER_LIST_HEADER_FOOTER_CLASS, "a");
         FOOTER_FIELD = Reflections.getField(PLAYER_LIST_HEADER_FOOTER_CLASS, "b");
 
-        ADD_PLAYER = (Enum<?>) Reflections.getCraftClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction").getEnumConstants()[0];
-        UPDATE_PLAYER = (Enum<?>) Reflections.getCraftClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction").getEnumConstants()[3];
+        ADD_PLAYER = (Enum<?>) Reflections.getCraftClass("EnumPlayerInfoAction").getEnumConstants()[0];
+        UPDATE_PLAYER = (Enum<?>) Reflections.getCraftClass("EnumPlayerInfoAction").getEnumConstants()[3];
 
         try {
             playerInfoDataConstructor = PLAYER_INFO_DATA_CLASS.getConstructor(

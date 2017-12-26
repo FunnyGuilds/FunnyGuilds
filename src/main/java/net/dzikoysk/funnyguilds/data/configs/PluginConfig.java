@@ -519,7 +519,7 @@ public class PluginConfig {
     @CfgComment("{G-MEMBERS-ALL} - liczba wszystkich czlonkow gildii")
     @CfgComment("> Spis pozostalych zmiennych:")
     @CfgComment("{ONLINE} - liczba graczy online")
-    @CfgComment("{TPS} - TPS serwera")
+    @CfgComment("{TPS} - TPS serwera (wspierane tylko od wersji 1.8.8+ spigot/paperspigot)")
     @CfgComment("{SECOND} - Sekunda")
     @CfgComment("{MINUTE} - Minuta")
     @CfgComment("{HOUR} - Godzina")
@@ -566,9 +566,9 @@ public class PluginConfig {
     @CfgName("player-list-enable")
     public boolean playerlistEnable = false;
 
-    @CfgComment("Co ile sekund ma odswiezac liste graczy")
-    @CfgName("player-list-interval")
-    public int playerlistInterval = 1;
+//    @CfgComment("Co ile sekund ma odswiezac liste graczy")
+//    @CfgName("player-list-interval")
+//    public int playerlistInterval = 1;
 
     @CfgComment("Wyglad punktow wyswietlanych przy gildii w rankingu")
     @CfgName("player-list-points")
