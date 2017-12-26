@@ -14,11 +14,14 @@ public class PlayerQuit implements Listener {
     public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         User user = User.get(player);
+        
         NotificationBar.remove(player);
+        
         user.setIndividualPrefix(null);
         user.setScoreboard(null);
         user.setDummy(null);
         user.removeFromCache();
+        
         AbstractTablist.removeTablist(player);
     }
 

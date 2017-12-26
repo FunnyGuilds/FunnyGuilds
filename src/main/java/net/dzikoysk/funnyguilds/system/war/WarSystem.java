@@ -4,6 +4,10 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -28,6 +32,7 @@ public class WarSystem {
             WarUtils.message(player, 0);
             return;
         }
+        
         Guild attacker = user.getGuild();
         if (attacker.equals(guild)) {
             return;
@@ -36,14 +41,17 @@ public class WarSystem {
             WarUtils.message(player, 1);
             return;
         }
+        
         if (!guild.canBeAttacked()) {
             WarUtils.message(player, 2, (guild.getAttacked() + Settings.getConfig().warWait) - System.currentTimeMillis());
             return;
         }
+        
         guild.setAttacked(System.currentTimeMillis());
         guild.removeLive();
+        
         if (guild.getLives() < 1) {
-            conquer(attacker, guild);
+            conquer(attacker, guild, user);
         } else {
             for (User u : attacker.getMembers()) {
                 Player p = Bukkit.getPlayer(u.getName());
@@ -51,6 +59,7 @@ public class WarSystem {
                     WarUtils.message(p, 3, guild);
                 }
             }
+            
             for (User u : guild.getMembers()) {
                 Player p = Bukkit.getPlayer(u.getName());
                 if (p != null) {
@@ -60,7 +69,12 @@ public class WarSystem {
         }
     }
 
-    public void conquer(Guild conqueror, Guild loser) {
+    public void conquer(Guild conqueror, Guild loser, User attacker) {
+        if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, attacker, loser))) {
+            loser.addLive();
+            return;
+        }
+        
         String message = WarUtils.getWinMessage(conqueror, loser);
         for (User user : conqueror.getMembers()) {
             Player player = Bukkit.getPlayer(user.getName());
@@ -68,6 +82,7 @@ public class WarSystem {
                 player.sendMessage(message);
             }
         }
+        
         message = WarUtils.getLoseMessage(conqueror, loser);
         for (User user : loser.getMembers()) {
             Player player = Bukkit.getPlayer(user.getName());
@@ -75,7 +90,7 @@ public class WarSystem {
                 player.sendMessage(message);
             }
         }
-
+        
         GuildUtils.deleteGuild(loser);
         conqueror.addLive();
 

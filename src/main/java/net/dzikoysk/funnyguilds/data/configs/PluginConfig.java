@@ -403,6 +403,26 @@ public class PluginConfig {
     @CfgName("damage-ally")
     public boolean damageAlly = false;
 
+    @CfgComment("Wyglad znaczika {POS} wstawionego w format chatu")
+    @CfgComment("Znacznik ten pokazuje czy ktos jest liderem, zastepca czy zwyklym czlonkiem gildii")
+    @CfgName("chat-position")
+    public String chatPosition_ = "&b{POS} ";
+    
+    @CfgExclude
+    public String chatPosition;
+    
+    @CfgComment("Znacznik dla lidera gildii")
+    @CfgName("chat-position-leader")
+    public String chatPositionLeader = "**";
+    
+    @CfgComment("Znacznik dla zastepcy gildii")
+    @CfgName("chat-position-deputy")
+    public String chatPositionDeputy = "*";
+    
+    @CfgComment("Znacznik dla czlonka gildii")
+    @CfgName("chat-position-member")
+    public String chatPositionMember = "";
+    
     @CfgComment("Wyglad znaczika {TAG} wstawionego w format chatu")
     @CfgName("chat-guild")
     public String chatGuild_ = "&b{TAG} ";
@@ -437,25 +457,25 @@ public class PluginConfig {
     public String chatGlobal = "!!!";
 
     @CfgComment("Wyglad wiadomosci wysylanej na czacie gildii")
-    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}")
+    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     @CfgName("chat-priv-design")
-    public String chatPrivDesign_ = "&8[&aChat gildii&8] &7{PLAYER}&8:&f {MESSAGE}";
+    public String chatPrivDesign_ = "&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}";
 
     @CfgExclude
     public String chatPrivDesign;
 
     @CfgComment("Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow")
-    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}")
+    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     @CfgName("chat-ally-design")
-    public String chatAllyDesign_ = "&8[&6Chat sojuszniczy&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}";
+    public String chatAllyDesign_ = "&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
 
     @CfgExclude
     public String chatAllyDesign;
 
     @CfgComment("Wyglad wiadomosci wysylanej na czacie globalnym gildii")
-    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}")
+    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     @CfgName("chat-global-design")
-    public String chatGlobalDesign_ = "&8[&cChat globalny gildii&8] &8{TAG} &7{PLAYER}&8:&f {MESSAGE}";
+    public String chatGlobalDesign_ = "&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
 
     @CfgExclude
     public String chatGlobalDesign;
@@ -645,13 +665,13 @@ public class PluginConfig {
                 try {
                     item = new GuiItem(createItemsVip.get(Parser.getIndex(var) - 1));
                 } catch(IndexOutOfBoundsException e) {
-                    FunnyGuilds.parser("Index given in " + var + "is > " + createItemsVip.size() + "or <= 0");
+                    FunnyGuilds.parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
             }  else if (var.contains("ITEM-")) {
                 try {
                     item = new GuiItem(createItems.get(Parser.getIndex(var) - 1));
                 } catch(IndexOutOfBoundsException e) {
-                    FunnyGuilds.parser("Index given in " + var + "is > " + createItems.size() + "or <= 0");
+                    FunnyGuilds.parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
             } else {
                 item = new GuiItem(Parser.parseItem(var));
@@ -709,10 +729,12 @@ public class PluginConfig {
             if (material == null || material == Material.AIR) {
                 continue;
             }
+            
             double chance = entry.getValue();
             if (chance == 0) {
                 continue;
             }
+            
             map.put(material, chance);
         }
 
@@ -724,6 +746,7 @@ public class PluginConfig {
             if (material == null) {
                 continue;
             }
+            
             translatedMaterials.put(material, translatedMaterials_.get(materialName));
         }
 
@@ -745,6 +768,7 @@ public class PluginConfig {
 
         this.dummySuffix = StringUtils.colored(this.dummySuffix_);
 
+        this.chatPosition = StringUtils.colored(this.chatPosition_);
         this.chatGuild = StringUtils.colored(this.chatGuild_);
         this.chatRank = StringUtils.colored(this.chatRank_);
         this.chatPoints = StringUtils.colored(this.chatPoints_);

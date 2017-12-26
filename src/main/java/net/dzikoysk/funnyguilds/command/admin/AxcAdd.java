@@ -1,6 +1,10 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -55,6 +59,11 @@ public class AxcAdd implements Executor {
             return;
         }
 
+        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
+        if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, user))) {
+            return;
+        }
+        
         guild.addMember(user);
         user.setGuild(guild);
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
