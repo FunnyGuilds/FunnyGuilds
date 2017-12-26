@@ -1,14 +1,19 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildBanEvent;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
@@ -57,6 +62,12 @@ public class AxcBan implements Executor {
         }
         
         String reason = reasonBuilder.toString();
+        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
+        
+        if (!SimpleEventHandler.handle(new GuildBanEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, time, reason))) {
+            return;
+        }
+        
         BanUtils.ban(guild, time, reason);
 
         MessageTranslator translator = new MessageTranslator()

@@ -1,12 +1,17 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
 
 public class AxcLives implements Executor {
 
@@ -39,6 +44,11 @@ public class AxcLives implements Executor {
             return;
         }
 
+        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
+        if (!SimpleEventHandler.handle(new GuildLivesChangeEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, lives))) {
+            return;
+        }
+        
         guild.setLives(lives);
         sender.sendMessage(messages.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives)));
     }

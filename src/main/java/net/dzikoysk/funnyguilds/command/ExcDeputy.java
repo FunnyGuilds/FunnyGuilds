@@ -9,6 +9,9 @@ import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
 
 public class ExcDeputy implements Executor {
 
@@ -55,6 +58,10 @@ public class ExcDeputy implements Executor {
             return;
         }
 
+        if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
+            return;
+        }
+        
         if (deputyUser.isDeputy()) {
             guild.setDeputy(null);
             player.sendMessage(messages.deputyRemove);

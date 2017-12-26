@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,6 +10,10 @@ import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
@@ -42,10 +45,16 @@ public class AxcKick implements Executor {
             return;
         }
 
+        Guild guild = user.getGuild();
+        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
+        if (!SimpleEventHandler.handle(new GuildMemberKickEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, user))) {
+            return;
+        }
+        
         IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, user.getOfflineUser());
 
         Player player = user.getPlayer();
-        Guild guild = user.getGuild();
+
         guild.removeMember(user);
         user.removeGuild();
 

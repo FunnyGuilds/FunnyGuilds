@@ -10,6 +10,9 @@ import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaderEvent;
 
 public class AxcLeader implements Executor {
 
@@ -48,6 +51,11 @@ public class AxcLeader implements Executor {
         
         if (guild.getOwner().equals(user)) {
             sender.sendMessage(messages.adminAlreadyLeader);
+            return;
+        }
+        
+        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
+        if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, user))) {
             return;
         }
         

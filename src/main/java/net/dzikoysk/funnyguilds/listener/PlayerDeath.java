@@ -1,8 +1,17 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
+import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.util.MaterialUtil;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
@@ -10,10 +19,6 @@ import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 
 public class PlayerDeath implements Listener {
 
@@ -75,13 +80,18 @@ public class PlayerDeath implements Listener {
                 break;
         }
 
-        attacker.getRank().addKill();
-        attacker.getRank().addPoints(rankChanges[0]);
-        attacker.setLastVictim(victim);
+        RankChangeEvent attackerEvent = new PointsChangeEvent(EventCause.USER, attacker.getRank(), attacker, rankChanges[0]);
+        RankChangeEvent victimEvent = new PointsChangeEvent(EventCause.USER, victim.getRank(), attacker, rankChanges[1]);
+        
+        if (SimpleEventHandler.handle(attackerEvent) && SimpleEventHandler.handle(victimEvent)) {
+            attacker.getRank().addKill();
+            attacker.getRank().addPoints(attackerEvent.getChange());
+            attacker.setLastVictim(victim);
 
-        victim.getRank().removePoints(rankChanges[1]);
-        victim.setLastAttacker(attacker);
-
+            victim.getRank().removePoints(victimEvent.getChange());
+            victim.setLastAttacker(attacker);
+        }
+        
         if (Settings.getConfig().dataType.mysql) {
             if (victim.hasGuild()) {
                 IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
@@ -103,8 +113,8 @@ public class PlayerDeath implements Listener {
         String death = Messages.getInstance().rankDeathMessage;
         death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());
         death = StringUtils.replace(death, "{VICTIM}", victim.getName());
-        death = StringUtils.replace(death, "{+}", Integer.toString(rankChanges[0]));
-        death = StringUtils.replace(death, "{-}", Integer.toString(rankChanges[1]));
+        death = StringUtils.replace(death, "{+}", Integer.toString(attackerEvent.getChange()));
+        death = StringUtils.replace(death, "{-}", Integer.toString(victimEvent.getChange()));
         death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
         death = StringUtils.replace(death, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
 

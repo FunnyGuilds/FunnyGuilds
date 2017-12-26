@@ -1,16 +1,7 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.Region;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
-import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.util.SpaceUtils;
-import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,7 +9,21 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.List;
+import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
+import net.dzikoysk.funnyguilds.util.SpaceUtils;
+import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 
 public class AxcMove implements Executor {
 
@@ -62,6 +67,11 @@ public class AxcMove implements Executor {
             return;
         }
 
+        User admin = User.get(player);
+        if (!SimpleEventHandler.handle(new GuildMoveEvent(EventCause.ADMIN, admin, guild, location))) {
+            return;
+        }
+        
         Region region = RegionUtils.get(guild.getRegion());
         
         if (region == null) {

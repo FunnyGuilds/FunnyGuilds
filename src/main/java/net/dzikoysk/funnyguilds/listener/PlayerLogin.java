@@ -23,16 +23,20 @@ public class PlayerLogin implements Listener {
         if (this.plugin.getServer().hasWhitelist()) {
             return;
         }
+        
         String name = event.getPlayer().getName();
         if (name.length() < 2) {
             event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick jest za krotki!"));
         }
+        
         if (name.length() > 16) {
             event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick jest za dlugi!"));
         }
+        
         if (!name.matches("[a-zA-Z0-9_]+")) {
             event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
+        
         if (!UserUtils.playedBefore(event.getPlayer().getName())) {
             return;
         }
@@ -41,9 +45,11 @@ public class PlayerLogin implements Listener {
         if (!user.isBanned()) {
             return;
         }
+        
         if (!BanUtils.check(user)) {
             return;
         }
+        
         event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user));
     }
 

@@ -79,7 +79,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
         return funnyguilds;
     }
-
+    
     public static void update(String content) {
         Bukkit.getLogger().info("[FunnyGuilds][Updater] > " + content);
     }

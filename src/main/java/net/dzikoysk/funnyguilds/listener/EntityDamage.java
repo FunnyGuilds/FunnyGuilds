@@ -44,12 +44,14 @@ public class EntityDamage implements Listener {
             if (uv.getUUID().equals(ua.getUUID())) {
                 return;
             }
+            
             if (uv.getGuild().equals(ua.getGuild())) {
                 if (!uv.getGuild().getPvP()) {
                     event.setCancelled(true);
                     return;
                 }
             }
+            
             if (uv.getGuild().getAllies().contains(ua.getGuild())) {
                 if (!Settings.getConfig().damageAlly) {
                     event.setCancelled(true);
@@ -58,4 +60,5 @@ public class EntityDamage implements Listener {
             }
         }
     }
+    
 }

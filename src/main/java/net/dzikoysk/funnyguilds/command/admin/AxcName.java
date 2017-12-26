@@ -1,9 +1,11 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
@@ -15,6 +17,9 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 
 public class AxcName implements Executor {
 
@@ -42,6 +47,11 @@ public class AxcName implements Executor {
             return;
         }
 
+        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
+        if (!SimpleEventHandler.handle(new GuildRenameEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, args[1]))) {
+            return;
+        }
+        
         Manager.getInstance().stop();
         PluginConfig.DataType dataType = Settings.getConfig().dataType;
         Region region = RegionUtils.get(guild.getRegion());

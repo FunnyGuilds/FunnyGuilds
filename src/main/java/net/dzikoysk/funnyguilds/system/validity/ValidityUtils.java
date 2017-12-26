@@ -12,11 +12,13 @@ public class ValidityUtils {
         if (guild == null || guild.getName() == null) {
             return;
         }
+        
         Region region = RegionUtils.get(guild.getRegion());
         String message = Messages.getInstance().broadcastValidity
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", guild.getTag())
                 .replace("{GUILD}", guild.getName());
+        
         if (region != null && region.getCenter() != null) {
             message = message
                     .replace("{X}", Integer.toString(region.getCenter().getBlockX()))
@@ -28,6 +30,7 @@ public class ValidityUtils {
                     .replace("{Y}", "Brak informacji")
                     .replace("{Z}", "Brak informacji");
         }
+        
         Bukkit.broadcastMessage(message);
     }
 

@@ -1,12 +1,17 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import net.dzikoysk.funnyguilds.basic.Rank;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 
 public class AxcKills implements Executor {
 
@@ -38,6 +43,14 @@ public class AxcKills implements Executor {
         }
 
         User user = User.get(args[0]);
+        Rank userRank = user.getRank();
+        
+        int change = kills - userRank.getDeaths();
+        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
+        if (!SimpleEventHandler.handle(new KillsChangeEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, userRank, admin, change))) {
+            return;
+        }
+        
         user.getRank().setKills(kills);
         sender.sendMessage(messages.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(kills)));
     }

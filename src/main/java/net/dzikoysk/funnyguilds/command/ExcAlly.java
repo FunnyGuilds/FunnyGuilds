@@ -1,5 +1,10 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.util.List;
+
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -7,13 +12,14 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.ally.GuildAcceptAllyInvitationEvent;
+import net.dzikoysk.funnyguilds.event.guild.ally.GuildRevokeAllyInvitationEvent;
+import net.dzikoysk.funnyguilds.event.guild.ally.GuildSendAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class ExcAlly implements Executor {
 
@@ -70,6 +76,10 @@ public class ExcAlly implements Executor {
         }
 
         if (InvitationList.hasInvitationFrom(guild, invitedGuild)) {
+            if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
+                return;
+            }
+            
             InvitationList.expireInvitation(invitedGuild, guild);
 
             guild.addAlly(invitedGuild);
@@ -93,6 +103,10 @@ public class ExcAlly implements Executor {
         }
 
         if (InvitationList.hasInvitationFrom(invitedGuild, guild)) {
+            if (!SimpleEventHandler.handle(new GuildRevokeAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
+                return;
+            }
+            
             InvitationList.expireInvitation(guild, invitedGuild);
             player.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
 
@@ -104,6 +118,10 @@ public class ExcAlly implements Executor {
             return;
         }
 
+        if (!SimpleEventHandler.handle(new GuildSendAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
+            return;
+        }
+        
         InvitationList.createInvitation(guild, invitedGuild);
         player.sendMessage(messages.allyInviteDone.replace("{GUILD}", invitedGuild.getName()));
 

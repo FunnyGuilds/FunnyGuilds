@@ -77,6 +77,7 @@ public final class WarListener {
             if ("ATTACK".equalsIgnoreCase(action)) {
                 WarSystem.getInstance().attack(player, entry.getKey());
             }
+            
             else if ("INTERACT_AT".equalsIgnoreCase(action)) {
                 if(informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, Settings.getConfig().infoPlayerCooldown)) {
                     return;
