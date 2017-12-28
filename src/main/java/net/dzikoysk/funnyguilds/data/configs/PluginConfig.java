@@ -45,7 +45,11 @@ public class PluginConfig {
     @CfgComment("Wyswietlana nazwa pluginu")
     @CfgName("plugin-name")
     public String pluginName = "FunnyGuilds";
-
+    
+    @CfgComment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
+    @CfgName("updateInfo")
+    public boolean updateInfo = true;
+    
     @CfgComment("Mozliwosc zakladania gildii (mozna zmienic takze za pomoca komendy /ga enabled)")
     @CfgName("guilds-enabled")
     public boolean guildsEnabled = true;
