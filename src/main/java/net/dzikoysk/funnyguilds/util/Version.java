@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.util;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.Settings;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -9,7 +11,11 @@ public final class Version {
     public static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
 
     public static void isNewAvailable(final Player player) {
-        if (!player.hasPermission("funnyguilds.admin") && !player.isOp()) {
+        if (!Settings.getConfig().updateInfo) {
+            return;
+        }
+        
+        if (!player.hasPermission("funnyguilds.admin")) {
             return;
         }
 
