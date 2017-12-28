@@ -9,6 +9,7 @@ public final class Version {
     public static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
 
     public static void isNewAvailable(final Player player) {
+        PluginConfig config = Settings.getConfig();
         if (config.updateInfo == true && player.hasPermission("funnyguilds.admin") || player.isOp() && config.updateInfo == true) {
             return;
         }
