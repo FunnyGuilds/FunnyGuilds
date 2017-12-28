@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.util;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.ChatColor;
+import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import org.bukkit.entity.Player;
 
 public final class Version {
@@ -10,7 +12,7 @@ public final class Version {
 
     public static void isNewAvailable(final Player player) {
         PluginConfig config = Settings.getConfig();
-        if (config.updateInfo == true && player.hasPermission("funnyguilds.admin") || player.isOp() && config.updateInfo == true) {
+        if (config.updateInfo == false && player.hasPermission("funnyguilds.admin") || player.isOp() && config.updateInfo == false) {
             return;
         }
 
