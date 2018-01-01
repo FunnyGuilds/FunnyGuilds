@@ -56,7 +56,7 @@ public final class WarListener {
                 return;
             }
 
-            call(player, id, actionEnum.toString(), enumHand.toString());
+            call(player, id, actionEnum.toString(), enumHand == null ? "" : enumHand.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
