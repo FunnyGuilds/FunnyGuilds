@@ -18,9 +18,11 @@ public class Ticker {
         try {
             Class<?> minecraftServerClass = Reflections.getCraftClass("MinecraftServer");
             serverInstance = Reflections.getMethod(Reflections.getCraftClass("MinecraftServer"), "getServer").invoke(null);
-            tpsField = Reflections.getFixedVersion().startsWith("v1_8") ? null : Reflections.getField(minecraftServerClass, "recentTps");
+            tpsField = minecraftServerClass.getDeclaredField("recentTps");
         } catch (IllegalAccessException | InvocationTargetException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
+        } catch (NoSuchFieldException ex) {
+            tpsField = null;
         }
     }
 
