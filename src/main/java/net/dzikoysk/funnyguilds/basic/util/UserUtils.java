@@ -45,7 +45,7 @@ public class UserUtils {
             user = uuidUserMap.get(uuid);
 
             if (user != null) {
-                uuidUserMap.put(uuid, user);
+                uuidUserCache.put(uuid, user);
                 return user;
             }
 

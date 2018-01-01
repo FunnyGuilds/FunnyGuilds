@@ -5,9 +5,9 @@ import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Rank implements Comparable<Rank> {
 
-    private BasicType type;
+    private final BasicType type;
     private Basic basic;
-    private String idns;
+    private final String identityName;
     private Guild guild;
     private User user;
     private int position;
@@ -18,7 +18,7 @@ public class Rank implements Comparable<Rank> {
     public Rank(Basic basic) {
         this.basic = basic;
         this.type = basic.getType();
-        this.idns = basic.getName();
+        this.identityName = basic.getName();
         if (this.type == BasicType.GUILD) {
             this.guild = (Guild) basic;
         } else if (this.type == BasicType.USER) {
@@ -54,13 +54,13 @@ public class Rank implements Comparable<Rank> {
     public int compareTo(Rank rank) {
         int i = Integer.compare(rank.getPoints(), getPoints());
         if (i == 0) {
-            if (idns == null) {
+            if (identityName == null) {
                 return -1;
             }
-            if (rank.getIDNS() == null) {
+            if (rank.getIdentityName() == null) {
                 return 1;
             }
-            i = idns.compareTo(rank.getIDNS());
+            i = identityName.compareTo(rank.getIdentityName());
         }
         return i;
     }
@@ -130,8 +130,8 @@ public class Rank implements Comparable<Rank> {
         return 1.0F * this.kills / this.deaths;
     }
     
-    public String getIDNS() {
-        return idns;
+    public String getIdentityName() {
+        return identityName;
     }
 
     public BasicType getType() {
@@ -160,13 +160,13 @@ public class Rank implements Comparable<Rank> {
             return false;
         }
 
-        Rank rank = (Rank) o;
+        final Rank rank = (Rank) o;
 
-        if (rank.getType() != type) {
+        if (rank.getType() != this.type) {
             return false;
         }
 
-        return rank.getIDNS().equalsIgnoreCase(idns);
+        return rank.getIdentityName().equals(this.identityName);
     }
 
     @Override

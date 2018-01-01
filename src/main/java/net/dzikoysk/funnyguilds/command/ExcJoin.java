@@ -75,6 +75,7 @@ public class ExcJoin implements Executor {
 
             String msg = ItemUtils.translatePlaceholder(messages.joinItems, requiredItems, requiredItem);
             player.sendMessage(msg);
+            return;
         }
         
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {

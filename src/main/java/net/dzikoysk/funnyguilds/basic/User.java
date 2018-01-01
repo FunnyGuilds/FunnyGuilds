@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.base.Charsets;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -26,8 +27,8 @@ public class User implements Basic {
 
     private static final Set<UUID> ONLINE_USERS_CACHE = new HashSet<>();
 
-    private UUID uuid;
-    private String name;
+    private final UUID uuid;
+    private final String name;
     private Guild guild;
     private Rank rank;
     private Scoreboard scoreboard;
@@ -48,25 +49,20 @@ public class User implements Basic {
 
     private User(UUID uuid) {
         this.uuid = uuid;
+        this.name = Bukkit.getOfflinePlayer(uuid).getName();
         this.changes = true;
         this.updateCache();
     }
 
     private User(String name) {
-        this(new OfflineUser(name));
+        this.name = name;
+        this.uuid = UUID.nameUUIDFromBytes(("OfflinePlayer:" + this.name).getBytes(Charsets.UTF_8));
         this.changes = true;
     }
 
     private User(Player player) {
-        this.uuid = player.getUniqueId();
         this.name = player.getName();
-        this.changes = true;
-        this.updateCache();
-    }
-
-    private User(OfflineUser offline) {
-        this.uuid = offline.getUniqueId();
-        this.name = offline.getName();
+        this.uuid = player.getUniqueId();
         this.changes = true;
         this.updateCache();
     }
@@ -148,7 +144,7 @@ public class User implements Basic {
         if (!ONLINE_USERS_CACHE.contains(this.uuid)) {
             final Player player = Bukkit.getPlayer(this.uuid);
             if (player != null) {
-                ONLINE_USERS_CACHE.add(player.getUniqueId());
+                ONLINE_USERS_CACHE.add(this.uuid);
                 return true;
             }
             
@@ -168,12 +164,6 @@ public class User implements Basic {
 
     public String getName() {
         return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-        this.changes();
-        this.updateCache();
     }
 
     public Guild getGuild() {
@@ -315,7 +305,7 @@ public class User implements Basic {
             return null;
         }
         
-        return Bukkit.getPlayer(this.name);
+        return Bukkit.getPlayer(this.uuid);
     }
 
     public OfflineUser getOfflineUser() {
