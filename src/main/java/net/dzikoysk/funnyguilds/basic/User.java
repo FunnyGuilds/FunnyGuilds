@@ -28,7 +28,7 @@ public class User implements Basic {
     private static final Set<UUID> ONLINE_USERS_CACHE = new HashSet<>();
 
     private final UUID uuid;
-    private final String name;
+    private String name;
     private Guild guild;
     private Rank rank;
     private Scoreboard scoreboard;
@@ -173,6 +173,12 @@ public class User implements Basic {
     public void setGuild(Guild guild) {
         this.guild = guild;
         this.changes();
+    }
+
+    public void setName(String name) {
+        this.name = name;
+        this.changes();
+        this.updateCache();
     }
 
     public synchronized Scoreboard getScoreboard() {
