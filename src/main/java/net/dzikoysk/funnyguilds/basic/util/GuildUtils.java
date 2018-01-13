@@ -32,20 +32,16 @@ public class GuildUtils {
         }
 
         Manager.getInstance().stop();
-        guild.delete();
         final Region region = RegionUtils.get(guild.getRegion());
 
         if (region != null) {
             if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
                 EntityUtil.despawn(guild);
             } else if (Settings.getConfig().createMaterial != Material.AIR) {
-                Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), new Runnable() {
-                    @Override
-                    public void run() {
-                        Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-                        if (block.getLocation().getBlockY() > 1) {
-                            block.setType(Material.AIR);
-                        }
+                Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
+                    Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
+                    if (block.getLocation().getBlockY() > 1) {
+                        block.setType(Material.AIR);
                     }
                 });
             }
