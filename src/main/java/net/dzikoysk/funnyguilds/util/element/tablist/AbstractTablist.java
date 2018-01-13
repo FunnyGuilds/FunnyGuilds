@@ -12,7 +12,12 @@ import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public abstract class AbstractTablist {
 
