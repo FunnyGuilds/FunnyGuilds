@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.diorite.cfg.annotations.CfgCollectionStyle;
 import org.diorite.cfg.annotations.CfgComment;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class MessagesConfig {
     @CfgComment("<------- Global Date Format -------> #")
@@ -218,6 +218,8 @@ public class MessagesConfig {
     public String createMore = "&cNazwa gildi nie moze zawierac spacji!";
     public String createNameExists = "&cJest juz gildia z taka nazwa!";
     public String createTagExists = "&cJest juz gildia z takim tagiem!";
+    public String restrictedGuildName = "&cPodana nazwa gildii jest niedozwolona.";
+    public String restrictedGuildTag = "&cPodany tag gildii jest niedozwolony.";
     @CfgComment("Available variables: {DISTANCE}")
     public String createSpawn = "&7Jestes zbyt blisko spawnu! Minimalna odleglosc to &c{DISTANCE}";
     public String createIsNear = "&cW poblizu znajduje sie jakas gildia, poszukaj innego miejsca!";

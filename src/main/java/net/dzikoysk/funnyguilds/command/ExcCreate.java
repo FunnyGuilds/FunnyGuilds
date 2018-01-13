@@ -1,15 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -31,6 +21,15 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class ExcCreate implements Executor {
 
@@ -113,6 +112,17 @@ public class ExcCreate implements Executor {
         if (GuildUtils.tagExists(tag)) {
             player.sendMessage(messages.createTagExists);
             return;
+        }
+
+        if (config.checkForRestrictedGuildNames) {
+            if (!GuildUtils.isNameValid(name)) {
+                player.sendMessage(messages.restrictedGuildName);
+                return;
+            }
+            else if (!GuildUtils.isTagValid(tag)) {
+                player.sendMessage(messages.restrictedGuildTag);
+                return;
+            }
         }
 
         Location guildLocation = player.getLocation().getBlock().getLocation();

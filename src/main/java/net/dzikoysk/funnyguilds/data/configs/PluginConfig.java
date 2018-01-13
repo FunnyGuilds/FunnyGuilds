@@ -1,25 +1,7 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.diorite.cfg.annotations.CfgClass;
-import org.diorite.cfg.annotations.CfgCollectionStyle;
-import org.diorite.cfg.annotations.CfgComment;
-import org.diorite.cfg.annotations.CfgExclude;
-import org.diorite.cfg.annotations.CfgName;
-import org.diorite.cfg.annotations.CfgStringStyle;
-import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
-
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.RankSystem;
 import net.dzikoysk.funnyguilds.data.Messages;
@@ -28,6 +10,13 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.gui.GuiItem;
 import net.dzikoysk.funnyguilds.util.element.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.diorite.cfg.annotations.*;
+import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @CfgClass(name = "PluginConfig")
 @CfgDelegateDefault("{new}")
@@ -618,6 +607,22 @@ public class PluginConfig {
             .put("iron_sword", "&7zelazny miecz")
             .build();
 
+    @CfgComment("Czy filtry nazw i tagow gildii powinny byc wlaczone")
+    @CfgName("check-for-restricted-guild-names")
+    public boolean checkForRestrictedGuildNames = false;
+
+    @CfgComment("Niedozwolone nazwy przy zakladaniu gildii")
+    @CfgName("restricted-guild-names")
+    public List<String> restrictedGuildNames = ImmutableList.<String>builder()
+            .add("Administracja")
+            .build();
+
+    @CfgComment("Niedozwolone tagi przy zakladaniu gildii")
+    @CfgName("restricted-guild-tags")
+    public List<String> restrictedGuildTags = ImmutableList.<String>builder()
+            .add("TEST")
+            .build();
+
     @CfgExclude
     public Map<Material, String> translatedMaterials;
 
@@ -782,8 +787,6 @@ public class PluginConfig {
         this.chatGlobalDesign = StringUtils.colored(this.chatGlobalDesign_);
 
         this.playerlistPoints = StringUtils.colored(this.playerlistPoints_);
-
-
     }
 
     public static class Commands {

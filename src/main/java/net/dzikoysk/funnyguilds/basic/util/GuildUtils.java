@@ -20,7 +20,7 @@ import java.util.List;
 
 public class GuildUtils {
 
-    private static List<Guild> guilds = new ArrayList<>();
+    private static final List<Guild> guilds = new ArrayList<>();
 
     public static List<Guild> getGuilds() {
         return new ArrayList<>(guilds);
@@ -177,4 +177,11 @@ public class GuildUtils {
         guilds.remove(guild);
     }
 
+    public static boolean isNameValid(String guildName) {
+        return Settings.getConfig().restrictedGuildNames.stream().noneMatch(name -> name.equalsIgnoreCase(guildName));
+    }
+
+    public static boolean isTagValid(String guildTag) {
+        return Settings.getConfig().restrictedGuildTags.stream().noneMatch(tag -> tag.equalsIgnoreCase(guildTag));
+    }
 }
