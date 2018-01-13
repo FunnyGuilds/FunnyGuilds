@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.gui.GuiItem;
 import net.dzikoysk.funnyguilds.util.element.gui.GuiWindow;
+import net.dzikoysk.funnyguilds.util.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -81,6 +82,11 @@ public class PluginConfig {
     public List<ItemStack> createItems;
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
+    @CfgComment("Dwukropek i metadata po nazwie przedmiotu sa opcjonalne")
+    @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant]")
+    @CfgComment("Spacja = _ ")
+    @CfgComment("Nowa linia lore = #")
+    @CfgComment("Aby w lore uzyc znaku # wstaw {HASH}")
     @CfgName("items-vip")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> itemsVip_ = Collections.singletonList("1 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!");
@@ -579,10 +585,6 @@ public class PluginConfig {
     @CfgName("player-list-enable")
     public boolean playerlistEnable = false;
 
-//    @CfgComment("Co ile sekund ma odswiezac liste graczy")
-//    @CfgName("player-list-interval")
-//    public int playerlistInterval = 1;
-
     @CfgComment("Wyglad punktow wyswietlanych przy gildii w rankingu")
     @CfgName("player-list-points")
     public String playerlistPoints_ = "&7[&b{POINTS}&7]";
@@ -607,6 +609,9 @@ public class PluginConfig {
             .put("iron_sword", "&7zelazny miecz")
             .build();
 
+    @CfgExclude
+    public Map<Material, String> translatedMaterials;
+
     @CfgComment("Czy filtry nazw i tagow gildii powinny byc wlaczone")
     @CfgName("check-for-restricted-guild-names")
     public boolean checkForRestrictedGuildNames = false;
@@ -623,8 +628,36 @@ public class PluginConfig {
             .add("TEST")
             .build();
 
+    @CfgComment("Gdzie maja pojawiac sie wiadomosci zwiazane z poruszaniem sie po terenach gildii")
+    @CfgName("region-move-notification-style")
+    public String regionEnterNotificationStyle_ = "BOSSBAR";
+
+    @CfgComment("Jak dlugo title powinno sie pojawiac")
+    @CfgComment("Opcja dziala tylko gdy typ notyfikacji to title")
+    @CfgName("notification-title-fade-in")
+    public int notificationTitleFadeIn_ = 10;
+
+    @CfgComment("Jak dlugo title powinno pozostac na ekranie gracza")
+    @CfgComment("Opcja dziala tylko gdy typ notyfikacji to title")
+    @CfgName("notification-title-stay")
+    public int notificationTitleStay_ = 10;
+
+    @CfgComment("Jak dlugo title powinno zanikac")
+    @CfgComment("Opcja dziala tylko gdy typ notyfikacji to title")
+    @CfgName("notification-title-fade-out")
+    public int notificationTitleFadeOut_ = 10;
+
     @CfgExclude
-    public Map<Material, String> translatedMaterials;
+    public int notificationTitleFadeIn;
+
+    @CfgExclude
+    public int notificationTitleStay;
+
+    @CfgExclude
+    public int notificationTitleFadeOut;
+
+    @CfgExclude
+    public NotificationStyle regionEnterNotificationStyle = NotificationStyle.BOSSBAR;
 
     @CfgComment("Nazwy komend")
     @CfgName("commands")
@@ -758,6 +791,27 @@ public class PluginConfig {
             
             translatedMaterials.put(material, translatedMaterials_.get(materialName));
         }
+
+        this.regionEnterNotificationStyle = NotificationStyle.valueOf(this.regionEnterNotificationStyle_.toUpperCase());
+
+        if (this.notificationTitleFadeIn_ <= 0) {
+            FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-fade-in\" can not be less than or equal to zero!"));
+            this.notificationTitleFadeIn_ = 10;
+        }
+
+        if (this.notificationTitleStay_ <= 0) {
+            FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-stay\" can not be less than or equal to zero!"));
+            this.notificationTitleStay_ = 10;
+        }
+
+        if (this.notificationTitleFadeOut_ <= 0) {
+            FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-fade-out\" can not be less than or equal to zero!"));
+            this.notificationTitleFadeOut_ = 10;
+        }
+
+        this.notificationTitleFadeIn = this.notificationTitleFadeIn_;
+        this.notificationTitleStay = this.notificationTitleStay_;
+        this.notificationTitleFadeOut = this.notificationTitleFadeOut_;
 
         this.warProtection = Parser.parseTime(this.warProtection_);
         this.warWait = Parser.parseTime(this.warWait_);

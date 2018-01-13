@@ -24,7 +24,7 @@ public class NotificationBar {
     public static void set(final Player player, String text, float percent, int time) {
 
         remove(player);
-        FakeDragon dragon = DRAGONBAR_CACHE.containsKey(player) ? DRAGONBAR_CACHE.get(player) : null;
+        FakeDragon dragon = DRAGONBAR_CACHE.getOrDefault(player, null);
 
         if (text.length() > 64) {
             text = text.substring(0, 63);
@@ -51,12 +51,7 @@ public class NotificationBar {
             sendPacket(player, dragon.getTeleportPacket(player.getLocation().add(0, -200, 0)));
         }
 
-        Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                NotificationBar.remove(player);
-            }
-        }, time * 20);
+        Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> NotificationBar.remove(player), time * 20);
     }
 
     public static boolean has(Player player) {

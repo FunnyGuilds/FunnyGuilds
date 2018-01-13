@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.element.notification;
 
 import com.google.common.collect.Lists;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -23,7 +23,7 @@ public final class NotificationUtil {
     static {
         PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getCraftClass("PacketPlayOutTitle");
         PACKET_PLAY_OUT_CHAT_CLASS = Reflections.getCraftClass("PacketPlayOutChat");
-        TITLE_ACTION_CLASS =  Reflections.getFixedVersion().equals("v1_8_R1") ? Reflections.getCraftClass("EnumTitleAction") : Reflections.getCraftClass("PacketPlayOutTitle$EnumTitleAction");
+        TITLE_ACTION_CLASS = "v1_8_R1".equals(Reflections.getFixedVersion()) ? Reflections.getCraftClass("EnumTitleAction") : Reflections.getCraftClass("PacketPlayOutTitle$EnumTitleAction");
         if ("v1_12_R1".equals(Reflections.getFixedVersion())) {
             CHAT_MESSAGE_TYPE_CLASS = Reflections.getCraftClass("ChatMessageType");
         } else {

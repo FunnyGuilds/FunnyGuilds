@@ -1,24 +1,18 @@
 package net.dzikoysk.funnyguilds.util.element.tablist;
 
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
+import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.util.Parser;
+import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.util.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.util.element.tablist.variable.TablistVariablesParser;
 import net.dzikoysk.funnyguilds.util.element.tablist.variable.VariableParsingResult;
+import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
+import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.util.NotificationUtil;
-import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
-import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import java.util.*;
 
 public abstract class AbstractTablist {
 

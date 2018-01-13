@@ -29,17 +29,11 @@ public class MessagesConfig {
     @CfgComment("Available variables: {PLAYER}, {REASON}, {DATE}, {NEWLINE}")
     public String banMessage = "&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}";
 
-    @CfgComment("<------- Notification Bar Messages -------> #")
-    @CfgComment("Available variables: {PLAYER}")
-    public String notificationMember = "&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!";
-    @CfgComment("Available variables: {GUILD}, {TAG}")
-    public String notificationOther = "&7Wkroczyles na teren gildii &c{TAG}&7!";
-
     @CfgComment("<------- Region Messages -------> #")
     @CfgComment("Available variables: {GUILD}, {TAG}")
     public String regionEnter = "&7Wkroczyles na teren gildii &c{TAG}&7!";
     @CfgComment("Available variables: {GUILD}, {TAG}")
-    public String regionLeave = "&7Opuszczono teren gildii &c{TAG}&7!";
+    public String regionLeave = "&7Opusciles teren gildii &c{TAG}&7!";
     public String regionOther = "&cTen teren nalezy do innej gildii!";
     public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
     @CfgComment("Available variables: {TIME}")
@@ -47,6 +41,21 @@ public class MessagesConfig {
     @CfgComment("Available variables: {TIME}")
     public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME} sekund&c!";
     public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
+
+    @CfgComment("<------- Bossbar Region Messages -------> #")
+    @CfgComment("Available variables: {PLAYER}")
+    public String notificationIntruderEnterGuildRegion = "&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!";
+    @CfgComment("Available variables: {GUILD}, {TAG}")
+    public String notificationEnterGuildRegion = "&7Wkroczyles na teren gildii &c{TAG}&7!";
+
+    @CfgComment("<------- Title Region Messages -------> #")
+    @CfgComment("Available variables: {GUILD}, {TAG}")
+    public String notificationTitleEnterOnGuildRegion = "";
+    public String notificationSubtitleEnterOnGuildRegion = notificationEnterGuildRegion;
+    public String notificationTitleIntruderEnteredOnGuildRegion = "";
+    public String notificationSubtitleIntruderEnteredOnGuildRegion = notificationIntruderEnterGuildRegion;
+    public String notificationTitleLeavedGuildRegion = "";
+    public String notificationSubtitleLeavedGuildRegion = regionLeave;
 
     @CfgComment("<------- Broadcast Messages -------> #")
     @CfgComment("Available variables: {PLAYER}, {GUILD}, {TAG}")
