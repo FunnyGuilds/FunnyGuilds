@@ -274,7 +274,7 @@ public class PluginConfig {
     public Map<String, Double> explodeMaterials_ = ImmutableMap.of("obsidian", 20.0, "water", 33.0, "lava", 33.0);
 
     @CfgExclude
-    public HashMap<Material, Double> explodeMaterials;
+    public Map<Material, Double> explodeMaterials;
 
     @CfgComment("Ile zyc ma gildia")
     @CfgName("war-lives")
@@ -659,6 +659,13 @@ public class PluginConfig {
     @CfgExclude
     public NotificationStyle regionEnterNotificationStyle = NotificationStyle.BOSSBAR;
 
+    @CfgComment("Zbior przedmiotow potrzebnych do resetu rankingu")
+    @CfgName("rank-reset-needed-items")
+    public List<String> rankResetItems_ = Collections.singletonList("1 diamond");
+
+    @CfgExclude
+    public List<ItemStack> rankResetItems;
+
     @CfgComment("Nazwy komend")
     @CfgName("commands")
     public Commands commands = new Commands();
@@ -813,6 +820,8 @@ public class PluginConfig {
         this.notificationTitleStay = this.notificationTitleStay_;
         this.notificationTitleFadeOut = this.notificationTitleFadeOut_;
 
+        this.rankResetItems = loadItemStackList(this.rankResetItems_);
+
         this.warProtection = Parser.parseTime(this.warProtection_);
         this.warWait = Parser.parseTime(this.warWait_);
 
@@ -858,7 +867,8 @@ public class PluginConfig {
         public Command enlarge = new Command("powieksz");
         public Command ally = new Command("sojusz");
         public Command items = new Command("przedmioty");
-        public Command escape = new Command("ucieczka", Arrays.asList("escape"));
+        public Command escape = new Command("ucieczka", Collections.singletonList("escape"));
+        public Command rankReset = new Command("rankreset", Collections.singletonList("resetrank"));
         @CfgName("break")
         public Command break_ = new Command("rozwiaz");
         public Command info = new Command("info");

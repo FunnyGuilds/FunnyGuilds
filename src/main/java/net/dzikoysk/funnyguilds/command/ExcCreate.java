@@ -46,8 +46,8 @@ public class ExcCreate implements Executor {
             return;
         }
 
-        boolean bool = this.checkWorld(player);
-        if (bool) {
+        boolean isBlockedWorld = this.checkWorld(player);
+        if (isBlockedWorld) {
             player.sendMessage(messages.blockedWorld);
             return;
         }
