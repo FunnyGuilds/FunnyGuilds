@@ -208,6 +208,10 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void update() {
+        if (!Settings.getConfig().updateCheck) {
+            return;
+        }
+        
         this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
             String latest = IOUtils.getContent(Version.VERSION_FILE_URL);
             if (latest == null || latest.isEmpty()) {

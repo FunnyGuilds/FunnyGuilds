@@ -2,10 +2,7 @@ package net.dzikoysk.funnyguilds.util;
 
 import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public final class StringUtils {
 
@@ -50,6 +47,16 @@ public final class StringUtils {
     public static String colored(String s) {
         return s != null ? ChatColor.translateAlternateColorCodes('&', s) : null;
     }
+    
+    public static List<String> colored(List<String> list) {
+        List<String> colored = new ArrayList<String>();
+        
+        for (String s : list) {
+            colored.add(colored(s));
+        }
+        
+        return colored;
+    }
 
     public static String toString(Collection<String> list, boolean send) {
         StringBuilder builder = new StringBuilder();
@@ -92,6 +99,10 @@ public final class StringUtils {
         return number > 9 ? "" + number : "0" + number;
     }
 
+    public static String getPercent(int dividend, int divisor) {
+        return String.format(Locale.US, "%.1f", 100.0F * dividend / divisor);
+    }
+    
     private StringUtils() {
 
     }
