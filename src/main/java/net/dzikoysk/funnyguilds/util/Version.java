@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.util;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

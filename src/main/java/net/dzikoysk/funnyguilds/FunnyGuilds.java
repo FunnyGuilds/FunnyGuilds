@@ -7,8 +7,22 @@ import net.dzikoysk.funnyguilds.command.Commands;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.listener.*;
-import net.dzikoysk.funnyguilds.listener.region.*;
+import net.dzikoysk.funnyguilds.listener.EntityDamage;
+import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.PlayerChat;
+import net.dzikoysk.funnyguilds.listener.PlayerDeath;
+import net.dzikoysk.funnyguilds.listener.PlayerJoin;
+import net.dzikoysk.funnyguilds.listener.PlayerLogin;
+import net.dzikoysk.funnyguilds.listener.PlayerQuit;
+import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
+import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
+import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
+import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
+import net.dzikoysk.funnyguilds.listener.region.BucketAction;
+import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
+import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
+import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.Reloader;
@@ -197,7 +211,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
             String latest = IOUtils.getContent(Version.VERSION_FILE_URL);
             if (latest == null || latest.isEmpty()) {
-                update("Failed to check the newest version of FunnyGuilds..-");
+                update("Failed to check the newest version of FunnyGuilds...");
                 return;
             }
             
