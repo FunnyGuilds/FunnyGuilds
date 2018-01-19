@@ -33,10 +33,6 @@ public class PluginConfig {
     @CfgName("plugin-name")
     public String pluginName = "FunnyGuilds";
     
-    @CfgComment("Czy plugin ma sprawdzac dostepnosc aktualizacji")
-    @CfgName("update-check")
-    public boolean updateCheck = true;
-    
     @CfgComment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
     @CfgName("update-info")
     public boolean updateInfo = true;

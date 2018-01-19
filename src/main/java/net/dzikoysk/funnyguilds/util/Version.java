@@ -11,7 +11,7 @@ public final class Version {
     public static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
 
     public static void isNewAvailable(final Player player) {
-        if (!Settings.getConfig().updateCheck || !Settings.getConfig().updateInfo) {
+        if (!Settings.getConfig().updateInfo) {
             return;
         }
         
