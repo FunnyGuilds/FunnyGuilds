@@ -31,16 +31,18 @@ public final class IOUtils {
         InputStream in = null;
 
         try {
-            URL url = new URL(s);
-            URLConnection con = url.openConnection();
+            URLConnection con = new URL(s).openConnection();
+            
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
             in = con.getInputStream();
+            
             String encoding = con.getContentEncoding();
             encoding = encoding == null ? "UTF-8" : encoding;
+            
             body = IOUtils.toString(in, encoding);
             in.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            FunnyGuilds.update("Connection to the update server (" + s + ") failed!");
         } finally {
             close(in);
         }

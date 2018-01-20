@@ -1,13 +1,5 @@
 package net.dzikoysk.funnyguilds;
 
-import java.io.InputStream;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -45,6 +37,13 @@ import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import net.dzikoysk.funnyguilds.util.runnable.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.InputStream;
 
 public class FunnyGuilds extends JavaPlugin {
     
@@ -77,6 +76,7 @@ public class FunnyGuilds extends JavaPlugin {
         if (funnyguilds == null) {
             return new FunnyGuilds();
         }
+        
         return funnyguilds;
     }
     
@@ -211,14 +211,15 @@ public class FunnyGuilds extends JavaPlugin {
         this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
             String latest = IOUtils.getContent(Version.VERSION_FILE_URL);
             if (latest == null || latest.isEmpty()) {
-                update("Failed to check the newest version of FunnyGuilds..");
+                update("Failed to check the newest version of FunnyGuilds...");
                 return;
             }
+            
             latest = latest.trim();
             String current = getVersion().trim();
 
             if (latest.equals(current)) {
-                update("You have the newest version of FunnyGuilds.");
+                update("You have the newest version of FunnyGuilds!");
             } else {
                 update("");
                 update("A new version of FunnyGuilds is available!");

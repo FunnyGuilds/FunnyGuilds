@@ -1,14 +1,11 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.RankSystem;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.element.gui.GuiItem;
-import net.dzikoysk.funnyguilds.util.element.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.util.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 import org.bukkit.Material;
@@ -124,12 +121,15 @@ public class PluginConfig {
                     "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
     
     @CfgExclude
-    public GuiWindow guiItems;
+    public List<ItemStack> guiItems;
     
     @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
     @CfgComment("Nazwa moze zawierac max. 32 znaki (wliczajac w to kody kolorow)")
     @CfgName("gui-items-title")
-    public String guiItemsTitle = "&5&lPrzedmioty na gildie";
+    public String guiItemsTitle_ = "&5&lPrzedmioty na gildie";
+    
+    @CfgExclude
+    public String guiItemsTitle;
     
     @CfgComment("GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
@@ -141,12 +141,37 @@ public class PluginConfig {
                     "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
 
     @CfgExclude
-    public GuiWindow guiItemsVip;
+    public List<ItemStack> guiItemsVip;
     
     @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Nazwa moze zawierac max. 32 znaki (wliczajac w to kody kolorow)")
     @CfgName("gui-items-vip-title")
-    public String guiItemsVipTitle = "&5&lPrzedmioty na gildie (VIP)";
+    public String guiItemsVipTitle_ = "&5&lPrzedmioty na gildie (VIP)";
+    
+    @CfgExclude
+    public String guiItemsVipTitle;
+    
+    @CfgComment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
+    @CfgComment("Linie te mozna ustawic ponizej")
+    @CfgName("add-lore-lines")
+    public boolean addLoreLines = true;
+    
+    @CfgComment("Dodatkowe linie opisu, dodawane do kazdego przedmiotu, ktory jest jednoczesnie przedmiotem na gildie")
+    @CfgComment("Dodawane linie nie zaleza od otwieranego GUI - sa wspolne dla zwyklego i VIP")
+    @CfgComment("Mozliwe do uzycia zmienne:")
+    @CfgComment("{PINV-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie")
+    @CfgComment("{PINV-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie")
+    @CfgComment("{EC-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma w enderchescie")
+    @CfgComment("{EC-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma w enderchescie")
+    @CfgComment("{ALL-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie i w enderchescie")
+    @CfgComment("{ALL-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
+    @CfgName("gui-items-lore")
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> guiItemsLore_ = Arrays.asList("&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
+                    "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
+    
+    @CfgExclude
+    public List<String> guiItemsLore;
     
     @CfgComment("Odleglosc od spawnu")
     @CfgName("create-distance")
@@ -618,17 +643,16 @@ public class PluginConfig {
 
     @CfgComment("Niedozwolone nazwy przy zakladaniu gildii")
     @CfgName("restricted-guild-names")
-    public List<String> restrictedGuildNames = ImmutableList.<String>builder()
-            .add("Administracja")
-            .build();
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> restrictedGuildNames = Collections.singletonList("Administracja");
 
     @CfgComment("Niedozwolone tagi przy zakladaniu gildii")
     @CfgName("restricted-guild-tags")
-    public List<String> restrictedGuildTags = ImmutableList.<String>builder()
-            .add("TEST")
-            .build();
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
     @CfgComment("Gdzie maja pojawiac sie wiadomosci zwiazane z poruszaniem sie po terenach gildii")
+    @CfgComment("Mozliwe miejsca wyswietlania: BOSSBAR, TITLE")
     @CfgName("region-move-notification-style")
     public String regionEnterNotificationStyle_ = "BOSSBAR";
 
@@ -661,6 +685,7 @@ public class PluginConfig {
 
     @CfgComment("Zbior przedmiotow potrzebnych do resetu rankingu")
     @CfgName("rank-reset-needed-items")
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> rankResetItems_ = Collections.singletonList("1 diamond");
 
     @CfgExclude
@@ -701,35 +726,35 @@ public class PluginConfig {
         return items;
     }
 
-    private GuiWindow loadGUI(List<String> contents, String title) {
-        GuiWindow gui = new GuiWindow(StringUtils.colored(title), contents.size() / 9 + (contents.size() % 9 !=0 ? 1 : 0));
+    private List<ItemStack> loadGUI(List<String> contents) {
+        List<ItemStack> items = new ArrayList<ItemStack>();
         
         for (int i=0; i < contents.size(); i++) {
             String var = contents.get(i);
-            GuiItem item = null;
+            ItemStack item = null;
             
             if (var.contains("GUI-")) {
-                item = gui.getItem(Parser.getIndex(var) - 1);
+                item = items.get(Parser.getIndex(var) - 1);
             } else if (var.contains("VIPITEM-")) {
                 try {
-                    item = new GuiItem(createItemsVip.get(Parser.getIndex(var) - 1));
+                    item = createItemsVip.get(Parser.getIndex(var) - 1);
                 } catch(IndexOutOfBoundsException e) {
                     FunnyGuilds.parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
             }  else if (var.contains("ITEM-")) {
                 try {
-                    item = new GuiItem(createItems.get(Parser.getIndex(var) - 1));
+                    item = createItems.get(Parser.getIndex(var) - 1);
                 } catch(IndexOutOfBoundsException e) {
                     FunnyGuilds.parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
             } else {
-                item = new GuiItem(Parser.parseItem(var));
+                item = Parser.parseItem(var);
             }
             
-            gui.setItem(i, item);
+            items.add(item);
         }
         
-        return gui;
+        return items;
     }
     
     public void reload() {
@@ -738,10 +763,14 @@ public class PluginConfig {
         this.createItems = loadItemStackList(this.items_);
         this.createItemsVip = loadItemStackList(this.itemsVip_);
         
-        this.guiItems = loadGUI(this.guiItems_, this.guiItemsTitle);
+        this.guiItems = loadGUI(this.guiItems_);
         if (!useCommonGUI) {
-            this.guiItemsVip = loadGUI(this.guiItemsVip_, this.guiItemsVipTitle);
+            this.guiItemsVip = loadGUI(this.guiItemsVip_);
         }
+        
+        this.guiItemsTitle = StringUtils.colored(this.guiItemsTitle_);
+        this.guiItemsVipTitle = StringUtils.colored(this.guiItemsVipTitle_);
+        this.guiItemsLore = StringUtils.colored(this.guiItemsLore_);
         
         this.createMaterial = Parser.parseMaterial(this.createStringMaterial);
 

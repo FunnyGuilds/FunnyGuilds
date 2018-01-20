@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util;
 
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -37,6 +38,18 @@ public final class ItemUtils {
         return message;
     }
 
+    public static int getItemAmount(ItemStack item, Inventory inv) {
+        int amount = 0;
+        
+        for (ItemStack is : inv.getContents()) {
+            if (item.isSimilar(is)) {
+                amount += is.getAmount();
+            }
+        }
+        
+        return amount;
+    }
+    
     public static ItemStack[] toArray(Collection<ItemStack> collection) {
         return collection.toArray(new ItemStack[0]);
     }
