@@ -18,8 +18,8 @@ public class MessageTranslator {
         return message;
     }
 
-    public MessageTranslator register(String placeholder, Object value) {
-        this.placeholders.put(placeholder, value.toString());
+    public MessageTranslator register(String placeholder, String value) {
+        this.placeholders.put(placeholder, value);
         return this;
     }
 
