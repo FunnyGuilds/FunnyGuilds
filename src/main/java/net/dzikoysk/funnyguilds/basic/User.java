@@ -314,7 +314,7 @@ public class User implements Basic {
     }
 
     public OfflineUser getOfflineUser() {
-        return new OfflineUser(name);
+        return new OfflineUser(this.name);
     }
 
     public boolean getBypass() {
