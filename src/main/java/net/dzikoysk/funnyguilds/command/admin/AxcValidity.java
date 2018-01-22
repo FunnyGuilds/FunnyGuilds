@@ -1,10 +1,5 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import java.util.Date;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -17,6 +12,10 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.util.Parser;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.Date;
 
 public class AxcValidity implements Executor {
 
@@ -33,7 +32,7 @@ public class AxcValidity implements Executor {
             return;
         }
 
-        Guild guild = GuildUtils.byTag(args[0]);
+        Guild guild = GuildUtils.getByTag(args[0]);
 
         if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);

@@ -1,10 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -20,6 +15,10 @@ import net.dzikoysk.funnyguilds.event.guild.ally.GuildSendAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class ExcAlly implements Executor {
 
@@ -64,7 +63,7 @@ public class ExcAlly implements Executor {
             return;
         }
 
-        Guild invitedGuild = GuildUtils.byTag(tag);
+        Guild invitedGuild = GuildUtils.getByTag(tag);
         if (guild.equals(invitedGuild)) {
             player.sendMessage(messages.allySame);
             return;

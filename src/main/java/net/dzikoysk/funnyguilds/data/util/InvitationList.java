@@ -3,10 +3,17 @@ package net.dzikoysk.funnyguilds.data.util;
 import com.google.common.collect.ImmutableList;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public final class InvitationList {
@@ -194,8 +201,9 @@ public final class InvitationList {
             return to;
         }
 
+        @Nullable
         private Guild wrapFrom() {
-            return Guild.get(from);
+            return GuildUtils.getByUUID(from);
         }
 
         @Override

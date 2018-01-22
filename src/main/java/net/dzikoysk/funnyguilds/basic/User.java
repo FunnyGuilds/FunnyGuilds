@@ -1,16 +1,6 @@
 package net.dzikoysk.funnyguilds.basic;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
-
 import com.google.common.base.Charsets;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.Scoreboard;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
@@ -22,6 +12,15 @@ import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class User implements Basic {
 
@@ -315,7 +314,7 @@ public class User implements Basic {
     }
 
     public OfflineUser getOfflineUser() {
-        return new OfflineUser(this.name);
+        return new OfflineUser(name);
     }
 
     public boolean getBypass() {

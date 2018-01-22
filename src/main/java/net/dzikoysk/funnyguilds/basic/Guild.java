@@ -48,7 +48,7 @@ public class Guild implements Basic {
         GuildUtils.addGuild(this);
     }
 
-    public static Guild get(UUID uuid) {
+    public static Guild getOrCreate(UUID uuid) {
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getUUID().equals(uuid)) {
                 return guild;
@@ -58,7 +58,7 @@ public class Guild implements Basic {
         return new Guild(uuid);
     }
 
-    public static Guild get(String name) {
+    public static Guild getOrCreate(String name) {
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getName().equalsIgnoreCase(name)) {
                 return guild;

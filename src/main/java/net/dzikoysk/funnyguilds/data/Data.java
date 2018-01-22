@@ -96,12 +96,12 @@ public class Data {
             }
             Yamler pc = new Yamler(file);
             for (String key : pc.getKeys(false)) {
-                Guild guild = Guild.get(UUID.fromString(key));
+                Guild guild = GuildUtils.getByUUID(UUID.fromString(key));
                 if (guild != null) {
                     List<String> allyInvitations = pc.getStringList(key + ".guilds");
                     List<String> playerInvitations = pc.getStringList(key + ".players");
                     for (String ally : allyInvitations) {
-                        Guild allyGuild = Guild.get(UUID.fromString(ally));
+                        Guild allyGuild = GuildUtils.getByUUID(UUID.fromString(ally));
                         if (allyGuild != null) {
                             InvitationList.createInvitation(guild, allyGuild);
                         }

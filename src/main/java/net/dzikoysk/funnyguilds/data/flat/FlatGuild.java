@@ -101,14 +101,22 @@ public class FlatGuild {
         List<Guild> allies = new ArrayList<>();
         if (als != null) {
             for (String s : als) {
-                allies.add(Guild.get(s));
+                Guild guild = GuildUtils.getByName(s);
+
+                if (guild != null) {
+                    allies.add(guild);
+                }
             }
         }
 
         List<Guild> enemies = new ArrayList<>();
         if (ens != null) {
             for (String s : ens) {
-                enemies.add(Guild.get(s));
+                Guild guild = GuildUtils.getByName(s);
+
+                if (guild != null) {
+                    enemies.add(guild);
+                }
             }
         }
 

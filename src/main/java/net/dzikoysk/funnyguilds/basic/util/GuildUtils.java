@@ -17,6 +17,7 @@ import org.bukkit.block.BlockFace;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GuildUtils {
 
@@ -81,7 +82,7 @@ public class GuildUtils {
         Manager.getInstance().start();
     }
 
-    public static Guild get(String name) {
+    public static Guild getByName(String name) {
         for (Guild guild : guilds) {
             if (guild.getName() != null && guild.getName().equalsIgnoreCase(name)) {
                 return guild;
@@ -90,7 +91,16 @@ public class GuildUtils {
         return null;
     }
 
-    public static Guild byTag(String tag) {
+    public static Guild getByUUID(UUID uuid) {
+        for (Guild guild : guilds) {
+            if (guild.getUUID().equals(uuid)) {
+                return guild;
+            }
+        }
+        return null;
+    }
+
+    public static Guild getByTag(String tag) {
         for (Guild guild : guilds) {
             if (guild.getTag() != null && guild.getTag().equalsIgnoreCase(tag.toLowerCase())) {
                 return guild;
@@ -154,7 +164,7 @@ public class GuildUtils {
         List<Guild> list = new ArrayList<>();
 
         for (String name : names) {
-            Guild guild = Guild.get(name);
+            Guild guild = GuildUtils.getByName(name);
 
             if (guild != null) {
                 list.add(guild);
@@ -168,7 +178,7 @@ public class GuildUtils {
         if (guild == null || guild.getName() == null) {
             return;
         }
-        if (get(guild.getName()) == null) {
+        if (getByName(guild.getName()) == null) {
             guilds.add(guild);
         }
     }

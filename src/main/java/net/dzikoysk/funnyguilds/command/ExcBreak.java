@@ -1,10 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import java.util.List;
-
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -17,6 +12,10 @@ import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class ExcBreak implements Executor {
 
@@ -55,7 +54,7 @@ public class ExcBreak implements Executor {
         }
 
         String tag = args[0];
-        Guild oppositeGuild = GuildUtils.byTag(tag);
+        Guild oppositeGuild = GuildUtils.getByTag(tag);
 
         if (oppositeGuild == null) {
             player.sendMessage(messages.generalGuildNotExists.replace("{TAG}", tag));

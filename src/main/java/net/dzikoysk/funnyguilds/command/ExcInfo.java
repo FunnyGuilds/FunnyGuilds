@@ -45,7 +45,7 @@ public class ExcInfo implements Executor {
             return;
         }
 
-        Guild guild = GuildUtils.byTag(tag);
+        Guild guild = GuildUtils.getByTag(tag);
 
         if (guild == null) {
             sender.sendMessage(messages.infoExists);

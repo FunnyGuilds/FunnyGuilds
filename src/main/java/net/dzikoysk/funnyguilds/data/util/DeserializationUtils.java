@@ -18,7 +18,7 @@ public class DeserializationUtils {
             FunnyGuilds.error("[Deserialize] Cannot deserialize guild! Caused by: null");
             return null;
         }
-        Guild guild = Guild.get((String) values[1]);
+        Guild guild = Guild.getOrCreate((String) values[1]);
         guild.setUUID((UUID) values[0]);
         guild.setTag(Settings.getConfig().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase());
         guild.setOwner((User) values[3]);

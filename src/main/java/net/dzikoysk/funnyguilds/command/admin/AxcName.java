@@ -35,7 +35,7 @@ public class AxcName implements Executor {
             return;
         }
 
-        Guild guild = GuildUtils.byTag(args[0]);
+        Guild guild = GuildUtils.getByTag(args[0]);
 
         if (guild == null) {
             sender.sendMessage(messages.generalNoGuildFound);
