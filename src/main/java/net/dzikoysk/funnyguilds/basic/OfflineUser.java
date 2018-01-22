@@ -171,8 +171,10 @@ public class OfflineUser implements OfflinePlayer, ConfigurationSerializable {
         }
         return false;
     }
-
+    
+    @Override
     public String toString() {
         return getClass().getSimpleName() + "[UUID=" + this.profile.getId() + "]";
     }
+    
 }
