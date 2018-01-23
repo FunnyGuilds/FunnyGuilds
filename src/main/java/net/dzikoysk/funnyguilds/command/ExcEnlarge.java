@@ -25,6 +25,11 @@ public class ExcEnlarge implements Executor {
         Player player = (Player) sender;
         User user = User.get(player);
 
+        if (!config.regionsEnabled) {
+            player.sendMessage(messages.regionsDisabled);
+            return;
+        }
+        
         if (!config.enlargeEnable) {
             return;
         }

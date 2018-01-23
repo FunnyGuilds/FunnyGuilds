@@ -30,6 +30,7 @@ public class VariableParsingResult {
         for (Map.Entry<String, String> entry : this.values.entrySet()) {
             string = StringUtils.replace(string, "{" + entry.getKey() + "}", entry.getValue());
         }
+        
         return string;
     }
 }

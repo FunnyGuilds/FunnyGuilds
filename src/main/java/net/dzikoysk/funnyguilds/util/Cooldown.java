@@ -12,9 +12,11 @@ public class Cooldown<T> {
         if (cooldown == null) {
             return false;
         }
+        
         if (cooldown > System.currentTimeMillis()) {
             return true;
         }
+        
         cooldowns.remove(key);
         return false;
     }

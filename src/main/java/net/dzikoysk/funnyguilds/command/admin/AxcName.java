@@ -26,6 +26,7 @@ public class AxcName implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
+        PluginConfig config = Settings.getConfig();
 
         if (args.length < 1) {
             sender.sendMessage(messages.generalNoTagGiven);
@@ -54,20 +55,29 @@ public class AxcName implements Executor {
         
         Manager.getInstance().stop();
         PluginConfig.DataType dataType = Settings.getConfig().dataType;
-        Region region = RegionUtils.get(guild.getRegion());
 
+        if (config.regionsEnabled) {
+            Region region = RegionUtils.get(guild.getRegion());
+            if (dataType.flat) {
+                Flat.getRegionFile(region).delete();
+            }
+            
+            if (dataType.mysql) {
+                new DatabaseRegion(region).delete();
+            }
+            
+            region.setName(args[1]);
+        }
+        
         if (dataType.flat) {
             Flat.getGuildFile(guild).delete();
-            Flat.getRegionFile(region).delete();
         }
         
         if (dataType.mysql) {
             new DatabaseGuild(guild).delete();
-            new DatabaseRegion(region).delete();
         }
         
         guild.setName(args[1]);
-        region.setName(args[1]);
         
         Manager.getInstance().start();
         sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));

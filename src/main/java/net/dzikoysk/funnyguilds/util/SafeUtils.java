@@ -22,7 +22,5 @@ public final class SafeUtils {
         T initialize() throws Exception;
     }
 
-    private SafeUtils() {
-
-    }
+    private SafeUtils() {}
 }

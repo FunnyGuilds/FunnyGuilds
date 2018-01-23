@@ -80,6 +80,7 @@ public final class StringUtils {
             if (s.length() > 2) {
                 s = s.substring(0, s.length() - 2);
             }
+            
             else if (s.length() > 1) {
                 s = s.substring(0, s.length() - 1);
             }
@@ -107,8 +108,6 @@ public final class StringUtils {
         return String.format(Locale.US, "%.1f", 100.0F * dividend / divisor);
     }
     
-    private StringUtils() {
-
-    }
+    private StringUtils() {}
 
 }

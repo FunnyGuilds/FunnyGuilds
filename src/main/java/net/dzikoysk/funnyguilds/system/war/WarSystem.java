@@ -37,6 +37,7 @@ public class WarSystem {
         if (attacker.equals(guild)) {
             return;
         }
+        
         if (attacker.getAllies().contains(guild)) {
             WarUtils.message(player, 1);
             return;

@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.Yamler;
@@ -28,7 +29,9 @@ public class FlatGuild {
     }
 
     public static Guild deserialize(File file) {
+        PluginConfig config = Settings.getConfig();
         Yamler pc = new Yamler(file);
+        
         String id = pc.getString("uuid");
         String name = pc.getString("name");
         String tag = pc.getString("tag");
@@ -57,12 +60,13 @@ public class FlatGuild {
         } else if (os == null) {
             FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
             return null;
-        } else if (region == null) {
+        } else if (region == null && config.regionsEnabled) {
             FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
             return null;
         }
+        
         Region rg = RegionUtils.get(region);
-        if (rg == null) {
+        if (rg == null && config.regionsEnabled) {
             FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
             return null;
         }
@@ -78,15 +82,19 @@ public class FlatGuild {
             deputy = User.get(dp);
         }
 
-        Location home = rg.getCenter();
-        if (hs != null) {
-            home = Parser.parseLocation(hs);
+        Location home = null;
+        if (rg !=null) {
+            home = rg.getCenter();
+            if (hs != null) {
+                home = Parser.parseLocation(hs);
+            }
         }
 
         if (ms == null || ms.isEmpty()) {
             ms = new ArrayList<>();
             ms.add(os);
         }
+        
         List<User> members = UserUtils.getUsers(ms);
 
         List<String> regions = new ArrayList<>();
@@ -124,10 +132,10 @@ public class FlatGuild {
             born = System.currentTimeMillis();
         }
         if (validity == 0) {
-            validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
+            validity = System.currentTimeMillis() + config.validityStart;
         }
         if (lives == 0) {
-            lives = Settings.getConfig().warLives;
+            lives = config.warLives;
         }
 
         Object[] values = new Object[17];
@@ -161,7 +169,7 @@ public class FlatGuild {
         } else if (guild.getOwner() == null) {
             FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
             return false;
-        } else if (guild.getRegion() == null) {
+        } else if (guild.getRegion() == null && Settings.getConfig().regionsEnabled) {
             FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
             return false;
         } else if (guild.getUUID() == null) {
@@ -187,9 +195,11 @@ public class FlatGuild {
         pc.set("lives", guild.getLives());
         pc.set("ban", guild.getBan());
         pc.set("pvp", guild.getPvP());
+        
         if (guild.getDeputy() != null) {
             pc.set("deputy", guild.getDeputy().getName());
         }
+        
         pc.save();
         pc = null;
         return true;

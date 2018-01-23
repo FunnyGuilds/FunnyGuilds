@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.system.security;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -23,6 +24,7 @@ public final class SecuritySystem {
         if (instance == null) {
             new SecuritySystem();
         }
+        
         return instance;
     }
 
@@ -32,13 +34,19 @@ public final class SecuritySystem {
                 return true;
             }
         }
+        
         return false;
     }
 
     public boolean checkPlayer(Player player, SecurityType type, Object... values) {
+        if (!Settings.getConfig().regionsEnabled) {
+            return false;
+        }
+        
         if (isBanned(User.get(player))) {
             return true;
         }
+        
         switch (type) {
             case FREECAM:
                 Guild guild = null;
@@ -47,16 +55,19 @@ public final class SecuritySystem {
                         guild = (Guild) values[i];
                     }
                 }
+                
                 int dis = (int) RegionUtils.get(guild.getRegion()).getCenter().distance(player.getLocation());
                 if (dis < 6) {
                     return false;
                 }
+                
                 for (Player w : Bukkit.getOnlinePlayers()) {
                     if (w.isOp()) {
                         w.sendMessage(SecurityUtils.getBustedMessage(player.getName(), "FreeCam"));
                         w.sendMessage(SecurityUtils.getNoteMessage("Zaatakowal krysztal z odleglosci &c" + dis + " kratek"));
                     }
                 }
+                
                 blocked.add(User.get(player));
                 return true;
             case EVERYTHING:
@@ -64,6 +75,7 @@ public final class SecuritySystem {
             default:
                 break;
         }
+        
         return false;
     }
 

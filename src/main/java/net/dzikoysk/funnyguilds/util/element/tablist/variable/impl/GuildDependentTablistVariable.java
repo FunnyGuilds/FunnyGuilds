@@ -31,8 +31,7 @@ public final class GuildDependentTablistVariable implements TablistVariable {
     public String get(User user) {
         if (user.getGuild() != null) {
             return this.whenInGuild.apply(user);
-        }
-        else {
+        } else {
             return this.whenNotInGuild.apply(user);
         }
     }

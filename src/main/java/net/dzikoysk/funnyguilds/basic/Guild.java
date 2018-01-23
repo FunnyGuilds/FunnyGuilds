@@ -191,7 +191,7 @@ public class Guild implements Basic {
     }
 
     public boolean isSomeoneInRegion() {
-        return Bukkit.getOnlinePlayers().stream()
+        return Settings.getConfig().regionsEnabled && Bukkit.getOnlinePlayers().stream()
                 .filter(player -> User.get(player).getGuild() != this)
                 .map(player -> RegionUtils.getAt(player.getLocation()))
                 .anyMatch(region -> region != null && region.getGuild() == this);
@@ -273,6 +273,10 @@ public class Guild implements Basic {
     }
 
     public void setRegion(String s) {
+        if (Settings.getConfig().regionsEnabled) {
+            return;
+        }
+        
         this.region = s;
         if (this.home == null) {
             Region region = Region.get(s);

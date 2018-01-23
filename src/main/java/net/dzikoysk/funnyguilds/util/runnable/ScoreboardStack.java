@@ -26,11 +26,13 @@ public class ScoreboardStack implements Runnable {
             if (instance == null) {
                 throw new UnsupportedOperationException("ScoreboardStack is not setup!");
             }
+            
             return instance;
         } catch (Exception ex) {
             if (FunnyGuilds.exception(ex.getCause())) {
                 ex.printStackTrace();
             }
+            
             return null;
         }
     }
@@ -60,6 +62,7 @@ public class ScoreboardStack implements Runnable {
                 FunnyGuilds.error("[ScoreboardStack] ScoreboardManager is null!");
                 return;
             }
+            
             int loop = Bukkit.getMaxPlayers() * 2 - stack.size();
             for (int i = 0; i < loop; i++) {
                 stack.push(sm.getNewScoreboard());

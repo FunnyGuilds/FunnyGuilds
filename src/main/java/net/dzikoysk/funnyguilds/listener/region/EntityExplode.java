@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.Cooldown;
-import net.dzikoysk.funnyguilds.util.RandomizationUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -80,12 +79,13 @@ public class EntityExplode implements Listener {
             if (!materials.containsKey(material)) {
                 continue;
             }
+            
             if (material == Material.WATER || material == Material.LAVA) {
-                if (RandomizationUtils.chance(materials.get(material))) {
+                if (SpaceUtils.chance(materials.get(material))) {
                     l.getBlock().setType(Material.AIR);
                 }
             } else {
-                if (RandomizationUtils.chance(materials.get(material))) {
+                if (SpaceUtils.chance(materials.get(material))) {
                     l.getBlock().breakNaturally();
                 }
             }
