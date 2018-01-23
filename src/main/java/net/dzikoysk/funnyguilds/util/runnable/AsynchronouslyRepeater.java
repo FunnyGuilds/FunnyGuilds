@@ -27,11 +27,13 @@ public class AsynchronouslyRepeater implements Runnable {
             if (instance == null) {
                 throw new UnsupportedOperationException("AsynchronouslyRepeater is not setup!");
             }
+            
             return instance;
         } catch (Exception ex) {
             if (FunnyGuilds.exception(ex.getCause())) {
                 ex.printStackTrace();
             }
+            
             return null;
         }
     }
@@ -40,6 +42,7 @@ public class AsynchronouslyRepeater implements Runnable {
         if (this.repeater != null) {
             return;
         }
+        
         this.repeater = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, this, 100, 20);
     }
 
@@ -60,6 +63,7 @@ public class AsynchronouslyRepeater implements Runnable {
                 if (!AbstractTablist.hasTablist(player)) {
                     AbstractTablist.createTablist(Settings.getConfig().playerList, Settings.getConfig().playerListHeader, Settings.getConfig().playerListFooter, Settings.getConfig().playerListPing, player);
                 }
+                
                 final AbstractTablist tablist = AbstractTablist.getTablist(player);
                 tablist.send();
             }

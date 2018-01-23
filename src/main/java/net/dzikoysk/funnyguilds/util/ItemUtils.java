@@ -54,8 +54,6 @@ public final class ItemUtils {
         return collection.toArray(new ItemStack[0]);
     }
 
-    private ItemUtils() {
-
-    }
+    private ItemUtils() {}
 
 }

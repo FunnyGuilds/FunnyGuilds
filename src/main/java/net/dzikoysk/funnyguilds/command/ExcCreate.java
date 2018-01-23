@@ -126,20 +126,21 @@ public class ExcCreate implements Executor {
         }
 
         Location guildLocation = player.getLocation().getBlock().getLocation();
-
-        if (config.createCenterY != 0) {
-            guildLocation.setY(config.createCenterY);
-        }
-
-        int d = config.regionSize + config.createDistance;
-
-        if (config.enlargeItems != null) {
-            d += config.enlargeItems.size() * config.enlargeSize;
-        }
-
-        if (d > player.getWorld().getSpawnLocation().distance(guildLocation)) {
-            player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
-            return;
+        if (config.regionsEnabled) {
+            if (config.createCenterY != 0) {
+                guildLocation.setY(config.createCenterY);
+            }
+    
+            int d = config.regionSize + config.createDistance;
+    
+            if (config.enlargeItems != null) {
+                d += config.enlargeItems.size() * config.enlargeSize;
+            }
+    
+            if (d > player.getWorld().getSpawnLocation().distance(guildLocation)) {
+                player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
+                return;
+            }
         }
 
         if (config.rankCreateEnable) {
@@ -169,16 +170,18 @@ public class ExcCreate implements Executor {
             }
         }
 
-        if (RegionUtils.isIn(guildLocation)) {
-            player.sendMessage(messages.createIsNear);
-            return;
+        if (config.regionsEnabled) {
+            if (RegionUtils.isIn(guildLocation)) {
+                player.sendMessage(messages.createIsNear);
+                return;
+            }
+            
+            if (RegionUtils.isNear(guildLocation)) {
+                player.sendMessage(messages.createIsNear);
+                return;
+            }
         }
-
-        if (RegionUtils.isNear(guildLocation)) {
-            player.sendMessage(messages.createIsNear);
-            return;
-        }
-
+        
         if (!SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, name, tag, guildLocation))) {
             return;
         }
@@ -199,34 +202,37 @@ public class ExcCreate implements Executor {
         guild.setValidity(System.currentTimeMillis() + config.validityStart);
         guild.setAttacked(System.currentTimeMillis() - config.warWait + config.warProtection);
         guild.setPvP(config.damageGuild);
-
-        Region region = new Region(guild, guildLocation, config.regionSize);
-        guild.setRegion(region.getName());
-        guild.addRegion(region.getName());
-
         user.setGuild(guild);
+        
+        if (config.regionsEnabled) {
+            Region region = new Region(guild, guildLocation, config.regionSize);
+            guild.setRegion(region.getName());
+            guild.addRegion(region.getName());
+            
+            if (config.createCenterSphere) {
+                for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
+                    if (l.getBlock().getType() != Material.BEDROCK) {
+                        l.getBlock().setType(Material.AIR);
+                    }
+                }
 
-        if (config.createCenterSphere) {
-            for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
-                if (l.getBlock().getType() != Material.BEDROCK) {
-                    l.getBlock().setType(Material.AIR);
+                for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0)) {
+                    if (l.getBlock().getType() != Material.BEDROCK) {
+                        l.getBlock().setType(Material.OBSIDIAN);
+                    }
                 }
             }
+        
 
-            for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0)) {
-                if (l.getBlock().getType() != Material.BEDROCK) {
-                    l.getBlock().setType(Material.OBSIDIAN);
-                }
+            if (config.createMaterial != null && config.createMaterial != Material.AIR) {
+                guildLocation.getBlock().getRelative(BlockFace.DOWN).setType(config.createMaterial);
+            } else if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                EntityUtil.spawn(guild);
             }
-        }
 
-        if (config.createMaterial != null && config.createMaterial != Material.AIR) {
-            guildLocation.getBlock().getRelative(BlockFace.DOWN).setType(config.createMaterial);
-        } else if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
-            EntityUtil.spawn(guild);
+            player.teleport(guildLocation);
         }
-
-        player.teleport(guildLocation);
+        
         Manager.getInstance().start();
 
         IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);

@@ -19,12 +19,14 @@ public class IndividualPrefixManager {
         if (!player.isOnline()) {
             return;
         }
+        
         User user = User.get(player);
         try {
             player.setScoreboard(user.getIndividualPrefix().getScoreboard());
         } catch (IllegalStateException e) {
             FunnyGuilds.warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
         }
+        
         user.setScoreboard(user.getIndividualPrefix().getScoreboard());
     }
 
@@ -32,6 +34,7 @@ public class IndividualPrefixManager {
         for (Player p : Bukkit.getOnlinePlayers()) {
             User.get(p).getIndividualPrefix().addGuild(to);
         }
+        
         updatePlayers();
     }
 
@@ -39,6 +42,7 @@ public class IndividualPrefixManager {
         for (Player p : Bukkit.getOnlinePlayers()) {
             User.get(p).getIndividualPrefix().addPlayer(player);
         }
+        
         updatePlayers();
     }
 
@@ -46,6 +50,7 @@ public class IndividualPrefixManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             User.get(player).getIndividualPrefix().removeGuild(guild);
         }
+        
         updatePlayers();
     }
 
@@ -53,6 +58,7 @@ public class IndividualPrefixManager {
         for (Player ps : Bukkit.getOnlinePlayers()) {
             User.get(ps).getIndividualPrefix().removePlayer(player);
         }
+        
         updatePlayers();
     }
 }

@@ -33,6 +33,11 @@ public class AxcMove implements Executor {
         PluginConfig config = Settings.getConfig();
         Player player = (Player) sender;
 
+        if (!config.regionsEnabled) {
+            player.sendMessage(messages.regionsDisabled);
+            return;
+        }
+        
         if (args.length < 1) {
             player.sendMessage(messages.generalNoTagGiven);
             return;

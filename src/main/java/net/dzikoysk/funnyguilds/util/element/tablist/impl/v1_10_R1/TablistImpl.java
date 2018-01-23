@@ -58,6 +58,7 @@ public class TablistImpl extends AbstractTablist {
                     ENUM_GAMEMODE_CLASS,
                     BASE_COMPONENT_CLASS
             );
+            
             gameProfileConstructor = GAME_PROFILE_CLASS.getConstructor(
                     UUID.class,
                     String.class

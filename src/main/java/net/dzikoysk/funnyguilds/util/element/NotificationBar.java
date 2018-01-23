@@ -29,9 +29,11 @@ public class NotificationBar {
         if (text.length() > 64) {
             text = text.substring(0, 63);
         }
+        
         if (percent > 1.0f) {
             percent = 1.0f;
         }
+        
         if (percent < 0.05f) {
             percent = 0.05f;
         }
@@ -109,6 +111,7 @@ public class NotificationBar {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
                 }
+                
                 return null;
             }
         }
@@ -122,6 +125,7 @@ public class NotificationBar {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
                 }
+                
                 return null;
             }
         }
@@ -159,6 +163,7 @@ public class NotificationBar {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
                 }
+                
                 return null;
             }
         }
@@ -171,6 +176,7 @@ public class NotificationBar {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
                 }
+                
                 return null;
             }
         }
@@ -194,6 +200,7 @@ public class NotificationBar {
                 if (FunnyGuilds.exception(e.getCause())) {
                     e.printStackTrace();
                 }
+                
                 return null;
             }
         }
@@ -218,9 +225,11 @@ public class NotificationBar {
             if (key instanceof Player) {
                 return contents.containsKey(((Player) key).getName());
             }
+            
             if (key instanceof String) {
                 return contents.containsKey(key);
             }
+            
             return false;
         }
 
@@ -233,6 +242,7 @@ public class NotificationBar {
             for (String name : contents.keySet()) {
                 toReturn.add(new PlayerEntry(Bukkit.getPlayer(name), contents.get(name)));
             }
+            
             return toReturn;
         }
 
@@ -241,9 +251,11 @@ public class NotificationBar {
             if (key instanceof Player) {
                 result = contents.get(((Player) key).getName());
             }
+            
             if (key instanceof String) {
                 result = contents.get(key);
             }
+            
             return (result == null) ? defaultValue : result;
         }
 
@@ -252,6 +264,7 @@ public class NotificationBar {
             for (String name : contents.keySet()) {
                 toReturn.add(Bukkit.getPlayer(name));
             }
+            
             return toReturn;
         }
 
@@ -259,6 +272,7 @@ public class NotificationBar {
             if (key == null) {
                 return null;
             }
+            
             return contents.put(key.getName(), value);
         }
 
@@ -280,9 +294,11 @@ public class NotificationBar {
             if (key instanceof Player) {
                 return contents.remove(((Player) key).getName());
             }
+            
             if (key instanceof String) {
                 return contents.remove(key);
             }
+            
             return null;
         }
 

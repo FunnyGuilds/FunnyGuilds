@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.*;
 import net.dzikoysk.funnyguilds.data.Data;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -134,6 +135,10 @@ public class Flat {
     }
 
     private void saveRegions(boolean b) {
+        if (!Settings.getConfig().regionsEnabled) {
+            return;
+        }
+        
         int i = 0;
         for (Region region : RegionUtils.getRegions()) {
             if (!b) {
@@ -152,6 +157,11 @@ public class Flat {
     }
 
     private void loadRegions() {
+        if (!Settings.getConfig().regionsEnabled) {
+            FunnyGuilds.info("Regions are disabled and thus - not loaded");
+            return;
+        }
+        
         File[] path = REGIONS.listFiles();
         if (path != null) {
             for (File file : path) {

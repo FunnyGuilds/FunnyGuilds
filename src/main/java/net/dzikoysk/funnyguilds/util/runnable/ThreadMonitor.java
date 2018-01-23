@@ -24,6 +24,7 @@ public class ThreadMonitor implements Runnable {
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             full += tmxb.getThreadCpuTime(t.getId());
         }
+        
         FunnyGuilds.info("================================");
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             if (tmxb.getThreadCpuTime(t.getId()) > 0) {
@@ -33,6 +34,7 @@ public class ThreadMonitor implements Runnable {
                 }
             }
         }
+        
         FunnyGuilds.info("================================");
     }
 

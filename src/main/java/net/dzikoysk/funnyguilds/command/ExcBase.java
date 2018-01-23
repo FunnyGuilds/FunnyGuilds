@@ -28,6 +28,11 @@ public class ExcBase implements Executor {
         Player player = (Player) sender;
         User user = User.get(player);
 
+        if (!config.regionsEnabled) {
+            player.sendMessage(messages.regionsDisabled);
+            return;
+        }
+        
         if (!config.baseEnable) {
             player.sendMessage(messages.baseTeleportationDisabled);
             return;

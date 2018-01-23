@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.util.element.tablist.variable;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.util.element.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.util.element.tablist.variable.impl.TimeFormattedVariable;
@@ -46,6 +45,7 @@ public final class DefaultTablistVariables {
         parser.add(new GuildDependentTablistVariable("G-POINTS", (user) -> String.valueOf(user.getGuild().getRank().getPoints()), (user) -> "0"));
         parser.add(new GuildDependentTablistVariable("G-KILLS", (user) -> String.valueOf(user.getGuild().getRank().getKills()), (user) -> "0"));
         parser.add(new GuildDependentTablistVariable("G-DEATHS", (user) -> String.valueOf(user.getGuild().getRank().getDeaths()), (user) -> "0"));
+        parser.add(new GuildDependentTablistVariable("G-KDR", (user) -> String.format(Locale.US, "%.2f", user.getGuild().getRank().getKDR()), (user) -> "0.0"));
         parser.add(new GuildDependentTablistVariable("G-MEMBERS-ONLINE", (user) -> String.valueOf(user.getGuild().getOnlineMembers().size()), (user) -> "0"));
         parser.add(new GuildDependentTablistVariable("G-MEMBERS-ALL", (user) -> String.valueOf(user.getGuild().getMembers().size()), (user) -> "0"));
 

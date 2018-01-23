@@ -21,9 +21,7 @@ public class TablistVariablesParser {
 
         for (TablistVariable tablistVariable : this.tablistVariables) {
             String value = tablistVariable.get(user);
-
             for (String name : tablistVariable.names()) {
-
                 if (values.containsKey(name)) {
                     FunnyGuilds.warning("Conflicting variable name: " + name);
                 }

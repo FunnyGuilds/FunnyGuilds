@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
@@ -50,19 +51,23 @@ public class DatabaseBasic {
             }
         }
 
-        ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM `regions`");
-        try {
-            while (regions.next()) {
-                Region region = DatabaseRegion.deserialize(regions);
-                if (region != null) {
-                    region.changed();
+        if (Settings.getConfig().regionsEnabled) {
+            ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM `regions`");
+            try {
+                while (regions.next()) {
+                    Region region = DatabaseRegion.deserialize(regions);
+                    if (region != null) {
+                        region.changed();
+                    }
+                }
+                FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
+            } catch (Exception e) {
+                if (FunnyGuilds.exception(e.getCause())) {
+                    e.printStackTrace();
                 }
             }
-            FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
-        } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        } else {
+            FunnyGuilds.info("Regions are disabled and thus - not loaded");
         }
 
         ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM `guilds`");
@@ -73,6 +78,7 @@ public class DatabaseBasic {
                     guild.changed();
                 }
             }
+            
             FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
         } catch (Exception e) {
             if (FunnyGuilds.exception(e.getCause())) {
@@ -100,6 +106,7 @@ public class DatabaseBasic {
                     continue;
                 }
             }
+            
             try {
                 new DatabaseUser(user).save(db);
             } catch (Exception e) {
@@ -108,26 +115,32 @@ public class DatabaseBasic {
                 }
             }
         }
-        for (Region region : RegionUtils.getRegions()) {
-            if (!b) {
-                if (!region.changed()) {
-                    continue;
+        
+        if (Settings.getConfig().regionsEnabled) {
+            for (Region region : RegionUtils.getRegions()) {
+                if (!b) {
+                    if (!region.changed()) {
+                        continue;
+                    }
                 }
-            }
-            try {
-                new DatabaseRegion(region).save(db);
-            } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
-                    e.printStackTrace();
+                
+                try {
+                    new DatabaseRegion(region).save(db);
+                } catch (Exception e) {
+                    if (FunnyGuilds.exception(e.getCause())) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
+        
         for (Guild guild : GuildUtils.getGuilds()) {
             if (!b) {
                 if (!guild.changed()) {
                     continue;
                 }
             }
+            
             try {
                 new DatabaseGuild(guild).save(db);
             } catch (Exception e) {

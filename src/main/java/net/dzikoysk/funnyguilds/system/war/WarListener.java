@@ -83,7 +83,7 @@ public final class WarListener {
                     return;
                 }
 
-                if (! hand.isEmpty() && ! "MAIN_HAND".equalsIgnoreCase(hand)) {
+                if (!hand.isEmpty() && !"MAIN_HAND".equalsIgnoreCase(hand)) {
                     return;
                 }
 

@@ -161,8 +161,10 @@ public class FunnyGuilds extends JavaPlugin {
         em.enable();
 
         PluginManager pm = Bukkit.getPluginManager();
+        PluginConfig config = Settings.getConfig();
+        
         //pm.registerEvents(new PacketReceive(), this);
-
+        pm.registerEvents(new GuiActionHandler(), this);
         pm.registerEvents(new EntityDamage(), this);
         pm.registerEvents(new EntityInteract(), this);
         pm.registerEvents(new PlayerChat(this), this);
@@ -171,22 +173,24 @@ public class FunnyGuilds extends JavaPlugin {
         pm.registerEvents(new PlayerLogin(this), this);
         pm.registerEvents(new PlayerQuit(), this);
 
-        pm.registerEvents(new BlockBreak(), this);
-        pm.registerEvents(new BlockIgnite(), this);
-        pm.registerEvents(new BlockPlace(), this);
-        pm.registerEvents(new BucketAction(), this);
-        pm.registerEvents(new EntityExplode(this), this);
-        pm.registerEvents(new PlayerCommand(), this);
-        pm.registerEvents(new PlayerInteract(), this);
-        pm.registerEvents(new GuiActionHandler(), this);
+        if (config.regionsEnabled) {
+            pm.registerEvents(new BlockBreak(), this);
+            pm.registerEvents(new BlockIgnite(), this);
+            pm.registerEvents(new BlockPlace(), this);
+            pm.registerEvents(new BucketAction(), this);
+            pm.registerEvents(new EntityExplode(this), this);
+            pm.registerEvents(new PlayerCommand(), this);
+            pm.registerEvents(new PlayerInteract(), this);
 
-        if (Settings.getConfig().eventMove) {
-            pm.registerEvents(new PlayerMove(), this);
+            if (config.eventMove) {
+                pm.registerEvents(new PlayerMove(), this);
+            }
+            
+            if (config.eventPhysics) {
+                pm.registerEvents(new BlockPhysics(), this);
+            }
         }
-        if (Settings.getConfig().eventPhysics) {
-            pm.registerEvents(new BlockPhysics(), this);
-        }
-
+            
         patch();
         update();
         info("~ Created by & \u2764 Dzikoysk ~");

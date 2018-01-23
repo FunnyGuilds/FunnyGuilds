@@ -15,7 +15,5 @@ public final class MaterialUtil {
         }
     }
 
-    private MaterialUtil() {
-
-    }
+    private MaterialUtil() {}
 }

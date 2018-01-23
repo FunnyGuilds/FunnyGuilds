@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -17,6 +18,11 @@ public class AxcTeleport implements Executor {
         MessagesConfig messages = Messages.getInstance();
         Player player = (Player) sender;
 
+        if (!Settings.getConfig().regionsEnabled) {
+            player.sendMessage(messages.regionsDisabled);
+            return;
+        }
+        
         if (args.length < 1) {
             player.sendMessage(messages.generalNoTagGiven);
             return;

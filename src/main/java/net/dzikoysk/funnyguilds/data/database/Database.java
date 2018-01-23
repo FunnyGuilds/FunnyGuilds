@@ -100,6 +100,7 @@ public class Database {
         if (instance == null) {
             return new Database();
         }
+        
         return instance;
     }
 

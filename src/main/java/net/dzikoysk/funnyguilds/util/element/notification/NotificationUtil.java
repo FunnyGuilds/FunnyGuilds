@@ -24,6 +24,7 @@ public final class NotificationUtil {
         PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getCraftClass("PacketPlayOutTitle");
         PACKET_PLAY_OUT_CHAT_CLASS = Reflections.getCraftClass("PacketPlayOutChat");
         TITLE_ACTION_CLASS = "v1_8_R1".equals(Reflections.getFixedVersion()) ? Reflections.getCraftClass("EnumTitleAction") : Reflections.getCraftClass("PacketPlayOutTitle$EnumTitleAction");
+        
         if ("v1_12_R1".equals(Reflections.getFixedVersion())) {
             CHAT_MESSAGE_TYPE_CLASS = Reflections.getCraftClass("ChatMessageType");
         } else {
@@ -94,7 +95,5 @@ public final class NotificationUtil {
         return actionbarPacket;
     }
 
-    private NotificationUtil() {
-
-    }
+    private NotificationUtil() {}
 }

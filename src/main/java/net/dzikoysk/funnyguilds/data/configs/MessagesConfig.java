@@ -43,6 +43,7 @@ public class MessagesConfig {
     @CfgComment("Dostepne zmienne: {TIME}")
     public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME} sekund&c!";
     public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
+    public String regionsDisabled = "&cRegiony gildii sa wylaczone!";
 
     @CfgComment("<------- Bossbar Region Messages -------> #")
     @CfgComment("Dostepne zmienne: {PLAYER}")

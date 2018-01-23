@@ -105,7 +105,16 @@ public class Rank implements Comparable<Rank> {
     }
 
     public int getKills() {
-        return this.kills;
+        if (this.type == BasicType.USER) {
+            return this.kills;
+        }
+        
+        int kills = 0;
+        for (User user : this.guild.getMembers()) {
+            kills += user.getRank().getKills();
+        }
+        
+        return kills;
     }
 
     public void setKills(int i) {
@@ -114,7 +123,16 @@ public class Rank implements Comparable<Rank> {
     }
 
     public int getDeaths() {
-        return this.deaths;
+        if (this.type == BasicType.USER) {
+            return this.deaths;
+        }
+        
+        int deaths = 0;
+        for (User user : this.guild.getMembers()) {
+            deaths += user.getRank().getDeaths();
+        }
+        
+        return deaths;
     }
 
     public void setDeaths(int i) {
@@ -123,11 +141,11 @@ public class Rank implements Comparable<Rank> {
     }
 
     public float getKDR() {
-        if (this.deaths == 0) {
-            return this.kills;
+        if (getDeaths() == 0) {
+            return getKills();
         }
-        
-        return 1.0F * this.kills / this.deaths;
+    
+        return 1.0F * getKills() / getDeaths();
     }
     
     public String getIdentityName() {

@@ -41,6 +41,14 @@ public class PluginConfig {
     @CfgName("guilds-enabled")
     public boolean guildsEnabled = true;
 
+    @CfgComment("Czy tworzenie regionow gildii (i inne zwiazane z nimi rzeczy) maja byc wlaczone")
+    @CfgComment("UWAGA - dobrze przemysl decyzje o wylaczeniu regionow!")
+    @CfgComment("Gildie nie beda mialy w sobie zadnych informacji o regionach, a jesli regiony sa wlaczone - te informacje musza byc obecne")
+    @CfgComment("Jesli regiony mialyby byc znowu wlaczone - bedzie trzeba wykasowac WSZYSTKIE dane pluginu")
+    @CfgComment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
+    @CfgName("regions-enabled")
+    public boolean regionsEnabled = true;
+    
     @CfgComment("Maksymalna dlugosc nazwy gildii")
     @CfgName("name-length")
     public int createNameLength = 22;
@@ -559,6 +567,7 @@ public class PluginConfig {
     @CfgComment("{G-POSITION} - pozycja gildii gracza w rankingu")
     @CfgComment("{G-KILLS} - suma zabojstw czlonkow gildii")
     @CfgComment("{G-DEATHS} - suma smierci czlonkow gildii")
+    @CfgComment("{G-KDR} - stosunek zabojstw do smierci czlonkow gildii")
     @CfgComment("{G-MEMBERS-ONLINE} - liczba czlonkow gildii online")
     @CfgComment("{G-MEMBERS-ALL} - liczba wszystkich czlonkow gildii")
     @CfgComment("> Spis pozostalych zmiennych:")

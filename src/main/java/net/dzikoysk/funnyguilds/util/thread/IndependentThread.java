@@ -25,11 +25,13 @@ public class IndependentThread extends Thread {
             if (instance == null) {
                 throw new UnsupportedOperationException("IndependentThread is not setup!");
             }
+            
             return instance;
         } catch (Exception ex) {
             if (FunnyGuilds.exception(ex.getCause())) {
                 ex.printStackTrace();
             }
+            
             return null;
         }
     }

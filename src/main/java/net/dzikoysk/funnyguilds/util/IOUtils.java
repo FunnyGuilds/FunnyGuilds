@@ -107,7 +107,5 @@ public final class IOUtils {
         }
     }
 
-    private IOUtils() {
-
-    }
+    private IOUtils() {}
 }

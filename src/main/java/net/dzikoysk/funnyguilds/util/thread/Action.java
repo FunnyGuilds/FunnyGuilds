@@ -109,13 +109,16 @@ public class Action {
         if (o == null) {
             return false;
         }
+        
         if (this.getClass() != o.getClass()) {
             return false;
         }
+        
         Action a = (Action) o;
         if (action != a.getActionType()) {
             return false;
         }
+        
         return values == null && a.getValues() == null;
     }
 

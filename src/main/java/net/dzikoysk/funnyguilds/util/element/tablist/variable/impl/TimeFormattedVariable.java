@@ -29,8 +29,7 @@ public class TimeFormattedVariable implements TablistVariable {
 
         if (result < 10) {
             return "0" + String.valueOf(result);
-        }
-        else {
+        } else {
             return String.valueOf(result);
         }
     }

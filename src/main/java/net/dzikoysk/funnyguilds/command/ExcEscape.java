@@ -26,6 +26,11 @@ public class ExcEscape implements Executor {
         MessagesConfig messages = Messages.getInstance();
         Player player = (Player) sender;
 
+        if (!config.regionsEnabled) {
+            player.sendMessage(messages.regionsDisabled);
+            return;
+        }
+        
         if (!config.escapeEnable || !config.baseEnable) {
             player.sendMessage(messages.escapeDisabled);
             return;

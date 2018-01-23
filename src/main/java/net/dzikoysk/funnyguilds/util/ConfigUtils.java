@@ -51,7 +51,5 @@ public final class ConfigUtils {
         return config;
     }
 
-    private ConfigUtils() {
-
-    }
+    private ConfigUtils() {}
 }

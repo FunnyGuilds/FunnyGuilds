@@ -12,8 +12,6 @@ public final class LocationUtils {
         return (f.getBlockX() == s.getBlockX() && f.getBlockZ() == s.getBlockZ());
     }
 
-    private LocationUtils() {
-
-    }
+    private LocationUtils() {}
 
 }
