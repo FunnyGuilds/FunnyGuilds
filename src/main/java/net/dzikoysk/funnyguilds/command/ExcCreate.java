@@ -245,7 +245,7 @@ public class ExcCreate implements Executor {
                 .register("{PLAYER}", player.getName());
 
         player.sendMessage(translator.translate(messages.createGuild));
-        Bukkit.getServer().broadcastMessage(translator.translate(messages.broadcastCreate));
+        Bukkit.broadcastMessage(translator.translate(messages.broadcastCreate));
     }
 
 }

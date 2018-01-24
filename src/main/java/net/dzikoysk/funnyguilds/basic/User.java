@@ -18,7 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -45,6 +47,8 @@ public class User implements Basic {
     private boolean bypass;
     private boolean changes;
     private boolean spy;
+    
+    private Map<User, Double> damage = new HashMap<User, Double>();
 
     private User(UUID uuid) {
         this.uuid = uuid;
@@ -295,6 +299,36 @@ public class User implements Basic {
 
     public long getLastAttackerTime() {
         return this.lastAttackerTime;
+    }
+    
+    public Map<User, Double> getDamage() {
+        return new HashMap<User, Double>(this.damage);
+    }
+    
+    public Double getTotalDamage() {
+        double damage = 0.0D;
+        for (double d : this.damage.values()) {
+            damage += d;
+        }
+        
+        return damage;
+    }
+    
+    public void addDamage(User user, double damage) {
+        Double currentDamage = this.damage.get(user);
+        this.damage.put(user, (currentDamage == null ? 0.0D : currentDamage) + damage);
+    }
+    
+    public double killedBy(User user) {
+        return this.damage.remove(user);
+    }
+    
+    public boolean isAssisted() {
+        return !this.damage.isEmpty();
+    }
+    
+    public void clearDamage() {
+        this.damage.clear();
     }
 
     public BukkitTask getTeleportation() {

@@ -1,6 +1,10 @@
 package net.dzikoysk.funnyguilds.basic;
 
-import net.dzikoysk.funnyguilds.basic.util.*;
+import net.dzikoysk.funnyguilds.basic.util.BasicType;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.util.RankManager;
+import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -273,7 +277,7 @@ public class Guild implements Basic {
     }
 
     public void setRegion(String s) {
-        if (Settings.getConfig().regionsEnabled) {
+        if (!Settings.getConfig().regionsEnabled) {
             return;
         }
         
@@ -317,6 +321,10 @@ public class Guild implements Basic {
     }
 
     public void setRegions(List<String> regions) {
+        if (!Settings.getConfig().regionsEnabled) {
+            return;
+        }
+        
         this.regions = regions;
         this.changes();
     }

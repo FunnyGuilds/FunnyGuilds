@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.util;
 
+import org.bukkit.Material;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.bukkit.Material;
 
 public class MaterialAliaser {
 

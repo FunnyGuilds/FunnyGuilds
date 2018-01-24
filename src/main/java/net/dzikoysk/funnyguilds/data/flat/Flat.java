@@ -4,7 +4,11 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.*;
+import net.dzikoysk.funnyguilds.basic.util.BasicType;
+import net.dzikoysk.funnyguilds.basic.util.BasicUtils;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.IOUtils;
@@ -184,11 +188,13 @@ public class Flat {
                     continue;
                 }
             }
+            
             if (!new FlatGuild(guild).serialize()) {
                 GuildUtils.deleteGuild(guild);
                 i++;
             }
         }
+        
         if (i > 0) {
             FunnyGuilds.warning("Deleted defective guild: " + i);
         }

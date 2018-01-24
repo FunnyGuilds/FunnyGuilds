@@ -1,8 +1,5 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.Rank;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
@@ -13,6 +10,8 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class AxcPoints implements Executor {
 

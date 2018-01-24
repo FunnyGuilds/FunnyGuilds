@@ -10,11 +10,21 @@ import net.dzikoysk.funnyguilds.util.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.diorite.cfg.annotations.*;
+import org.diorite.cfg.annotations.CfgClass;
+import org.diorite.cfg.annotations.CfgCollectionStyle;
+import org.diorite.cfg.annotations.CfgComment;
+import org.diorite.cfg.annotations.CfgExclude;
+import org.diorite.cfg.annotations.CfgName;
+import org.diorite.cfg.annotations.CfgStringStyle;
 import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @CfgClass(name = "PluginConfig")
 @CfgDelegateDefault("{new}")
@@ -193,19 +203,20 @@ public class PluginConfig {
     public Material createMaterial;
 
     @CfgComment("Na jakim poziomie ma byc wyznaczone centrum gildii")
-    @CfgComment("- Wpisz 0, jezeli ma byc ustalone przez gracza")
+    @CfgComment("Wpisz 0 jesli ma byc ustalone przez pozycje gracza")
     @CfgName("create-center-y")
     public int createCenterY = 60;
 
-    @CfgComment("Czy ma tworzyc pusta przestrzen dookola centrum gildii")
+    @CfgComment("Czy ma sie tworzyc pusta przestrzen dookola centrum gildii")
     @CfgName("create-center-sphere")
     public boolean createCenterSphere = true;
 
-    @CfgComment("Czy funkcja efeltu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
+    @CfgComment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
     @CfgName("bugged-blocks")
     public boolean buggedBlocks = false;
 
-    @CfgComment("Czas (w tickach) po ktorym 'zbugowane' klocki maja zostac usuniete (warunek wymagany: bugged-blocks = true)")
+    @CfgComment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete (warunek wymagany: bugged-blocks = true)")
+    @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
     @CfgName("bugged-blocks-timer")
     public int buggedBlocksTimer = 20;
 
@@ -213,7 +224,7 @@ public class PluginConfig {
     @CfgName("max-members")
     public int inviteMembers = 15;
 
-    @CfgComment("Swiaty, na ktorych powinno byc zablokowane tworzenie gildii")
+    @CfgComment("Swiaty, na ktorych zablokowane jest tworzenie gildii")
     @CfgName("blockedworlds")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> blockedWorlds = Collections.singletonList("some_world");
@@ -368,6 +379,16 @@ public class PluginConfig {
     @CfgName("rank-farming-cooldown")
     public int rankFarmingCooldown = 7200;
 
+    @CfgComment("Czy system asyst ma byc wlaczony")
+    @CfgName("rank-assist-enable")
+    public boolean assistEnable = true;
+    
+    @CfgComment("Jaka czesc rankingu za zabicie idzie na konto zabojcy")
+    @CfgComment("1 to caly ranking, 0 to nic")
+    @CfgComment("Reszta rankingu rozdzielana jest miedzy osoby asystujace w zaleznosci od zadanych obrazen")
+    @CfgName("rank-assist-killer-share")
+    public double assistKillerShare = 0.5;
+    
     @CfgComment("System rankingowy uzywany przez plugin, do wyboru:")
     @CfgComment("ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")
     @CfgComment("PERCENT - system, ktory obu graczom zabiera procent rankingu osoby zabitej")
@@ -415,15 +436,15 @@ public class PluginConfig {
     @CfgName("static-victim-change")
     public int staticVictimChange = 10;
 
-    @CfgComment("Czy pokazywac informacje przy kliknieciu prawym na gracza")
+    @CfgComment("Czy pokazywac informacje przy kliknieciu PPM na gracza")
     @CfgName("info-player-enabled")
     public boolean infoPlayerEnabled = true;
 
-    @CfgComment("Cooldown pomiedzy pokazywanie informacji przez prawy klik (w sekundach)")
+    @CfgComment("Cooldown pomiedzy pokazywaniem informacji przez PPM (w sekundach)")
     @CfgName("info-player-cooldown")
     public int infoPlayerCooldown = 0;
 
-    @CfgComment("Czy trzeba kucac, zeby przy klikniecu prawym na gracza wyswietlilo informacje o nim")
+    @CfgComment("Czy trzeba kucac, zeby przy klikniecu PPM na gracza wyswietlilo informacje o nim")
     @CfgName("info-player-sneaking")
     public boolean infoPlayerSneaking = true;
 
@@ -548,7 +569,7 @@ public class PluginConfig {
     public String dummySuffix;
 
     @CfgStringStyle(CfgStringStyle.StringStyle.ALWAYS_QUOTED)
-    @CfgComment("Wyglad listy graczy. Przedzial od 1 do 80")
+    @CfgComment("Wyglad listy graczy, przedzial od 1 do 80")
     @CfgComment("> Spis zmiennych gracza:")
     @CfgComment("{PLAYER} - nazwa gracza")
     @CfgComment("{PING} - ping gracza")
@@ -661,36 +682,31 @@ public class PluginConfig {
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
     @CfgComment("Gdzie maja pojawiac sie wiadomosci zwiazane z poruszaniem sie po terenach gildii")
-    @CfgComment("Mozliwe miejsca wyswietlania: BOSSBAR, TITLE")
+    @CfgComment("Mozliwe miejsca wyswietlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
     @CfgName("region-move-notification-style")
-    public String regionEnterNotificationStyle_ = "BOSSBAR";
-
-    @CfgComment("Jak dlugo title powinno sie pojawiac")
-    @CfgComment("Opcja dziala tylko gdy typ notyfikacji to title")
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> regionEnterNotificationStyle_ = Arrays.asList("ACTIONBAR", "BOSSBAR");
+    
+    @CfgExclude
+    public List<NotificationStyle> regionEnterNotificationStyle = new ArrayList<NotificationStyle>();
+    
+    @CfgComment("Jak dlugo title/subtitle powinien sie pojawiac")
+    @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
+    @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CfgName("notification-title-fade-in")
-    public int notificationTitleFadeIn_ = 10;
+    public int notificationTitleFadeIn = 10;
 
-    @CfgComment("Jak dlugo title powinno pozostac na ekranie gracza")
-    @CfgComment("Opcja dziala tylko gdy typ notyfikacji to title")
+    @CfgComment("Jak dlugo title/subtitle powinien pozostac na ekranie gracza")
+    @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
+    @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CfgName("notification-title-stay")
-    public int notificationTitleStay_ = 10;
+    public int notificationTitleStay = 10;
 
-    @CfgComment("Jak dlugo title powinno zanikac")
-    @CfgComment("Opcja dziala tylko gdy typ notyfikacji to title")
+    @CfgComment("Jak dlugo title/subtitle powinien znikac")
+    @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
+    @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CfgName("notification-title-fade-out")
-    public int notificationTitleFadeOut_ = 10;
-
-    @CfgExclude
-    public int notificationTitleFadeIn;
-
-    @CfgExclude
-    public int notificationTitleStay;
-
-    @CfgExclude
-    public int notificationTitleFadeOut;
-
-    @CfgExclude
-    public NotificationStyle regionEnterNotificationStyle = NotificationStyle.BOSSBAR;
+    public int notificationTitleFadeOut = 10;
 
     @CfgComment("Zbior przedmiotow potrzebnych do resetu rankingu")
     @CfgName("rank-reset-needed-items")
@@ -837,26 +853,24 @@ public class PluginConfig {
             translatedMaterials.put(material, translatedMaterials_.get(materialName));
         }
 
-        this.regionEnterNotificationStyle = NotificationStyle.valueOf(this.regionEnterNotificationStyle_.toUpperCase());
+        for (String s : this.regionEnterNotificationStyle_) {
+            this.regionEnterNotificationStyle.add(NotificationStyle.valueOf(s.toUpperCase()));
+        }
 
-        if (this.notificationTitleFadeIn_ <= 0) {
+        if (this.notificationTitleFadeIn <= 0) {
             FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-fade-in\" can not be less than or equal to zero!"));
-            this.notificationTitleFadeIn_ = 10;
+            this.notificationTitleFadeIn = 10;
         }
 
-        if (this.notificationTitleStay_ <= 0) {
+        if (this.notificationTitleStay <= 0) {
             FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-stay\" can not be less than or equal to zero!"));
-            this.notificationTitleStay_ = 10;
+            this.notificationTitleStay = 10;
         }
 
-        if (this.notificationTitleFadeOut_ <= 0) {
+        if (this.notificationTitleFadeOut <= 0) {
             FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-fade-out\" can not be less than or equal to zero!"));
-            this.notificationTitleFadeOut_ = 10;
+            this.notificationTitleFadeOut = 10;
         }
-
-        this.notificationTitleFadeIn = this.notificationTitleFadeIn_;
-        this.notificationTitleStay = this.notificationTitleStay_;
-        this.notificationTitleFadeOut = this.notificationTitleFadeOut_;
 
         this.rankResetItems = loadItemStackList(this.rankResetItems_);
 
@@ -891,51 +905,57 @@ public class PluginConfig {
     }
 
     public static class Commands {
-        public Command funnyguilds = new Command("funnyguilds", Collections.singletonList("fg"));
+        public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
-        public Command guild = new Command("gildia", Arrays.asList("gildie", "g"));
-        public Command create = new Command("zaloz");
-        public Command delete = new Command("usun");
-        public Command confirm = new Command("potwierdz");
-        public Command invite = new Command("zapros");
-        public Command join = new Command("dolacz");
-        public Command leave = new Command("opusc");
-        public Command kick = new Command("wyrzuc");
-        public Command base = new Command("baza");
-        public Command enlarge = new Command("powieksz");
-        public Command ally = new Command("sojusz");
-        public Command items = new Command("przedmioty");
-        public Command escape = new Command("ucieczka", Collections.singletonList("escape"));
-        public Command rankReset = new Command("rankreset", Collections.singletonList("resetrank"));
+        public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
+        public FunnyCommand create = new FunnyCommand("zaloz");
+        public FunnyCommand delete = new FunnyCommand("usun");
+        public FunnyCommand confirm = new FunnyCommand("potwierdz");
+        public FunnyCommand invite = new FunnyCommand("zapros");
+        public FunnyCommand join = new FunnyCommand("dolacz");
+        public FunnyCommand leave = new FunnyCommand("opusc");
+        public FunnyCommand kick = new FunnyCommand("wyrzuc");
+        public FunnyCommand base = new FunnyCommand("baza");
+        public FunnyCommand enlarge = new FunnyCommand("powieksz");
+        public FunnyCommand ally = new FunnyCommand("sojusz");
+        public FunnyCommand items = new FunnyCommand("przedmioty");
+        public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
+        public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
         @CfgName("break")
-        public Command break_ = new Command("rozwiaz");
-        public Command info = new Command("info");
-        public Command player = new Command("gracz");
-        public Command top = new Command("top", Collections.singletonList("top10"));
-        public Command validity = new Command("przedluz");
-        public Command leader = new Command("lider", Collections.singletonList("zalozyciel"));
-        public Command deputy = new Command("zastepca");
-        public Command ranking = new Command("ranking");
-        public Command setbase = new Command("ustawbaze", Collections.singletonList("ustawdom"));
-        public Command pvp = new Command("pvp", Collections.singletonList("ustawpvp"));
+        public FunnyCommand break_ = new FunnyCommand("rozwiaz");
+        public FunnyCommand info = new FunnyCommand("info");
+        public FunnyCommand player = new FunnyCommand("gracz");
+        public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
+        public FunnyCommand validity = new FunnyCommand("przedluz");
+        public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
+        public FunnyCommand deputy = new FunnyCommand("zastepca");
+        public FunnyCommand ranking = new FunnyCommand("ranking");
+        public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
+        public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
         @CfgComment("Komendy administratora")
         public AdminCommands admin = new AdminCommands();
 
-        public static class Command {
+        public static class FunnyCommand {
             @CfgStringStyle(CfgStringStyle.StringStyle.ALWAYS_SINGLE_QUOTED)
             public String name;
             @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
             public List<String> aliases;
+            public boolean enabled;
 
-            public Command() {}
+            public FunnyCommand() {}
 
-            public Command(String name) {
-                this(name, Collections.emptyList());
+            public FunnyCommand(String name) {
+                this(name, Collections.emptyList(), true);
             }
 
-            public Command(String name, List<String> aliases) {
+            public FunnyCommand(String name, List<String> aliases) {
+                this(name, aliases, true);
+            }
+            
+            public FunnyCommand(String name, List<String> aliases, boolean enabled) {
                 this.name = name;
                 this.aliases = aliases;
+                this.enabled = enabled;
             }
         }
 

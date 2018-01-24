@@ -1,8 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
@@ -15,6 +12,8 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberRevokeInviteEvent;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class ExcInvite implements Executor {
 

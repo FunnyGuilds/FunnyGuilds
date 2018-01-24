@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -35,29 +36,32 @@ public class EntityDamage implements Listener {
             return;
         }
 
-        Player victim = (Player) event.getEntity();
+        PluginConfig config = Settings.getConfig();
+        User victimUser = User.get((Player) event.getEntity());
+        User attackerUser = User.get(attacker);
 
-        User uv = User.get(victim);
-        User ua = User.get(attacker);
-
-        if (uv.hasGuild() && ua.hasGuild()) {
-            if (uv.getUUID().equals(ua.getUUID())) {
+        if (victimUser.hasGuild() && attackerUser.hasGuild()) {
+            if (victimUser.getUUID().equals(attackerUser.getUUID())) {
                 return;
             }
             
-            if (uv.getGuild().equals(ua.getGuild())) {
-                if (!uv.getGuild().getPvP()) {
+            if (victimUser.getGuild().equals(attackerUser.getGuild())) {
+                if (!victimUser.getGuild().getPvP()) {
                     event.setCancelled(true);
                     return;
                 }
             }
             
-            if (uv.getGuild().getAllies().contains(ua.getGuild())) {
-                if (!Settings.getConfig().damageAlly) {
+            if (victimUser.getGuild().getAllies().contains(attackerUser.getGuild())) {
+                if (!config.damageAlly) {
                     event.setCancelled(true);
                     return;
                 }
             }
+        }
+        
+        if (config.assistEnable) {
+            victimUser.addDamage(attackerUser, event.getDamage());
         }
     }
     

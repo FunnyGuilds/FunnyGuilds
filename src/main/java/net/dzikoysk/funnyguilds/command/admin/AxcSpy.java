@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class AxcSpy implements Executor {
 

@@ -21,8 +21,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.util.List;
-
 public class PlayerMove implements Listener {
 
     @EventHandler
@@ -58,25 +56,27 @@ public class PlayerMove implements Listener {
                         }
                     }, 40L);
 
-                    if (guild.getMembers().contains(user)) {
-                        player.sendMessage(messages.regionLeave.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-                        return;
+                    if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
+                        PacketSender.sendPacket(player, NotificationUtil.createActionbarNotification(messages.notificationActionbarLeaveGuildRegion
+                                        .replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag())));
+                    }
+                    
+                    if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
+                        NotificationBar.set(player, messages.notificationBossbarLeaveGuildRegion
+                                        .replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()), 1, config.regionNotificationTime);
+                    }
+                    
+                    if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
+                        player.sendMessage(messages.notificationChatLeaveGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
                     }
 
-                    player.sendMessage(messages.regionLeave.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-
-                    if (config.regionEnterNotificationStyle == NotificationStyle.TITLE) {
-                        List<Object> titlePacket = NotificationUtil.createTitleNotification(
-                                messages.notificationTitleLeavedGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
-                                messages.notificationSubtitleLeavedGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
-                                config.notificationTitleFadeIn,
-                                config.notificationTitleStay,
-                                config.notificationTitleFadeOut
-                        );
-                        PacketSender.sendPacket(player, titlePacket);
-                    }
-                    else {
-                        NotificationBar.set(player, messages.regionLeave.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()), 1, config.regionNotificationTime);
+                    if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
+                        PacketSender.sendPacket(player, NotificationUtil.createTitleNotification(
+                                        messages.notificationTitleLeaveGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
+                                        messages.notificationSubtitleLeaveGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
+                                        config.notificationTitleFadeIn,
+                                        config.notificationTitleStay,
+                                        config.notificationTitleFadeOut));
                     }
                 }
             } else if (!user.getEnter() && region != null) {
@@ -92,25 +92,27 @@ public class PlayerMove implements Listener {
                     }
                 }, 40L);
                 
-                if (guild.getMembers().contains(user)) {
-                    player.sendMessage(messages.regionEnter.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-                    return;
+                if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
+                    PacketSender.sendPacket(player, NotificationUtil.createActionbarNotification(messages.notificationActionbarEnterGuildRegion
+                                    .replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag())));
+                }
+                
+                if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
+                    NotificationBar.set(player, messages.notificationBossbarEnterGuildRegion
+                                    .replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()), 1, config.regionNotificationTime);
+                }
+                
+                if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
+                    player.sendMessage(messages.notificationChatEnterGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
                 }
 
-                player.sendMessage(messages.notificationEnterGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-
-                if (config.regionEnterNotificationStyle == NotificationStyle.TITLE) {
-                    List<Object> titlePacket = NotificationUtil.createTitleNotification(
-                            messages.notificationTitleEnterOnGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
-                            messages.notificationSubtitleEnterOnGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
-                            config.notificationTitleFadeIn,
-                            config.notificationTitleStay,
-                            config.notificationTitleFadeOut
-                    );
-                    PacketSender.sendPacket(player, titlePacket);
-                }
-                else {
-                    NotificationBar.set(player, messages.notificationEnterGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()), 1, config.regionNotificationTime);
+                if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
+                    PacketSender.sendPacket(player, NotificationUtil.createTitleNotification(
+                                    messages.notificationTitleEnterGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
+                                    messages.notificationSubtitleEnterGuildRegion.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()),
+                                    config.notificationTitleFadeIn,
+                                    config.notificationTitleStay,
+                                    config.notificationTitleFadeOut));
                 }
 
                 if (player.hasPermission("funnyguilds.admin.notification")) {
@@ -122,26 +124,29 @@ public class PlayerMove implements Listener {
                 }
 
                 for (User u : guild.getOnlineMembers()) {
-                    if (u.getName() == null) {
-                        continue;
-                    }
-                    
                     Player member = u.getPlayer();
                     
-                    member.sendMessage(messages.notificationIntruderEnterGuildRegion.replace("{PLAYER}", player.getName()));
-
-                    if (config.regionEnterNotificationStyle == NotificationStyle.TITLE) {
-                        List<Object> titlePacket = NotificationUtil.createTitleNotification(
-                                messages.notificationTitleIntruderEnteredOnGuildRegion.replace("{PLAYER}", player.getName()),
-                                messages.notificationSubtitleIntruderEnteredOnGuildRegion.replace("{PLAYER}", player.getName()),
-                                config.notificationTitleFadeIn,
-                                config.notificationTitleStay,
-                                config.notificationTitleFadeOut
-                        );
-                        PacketSender.sendPacket(member, titlePacket);
+                    if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
+                        PacketSender.sendPacket(member, NotificationUtil.createActionbarNotification(messages.notificationActionbarIntruderEnterGuildRegion
+                                        .replace("{PLAYER}", player.getName())));
                     }
-                    else {
-                        NotificationBar.set(member, messages.notificationIntruderEnterGuildRegion.replace("{PLAYER}", player.getName()), 1, config.regionNotificationTime);
+                    
+                    if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
+                        NotificationBar.set(member, messages.notificationBossbarIntruderEnterGuildRegion
+                                        .replace("{PLAYER}", player.getName()), 1, config.regionNotificationTime);
+                    }
+                    
+                    if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
+                        member.sendMessage(messages.notificationChatIntruderEnterGuildRegion.replace("{PLAYER}", player.getName()));
+                    }
+
+                    if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
+                        PacketSender.sendPacket(member, NotificationUtil.createTitleNotification(
+                                        messages.notificationTitleIntruderEnterGuildRegion.replace("{PLAYER}", player.getName()),
+                                        messages.notificationSubtitleIntruderEnterGuildRegion.replace("{PLAYER}", player.getName()),
+                                        config.notificationTitleFadeIn,
+                                        config.notificationTitleStay,
+                                        config.notificationTitleFadeOut));
                     }
                 }
                 
