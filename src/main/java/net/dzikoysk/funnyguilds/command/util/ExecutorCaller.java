@@ -1,11 +1,9 @@
 package net.dzikoysk.funnyguilds.command.util;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig.Commands.FunnyCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,14 +12,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.Messages;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ExecutorCaller implements CommandExecutor, TabExecutor {
 
     private static final List<ExecutorCaller> ecs = new ArrayList<>();
 
     private Executor executor;
+    private boolean enabled;
     private boolean playerOnly;
     private String overriding;
     private String permission;
@@ -29,13 +31,22 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     private List<String> aliases;
     private List<ExecutorCaller> executors = new ArrayList<>();
 
-    public ExecutorCaller(Executor exc, String command, String perm, List<String> aliases, boolean playerOnly) {
+    public ExecutorCaller(Executor exc, String perm, FunnyCommand command, boolean playerOnly) {
+        this(exc, perm, command.name, command.aliases, command.enabled, playerOnly);
+    }
+    
+    public ExecutorCaller(Executor exc, String command, List<String> aliases, boolean enabled, boolean playerOnly) {
+        this(exc, "funnyguilds.admin", command, aliases, enabled, playerOnly);
+    }
+    
+    public ExecutorCaller(Executor exc, String perm, String command, List<String> aliases, boolean enabled, boolean playerOnly) {
         if (exc == null || command == null) {
             return;
         }
 
         this.executor = exc;
         this.permission = perm;
+        this.enabled = enabled;
         this.playerOnly = playerOnly;
         
         if (aliases != null && aliases.size() > 0) {
@@ -133,8 +144,15 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        MessagesConfig messages = Messages.getInstance();
+        
+        if (!this.enabled) {
+            sender.sendMessage(messages.generalCommandDisabled);
+            return true;
+        }
+        
         if (this.playerOnly && !(sender instanceof Player)) {
-            sender.sendMessage(Messages.getInstance().playerOnly);
+            sender.sendMessage(messages.playerOnly);
             return true;
         }
         

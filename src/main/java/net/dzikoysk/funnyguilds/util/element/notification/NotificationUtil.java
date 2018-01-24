@@ -24,13 +24,13 @@ public final class NotificationUtil {
         PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getCraftClass("PacketPlayOutTitle");
         PACKET_PLAY_OUT_CHAT_CLASS = Reflections.getCraftClass("PacketPlayOutChat");
         TITLE_ACTION_CLASS = "v1_8_R1".equals(Reflections.getFixedVersion()) ? Reflections.getCraftClass("EnumTitleAction") : Reflections.getCraftClass("PacketPlayOutTitle$EnumTitleAction");
-        
+
         if ("v1_12_R1".equals(Reflections.getFixedVersion())) {
             CHAT_MESSAGE_TYPE_CLASS = Reflections.getCraftClass("ChatMessageType");
         } else {
             CHAT_MESSAGE_TYPE_CLASS = null;
         }
-
+        
         CREATE_BASE_COMPONENT = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
     }
 
@@ -38,30 +38,24 @@ public final class NotificationUtil {
         List<Object> packets = Lists.newArrayList();
 
         Object titlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS)
-                .create()
-                .withField("a", TITLE_ACTION_CLASS.getEnumConstants()[0])
-                .withField("b", createBaseComponent(text, false))
-                .withField("c", -1)
-                .withField("d", -1)
-                .withField("e", -1)
-                .getPacket();
+                        .create()
+                        .withField("a", TITLE_ACTION_CLASS.getEnumConstants()[0])
+                        .withField("b", createBaseComponent(text, false))
+                        .withField("c", fadeIn)
+                        .withField("d", stay)
+                        .withField("e", fadeOut)
+                        .getPacket();
+        
         Object subtitlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS)
-                .create()
-                .withField("a", TITLE_ACTION_CLASS.getEnumConstants()[1])
-                .withField("b", createBaseComponent(subText, false))
-                .withField("c", -1)
-                .withField("d", -1)
-                .withField("e", -1)
-                .getPacket();
-        Object timerPacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS)
-                .create()
-                .withField("a", TITLE_ACTION_CLASS.getEnumConstants()[2])
-                .withField("c", fadeIn)
-                .withField("d", stay)
-                .withField("e", fadeOut)
-                .getPacket();
+                        .create()
+                        .withField("a", TITLE_ACTION_CLASS.getEnumConstants()[1])
+                        .withField("b", createBaseComponent(subText, false))
+                        .withField("c", fadeIn)
+                        .withField("d", stay)
+                        .withField("e", fadeOut)
+                        .getPacket();
 
-        packets.addAll(Arrays.asList(titlePacket, subtitlePacket, timerPacket));
+        packets.addAll(Arrays.asList(titlePacket, subtitlePacket));
         return packets;
     }
 
@@ -92,6 +86,7 @@ public final class NotificationUtil {
                     .getPacket();
         }
 
+        
         return actionbarPacket;
     }
 

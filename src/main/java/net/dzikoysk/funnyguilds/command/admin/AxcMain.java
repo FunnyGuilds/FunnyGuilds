@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import org.bukkit.command.CommandSender;
-
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import org.bukkit.command.CommandSender;
 
 public class AxcMain implements Executor {
 

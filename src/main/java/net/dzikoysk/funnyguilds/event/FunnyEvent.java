@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.event;
 
+import net.dzikoysk.funnyguilds.basic.User;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
-import net.dzikoysk.funnyguilds.basic.User;
 
 public abstract class FunnyEvent extends Event implements Cancellable {
 

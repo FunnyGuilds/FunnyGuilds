@@ -60,6 +60,7 @@ public class Manager {
                 }
             }
         }
+        
         if (Settings.getConfig().dataType.mysql) {
             try {
                 DatabaseBasic.getInstance().save(false);
@@ -70,6 +71,7 @@ public class Manager {
                 }
             }
         }
+        
         Data.getInstance().save();
     }
 
@@ -77,9 +79,11 @@ public class Manager {
         if (FunnyGuilds.getInstance().isDisabling()) {
             return;
         }
+        
         if (this.task != null) {
             return;
         }
+        
         this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
             public void run() {
                 IndependentThread.action(ActionType.SAVE_DATA);

@@ -16,14 +16,18 @@ public class MessagesConfig {
     public String playerOnly = "&cKomenda dostepna tylko dla graczy!";
 
     @CfgComment("<------- Rank Messages -------> #")
-    public String rankAddressAttacker = "&7Wykryto ten sam &cadres&7, punkty nie zostaja naliczone!";
-    public String rankAddressVictim = "&7Wykryto ten sam &cadres&7, punkty nie zostaja odebrane!";
     public String rankLastVictimV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
     public String rankLastVictimA = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!";
     public String rankLastAttackerV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
     @CfgComment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}, {WEAPON}")
-    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&b+{+}&7) zabil {VTAG}&b{VICTIM} &7(&b-{-}&7) uzywajac &b{WEAPON}";
+    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON}";
+    @CfgComment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
+    public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
+    @CfgComment("Dostepne zmienne: {PLAYER}, {+}, {SHARE}")
+    public String rankAssistEntry = "&b{PLAYER} &7(&a+{+}&7, {SHARE}% dmg)";
+    @CfgComment("Znaki oddzielajace kolejne wpisy o asystujacych graczach")
+    public String rankAssistDelimiter = "&8, ";
     @CfgComment("Dostepne zmienne: {LAST-RANK}, {CURRENT-RANK}")
     public String rankResetMessage = "&7Zresetowales swoj ranking z poziomu &c{LAST-RANK} &7do poziomu &c{CURRENT-RANK}&7.";
 
@@ -32,10 +36,6 @@ public class MessagesConfig {
     public String banMessage = "&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}";
 
     @CfgComment("<------- Region Messages -------> #")
-    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String regionEnter = "&7Wkroczyles na teren gildii &c{TAG}&7!";
-    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String regionLeave = "&7Opusciles teren gildii &c{TAG}&7!";
     public String regionOther = "&cTen teren nalezy do innej gildii!";
     public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
     @CfgComment("Dostepne zmienne: {TIME}")
@@ -45,20 +45,43 @@ public class MessagesConfig {
     public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
     public String regionsDisabled = "&cRegiony gildii sa wylaczone!";
 
+    @CfgComment("<------- ActionBar Region Messages -------> #")
+    @CfgComment("Dostepne zmienne: {PLAYER}")
+    public String notificationActionbarIntruderEnterGuildRegion = "&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!";
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String notificationActionbarEnterGuildRegion = "&7Wkroczyles na teren gildii &c{TAG}&7!";
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String notificationActionbarLeaveGuildRegion = "&7Opusciles teren gildii &c{TAG}&7!";
+    
     @CfgComment("<------- Bossbar Region Messages -------> #")
     @CfgComment("Dostepne zmienne: {PLAYER}")
-    public String notificationIntruderEnterGuildRegion = "&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!";
+    public String notificationBossbarIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationEnterGuildRegion = "&7Wkroczyles na teren gildii &c{TAG}&7!";
+    public String notificationBossbarEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String notificationBossbarLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
 
-    @CfgComment("<------- Title Region Messages -------> #")
+    @CfgComment("<------- Chat Region Messages -------> #")
+    @CfgComment("Dostepne zmienne: {PLAYER}")
+    public String notificationChatIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationTitleEnterOnGuildRegion = "";
-    public String notificationSubtitleEnterOnGuildRegion = notificationEnterGuildRegion;
-    public String notificationTitleIntruderEnteredOnGuildRegion = "";
-    public String notificationSubtitleIntruderEnteredOnGuildRegion = notificationIntruderEnterGuildRegion;
-    public String notificationTitleLeavedGuildRegion = "";
-    public String notificationSubtitleLeavedGuildRegion = regionLeave;
+    public String notificationChatEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String notificationChatLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    
+    @CfgComment("<------- Title Region Messages -------> #")
+    @CfgComment("Dostepne zmienne: {PLAYER}")
+    public String notificationTitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    @CfgComment("Dostepne zmienne: {PLAYER}")
+    public String notificationSubtitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String notificationTitleEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String notificationSubtitleEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String notificationTitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String notificationSubtitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
 
     @CfgComment("<------- Broadcast Messages -------> #")
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
@@ -200,6 +223,7 @@ public class MessagesConfig {
     public String generalGuildNotExists = "&7Gildia o tagu &c{TAG} &7nie istnieje!";
     public String generalIsNotMember = "&cTen gracz nie jest czlonkiem twojej gildii!";
     public String generalPlayerHasNoGuild = "&cTen gracz nie ma gildii!";
+    public String generalCommandDisabled = "&cTa komenda jest wylaczona!";
     
     @CfgComment("<------- Escape Messages -------> #")
     public String escapeDisabled = "&cPrzykro mi, ucieczki sa wylaczone!";

@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -15,6 +14,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 
 public final class InvitationList {
 

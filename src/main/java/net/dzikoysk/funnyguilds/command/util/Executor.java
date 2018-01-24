@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.command.util;
 
-import java.util.List;
-
+import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import net.dzikoysk.funnyguilds.data.Settings;
+import java.util.List;
 
 public interface Executor {
 

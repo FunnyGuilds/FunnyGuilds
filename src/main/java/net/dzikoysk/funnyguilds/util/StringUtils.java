@@ -104,8 +104,12 @@ public final class StringUtils {
         return number > 9 ? "" + number : "0" + number;
     }
 
-    public static String getPercent(int dividend, int divisor) {
-        return String.format(Locale.US, "%.1f", 100.0F * dividend / divisor);
+    public static String getPercent(double dividend, double divisor) {
+        return getPercent(dividend / divisor);
+    }
+    
+    public static String getPercent(double fraction) {
+        return String.format(Locale.US, "%.1f", 100.0D * fraction);
     }
     
     private StringUtils() {}
