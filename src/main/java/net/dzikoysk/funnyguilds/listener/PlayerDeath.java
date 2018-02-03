@@ -91,7 +91,7 @@ public class PlayerDeath implements Listener {
         RankChangeEvent attackerEvent = new PointsChangeEvent(EventCause.USER, attacker.getRank(), attacker, rankChanges[0]);
         RankChangeEvent victimEvent = new PointsChangeEvent(EventCause.USER, victim.getRank(), attacker, rankChanges[1]);
         
-        List<String> assistEntries = new ArrayList<String>();
+        List<String> assistEntries = new ArrayList<>();
         if (SimpleEventHandler.handle(attackerEvent) && SimpleEventHandler.handle(victimEvent)) {
             double attackerDamage = victim.killedBy(attacker);
             
@@ -102,7 +102,11 @@ public class PlayerDeath implements Listener {
                 for (Entry<User, Double> assist : victim.getDamage().entrySet()) {
                     double assistFraction = assist.getValue() / totalDamage;
                     int addedPoints = (int) Math.round(assistFraction * toShare);
-                    
+
+                    if (addedPoints <= 0) {
+                        continue;
+                    }
+
                     String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assist.getKey().getName());
                     assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", StringUtils.getPercent(assistFraction));
