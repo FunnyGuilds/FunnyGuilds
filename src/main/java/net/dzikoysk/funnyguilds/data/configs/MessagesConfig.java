@@ -263,6 +263,8 @@ public class MessagesConfig {
     public String createRank = "&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED} &cpunktow.";
     @CfgComment("Dostepne zmienne: {ITEM}, {ITEMS}")
     public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
+    @CfgComment("Dostepne zmienne: {EXP}")
+    public String createExperience = "&cNie posiadasz wymaganego doswiadczenia do zalozenia gildii: &7{EXP}";
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
     public String createGuild = "&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
 

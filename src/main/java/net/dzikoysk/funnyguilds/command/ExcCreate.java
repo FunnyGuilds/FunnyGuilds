@@ -157,8 +157,16 @@ public class ExcCreate implements Executor {
         }
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items") ? config.createItemsVip : config.createItems;
+        int requiredExperience = player.hasPermission("funnyguilds.vip.items") ? config.requiredExperienceVip : config.requiredExperience;
 
         if (!user.getBypass()) {
+            if (player.getTotalExperience() < requiredExperience) {
+                String msg = messages.createExperience;
+                msg = StringUtils.replace(msg, "{EXP}", String.valueOf(requiredExperience));
+                player.sendMessage(msg);
+                return;
+            }
+
             for (ItemStack requiredItem : requiredItems) {
                 if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                     continue;
@@ -190,6 +198,7 @@ public class ExcCreate implements Executor {
             user.setBypass(false);
         } else {
             player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
+            player.setTotalExperience(player.getTotalExperience() - requiredExperience);
         }
 
         Manager.getInstance().stop();
