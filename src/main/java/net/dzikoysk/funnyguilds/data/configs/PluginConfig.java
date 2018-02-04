@@ -96,6 +96,10 @@ public class PluginConfig {
     @CfgExclude
     public List<ItemStack> createItems;
 
+    @CfgComment("Wymagana ilosc doswiadczenia do zalozenia gildii")
+    @CfgName("requiredExperience")
+    public int requiredExperience = 0;
+
     @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Dwukropek i metadata po nazwie przedmiotu sa opcjonalne")
     @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant]")
@@ -108,6 +112,10 @@ public class PluginConfig {
 
     @CfgExclude
     public List<ItemStack> createItemsVip;
+
+    @CfgComment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
+    @CfgName("requiredExperienceVip")
+    public int requiredExperienceVip = 0;
 
     @CfgComment("Czy opcja wymaganego rankingu do zalozenia gildi ma byc wlaczona?")
     @CfgName("rank-create-enable")
