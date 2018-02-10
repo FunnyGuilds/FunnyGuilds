@@ -15,7 +15,7 @@ Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 [FunnyGuilds Tribute 4.1.0 for 1.8.8+](https://github.com/FunnyGuilds/FunnyGuilds/releases)
 
 #### Building
-You can build FunnyGuilds as a maven project or just generate plugin using [FunnyCreator](https://github.com/FunnyGuilds/FunnyCreator)
+You can build FunnyGuilds as a Maven project or just generate plugin using [FunnyCreator](https://github.com/FunnyGuilds/FunnyCreator)
 ![FunnyCreator](https://dzikoysk.net/projects/funnycreator/funnycreator-short.gif)
 
 #### Stats
