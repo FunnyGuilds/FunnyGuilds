@@ -644,9 +644,9 @@ public class PluginConfig {
     @CfgName("player-list-ping")
     public int playerListPing = 0;
 
-    @CfgComment("Tablista wlaczona")
+    @CfgComment("Czy tablista ma byc wlaczona")
     @CfgName("player-list-enable")
-    public boolean playerlistEnable = false;
+    public boolean playerlistEnable = true;
 
     @CfgComment("Wyglad punktow wyswietlanych przy gildii w rankingu")
     @CfgName("player-list-points")
