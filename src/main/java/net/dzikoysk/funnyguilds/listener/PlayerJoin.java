@@ -52,7 +52,7 @@ public class PlayerJoin implements Listener {
                 return;
             }
             
-            if (Settings.getConfig().createStringMaterial.equalsIgnoreCase("ender crystal")) {
+            if ("ender crystal".equalsIgnoreCase(Settings.getConfig().createStringMaterial)) {
                 EntityUtil.spawn(region.getGuild(), player);
             }
         }, 30L);

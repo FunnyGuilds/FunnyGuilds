@@ -19,7 +19,7 @@ public final class BanUtils {
             
             Player p = user.getPlayer();
             if (p != null && p.isOnline()) {
-                p.kickPlayer(ChatColor.GRAY + "Otrzymano bana za: " + ChatColor.RED + user.getReason());
+                p.kickPlayer(getBanMessage(user));
             }
         }
     }

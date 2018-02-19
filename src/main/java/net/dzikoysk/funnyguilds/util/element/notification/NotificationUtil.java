@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.util.element.notification;
 
 import com.google.common.collect.Lists;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.PacketCreator;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 
@@ -18,7 +19,10 @@ public final class NotificationUtil {
     private static final Class<?> TITLE_ACTION_CLASS;
     private static final Class<?> CHAT_MESSAGE_TYPE_CLASS;
 
-    private static final Method CREATE_BASE_COMPONENT;
+    private static final Method CREATE_BASE_COMPONENT_NMS;
+    private static final Method CREATE_BASE_COMPONENT_CRAFTBUKKIT;
+
+    private static final String BASE_COMPONENT_JSON_PATTERN = "{\"text\": \"{TEXT}\"}";
 
     static {
         PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getCraftClass("PacketPlayOutTitle");
@@ -31,7 +35,8 @@ public final class NotificationUtil {
             CHAT_MESSAGE_TYPE_CLASS = null;
         }
         
-        CREATE_BASE_COMPONENT = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
+        CREATE_BASE_COMPONENT_NMS = Reflections.getMethod(Reflections.getCraftClass("IChatBaseComponent$ChatSerializer"), "a", String.class);
+        CREATE_BASE_COMPONENT_CRAFTBUKKIT = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
     }
 
     public static List<Object> createTitleNotification(String text, String subText, int fadeIn, int stay, int fadeOut) {
@@ -62,7 +67,7 @@ public final class NotificationUtil {
     public static Object createBaseComponent(String text, boolean keepNewLines) {
         String text0 = text != null ? text : "";
         try {
-            return Array.get(CREATE_BASE_COMPONENT.invoke(null, text0, keepNewLines), 0);
+            return keepNewLines ? Array.get(CREATE_BASE_COMPONENT_CRAFTBUKKIT.invoke(null, text0, true), 0) : CREATE_BASE_COMPONENT_NMS.invoke(null, StringUtils.replace(BASE_COMPONENT_JSON_PATTERN, "{TEXT}", text0));
         } catch (IllegalAccessException | InvocationTargetException ex) {
             FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
             return null;
@@ -78,7 +83,8 @@ public final class NotificationUtil {
                     .withField("a", createBaseComponent(text, false))
                     .withField("b", CHAT_MESSAGE_TYPE_CLASS.getEnumConstants()[2])
                     .getPacket();
-        } else {
+        }
+        else {
             actionbarPacket = PacketCreator.of(PACKET_PLAY_OUT_CHAT_CLASS)
                     .create()
                     .withField("a", createBaseComponent(text, false))

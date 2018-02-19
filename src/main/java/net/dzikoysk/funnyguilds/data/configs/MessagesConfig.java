@@ -31,7 +31,7 @@ public class MessagesConfig {
     @CfgComment("Dostepne zmienne: {LAST-RANK}, {CURRENT-RANK}")
     public String rankResetMessage = "&7Zresetowales swoj ranking z poziomu &c{LAST-RANK} &7do poziomu &c{CURRENT-RANK}&7.";
 
-    @CfgComment("<------- Rank Messages -------> #")
+    @CfgComment("<------- Ban Messages -------> #")
     @CfgComment("Dostepne zmienne: {PLAYER}, {REASON}, {DATE}, {NEWLINE}")
     public String banMessage = "&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}";
 
