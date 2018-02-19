@@ -41,14 +41,11 @@ public final class BanUtils {
         user.setReason(null);
     }
 
-    public static boolean check(User user) {
-        if (System.currentTimeMillis() < user.getBan()) {
-            return true;
+    public static void checkIfBanShouldExpire(User user) {
+        if (System.currentTimeMillis() > user.getBan()) {
+            user.setBan(0);
+            user.setReason(null);
         }
-        
-        user.setBan(0);
-        user.setReason(null);
-        return false;
     }
 
     public static String getBanMessage(User user) {

@@ -42,11 +42,10 @@ public class PlayerLogin implements Listener {
         }
 
         User user = User.get(event.getPlayer());
+
+        BanUtils.checkIfBanShouldExpire(user);
+
         if (!user.isBanned()) {
-            return;
-        }
-        
-        if (!BanUtils.check(user)) {
             return;
         }
         
