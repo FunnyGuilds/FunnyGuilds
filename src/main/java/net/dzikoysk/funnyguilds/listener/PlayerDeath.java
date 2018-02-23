@@ -111,6 +111,7 @@ public class PlayerDeath implements Listener {
                     assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", StringUtils.getPercent(assistFraction));
                     assistEntries.add(assistEntry);
+                    assist.getKey().getRank().addPoints(addedPoints);
                 }
                 
                 attackerEvent.setChange((int) Math.round(attackerEvent.getChange() * config.assistKillerShare));
