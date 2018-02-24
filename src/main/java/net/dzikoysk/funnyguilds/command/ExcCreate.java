@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.command;
 
+import com.sk89q.worldedit.MaxChangedBlocksException;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -18,6 +20,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.util.ItemUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.element.schematic.SchematicHelper;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -29,6 +32,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ExcCreate implements Executor {
@@ -217,8 +221,18 @@ public class ExcCreate implements Executor {
             Region region = new Region(guild, guildLocation, config.regionSize);
             guild.setRegion(region.getName());
             guild.addRegion(region.getName());
-            
-            if (config.createCenterSphere) {
+
+            if (config.pasteSchematicOnCreation) {
+                try {
+                    SchematicHelper.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir);
+                }
+                catch (IOException | MaxChangedBlocksException ex) {
+                    player.sendMessage(messages.createGuildCouldNotPasteSchematic);
+                    FunnyGuilds.exception(ex);
+                }
+
+            }
+            else if (config.createCenterSphere) {
                 for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
                     if (l.getBlock().getType() != Material.BEDROCK) {
                         l.getBlock().setType(Material.AIR);
@@ -231,7 +245,6 @@ public class ExcCreate implements Executor {
                     }
                 }
             }
-        
 
             if (config.createMaterial != null && config.createMaterial != Material.AIR) {
                 guildLocation.getBlock().getRelative(BlockFace.DOWN).setType(config.createMaterial);

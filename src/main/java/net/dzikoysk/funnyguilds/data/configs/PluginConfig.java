@@ -18,6 +18,7 @@ import org.diorite.cfg.annotations.CfgName;
 import org.diorite.cfg.annotations.CfgStringStyle;
 import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -220,6 +221,22 @@ public class PluginConfig {
     @CfgComment("Czy ma sie tworzyc pusta przestrzen dookola centrum gildii")
     @CfgName("create-center-sphere")
     public boolean createCenterSphere = true;
+
+    @CfgComment("Czy przy tworzeniu gildii powinien byc wklejany schemat")
+    @CfgName("paste-schematic-on-creation")
+    public boolean pasteSchematicOnCreation = false;
+
+    @CfgComment("Nazwa pliku z schematem poczatkowym gildii")
+    @CfgName("guild-schematic-file-name")
+    public String guildSchematicFileName = "funnyguilds.schematic";
+
+    @CfgComment("Czy schemat przy tworzeniu gildii powinien byc wklejany razem z powietrzem?")
+    @CfgComment("Przy duzych schematach ma to wplyw na wydajnosc")
+    @CfgName("paste-schematic-with-air")
+    public boolean pasteSchematicWithAir = true;
+
+    @CfgExclude
+    public File guildSchematicFile;
 
     @CfgComment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
     @CfgName("bugged-blocks")
@@ -912,6 +929,20 @@ public class PluginConfig {
         this.chatGlobalDesign = StringUtils.colored(this.chatGlobalDesign_);
 
         this.playerlistPoints = StringUtils.colored(this.playerlistPoints_);
+
+        if (this.pasteSchematicOnCreation && (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty())) {
+            FunnyGuilds.exception(new IllegalArgumentException("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!"));
+            this.pasteSchematicOnCreation = false;
+        }
+        else {
+            this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName != null ? this.guildSchematicFileName : "");
+
+            if (!this.guildSchematicFile.exists()) {
+                FunnyGuilds.exception(new IllegalArgumentException("File with given name in field \"guild-schematic-file-name\" does not exists!"));
+                this.pasteSchematicOnCreation = false;
+            }
+        }
+
     }
 
     public static class Commands {

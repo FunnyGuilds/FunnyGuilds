@@ -267,6 +267,7 @@ public class MessagesConfig {
     public String createExperience = "&cNie posiadasz wymaganego doswiadczenia do zalozenia gildii: &7{EXP}";
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
     public String createGuild = "&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
+    public String createGuildCouldNotPasteSchematic = "&cWystapil blad podczas tworzenia terenu gildii, zglos sie do administracji.";
 
     @CfgComment("<------- Delete Guild Messages -------> #")
     public String deleteConfirm = "&7Aby potwierdzic usuniecie gildii, wpisz: &c/potwierdz";
