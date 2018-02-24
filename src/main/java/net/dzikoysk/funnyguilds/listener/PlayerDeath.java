@@ -41,6 +41,10 @@ public class PlayerDeath implements Listener {
 
         User attacker = User.get(a);
 
+        if (victim.equals(attacker)) {
+            return;
+        }
+
         if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
             if (WorldGuardHook.isOnNonPointsRegion(v.getLocation()) || WorldGuardHook.isOnNonPointsRegion(a.getLocation())) {
                 return;
