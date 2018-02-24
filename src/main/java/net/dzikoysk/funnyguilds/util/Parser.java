@@ -33,7 +33,8 @@ public class Parser {
         try {
             stack = Integer.parseInt(split[0]);
             data = Integer.parseInt(subtype);
-        } catch (NumberFormatException ex) {
+        }
+        catch (NumberFormatException ex) {
             FunnyGuilds.parser("Unknown size: " + split[0]);
             stack = 1;
             data = 0;
@@ -52,7 +53,7 @@ public class Parser {
                 String[] splitLore = str.split(":");
                 String loreArgs = String.join(":", Arrays.copyOfRange(splitLore, 1, splitLore.length));
                 String[] lores = loreArgs.split("#");
-                List<String> lore = new ArrayList<String>();
+                List<String> lore = new ArrayList<>();
 
                 for (String s : lores) {
                     lore.add(StringUtils.replace(StringUtils.replace(StringUtils.colored(s), "_", " "), "{HASH}", "#"));

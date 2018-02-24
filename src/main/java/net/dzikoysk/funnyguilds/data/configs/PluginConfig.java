@@ -89,6 +89,7 @@ public class PluginConfig {
     @CfgComment("Spacja = _ ")
     @CfgComment("Nowa linia lore = #")
     @CfgComment("Aby w lore uzyc znaku # wstaw {HASH}")
+    @CfgComment("UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
     @CfgName("items")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> items_ = Arrays.asList("5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!", "5 dirt", "5 tnt");
@@ -106,6 +107,7 @@ public class PluginConfig {
     @CfgComment("Spacja = _ ")
     @CfgComment("Nowa linia lore = #")
     @CfgComment("Aby w lore uzyc znaku # wstaw {HASH}")
+    @CfgComment("UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
     @CfgName("items-vip")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> itemsVip_ = Collections.singletonList("1 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!");
