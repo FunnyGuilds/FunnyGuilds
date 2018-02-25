@@ -2,8 +2,11 @@ package net.dzikoysk.funnyguilds.data.configs;
 
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.util.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.util.RankSystem;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.notification.NotificationStyle;
@@ -16,6 +19,7 @@ import org.diorite.cfg.annotations.CfgComment;
 import org.diorite.cfg.annotations.CfgExclude;
 import org.diorite.cfg.annotations.CfgName;
 import org.diorite.cfg.annotations.CfgStringStyle;
+import org.diorite.cfg.annotations.CfgStringStyle.StringStyle;
 import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
 
 import java.io.File;
@@ -75,6 +79,30 @@ public class PluginConfig {
     @CfgComment("Minimalna dlugosc tagu gildii")
     @CfgName("tag-min-length")
     public int createTagMinLength = 2;
+    
+    @CfgComment("Zasada sprawdzania nazwy gildii przy jej tworzeniu")
+    @CfgComment("Dostepne zasady:")
+    @CfgComment("LOWERCASE - umozliwia uzycie tylko malych liter")
+    @CfgComment("UPPERCASE - umozliwia uzycie tylko duzych liter")
+    @CfgComment("DIGITS - umozliwia uzycie tylko cyfr")
+    @CfgComment("LOWERCASE_DIGITS - umozliwia uzycie malych liter i cyfr")
+    @CfgComment("UPPERCASE_DIGITS - umozliwia uzycie duzych liter i cyfr")
+    @CfgComment("LETTERS - umozliwia uzycie malych i duzych liter")
+    @CfgComment("LETTERS_DIGITS - umozliwia uzycie malych i duzych liter oraz cyrf")
+    @CfgComment("LETTERS_DIGITS_UNDERSCORE - umozliwia uzycie malych i duzych liter, cyrf oraz podkreslnika")
+    @CfgName("name-regex")
+    public String nameRegex_ = "LETTERS";
+    
+    @CfgExclude
+    public GuildRegex nameRegex;
+    
+    @CfgComment("Zasada sprawdzania tagu gildii przy jej tworzeniu")
+    @CfgComment("Mozliwe zasady sa takie same jak w przypadku name-regex")
+    @CfgName("tag-regex")
+    public String tagRegex_ = "LETTERS";
+    
+    @CfgExclude
+    public GuildRegex tagRegex;
 
     @CfgComment("Minimalna liczba graczy w gildii aby zaliczala sie do rankingu")
     @CfgName("guild-min-members")
@@ -196,7 +224,8 @@ public class PluginConfig {
     @CfgComment("{ALL-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
     @CfgName("gui-items-lore")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> guiItemsLore_ = Arrays.asList("&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
+    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    public List<String> guiItemsLore_ = Arrays.asList("", "&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
                     "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
     
     @CfgExclude
@@ -769,6 +798,7 @@ public class PluginConfig {
             if (item == null || "".equals(item)) {
                 continue;
             }
+            
             ItemStack itemstack = Parser.parseItem(item);
             if (itemstack != null) {
                 items.add(itemstack);
@@ -786,21 +816,37 @@ public class PluginConfig {
             ItemStack item = null;
             
             if (var.contains("GUI-")) {
-                item = items.get(Parser.getIndex(var) - 1);
+                int index = Parser.getIndex(var);
+                
+                if (index > 0 && index <= items.size()) {
+                    item = items.get(index - 1);
+                }
             } else if (var.contains("VIPITEM-")) {
                 try {
-                    item = createItemsVip.get(Parser.getIndex(var) - 1);
+                    int index = Parser.getIndex(var);
+                    
+                    if (index > 0 && index <= createItemsVip.size()) {
+                        item = createItemsVip.get(index - 1);
+                    }
                 } catch(IndexOutOfBoundsException e) {
-                    FunnyGuilds.parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
+                    FunnyLogger.parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
-            }  else if (var.contains("ITEM-")) {
+            } else if (var.contains("ITEM-")) {
                 try {
-                    item = createItems.get(Parser.getIndex(var) - 1);
+                    int index = Parser.getIndex(var);
+                    
+                    if (index > 0 && index <= createItems.size()) {
+                        item = createItems.get(index - 1);
+                    }
                 } catch(IndexOutOfBoundsException e) {
-                    FunnyGuilds.parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
+                    FunnyLogger.parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
             } else {
                 item = Parser.parseItem(var);
+            }
+            
+            if (item == null) {
+                item = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, 14).setName("&c&lERROR IN GUI CREATION: " + var , true).getItem();
             }
             
             items.add(item);
@@ -811,6 +857,20 @@ public class PluginConfig {
     
     public void reload() {
         this.dateFormat = new SimpleDateFormat(Messages.getInstance().dateFormat);
+        
+        try {
+            this.nameRegex = GuildRegex.valueOf(this.nameRegex_.toUpperCase());
+        } catch (Exception e) {
+            this.nameRegex = GuildRegex.LETTERS;
+            FunnyLogger.exception(new IllegalArgumentException("\"" + this.nameRegex_ + "\" is not a valid regex option!"));
+        }
+        
+        try {
+            this.tagRegex = GuildRegex.valueOf(this.tagRegex_.toUpperCase());
+        } catch (Exception e) {
+            this.tagRegex = GuildRegex.LETTERS;
+            FunnyLogger.exception(new IllegalArgumentException("\"" + this.tagRegex_ + "\" is not a valid regex option!"));
+        }
         
         this.createItems = loadItemStackList(this.items_);
         this.createItemsVip = loadItemStackList(this.itemsVip_);
@@ -838,7 +898,7 @@ public class PluginConfig {
         }
 
         if (this.buggedBlocksTimer <= 0) {
-            FunnyGuilds.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than or equal to zero!"));
+            FunnyLogger.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than or equal to zero!"));
             this.buggedBlocksTimer = 20; // default value
         }
 
@@ -846,7 +906,7 @@ public class PluginConfig {
             this.rankSystem = RankSystem.valueOf(this.rankSystem_.toUpperCase());
         } catch (Exception e) {
             this.rankSystem = RankSystem.ELO;
-            FunnyGuilds.exception(new IllegalArgumentException("\"" + this.rankSystem_ + "\" is not a valid rank system!"));
+            FunnyLogger.exception(new IllegalArgumentException("\"" + this.rankSystem_ + "\" is not a valid rank system!"));
         }
 
         if (this.rankSystem == RankSystem.ELO) {
@@ -885,17 +945,17 @@ public class PluginConfig {
         }
 
         if (this.notificationTitleFadeIn <= 0) {
-            FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-fade-in\" can not be less than or equal to zero!"));
+            FunnyLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-in\" can not be less than or equal to zero!"));
             this.notificationTitleFadeIn = 10;
         }
 
         if (this.notificationTitleStay <= 0) {
-            FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-stay\" can not be less than or equal to zero!"));
+            FunnyLogger.exception(new IllegalArgumentException("The field named \"notification-title-stay\" can not be less than or equal to zero!"));
             this.notificationTitleStay = 10;
         }
 
         if (this.notificationTitleFadeOut <= 0) {
-            FunnyGuilds.exception(new IllegalArgumentException("The field named \"notification-title-fade-out\" can not be less than or equal to zero!"));
+            FunnyLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-out\" can not be less than or equal to zero!"));
             this.notificationTitleFadeOut = 10;
         }
 
@@ -930,16 +990,17 @@ public class PluginConfig {
 
         this.playerlistPoints = StringUtils.colored(this.playerlistPoints_);
 
-        if (this.pasteSchematicOnCreation && (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty())) {
-            FunnyGuilds.exception(new IllegalArgumentException("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!"));
-            this.pasteSchematicOnCreation = false;
-        }
-        else {
-            this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName != null ? this.guildSchematicFileName : "");
-
-            if (!this.guildSchematicFile.exists()) {
-                FunnyGuilds.exception(new IllegalArgumentException("File with given name in field \"guild-schematic-file-name\" does not exists!"));
+        if (this.pasteSchematicOnCreation) {
+            if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
+                FunnyLogger.exception(new IllegalArgumentException("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!"));
                 this.pasteSchematicOnCreation = false;
+            } else {
+                this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName);
+
+                if (!this.guildSchematicFile.exists()) {
+                    FunnyLogger.exception(new IllegalArgumentException("File with given name in field \"guild-schematic-file-name\" does not exist!"));
+                    this.pasteSchematicOnCreation = false;
+                }
             }
         }
 

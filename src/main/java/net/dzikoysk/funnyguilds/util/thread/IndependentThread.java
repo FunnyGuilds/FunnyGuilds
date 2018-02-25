@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.thread;
 
 import com.google.common.collect.ImmutableList;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +16,8 @@ public class IndependentThread extends Thread {
     public IndependentThread() {
         super("FunnyGuilds | IndependentThread");
         instance = this;
-        FunnyGuilds.info("Available Processors: " + Runtime.getRuntime().availableProcessors());
-        FunnyGuilds.info("Active Threads: " + Thread.activeCount());
+        FunnyLogger.info("Available Processors: " + Runtime.getRuntime().availableProcessors());
+        FunnyLogger.info("Active Threads: " + Thread.activeCount());
     }
 
     public static IndependentThread getInstance() {
@@ -28,7 +28,7 @@ public class IndependentThread extends Thread {
             
             return instance;
         } catch (Exception ex) {
-            if (FunnyGuilds.exception(ex.getCause())) {
+            if (FunnyLogger.exception(ex.getCause())) {
                 ex.printStackTrace();
             }
             
@@ -92,7 +92,7 @@ public class IndependentThread extends Thread {
                     locker.wait();
                 }
             } catch (InterruptedException e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
@@ -108,7 +108,7 @@ public class IndependentThread extends Thread {
 
                 action.execute();
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }

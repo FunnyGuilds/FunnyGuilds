@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class AsynchronouslyRepeater implements Runnable {
             
             return instance;
         } catch (Exception ex) {
-            if (FunnyGuilds.exception(ex.getCause())) {
+            if (FunnyLogger.exception(ex.getCause())) {
                 ex.printStackTrace();
             }
             
@@ -54,6 +55,7 @@ public class AsynchronouslyRepeater implements Runnable {
         if (validity_system >= 10) {
             validitySystem();
         }
+        
         if (ban_system >= 7) {
             banSystem();
         }

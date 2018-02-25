@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.element.tablist.variable;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +23,7 @@ public class TablistVariablesParser {
             String value = tablistVariable.get(user);
             for (String name : tablistVariable.names()) {
                 if (values.containsKey(name)) {
-                    FunnyGuilds.warning("Conflicting variable name: " + name);
+                    FunnyLogger.warning("Conflicting variable name: " + name);
                 }
 
                 values.put(name, value);

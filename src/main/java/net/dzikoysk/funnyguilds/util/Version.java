@@ -3,18 +3,18 @@ package net.dzikoysk.funnyguilds.util;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 
 public final class Version {
 
-    public static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
+    private static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
 
-    public static void isNewAvailable(final Player player) {
-        if (!Settings.getConfig().updateInfo) {
+    public static void isNewAvailable(CommandSender sender, boolean force) {
+        if (!Settings.getConfig().updateInfo && !force) {
             return;
         }
         
-        if (!player.hasPermission("funnyguilds.admin")) {
+        if (!sender.hasPermission("funnyguilds.admin")) {
             return;
         }
 
@@ -22,13 +22,13 @@ public final class Version {
             String latest = IOUtils.getContent(VERSION_FILE_URL);
 
             if (latest != null && !latest.equalsIgnoreCase(FunnyGuilds.getVersion())) {
-                player.sendMessage("");
-                player.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
-                player.sendMessage(ChatColor.GRAY + "Dostepna jest nowa wersja " + ChatColor.AQUA + "FunnyGuilds" + ChatColor.GRAY + '!');
-                player.sendMessage(ChatColor.GRAY + "Obecna: " + ChatColor.AQUA + FunnyGuilds.getVersion());
-                player.sendMessage(ChatColor.GRAY + "Najnowsza: " + ChatColor.AQUA + latest);
-                player.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
-                player.sendMessage("");
+                sender.sendMessage("");
+                sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
+                sender.sendMessage(ChatColor.GRAY + "Dostepna jest nowa wersja " + ChatColor.AQUA + "FunnyGuilds" + ChatColor.GRAY + '!');
+                sender.sendMessage(ChatColor.GRAY + "Obecna: " + ChatColor.AQUA + FunnyGuilds.getVersion());
+                sender.sendMessage(ChatColor.GRAY + "Najnowsza: " + ChatColor.AQUA + latest);
+                sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
+                sender.sendMessage("");
             }
         });
     }

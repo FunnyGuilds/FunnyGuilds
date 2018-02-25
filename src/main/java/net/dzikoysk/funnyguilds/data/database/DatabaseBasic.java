@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.data.database;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -8,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
@@ -44,9 +44,10 @@ public class DatabaseBasic {
                     user.changed();
                 }
             }
-            FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());
+            
+            FunnyLogger.info("Loaded users: " + UserUtils.getUsers().size());
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
@@ -60,14 +61,15 @@ public class DatabaseBasic {
                         region.changed();
                     }
                 }
-                FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
+                
+                FunnyLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
         } else {
-            FunnyGuilds.info("Regions are disabled and thus - not loaded");
+            FunnyLogger.info("Regions are disabled and thus - not loaded");
         }
 
         ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM `guilds`");
@@ -79,9 +81,9 @@ public class DatabaseBasic {
                 }
             }
             
-            FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
+            FunnyLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
@@ -110,7 +112,7 @@ public class DatabaseBasic {
             try {
                 new DatabaseUser(user).save(db);
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
@@ -127,7 +129,7 @@ public class DatabaseBasic {
                 try {
                     new DatabaseRegion(region).save(db);
                 } catch (Exception e) {
-                    if (FunnyGuilds.exception(e.getCause())) {
+                    if (FunnyLogger.exception(e.getCause())) {
                         e.printStackTrace();
                     }
                 }
@@ -144,7 +146,7 @@ public class DatabaseBasic {
             try {
                 new DatabaseGuild(guild).save(db);
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }

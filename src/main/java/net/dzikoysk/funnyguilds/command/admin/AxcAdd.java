@@ -64,7 +64,7 @@ public class AxcAdd implements Executor {
         
         guild.addMember(user);
         user.setGuild(guild);
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getName());
 
         MessageTranslator translator = new MessageTranslator()
                 .register("{GUILD}", guild.getName())

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
@@ -40,7 +39,6 @@ public class ExcKick implements Executor {
         }
 
         User formerUser = User.get(args[0]);
-        OfflineUser formerOffline = formerUser.getOfflineUser();
 
         if (!formerUser.hasGuild()) {
             player.sendMessage(messages.generalPlayerHasNoGuild);
@@ -62,12 +60,12 @@ public class ExcKick implements Executor {
             return;
         }
         
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, formerOffline);
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, formerUser.getName());
 
         guild.removeMember(formerUser);
         formerUser.removeGuild();
 
-        if (formerOffline.isOnline()) {
+        if (formerUser.isOnline()) {
             IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
         }
 

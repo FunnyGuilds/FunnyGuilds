@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import com.sk89q.worldedit.MaxChangedBlocksException;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -32,7 +30,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.io.IOException;
 import java.util.List;
 
 public class ExcCreate implements Executor {
@@ -76,6 +73,7 @@ public class ExcCreate implements Executor {
 
         String tag = args[0];
         tag = Settings.getConfig().guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
+        
         String name = args[1];
 
         if (tag.length() > config.createTagLength) {
@@ -98,12 +96,12 @@ public class ExcCreate implements Executor {
             return;
         }
 
-        if (!tag.matches("[a-zA-Z]+")) {
+        if (!tag.matches(config.tagRegex.getPattern())) {
             player.sendMessage(messages.createOLTag);
             return;
         }
 
-        if (!name.matches("[a-zA-Z]+")) {
+        if (!name.matches(config.nameRegex.getPattern())) {
             player.sendMessage(messages.createOLName);
             return;
         }
@@ -223,16 +221,10 @@ public class ExcCreate implements Executor {
             guild.addRegion(region.getName());
 
             if (config.pasteSchematicOnCreation) {
-                try {
-                    SchematicHelper.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir);
-                }
-                catch (IOException | MaxChangedBlocksException ex) {
+                if (!SchematicHelper.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir)) {
                     player.sendMessage(messages.createGuildCouldNotPasteSchematic);
-                    FunnyGuilds.exception(ex);
                 }
-
-            }
-            else if (config.createCenterSphere) {
+            } else if (config.createCenterSphere) {
                 for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
                     if (l.getBlock().getType() != Material.BEDROCK) {
                         l.getBlock().setType(Material.AIR);
@@ -259,7 +251,7 @@ public class ExcCreate implements Executor {
 
         IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);
         IndependentThread.actions(ActionType.PREFIX_GLOBAL_ADD_GUILD, guild);
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getOfflineUser());
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getName());
 
         MessageTranslator translator = new MessageTranslator()
                 .register("{GUILD}", name)
@@ -269,5 +261,4 @@ public class ExcCreate implements Executor {
         player.sendMessage(translator.translate(messages.createGuild));
         Bukkit.broadcastMessage(translator.translate(messages.broadcastCreate));
     }
-
 }

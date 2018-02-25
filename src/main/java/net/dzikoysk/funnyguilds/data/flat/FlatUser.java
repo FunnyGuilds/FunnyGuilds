@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Yamler;
@@ -29,13 +28,9 @@ public class FlatUser {
         int deaths = pc.getInt("deaths");
         long ban = pc.getLong("ban");
         String reason = pc.getString("reason");
-        pc = null;
 
-        if (name == null) {
+        if (id == null || name == null) {
             return null;
-        }
-        if (id == null) {
-            id = new OfflineUser(name).getUniqueId().toString();
         }
 
         Object[] values = new Object[7];
@@ -46,6 +41,7 @@ public class FlatUser {
         values[4] = deaths;
         values[5] = ban;
         values[6] = reason;
+        
         return DeserializationUtils.deserializeUser(values);
     }
 
@@ -56,6 +52,7 @@ public class FlatUser {
         }
 
         Yamler pc = new Yamler(file);
+        
         pc.set("uuid", user.getUUID().toString());
         pc.set("name", user.getName());
         pc.set("points", user.getRank().getPoints());
@@ -64,7 +61,7 @@ public class FlatUser {
         pc.set("ban", user.getBan());
         pc.set("reason", user.getReason());
         pc.save();
-        pc = null;
+        
         return true;
     }
 }

@@ -58,6 +58,7 @@ public class Data {
                 throw new RuntimeException("Failed to create data file", e);
             }
         }
+        
         PandaConfiguration pc = new PandaConfiguration(file);
         if (todo == DO.SAVE) {
             pc.set("played-before", Bukkit.getOnlinePlayers().size());
@@ -71,16 +72,17 @@ public class Data {
         if (todo == DO.SAVE) {
             file.delete();
             Yamler pc = new Yamler(file);
+            
             for (Guild guild : GuildUtils.getGuilds()) {
                 List<InvitationList.Invitation> invitationList = InvitationList.getInvitationsFrom(guild);
+                
                 for(InvitationList.Invitation invitation : invitationList) {
                     List<String> allyInvitations = new ArrayList<>();
                     List<String> playerInvitations = new ArrayList<>();
 
                     if (invitation.isToGuild()) {
                         playerInvitations.add(invitation.getFor().toString());
-                    }
-                    else if (invitation.isToAlly()) {
+                    } else if (invitation.isToAlly()) {
                         allyInvitations.add(invitation.getFor().toString());
                     }
 
@@ -94,14 +96,18 @@ public class Data {
             if (!file.exists()) {
                 return;
             }
+            
             Yamler pc = new Yamler(file);
             for (String key : pc.getKeys(false)) {
                 Guild guild = GuildUtils.getByUUID(UUID.fromString(key));
+                
                 if (guild != null) {
                     List<String> allyInvitations = pc.getStringList(key + ".guilds");
                     List<String> playerInvitations = pc.getStringList(key + ".players");
+                    
                     for (String ally : allyInvitations) {
                         Guild allyGuild = GuildUtils.getByUUID(UUID.fromString(ally));
+                        
                         if (allyGuild != null) {
                             InvitationList.createInvitation(guild, allyGuild);
                         }

@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.basic;
 
 import com.google.common.base.Charsets;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.Dummy;
 import net.dzikoysk.funnyguilds.util.element.IndividualPrefix;
@@ -347,10 +347,6 @@ public class User implements Basic {
         return Bukkit.getPlayer(this.uuid);
     }
 
-    public OfflineUser getOfflineUser() {
-        return new OfflineUser(this.name);
-    }
-
     public boolean getBypass() {
         return this.bypass;
     }
@@ -373,7 +369,7 @@ public class User implements Basic {
             Object handle = craftPlayer.getMethod("getHandle").invoke(cp);
             ping = (int) handle.getClass().getField("ping").get(handle);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }

@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.data.database;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Parser;
 import org.bukkit.Location;
 
@@ -28,10 +28,10 @@ public class DatabaseRegion {
             Location loc = Parser.parseLocation(center);
 
             if (name == null) {
-                FunnyGuilds.error("Cannot deserialize region! Caused by: name == null");
+                FunnyLogger.error("Cannot deserialize region! Caused by: name == null");
                 return null;
             } else if (loc == null) {
-                FunnyGuilds.error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
+                FunnyLogger.error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
                 return null;
             }
 
@@ -42,7 +42,7 @@ public class DatabaseRegion {
             values[3] = enlarge;
             return DeserializationUtils.deserializeRegion(values);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }

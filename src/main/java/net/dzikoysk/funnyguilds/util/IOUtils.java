@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -23,11 +21,12 @@ public final class IOUtils {
                     file.mkdir();
                 }
             } catch (IOException e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
         }
+        
         return file;
     }
 
@@ -47,7 +46,7 @@ public final class IOUtils {
             body = IOUtils.toString(in, encoding);
             in.close();
         } catch (Exception e) {
-            FunnyGuilds.update("Connection to the update server (" + s + ") failed!");
+            FunnyLogger.update("Connection to the update server (" + s + ") failed!");
         } finally {
             close(in);
         }
@@ -57,6 +56,7 @@ public final class IOUtils {
 
     public static File getFile(String s, boolean folder) {
         File file = new File(s);
+        
         try {
             if (!file.exists()) {
                 if (folder) {
@@ -69,6 +69,7 @@ public final class IOUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
         return file;
     }
 
@@ -76,11 +77,13 @@ public final class IOUtils {
         if (!f.exists()) {
             return;
         }
+        
         if (f.isDirectory()) {
             for (File c : f.listFiles()) {
                 delete(c);
             }
         }
+        
         if (!f.delete()) {
             try {
                 throw new FileNotFoundException("Failed to delete file: " + f);
@@ -94,9 +97,11 @@ public final class IOUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[8192];
         int len = 0;
+        
         while ((len = in.read(buf)) != -1) {
             baos.write(buf, 0, len);
         }
+        
         return new String(baos.toByteArray(), encoding);
     }
 

@@ -51,6 +51,7 @@ public class PacketExtension {
                     if (msg == null) {
                         return;
                     }
+                    
                     super.write(ctx, msg, promise);
                 }
 
@@ -61,12 +62,7 @@ public class PacketExtension {
                             return;
                         }
 
-                        /*
-                        AsyncPacketReceiveEvent event = new AsyncPacketReceiveEvent(msg, p);
-                        Bukkit.getPluginManager().callEvent(event);
-                        */
                         IndependentThread.action(ActionType.PACKET_PLAY_IN_USE_ENTITY, p, msg);
-
                         super.channelRead(ctx, msg);
                     } catch (Exception e) {
                         super.channelRead(ctx, msg);
@@ -85,9 +81,6 @@ public class PacketExtension {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void unregisterFunnyGuildsChannel() {
     }
 
 }

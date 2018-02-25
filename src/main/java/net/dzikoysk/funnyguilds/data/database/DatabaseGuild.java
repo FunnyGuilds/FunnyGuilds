@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.data.database;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 
@@ -47,7 +47,7 @@ public class DatabaseGuild {
             int lives = rs.getInt("lives");
 
             if (name == null || tag == null || os == null) {
-                FunnyGuilds.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
+                FunnyLogger.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
                 return null;
             }
 
@@ -106,7 +106,7 @@ public class DatabaseGuild {
 
             return DeserializationUtils.deserializeGuild(values);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }

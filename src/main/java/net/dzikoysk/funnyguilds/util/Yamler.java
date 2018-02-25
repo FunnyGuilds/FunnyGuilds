@@ -11,6 +11,7 @@ public class Yamler extends YamlConfiguration {
 
     public Yamler(File file) {
         super();
+        
         try {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();

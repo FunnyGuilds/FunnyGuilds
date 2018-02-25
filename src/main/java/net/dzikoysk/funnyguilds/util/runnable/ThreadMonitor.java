@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.util.runnable;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -21,21 +22,23 @@ public class ThreadMonitor implements Runnable {
     public void run() {
         ThreadMXBean tmxb = ManagementFactory.getThreadMXBean();
         long full = 0;
+        
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             full += tmxb.getThreadCpuTime(t.getId());
         }
         
-        FunnyGuilds.info("================================");
+        FunnyLogger.info("================================");
         for (Thread t : Thread.getAllStackTraces().keySet()) {
             if (tmxb.getThreadCpuTime(t.getId()) > 0) {
                 long l = (tmxb.getThreadCpuTime(t.getId()) * 100L) / full;
+                
                 if (l > 0.0) {
-                    FunnyGuilds.info(t.getName() + ": " + l + "%");
+                    FunnyLogger.info(t.getName() + ": " + l + "%");
                 }
             }
         }
         
-        FunnyGuilds.info("================================");
+        FunnyLogger.info("================================");
     }
 
 }

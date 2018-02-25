@@ -42,6 +42,7 @@ public class ItemBuilder {
     public ItemBuilder setName(String name, boolean color) {
         this.itemMeta.setDisplayName(color ? StringUtils.colored(name) : name);
         this.refreshMeta();
+        
         return this;
     }
 
@@ -53,6 +54,7 @@ public class ItemBuilder {
         
         this.itemMeta.setLore(formatted);
         this.refreshMeta();
+        
         return this;
     }
 
@@ -63,12 +65,14 @@ public class ItemBuilder {
     public ItemBuilder addEnchant(Enchantment enchant, int level) {
         this.itemMeta.addEnchant(enchant, level, true);
         this.refreshMeta();
+        
         return this;
     }
 
     public ItemBuilder setFlag(ItemFlag flag) {
         this.itemMeta.addItemFlags(flag);
         this.refreshMeta();
+        
         return this;
     }
 

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.hook;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public final class PluginHook {
                 Class.forName("com.sk89q.worldguard.protection.flags.Flag");
                 WorldGuardHook.initWorldGuard();
             } catch (final ClassNotFoundException e) {
-                FunnyGuilds.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
+                FunnyLogger.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
             }
         });
     }

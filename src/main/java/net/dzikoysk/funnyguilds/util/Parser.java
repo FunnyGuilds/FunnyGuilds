@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
@@ -35,7 +34,7 @@ public class Parser {
             data = Integer.parseInt(subtype);
         }
         catch (NumberFormatException ex) {
-            FunnyGuilds.parser("Unknown size: " + split[0]);
+            FunnyLogger.parser("Unknown size: " + split[0]);
             stack = 1;
             data = 0;
         }
@@ -48,8 +47,7 @@ public class Parser {
             if (str.contains("name")) {
                 String[] splitName = str.split(":");
                 item.setName(StringUtils.replace(StringUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_", " "), true);
-            }
-            else if (str.contains("lore")) {
+            } else if (str.contains("lore")) {
                 String[] splitLore = str.split(":");
                 String loreArgs = String.join(":", Arrays.copyOfRange(splitLore, 1, splitLore.length));
                 String[] lores = loreArgs.split("#");
@@ -60,8 +58,7 @@ public class Parser {
                 }
                 
                 item.setLore(lore);
-            }
-            else if (str.contains("enchant")) {
+            } else if (str.contains("enchant")) {
                 String[] parse = str.split(":");
                 String enchantName = parse[1];
                 int level;
@@ -69,14 +66,14 @@ public class Parser {
                 try {
                     level = Integer.parseInt(parse[2]);
                 } catch (NumberFormatException ex) {
-                    FunnyGuilds.parser("Unknown enchant level: " + split[2]);
+                    FunnyLogger.parser("Unknown enchant level: " + split[2]);
                     level = 1;
                 }
 
                 Enchantment enchant = Enchantment.getByName(enchantName.toUpperCase());
 
                 if (enchant == null) {
-                    FunnyGuilds.parser("Unknown enchant: " + parse[1]);
+                    FunnyLogger.parser("Unknown enchant: " + parse[1]);
                 }
 
                 item.addEnchant(enchant, level);
@@ -88,7 +85,7 @@ public class Parser {
 
     public static Material parseMaterial(String string) {
         if (string == null) {
-            FunnyGuilds.parser("Unknown material: null");
+            FunnyLogger.parser("Unknown material: null");
             return Material.AIR;
         }
 
@@ -103,7 +100,7 @@ public class Parser {
         material = Material.getMaterial(materialName);
         if (material == null) {
             if (!string.equalsIgnoreCase("ender crystal")) {
-                FunnyGuilds.parser("Unknown material: " + string);
+                FunnyLogger.parser("Unknown material: " + string);
             }
             
             return Material.AIR;
@@ -139,7 +136,7 @@ public class Parser {
 
         int i = getIndex(var);
         if(i <= 0) {
-            FunnyGuilds.error("Index in TOP- must be greater or equal to 1!");
+            FunnyLogger.error("Index in TOP- must be greater or equal to 1!");
             return null;
         }
 
@@ -213,7 +210,7 @@ public class Parser {
         try {
             result = Integer.parseInt(sb.toString());
         } catch(NumberFormatException e) {
-            FunnyGuilds.parser(var + " contains an invalid number: " + sb.toString());
+            FunnyLogger.parser(var + " contains an invalid number: " + sb.toString());
         }
         
         return result;
@@ -257,7 +254,7 @@ public class Parser {
                                 break;
                         }
                     } catch (NumberFormatException e) {
-                        FunnyGuilds.parser("Unknown number: " + value.toString());
+                        FunnyLogger.parser("Unknown number: " + value.toString());
                         return time;
                     }
 

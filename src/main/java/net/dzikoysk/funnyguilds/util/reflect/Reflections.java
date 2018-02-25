@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.SafeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -48,7 +48,7 @@ public class Reflections {
             c = Class.forName(className);
             classCache.put(className, c);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
             classCache.put(className, INVALID_CLASS);
@@ -68,7 +68,7 @@ public class Reflections {
         try {
             return getMethod(entity.getClass(), "getHandle").invoke(entity);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
             return null;
@@ -79,7 +79,7 @@ public class Reflections {
         try {
             return getMethod(world.getClass(), "getHandle").invoke(world);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
             return null;
@@ -103,7 +103,7 @@ public class Reflections {
             field = cl.getDeclaredField(fieldName);
             fieldCache.put(cacheKey, field);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
             fieldCache.put(cacheKey, INVALID_FIELD);
@@ -116,6 +116,7 @@ public class Reflections {
         return getField(target, null, fieldType, index);
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> FieldAccessor<T> getField(Class<?> target, String name, Class<T> fieldType, int index) {
         final String cacheKey = target.getName() + "." + (name != null ? name : "NONE") + "." + fieldType.getName() + "." + index;
 
@@ -134,7 +135,7 @@ public class Reflections {
                 field.setAccessible(true);
 
                 output = new FieldAccessor<T>() {
-                    @SuppressWarnings("unchecked")
+                    
                     @Override
                     public T get(Object target) {
                         try {
@@ -190,7 +191,7 @@ public class Reflections {
             c.setAccessible(true);
             fieldCache.put(cacheKey, c);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
             fieldCache.put(cacheKey, INVALID_FIELD);

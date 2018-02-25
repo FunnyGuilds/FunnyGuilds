@@ -41,7 +41,7 @@ public class ExcLeave implements Executor {
         guild.removeMember(user);
         user.removeGuild();
         
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, user.getOfflineUser());
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, user.getName());
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
 
         MessageTranslator translator = new MessageTranslator()

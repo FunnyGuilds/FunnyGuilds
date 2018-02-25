@@ -1,18 +1,16 @@
 package net.dzikoysk.funnyguilds.util.element;
 
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
 public class Dummy {
 
-    private static String name = "points";
+    private static final String name = "FG-Points";
     private final User user;
 
     public Dummy(User user) {
@@ -25,13 +23,11 @@ public class Dummy {
             return;
         }
         
-        Scoreboard scoreboard = this.user.getScoreboard();
-        Objective objective = scoreboard.getObjective(name);
+        Objective objective = this.user.getScoreboard().getObjective(name);
         if (objective == null || !objective.getName().equals(name)) {
             initialize();
         } else {
-            OfflineUser offline = user.getOfflineUser();
-            objective.getScore(offline).setScore(user.getRank().getPoints());
+            objective.getScore(user.getName()).setScore(user.getRank().getPoints());
         }
     }
 
@@ -42,6 +38,7 @@ public class Dummy {
         
         Scoreboard scoreboard = this.user.getScoreboard();
         Objective objective = scoreboard.getObjective(name);
+        
         if (objective == null || !objective.getName().equals(name)) {
             objective = scoreboard.registerNewObjective(name, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
@@ -50,8 +47,7 @@ public class Dummy {
         
         for (Player player : Bukkit.getOnlinePlayers()) {
             User user = User.get(player);
-            Score score = objective.getScore(user.getOfflineUser());
-            score.setScore(user.getRank().getPoints());
+            objective.getScore(user.getName()).setScore(user.getRank().getPoints());
         }
     }
 }
