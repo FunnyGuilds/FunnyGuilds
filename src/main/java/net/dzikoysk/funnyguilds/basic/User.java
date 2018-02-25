@@ -48,7 +48,7 @@ public class User implements Basic {
     private boolean changes;
     private boolean spy;
     
-    private Map<User, Double> damage = new HashMap<User, Double>();
+    private final Map<User, Double> damage = new HashMap<User, Double>();
 
     private User(UUID uuid) {
         this.uuid = uuid;
@@ -320,7 +320,8 @@ public class User implements Basic {
     }
     
     public double killedBy(User user) {
-        return this.damage.remove(user);
+        Double damage = this.damage.remove(user);
+        return damage == null ? 0.0D : damage.doubleValue();
     }
     
     public boolean isAssisted() {
@@ -425,4 +426,5 @@ public class User implements Basic {
     public String toString() {
         return this.name;
     }
+	
 }

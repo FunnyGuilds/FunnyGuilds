@@ -4,16 +4,17 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class EntityDamage implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onDamage(EntityDamageByEntityEvent event) {
         Entity entity = event.getEntity();
         Entity damager = event.getDamager();
@@ -26,9 +27,9 @@ public class EntityDamage implements Listener {
         if (damager instanceof Player) {
             attacker = (Player) damager;
         } else if (damager instanceof Projectile) {
-            LivingEntity le = (LivingEntity) ((Projectile) damager).getShooter();
-            if (le instanceof Player) {
-                attacker = (Player) le;
+            ProjectileSource shooter = ((Projectile) damager).getShooter();
+            if (shooter instanceof Player) {
+                attacker = (Player) shooter;
             }
         }
 
@@ -60,7 +61,7 @@ public class EntityDamage implements Listener {
             }
         }
         
-        if (config.assistEnable) {
+        if (config.assistEnable && !event.isCancelled()) {
             victimUser.addDamage(attackerUser, event.getDamage());
         }
     }

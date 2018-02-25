@@ -40,7 +40,6 @@ public class PlayerDeath implements Listener {
         }
 
         User attacker = User.get(a);
-
         if (victim.equals(attacker)) {
             return;
         }
@@ -173,4 +172,5 @@ public class PlayerDeath implements Listener {
         
         event.setDeathMessage(death);
     }
+	
 }
