@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.basic.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class BasicUtils {
         }
         
         if (i > 0) {
-            FunnyGuilds.warning("Repaired conflicts: " + i);
+            FunnyLogger.warning("Repaired conflicts: " + i);
         }
     }
 }

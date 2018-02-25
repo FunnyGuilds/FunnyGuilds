@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.util.element;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -72,7 +73,7 @@ public class NotificationBar {
             Method sendPacket = Reflections.getMethod(connection.getClass(), "sendPacket");
             sendPacket.invoke(connection, packet);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
@@ -112,7 +113,7 @@ public class NotificationBar {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
                 return packetClass.getConstructor(new Class<?>[]{int.class, watcherClass, boolean.class}).newInstance(id, watcher, true);
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
                 
@@ -126,7 +127,7 @@ public class NotificationBar {
                 return packetClass.getConstructor(new Class<?>[]{int.class, int.class, int.class, int.class, byte.class, byte.class}).newInstance(
                         this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
                 
@@ -164,7 +165,7 @@ public class NotificationBar {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
                 return packetClass.getConstructor(new Class<?>[]{EntityLiving}).newInstance(dragon);
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
                 
@@ -177,7 +178,7 @@ public class NotificationBar {
                 Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
                 return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
                 
@@ -201,7 +202,7 @@ public class NotificationBar {
                 a.invoke(watcher, 11, (byte) 1);
                 return watcher;
             } catch (Exception e) {
-                if (FunnyGuilds.exception(e.getCause())) {
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
                 

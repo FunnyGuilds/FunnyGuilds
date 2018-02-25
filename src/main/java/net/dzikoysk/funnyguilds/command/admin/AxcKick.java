@@ -50,7 +50,7 @@ public class AxcKick implements Executor {
             return;
         }
         
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, user.getOfflineUser());
+        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, user.getName());
 
         Player player = user.getPlayer();
 

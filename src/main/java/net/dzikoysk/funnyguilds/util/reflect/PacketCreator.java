@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
@@ -65,11 +65,12 @@ public final class PacketCreator {
         if (this.packetInstance == null) {
             throw new RuntimeException("Tried to set field on non-existing packet instance!");
         }
+        
         try {
             Field field = this.packetFields.get(fieldName);
             field.set(this.packetInstance, value);
         } catch (final IllegalAccessException ex) {
-            FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
+            FunnyLogger.exception(ex.getMessage(), ex.getStackTrace());
         }
 
         return this;
@@ -80,16 +81,17 @@ public final class PacketCreator {
         if (this.packetInstance == null) {
             throw new RuntimeException("Tried to set field on non-existing packet instance!");
         }
+        
         try {
             Field field = this.packetFields.get(fieldName);
 
             if (!fieldType.isAssignableFrom(field.getType())) {
-                FunnyGuilds.error("Given fieldType is not assignable from found field's type");
+                FunnyLogger.error("Given fieldType is not assignable from found field's type");
             }
 
             field.set(this.packetInstance, value);
         } catch (final IllegalAccessException ex) {
-            FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
+            FunnyLogger.exception(ex.getMessage(), ex.getStackTrace());
         }
 
         return this;

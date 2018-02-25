@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 
 import java.io.File;
@@ -15,9 +16,9 @@ public class FlatPatcher {
         boolean r = regions.exists();
 
         if (g || r) {
-            FunnyGuilds.update("Updating flat files ...");
+            FunnyLogger.update("Updating flat files ...");
 
-            FunnyGuilds.update("Scanning files ...");
+            FunnyLogger.update("Scanning files ...");
             int todo = 0;
             int tg = 0;
             int tr = 0;
@@ -33,9 +34,9 @@ public class FlatPatcher {
             }
 
             todo = tg + tr;
-            FunnyGuilds.update(todo + " files found ...");
+            FunnyLogger.update(todo + " files found ...");
 
-            FunnyGuilds.update("Updating files ...");
+            FunnyLogger.update("Updating files ...");
             if (g) {
                 guilds.renameTo(Flat.GUILDS);
             }
@@ -53,8 +54,8 @@ public class FlatPatcher {
                 IOUtils.delete(regions);
             }
 
-            FunnyGuilds.update("Done!");
-            FunnyGuilds.update("Updated files: " + todo);
+            FunnyLogger.update("Done!");
+            FunnyLogger.update("Updated files: " + todo);
         }
     }
 

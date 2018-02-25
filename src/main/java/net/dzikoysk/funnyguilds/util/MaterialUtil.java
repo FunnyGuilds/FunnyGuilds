@@ -8,6 +8,7 @@ public final class MaterialUtil {
 
     public static String getMaterialName(Material material) {
         PluginConfig config = Settings.getConfig();
+        
         if (config.translatedMaterialsEnable && config.translatedMaterials.containsKey(material)) {
             return StringUtils.colored(Settings.getConfig().translatedMaterials.get(material));
         } else {

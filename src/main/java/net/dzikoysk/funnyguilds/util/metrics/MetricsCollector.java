@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.util.metrics;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 
 import java.util.HashMap;
 
@@ -19,7 +20,7 @@ public class MetricsCollector implements Runnable {
             mcstats = new MCStats(plugin);
         } catch (Exception e) {
             this.mcstats = null;
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
@@ -27,7 +28,7 @@ public class MetricsCollector implements Runnable {
             this.bstats = new BStats(plugin);
         } catch (Exception e) {
             this.bstats = null;
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }

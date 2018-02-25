@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -11,6 +10,7 @@ import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import org.bukkit.Location;
@@ -52,22 +52,22 @@ public class FlatGuild {
         pc = null;
 
         if (name == null) {
-            FunnyGuilds.error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
+            FunnyLogger.error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
             return null;
         } else if (tag == null) {
-            FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
+            FunnyLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
             return null;
         } else if (os == null) {
-            FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
+            FunnyLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
             return null;
         } else if (region == null && config.regionsEnabled) {
-            FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
+            FunnyLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
             return null;
         }
         
         Region rg = RegionUtils.get(region);
         if (rg == null && config.regionsEnabled) {
-            FunnyGuilds.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
+            FunnyLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
             return null;
         }
 
@@ -161,16 +161,16 @@ public class FlatGuild {
 
     public boolean serialize() {
         if (guild.getName() == null) {
-            FunnyGuilds.error("[Serialize] Cannot serialize guild! Caused by: name is null");
+            FunnyLogger.error("[Serialize] Cannot serialize guild! Caused by: name is null");
             return false;
         } else if (guild.getTag() == null) {
-            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
+            FunnyLogger.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
             return false;
         } else if (guild.getOwner() == null) {
-            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
+            FunnyLogger.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
             return false;
         } else if (guild.getRegion() == null && Settings.getConfig().regionsEnabled) {
-            FunnyGuilds.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
+            FunnyLogger.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
             return false;
         } else if (guild.getUUID() == null) {
             guild.setUUID(UUID.randomUUID());

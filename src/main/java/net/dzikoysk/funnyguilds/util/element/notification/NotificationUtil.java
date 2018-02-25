@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.element.notification;
 
 import com.google.common.collect.Lists;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.PacketCreator;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
@@ -69,7 +69,7 @@ public final class NotificationUtil {
         try {
             return keepNewLines ? Array.get(CREATE_BASE_COMPONENT_CRAFTBUKKIT.invoke(null, text0, true), 0) : CREATE_BASE_COMPONENT_NMS.invoke(null, StringUtils.replace(BASE_COMPONENT_JSON_PATTERN, "{TEXT}", text0));
         } catch (IllegalAccessException | InvocationTargetException ex) {
-            FunnyGuilds.exception(ex.getMessage(), ex.getStackTrace());
+            FunnyLogger.exception(ex.getMessage(), ex.getStackTrace());
             return null;
         }
     }

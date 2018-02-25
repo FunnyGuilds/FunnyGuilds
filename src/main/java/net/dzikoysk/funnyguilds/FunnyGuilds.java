@@ -24,7 +24,7 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
-import net.dzikoysk.funnyguilds.util.IOUtils;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.element.gui.GuiActionHandler;
@@ -48,7 +48,6 @@ import java.io.InputStream;
 public class FunnyGuilds extends JavaPlugin {
     
     private static FunnyGuilds funnyguilds;
-    private static Thread thread;
     private static String version;
     private boolean disabling;
 
@@ -56,14 +55,11 @@ public class FunnyGuilds extends JavaPlugin {
         funnyguilds = this;
     }
 
-    public static Thread getThread() {
-        return thread;
-    }
-
     public static String getVersion() {
         if (version != null) {
             return version;
         }
+        
         String[] array = funnyguilds.getDescription().getVersion().split("-");
         if (array.length != 2) {
             return version = funnyguilds.getDescription().getVersion();
@@ -79,65 +75,12 @@ public class FunnyGuilds extends JavaPlugin {
         
         return funnyguilds;
     }
-    
-    public static void update(String content) {
-        Bukkit.getLogger().info("[FunnyGuilds][Updater] > " + content);
-    }
-
-    public static void parser(String content) {
-        Bukkit.getLogger().severe("[FunnyGuilds][Parser] #> " + content);
-    }
-
-    public static void info(String content) {
-        Bukkit.getLogger().info("[FunnyGuilds] " + content);
-    }
-
-    public static void warning(String content) {
-        Bukkit.getLogger().warning("[FunnyGuilds] " + content);
-    }
-
-    public static void error(String content) {
-        Bukkit.getLogger().severe("[Server thread/ERROR] #!# " + content);
-    }
-
-    public static boolean exception(Throwable cause) {
-        return cause == null || exception(cause.getMessage(), cause.getStackTrace());
-    }
-
-    public static boolean exception(String cause, StackTraceElement[] ste) {
-        error("");
-        error("[FunnyGuilds] Severe error:");
-        error("");
-        error("Server Information:");
-        error("  FunnyGuilds: " + getVersion());
-        error("  Bukkit: " + Bukkit.getBukkitVersion());
-        error("  Java: " + System.getProperty("java.version"));
-        error("  Thread: " + Thread.currentThread());
-        error("  Running CraftBukkit: " + Bukkit.getServer().getClass().getName().equals("org.bukkit.craftbukkit.CraftServer"));
-        error("");
-        if (cause == null || ste == null || ste.length < 1) {
-            error("Stack trace: no/empty exception given, dumping current stack trace instead!");
-            return true;
-        } else {
-            error("Stack trace: ");
-        }
-        error("Caused by: " + cause);
-        for (StackTraceElement st : ste) {
-            error("    at " + st.toString());
-        }
-        error("");
-        error("End of Error.");
-        error("");
-        return false;
-    }
 
     @Override
     public void onLoad() {
         if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
-
-        thread = Thread.currentThread();
 
         new Reloader().init();
         new DescriptionChanger(getDescription()).name(Settings.getConfig().pluginName);
@@ -163,7 +106,6 @@ public class FunnyGuilds extends JavaPlugin {
         PluginManager pm = Bukkit.getPluginManager();
         PluginConfig config = Settings.getConfig();
         
-        //pm.registerEvents(new PacketReceive(), this);
         pm.registerEvents(new GuiActionHandler(), this);
         pm.registerEvents(new EntityDamage(), this);
         pm.registerEvents(new EntityInteract(), this);
@@ -192,8 +134,8 @@ public class FunnyGuilds extends JavaPlugin {
         }
             
         patch();
-        update();
-        info("~ Created by & \u2764 Dzikoysk ~");
+        Version.isNewAvailable(getServer().getConsoleSender(), true);
+        FunnyLogger.info("~ Created by & \u2764 Dzikoysk ~");
     }
 
     @Override
@@ -201,7 +143,6 @@ public class FunnyGuilds extends JavaPlugin {
         disabling = true;
 
         EntityUtil.despawn();
-        PacketExtension.unregisterFunnyGuildsChannel();
         EventManager.getEventManager().disable();
 
         AsynchronouslyRepeater.getInstance().stop();
@@ -209,29 +150,6 @@ public class FunnyGuilds extends JavaPlugin {
         Manager.getInstance().save();
 
         funnyguilds = null;
-    }
-
-    private void update() {
-        this.getServer().getScheduler().runTaskAsynchronously(this, () -> {
-            String latest = IOUtils.getContent(Version.VERSION_FILE_URL);
-            if (latest == null || latest.isEmpty()) {
-                update("Failed to check the newest version of FunnyGuilds...");
-                return;
-            }
-            
-            latest = latest.trim();
-            String current = getVersion().trim();
-
-            if (latest.equals(current)) {
-                update("You have the newest version of FunnyGuilds!");
-            } else {
-                update("");
-                update("A new version of FunnyGuilds is available!");
-                update("Current: " + current);
-                update("Latest: " + latest);
-                update("");
-            }
-        });
     }
 
     private void patch() {

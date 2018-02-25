@@ -1,11 +1,9 @@
 package net.dzikoysk.funnyguilds.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 public final class SafeUtils {
 
     private static void reportUnsafe(Throwable t) {
-        FunnyGuilds.exception(t);
+        FunnyLogger.exception(t);
     }
 
     public static <T> T safeInit(SafeInitializer<T> initializer) {

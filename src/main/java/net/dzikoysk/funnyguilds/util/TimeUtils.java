@@ -33,9 +33,8 @@ public final class TimeUtils {
 
         if (days > 0) {
             sb.append(days);
-            long i = days % 10;
 
-            if (i == 1) {
+            if (days == 1) {
                 sb.append(" dzien ");
             } else {
                 sb.append(" dni ");
@@ -44,11 +43,13 @@ public final class TimeUtils {
         
         if (hours > 0) {
             sb.append(hours);
-            long i = hours % 10;
+            
+            long last = hours % 10;
+            long lastTwo = hours % 100;
 
-            if (i == 1) {
+            if (hours == 1) {
                 sb.append(" godzine ");
-            } else if (i < 5) {
+            } else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
                 sb.append(" godziny ");
             } else {
                 sb.append(" godzin ");
@@ -57,11 +58,13 @@ public final class TimeUtils {
         
         if (minutes > 0) {
             sb.append(minutes);
-            long i = minutes % 10;
 
-            if (i == 1) {
+            long last = minutes % 10;
+            long lastTwo = minutes % 100;
+
+            if (minutes == 1) {
                 sb.append(" minute ");
-            } else if (i < 5) {
+            } else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
                 sb.append(" minuty ");
             } else {
                 sb.append(" minut ");
@@ -70,11 +73,13 @@ public final class TimeUtils {
         
         if (seconds > 0) {
             sb.append(seconds);
-            long i = seconds % 10;
 
-            if (i == 1) {
+            long last = seconds % 10;
+            long lastTwo = seconds % 100;
+
+            if (seconds == 1) {
                 sb.append(" sekunde ");
-            } else if (i < 5) {
+            } else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
                 sb.append(" sekundy ");
             } else {
                 sb.append(" sekund ");

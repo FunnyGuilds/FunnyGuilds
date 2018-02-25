@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;
@@ -29,12 +30,7 @@ public class ExcFunnyGuilds implements Executor {
                 break;
             case "check":
             case "update":
-                if (sender instanceof Player) {
-                    Version.isNewAvailable((Player) sender);
-                }
-                else {
-                    FunnyGuilds.info(Messages.getInstance().playerOnly);
-                }
+                Version.isNewAvailable(sender, true);
                 break;
             case "save-all":
                 saveAll(sender);
@@ -89,8 +85,8 @@ public class ExcFunnyGuilds implements Executor {
             try {
                 Flat.getInstance().save(true);
             } catch (Exception e) {
-                FunnyGuilds.error("An error occurred while saving data to flat file! Caused by: Exception");
-                if (FunnyGuilds.exception(e.getCause())) {
+                FunnyLogger.error("An error occurred while saving data to flat file! Caused by: Exception");
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
@@ -100,8 +96,8 @@ public class ExcFunnyGuilds implements Executor {
             try {
                 DatabaseBasic.getInstance().save(true);
             } catch (Exception e) {
-                FunnyGuilds.error("An error occurred while saving data to database! Caused by: Exception");
-                if (FunnyGuilds.exception(e.getCause())) {
+                FunnyLogger.error("An error occurred while saving data to database! Caused by: Exception");
+                if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }

@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.util.elo;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Rank;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +16,13 @@ public class EloUtils {
         for (String s : eloConstants) {
             String[] split = s.split(" ");
             if (split.length < 2) {
-                FunnyGuilds.exception(new IllegalArgumentException("\"" + s + "\" is not a valid constant String!"));
+                FunnyLogger.exception(new IllegalArgumentException("\"" + s + "\" is not a valid constant String!"));
                 continue;
             }
 
             String[] range = split[0].split("-");
             if (range.length < 2) {
-                FunnyGuilds.exception(new IllegalArgumentException("\"" + s + "\" is not a valid constant range String!"));
+                FunnyLogger.exception(new IllegalArgumentException("\"" + s + "\" is not a valid constant range String!"));
                 continue;
             }
 
@@ -30,33 +30,33 @@ public class EloUtils {
             try {
                 rankMin = Integer.parseInt(range[0]);
                 if (rankMin < 0) {
-                    FunnyGuilds.exception(new IllegalArgumentException("\"" + rankMin + "\" of constant String \"" + s + "\" is an invalid, negative integer!"));
+                    FunnyLogger.exception(new IllegalArgumentException("\"" + rankMin + "\" of constant String \"" + s + "\" is an invalid, negative integer!"));
                     continue;
                 }
             } catch (NumberFormatException e) {
-                FunnyGuilds.exception(new NumberFormatException("\"" + range[0] + "\" of constant String \"" + s + "\" is not a valid integer!"));
+                FunnyLogger.exception(new NumberFormatException("\"" + range[0] + "\" of constant String \"" + s + "\" is not a valid integer!"));
                 continue;
             }
 
             try {
                 rankMax = range[1].equals("*") ? Integer.MAX_VALUE : Integer.parseInt(range[1]);
                 if (rankMax < 0) {
-                    FunnyGuilds.exception(new IllegalArgumentException("\"" + rankMax + "\" of constant String \"" + s + "\" is an invalid, negative integer!"));
+                    FunnyLogger.exception(new IllegalArgumentException("\"" + rankMax + "\" of constant String \"" + s + "\" is an invalid, negative integer!"));
                     continue;
                 }
             } catch (NumberFormatException e) {
-                FunnyGuilds.exception(new NumberFormatException("\"" + range[1] + "\" of constant String \"" + s + "\" is not a valid integer!"));
+                FunnyLogger.exception(new NumberFormatException("\"" + range[1] + "\" of constant String \"" + s + "\" is not a valid integer!"));
                 continue;
             }
 
             try {
                 constant = Integer.parseInt(split[1]);
                 if (constant < 0) {
-                    FunnyGuilds.exception(new IllegalArgumentException("\"" + constant + "\" of constant String \"" + s + "\" is an invalid, negative integer!"));
+                    FunnyLogger.exception(new IllegalArgumentException("\"" + constant + "\" of constant String \"" + s + "\" is an invalid, negative integer!"));
                     continue;
                 }
             } catch (NumberFormatException e) {
-                FunnyGuilds.exception(new NumberFormatException("\"" + split[1] + "\" of constant String \"" + s + "\" is not a valid integer!"));
+                FunnyLogger.exception(new NumberFormatException("\"" + split[1] + "\" of constant String \"" + s + "\" is not a valid integer!"));
                 continue;
             }
 

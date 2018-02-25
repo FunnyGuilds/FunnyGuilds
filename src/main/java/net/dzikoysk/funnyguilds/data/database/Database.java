@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import com.zaxxer.hikari.HikariDataSource;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -110,7 +110,7 @@ public class Database {
             PreparedStatement statement = connection.prepareStatement(query);
             return statement.executeQuery();
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
@@ -129,7 +129,7 @@ public class Database {
             connection.close();
             return result;
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }

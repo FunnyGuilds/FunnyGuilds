@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -11,6 +10,7 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.IOUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -132,10 +132,10 @@ public class Flat {
         }
 
         if (i > 0) {
-            FunnyGuilds.warning("Repaired conflicts: " + i);
+            FunnyLogger.warning("Repaired conflicts: " + i);
         }
 
-        FunnyGuilds.info("Loaded users: " + UserUtils.getUsers().size());
+        FunnyLogger.info("Loaded users: " + UserUtils.getUsers().size());
     }
 
     private void saveRegions(boolean b) {
@@ -156,13 +156,13 @@ public class Flat {
             }
         }
         if (i > 0) {
-            FunnyGuilds.warning("Deleted defective regions: " + i);
+            FunnyLogger.warning("Deleted defective regions: " + i);
         }
     }
 
     private void loadRegions() {
         if (!Settings.getConfig().regionsEnabled) {
-            FunnyGuilds.info("Regions are disabled and thus - not loaded");
+            FunnyLogger.info("Regions are disabled and thus - not loaded");
             return;
         }
         
@@ -177,7 +177,8 @@ public class Flat {
                 }
             }
         }
-        FunnyGuilds.info("Loaded regions: " + RegionUtils.getRegions().size());
+        
+        FunnyLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
     }
 
     private void saveGuilds(boolean b) {
@@ -196,7 +197,7 @@ public class Flat {
         }
         
         if (i > 0) {
-            FunnyGuilds.warning("Deleted defective guild: " + i);
+            FunnyLogger.warning("Deleted defective guild: " + i);
         }
     }
 
@@ -224,7 +225,7 @@ public class Flat {
         }
 
         IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
-        FunnyGuilds.info("Loaded guilds: " + GuildUtils.getGuilds().size());
+        FunnyLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
 
 }

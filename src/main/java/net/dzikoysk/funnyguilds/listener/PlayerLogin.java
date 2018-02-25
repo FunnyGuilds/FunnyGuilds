@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
@@ -33,7 +34,7 @@ public class PlayerLogin implements Listener {
             event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick jest za dlugi!"));
         }
         
-        if (!name.matches("[a-zA-Z0-9_]+")) {
+        if (!name.matches(GuildRegex.LETTERS_DIGITS_UNDERSCORE.getPattern())) {
             event.disallow(Result.KICK_OTHER, StringUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
         
@@ -42,7 +43,6 @@ public class PlayerLogin implements Listener {
         }
 
         User user = User.get(event.getPlayer());
-
         BanUtils.checkIfBanShouldExpire(user);
 
         if (!user.isBanned()) {

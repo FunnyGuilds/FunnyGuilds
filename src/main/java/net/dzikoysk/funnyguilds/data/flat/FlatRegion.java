@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import org.bukkit.Location;
@@ -28,13 +28,13 @@ public class FlatRegion {
         pc = null;
 
         if (name == null || cs == null) {
-            FunnyGuilds.error("Cannot deserialize region! Caused by: name/center is null");
+            FunnyLogger.error("Cannot deserialize region! Caused by: name/center is null");
             return null;
         }
 
         Location center = Parser.parseLocation(cs);
         if (center == null) {
-            FunnyGuilds.error("Cannot deserialize region! Caused by: center is null");
+            FunnyLogger.error("Cannot deserialize region! Caused by: center is null");
             return null;
         }
 

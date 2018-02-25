@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.util.thread;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.OfflineUser;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Manager;
@@ -58,13 +57,13 @@ public class Action {
                 IndividualPrefixManager.addGuild((Guild) values[0]);
                 break;
             case PREFIX_GLOBAL_ADD_PLAYER:
-                IndividualPrefixManager.addPlayer((OfflineUser) values[0]);
+                IndividualPrefixManager.addPlayer((String) values[0]);
                 break;
             case PREFIX_GLOBAL_REMOVE_GUILD:
                 IndividualPrefixManager.removeGuild((Guild) values[0]);
                 break;
             case PREFIX_GLOBAL_REMOVE_PLAYER:
-                IndividualPrefixManager.removePlayer((OfflineUser) values[0]);
+                IndividualPrefixManager.removePlayer((String) values[0]);
                 break;
             case PREFIX_GLOBAL_UPDATE:
                 IndividualPrefixManager.updatePlayers();

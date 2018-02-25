@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.command.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig.Commands.FunnyCommand;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -136,7 +136,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             cmap.register("", p);
             p.setExecutor(this);
         } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
+            if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
