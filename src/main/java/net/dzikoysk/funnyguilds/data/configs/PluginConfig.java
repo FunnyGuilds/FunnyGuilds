@@ -36,7 +36,7 @@ import java.util.Map;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("         4.1.0 Tribute          #")
+@CfgComment("         4.1.1 Tribute          #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfig {
@@ -104,7 +104,7 @@ public class PluginConfig {
     @CfgExclude
     public GuildRegex tagRegex;
 
-    @CfgComment("Minimalna liczba graczy w gildii aby zaliczala sie do rankingu")
+    @CfgComment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
     @CfgName("guild-min-members")
     public int minMembersToInclude = 3;
     
@@ -625,7 +625,8 @@ public class PluginConfig {
     public String dummySuffix;
 
     @CfgStringStyle(CfgStringStyle.StringStyle.ALWAYS_QUOTED)
-    @CfgComment("Wyglad listy graczy, przedzial od 1 do 80")
+    @CfgComment("Wyglad listy graczy, przedzial slotow - od 1 do 80")
+    @CfgComment("Schemat wygladu listy: https://github.com/FunnyGuilds/FunnyGuilds/blob/master/tab-scheme.png")
     @CfgComment("> Spis zmiennych gracza:")
     @CfgComment("{PLAYER} - nazwa gracza")
     @CfgComment("{PING} - ping gracza")
@@ -682,7 +683,7 @@ public class PluginConfig {
 
     @CfgComment("Wyglad naglowka w liscie graczy.")
     @CfgName("player-list-header")
-    public String playerListHeader = "&7FunnyGuilds &b4.0.2 Tribute";
+    public String playerListHeader = "&7FunnyGuilds &b4.1.1 Tribute";
 
     @CfgComment("Wyglad stopki w liscie graczy.")
     @CfgName("player-list-footer")
@@ -1115,4 +1116,5 @@ public class PluginConfig {
             this.poolSize = poolSize;
         }
     }
+	
 }
