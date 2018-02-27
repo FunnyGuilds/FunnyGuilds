@@ -17,14 +17,14 @@ public final class GuildDependentTablistVariable implements TablistVariable {
 
 
     public GuildDependentTablistVariable(String[] names, Function<User, String> whenInGuild, Function<User, String> whenNotInGuild) {
-        this.names = names;
+        this.names = names.clone();
         this.whenInGuild = whenInGuild;
         this.whenNotInGuild = whenNotInGuild;
     }
 
     @Override
     public String[] names() {
-        return this.names;
+        return this.names.clone();
     }
 
     @Override
