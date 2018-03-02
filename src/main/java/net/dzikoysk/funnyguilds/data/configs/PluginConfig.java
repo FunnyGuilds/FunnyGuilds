@@ -280,8 +280,8 @@ public class PluginConfig {
     @CfgName("max-members")
     public int inviteMembers = 15;
 
-    @CfgComment("Swiaty, na ktorych zablokowane jest tworzenie gildii")
-    @CfgName("blockedworlds")
+    @CfgComment("Lista nazw swiatow, na ktorych mozliwosc utworzenia gildii powinna byc zablokowana")
+    @CfgName("blocked-worlds")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> blockedWorlds = Collections.singletonList("some_world");
 
