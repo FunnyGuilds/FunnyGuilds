@@ -83,7 +83,7 @@ public class ExcBreak implements Executor {
         Player owner = oppositeGuild.getOwner().getPlayer();
 
         if (owner !=null) {
-            owner.sendMessage(messages.allyIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+            owner.sendMessage(messages.breakIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
         }
 
         player.sendMessage(messages.breakDone.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", oppositeGuild.getTag()));
