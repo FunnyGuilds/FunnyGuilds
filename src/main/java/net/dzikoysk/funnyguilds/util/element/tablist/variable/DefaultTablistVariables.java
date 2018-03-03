@@ -50,6 +50,8 @@ public final class DefaultTablistVariables {
         parser.add(new GuildDependentTablistVariable("G-MEMBERS-ALL", (user) -> String.valueOf(user.getGuild().getMembers().size()), (user) -> "0"));
 
         parser.add(new GuildDependentTablistVariable("G-POSITION", (user) -> user.getGuild().getMembers().size() >= Settings.getConfig().minMembersToInclude ? String.valueOf(user.getGuild().getRank().getPosition()) : Settings.getConfig().minMembersPositionString, (user) -> Settings.getConfig().minMembersPositionString));
+        parser.add(new GuildDependentTablistVariable("G-VALIDITY", (user) -> Settings.getConfig().dateFormat.format(user.getGuild().getValidityDate()), (user) -> "Brak"));
+        parser.add(new GuildDependentTablistVariable("G-REGION-SIZE", (user) -> String.valueOf(user.getGuild().getRegionData().getSize()), (user) -> "Brak"));
 
         for (Consumer<TablistVariablesParser> installer : installers) {
             installer.accept(parser);

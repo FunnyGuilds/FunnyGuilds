@@ -147,30 +147,28 @@ public class PlayerDeath implements Listener {
         IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
         IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
 
-        String death = messages.rankDeathMessage;
-        death = StringUtils.replace(death, "{ATTACKER}", attacker.getName());
-        death = StringUtils.replace(death, "{VICTIM}", victim.getName());
-        death = StringUtils.replace(death, "{+}", Integer.toString(attackerEvent.getChange()));
-        death = StringUtils.replace(death, "{-}", Integer.toString(victimEvent.getChange()));
-        death = StringUtils.replace(death, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
-        death = StringUtils.replace(death, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
+        String deathMessage = messages.rankDeathMessage;
+        deathMessage = StringUtils.replace(deathMessage, "{ATTACKER}", attacker.getName());
+        deathMessage = StringUtils.replace(deathMessage, "{VICTIM}", victim.getName());
+        deathMessage = StringUtils.replace(deathMessage, "{+}", Integer.toString(attackerEvent.getChange()));
+        deathMessage = StringUtils.replace(deathMessage, "{-}", Integer.toString(victimEvent.getChange()));
+        deathMessage = StringUtils.replace(deathMessage, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
+        deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
+        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", Double.toString(a.getHealth()));
+        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEARTS}", Double.toString(a.getHealth() / 2));
 
         if (victim.hasGuild()) {
-            death = StringUtils.replace(death, "{VTAG}", StringUtils.replace(config.chatGuild, "{TAG}", victim.getGuild().getTag()));
+            deathMessage = StringUtils.replace(deathMessage, "{VTAG}", StringUtils.replace(config.chatGuild, "{TAG}", victim.getGuild().getTag()));
         }
 
         if (attacker.hasGuild()) {
-            death = StringUtils.replace(death, "{ATAG}", StringUtils.replace(config.chatGuild, "{TAG}", attacker.getGuild().getTag()));
+            deathMessage = StringUtils.replace(deathMessage, "{ATAG}", StringUtils.replace(config.chatGuild, "{TAG}", attacker.getGuild().getTag()));
         }
 
-        death = StringUtils.replace(death, "{VTAG}", "");
-        death = StringUtils.replace(death, "{ATAG}", "");
+        deathMessage = StringUtils.replace(deathMessage, "{VTAG}", "");
+        deathMessage = StringUtils.replace(deathMessage, "{ATAG}", "");
         
-        if (config.assistEnable && !assistEntries.isEmpty()) {
-            death += "\n" + StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries));
-        }
-        
-        event.setDeathMessage(death);
+        event.setDeathMessage(deathMessage);
     }
 	
 }

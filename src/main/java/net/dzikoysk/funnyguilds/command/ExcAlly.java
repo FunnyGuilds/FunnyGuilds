@@ -83,11 +83,17 @@ public class ExcAlly implements Executor {
 
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
-            player.sendMessage(StringUtils.replace(messages.allyDone, "{GUILD}", invitedGuild.getName()));
+            String allyDoneMessage = messages.allyDone;
+            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
+            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
+            player.sendMessage(allyDoneMessage);
 
             Player owner = invitedGuild.getOwner().getPlayer();
             if (owner !=null) {
-                owner.sendMessage(messages.allyIDone.replace("{GUILD}", guild.getName()));
+                String allyIDoneMessage = messages.allyIDone;
+                allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
+                allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
+                owner.sendMessage(allyIDoneMessage);
             }
 
             for (User u : guild.getMembers()) {
@@ -107,11 +113,18 @@ public class ExcAlly implements Executor {
             }
             
             InvitationList.expireInvitation(guild, invitedGuild);
-            player.sendMessage(messages.allyReturn.replace("{GUILD}", invitedGuild.getName()));
+
+            String allyReturnMessage = messages.allyReturn;
+            allyReturnMessage = StringUtils.replace(allyReturnMessage, "{GUILD}", invitedGuild.getName());
+            allyReturnMessage = StringUtils.replace(allyReturnMessage, "{TAG}", invitedGuild.getTag());
+            player.sendMessage(allyReturnMessage);
 
             Player owner = invitedGuild.getOwner().getPlayer();
             if (owner !=null) {
-                owner.sendMessage(messages.allyIReturn.replace("{GUILD}", guild.getName()));
+                String allyIReturnMessage = messages.allyIReturn;
+                allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{GUILD}", guild.getName());
+                allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{TAG}", guild.getTag());
+                owner.sendMessage(allyIReturnMessage);
             }
 
             return;
@@ -122,11 +135,18 @@ public class ExcAlly implements Executor {
         }
         
         InvitationList.createInvitation(guild, invitedGuild);
-        player.sendMessage(messages.allyInviteDone.replace("{GUILD}", invitedGuild.getName()));
+
+        String allyInviteDoneMessage = messages.allyInviteDone;
+        allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{GUILD}", invitedGuild.getName());
+        allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{TAG}", invitedGuild.getTag());
+        player.sendMessage(allyInviteDoneMessage);
 
         Player owner = invitedGuild.getOwner().getPlayer();
         if (owner !=null) {
-            owner.sendMessage(messages.allyToInvited.replace("{GUILD}", guild.getName()));
+            String allyToInvitedMessage = messages.allyToInvited;
+            allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{GUILD}", guild.getName());
+            allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{TAG}", guild.getTag());
+            owner.sendMessage(allyToInvitedMessage);
         }
     }
 

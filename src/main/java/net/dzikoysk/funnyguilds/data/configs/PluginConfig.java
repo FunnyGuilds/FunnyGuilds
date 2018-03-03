@@ -648,6 +648,8 @@ public class PluginConfig {
     @CfgComment("{G-KDR} - stosunek zabojstw do smierci czlonkow gildii")
     @CfgComment("{G-MEMBERS-ONLINE} - liczba czlonkow gildii online")
     @CfgComment("{G-MEMBERS-ALL} - liczba wszystkich czlonkow gildii")
+    @CfgComment("{G-VALIDITY} - data wygasniecia gildii")
+    @CfgComment("{G-REGION-SIZE} - rozmiar gildii")
     @CfgComment("> Spis pozostalych zmiennych:")
     @CfgComment("{ONLINE} - liczba graczy online")
     @CfgComment("{TPS} - TPS serwera (wspierane tylko od wersji 1.8.8+ spigot/paperspigot)")

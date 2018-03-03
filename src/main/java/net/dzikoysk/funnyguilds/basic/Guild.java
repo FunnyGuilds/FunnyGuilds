@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,6 +24,7 @@ public class Guild implements Basic {
     private User deputy;
     private Rank rank;
     private String region;
+    private Region regionData;
     private Location home;
     private List<User> members = new ArrayList<>();
     private List<String> regions = new ArrayList<>();
@@ -32,6 +34,7 @@ public class Guild implements Basic {
     private boolean pvp;
     private long born;
     private long validity;
+    private Date validityDate;
     private long attacked;
     private long ban;
     private int lives;
@@ -276,6 +279,10 @@ public class Guild implements Basic {
         return this.region;
     }
 
+    public Region getRegionData() {
+        return this.regionData == null ? this.regionData = RegionUtils.get(this.region) : this.regionData;
+    }
+
     public void setRegion(String s) {
         if (!Settings.getConfig().regionsEnabled) {
             return;
@@ -286,6 +293,8 @@ public class Guild implements Basic {
             Region region = Region.get(s);
             this.home = region.getCenter();
         }
+
+        this.regionData = RegionUtils.get(this.region);
         
         this.changes();
     }
@@ -369,13 +378,18 @@ public class Guild implements Basic {
         return this.validity;
     }
 
+    public Date getValidityDate() {
+        return this.validityDate == null ? this.validityDate = new Date(this.validity) : this.validityDate;
+    }
+
     public void setValidity(long l) {
         if (l == this.born) {
             this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
         } else {
             this.validity = l;
         }
-        
+
+        this.validityDate = new Date(this.validity);
         this.changes();
     }
 

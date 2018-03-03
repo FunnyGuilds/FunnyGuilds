@@ -20,7 +20,7 @@ public class MessagesConfig {
     public String rankLastVictimA = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!";
     public String rankLastAttackerV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
-    @CfgComment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}, {WEAPON}")
+    @CfgComment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}, {WEAPON}, {REMAINING-HEALTH}, {REMAINING-HEARTS}")
     public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON}";
     @CfgComment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
     public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
@@ -348,17 +348,17 @@ public class MessagesConfig {
     @CfgComment("Dostepne zmienne: {TAG}")
     public String allyAlly = "&cMasz juz sojusz z ta gildia!";
     public String allySame = "&cNie mozesz nawiazac sojuszu z wlasna gildia!";
-    @CfgComment("Dostepne zmienne: {GUILD}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String allyDone = "&7Nawiazano sojusz z gildia &a{GUILD}&7!";
-    @CfgComment("Dostepne zmienne: {GUILD}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String allyIDone = "&7Gildia &a{GUILD} &7przystapila do sojuszu!";
-    @CfgComment("Dostepne zmienne: {GUILD}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String allyReturn = "&7Wycofano zaproszenie do sojuszu dla gildii &c{GUILD}!";
-    @CfgComment("Dostepne zmienne: {GUILD}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String allyIReturn = "&7Gildia &c{GUILD} &7wycofala zaprszenie do sojuszu!";
-    @CfgComment("Dostepne zmienne: {GUILD}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String allyInviteDone = "&7Zaproszono gildie &a{GUILD} &7do sojuszu!";
-    @CfgComment("Dostepne zmienne: {GUILD}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String allyToInvited = "&7Otrzymano zaproszenie do sojuszu od gildii &a{GUILD}&7!";
 
     @CfgComment("<------- Break Messages -------> #")
