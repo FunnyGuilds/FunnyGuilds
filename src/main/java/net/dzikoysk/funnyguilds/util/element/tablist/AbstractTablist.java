@@ -147,21 +147,9 @@ public abstract class AbstractTablist {
         int minute = time.get(Calendar.MINUTE);
         int second = time.get(Calendar.SECOND);
 
-        if (hour < 10) {
-            formatted = StringUtils.replace(formatted, "{HOUR}", "0" + String.valueOf(hour));
-        } else {
-            formatted = StringUtils.replace(formatted, "{HOUR}", String.valueOf(hour));
-        }
-        if (minute < 10) {
-            formatted = StringUtils.replace(formatted, "{MINUTE}", "0" + String.valueOf(minute));
-        } else {
-            formatted = StringUtils.replace(formatted, "{MINUTE}", String.valueOf(minute));
-        }
-        if (second < 10) {
-            formatted = StringUtils.replace(formatted, "{SECOND}", "0" + String.valueOf(second));
-        } else {
-            formatted = StringUtils.replace(formatted, "{SECOND}", String.valueOf(second));
-        }
+        formatted = StringUtils.replace(formatted, "{HOUR}", (hour < 10 ? "0" : "") + hour);
+        formatted = StringUtils.replace(formatted, "{MINUTE}", (minute < 10 ? "0" : "") + minute);
+        formatted = StringUtils.replace(formatted, "{SECOND}", (second < 10 ? "0" : "") + second);
 
         formatted = StringUtils.colored(formatted);
 

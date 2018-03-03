@@ -20,6 +20,7 @@ public class Settings {
         if (settings == null) {
             new Settings();
         }
+        
         return settings;
     }
 

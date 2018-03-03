@@ -23,7 +23,7 @@ import java.util.UUID;
 public class GuildUtils {
 
     private static final List<Guild> guilds = new ArrayList<>();
-    
+
     public static List<Guild> getGuilds() {
         return new ArrayList<>(guilds);
     }
@@ -41,9 +41,9 @@ public class GuildUtils {
             Region region = RegionUtils.get(guild.getRegion());
 
             if (region != null) {
-                if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+                if (config.createEntityType != null) {
                     EntityUtil.despawn(guild);
-                } else if (config.createMaterial != Material.AIR) {
+                } else if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
                     Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
                         Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                         if (block.getLocation().getBlockY() > 1) {
@@ -212,4 +212,6 @@ public class GuildUtils {
     public static boolean isTagValid(String guildTag) {
         return Settings.getConfig().restrictedGuildTags.stream().noneMatch(tag -> tag.equalsIgnoreCase(guildTag));
     }
+    
+    private GuildUtils() {}
 }

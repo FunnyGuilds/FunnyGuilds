@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -15,6 +16,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -26,6 +28,7 @@ import java.util.List;
 
 public class AxcMove implements Executor {
 
+    @SuppressWarnings("deprecation")
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
@@ -81,13 +84,16 @@ public class AxcMove implements Executor {
         if (region == null) {
             region = new Region(guild, location, config.regionSize);
         } else {
-            if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+            if (config.createEntityType != null) {
                 EntityUtil.despawn(guild);
-            } else {
+            } else if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-                if (block.getLocation().getBlockY() > 1) {
-                    block.setType(Material.AIR);
-                }
+                
+                Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
+                    if (block.getLocation().getBlockY() > 1) {
+                        block.setType(Material.AIR);
+                    }
+                });
             }
             
             region.setCenter(location);
@@ -102,9 +108,12 @@ public class AxcMove implements Executor {
             }
         }
         
-        if (config.createMaterial != null && config.createMaterial != Material.AIR) {
-            location.getBlock().getRelative(BlockFace.DOWN).setType(config.createMaterial);
-        } else if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+        if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
+            Block heart = location.getBlock().getRelative(BlockFace.DOWN);
+            
+            heart.setType(config.createMaterialData.getItemType());
+            heart.setData(config.createMaterialData.getData());
+        } else if (config.createEntityType != null) {
             EntityUtil.spawn(guild);
         }
 

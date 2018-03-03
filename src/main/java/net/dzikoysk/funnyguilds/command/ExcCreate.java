@@ -26,6 +26,7 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,6 +36,7 @@ import java.util.List;
 
 public class ExcCreate implements Executor {
 
+    @SuppressWarnings("deprecation")
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
@@ -251,10 +253,13 @@ public class ExcCreate implements Executor {
                     }
                 }
             }
-
-            if (config.createMaterial != null && config.createMaterial != Material.AIR) {
-                guildLocation.getBlock().getRelative(BlockFace.DOWN).setType(config.createMaterial);
-            } else if (config.createStringMaterial.equalsIgnoreCase("ender crystal")) {
+            
+            if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
+                Block heart = guildLocation.getBlock().getRelative(BlockFace.DOWN);
+                
+                heart.setType(config.createMaterialData.getItemType());
+                heart.setData(config.createMaterialData.getData());
+            } else if (config.createEntityType != null) {
                 EntityUtil.spawn(guild);
             }
 

@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.util.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.util.RankSystem;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.Parser;
@@ -12,7 +13,10 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.diorite.cfg.annotations.CfgClass;
 import org.diorite.cfg.annotations.CfgCollectionStyle;
 import org.diorite.cfg.annotations.CfgComment;
@@ -41,6 +45,9 @@ import java.util.Map;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfig {
 
+    @CfgExclude
+    public final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
+    
     @CfgExclude
     public SimpleDateFormat dateFormat;
     
@@ -245,12 +252,17 @@ public class PluginConfig {
     @CfgName("create-distance")
     public int createDistance = 100;
 
-    @CfgComment("Blok, jaki pojawi sie pod nami po stworzeniu gildii")
-    @CfgName("create-material")
-    public String createStringMaterial = "ender crystal";
+    @CfgComment("Blok lub entity, ktore jest sercem gildii")
+    @CfgComment("Bloki musza byc podawane w formacie - material:metadata (tak jak przedmioty na gildie, tylko bez ilosci, nazwy czy opisu)")
+    @CfgComment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
+    @CfgName("create-type")
+    public String createType = "ender_crystal";
 
     @CfgExclude
-    public Material createMaterial;
+    public MaterialData createMaterialData;
+    
+    @CfgExclude
+    public EntityType createEntityType;
 
     @CfgComment("Na jakim poziomie ma byc wyznaczone centrum gildii")
     @CfgComment("Wpisz 0 jesli ma byc ustalone przez pozycje gracza")
@@ -897,9 +909,13 @@ public class PluginConfig {
         this.guiItemsVipTitle = StringUtils.colored(this.guiItemsVipTitle_);
         this.guiItemsLore = StringUtils.colored(this.guiItemsLore_);
         
-        this.createMaterial = Parser.parseMaterial(this.createStringMaterial);
+        try {
+            this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
+        } catch (Exception e) {
+            this.createMaterialData = Parser.parseMaterialData(this.createType, true);
+        }
 
-        if (this.createMaterial != null && this.createMaterial == Material.DRAGON_EGG) {
+        if (this.createMaterialData != null && this.createMaterialData.getItemType() == Material.DRAGON_EGG) {
             this.eventPhysics = true;
         }
 
@@ -928,7 +944,7 @@ public class PluginConfig {
 
         HashMap<Material, Double> map = new HashMap<>();
         for (Map.Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
-            Material material = Parser.parseMaterial(entry.getKey());
+            Material material = Parser.parseMaterial(entry.getKey(), true);
             if (material == null || material == Material.AIR) {
                 continue;
             }

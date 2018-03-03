@@ -31,10 +31,8 @@ public class PlayerJoin implements Listener {
         final User user = User.get(player);
         final PluginConfig config = Settings.getConfig();
 
-        if (config.playerlistEnable) {
-            if (!AbstractTablist.hasTablist(player)) {
-                AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
-            }
+        if (config.playerlistEnable && !AbstractTablist.hasTablist(player)) {
+            AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
         }
 
         user.getScoreboard();
@@ -52,7 +50,7 @@ public class PlayerJoin implements Listener {
                 return;
             }
             
-            if ("ender crystal".equalsIgnoreCase(Settings.getConfig().createStringMaterial)) {
+            if (config.createEntityType != null) {
                 EntityUtil.spawn(region.getGuild(), player);
             }
         }, 30L);

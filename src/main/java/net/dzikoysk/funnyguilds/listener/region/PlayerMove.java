@@ -51,7 +51,7 @@ public class PlayerMove implements Listener {
                     Guild guild = region.getGuild();
 
                     FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
-                        if ("ender crystal".equalsIgnoreCase(config.createStringMaterial)) {
+                        if (config.createEntityType != null) {
                             EntityUtil.despawn(guild, player);
                         }
                     }, 40L);
@@ -87,7 +87,7 @@ public class PlayerMove implements Listener {
                 
                 user.setEnter(true);
                 FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
-                    if ("ender crystal".equalsIgnoreCase(config.createStringMaterial)) {
+                    if (config.createEntityType != null) {
                         EntityUtil.spawn(guild, player);
                     }
                 }, 40L);

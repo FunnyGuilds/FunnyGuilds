@@ -1,10 +1,10 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
 version: '${project.version} Tribute-${git.commit.id.abbrev}'
-author: dzikoysk
-authors: ['kacperduras', 'insertt']
-website: https://www.dzikoysk.net/
-loadbefore: [WorldEdit, WorldGuard, Vault]
+author: 'FunnyGuilds Team'
+website: https://github.com/FunnyGuilds
+softdepend: [WorldEdit, Vault]
+loadbefore: [WorldGuard]
 
 permissions:
     funnyguilds.*:

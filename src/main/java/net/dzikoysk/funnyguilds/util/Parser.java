@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,7 +25,7 @@ public class Parser {
         String[] typeSplit = split[1].split(":");
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
 
-        Material mat = parseMaterial(typeSplit[0]);
+        Material mat = parseMaterial(typeSplit[0], false);
         
         int stack;
         int data;
@@ -83,10 +84,10 @@ public class Parser {
         return item.getItem();
     }
 
-    public static Material parseMaterial(String string) {
+    public static Material parseMaterial(String string, boolean allowNullReturn) {
         if (string == null) {
             FunnyLogger.parser("Unknown material: null");
-            return Material.AIR;
+            return allowNullReturn ? null : Material.AIR;
         }
 
         
@@ -99,14 +100,29 @@ public class Parser {
 
         material = Material.getMaterial(materialName);
         if (material == null) {
-            if (!string.equalsIgnoreCase("ender crystal")) {
-                FunnyLogger.parser("Unknown material: " + string);
-            }
-            
-            return Material.AIR;
+            FunnyLogger.parser("Unknown material: " + string);
+            return allowNullReturn ? null : Material.AIR;
         }
         
         return material;
+    }
+    
+    @SuppressWarnings("deprecation")
+    public static MaterialData parseMaterialData(String string, boolean allowNullReturn) {
+        if (string == null) {
+            FunnyLogger.parser("Unknown materialdata: null");
+            return allowNullReturn ? null : new MaterialData(Material.AIR);
+        }
+        
+        String[] data = string.split(":");
+        Material material = parseMaterial(data[0], allowNullReturn);
+        
+        if (material == null) {
+            FunnyLogger.parser("Unknown material in materialdata: " + string);
+            return allowNullReturn ? null : new MaterialData(Material.AIR);
+        }
+        
+        return new MaterialData(material, data.length == 2 ? Byte.parseByte(data[1]) : 0);
     }
 
     public static Location parseLocation(String string) {

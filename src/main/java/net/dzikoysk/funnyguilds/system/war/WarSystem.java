@@ -54,14 +54,14 @@ public class WarSystem {
             conquer(attacker, guild, user);
         } else {
             for (User u : attacker.getMembers()) {
-                Player p = Bukkit.getPlayer(u.getName());
+                Player p = u.getPlayer();
                 if (p != null) {
                     WarUtils.message(p, 3, guild);
                 }
             }
             
             for (User u : guild.getMembers()) {
-                Player p = Bukkit.getPlayer(u.getName());
+                Player p = u.getPlayer();
                 if (p != null) {
                     WarUtils.message(p, 4, attacker);
                 }
@@ -77,7 +77,7 @@ public class WarSystem {
         
         String message = WarUtils.getWinMessage(conqueror, loser);
         for (User user : conqueror.getMembers()) {
-            Player player = Bukkit.getPlayer(user.getName());
+            Player player = user.getPlayer();
             if (player != null) {
                 player.sendMessage(message);
             }
@@ -85,7 +85,7 @@ public class WarSystem {
         
         message = WarUtils.getLoseMessage(conqueror, loser);
         for (User user : loser.getMembers()) {
-            Player player = Bukkit.getPlayer(user.getName());
+            Player player = user.getPlayer();
             if (player != null) {
                 player.sendMessage(message);
             }

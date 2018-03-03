@@ -38,12 +38,10 @@ import net.dzikoysk.funnyguilds.util.runnable.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.InputStream;
 
 public class FunnyGuilds extends JavaPlugin {
     
@@ -88,6 +86,11 @@ public class FunnyGuilds extends JavaPlugin {
 
         EventManager em = EventManager.getEventManager();
         em.load();
+        
+        System.out.println("Class name: " + EntityType.ENDER_CRYSTAL.getEntityClass().getName());
+        System.out.println("Class type name: " + EntityType.ENDER_CRYSTAL.getEntityClass().getTypeName());
+        System.out.println("Class simple name: " + EntityType.ENDER_CRYSTAL.getEntityClass().getSimpleName());
+        System.out.println("Class canonical name: " + EntityType.ENDER_CRYSTAL.getEntityClass().getCanonicalName());
     }
 
     @Override
@@ -135,7 +138,7 @@ public class FunnyGuilds extends JavaPlugin {
         Version.isNewAvailable(getServer().getConsoleSender(), true);
         PluginHook.init();
 
-        FunnyLogger.info("~ Created by & \u2764 Dzikoysk ~");
+        FunnyLogger.info("~ Created by FunnyGuilds Team ~");
     }
 
     @Override
@@ -169,17 +172,12 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         for (Guild guild : GuildUtils.getGuilds()) {
-            if (config.createMaterial == Material.DRAGON_EGG) {
+            if (config.createEntityType != null) {
                 EntityUtil.spawn(guild);
             }
 
             guild.updateRank();
         }
-    }
-
-    @Override
-    public InputStream getResource(String s) {
-        return super.getResource(s);
     }
 
     public boolean isDisabling() {

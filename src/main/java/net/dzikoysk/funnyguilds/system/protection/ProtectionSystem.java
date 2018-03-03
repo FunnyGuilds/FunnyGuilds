@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 
 import java.util.concurrent.TimeUnit;
 
@@ -50,8 +51,8 @@ public final class ProtectionSystem {
                         Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))));
                 return true;
             } else if (location.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
-                Material m = Settings.getConfig().createMaterial;
-                if (m != null && m != Material.AIR) {
+                MaterialData md = Settings.getConfig().createMaterialData;
+                if (md != null && md.getItemType() != Material.AIR) {
                     return true;
                 }
             }
