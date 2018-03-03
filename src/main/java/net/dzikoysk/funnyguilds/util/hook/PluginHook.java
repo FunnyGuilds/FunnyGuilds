@@ -8,6 +8,7 @@ import java.util.List;
 
 public final class PluginHook {
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
+    public static final String PLUGIN_VAULT = "Vault";
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
     public static void init() {
@@ -20,6 +21,8 @@ public final class PluginHook {
                 FunnyLogger.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
             }
         });
+
+        tryInit(PLUGIN_VAULT, VaultHook::initEconomyHook);
     }
 
     public static void tryInit(String plugin, Runnable init) {
@@ -27,6 +30,9 @@ public final class PluginHook {
             if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
                 init.run();
                 HOOK_LIST.add(plugin);
+            }
+            else {
+                FunnyLogger.warning("Plugin: " + plugin + " could not be found, some features may be not available.");
             }
         } catch (Exception e) {
             e.printStackTrace();

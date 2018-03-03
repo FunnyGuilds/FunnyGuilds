@@ -265,6 +265,8 @@ public class MessagesConfig {
     public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
     @CfgComment("Dostepne zmienne: {EXP}")
     public String createExperience = "&cNie posiadasz wymaganego doswiadczenia do zalozenia gildii: &7{EXP}";
+    @CfgComment("Dostepne zmienne: {MONEY}")
+    public String createMoney = "&cNie posiadasz wymaganej ilosci pieniedzy do zalozenia gildii: &7{MONEY}";
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
     public String createGuild = "&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
     public String createGuildCouldNotPasteSchematic = "&cWystapil blad podczas tworzenia terenu gildii, zglos sie do administracji.";

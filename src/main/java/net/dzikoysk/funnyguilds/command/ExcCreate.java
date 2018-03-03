@@ -19,6 +19,7 @@ import net.dzikoysk.funnyguilds.util.ItemUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.schematic.SchematicHelper;
+import net.dzikoysk.funnyguilds.util.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -160,6 +161,7 @@ public class ExcCreate implements Executor {
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items") ? config.createItemsVip : config.createItems;
         int requiredExperience = player.hasPermission("funnyguilds.vip.items") ? config.requiredExperienceVip : config.requiredExperience;
+        double requiredMoney = player.hasPermission("funnyguilds.vip.items") ? config.requiredMoneyVip : config.requiredMoney;
 
         if (!user.getBypass()) {
             if (player.getTotalExperience() < requiredExperience) {
@@ -167,6 +169,15 @@ public class ExcCreate implements Executor {
                 msg = StringUtils.replace(msg, "{EXP}", String.valueOf(requiredExperience));
                 player.sendMessage(msg);
                 return;
+            }
+
+            if (VaultHook.isHooked()) {
+                if (!VaultHook.canAfford(player, requiredMoney)) {
+                    String notEnoughMoneyMessage = messages.createMoney;
+                    notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
+                    player.sendMessage(notEnoughMoneyMessage);
+                    return;
+                }
             }
 
             for (ItemStack requiredItem : requiredItems) {
@@ -201,6 +212,9 @@ public class ExcCreate implements Executor {
         } else {
             player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
             player.setTotalExperience(player.getTotalExperience() - requiredExperience);
+            if (VaultHook.isHooked()) {
+                VaultHook.withdrawFromPlayerBank(player, requiredMoney);
+            }
         }
 
         Manager.getInstance().stop();

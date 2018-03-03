@@ -86,8 +86,6 @@ public class FunnyGuilds extends JavaPlugin {
         new DescriptionChanger(getDescription()).name(Settings.getConfig().pluginName);
         new Commands().register();
 
-        PluginHook.init();
-
         EventManager em = EventManager.getEventManager();
         em.load();
     }
@@ -135,6 +133,8 @@ public class FunnyGuilds extends JavaPlugin {
             
         patch();
         Version.isNewAvailable(getServer().getConsoleSender(), true);
+        PluginHook.init();
+
         FunnyLogger.info("~ Created by & \u2764 Dzikoysk ~");
     }
 

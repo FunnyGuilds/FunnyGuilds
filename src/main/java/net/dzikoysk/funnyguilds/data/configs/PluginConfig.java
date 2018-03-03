@@ -127,8 +127,13 @@ public class PluginConfig {
     public List<ItemStack> createItems;
 
     @CfgComment("Wymagana ilosc doswiadczenia do zalozenia gildii")
-    @CfgName("requiredExperience")
+    @CfgName("required-experience")
     public int requiredExperience = 0;
+
+    @CfgComment("Wymagana ilosc pieniedzy do zalozenia gildii")
+    @CfgComment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodający ekonomie")
+    @CfgName("required-money")
+    public double requiredMoney = 0;
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Dwukropek i metadata po nazwie przedmiotu sa opcjonalne")
@@ -145,8 +150,13 @@ public class PluginConfig {
     public List<ItemStack> createItemsVip;
 
     @CfgComment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CfgName("requiredExperienceVip")
+    @CfgName("required-experience-vip")
     public int requiredExperienceVip = 0;
+
+    @CfgComment("Wymagana ilosc pieniedzy do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
+    @CfgComment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodający ekonomie")
+    @CfgName("required-money-vip")
+    public double requiredMoneyVip = 0;
 
     @CfgComment("Czy opcja wymaganego rankingu do zalozenia gildi ma byc wlaczona?")
     @CfgName("rank-create-enable")

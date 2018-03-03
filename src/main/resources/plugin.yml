@@ -4,7 +4,7 @@ version: '${project.version} Tribute-${git.commit.id.abbrev}'
 author: dzikoysk
 authors: ['kacperduras', 'insertt']
 website: https://www.dzikoysk.net/
-loadbefore: [WorldEdit, WorldGuard]
+loadbefore: [WorldEdit, WorldGuard, Vault]
 
 permissions:
     funnyguilds.*:
