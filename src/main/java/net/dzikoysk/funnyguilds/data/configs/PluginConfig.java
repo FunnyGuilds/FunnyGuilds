@@ -253,8 +253,10 @@ public class PluginConfig {
     public int createDistance = 100;
 
     @CfgComment("Blok lub entity, ktore jest sercem gildii")
+    @CfgComment("Zmiana entity wymaga pelnego restartu serwera")
     @CfgComment("Bloki musza byc podawane w formacie - material:metadata (tak jak przedmioty na gildie, tylko bez ilosci, nazwy czy opisu)")
     @CfgComment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
+    @CfgComment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
     @CfgName("create-type")
     public String createType = "ender_crystal";
 
