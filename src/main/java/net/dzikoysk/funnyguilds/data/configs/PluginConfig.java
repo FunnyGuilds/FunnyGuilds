@@ -764,6 +764,10 @@ public class PluginConfig {
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
+    @CfgComment("Czy powiadomienia o wejsciu na teren gildii czlonka gildii powinny byc wyswietlane")
+    @CfgName("notification-guild-member-display")
+    public boolean regionEnterNotificationGuildMember = false;
+
     @CfgComment("Gdzie maja pojawiac sie wiadomosci zwiazane z poruszaniem sie po terenach gildii")
     @CfgComment("Mozliwe miejsca wyswietlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
     @CfgName("region-move-notification-style")
@@ -771,7 +775,7 @@ public class PluginConfig {
     public List<String> regionEnterNotificationStyle_ = Arrays.asList("ACTIONBAR", "BOSSBAR");
     
     @CfgExclude
-    public List<NotificationStyle> regionEnterNotificationStyle = new ArrayList<NotificationStyle>();
+    public List<NotificationStyle> regionEnterNotificationStyle = new ArrayList<>();
     
     @CfgComment("Jak dlugo title/subtitle powinien sie pojawiac")
     @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")

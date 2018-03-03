@@ -123,6 +123,10 @@ public class PlayerMove implements Listener {
                     return;
                 }
 
+                if (!config.regionEnterNotificationGuildMember && user.getGuild().equals(guild)) {
+                    return;
+                }
+
                 for (User u : guild.getOnlineMembers()) {
                     Player member = u.getPlayer();
                     
