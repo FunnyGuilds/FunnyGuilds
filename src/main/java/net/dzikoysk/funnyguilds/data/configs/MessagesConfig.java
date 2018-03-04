@@ -147,6 +147,7 @@ public class MessagesConfig {
     
     @CfgComment("<------- Player Info Messages -------> #")
     public String playerInfoExists = "&cTaki gracz nigdy nie byl na serwerze!";
+    
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> playerInfoList = Arrays.asList(
@@ -162,14 +163,14 @@ public class MessagesConfig {
     @CfgComment("<------- Info Messages -------> #")
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
-    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {MEMBERS}, ")
-    @CfgComment("{POINTS}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY},")
-    @CfgComment("{LIVES}")
+    
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {POINTS}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY}, {LIVES}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
             "&7Zalozyciel: &c{OWNER}",
+            "&7Zastepcy: &c{DEPUTIES}",
             "&7Punkty: &c{POINTS} &8[&c{RANK}&8]",
             "&7Zycia: &4{LIVES}",
             "&7Waznosc: &c{VALIDITY}",

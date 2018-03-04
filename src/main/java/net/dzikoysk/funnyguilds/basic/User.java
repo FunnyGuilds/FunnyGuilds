@@ -48,7 +48,7 @@ public class User implements Basic {
     private boolean changes;
     private boolean spy;
     
-    private final Map<User, Double> damage = new HashMap<User, Double>();
+    private final Map<User, Double> damage = new HashMap<>();
 
     private User(UUID uuid) {
         this.uuid = uuid;
@@ -132,11 +132,7 @@ public class User implements Basic {
             return false;
         }
         
-        if (this.guild.getDeputy() == null) {
-            return false;
-        }
-        
-        return this.guild.getDeputy().equals(this);
+        return this.guild.getDeputies().contains(this);
     }
 
     public boolean isOnline() {
@@ -192,7 +188,7 @@ public class User implements Basic {
         return this.scoreboard;
     }
 
-    public void setScoreboard(Scoreboard sb) {
+    public synchronized void setScoreboard(Scoreboard sb) {
         this.scoreboard = sb;
     }
 
@@ -302,16 +298,16 @@ public class User implements Basic {
     }
     
     public Map<User, Double> getDamage() {
-        return new HashMap<User, Double>(this.damage);
+        return new HashMap<>(this.damage);
     }
     
     public Double getTotalDamage() {
-        double damage = 0.0D;
+        double dmg = 0.0D;
         for (double d : this.damage.values()) {
-            damage += d;
+            dmg += d;
         }
         
-        return damage;
+        return dmg;
     }
     
     public void addDamage(User user, double damage) {
@@ -320,8 +316,8 @@ public class User implements Basic {
     }
     
     public double killedBy(User user) {
-        Double damage = this.damage.remove(user);
-        return damage == null ? 0.0D : damage.doubleValue();
+        Double dmg = this.damage.remove(user);
+        return dmg == null ? 0.0D : dmg.doubleValue();
     }
     
     public boolean isAssisted() {

@@ -35,7 +35,7 @@ public class DeserializationUtils {
         guild.setAttacked((long) values[12]);
         guild.setLives((int) values[13]);
         guild.setBan((long) values[14]);
-        guild.setDeputy((User) values[15]);
+        guild.setDeputies((List<User>) values[15]);
         guild.deserializationUpdate();
         
         return guild;

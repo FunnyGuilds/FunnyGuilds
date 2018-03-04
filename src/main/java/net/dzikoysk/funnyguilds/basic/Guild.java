@@ -21,12 +21,12 @@ public class Guild implements Basic {
     private String name;
     private String tag;
     private User owner;
-    private User deputy;
     private Rank rank;
     private String region;
     private Region regionData;
     private Location home;
     private List<User> members = new ArrayList<>();
+    private List<User> deputies = new ArrayList<>();
     private List<String> regions = new ArrayList<>();
     private List<Guild> allies = new ArrayList<>();
     private List<Guild> enemies = new ArrayList<>();
@@ -140,10 +140,7 @@ public class Guild implements Basic {
     }
 
     public void removeMember(User user) {
-        if(user.isDeputy()) {
-            this.deputy = null;
-        }
-        
+        this.deputies.remove(user);
         this.members.remove(user);
         this.updateRank();
         this.changes();
@@ -266,12 +263,26 @@ public class Guild implements Basic {
         this.changes();
     }
 
-    public User getDeputy() {
-        return this.deputy;
+    public List<User> getDeputies() {
+        return this.deputies;
+    }
+    
+    public void addDeputy(User user) {
+        if (this.deputies.contains(user)) {
+            return;
+        }
+        
+        this.deputies.add(user);
+        this.changes();
+    }
+    
+    public void removeDeputy(User user) {
+        this.deputies.remove(user);
+        this.changes();
     }
 
-    public void setDeputy(User user) {
-        this.deputy = user;
+    public void setDeputies(List<User> users) {
+        this.deputies = users;
         this.changes();
     }
 

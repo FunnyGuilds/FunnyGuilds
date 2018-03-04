@@ -1,17 +1,15 @@
 package net.dzikoysk.funnyguilds.util;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public final class SpaceUtils {
 
-    private final static Random RANDOM_INSTANCE = new Random();
-
     public static boolean chance(double chance) {
-        return chance >= 100 || chance >= RANDOM_INSTANCE.nextDouble() * 100;
+        return chance >= 100 || chance >= FunnyGuilds.RANDOM_INSTANCE.nextDouble() * 100;
     }
     
     public static List<Location> sphere(Location loc, int radius, int height, boolean hollow, boolean sphere, int plusY) {

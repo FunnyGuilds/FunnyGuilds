@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
@@ -26,8 +25,7 @@ public class ExcInfo implements Executor {
 
         if (args.length > 0) {
             tag = args[0];
-        }
-        else if (sender instanceof Player) {
+        } else if (sender instanceof Player) {
             User user = User.get((Player) sender);
 
             if (user.hasGuild()) {
@@ -63,11 +61,16 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(guild.getRank().getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(guild.getRank().getDeaths()));
             messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", guild.getRank().getKDR()));
-            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(guild)));
             messageLine = StringUtils.replace(messageLine, "{VALIDITY}", validity);
             messageLine = StringUtils.replace(messageLine, "{LIVES}", Integer.toString(guild.getLives()));
             
-            if (guild.getAllies().size() > 0) {
+            if (guild.getMembers().size() >= Settings.getConfig().minMembersToInclude) {
+                messageLine = StringUtils.replace(messageLine, "{RANK}", String.valueOf(guild.getRank().getPosition()));
+            } else {
+                messageLine = StringUtils.replace(messageLine, "{RANK}", Settings.getConfig().minMembersPositionString);
+            }
+            
+            if (!guild.getAllies().isEmpty()) {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
             } else {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", "Brak");

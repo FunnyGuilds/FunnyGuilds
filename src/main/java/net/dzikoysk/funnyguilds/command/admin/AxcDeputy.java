@@ -59,7 +59,7 @@ public class AxcDeputy implements Executor {
                 .register("{PLAYER}", user.getName());
 
         if (user.isDeputy()) {
-            guild.setDeputy(null);
+            guild.removeDeputy(user);
             sender.sendMessage(messages.deputyRemove);
             
             if (player != null) {
@@ -75,7 +75,7 @@ public class AxcDeputy implements Executor {
             return;
         }
 
-        guild.setDeputy(user);
+        guild.addDeputy(user);
         sender.sendMessage(messages.deputySet);
         
         if (player != null) {

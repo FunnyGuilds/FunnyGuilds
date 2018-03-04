@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Parser;
+import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import org.bukkit.Location;
 
@@ -49,7 +50,6 @@ public class FlatGuild {
         long attacked = pc.getLong("attacked");
         long ban = pc.getLong("ban");
         int lives = pc.getInt("lives");
-        pc = null;
 
         if (name == null) {
             FunnyLogger.error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
@@ -77,9 +77,10 @@ public class FlatGuild {
         }
 
         User owner = User.get(os);
-        User deputy = null;
-        if (dp != null) {
-            deputy = User.get(dp);
+        
+        List<User> deputies = new ArrayList<>();
+        if (dp != null && !dp.isEmpty()) {
+            deputies = UserUtils.getUsers(StringUtils.fromString(dp));
         }
 
         Location home = null;
@@ -131,9 +132,11 @@ public class FlatGuild {
         if (born == 0) {
             born = System.currentTimeMillis();
         }
+        
         if (validity == 0) {
             validity = System.currentTimeMillis() + config.validityStart;
         }
+        
         if (lives == 0) {
             lives = config.warLives;
         }
@@ -154,8 +157,9 @@ public class FlatGuild {
         values[12] = attacked;
         values[13] = lives;
         values[14] = ban;
-        values[15] = deputy;
+        values[15] = deputies;
         values[16] = pvp;
+        
         return DeserializationUtils.deserializeGuild(values);
     }
 
@@ -195,13 +199,9 @@ public class FlatGuild {
         pc.set("lives", guild.getLives());
         pc.set("ban", guild.getBan());
         pc.set("pvp", guild.getPvP());
-        
-        if (guild.getDeputy() != null) {
-            pc.set("deputy", guild.getDeputy().getName());
-        }
+        pc.set("deputy", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
         
         pc.save();
-        pc = null;
         return true;
     }
 

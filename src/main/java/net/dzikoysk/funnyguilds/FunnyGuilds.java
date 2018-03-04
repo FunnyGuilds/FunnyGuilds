@@ -42,7 +42,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Random;
+
 public class FunnyGuilds extends JavaPlugin {
+    
+    public final static Random RANDOM_INSTANCE = new Random();
     
     private static FunnyGuilds funnyguilds;
     private static String version;

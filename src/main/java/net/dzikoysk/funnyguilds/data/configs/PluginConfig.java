@@ -663,6 +663,8 @@ public class PluginConfig {
     @CfgComment("{G-NAME} - nazwa gildii do ktorej nalezy gracz")
     @CfgComment("{G-TAG} - tag gildii gracza")
     @CfgComment("{G-OWNER} - wlasciciel gildii")
+    @CfgComment("{G-DEPUTIES} - zastepcy gildii")
+    @CfgComment("{G-DEPUTY} - losowy z zastepcow gildii")
     @CfgComment("{G-LIVES} - liczba zyc gildii")
     @CfgComment("{G-ALLIES} - liczba sojusznikow gildii")
     @CfgComment("{G-POINTS} - punkty gildii")

@@ -62,7 +62,7 @@ public class ExcDeputy implements Executor {
         }
         
         if (deputyUser.isDeputy()) {
-            guild.setDeputy(null);
+            guild.removeDeputy(deputyUser);;
             player.sendMessage(messages.deputyRemove);
             
             if (deputyPlayer != null) {
@@ -72,7 +72,7 @@ public class ExcDeputy implements Executor {
             return;
         }
 
-        guild.setDeputy(deputyUser);
+        guild.addDeputy(deputyUser);
         player.sendMessage(messages.deputySet);
         
         if (deputyPlayer != null) {
