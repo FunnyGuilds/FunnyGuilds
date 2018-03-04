@@ -20,6 +20,8 @@ import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
 import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
 import net.dzikoysk.funnyguilds.listener.region.BucketAction;
 import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
+import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
 import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
@@ -120,6 +122,8 @@ public class FunnyGuilds extends JavaPlugin {
             pm.registerEvents(new BlockPlace(), this);
             pm.registerEvents(new BucketAction(), this);
             pm.registerEvents(new EntityExplode(this), this);
+            pm.registerEvents(new HangingBreak(), this);
+            pm.registerEvents(new HangingPlace(), this);
             pm.registerEvents(new PlayerCommand(), this);
             pm.registerEvents(new PlayerInteract(), this);
 
