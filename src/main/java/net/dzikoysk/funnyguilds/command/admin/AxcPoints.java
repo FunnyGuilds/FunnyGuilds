@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
+import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -54,7 +55,11 @@ public class AxcPoints implements Executor {
         user.getRank().setPoints(points);
         RankManager.getInstance().update(user);
 
-        sender.sendMessage(messages.adminPointsChanged.replace("{PLAYER}", user.getName()).replace("{POINTS}", Integer.toString(points)));
+        String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
+        message = message.replace("{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(points));
+        message = message.replace("{POINTS}", String.valueOf(points));
+        
+        sender.sendMessage(message);
     }
 
 }

@@ -20,7 +20,7 @@ public class MessagesConfig {
     public String rankLastVictimA = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!";
     public String rankLastAttackerV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
-    @CfgComment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {VTAG}, {ATAG}, {WEAPON}, {REMAINING-HEALTH}, {REMAINING-HEARTS}")
+    @CfgComment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {REMAINING-HEALTH}, {REMAINING-HEARTS}")
     public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON}";
     @CfgComment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
     public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
@@ -148,7 +148,7 @@ public class MessagesConfig {
     @CfgComment("<------- Player Info Messages -------> #")
     public String playerInfoExists = "&cTaki gracz nigdy nie byl na serwerze!";
     
-    @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
+    @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> playerInfoList = Arrays.asList(
             "&8--------------.-----------------",
@@ -164,7 +164,7 @@ public class MessagesConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
     
-    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {POINTS}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY}, {LIVES}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY}, {LIVES}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
@@ -196,6 +196,7 @@ public class MessagesConfig {
 
     @CfgComment("<------- Ranking Messages -------> #")
     @CfgComment("{PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu")
+    @CfgComment("{ONLINE-PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu z uwzglednieniem, czy jest online")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> rankingList = Arrays.asList(
             "&8----------{ &cTOP 10 Graczy &8}----------",
@@ -260,7 +261,7 @@ public class MessagesConfig {
     @CfgComment("Dostepne zmienne: {DISTANCE}")
     public String createSpawn = "&7Jestes zbyt blisko spawnu! Minimalna odleglosc to &c{DISTANCE}";
     public String createIsNear = "&cW poblizu znajduje sie jakas gildia, poszukaj innego miejsca!";
-    @CfgComment("Dostepne zmienne: {POINTS}, {REQUIRED}")
+    @CfgComment("Dostepne zmienne: {POINTS}, {POINTS-FORMAT}, {REQUIRED}, {REQUIRED-FORMAT}")
     public String createRank = "&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED} &cpunktow.";
     @CfgComment("Dostepne zmienne: {ITEM}, {ITEMS}")
     public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
@@ -436,7 +437,7 @@ public class MessagesConfig {
     public String adminNoPointsGiven = "&cPodaj liczbe punktow!";
     @CfgComment("Dostepne zmienne: {ERROR}")
     public String adminErrorInNumber = "&cNieznana jest liczba: {ERROR}";
-    @CfgComment("Dostepne zmienne: {PLAYER}, {POINTS}")
+    @CfgComment("Dostepne zmienne: {PLAYER}, {POINTS}, {POINTS-FORMAT}")
     public String adminPointsChanged = "&aUstawiono &7{POINTS} &apunktow dla gracza &7{PLAYER}";
     
     public String adminNoKillsGiven = "&cPodaj liczbe zabojstw!";

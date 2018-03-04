@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -47,6 +48,7 @@ public class ExcPlayer implements Executor {
             }
             
             messageLine = StringUtils.replace(messageLine, "{PLAYER}", user.getName());
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(user.getRank().getPoints()));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(user.getRank().getPoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(user.getRank().getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(user.getRank().getDeaths()));

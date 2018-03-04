@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
+import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.entity.Player;
@@ -152,7 +153,8 @@ public class PlayerDeath implements Listener {
         deathMessage = StringUtils.replace(deathMessage, "{VICTIM}", victim.getName());
         deathMessage = StringUtils.replace(deathMessage, "{+}", Integer.toString(attackerEvent.getChange()));
         deathMessage = StringUtils.replace(deathMessage, "{-}", Integer.toString(victimEvent.getChange()));
-        deathMessage = StringUtils.replace(deathMessage, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
+        deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(victim.getRank().getPoints()));
+        deathMessage = StringUtils.replace(deathMessage, "{POINTS}", String.valueOf(victim.getRank().getPoints()));
         deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
         deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", Double.toString(a.getHealth()));
         deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEARTS}", Double.toString(a.getHealth() / 2));

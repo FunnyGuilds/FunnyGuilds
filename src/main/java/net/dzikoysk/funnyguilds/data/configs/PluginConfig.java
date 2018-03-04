@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.util.elo.EloUtils;
+import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -570,12 +571,32 @@ public class PluginConfig {
     @CfgExclude
     public String chatRank;
 
-    @CfgComment("Wyglad znaczika {POINTS} wstawionego w format chatu")
-    @CfgName("chat-points")
-    public String chatPoints_ = "&b{POINTS} ";
-
+    @CfgComment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
+    @CfgComment("{G-POINTS-FORMAT} (tak samo jak {G-POINTS}) jest uzywane jedynie na liscie graczy")
+    @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
+    @CfgComment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
+    @CfgComment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
+    @CfgName("points-format")
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> pointsFormat_ = Arrays.asList("0-749 &4{POINTS}", "750-999 &c{POINTS}", "1000-1499 &a{POINTS}", "1500-* &6&l{POINTS}");
+    
+    @CfgComment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
+    @CfgComment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @CfgComment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
+    @CfgName("ptop-points")
+    public String ptopPoints_ = " &7[{POINTS}&7]";
+    
     @CfgExclude
-    public String chatPoints;
+    public String ptopPoints;
+    
+    @CfgComment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
+    @CfgComment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @CfgComment("Jesli nie chcesz wyswietlac punktow, tylko sam tag - nie podawaj tu nic")
+    @CfgName("gtop-points")
+    public String gtopPoints_ = " &7[&b{POINTS-FORMAT}&7]";
+    
+    @CfgExclude
+    public String gtopPoints;
 
     @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do gildii gildii")
     @CfgName("chat-priv")
@@ -636,6 +657,20 @@ public class PluginConfig {
 
     @CfgExclude
     public String prefixOther;
+    
+    @CfgComment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {ONLINE-PTOP-x}")
+    @CfgName("ptop-online")
+    public String ptopOnline_ = "&a";
+    
+    @CfgExclude
+    public String ptopOnline;
+    
+    @CfgComment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {ONLINE-PTOP-x}")
+    @CfgName("ptop-offline")
+    public String ptopOffline_ = "&c";
+    
+    @CfgExclude
+    public String ptopOffline;
 
     @CfgComment("Czy wlaczyc dummy z punktami")
     @CfgName("dummy-enable")
@@ -655,6 +690,7 @@ public class PluginConfig {
     @CfgComment("{PLAYER} - nazwa gracza")
     @CfgComment("{PING} - ping gracza")
     @CfgComment("{POINTS} - punkty gracza")
+    @CfgComment("{POINTS-FORMAT} - punkty gracza z formatowaniem")
     @CfgComment("{POSITION} - pozycja gracza w rankingu")
     @CfgComment("{KILLS} - liczba zabojstw gracza")
     @CfgComment("{DEATHS} - liczba smierci gracza")
@@ -668,6 +704,7 @@ public class PluginConfig {
     @CfgComment("{G-LIVES} - liczba zyc gildii")
     @CfgComment("{G-ALLIES} - liczba sojusznikow gildii")
     @CfgComment("{G-POINTS} - punkty gildii")
+    @CfgComment("{G-POINTS-FORMAT} - punkty gildii z formatowaniem")
     @CfgComment("{G-POSITION} - pozycja gildii gracza w rankingu")
     @CfgComment("{G-KILLS} - suma zabojstw czlonkow gildii")
     @CfgComment("{G-DEATHS} - suma smierci czlonkow gildii")
@@ -683,6 +720,7 @@ public class PluginConfig {
     @CfgComment("{MINUTE} - Minuta")
     @CfgComment("{HOUR} - Godzina")
     @CfgComment("{PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu (np. {PTOP-1}, {PTOP-60})")
+    @CfgComment("{ONLINE-PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu z uwzglednieniem, czy jest online")
     @CfgComment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
     @CfgName("player-list")
     public Map<Integer, String> playerList = ImmutableMap.<Integer, String>builder()
@@ -694,7 +732,7 @@ public class PluginConfig {
             .put(6, "&7KDR: &b{KDR}")
             .put(7, "&7Gildia: &b{G-NAME}")
             .put(9, "&7TAG: &b{G-TAG}")
-            .put(10, "&7Punkty gildii: &b{G-POINTS}")
+            .put(10, "&7Punkty gildii: &b{G-POINTS-FORMAT}")
             .put(11, "&7Pozycja gildii: &b{G-POSITION}")
             .put(12, "&7Liczba graczy online: &b{G-MEMBERS-ONLINE}")
             .put(21, "&7Online: &b{ONLINE}")
@@ -725,17 +763,10 @@ public class PluginConfig {
     @CfgName("player-list-enable")
     public boolean playerlistEnable = true;
 
-    @CfgComment("Wyglad punktow wyswietlanych przy gildii w rankingu")
-    @CfgName("player-list-points")
-    public String playerlistPoints_ = "&7[&b{POINTS}&7]";
-
     @CfgComment("Czy tagi gildii powinny byc pokazywane wielka litera")
     @CfgComment("Dziala dopiero po zrestartowaniu serwera")
     @CfgName("guild-tag-uppercase")
     public boolean guildTagUppercase = false;
-
-    @CfgExclude
-    public String playerlistPoints;
 
     @CfgComment("Czy wlaczyc tlumaczenie nazw przedmiotow przy zabojstwie")
     @CfgName("translated-materials-enable")
@@ -1013,19 +1044,24 @@ public class PluginConfig {
         this.prefixOur = StringUtils.colored(this.prefixOur_);
         this.prefixAllies = StringUtils.colored(this.prefixAllies_);
         this.prefixOther = StringUtils.colored(this.prefixOther_);
+        
+        this.ptopOnline = StringUtils.colored(this.ptopOnline_);
+        this.ptopOffline = StringUtils.colored(this.ptopOffline_);
 
         this.dummySuffix = StringUtils.colored(this.dummySuffix_);
 
         this.chatPosition = StringUtils.colored(this.chatPosition_);
         this.chatGuild = StringUtils.colored(this.chatGuild_);
         this.chatRank = StringUtils.colored(this.chatRank_);
-        this.chatPoints = StringUtils.colored(this.chatPoints_);
+
+        PointsFormatUtils.parseData(this.pointsFormat_);
+        
+        this.ptopPoints = StringUtils.colored(this.ptopPoints_);
+        this.gtopPoints = StringUtils.colored(this.gtopPoints_);
 
         this.chatPrivDesign = StringUtils.colored(this.chatPrivDesign_);
         this.chatAllyDesign = StringUtils.colored(this.chatAllyDesign_);
         this.chatGlobalDesign = StringUtils.colored(this.chatGlobalDesign_);
-
-        this.playerlistPoints = StringUtils.colored(this.playerlistPoints_);
 
         if (this.pasteSchematicOnCreation) {
             if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {

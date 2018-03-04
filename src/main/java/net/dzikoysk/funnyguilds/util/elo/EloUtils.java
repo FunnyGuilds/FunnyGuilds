@@ -9,10 +9,11 @@ import java.util.List;
 
 public class EloUtils {
 
-    private static List<EloConstant> constants = new ArrayList<EloConstant>();
+    private static List<EloConstant> constants = new ArrayList<>();
 
     public static void parseData(List<String> eloConstants) {
         constants.clear();
+        
         for (String s : eloConstants) {
             String[] split = s.split(" ");
             if (split.length < 2) {
@@ -26,7 +27,10 @@ public class EloUtils {
                 continue;
             }
 
-            int rankMin = 0, rankMax = 0, constant = 0;
+            int rankMin = 0;
+            int rankMax = 0;
+            int constant = 0;
+            
             try {
                 rankMin = Integer.parseInt(range[0]);
                 if (rankMin < 0) {
@@ -84,4 +88,6 @@ public class EloUtils {
         };
     }
 
+    private EloUtils() {}
+    
 }

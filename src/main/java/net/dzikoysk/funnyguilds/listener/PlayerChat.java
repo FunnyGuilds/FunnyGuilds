@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,9 +38,12 @@ public class PlayerChat implements Listener {
             }
         }
         
+        int points = user.getRank().getPoints();
         String format = event.getFormat();
+        
         format = StringUtils.replace(format, "{RANK}", StringUtils.replace(c.chatRank, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user))));
-        format = StringUtils.replace(format, "{POINTS}", StringUtils.replace(c.chatPoints, "{POINTS}", Integer.toString(user.getRank().getPoints())));
+        format = StringUtils.replace(format, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(points));
+        format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
         
         if (user.hasGuild()) {
             format = StringUtils.replace(format, "{TAG}", StringUtils.replace(c.chatGuild, "{TAG}", user.getGuild().getTag()));
@@ -114,7 +118,7 @@ public class PlayerChat implements Listener {
             
             format = StringUtils.replace(format, "{MESSAGE}", subMessage);
             for (User u : guild.getMembers()) {
-                Player p = this.plugin.getServer().getPlayer(u.getName());
+                Player p = u.getPlayer();
                 if (p != null) {
                     p.sendMessage(format);
                 }

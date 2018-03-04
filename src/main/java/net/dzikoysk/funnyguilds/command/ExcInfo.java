@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -57,6 +58,8 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{TAG}", guild.getTag());
             messageLine = StringUtils.replace(messageLine, "{OWNER}", guild.getOwner().getName());
             messageLine = StringUtils.replace(messageLine, "{MEMBERS}", StringUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
+            messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(guild.getRank().getPoints()));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(guild.getRank().getPoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(guild.getRank().getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(guild.getRank().getDeaths()));
