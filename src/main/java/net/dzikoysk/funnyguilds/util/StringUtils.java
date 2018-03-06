@@ -53,7 +53,7 @@ public final class StringUtils {
     }
     
     public static List<String> colored(List<String> list) {
-        List<String> colored = new ArrayList<String>();
+        List<String> colored = new ArrayList<>();
         
         for (String s : list) {
             colored.add(colored(s));

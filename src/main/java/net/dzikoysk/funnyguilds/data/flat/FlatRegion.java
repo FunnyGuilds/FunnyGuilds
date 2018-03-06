@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import org.bukkit.Location;
@@ -54,7 +55,7 @@ public class FlatRegion {
         File file = Flat.loadCustomFile(BasicType.REGION, region.getName());
         Yamler pc = new Yamler(file);
         pc.set("name", region.getName());
-        pc.set("center", Parser.toString(region.getCenter()));
+        pc.set("center", LocationUtils.toString(region.getCenter()));
         pc.set("size", region.getSize());
         pc.set("enlarge", region.getEnlarge());
         pc.save();

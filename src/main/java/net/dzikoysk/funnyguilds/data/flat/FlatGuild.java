@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.Yamler;
@@ -187,7 +188,7 @@ public class FlatGuild {
         pc.set("name", guild.getName());
         pc.set("tag", guild.getTag());
         pc.set("owner", guild.getOwner().getName());
-        pc.set("home", Parser.toString(guild.getHome()));
+        pc.set("home", LocationUtils.toString(guild.getHome()));
         pc.set("members", UserUtils.getNames(guild.getMembers()));
         pc.set("region", guild.getRegion());
         pc.set("regions", guild.getRegions());

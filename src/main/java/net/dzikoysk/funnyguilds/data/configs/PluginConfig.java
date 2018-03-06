@@ -7,12 +7,11 @@ import net.dzikoysk.funnyguilds.basic.util.RankSystem;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.notification.NotificationStyle;
-import net.dzikoysk.funnyguilds.util.elo.EloUtils;
-import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -35,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 @CfgClass(name = "PluginConfig")
 @CfgDelegateDefault("{new}")
@@ -272,7 +272,7 @@ public class PluginConfig {
     @CfgName("create-center-y")
     public int createCenterY = 60;
 
-    @CfgComment("Czy ma sie tworzyc pusta przestrzen dookola centrum gildii")
+    @CfgComment("Czy ma sie tworzyc kula z obsydianu dookola centrum gildii")
     @CfgName("create-center-sphere")
     public boolean createCenterSphere = true;
 
@@ -488,7 +488,10 @@ public class PluginConfig {
     @CfgComment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"2401-* 16\"")
     @CfgName("elo-constants")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> eloConstants = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
+    public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
+    
+    @CfgExclude
+    public Map<IntegerRange, Integer> eloConstants;
 
     @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @CfgComment("Dzielnik obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
@@ -570,6 +573,14 @@ public class PluginConfig {
 
     @CfgExclude
     public String chatRank;
+    
+    @CfgComment("Wyglad znaczika {POINTS} wstawionego w format chatu")
+    @CfgComment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
+    @CfgName("chat-points")
+    public String chatPoints_ = "&b{POINTS} ";
+
+    @CfgExclude
+    public String chatPoints;
 
     @CfgComment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
     @CfgComment("{G-POINTS-FORMAT} (tak samo jak {G-POINTS}) jest uzywane jedynie na liscie graczy")
@@ -579,6 +590,9 @@ public class PluginConfig {
     @CfgName("points-format")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> pointsFormat_ = Arrays.asList("0-749 &4{POINTS}", "750-999 &c{POINTS}", "1000-1499 &a{POINTS}", "1500-* &6&l{POINTS}");
+    
+    @CfgExclude
+    public Map<IntegerRange, String> pointsFormat;
     
     @CfgComment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
     @CfgComment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
@@ -598,6 +612,17 @@ public class PluginConfig {
     @CfgExclude
     public String gtopPoints;
 
+    @CfgComment("Wyglad znacznika {PING-FORMAT} w zaleznosci od wartosci pingu")
+    @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
+    @CfgComment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
+    @CfgComment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minPing w gore, np.: \"301-* &c{PING}\"")
+    @CfgName("points-format")
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> pingFormat_ = Arrays.asList("0-75 &a{PING}", "76-150 &e{PING}", "151-300 &c{PING}", "301-* &c{PING}");
+    
+    @CfgExclude
+    public Map<IntegerRange, String> pingFormat;
+    
     @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do gildii gildii")
     @CfgName("chat-priv")
     public String chatPriv = "!";
@@ -658,14 +683,16 @@ public class PluginConfig {
     @CfgExclude
     public String prefixOther;
     
-    @CfgComment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {ONLINE-PTOP-x}")
+    @CfgComment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
+    @CfgComment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
     @CfgName("ptop-online")
     public String ptopOnline_ = "&a";
     
     @CfgExclude
     public String ptopOnline;
     
-    @CfgComment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {ONLINE-PTOP-x}")
+    @CfgComment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
+    @CfgComment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-online) pusta")
     @CfgName("ptop-offline")
     public String ptopOffline_ = "&c";
     
@@ -673,6 +700,7 @@ public class PluginConfig {
     public String ptopOffline;
 
     @CfgComment("Czy wlaczyc dummy z punktami")
+    @CfgComment("UWAGA - zalecane jest wylaczenie tej opcji w przypadku konfliktow z BungeeCord'em, wiecej szczegolow tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
     @CfgName("dummy-enable")
     public boolean dummyEnable = true;
 
@@ -689,6 +717,7 @@ public class PluginConfig {
     @CfgComment("> Spis zmiennych gracza:")
     @CfgComment("{PLAYER} - nazwa gracza")
     @CfgComment("{PING} - ping gracza")
+    @CfgComment("{PING-FORMAT} - ping gracza z formatowaniem")
     @CfgComment("{POINTS} - punkty gracza")
     @CfgComment("{POINTS-FORMAT} - punkty gracza z formatowaniem")
     @CfgComment("{POSITION} - pozycja gracza w rankingu")
@@ -720,7 +749,6 @@ public class PluginConfig {
     @CfgComment("{MINUTE} - Minuta")
     @CfgComment("{HOUR} - Godzina")
     @CfgComment("{PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu (np. {PTOP-1}, {PTOP-60})")
-    @CfgComment("{ONLINE-PTOP-<pozycja>} - Gracz na podanym miejscu w rankingu z uwzglednieniem, czy jest online")
     @CfgComment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
     @CfgName("player-list")
     public Map<Integer, String> playerList = ImmutableMap.<Integer, String>builder()
@@ -978,7 +1006,16 @@ public class PluginConfig {
         }
 
         if (this.rankSystem == RankSystem.ELO) {
-            EloUtils.parseData(this.eloConstants);
+            Map<IntegerRange, Integer> parsedData = new HashMap<>();
+            for(Entry<IntegerRange, String> entry : Parser.parseIntegerRange(this.eloConstants_, false).entrySet()) {
+                try {
+                    parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
+                } catch (NumberFormatException e) {
+                    FunnyLogger.parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
+                }
+            }
+            
+            this.eloConstants = parsedData;
         }
 
         HashMap<Material, Double> map = new HashMap<>();
@@ -1053,8 +1090,10 @@ public class PluginConfig {
         this.chatPosition = StringUtils.colored(this.chatPosition_);
         this.chatGuild = StringUtils.colored(this.chatGuild_);
         this.chatRank = StringUtils.colored(this.chatRank_);
+        this.chatPoints = StringUtils.colored(this.chatPoints_);
 
-        PointsFormatUtils.parseData(this.pointsFormat_);
+        this.pointsFormat = Parser.parseIntegerRange(this.pointsFormat_, true);
+        this.pingFormat = Parser.parseIntegerRange(this.pingFormat_, true);
         
         this.ptopPoints = StringUtils.colored(this.ptopPoints_);
         this.gtopPoints = StringUtils.colored(this.gtopPoints_);

@@ -15,12 +15,12 @@ import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.ItemUtils;
 import net.dzikoysk.funnyguilds.util.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.element.schematic.SchematicHelper;
 import net.dzikoysk.funnyguilds.util.hook.VaultHook;
-import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -156,9 +156,9 @@ public class ExcCreate implements Executor {
             if (points < requiredRank) {
                 String msg = messages.createRank;
                 
-                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", PointsFormatUtils.getFormatForRank(requiredRank).replace("{POINTS}", "{REQUIRED}"));
+                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(requiredRank, config.pointsFormat.keySet())).replace("{POINTS}", "{REQUIRED}"));
                 msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
-                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(points));
+                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(points, config.pointsFormat.keySet())));
                 msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
                 
                 player.sendMessage(msg);

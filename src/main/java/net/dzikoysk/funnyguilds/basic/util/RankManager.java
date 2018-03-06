@@ -55,14 +55,6 @@ public class RankManager {
         }
     }
 
-    public int getPosition(User user) {
-        return this.users.indexOf(user.getRank()) + 1;
-    }
-
-    public int getPosition(Guild guild) {
-        return this.guilds.indexOf(guild.getRank()) + 1;
-    }
-
     public User getUser(int i) {
         if (i - 1 < this.users.size()) {
             return (this.users.get(i - 1)).getUser();

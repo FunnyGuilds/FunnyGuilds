@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.LocationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
 import org.bukkit.Location;
 
@@ -69,11 +70,11 @@ public class DatabaseRegion {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO `regions` (`name`, `center`, `size`, `enlarge`) VALUES (");
         sb.append("'" + region.getName() + "',");
-        sb.append("'" + Parser.toString(region.getCenter()) + "',");
+        sb.append("'" + LocationUtils.toString(region.getCenter()) + "',");
         sb.append("'" + region.getSize() + "',");
         sb.append("'" + region.getEnlarge() + "'");
         sb.append(") ON DUPLICATE KEY UPDATE ");
-        sb.append("`center`='" + Parser.toString(region.getCenter()) + "',");
+        sb.append("`center`='" + LocationUtils.toString(region.getCenter()) + "',");
         sb.append("`size`='" + region.getSize() + "',");
         sb.append("`enlarge`='" + region.getEnlarge() + "';");
         return sb.toString();

@@ -1,13 +1,15 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.basic.Rank;
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,6 +20,7 @@ public class ExcPlayer implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
+        PluginConfig config = Settings.getConfig();
         
         if (args.length == 0 && !(sender instanceof Player)) {
             sender.sendMessage(Messages.getInstance().playerOnly);
@@ -47,13 +50,14 @@ public class ExcPlayer implements Executor {
                 messageLine = StringUtils.replace(messageLine, "{TAG}", "Brak");
             }
             
+            Rank rank = user.getRank();
             messageLine = StringUtils.replace(messageLine, "{PLAYER}", user.getName());
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(user.getRank().getPoints()));
-            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(user.getRank().getPoints()));
-            messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(user.getRank().getKills()));
-            messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(user.getRank().getDeaths()));
-            messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", user.getRank().getKDR()));
-            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user)));
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(rank.getPoints(), config.pointsFormat.keySet())));
+            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
+            messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
+            messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));
+            messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()));
+            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(rank.getPosition()));
             
             sender.sendMessage(messageLine);
         }

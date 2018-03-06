@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.Rank;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
@@ -8,8 +9,9 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -22,6 +24,7 @@ public class ExcInfo implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
+        PluginConfig config = Settings.getConfig();
         String tag = null;
 
         if (args.length > 0) {
@@ -59,16 +62,18 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{OWNER}", guild.getOwner().getName());
             messageLine = StringUtils.replace(messageLine, "{MEMBERS}", StringUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
             messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(guild.getRank().getPoints()));
-            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(guild.getRank().getPoints()));
-            messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(guild.getRank().getKills()));
-            messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(guild.getRank().getDeaths()));
-            messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", guild.getRank().getKDR()));
+            
+            Rank rank = guild.getRank();
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(rank.getPoints(), config.pointsFormat.keySet())));
+            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
+            messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
+            messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));
+            messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()));
             messageLine = StringUtils.replace(messageLine, "{VALIDITY}", validity);
             messageLine = StringUtils.replace(messageLine, "{LIVES}", Integer.toString(guild.getLives()));
             
             if (guild.getMembers().size() >= Settings.getConfig().minMembersToInclude) {
-                messageLine = StringUtils.replace(messageLine, "{RANK}", String.valueOf(guild.getRank().getPosition()));
+                messageLine = StringUtils.replace(messageLine, "{RANK}", String.valueOf(rank.getPosition()));
             } else {
                 messageLine = StringUtils.replace(messageLine, "{RANK}", Settings.getConfig().minMembersPositionString);
             }

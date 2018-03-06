@@ -9,12 +9,11 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.MaterialUtil;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.elo.EloUtils;
 import net.dzikoysk.funnyguilds.util.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.hook.WorldGuardHook;
-import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.entity.Player;
@@ -73,10 +72,12 @@ public class PlayerDeath implements Listener {
         }
 
         int[] rankChanges = new int[2];
+        int aP = attacker.getRank().getPoints();
+        int vP = victim.getRank().getPoints();
 
         switch (config.rankSystem) {
             case ELO:
-                rankChanges = EloUtils.getRankChanges(attacker.getRank(), victim.getRank());
+                rankChanges = getEloValues(vP, aP);
                 break;
             case PERCENT:
                 Double d = victim.getRank().getPoints() * (config.percentRankChange / 100);
@@ -88,7 +89,7 @@ public class PlayerDeath implements Listener {
                 rankChanges[1] = config.staticVictimChange;
                 break;
             default:
-                rankChanges = EloUtils.getRankChanges(attacker.getRank(), victim.getRank());
+                rankChanges = getEloValues(vP, aP);
                 break;
         }
 
@@ -153,7 +154,7 @@ public class PlayerDeath implements Listener {
         deathMessage = StringUtils.replace(deathMessage, "{VICTIM}", victim.getName());
         deathMessage = StringUtils.replace(deathMessage, "{+}", Integer.toString(attackerEvent.getChange()));
         deathMessage = StringUtils.replace(deathMessage, "{-}", Integer.toString(victimEvent.getChange()));
-        deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(victim.getRank().getPoints()));
+        deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(vP, config.pointsFormat.keySet())));
         deathMessage = StringUtils.replace(deathMessage, "{POINTS}", String.valueOf(victim.getRank().getPoints()));
         deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
         deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", Double.toString(a.getHealth()));
@@ -173,4 +174,16 @@ public class PlayerDeath implements Listener {
         event.setDeathMessage(deathMessage);
     }
 	
+    private int[] getEloValues(int vP, int aP) {
+        PluginConfig config = Settings.getConfig();
+        int[] rankChanges = new int[2];
+        
+        int aC = config.eloConstants.get(IntegerRange.inRange(aP, config.eloConstants.keySet()));
+        int vC = config.eloConstants.get(IntegerRange.inRange(vP, config.eloConstants.keySet()));
+        
+        rankChanges[0] = (int) Math.round(aC * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (vP - aP) / config.eloDivider)))));
+        rankChanges[1] = (int) Math.round(vC * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (aP - vP) / config.eloDivider)))) * -1);
+        
+        return rankChanges;
+    }
 }

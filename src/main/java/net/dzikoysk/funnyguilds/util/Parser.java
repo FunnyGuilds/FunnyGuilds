@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,7 +15,9 @@ import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Stack;
 
 public class Parser {
@@ -151,7 +152,7 @@ public class Parser {
             return null;
         }
 
-        int i = getIndex(var.replace("ONLINE-", ""));
+        int i = getIndex(var);
         if(i <= 0) {
             FunnyLogger.error("Index in TOP- must be greater or equal to 1!");
             return null;
@@ -177,27 +178,11 @@ public class Parser {
                 String pointsFormat = c.gtopPoints;
                 
                 if (!pointsFormat.isEmpty()) {
-                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(points));
+                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", c.pointsFormat.get(IntegerRange.inRange(points, c.pointsFormat.keySet())));
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
                 return StringUtils.replace(var, "{GTOP-" + i + '}', guild.getTag() + pointsFormat);
-            }
-        } else if (var.contains("ONLINE-PTOP")) {
-            User user = RankManager.getInstance().getUser(i);
-            
-            if (user != null) {
-                int points = user.getRank().getPoints();
-                String pointsFormat = c.ptopPoints;
-                
-                if (!pointsFormat.isEmpty()) {
-                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(points));
-                    pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
-                }
-                
-                return StringUtils.replace(var, "{ONLINE-PTOP-" + i + '}', (user.isOnline() ? c.ptopOnline : c.ptopOffline) + user.getName() + pointsFormat);
-            } else {
-                return StringUtils.replace(var, "{ONLINE-PTOP-" + i + '}', "Brak");
             }
         } else if (var.contains("PTOP")) {
             User user = RankManager.getInstance().getUser(i);
@@ -207,11 +192,11 @@ public class Parser {
                 String pointsFormat = c.ptopPoints;
                 
                 if (!pointsFormat.isEmpty()) {
-                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(points));
+                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", c.pointsFormat.get(IntegerRange.inRange(points, c.pointsFormat.keySet())));
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
                 
-                return StringUtils.replace(var, "{PTOP-" + i + '}', user.getName() + pointsFormat);
+                return StringUtils.replace(var, "{PTOP-" + i + '}', (user.isOnline() ? c.ptopOnline : c.ptopOffline) + user.getName() + pointsFormat);
             } else {
                 return StringUtils.replace(var, "{PTOP-" + i + '}', "Brak");
             }
@@ -312,22 +297,46 @@ public class Parser {
 
         return time;
     }
+    
+    public static Map<IntegerRange, String> parseIntegerRange(List<String> data, boolean color) {
+        Map<IntegerRange, String> parsed = new HashMap<>();
+        
+        for (String s : data) {
+            String[] split = s.split(" ");
+            if (split.length < 2) {
+                FunnyLogger.parser("\"" + s + "\" is not a valid range String!");
+                continue;
+            }
 
-    public static String toString(Location loc) {
-        if (loc == null) {
-            return null;
+            String[] range = split[0].split("-");
+            if (range.length < 2) {
+                FunnyLogger.parser("\"" + s + "\" is not a valid integer range String!");
+                continue;
+            }
+
+            int minRange = 0;
+            int maxRange = 0;
+            
+            try {
+                minRange = Integer.parseInt(range[0]);
+            } catch (NumberFormatException e) {
+                FunnyLogger.parser("\"" + range[0] + "\" of integer range String \"" + s + "\" is not a valid integer!");
+                continue;
+            }
+
+            try {
+                maxRange = range[1].equals("*") ? Integer.MAX_VALUE : Integer.parseInt(range[1]);
+            } catch (NumberFormatException e) {
+                FunnyLogger.parser("\"" + range[1] + "\" of integer range String \"" + s + "\" is not a valid integer!");
+                continue;
+            }
+
+            parsed.put(new IntegerRange(minRange, maxRange), color ? StringUtils.colored(split[1]) : split[1]);
         }
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(loc.getWorld().getName());
-        sb.append(",");
-        sb.append(loc.getBlockX());
-        sb.append(",");
-        sb.append(loc.getBlockY());
-        sb.append(",");
-        sb.append(loc.getBlockZ());
-
-        return sb.toString();
+        
+        return parsed;
     }
+    
+    private Parser() {}
     
 }

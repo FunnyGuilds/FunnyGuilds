@@ -196,7 +196,6 @@ public class MessagesConfig {
 
     @CfgComment("<------- Ranking Messages -------> #")
     @CfgComment("{PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu")
-    @CfgComment("{ONLINE-PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu z uwzglednieniem, czy jest online")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> rankingList = Arrays.asList(
             "&8----------{ &cTOP 10 Graczy &8}----------",
@@ -388,7 +387,7 @@ public class MessagesConfig {
     @CfgComment("Dostepne zmienne: {DATE}")
     public String validityDone = "&7Waznosc gildii przedluzona do &a{DATE}&7!";
 
-    @CfgComment("<------- Validity Messages -------> #")
+    @CfgComment("<------- War Messages -------> #")
     public String warHasNotGuild = "&cMusisz miec gildie, aby zaatkowac inna!";
     public String warAlly = "&cNie mozesz zaatakowac sojusznika!";
     @CfgComment("Dostepne zmienne: {TIME}")

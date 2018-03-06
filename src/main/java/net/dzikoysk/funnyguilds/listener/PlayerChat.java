@@ -4,11 +4,10 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.pointsformat.PointsFormatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,8 +40,9 @@ public class PlayerChat implements Listener {
         int points = user.getRank().getPoints();
         String format = event.getFormat();
         
-        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(c.chatRank, "{RANK}", Integer.toString(RankManager.getInstance().getPosition(user))));
-        format = StringUtils.replace(format, "{POINTS-FORMAT}", PointsFormatUtils.getFormatForRank(points));
+        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(c.chatRank, "{RANK}", String.valueOf(user.getRank().getPosition())));
+        format = StringUtils.replace(format, "{POINTS}", c.chatPoints);
+        format = StringUtils.replace(format, "{POINTS-FORMAT}", c.pointsFormat.get(IntegerRange.inRange(points, c.pointsFormat.keySet())));
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
         
         if (user.hasGuild()) {
