@@ -11,4 +11,4 @@ Cieszymy się z Twojej obecności - propozycję oraz uwagi są naszym motorem na
 * rozwijaj wypowiedzi i odpowiadaj wyczerpująco na pytania - brak nieścisłości to szybsze rozpatrzenie zgłoszenia.
 
 To wszystko, powodzenia!  
-**~ [FunnyGuilds Team](https://github.com/FunnyGuilds/FunnyGuilds/graphs/contributors)**
+~ [FunnyGuilds Team](https://github.com/FunnyGuilds/FunnyGuilds/graphs/contributors)
