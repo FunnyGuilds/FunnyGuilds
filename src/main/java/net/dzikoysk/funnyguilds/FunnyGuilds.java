@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.listener.EntityInteract;
 import net.dzikoysk.funnyguilds.listener.PlayerChat;
 import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
+import net.dzikoysk.funnyguilds.listener.PlayerKick;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
@@ -113,6 +114,7 @@ public class FunnyGuilds extends JavaPlugin {
         pm.registerEvents(new PlayerChat(this), this);
         pm.registerEvents(new PlayerDeath(), this);
         pm.registerEvents(new PlayerJoin(this), this);
+        pm.registerEvents(new PlayerKick(), this);
         pm.registerEvents(new PlayerLogin(this), this);
         pm.registerEvents(new PlayerQuit(), this);
 

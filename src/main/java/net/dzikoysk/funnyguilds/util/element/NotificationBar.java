@@ -109,8 +109,8 @@ public class NotificationBar {
 
         public Object getMetaPacket(Object watcher) {
             try {
-                Class<?> watcherClass = Reflections.getCraftClass("DataWatcher");
-                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityMetadata");
+                Class<?> watcherClass = Reflections.getNMSClass("DataWatcher");
+                Class<?> packetClass = Reflections.getNMSClass("PacketPlayOutEntityMetadata");
                 return packetClass.getConstructor(new Class<?>[]{int.class, watcherClass, boolean.class}).newInstance(id, watcher, true);
             } catch (Exception e) {
                 if (FunnyLogger.exception(e.getCause())) {
@@ -123,7 +123,7 @@ public class NotificationBar {
 
         public Object getTeleportPacket(Location loc) {
             try {
-                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityTeleport");
+                Class<?> packetClass = Reflections.getNMSClass("PacketPlayOutEntityTeleport");
                 return packetClass.getConstructor(new Class<?>[]{int.class, int.class, int.class, int.class, byte.class, byte.class}).newInstance(
                         this.id, loc.getBlockX() * 32, loc.getBlockY() * 32, loc.getBlockZ() * 32, (byte) ((int) loc.getYaw() * 256 / 360), (byte) ((int) loc.getPitch() * 256 / 360));
             } catch (Exception e) {
@@ -144,12 +144,12 @@ public class NotificationBar {
         }
 
         public Object getSpawnPacket() {
-            Class<?> Entity = Reflections.getCraftClass("Entity");
-            Class<?> EntityLiving = Reflections.getCraftClass("EntityLiving");
-            Class<?> EntityEnderDragon = Reflections.getCraftClass("EntityEnderDragon");
+            Class<?> Entity = Reflections.getNMSClass("Entity");
+            Class<?> EntityLiving = Reflections.getNMSClass("EntityLiving");
+            Class<?> EntityEnderDragon = Reflections.getNMSClass("EntityEnderDragon");
 
             try {
-                dragon = EntityEnderDragon.getConstructor(Reflections.getCraftClass("World")).newInstance(world);
+                dragon = EntityEnderDragon.getConstructor(Reflections.getNMSClass("World")).newInstance(world);
 
                 Reflections.getMethod(EntityEnderDragon, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
                 Reflections.getMethod(EntityEnderDragon, "setInvisible", boolean.class).invoke(dragon, visible);
@@ -162,7 +162,7 @@ public class NotificationBar {
 
                 this.id = (Integer) Reflections.getMethod(EntityEnderDragon, "getId").invoke(dragon);
 
-                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
+                Class<?> packetClass = Reflections.getNMSClass("PacketPlayOutSpawnEntityLiving");
                 return packetClass.getConstructor(new Class<?>[]{EntityLiving}).newInstance(dragon);
             } catch (Exception e) {
                 if (FunnyLogger.exception(e.getCause())) {
@@ -175,7 +175,7 @@ public class NotificationBar {
 
         public Object getDestroyPacket() {
             try {
-                Class<?> packetClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
+                Class<?> packetClass = Reflections.getNMSClass("PacketPlayOutEntityDestroy");
                 return packetClass.getConstructor(new Class<?>[]{int[].class}).newInstance(new int[]{id});
             } catch (Exception e) {
                 if (FunnyLogger.exception(e.getCause())) {
@@ -187,8 +187,8 @@ public class NotificationBar {
         }
 
         public Object getWatcher() {
-            Class<?> Entity = Reflections.getCraftClass("Entity");
-            Class<?> DataWatcher = Reflections.getCraftClass("DataWatcher");
+            Class<?> Entity = Reflections.getNMSClass("Entity");
+            Class<?> DataWatcher = Reflections.getNMSClass("DataWatcher");
 
             try {
                 Object watcher = DataWatcher.getConstructor(new Class<?>[]{Entity}).newInstance(dragon);

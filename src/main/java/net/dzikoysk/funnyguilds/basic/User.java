@@ -361,7 +361,7 @@ public class User implements Basic {
         }
         
         try {
-            Class<?> craftPlayer = Reflections.getBukkitClass("entity.CraftPlayer");
+            Class<?> craftPlayer = Reflections.getCraftBukkitClass("entity.CraftPlayer");
             Object cp = craftPlayer.cast(p);
             Object handle = craftPlayer.getMethod("getHandle").invoke(cp);
             ping = (int) handle.getClass().getField("ping").get(handle);

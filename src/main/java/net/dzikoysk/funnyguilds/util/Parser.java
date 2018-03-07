@@ -5,12 +5,17 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.reflect.EggTypeChanger;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
@@ -35,8 +40,7 @@ public class Parser {
         try {
             stack = Integer.parseInt(split[0]);
             data = Integer.parseInt(subtype);
-        }
-        catch (NumberFormatException ex) {
+        } catch (NumberFormatException e) {
             FunnyLogger.parser("Unknown size: " + split[0]);
             stack = 1;
             data = 0;
@@ -68,7 +72,7 @@ public class Parser {
 
                 try {
                     level = Integer.parseInt(parse[2]);
-                } catch (NumberFormatException ex) {
+                } catch (NumberFormatException e) {
                     FunnyLogger.parser("Unknown enchant level: " + split[2]);
                     level = 1;
                 }
@@ -80,6 +84,39 @@ public class Parser {
                 }
 
                 item.addEnchant(enchant, level);
+            } else if (str.contains("skullowner")) {
+                if (item.getMeta() instanceof SkullMeta) {
+                    ((SkullMeta) item.getMeta()).setOwner(str.split(":")[1]);
+                    item.refreshMeta();
+                }
+            } else if (str.contains("armorcolor")) {
+                if (item.getMeta() instanceof LeatherArmorMeta) {
+                    String[] color = str.split(":")[1].split("_");
+                    
+                    try {
+                        ((LeatherArmorMeta) item.getMeta()).setColor(Color.fromRGB(Integer.parseInt(color[0]), Integer.parseInt(color[1]), Integer.parseInt(color[2])));
+                        item.refreshMeta();
+                    } catch (NumberFormatException e) {
+                        FunnyLogger.parser("Unknown armor color: " + str.split(":")[1]);
+                    }
+                }
+            } else if (str.contains("eggtype")) {
+                if (EggTypeChanger.needsSpawnEggMeta()) {
+                    EntityType type = null;
+                    
+                    try {
+                        type = EntityType.valueOf(str.split(":")[1].toUpperCase());
+                    } catch (Exception e) {
+                        FunnyLogger.parser("Unknown entity type: " + str.split(":")[1].toUpperCase());
+                    }
+                    
+                    if (type != null) {
+                        EggTypeChanger.applyChanges(item.getMeta(), type);
+                        item.refreshMeta();
+                    }
+                } else {
+                    FunnyLogger.info("This MC version supports metadata for spawn egg type, no need to use eggtype in item creation!");
+                }
             }
         }
 

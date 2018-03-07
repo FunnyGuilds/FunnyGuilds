@@ -35,20 +35,20 @@ public class TablistImpl extends AbstractTablist {
     private static Constructor<?> gameProfileConstructor;
 
     static {
-        PLAYER_INFO_CLASS = Reflections.getCraftClass("PacketPlayOutPlayerInfo");
-        PLAYER_LIST_HEADER_FOOTER_CLASS = Reflections.getCraftClass("PacketPlayOutPlayerListHeaderFooter");
-        PLAYER_INFO_DATA_CLASS = Reflections.getCraftClass("PacketPlayOutPlayerInfo$PlayerInfoData");
+        PLAYER_INFO_CLASS = Reflections.getNMSClass("PacketPlayOutPlayerInfo");
+        PLAYER_LIST_HEADER_FOOTER_CLASS = Reflections.getNMSClass("PacketPlayOutPlayerListHeaderFooter");
+        PLAYER_INFO_DATA_CLASS = Reflections.getNMSClass("PacketPlayOutPlayerInfo$PlayerInfoData");
         GAME_PROFILE_CLASS = Reflections.getClass("com.mojang.authlib.GameProfile");
-        ENUM_GAMEMODE_CLASS = Reflections.getCraftClass("EnumGamemode");
-        BASE_COMPONENT_CLASS = Reflections.getCraftClass("IChatBaseComponent");
+        ENUM_GAMEMODE_CLASS = Reflections.getNMSClass("EnumGamemode");
+        BASE_COMPONENT_CLASS = Reflections.getNMSClass("IChatBaseComponent");
 
         ACTION_ENUM_FIELD = Reflections.getField(PLAYER_INFO_CLASS, "a");
         LIST_FIELD = Reflections.getField(PLAYER_INFO_CLASS, "b");
         HEADER_FIELD = Reflections.getField(PLAYER_LIST_HEADER_FOOTER_CLASS, "a");
         FOOTER_FIELD = Reflections.getField(PLAYER_LIST_HEADER_FOOTER_CLASS, "b");
 
-        ADD_PLAYER = (Enum<?>) Reflections.getCraftClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction").getEnumConstants()[0];
-        UPDATE_PLAYER = (Enum<?>) Reflections.getCraftClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction").getEnumConstants()[3];
+        ADD_PLAYER = (Enum<?>) Reflections.getNMSClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction").getEnumConstants()[0];
+        UPDATE_PLAYER = (Enum<?>) Reflections.getNMSClass("PacketPlayOutPlayerInfo$EnumPlayerInfoAction").getEnumConstants()[3];
 
         try {
             playerInfoDataConstructor = PLAYER_INFO_DATA_CLASS.getConstructor(

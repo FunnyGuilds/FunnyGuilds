@@ -35,7 +35,7 @@ public class ItemBuilder {
         this.itemMeta = itemStack.getItemMeta();
     }
 
-    private void refreshMeta() {
+    public void refreshMeta() {
         this.itemStack.setItemMeta(itemMeta);
     }
 
@@ -75,8 +75,12 @@ public class ItemBuilder {
         
         return this;
     }
-
+    
     public ItemStack getItem() {
         return this.itemStack;
+    }
+    
+    public ItemMeta getMeta() {
+        return this.itemMeta;
     }
 }

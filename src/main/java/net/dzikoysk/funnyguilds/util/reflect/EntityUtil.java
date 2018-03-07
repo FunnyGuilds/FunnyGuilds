@@ -33,13 +33,13 @@ public class EntityUtil {
         EntityType entityType = Settings.getConfig().createEntityType;
         String entityTypeName = entityType == null ? "EnderCrystal" : entityType.getEntityClass().getSimpleName();
         
-        final Class<?> generalEntityClass = Reflections.getCraftClass("Entity");
-        final Class<?> entityLivingClass = Reflections.getCraftClass("EntityLiving");
-        final Class<?> entityClass = Reflections.getCraftClass("Entity" + entityTypeName);
-        final Class<?> spawnEntityClass = Reflections.getCraftClass("PacketPlayOutSpawnEntity");
-        final Class<?> spawnEntityLivingClass = Reflections.getCraftClass("PacketPlayOutSpawnEntityLiving");
-        final Class<?> despawnEntityClass = Reflections.getCraftClass("PacketPlayOutEntityDestroy");
-        final Class<?> craftWorldClass = Reflections.getCraftClass("World");
+        final Class<?> generalEntityClass = Reflections.getNMSClass("Entity");
+        final Class<?> entityLivingClass = Reflections.getNMSClass("EntityLiving");
+        final Class<?> entityClass = Reflections.getNMSClass("Entity" + entityTypeName);
+        final Class<?> spawnEntityClass = Reflections.getNMSClass("PacketPlayOutSpawnEntity");
+        final Class<?> spawnEntityLivingClass = Reflections.getNMSClass("PacketPlayOutSpawnEntityLiving");
+        final Class<?> despawnEntityClass = Reflections.getNMSClass("PacketPlayOutEntityDestroy");
+        final Class<?> craftWorldClass = Reflections.getNMSClass("World");
 
         SPAWN_ENTITY_CONSTRUCTOR = Reflections.getConstructor(spawnEntityClass, generalEntityClass, int.class);
         SPAWN_ENTITY_LIVING_CONSTRUCTOR = Reflections.getConstructor(spawnEntityLivingClass, entityLivingClass);

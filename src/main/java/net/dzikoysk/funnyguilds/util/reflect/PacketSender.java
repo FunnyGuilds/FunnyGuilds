@@ -19,9 +19,9 @@ public class PacketSender {
 
     static {
         try {
-            getHandle = Reflections.getMethod(Reflections.getBukkitClass("entity.CraftPlayer"), "getHandle");
-            sendPacket = Reflections.getMethod(Reflections.getCraftClass("PlayerConnection"), "sendPacket");
-            playerConnection = Reflections.getField(Reflections.getCraftClass("EntityPlayer"), "playerConnection");
+            getHandle = Reflections.getMethod(Reflections.getCraftBukkitClass("entity.CraftPlayer"), "getHandle");
+            sendPacket = Reflections.getMethod(Reflections.getNMSClass("PlayerConnection"), "sendPacket");
+            playerConnection = Reflections.getField(Reflections.getNMSClass("EntityPlayer"), "playerConnection");
 
         } catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {

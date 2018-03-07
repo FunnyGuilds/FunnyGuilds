@@ -56,12 +56,16 @@ public class Reflections {
         return c;
     }
 
-    public static Class<?> getCraftClass(String name) {
+    public static Class<?> getNMSClass(String name) {
         return getClass("net.minecraft.server." + getVersion() + name);
     }
 
-    public static Class<?> getBukkitClass(String name) {
+    public static Class<?> getCraftBukkitClass(String name) {
         return getClass("org.bukkit.craftbukkit." + getVersion() + name);
+    }
+    
+    public static Class<?> getBukkitClass(String name) {
+        return getClass("org.bukkit." + name);
     }
 
     public static Object getHandle(Entity entity) {

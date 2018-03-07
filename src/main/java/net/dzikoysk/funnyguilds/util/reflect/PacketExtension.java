@@ -23,10 +23,10 @@ public class PacketExtension {
 
     static {
         try {
-            clientChannel = Reflections.getField(Reflections.getCraftClass("NetworkManager"), Channel.class, 0);
-            playerConnection = Reflections.getField(Reflections.getCraftClass("EntityPlayer"), "playerConnection");
-            networkManager = Reflections.getField(Reflections.getCraftClass("PlayerConnection"), "networkManager");
-            handleMethod = Reflections.getMethod(Reflections.getBukkitClass("entity.CraftEntity"), "getHandle");
+            clientChannel = Reflections.getField(Reflections.getNMSClass("NetworkManager"), Channel.class, 0);
+            playerConnection = Reflections.getField(Reflections.getNMSClass("EntityPlayer"), "playerConnection");
+            networkManager = Reflections.getField(Reflections.getNMSClass("PlayerConnection"), "networkManager");
+            handleMethod = Reflections.getMethod(Reflections.getCraftBukkitClass("entity.CraftEntity"), "getHandle");
         } catch (Exception e) {
             e.printStackTrace();
         }

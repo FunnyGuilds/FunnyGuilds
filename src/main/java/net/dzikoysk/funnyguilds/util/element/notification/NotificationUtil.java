@@ -25,18 +25,18 @@ public final class NotificationUtil {
     private static final String BASE_COMPONENT_JSON_PATTERN = "{\"text\": \"{TEXT}\"}";
 
     static {
-        PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getCraftClass("PacketPlayOutTitle");
-        PACKET_PLAY_OUT_CHAT_CLASS = Reflections.getCraftClass("PacketPlayOutChat");
-        TITLE_ACTION_CLASS = "v1_8_R1".equals(Reflections.getFixedVersion()) ? Reflections.getCraftClass("EnumTitleAction") : Reflections.getCraftClass("PacketPlayOutTitle$EnumTitleAction");
+        PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getNMSClass("PacketPlayOutTitle");
+        PACKET_PLAY_OUT_CHAT_CLASS = Reflections.getNMSClass("PacketPlayOutChat");
+        TITLE_ACTION_CLASS = "v1_8_R1".equals(Reflections.getFixedVersion()) ? Reflections.getNMSClass("EnumTitleAction") : Reflections.getNMSClass("PacketPlayOutTitle$EnumTitleAction");
 
         if ("v1_12_R1".equals(Reflections.getFixedVersion())) {
-            CHAT_MESSAGE_TYPE_CLASS = Reflections.getCraftClass("ChatMessageType");
+            CHAT_MESSAGE_TYPE_CLASS = Reflections.getNMSClass("ChatMessageType");
         } else {
             CHAT_MESSAGE_TYPE_CLASS = null;
         }
         
-        CREATE_BASE_COMPONENT_NMS = Reflections.getMethod(Reflections.getCraftClass("IChatBaseComponent$ChatSerializer"), "a", String.class);
-        CREATE_BASE_COMPONENT_CRAFTBUKKIT = Reflections.getMethod(Reflections.getBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
+        CREATE_BASE_COMPONENT_NMS = Reflections.getMethod(Reflections.getNMSClass("IChatBaseComponent$ChatSerializer"), "a", String.class);
+        CREATE_BASE_COMPONENT_CRAFTBUKKIT = Reflections.getMethod(Reflections.getCraftBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
     }
 
     public static List<Object> createTitleNotification(String text, String subText, int fadeIn, int stay, int fadeOut) {

@@ -121,12 +121,20 @@ public class PluginConfig {
     public String minMembersPositionString = "Brak";
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii")
-    @CfgComment("Dwukropek i metadata po nazwie przedmiotu sa opcjonalne")
-    @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant]")
-    @CfgComment("Spacja = _ ")
-    @CfgComment("Nowa linia lore = #")
+    @CfgComment("Tylko wartosci ujete w <> sa wymagane, reszta (ujeta w []) jest opcjonalna")
+    @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant:eggtype:skullowner:armorcolor]")
+    @CfgComment("")
+    @CfgComment("Zamiast spacji wstawiaj podkreslnik: _")
+    @CfgComment("Aby zrobic nowa linie lore wstaw hash: #")
     @CfgComment("Aby w lore uzyc znaku # wstaw {HASH}")
+    @CfgComment("")
+    @CfgComment("eggtype to typ jajka do spawnu moba, uzywane tylko gdy typem przedmiotu jest MONSTER_EGG")
+    @CfgComment("skullowner to nick gracza, ktorego glowa jest tworzona, uzywane tylko gdy typem przedmiotu jest SKULL_ITEM")
+    @CfgComment("armorcolor to kolor, w ktorym bedzie przedmiot, uzywane tylko gdy przedmiot jest czescia zbroi skorzanej")
+    @CfgComment("Kolor musi byc podany w postaci: \"R_G_B\"")
+    @CfgComment("")
     @CfgComment("UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
+    @CfgComment("UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
     @CfgName("items")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> items_ = Arrays.asList("5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!", "5 dirt", "5 tnt");
@@ -139,17 +147,11 @@ public class PluginConfig {
     public int requiredExperience = 0;
 
     @CfgComment("Wymagana ilosc pieniedzy do zalozenia gildii")
-    @CfgComment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodający ekonomie")
+    @CfgComment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
     @CfgName("required-money")
     public double requiredMoney = 0;
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CfgComment("Dwukropek i metadata po nazwie przedmiotu sa opcjonalne")
-    @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant]")
-    @CfgComment("Spacja = _ ")
-    @CfgComment("Nowa linia lore = #")
-    @CfgComment("Aby w lore uzyc znaku # wstaw {HASH}")
-    @CfgComment("UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
     @CfgName("items-vip")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> itemsVip_ = Collections.singletonList("1 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!");
@@ -162,7 +164,7 @@ public class PluginConfig {
     public int requiredExperienceVip = 0;
 
     @CfgComment("Wymagana ilosc pieniedzy do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CfgComment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodający ekonomie")
+    @CfgComment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
     @CfgName("required-money-vip")
     public double requiredMoneyVip = 0;
 

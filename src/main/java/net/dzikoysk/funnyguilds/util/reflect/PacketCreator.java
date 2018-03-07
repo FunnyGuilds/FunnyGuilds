@@ -31,7 +31,7 @@ public final class PacketCreator {
         ThreadLocal<PacketCreator> creator = PACKET_CREATOR_CACHE.get(packetClassName);
 
         if (creator == null) {
-            Class<?> packetClass = Reflections.getCraftClass(packetClassName);
+            Class<?> packetClass = Reflections.getNMSClass(packetClassName);
             creator = ThreadLocal.withInitial(() -> new PacketCreator(packetClass));
             PACKET_CREATOR_CACHE.put(packetClassName, creator);
         }

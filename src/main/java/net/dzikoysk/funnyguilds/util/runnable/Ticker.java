@@ -16,8 +16,8 @@ public class Ticker {
 
     static {
         try {
-            Class<?> minecraftServerClass = Reflections.getCraftClass("MinecraftServer");
-            serverInstance = Reflections.getMethod(Reflections.getCraftClass("MinecraftServer"), "getServer").invoke(null);
+            Class<?> minecraftServerClass = Reflections.getNMSClass("MinecraftServer");
+            serverInstance = Reflections.getMethod(Reflections.getNMSClass("MinecraftServer"), "getServer").invoke(null);
             tpsField = minecraftServerClass.getDeclaredField("recentTps");
         } catch (IllegalAccessException | InvocationTargetException ex) {
             FunnyLogger.exception(ex.getMessage(), ex.getStackTrace());
