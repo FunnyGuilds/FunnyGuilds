@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 public class PlayerKick implements Listener {
 
     @EventHandler
-    public void onQuit(PlayerKickEvent event) {
+    public void onKick(PlayerKickEvent event) {
         Player player = event.getPlayer();
         User user = User.get(player);
         
