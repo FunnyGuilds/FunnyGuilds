@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.util;
 
-import java.util.Collection;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class IntegerRange {
 
@@ -20,10 +21,11 @@ public class IntegerRange {
         return this.maxRange;
     }
     
-    public static IntegerRange inRange(int value, Collection<IntegerRange> ranges) {
-        for (IntegerRange range : ranges) {
+    public static <V> V inRange(int value, Map<IntegerRange, V> rangeMap) {
+        for (Entry<IntegerRange, V> entry : rangeMap.entrySet()) {
+            IntegerRange range = entry.getKey();
             if (value >= range.getMinRange() && value <= range.getMaxRange()) {
-                return range;
+                return entry.getValue();
             }
         }
         

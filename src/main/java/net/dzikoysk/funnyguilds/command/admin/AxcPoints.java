@@ -59,7 +59,7 @@ public class AxcPoints implements Executor {
         RankManager.getInstance().update(user);
 
         String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
-        message = message.replace("{POINTS-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(points, config.pointsFormat.keySet())));
+        message = message.replace("{POINTS-FORMAT}", IntegerRange.inRange(points, config.pointsFormat));
         message = message.replace("{POINTS}", String.valueOf(points));
         
         sender.sendMessage(message);

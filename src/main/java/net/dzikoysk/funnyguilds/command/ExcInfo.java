@@ -64,7 +64,7 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
             
             Rank rank = guild.getRank();
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(rank.getPoints(), config.pointsFormat.keySet())));
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));

@@ -901,7 +901,7 @@ public class PluginConfig {
     }
 
     private List<ItemStack> loadGUI(List<String> contents) {
-        List<ItemStack> items = new ArrayList<ItemStack>();
+        List<ItemStack> items = new ArrayList<>();
         
         for (int i=0; i < contents.size(); i++) {
             String var = contents.get(i);

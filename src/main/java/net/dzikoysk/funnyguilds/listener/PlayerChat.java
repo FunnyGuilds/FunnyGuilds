@@ -42,7 +42,7 @@ public class PlayerChat implements Listener {
         
         format = StringUtils.replace(format, "{RANK}", StringUtils.replace(c.chatRank, "{RANK}", String.valueOf(user.getRank().getPosition())));
         format = StringUtils.replace(format, "{POINTS}", c.chatPoints);
-        format = StringUtils.replace(format, "{POINTS-FORMAT}", c.pointsFormat.get(IntegerRange.inRange(points, c.pointsFormat.keySet())));
+        format = StringUtils.replace(format, "{POINTS-FORMAT}", IntegerRange.inRange(points, c.pointsFormat));
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
         
         if (user.hasGuild()) {

@@ -34,9 +34,9 @@ public final class DefaultTablistVariables {
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
         
-        parser.add(new SimpleTablistVariable("PING-FORMAT", user -> config.pingFormat.get(IntegerRange.inRange(user.getPing(), config.pingFormat.keySet())).replace("{PING}", String.valueOf(user.getPing()))));
+        parser.add(new SimpleTablistVariable("PING-FORMAT", user -> IntegerRange.inRange(user.getPing(), config.pingFormat).replace("{PING}", String.valueOf(user.getPing()))));
         parser.add(new SimpleTablistVariable("PING", user -> String.valueOf(user.getPing())));
-        parser.add(new SimpleTablistVariable("POINTS-FORMAT", user -> config.pointsFormat.get(IntegerRange.inRange(user.getRank().getPoints(), config.pointsFormat.keySet())).replace("{POINTS}", String.valueOf(user.getRank().getPoints()))));
+        parser.add(new SimpleTablistVariable("POINTS-FORMAT", user -> IntegerRange.inRange(user.getRank().getPoints(), config.pointsFormat).replace("{POINTS}", String.valueOf(user.getRank().getPoints()))));
         parser.add(new SimpleTablistVariable("POINTS", user -> String.valueOf(user.getRank().getPoints())));
         parser.add(new SimpleTablistVariable("POSITION", user -> String.valueOf(user.getRank().getPosition())));
         parser.add(new SimpleTablistVariable("KILLS", user -> String.valueOf(user.getRank().getKills())));
@@ -52,7 +52,7 @@ public final class DefaultTablistVariables {
         parser.add(new GuildDependentTablistVariable("G-DEPUTY", user -> user.getGuild().getDeputies().isEmpty() ? "Brak" : user.getGuild().getDeputies().get(FunnyGuilds.RANDOM_INSTANCE.nextInt(user.getGuild().getDeputies().size())).getName(), user -> "Brak"));
         parser.add(new GuildDependentTablistVariable("G-LIVES", user -> String.valueOf(user.getGuild().getLives()), user -> "0"));
         parser.add(new GuildDependentTablistVariable("G-ALLIES", user -> String.valueOf(user.getGuild().getAllies().size()), user -> "0"));
-        parser.add(new GuildDependentTablistVariable("G-POINTS-FORMAT", user -> config.pointsFormat.get(IntegerRange.inRange(user.getGuild().getRank().getPoints(), config.pointsFormat.keySet())).replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())), user -> config.pointsFormat.get(IntegerRange.inRange(0, config.pointsFormat.keySet())).replace("{POINTS}", String.valueOf("0"))));
+        parser.add(new GuildDependentTablistVariable("G-POINTS-FORMAT", user -> IntegerRange.inRange(user.getGuild().getRank().getPoints(), config.pointsFormat).replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())), user -> IntegerRange.inRange(0, config.pointsFormat).replace("{POINTS}", "0")));
         parser.add(new GuildDependentTablistVariable("G-POINTS", user -> String.valueOf(user.getGuild().getRank().getPoints()), user -> "0"));
         parser.add(new GuildDependentTablistVariable("G-KILLS", user -> String.valueOf(user.getGuild().getRank().getKills()), user -> "0"));
         parser.add(new GuildDependentTablistVariable("G-DEATHS", user -> String.valueOf(user.getGuild().getRank().getDeaths()), user -> "0"));

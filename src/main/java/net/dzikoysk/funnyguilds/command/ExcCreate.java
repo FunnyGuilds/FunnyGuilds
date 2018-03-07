@@ -156,9 +156,9 @@ public class ExcCreate implements Executor {
             if (points < requiredRank) {
                 String msg = messages.createRank;
                 
-                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(requiredRank, config.pointsFormat.keySet())).replace("{POINTS}", "{REQUIRED}"));
+                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", IntegerRange.inRange(requiredRank, config.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
                 msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
-                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", config.pointsFormat.get(IntegerRange.inRange(points, config.pointsFormat.keySet())));
+                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", IntegerRange.inRange(points, config.pointsFormat));
                 msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
                 
                 player.sendMessage(msg);
@@ -178,13 +178,11 @@ public class ExcCreate implements Executor {
                 return;
             }
 
-            if (VaultHook.isHooked()) {
-                if (!VaultHook.canAfford(player, requiredMoney)) {
-                    String notEnoughMoneyMessage = messages.createMoney;
-                    notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
-                    player.sendMessage(notEnoughMoneyMessage);
-                    return;
-                }
+            if (VaultHook.isHooked() && !VaultHook.canAfford(player, requiredMoney)) {
+                String notEnoughMoneyMessage = messages.createMoney;
+                notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
+                player.sendMessage(notEnoughMoneyMessage);
+                return;
             }
 
             for (ItemStack requiredItem : requiredItems) {
