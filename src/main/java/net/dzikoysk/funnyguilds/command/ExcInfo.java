@@ -60,8 +60,11 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{GUILD}", guild.getName());
             messageLine = StringUtils.replace(messageLine, "{TAG}", guild.getTag());
             messageLine = StringUtils.replace(messageLine, "{OWNER}", guild.getOwner().getName());
+            messageLine = StringUtils.replace(messageLine, "{MEMBERS-ONLINE}", String.valueOf(guild.getOnlineMembers().size()));
+            messageLine = StringUtils.replace(messageLine, "{MEMBERS-ALL}", String.valueOf(guild.getMembers().size()));
             messageLine = StringUtils.replace(messageLine, "{MEMBERS}", StringUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
             messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
+            messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", String.valueOf(guild.getRegionData().getSize()));
             
             Rank rank = guild.getRank();
             messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat));
