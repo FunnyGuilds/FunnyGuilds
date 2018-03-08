@@ -46,8 +46,8 @@ public class ExcPlayer implements Executor {
                 messageLine = StringUtils.replace(messageLine, "{GUILD}", user.getGuild().getName());
                 messageLine = StringUtils.replace(messageLine, "{TAG}", user.getGuild().getTag());
             } else {
-                messageLine = StringUtils.replace(messageLine, "{GUILD}", "Brak");
-                messageLine = StringUtils.replace(messageLine, "{TAG}", "Brak");
+                messageLine = StringUtils.replace(messageLine, "{GUILD}", messages.gNameNoValue);
+                messageLine = StringUtils.replace(messageLine, "{TAG}", messages.gTagNoValue);
             }
             
             Rank rank = user.getRank();

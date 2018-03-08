@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.util;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
+import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.reflect.EggTypeChanger;
@@ -208,7 +209,7 @@ public class Parser {
 
         if (var.contains("GTOP")) {
             if (rankedGuilds.isEmpty() || i - 1 >= rankedGuilds.size()) {
-                return StringUtils.replace(var, "{GTOP-" + i + '}', "Brak");
+                return StringUtils.replace(var, "{GTOP-" + i + '}', Messages.getInstance().gtopNoValue);
             } else {
                 Guild guild = rankedGuilds.get(i - 1);
                 int points = guild.getRank().getPoints();
@@ -235,7 +236,7 @@ public class Parser {
                 
                 return StringUtils.replace(var, "{PTOP-" + i + '}', (user.isOnline() ? c.ptopOnline : c.ptopOffline) + user.getName() + pointsFormat);
             } else {
-                return StringUtils.replace(var, "{PTOP-" + i + '}', "Brak");
+                return StringUtils.replace(var, "{PTOP-" + i + '}', Messages.getInstance().ptopNoValue);
             }
         }
         

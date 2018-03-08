@@ -103,6 +103,7 @@ public class PlayerDeath implements Listener {
             if (config.assistEnable && victim.isAssisted()) {
                 double toShare = attackerEvent.getChange() * (1 - config.assistKillerShare);
                 double totalDamage = victim.getTotalDamage() + attackerDamage;
+                int givenPoints = 0;
                 
                 for (Entry<User, Double> assist : victim.getDamage().entrySet()) {
                     double assistFraction = assist.getValue() / totalDamage;
@@ -112,6 +113,8 @@ public class PlayerDeath implements Listener {
                         continue;
                     }
 
+                    givenPoints += addedPoints;
+                    
                     String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assist.getKey().getName());
                     assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", StringUtils.getPercent(assistFraction));
@@ -119,7 +122,8 @@ public class PlayerDeath implements Listener {
                     assist.getKey().getRank().addPoints(addedPoints);
                 }
                 
-                attackerEvent.setChange((int) Math.round(attackerEvent.getChange() * config.assistKillerShare));
+                double attackerPoints = attackerEvent.getChange() - toShare + givenPoints < toShare ? toShare - givenPoints : 0;
+                attackerEvent.setChange((int) Math.round(attackerPoints));
             }
             
             attacker.getRank().addKill();

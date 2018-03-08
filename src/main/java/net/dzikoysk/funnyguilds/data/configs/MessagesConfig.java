@@ -9,6 +9,19 @@ import java.util.List;
 public class MessagesConfig {
     @CfgComment("<------- Global Date Format -------> #")
     public String dateFormat = "dd.MM.yyyy HH:mm:ss";
+
+    @CfgComment("<------- No Value Messages -------> #")
+    public String gNameNoValue = "Brak (G-NAME/NAME)";
+    public String gTagNoValue = "Brak (G-TAG/TAG)";
+    public String gOwnerNoValue = "Brak (G-OWNER)";
+    public String gDeputiesNoValue = "Brak (G-DEPUTIES)";
+    public String gDeputyNoValue = "Brak (G-DEPUTY)";
+    public String gValidityNoValue = "Brak (G-VALIDITY)";
+    public String gRegionSizeNoValue = "Brak (G-REGION-SIZE)";
+    public String alliesNoValue = "Brak (ALLIES)";
+    public String gtopNoValue = "Brak (GTOP-x)";
+    public String ptopNoValue = "Brak (PTOP-x)";
+    public String minMembersToIncludeNoValue = "Brak (too few members to include rank)";
     
     @CfgComment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";

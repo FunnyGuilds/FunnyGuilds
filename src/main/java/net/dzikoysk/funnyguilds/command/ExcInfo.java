@@ -54,7 +54,7 @@ public class ExcInfo implements Executor {
             return;
         }
 
-        String validity = Settings.getConfig().dateFormat.format(new Date(guild.getValidity()));
+        String validity = config.dateFormat.format(new Date(guild.getValidity()));
 
         for (String messageLine : messages.infoList) {
             messageLine = StringUtils.replace(messageLine, "{GUILD}", guild.getName());
@@ -75,16 +75,16 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{VALIDITY}", validity);
             messageLine = StringUtils.replace(messageLine, "{LIVES}", Integer.toString(guild.getLives()));
             
-            if (guild.getMembers().size() >= Settings.getConfig().minMembersToInclude) {
+            if (guild.getMembers().size() >= config.minMembersToInclude) {
                 messageLine = StringUtils.replace(messageLine, "{RANK}", String.valueOf(rank.getPosition()));
             } else {
-                messageLine = StringUtils.replace(messageLine, "{RANK}", Settings.getConfig().minMembersPositionString);
+                messageLine = StringUtils.replace(messageLine, "{RANK}", messages.minMembersToIncludeNoValue);
             }
             
             if (!guild.getAllies().isEmpty()) {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
             } else {
-                messageLine = StringUtils.replace(messageLine, "{ALLIES}", "Brak");
+                messageLine = StringUtils.replace(messageLine, "{ALLIES}", messages.alliesNoValue);
             }
             
             if (messageLine.contains("<online>")) {
