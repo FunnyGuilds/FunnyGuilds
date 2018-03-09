@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.util.Map;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -10,6 +11,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
+import net.dzikoysk.funnyguilds.util.MapUtil;
 import net.dzikoysk.funnyguilds.util.MaterialUtil;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.util.hook.PluginHook;
@@ -104,8 +106,10 @@ public class PlayerDeath implements Listener {
                 double toShare = attackerEvent.getChange() * (1 - config.assistKillerShare);
                 double totalDamage = victim.getTotalDamage() + attackerDamage;
                 int givenPoints = 0;
-                
-                for (Entry<User, Double> assist : victim.getDamage().entrySet()) {
+
+                Map<User, Double> damage = MapUtil.sortByValue(victim.getDamage());
+
+                for (Entry<User, Double> assist : damage.entrySet()) {
                     double assistFraction = assist.getValue() / totalDamage;
                     int addedPoints = (int) Math.round(assistFraction * toShare);
 
