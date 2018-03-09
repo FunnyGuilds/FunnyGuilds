@@ -164,10 +164,14 @@ public class PlayerChat implements Listener {
     }
 
     private void sendMessageToGuild(Guild guild, Player player, String message) {
+        if (guild == null || player == null || !player.isOnline()) {
+            return;
+        }
+
         for (User user : guild.getOnlineMembers()) {
             Player p = user.getPlayer();
             
-            if(!p.equals(player) || !user.isSpy()) {
+            if (!p.equals(player) || !user.isSpy()) {
                 p.sendMessage(message);
             }
         }
