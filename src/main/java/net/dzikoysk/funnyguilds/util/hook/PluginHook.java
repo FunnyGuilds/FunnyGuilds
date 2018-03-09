@@ -7,8 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class PluginHook {
+    
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
     public static final String PLUGIN_VAULT = "Vault";
+    public static final String PLUGIN_PLACEHOLDESAPI = "PlaceholderAPI";
+    public static final String PLUGIN_BUNGEETABLISTPLUS = "BungeeTabListPlus";
+    
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
     public static void init() {
@@ -23,6 +27,8 @@ public final class PluginHook {
         });
 
         tryInit(PLUGIN_VAULT, VaultHook::initEconomyHook);
+        tryInit(PLUGIN_PLACEHOLDESAPI, PlaceholderAPIHook::initPlaceholderHook);
+        tryInit(PLUGIN_BUNGEETABLISTPLUS, BungeeTabListPlusHook::initPlaceholderHook);
     }
 
     public static void tryInit(String plugin, Runnable init) {
@@ -30,9 +36,8 @@ public final class PluginHook {
             if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
                 init.run();
                 HOOK_LIST.add(plugin);
-            }
-            else {
-                FunnyLogger.warning("Plugin: " + plugin + " could not be found, some features may be not available.");
+            } else {
+                FunnyLogger.info("Plugin: " + plugin + " could not be found, some features may be not available");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,4 +47,5 @@ public final class PluginHook {
     public static boolean isPresent(String plugin) {
         return HOOK_LIST.contains(plugin);
     }
+    
 }

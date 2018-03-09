@@ -7,6 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MessagesConfig {
+    
+    @CfgComment("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
+    @CfgComment("https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds")
+    @CfgComment(" ")
+    @CfgComment(" ")
     @CfgComment("<------- Global Date Format -------> #")
     public String dateFormat = "dd.MM.yyyy HH:mm:ss";
 

@@ -14,6 +14,10 @@ Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 #### Current Version
 [FunnyGuilds Tribute 4.1.1 for 1.8.8+](https://github.com/FunnyGuilds/FunnyGuilds/releases)
 
+#### Placeholder support
+Funnyguilds hooks its placeholders into those plugins:
+- [PlaceholderAPI](https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds)
+
 #### Building
 You can build FunnyGuilds as a Maven project or just generate plugin using [FunnyCreator](https://github.com/FunnyGuilds/FunnyCreator)
 ![FunnyCreator](https://dzikoysk.net/projects/funnycreator/funnycreator-short.gif)

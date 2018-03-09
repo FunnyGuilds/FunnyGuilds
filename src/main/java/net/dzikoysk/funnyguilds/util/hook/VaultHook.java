@@ -12,7 +12,7 @@ public class VaultHook {
 
     private static Economy economyHook;
 
-    static void initEconomyHook() {
+    public static void initEconomyHook() {
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
 
         if (rsp == null) {
