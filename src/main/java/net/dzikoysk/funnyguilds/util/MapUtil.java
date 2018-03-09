@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class MapUtil {
+public final class MapUtil {
 
     public static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map, boolean descending) {
         Stream<Entry<K, V>> stream = map.entrySet().stream();

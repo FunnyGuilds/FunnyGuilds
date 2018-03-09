@@ -5,13 +5,9 @@ import org.bukkit.Bukkit;
 
 import java.util.logging.Logger;
 
-public class FunnyLogger {
+public final class FunnyLogger {
 
-    private static final Logger bukkitLogger;
-    
-    static {
-        bukkitLogger = Bukkit.getLogger();
-    }
+    private static final Logger bukkitLogger = Bukkit.getLogger();
     
     public static void update(String content) {
         bukkitLogger.info("[FunnyGuilds][Updater] > " + content);
