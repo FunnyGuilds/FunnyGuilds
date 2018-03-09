@@ -5,7 +5,7 @@ import org.bukkit.Material;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MaterialAliaser {
+public final class MaterialAliaser {
 
     private static final Map<String, Material> aliases = new HashMap<String, Material>();
     

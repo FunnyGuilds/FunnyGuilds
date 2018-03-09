@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-public class Parser {
+public final class Parser {
 
     public static ItemStack parseItem(String string) {
         String[] split = string.split(" ");

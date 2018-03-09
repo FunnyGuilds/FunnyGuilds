@@ -137,7 +137,14 @@ public class PlayerMove implements Listener {
 
                 translator = new MessageTranslator().register("{PLAYER}", player.getName());
                 for (User u : guild.getOnlineMembers()) {
+                    if (u == null) {
+                        continue;
+                    }
+
                     Player member = u.getPlayer();
+                    if (member == null || !member.isOnline()) {
+                        continue;
+                    }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
                         PacketSender.sendPacket(member, NotificationUtil.createActionbarNotification(

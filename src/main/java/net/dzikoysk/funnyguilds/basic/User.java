@@ -316,6 +316,9 @@ public class User implements Basic {
     }
     
     public double killedBy(User user) {
+        if (user == null) {
+            return 0.0D;
+        }
         Double dmg = this.damage.remove(user);
         return dmg == null ? 0.0D : dmg.doubleValue();
     }
