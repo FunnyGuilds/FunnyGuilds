@@ -42,6 +42,10 @@ public enum ObjectType {
     }
     
     public static ObjectType get(EntityType type) {
+        if (type == null) {
+            return null;
+        }
+        
         for (ObjectType ot : ObjectType.values()) {
             if (ot.toString().equals(type.toString())) {
                 return ot;
