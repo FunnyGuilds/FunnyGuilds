@@ -275,15 +275,18 @@ public class PluginConfig {
     public boolean createCenterSphere = true;
 
     @CfgComment("Czy przy tworzeniu gildii powinien byc wklejany schemat")
+    @CfgComment("Wklejenie schematu wymaga pluginu WorldEdit")
     @CfgName("paste-schematic-on-creation")
     public boolean pasteSchematicOnCreation = false;
 
     @CfgComment("Nazwa pliku z schematem poczatkowym gildii")
+    @CfgComment("Wklejenie schematu wymaga pluginu WorldEdit")
     @CfgName("guild-schematic-file-name")
     public String guildSchematicFileName = "funnyguilds.schematic";
 
     @CfgComment("Czy schemat przy tworzeniu gildii powinien byc wklejany razem z powietrzem?")
     @CfgComment("Przy duzych schematach ma to wplyw na wydajnosc")
+    @CfgComment("Wklejenie schematu wymaga pluginu WorldEdit")
     @CfgName("paste-schematic-with-air")
     public boolean pasteSchematicWithAir = true;
 
