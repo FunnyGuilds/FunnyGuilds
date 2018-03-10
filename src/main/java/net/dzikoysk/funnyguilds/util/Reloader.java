@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.util;
 
 import net.dzikoysk.funnyguilds.data.Data;
 import org.bukkit.Bukkit;
-import org.panda_lang.panda.util.configuration.PandaConfiguration;
+import org.panda_lang.panda.utilities.configuration.PandaConfiguration;
 
 import java.io.File;
 
