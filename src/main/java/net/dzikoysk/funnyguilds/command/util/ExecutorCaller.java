@@ -117,6 +117,13 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             return true;
         }
         
+        if (sender instanceof Player) {
+            if (main.permission != null && !sender.hasPermission(main.permission)) {
+                sender.sendMessage(Messages.getInstance().permission);
+                return true;
+            }
+        }
+        
         main.executor.execute(sender, args);
         return true;
     }

@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import org.bukkit.Bukkit;
-import org.panda_lang.panda.util.configuration.PandaConfiguration;
+import org.panda_lang.panda.utilities.configuration.PandaConfiguration;
 
 import java.io.File;
 import java.io.IOException;

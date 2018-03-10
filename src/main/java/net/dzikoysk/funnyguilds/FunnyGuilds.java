@@ -59,27 +59,6 @@ public class FunnyGuilds extends JavaPlugin {
         funnyguilds = this;
     }
 
-    public static String getVersion() {
-        if (version != null) {
-            return version;
-        }
-        
-        String[] array = funnyguilds.getDescription().getVersion().split("-");
-        if (array.length != 2) {
-            return version = funnyguilds.getDescription().getVersion();
-        }
-
-        return version = array[0];
-    }
-
-    public static FunnyGuilds getInstance() {
-        if (funnyguilds == null) {
-            return new FunnyGuilds();
-        }
-        
-        return funnyguilds;
-    }
-
     @Override
     public void onLoad() {
         if (!this.getDataFolder().exists()) {
@@ -186,6 +165,28 @@ public class FunnyGuilds extends JavaPlugin {
 
     public boolean isDisabling() {
         return disabling;
+    }
+
+    public static String getVersion() {
+        if (version != null) {
+            return version;
+        }
+
+        String[] array = funnyguilds.getDescription().getVersion().split("-");
+
+        if (array.length != 2) {
+            return version = funnyguilds.getDescription().getVersion();
+        }
+
+        return version = array[0];
+    }
+
+    public static FunnyGuilds getInstance() {
+        if (funnyguilds == null) {
+            return new FunnyGuilds();
+        }
+
+        return funnyguilds;
     }
 
 }
