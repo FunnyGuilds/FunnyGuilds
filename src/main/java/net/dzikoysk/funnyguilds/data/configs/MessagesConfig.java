@@ -337,9 +337,9 @@ public class MessagesConfig {
     @CfgComment("<------- Kick Messages -------> #")
     public String kickOtherGuild = "&cTen gracz nie jest w Twojej gildii!";
     public String kickOwner = "&cNie mozna wyrzucic zalozyciela!";
-    @CfgComment("Dostepne zmienne: {PLAYER}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {PLAYER}")
     public String kickToOwner = "&c{PLAYER} &7zostal wyrzucony z gildii!";
-    @CfgComment("Dostepne zmienne: {GUILD}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String kickToPlayer = "&cZostales wyrzucony z gildii!";
 
     @CfgComment("<------- Enlarge Messages -------> #")
