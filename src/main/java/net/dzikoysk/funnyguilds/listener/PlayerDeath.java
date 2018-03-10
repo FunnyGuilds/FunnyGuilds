@@ -135,7 +135,7 @@ public class PlayerDeath implements Listener {
                     assist.getKey().getRank().addPoints(addedPoints);
                 }
                 
-                double attackerPoints = attackerEvent.getChange() - toShare + givenPoints < toShare ? toShare - givenPoints : 0;
+                double attackerPoints = attackerEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
                 attackerEvent.setChange((int) Math.round(attackerPoints));
             }
             
