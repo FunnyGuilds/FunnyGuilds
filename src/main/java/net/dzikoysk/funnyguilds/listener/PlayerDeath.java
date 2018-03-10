@@ -72,6 +72,15 @@ public class PlayerDeath implements Listener {
                 }
             }
         }
+        
+        if (config.rankIPProtect) {
+            if (a.getAddress().getHostString().equalsIgnoreCase(v.getAddress().getHostString())) {
+                v.sendMessage(messages.rankIPVictim);
+                a.sendMessage(messages.rankIPAttacker);
+                event.setDeathMessage(null);
+                return;
+            }
+        }
 
         int[] rankChanges = new int[2];
         int aP = attacker.getRank().getPoints();
@@ -194,4 +203,5 @@ public class PlayerDeath implements Listener {
         
         return rankChanges;
     }
+	
 }

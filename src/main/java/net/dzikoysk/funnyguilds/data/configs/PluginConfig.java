@@ -460,6 +460,10 @@ public class PluginConfig {
     @CfgComment("Czas (w sekundach) blokady nabijania rankingu po walce dwoch osob")
     @CfgName("rank-farming-cooldown")
     public int rankFarmingCooldown = 7200;
+    
+    @CfgComment("Czy ma byc zablokowana zmiana rankingu, jesli obie osoby z walki maja taki sam adres IP")
+    @CfgName("rank-ip-protect")
+    public boolean rankIPProtect = false;
 
     @CfgComment("Czy system asyst ma byc wlaczony")
     @CfgName("rank-assist-enable")
