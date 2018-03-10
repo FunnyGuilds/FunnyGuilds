@@ -63,13 +63,11 @@ public class EntityExplode implements Listener {
 
             guild.setBuild(System.currentTimeMillis() + Settings.getConfig().regionExplode * 1000L);
             for (User user : guild.getMembers()) {
-                Player player = this.plugin.getServer().getPlayer(user.getUUID());
+                Player player = user.getPlayer();
                 if (player != null) {
-
                     if (informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, pluginConfiguration.infoPlayerCooldown)) {
                         player.sendMessage(Messages.getInstance().regionExplode.replace("{TIME}", Integer.toString(Settings.getConfig().regionExplode)));
                     }
-
                 }
             }
         }
