@@ -12,7 +12,7 @@ public final class MapUtil {
     public static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map, boolean descending) {
         Stream<Entry<K, V>> stream = map.entrySet().stream();
 
-        if (!descending) {
+        if (descending) {
             stream = stream.sorted(Entry.comparingByKey(Collections.reverseOrder()));
         } else {
             stream = stream.sorted(Entry.comparingByKey());
@@ -22,13 +22,13 @@ public final class MapUtil {
     }
 
     public static <K extends Comparable<? super K>, V> Map<K, V> sortByKey(Map<K, V> map) {
-        return sortByKey(map, false);
+        return sortByKey(map, true);
     }
 
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map, boolean descending) {
         Stream<Entry<K, V>> stream = map.entrySet().stream();
 
-        if (!descending) {
+        if (descending) {
             stream = stream.sorted(Entry.comparingByValue(Collections.reverseOrder()));
         } else {
             stream = stream.sorted(Entry.comparingByValue());
@@ -38,7 +38,7 @@ public final class MapUtil {
     }
 
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
-        return sortByValue(map, false);
+        return sortByValue(map, true);
     }
 
 }
