@@ -213,8 +213,10 @@ public class ExcCreate implements Executor {
                 double borderSize = border.getSize() / 2;
                 double borderX = border.getCenter().getX() + borderSize;
                 double borderZ = border.getCenter().getZ() + borderSize;
+                double distanceX = Math.abs(borderX) - Math.abs(player.getLocation().getX());
+                double distanceZ = Math.abs(borderZ) - Math.abs(player.getLocation().getZ());
 
-                if ( (borderX - player.getLocation().getX()) < config.createMinDistanceFromBorder || (borderZ - player.getLocation().getZ()) < config.createMinDistanceFromBorder) {
+                if ( (distanceX < config.createMinDistanceFromBorder) || (distanceZ < config.createMinDistanceFromBorder) ) {
                     String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
                     notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
                     player.sendMessage(notEnoughDistanceMessage);
