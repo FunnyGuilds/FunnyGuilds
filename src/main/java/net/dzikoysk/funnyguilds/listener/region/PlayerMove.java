@@ -131,7 +131,7 @@ public class PlayerMove implements Listener {
                     return;
                 }
 
-                if (!config.regionEnterNotificationGuildMember && guild.equals(user.getGuild())) {
+                if (!config.regionEnterNotificationGuildMember && user.getGuild() != null && guild.getTag().equals(user.getGuild().getTag())) {
                     return;
                 }
 
