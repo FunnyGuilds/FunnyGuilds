@@ -27,6 +27,7 @@ import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
@@ -205,6 +206,20 @@ public class ExcCreate implements Executor {
             if (RegionUtils.isNear(guildLocation)) {
                 player.sendMessage(messages.createIsNear);
                 return;
+            }
+
+            if (config.createMinDistanceFromBorder != -1) {
+                WorldBorder border = player.getWorld().getWorldBorder();
+                double borderSize = border.getSize() / 2;
+                double borderX = border.getCenter().getX() + borderSize;
+                double borderZ = border.getCenter().getZ() + borderSize;
+
+                if ( (borderX - player.getLocation().getX()) < config.createMinDistanceFromBorder || (borderZ - player.getLocation().getZ()) < config.createMinDistanceFromBorder) {
+                    String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
+                    notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
+                    player.sendMessage(notEnoughDistanceMessage);
+                    return;
+                }
             }
         }
         

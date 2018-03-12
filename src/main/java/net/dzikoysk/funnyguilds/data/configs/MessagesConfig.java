@@ -291,6 +291,8 @@ public class MessagesConfig {
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
     public String createGuild = "&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
     public String createGuildCouldNotPasteSchematic = "&cWystapil blad podczas tworzenia terenu gildii, zglos sie do administracji.";
+    @CfgComment("Dostepne zmienne: {BORDER-MIN-DISTANCE}")
+    public String createNotEnoughDistanceFromBorder = "&cJestes zbyt blisko granicy mapy aby zalozyc gildie! (Minimalna odleglosc: {BORDER-MIN-DISTANCE})";
 
     @CfgComment("<------- Delete Guild Messages -------> #")
     public String deleteConfirm = "&7Aby potwierdzic usuniecie gildii, wpisz: &c/potwierdz";
