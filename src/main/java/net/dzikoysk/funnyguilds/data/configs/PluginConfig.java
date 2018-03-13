@@ -896,8 +896,14 @@ public class PluginConfig {
     public DataType dataType = new DataType(true, false);
     @CfgComment("Dane wymagane do polaczenia z baza")
     @CfgComment("UWAGA: connectionTimeout jest w milisekundach!")
+    @CfgComment("Sekcje usersTableName, guildsTableName i regionsTableName to nazwy tabel z danymi FG w bazie danych")
+    @CfgComment("Najlepiej zmieniac te nazwy tylko wtedy, gdy jest naprawde taka potrzeba (np. wystepuje konflikt z innym pluginem)")
+    @CfgComment("Aby zmienic nazwy tabel, gdy masz juz w bazie jakies dane z FG:")
+    @CfgComment("1. Wylacz serwer")
+    @CfgComment("2. Zmien dane w configu FG")
+    @CfgComment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
     @CfgName("mysql")
-    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 16, 30000);
+    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 16, 30000, "users", "guilds", "regions");
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
@@ -1230,11 +1236,13 @@ public class PluginConfig {
         public String password;
         public int poolSize;
         public int connectionTimeout;
+        public String usersTableName;
+        public String guildsTableName;
+        public String regionsTableName;
 
-        public MySQL() {
-        }
+        public MySQL() {}
 
-        public MySQL(String hostname, int port, String database, String user, String password, int poolSize, int connectionTimeout) {
+        public MySQL(String hostname, int port, String database, String user, String password, int poolSize, int connectionTimeout, String usersTableName, String guildsTableName, String regionsTableName) {
             this.hostname = hostname;
             this.port = port;
             this.database = database;
@@ -1242,6 +1250,9 @@ public class PluginConfig {
             this.password = password;
             this.poolSize = poolSize;
             this.connectionTimeout = connectionTimeout;
+            this.usersTableName = usersTableName;
+            this.guildsTableName = guildsTableName;
+            this.regionsTableName = regionsTableName;
         }
     }
 	

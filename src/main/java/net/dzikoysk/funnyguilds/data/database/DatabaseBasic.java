@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
@@ -25,17 +26,19 @@ public class DatabaseBasic {
         if (instance != null) {
             return instance;
         }
+        
         return new DatabaseBasic();
     }
 
     public void load() {
         Database db = Database.getInstance();
+        PluginConfig config = Settings.getConfig();
 
         usersTable(db);
         regionsTable(db);
         guildsTable(db);
 
-        Database.getInstance().executeQuery("SELECT * FROM `users`", usersResult -> {
+        Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.usersTableName + "`", usersResult -> {
             try {
                 while (usersResult.next()) {
                     User user = DatabaseUser.deserialize(usersResult);
@@ -54,7 +57,7 @@ public class DatabaseBasic {
 
 
         if (Settings.getConfig().regionsEnabled) {
-            Database.getInstance().executeQuery("SELECT * FROM `regions`", regionsResult -> {
+            Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.regionsTableName + "`", regionsResult -> {
                 try {
                     while (regionsResult.next()) {
                         Region region = DatabaseRegion.deserialize(regionsResult);
@@ -75,7 +78,7 @@ public class DatabaseBasic {
             FunnyLogger.info("Regions are disabled and thus - not loaded");
         }
 
-        Database.getInstance().executeQuery("SELECT * FROM `guilds`", guildsResult -> {
+        Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.guildsTableName + "`", guildsResult -> {
             try {
                 while (guildsResult.next()) {
                     Guild guild = DatabaseGuild.deserialize(guildsResult);
@@ -159,8 +162,10 @@ public class DatabaseBasic {
 
     public void guildsTable(Database db) {
         StringBuilder sb = new StringBuilder();
-        sb.append("create table if not exists `guilds`(");
-        sb.append("`uuid` varchar(100) not null,");
+        
+        sb.append("create table if not exists `");
+        sb.append(Settings.getConfig().mysql.guildsTableName);
+        sb.append("`(`uuid` varchar(100) not null,");
         sb.append("`name` text not null,");
         sb.append("`tag` text not null,");
         sb.append("`owner` text not null,");
@@ -180,32 +185,30 @@ public class DatabaseBasic {
         sb.append("`info` text,");
         sb.append("`deputy` text,");
         sb.append("primary key (uuid));");
+        
         db.executeUpdate(sb.toString());
-        /*db.executeUpdate("alter table `guilds` add `born` bigint not null;");
-        db.executeUpdate("alter table `guilds` add `validity` bigint not null;");
-        db.executeUpdate("alter table `guilds` add `attacked` bigint not null;");
-        db.executeUpdate("alter table `guilds` add `lives` int not null;");
-        db.executeUpdate("alter table `guilds` add `ban` bigint not null;");
-        db.executeUpdate("alter table `guilds` add `pvp` boolean not null;");
-        db.executeUpdate("alter table `guilds` add `deputy` text;");
-        db.executeUpdate("alter table guilds add constraint deputy foreign key (deputy) references users (name) on update cascade;");*/
     }
 
     public void regionsTable(Database db) {
         StringBuilder sb = new StringBuilder();
-        sb.append("create table if not exists `regions`(");
-        sb.append("`name` varchar(100) not null,");
+        
+        sb.append("create table if not exists `");
+        sb.append(Settings.getConfig().mysql.regionsTableName);
+        sb.append("`(`name` varchar(100) not null,");
         sb.append("`center` text not null,");
         sb.append("`size` int not null,");
         sb.append("`enlarge` int not null,");
         sb.append("primary key (name));");
+        
         db.executeUpdate(sb.toString());
     }
 
     public void usersTable(Database db) {
         StringBuilder sb = new StringBuilder();
-        sb.append("create table if not exists `users`(");
-        sb.append("`uuid` varchar(100) not null,");
+        
+        sb.append("create table if not exists `");
+        sb.append(Settings.getConfig().mysql.usersTableName);
+        sb.append("`(`uuid` varchar(36) not null,");
         sb.append("`name` text not null,");
         sb.append("`points` int not null,");
         sb.append("`kills` int not null,");
@@ -214,9 +217,8 @@ public class DatabaseBasic {
         sb.append("`ban` bigint,");
         sb.append("`reason` text,");
         sb.append("primary key (uuid));");
+        
         db.executeUpdate(sb.toString());
-        /*db.executeUpdate("alter table `users` add `ban` bigint;");
-        db.executeUpdate("alter table `users` add `reason` text;");
-        db.executeUpdate("alter table `users` add `guild` varchar(100);");*/
     }
+    
 }

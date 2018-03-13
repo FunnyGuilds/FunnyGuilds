@@ -26,7 +26,6 @@ public class Database {
         this.dataSource = new HikariDataSource();
         PluginConfig.MySQL c = Settings.getConfig().mysql;
 
-        //this.dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         this.dataSource.setMaximumPoolSize(c.poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
 
@@ -40,63 +39,6 @@ public class Database {
         this.dataSource.addDataSourceProperty("prepStmtCacheSize", 250);
         this.dataSource.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
     }
-
-    /*public Connection openConnection() {
-        try {
-            if (checkConnection()) {
-                return connection;
-            }
-            Class.forName("com.mysql.jdbc.Driver");
-            String s = "jdbc:mysql://" + this.hostname + ":" + this.port + "/" + this.database;
-            connection = DriverManager.getConnection(s, this.user, this.password);
-            return connection;
-        } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    public void firstConnection() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://" + this.hostname + ":" + this.port + "/?user=" + this.user + "&password=" + this.password;
-            Connection conn = DriverManager.getConnection(url);
-            Statement s = conn.createStatement();
-            s.executeUpdate("CREATE DATABASE IF NOT EXISTS `" + this.database + "`");
-            conn.close();
-        } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public boolean checkConnection() {
-        try {
-            return connection != null && !connection.isClosed();
-        } catch (SQLException e) {
-            if (FunnyGuilds.exception(e.getCause())) {
-                e.printStackTrace();
-            }
-        }
-        return connection != null;
-    }
-
-    public boolean closeConnection() {
-        if (connection == null) {
-            return false;
-        }
-        try {
-            connection.close();
-        } catch (Exception e) {
-            if (FunnyGuilds.exception(e.getCause())) {
-                e.printStackTrace();
-            }
-        }
-        return true;
-    }*/
 
     public static Database getInstance() {
         if (instance == null) {
@@ -112,8 +54,7 @@ public class Database {
              ResultSet result = statement.executeQuery()) {
 
             action.accept(result);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
@@ -129,12 +70,12 @@ public class Database {
             }
 
             return statement.executeUpdate();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
         return 0;
     }
+    
 }

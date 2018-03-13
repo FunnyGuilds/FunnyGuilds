@@ -28,6 +28,7 @@ public class DatabaseGuild {
         if (rs == null) {
             return null;
         }
+        
         try {
             String id = rs.getString("uuid");
             String name = rs.getString("name");
@@ -94,6 +95,7 @@ public class DatabaseGuild {
             }
 
             Object[] values = new Object[17];
+            
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
@@ -118,6 +120,7 @@ public class DatabaseGuild {
                 e.printStackTrace();
             }
         }
+        
         return null;
     }
 
@@ -138,16 +141,24 @@ public class DatabaseGuild {
         if (guild.getUUID() != null) {
             Database db = Database.getInstance();
             StringBuilder update = new StringBuilder();
-            update.append("DELETE FROM `guilds` WHERE `uuid`='");
+            
+            update.append("DELETE FROM `");
+            update.append(Settings.getConfig().mysql.guildsTableName);
+            update.append("` WHERE `uuid`='");
             update.append(guild.getUUID().toString());
             update.append("'");
+            
             db.executeUpdate(update.toString());
         } else if (guild.getName() != null) {
             Database db = Database.getInstance();
             StringBuilder update = new StringBuilder();
-            update.append("DELETE FROM `guilds` WHERE `name`='");
+            
+            update.append("DELETE FROM `");
+            update.append(Settings.getConfig().mysql.guildsTableName);
+            update.append("` WHERE `name`='");
             update.append(guild.getName());
             update.append("'");
+            
             db.executeUpdate(update.toString());
         }
     }
@@ -155,11 +166,15 @@ public class DatabaseGuild {
     public void updatePoints() {
         Database db = Database.getInstance();
         StringBuilder update = new StringBuilder();
-        update.append("UPDATE `guilds` SET `points`=");
+        
+        update.append("UPDATE `");
+        update.append(Settings.getConfig().mysql.guildsTableName);
+        update.append("` SET `points`=");
         update.append(guild.getRank().getPoints());
         update.append(" WHERE `uuid`='");
         update.append(guild.getUUID().toString());
         update.append("'");
+        
         db.executeUpdate(update.toString());
     }
 
@@ -171,8 +186,9 @@ public class DatabaseGuild {
         String allies = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 
-        sb.append("INSERT INTO `guilds` (");
-        sb.append("`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `regions`, `allies`, ");
+        sb.append("INSERT INTO `");
+        sb.append(Settings.getConfig().mysql.guildsTableName);
+        sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `regions`, `allies`, ");
         sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
         sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");
         sb.append("'%members%','%regions%','%allies%','%enemies%',%points%,%born%,");

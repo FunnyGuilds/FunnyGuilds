@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.LocationUtils;
@@ -21,6 +22,7 @@ public class DatabaseRegion {
         if (rs == null) {
             return null;
         }
+        
         try {
             String name = rs.getString("name");
             String center = rs.getString("center");
@@ -37,16 +39,19 @@ public class DatabaseRegion {
             }
 
             Object[] values = new Object[4];
+            
             values[0] = name;
             values[1] = loc;
             values[2] = size;
             values[3] = enlarge;
+            
             return DeserializationUtils.deserializeRegion(values);
         } catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
+        
         return null;
     }
 
@@ -60,15 +65,22 @@ public class DatabaseRegion {
     public void delete() {
         Database db = Database.getInstance();
         StringBuilder update = new StringBuilder();
-        update.append("DELETE FROM `regions` WHERE `name`='");
+        
+        update.append("DELETE FROM `");
+        update.append(Settings.getConfig().mysql.regionsTableName);
+        update.append("` WHERE `name`='");
         update.append(region.getName());
         update.append("';");
+        
         db.executeUpdate(update.toString());
     }
 
     public String getInsert() {
         StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO `regions` (`name`, `center`, `size`, `enlarge`) VALUES (");
+        
+        sb.append("INSERT INTO `");
+        sb.append(Settings.getConfig().mysql.regionsTableName);
+        sb.append("` (`name`, `center`, `size`, `enlarge`) VALUES (");
         sb.append("'" + region.getName() + "',");
         sb.append("'" + LocationUtils.toString(region.getCenter()) + "',");
         sb.append("'" + region.getSize() + "',");
@@ -77,6 +89,8 @@ public class DatabaseRegion {
         sb.append("`center`='" + LocationUtils.toString(region.getCenter()) + "',");
         sb.append("`size`='" + region.getSize() + "',");
         sb.append("`enlarge`='" + region.getEnlarge() + "';");
+        
         return sb.toString();
     }
+    
 }

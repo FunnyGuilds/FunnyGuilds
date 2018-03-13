@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
 
@@ -18,6 +19,7 @@ public class DatabaseUser {
         if (rs == null) {
             return null;
         }
+        
         try {
             String uuid = rs.getString("uuid");
             String name = rs.getString("name");
@@ -28,6 +30,7 @@ public class DatabaseUser {
             String reason = rs.getString("reason");
 
             Object[] values = new Object[7];
+            
             values[0] = uuid;
             values[1] = name;
             values[2] = points;
@@ -35,12 +38,14 @@ public class DatabaseUser {
             values[4] = deaths;
             values[5] = ban;
             values[6] = reason;
+            
             return DeserializationUtils.deserializeUser(values);
         } catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
+        
         return null;
     }
 
@@ -63,11 +68,15 @@ public class DatabaseUser {
     public void updatePoints() {
         Database db = Database.getInstance();
         StringBuilder update = new StringBuilder();
-        update.append("UPDATE `users` SET `points`='");
+        
+        update.append("UPDATE `");
+        update.append(Settings.getConfig().mysql.usersTableName);
+        update.append("` SET `points`='");
         update.append(user.getRank().getPoints());
         update.append("' WHERE `uuid`='");
         update.append(user.getUUID().toString());
         update.append("'");
+        
         db.executeUpdate(update.toString());
     }
 
@@ -75,8 +84,12 @@ public class DatabaseUser {
         if (user.getUUID() == null) {
             return null;
         }
+        
         StringBuilder sb = new StringBuilder();
-        sb.append("INSERT INTO `users` (`uuid`, `name`, `points`, `kills`, `deaths`, `ban`, `reason`) VALUES (");
+        
+        sb.append("INSERT INTO `");
+        sb.append(Settings.getConfig().mysql.usersTableName);
+        sb.append("` (`uuid`, `name`, `points`, `kills`, `deaths`, `ban`, `reason`) VALUES (");
         sb.append("'" + user.getUUID().toString() + "',");
         sb.append("'" + user.getName() + "',");
         sb.append("'" + user.getRank().getPoints() + "',");
@@ -91,17 +104,24 @@ public class DatabaseUser {
         sb.append("`deaths`='" + user.getRank().getDeaths() + "',");
         sb.append("`ban`='" + user.getBan() + "',");
         sb.append("`reason`='" + user.getReason() + "'");
+        
         if (user.hasGuild()) {
-            sb.append("; UPDATE `users` SET `guild`='");
+            sb.append("; UPDATE `");
+            sb.append(Settings.getConfig().mysql.usersTableName);
+            sb.append("` SET `guild`='");
             sb.append(user.getGuild().getName());
             sb.append("' WHERE `uuid`='");
             sb.append(user.getUUID().toString());
             sb.append("'");
         } else {
-            sb.append("; UPDATE `users` SET `guild`=NULL WHERE `uuid`='");
+            sb.append("; UPDATE `");
+            sb.append(Settings.getConfig().mysql.usersTableName);
+            sb.append("` SET `guild`=NULL WHERE `uuid`='");
             sb.append(user.getUUID().toString());
             sb.append("'");
         }
+        
         return sb.toString();
     }
+    
 }
