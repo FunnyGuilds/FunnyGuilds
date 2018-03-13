@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;
 import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DatabaseBasic {
@@ -36,57 +35,62 @@ public class DatabaseBasic {
         regionsTable(db);
         guildsTable(db);
 
-        ResultSet users = Database.getInstance().executeQuery("SELECT * FROM `users`");
-        try {
-            while (users.next()) {
-                User user = DatabaseUser.deserialize(users);
-                if (user != null) {
-                    user.changed();
-                }
-            }
-            
-            FunnyLogger.info("Loaded users: " + UserUtils.getUsers().size());
-        } catch (Exception e) {
-            if (FunnyLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
-        }
-
-        if (Settings.getConfig().regionsEnabled) {
-            ResultSet regions = Database.getInstance().executeQuery("SELECT * FROM `regions`");
+        Database.getInstance().executeQuery("SELECT * FROM `users`", usersResult -> {
             try {
-                while (regions.next()) {
-                    Region region = DatabaseRegion.deserialize(regions);
-                    if (region != null) {
-                        region.changed();
+                while (usersResult.next()) {
+                    User user = DatabaseUser.deserialize(usersResult);
+                    if (user != null) {
+                        user.changed();
                     }
                 }
-                
-                FunnyLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
+
+                FunnyLogger.info("Loaded users: " + UserUtils.getUsers().size());
             } catch (Exception e) {
                 if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
+        });
+
+
+        if (Settings.getConfig().regionsEnabled) {
+            Database.getInstance().executeQuery("SELECT * FROM `regions`", regionsResult -> {
+                try {
+                    while (regionsResult.next()) {
+                        Region region = DatabaseRegion.deserialize(regionsResult);
+                        if (region != null) {
+                            region.changed();
+                        }
+                    }
+
+                    FunnyLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
+                } catch (Exception e) {
+                    if (FunnyLogger.exception(e.getCause())) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
         } else {
             FunnyLogger.info("Regions are disabled and thus - not loaded");
         }
 
-        ResultSet guilds = Database.getInstance().executeQuery("SELECT * FROM `guilds`");
-        try {
-            while (guilds.next()) {
-                Guild guild = DatabaseGuild.deserialize(guilds);
-                if (guild != null) {
-                    guild.changed();
+        Database.getInstance().executeQuery("SELECT * FROM `guilds`", guildsResult -> {
+            try {
+                while (guildsResult.next()) {
+                    Guild guild = DatabaseGuild.deserialize(guildsResult);
+                    if (guild != null) {
+                        guild.changed();
+                    }
+                }
+
+                FunnyLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
+            } catch (Exception e) {
+                if (FunnyLogger.exception(e.getCause())) {
+                    e.printStackTrace();
                 }
             }
-            
-            FunnyLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
-        } catch (Exception e) {
-            if (FunnyLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
-        }
+        });
 
         // TODO
         for (Guild guild : GuildUtils.getGuilds()) {

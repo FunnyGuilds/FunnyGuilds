@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.function.Consumer;
 
 public class Database {
 
@@ -27,6 +28,7 @@ public class Database {
 
         //this.dataSource.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         this.dataSource.setMaximumPoolSize(c.poolSize);
+        this.dataSource.setConnectionTimeout(c.connectionTimeout);
 
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database);
         this.dataSource.setUsername(c.user);
@@ -104,31 +106,31 @@ public class Database {
         return instance;
     }
 
-    public ResultSet executeQuery(String query) {
-        try {
-            Connection connection = this.dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            return statement.executeQuery();
-        } catch (Exception e) {
+    public void executeQuery(String query, Consumer<ResultSet> action) {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()) {
+
+            action.accept(result);
+        }
+        catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
-        return null;
     }
 
     public int executeUpdate(String query) {
-        try {
-            Connection connection = this.dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
             if (statement == null) {
                 return 0;
             }
-            int result = statement.executeUpdate();
-            statement.close();
-            connection.close();
-            return result;
-        } catch (Exception e) {
+
+            return statement.executeUpdate();
+        }
+        catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }

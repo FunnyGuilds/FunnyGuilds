@@ -895,8 +895,9 @@ public class PluginConfig {
     @CfgName("data-type")
     public DataType dataType = new DataType(true, false);
     @CfgComment("Dane wymagane do polaczenia z baza")
+    @CfgComment("UWAGA: connectionTimeout jest w milisekundach!")
     @CfgName("mysql")
-    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 16);
+    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 16, 30000);
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
@@ -1228,17 +1229,19 @@ public class PluginConfig {
         public String user;
         public String password;
         public int poolSize;
+        public int connectionTimeout;
 
         public MySQL() {
         }
 
-        public MySQL(String hostname, int port, String database, String user, String password, int poolSize) {
+        public MySQL(String hostname, int port, String database, String user, String password, int poolSize, int connectionTimeout) {
             this.hostname = hostname;
             this.port = port;
             this.database = database;
             this.user = user;
             this.password = password;
             this.poolSize = poolSize;
+            this.connectionTimeout = connectionTimeout;
         }
     }
 	
