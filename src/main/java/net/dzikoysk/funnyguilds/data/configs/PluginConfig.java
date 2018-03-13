@@ -801,6 +801,11 @@ public class PluginConfig {
     @CfgName("player-list-enable")
     public boolean playerlistEnable = true;
 
+    @CfgComment("Czy tag gildii podany przy tworzeniu gildii powinien zachowac forme taka, w jakiej zostal wpisany")
+    @CfgComment("UWAGA: Gdy ta opcja jest wlaczona, opcja \"guild-tag-uppercase\" nie bedzie miala wplywu na tag gildii")
+    @CfgName("guild-tag-keep-case")
+    public boolean guildTagKeepCase = true;
+
     @CfgComment("Czy tagi gildii powinny byc pokazywane wielka litera")
     @CfgComment("Dziala dopiero po zrestartowaniu serwera")
     @CfgName("guild-tag-uppercase")

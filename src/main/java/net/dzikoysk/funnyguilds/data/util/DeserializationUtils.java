@@ -22,7 +22,7 @@ public class DeserializationUtils {
         Guild guild = Guild.getOrCreate((String) values[1]);
         
         guild.setUUID((UUID) values[0]);
-        guild.setTag(Settings.getConfig().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase());
+        guild.setTag(Settings.getConfig().guildTagKeepCase ? (String) values[2] : (Settings.getConfig().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase()));
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
         guild.setRegion((String) values[5]);

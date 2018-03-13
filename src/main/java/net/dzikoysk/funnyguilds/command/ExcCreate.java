@@ -77,7 +77,10 @@ public class ExcCreate implements Executor {
         }
 
         String tag = args[0];
-        tag = Settings.getConfig().guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
+
+        if (!config.guildTagKeepCase) {
+            tag = config.guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
+        }
         
         String name = args[1];
 
