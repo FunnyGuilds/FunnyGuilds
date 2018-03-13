@@ -874,6 +874,10 @@ public class PluginConfig {
     @CfgExclude
     public List<ItemStack> rankResetItems;
 
+    @CfgComment("Czy przy szukaniu danych o graczu ma byc pomijana wielkosc znakow")
+    @CfgName("player-lookup-ignorecase")
+    public boolean playerLookupIgnorecase = false;
+
     @CfgComment("Nazwy komend")
     @CfgName("commands")
     public Commands commands = new Commands();

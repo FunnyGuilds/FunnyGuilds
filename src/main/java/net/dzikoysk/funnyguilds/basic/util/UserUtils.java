@@ -26,20 +26,42 @@ public class UserUtils {
     }
 
     public static User get(String nickname) {
-        User user = nameUserCache.getIfPresent(nickname);
+        return get(nickname, false);
+    }
 
-        if (user == null) {
-            user = nameUserMap.get(nickname);
+    public static User get(String nickname, boolean ignoreCase) {
+        if (ignoreCase) {
 
-            if (user != null) {
-                nameUserCache.put(nickname, user);
-                return user;
+            for (Map.Entry<String, User> cacheEntry : nameUserCache.asMap().entrySet()) {
+                if (cacheEntry.getKey().equalsIgnoreCase(nickname)) {
+                    return cacheEntry.getValue();
+                }
+            }
+
+            for (Map.Entry<String, User> entry : nameUserMap.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(nickname)) {
+                    return entry.getValue();
+                }
             }
 
             return null;
         }
+        else {
+            User user = nameUserCache.getIfPresent(nickname);
 
-        return user;
+            if (user == null) {
+                user = nameUserMap.get(nickname);
+
+                if (user != null) {
+                    nameUserCache.put(nickname, user);
+                    return user;
+                }
+
+                return null;
+            }
+
+            return user;
+        }
     }
 
     public static User get(UUID uuid) {
@@ -78,7 +100,24 @@ public class UserUtils {
     }
 
     public static boolean playedBefore(String nickname) {
-        return nickname != null && nameUserMap.containsKey(nickname);
+        return playedBefore(nickname, false);
+    }
+
+    public static boolean playedBefore(String nickname, boolean ignoreCase) {
+        if (ignoreCase) {
+            if (nickname != null) {
+                for (String userNickname : nameUserMap.keySet()) {
+                    if (userNickname.equalsIgnoreCase(nickname)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+        else {
+            return nickname != null && nameUserMap.containsKey(nickname);
+        }
     }
 
     public static List<String> getNames(List<User> users) {

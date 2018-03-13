@@ -23,34 +23,36 @@ public class ExcPlayer implements Executor {
         PluginConfig config = Settings.getConfig();
         
         if (args.length == 0 && !(sender instanceof Player)) {
-            sender.sendMessage(Messages.getInstance().playerOnly);
+            sender.sendMessage(messages.playerOnly);
             return;
         }
         
         String name = args.length == 0 ? sender.getName() : args[0];
 
-        if (!UserUtils.playedBefore(name)) {
+        if (!UserUtils.playedBefore(name, config.playerLookupIgnorecase)) {
             sender.sendMessage(messages.playerInfoExists);
             return;
         }
 
-        User user = User.get(name);
+        User user = UserUtils.get(name, config.playerLookupIgnorecase);
 
-        if (user.getUUID() == null) {
+        if (user == null) {
             sender.sendMessage(messages.playerInfoExists);
             return;
         }
+
+        Rank rank = user.getRank();
 
         for (String messageLine : messages.playerInfoList) {
             if (user.hasGuild()) {
                 messageLine = StringUtils.replace(messageLine, "{GUILD}", user.getGuild().getName());
                 messageLine = StringUtils.replace(messageLine, "{TAG}", user.getGuild().getTag());
-            } else {
+            }
+            else {
                 messageLine = StringUtils.replace(messageLine, "{GUILD}", messages.gNameNoValue);
                 messageLine = StringUtils.replace(messageLine, "{TAG}", messages.gTagNoValue);
             }
-            
-            Rank rank = user.getRank();
+
             messageLine = StringUtils.replace(messageLine, "{PLAYER}", user.getName());
             messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
