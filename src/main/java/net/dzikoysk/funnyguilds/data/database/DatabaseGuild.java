@@ -176,11 +176,11 @@ public class DatabaseGuild {
         sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
         sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");
         sb.append("'%members%','%regions%','%allies%','%enemies%',%points%,%born%,");
-        sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%,%deputy%) ON DUPLICATE KEY UPDATE ");
+        sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%,'%deputy%') ON DUPLICATE KEY UPDATE ");
         sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
         sb.append("`region`='%region%',`members`='%members%',`regions`='%regions%',`allies`='%allies%',");
         sb.append("`enemies`='%enemies%',`points`=%points%,`born`=%born%,`validity`=%validity%,");
-        sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%,`deputy`=%deputy%");
+        sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%,`deputy`='%deputy%'");
         
         String is = sb.toString();
         
