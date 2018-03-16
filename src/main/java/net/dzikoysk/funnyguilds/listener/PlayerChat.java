@@ -113,6 +113,7 @@ public class PlayerChat implements Listener {
             format = StringUtils.replace(format, "{TAG}", guild.getTag());
             format = StringUtils.replace(format, "{POS}", StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
             
+
             String subMessage = event.getMessage().substring(length);
             this.spy(player, subMessage);
             
@@ -170,6 +171,10 @@ public class PlayerChat implements Listener {
 
         for (User user : guild.getOnlineMembers()) {
             Player p = user.getPlayer();
+            
+            if (p == null) {
+                return;
+            }
             
             if (!p.equals(player) || !user.isSpy()) {
                 p.sendMessage(message);
