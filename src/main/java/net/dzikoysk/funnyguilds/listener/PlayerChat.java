@@ -173,7 +173,7 @@ public class PlayerChat implements Listener {
             Player p = user.getPlayer();
             
             if (p == null) {
-                return;
+                continue;
             }
             
             if (!p.equals(player) || !user.isSpy()) {
