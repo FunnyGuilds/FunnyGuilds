@@ -13,15 +13,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractTablist {
 
-    private static final Set<AbstractTablist> TABLIST_CACHE = new HashSet<>();
+    private static final Set<AbstractTablist> TABLIST_CACHE = ConcurrentHashMap.newKeySet();
 
     protected final TablistVariablesParser variables = new TablistVariablesParser();
     protected final Map<Integer, String> tablistPattern;
@@ -31,7 +31,7 @@ public abstract class AbstractTablist {
     protected final int ping;
     protected boolean firstPacket = true;
 
-    public AbstractTablist(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
+    public AbstractTablist(Map<Integer, String> tablistPattern, String header, String footer, int ping, Player player) {
         this.tablistPattern = tablistPattern;
         this.header = header;
         this.footer = footer;
@@ -45,7 +45,7 @@ public abstract class AbstractTablist {
         TABLIST_CACHE.clear();
     }
 
-    public static AbstractTablist createTablist(final Map<Integer, String> pattern, final String header, final String footer, final int ping, final Player player) {
+    public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, Player player) {
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return tablist;
@@ -53,18 +53,17 @@ public abstract class AbstractTablist {
         }
 
         if ("v1_8_R1".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
+            AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
-        }
-        if ("v1_8_R2".equals(Reflections.getFixedVersion()) || "v1_8_R3".equals(Reflections.getFixedVersion()) || "v1_9_R1".equals(Reflections.getFixedVersion()) || "v1_9_R2".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
+        } else if ("v1_8_R2".equals(Reflections.getFixedVersion()) || "v1_8_R3".equals(Reflections.getFixedVersion()) || "v1_9_R1".equals(Reflections.getFixedVersion()) || "v1_9_R2".equals(Reflections.getFixedVersion())) {
+            AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
         } else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
-            final AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
+            AbstractTablist tablist = new net.dzikoysk.funnyguilds.util.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
             TABLIST_CACHE.add(tablist);
 
             return tablist;
@@ -73,7 +72,7 @@ public abstract class AbstractTablist {
         }
     }
 
-    public static AbstractTablist getTablist(final Player player) {
+    public static AbstractTablist getTablist(Player player) {
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return tablist;
@@ -83,7 +82,7 @@ public abstract class AbstractTablist {
         throw new IllegalStateException("Given player's tablist does not exist!");
     }
 
-    public static void removeTablist(final Player player) {
+    public static void removeTablist(Player player) {
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 TABLIST_CACHE.remove(tablist);
@@ -92,20 +91,20 @@ public abstract class AbstractTablist {
         }
     }
 
-    public static boolean hasTablist(final Player player) {
+    public static boolean hasTablist(Player player) {
         for (AbstractTablist tablist : TABLIST_CACHE) {
             if (tablist.player.equals(player.getUniqueId())) {
                 return true;
             }
         }
+        
         return false;
     }
 
     public abstract void send();
 
-    protected void sendPackets(final List<Object> packets) {
-        final Player target = Bukkit.getPlayer(player);
-
+    protected void sendPackets(List<Object> packets) {
+        Player target = Bukkit.getPlayer(player);
         if (target == null) {
             return;
         }
@@ -119,7 +118,7 @@ public abstract class AbstractTablist {
 
     protected String putVars(String cell) {
         String formatted = cell;
-        final User user = User.get(player);
+        User user = User.get(player);
 
         if (user == null) {
             throw new IllegalStateException("Given player is null!");
@@ -127,7 +126,6 @@ public abstract class AbstractTablist {
 
         VariableParsingResult result = this.variables.createResultFor(user);
         formatted = result.replaceInString(formatted);
-
         formatted = StringUtils.colored(formatted);
 
         String temp = Parser.parseRank(formatted); // TODO
@@ -142,7 +140,7 @@ public abstract class AbstractTablist {
     protected String putHeaderFooterVars(String text) {
         String formatted = text;
 
-        final Calendar time = Calendar.getInstance();
+        Calendar time = Calendar.getInstance();
         int hour = time.get(Calendar.HOUR_OF_DAY);
         int minute = time.get(Calendar.MINUTE);
         int second = time.get(Calendar.SECOND);
@@ -150,7 +148,6 @@ public abstract class AbstractTablist {
         formatted = StringUtils.replace(formatted, "{HOUR}", (hour < 10 ? "0" : "") + hour);
         formatted = StringUtils.replace(formatted, "{MINUTE}", (minute < 10 ? "0" : "") + minute);
         formatted = StringUtils.replace(formatted, "{SECOND}", (second < 10 ? "0" : "") + second);
-
         formatted = StringUtils.colored(formatted);
 
         return formatted;
@@ -159,4 +156,5 @@ public abstract class AbstractTablist {
     protected boolean shouldUseHeaderAndFooter() {
         return !this.header.isEmpty() || !this.footer.isEmpty();
     }
+    
 }
