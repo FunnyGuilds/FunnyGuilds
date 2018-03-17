@@ -48,13 +48,11 @@ public final class DefaultTablistVariables {
         parser.add(new SimpleTablistVariable("KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR())));
         parser.add(new SimpleTablistVariable("ONLINE", (User user) -> {
             Player player = user.getPlayer();
-            if(player == null)
-                return String.valueOf(Bukkit.getOnlinePlayers());
             
             int visiblePlayers = 0;
             Bukkit.getOnlinePlayers()
                     .stream()
-                    .filter((p) -> (p.canSee(player)))
+                    .filter((p) -> (player.canSee(p)))
                     .map((_item) -> 1)
                     .reduce(visiblePlayers, Integer::sum);
             
