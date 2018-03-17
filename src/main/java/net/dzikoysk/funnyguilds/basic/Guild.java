@@ -77,6 +77,10 @@ public class Guild implements Basic {
 
     public void broadcast(String message) {
         for (User user : this.getOnlineMembers()) {
+            if (user.getPlayer() == null) {
+                continue;
+            }
+            
             user.getPlayer().sendMessage(message);
         }
     }
