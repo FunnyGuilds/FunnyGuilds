@@ -42,6 +42,8 @@ permissions:
             funnyguilds.ranking: true
             funnyguilds.manage: true
             funnyguilds.items: true
+            funnyguilds.escape: true
+            funnyguilds.rankreset: true
     funnyguilds.vip:
         default: op
         children:
