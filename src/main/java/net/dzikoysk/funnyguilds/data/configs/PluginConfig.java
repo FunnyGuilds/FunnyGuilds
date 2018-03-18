@@ -391,16 +391,16 @@ public class PluginConfig {
     @CfgName("region-delete-if-near")
     public boolean regionDeleteIfNear = false;
     
-    @CfgComment("Czy wlaczyc czasowa ochrone przed TNT w gildiach w podanych godzinach")
+    @CfgComment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
     @CfgName("guild-tnt-protection-enabled")
     public boolean guildTNTProtectionEnabled = false;
     
-    @CfgComment("Od której godziny ma sie zaczac ochrona przed TNT w gildii")
+    @CfgComment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
     @CfgComment("Godzina w formacie HH:mm")
     @CfgName("guild-tnt-protection-start-time")
     public String guildTNTProtectionStartTime = "22:00";
     
-    @CfgComment("Od której godziny ma sie zaczac ochrona przed TNT w gildii")
+    @CfgComment("Do której godziny ma dzialac ochrona przed TNT w gildii")
     @CfgComment("Godzina w formacie HH:mm")
     @CfgName("guild-tnt-protection-end-time")
     public String guildTNTProtectionEndTime = "06:00";
