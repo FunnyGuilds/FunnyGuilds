@@ -11,14 +11,22 @@ permissions:
         default: op
         children:
             funnyguilds.player: true
+            funnyguilds.vip: true
             funnyguilds.admin: true
-            funnymigrator.use: true
+
     funnyguilds.admin:
         default: op
         children:
             funnyguilds.reload: true
             funnyguilds.admin.build: true
             funnyguilds.admin.notification: true
+
+    funnyguilds.vip:
+        default: op
+        children:
+            funnyguilds.vip.items: true
+            funnyguilds.vip.rank: true
+
     funnyguilds.player:
         default: true
         children:
@@ -33,65 +41,13 @@ permissions:
             funnyguilds.help: true
             funnyguilds.ally: true
             funnyguilds.break: true
-            funnyguilds.player: true
             funnyguilds.info: true
             funnyguilds.top: true
             funnyguilds.validity: true
             funnyguilds.leader: true
             funnyguilds.deputy: true
             funnyguilds.ranking: true
-            funnyguilds.manage: true
             funnyguilds.items: true
             funnyguilds.escape: true
             funnyguilds.rankreset: true
-    funnyguilds.vip:
-        default: op
-        children:
-            funnyguilds.vip.items: true
-            funnyguilds.vip.rank: true
-    funnyguilds.reload:
-        default: op
-    funnyguilds.admin.build:
-        default: op
-    funnyguilds.admin.notification:
-        default: op
-    funnyguilds.info:
-        default: true
-    funnyguilds.create:
-        default: true
-    funnyguilds.delete:
-        default: true
-    funnyguilds.invite:
-        default: true
-    funnyguilds.join:
-        default: true
-    funnyguilds.leave:
-        default: true
-    funnyguilds.kick:
-        default: true
-    funnyguilds.base:
-        default: true
-    funnyguilds.enlarge:
-        default: true
-    funnyguilds.help:
-        default: true
-    funnyguilds.player:
-        default: true
-    funnyguilds.ally:
-        default: true
-    funnyguilds.break:
-        default: true
-    funnyguilds.top:
-        default: true
-    funnyguilds.validity:
-        default: true
-    funnyguilds.leader:
-        default: true
-    funnyguilds.deputy:
-        default: true
-    funnyguilds.manage:
-        default: true
-    funnyguilds.ranking:
-        default: true
-    funnyguilds.items:
-        default: true
+            funnyguilds.manage: true
