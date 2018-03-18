@@ -20,7 +20,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Locale;
 import java.util.function.Consumer;
-import org.bukkit.entity.Player;
 
 public final class DefaultTablistVariables {
 
@@ -46,18 +45,7 @@ public final class DefaultTablistVariables {
         parser.add(new SimpleTablistVariable("KILLS", user -> String.valueOf(user.getRank().getKills())));
         parser.add(new SimpleTablistVariable("DEATHS", user -> String.valueOf(user.getRank().getDeaths())));
         parser.add(new SimpleTablistVariable("KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR())));
-        parser.add(new SimpleTablistVariable("ONLINE", (User user) -> {
-            Player player = user.getPlayer();
-            
-            int visiblePlayers = 0;
-            Bukkit.getOnlinePlayers()
-                    .stream()
-                    .filter((p) -> (player.canSee(p)))
-                    .map((_item) -> 1)
-                    .reduce(visiblePlayers, Integer::sum);
-            
-            return String.valueOf(visiblePlayers);
-        }));
+        parser.add(new SimpleTablistVariable("ONLINE", user -> String.valueOf(Bukkit.getOnlinePlayers().stream().filter(p -> user.getPlayer().canSee(p)).count())));
         parser.add(new SimpleTablistVariable("TPS", user -> Ticker.getRecentTPS(0)));
 
         parser.add(new GuildDependentTablistVariable("G-NAME", user -> user.getGuild().getName(), user -> messages.gNameNoValue));
@@ -87,4 +75,5 @@ public final class DefaultTablistVariables {
     public static void registerInstaller(Consumer<TablistVariablesParser> parser) {
         installers.add(parser);
     }
+    
 }

@@ -90,11 +90,11 @@ public class FunnyGuilds extends JavaPlugin {
         pm.registerEvents(new GuiActionHandler(), this);
         pm.registerEvents(new EntityDamage(), this);
         pm.registerEvents(new EntityInteract(), this);
-        pm.registerEvents(new PlayerChat(this), this);
+        pm.registerEvents(new PlayerChat(), this);
         pm.registerEvents(new PlayerDeath(), this);
         pm.registerEvents(new PlayerJoin(this), this);
         pm.registerEvents(new PlayerKick(), this);
-        pm.registerEvents(new PlayerLogin(this), this);
+        pm.registerEvents(new PlayerLogin(), this);
         pm.registerEvents(new PlayerQuit(), this);
 
         if (config.regionsEnabled) {
@@ -102,7 +102,7 @@ public class FunnyGuilds extends JavaPlugin {
             pm.registerEvents(new BlockIgnite(), this);
             pm.registerEvents(new BlockPlace(), this);
             pm.registerEvents(new BucketAction(), this);
-            pm.registerEvents(new EntityExplode(this), this);
+            pm.registerEvents(new EntityExplode(), this);
             pm.registerEvents(new HangingBreak(), this);
             pm.registerEvents(new HangingPlace(), this);
             pm.registerEvents(new PlayerCommand(), this);

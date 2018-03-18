@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -8,6 +7,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,11 +17,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerChat implements Listener {
 
-    private final FunnyGuilds plugin;
-
-    public PlayerChat(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
@@ -70,7 +65,7 @@ public class PlayerChat implements Listener {
 
     private void spy(Player player, String message) {
         String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
-        for (Player looped : plugin.getServer().getOnlinePlayers()) {
+        for (Player looped : Bukkit.getOnlinePlayers()) {
             if (User.get(looped).isSpy()) {
                 looped.sendMessage(spyMessage);
             }

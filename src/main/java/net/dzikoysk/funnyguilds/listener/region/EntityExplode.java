@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -25,13 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class EntityExplode implements Listener {
 
-    private final FunnyGuilds plugin;
-
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
-
-    public EntityExplode(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onExplode(EntityExplodeEvent event) {
