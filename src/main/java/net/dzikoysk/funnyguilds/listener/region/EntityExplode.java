@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -25,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class EntityExplode implements Listener {
 
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     @EventHandler
     public void onExplode(EntityExplodeEvent event) {
@@ -44,6 +47,22 @@ public class EntityExplode implements Listener {
 
         if (region != null) {
             Guild guild = region.getGuild();
+
+            if(Settings.getConfig().guildTNTProtectionEnabled) {
+                LocalDate start = LocalDate.parse(Settings.getConfig().guildTNTProtectionStartTime, timeFormatter);
+                LocalDate end = LocalDate.parse(Settings.getConfig().guildTNTProtectionEndTime, timeFormatter);
+                
+                LocalDate now = LocalDate.now();
+                
+                if(end.isBefore(start)) {
+                    end = end.plusDays(1);
+                }
+                
+                if((now.isAfter(start) || now.equals(start)) && (now.isBefore(end) || now.equals(end))) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
 
             if (!guild.canBeAttacked()) {
                 event.setCancelled(true);

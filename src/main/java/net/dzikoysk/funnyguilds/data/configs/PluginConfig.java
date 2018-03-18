@@ -390,6 +390,20 @@ public class PluginConfig {
     @CfgComment("Czy mozna usunac gildie jezeli ktos spoza gildii jest na jej terenie")
     @CfgName("region-delete-if-near")
     public boolean regionDeleteIfNear = false;
+    
+    @CfgComment("Czy wlaczyc czasowa ochrone przed TNT w gildiach w podanych godzinach")
+    @CfgName("guild-tnt-protection-enabled")
+    public boolean guildTNTProtectionEnabled = false;
+    
+    @CfgComment("Od której godziny ma sie zaczac ochrona przed TNT w gildii")
+    @CfgComment("Godzina w formacie HH:mm")
+    @CfgName("guild-tnt-protection-start-time")
+    public String guildTNTProtectionStartTime = "22:00";
+    
+    @CfgComment("Od której godziny ma sie zaczac ochrona przed TNT w gildii")
+    @CfgComment("Godzina w formacie HH:mm")
+    @CfgName("guild-tnt-protection-end-time")
+    public String guildTNTProtectionEndTime = "06:00";
 
     @CfgComment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     @CfgName("region-explode")
