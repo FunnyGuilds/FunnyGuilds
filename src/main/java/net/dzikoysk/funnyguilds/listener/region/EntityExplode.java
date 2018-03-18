@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import java.time.LocalDateTime;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -44,6 +45,18 @@ public class EntityExplode implements Listener {
 
         if (region != null) {
             Guild guild = region.getGuild();
+
+            if (pluginConfiguration.guildTNTProtectionEnabled) {
+                LocalDateTime start = pluginConfiguration.guildTNTProtectionStartTime;
+                LocalDateTime end = pluginConfiguration.guildTNTProtectionEndTime;
+                
+                LocalDateTime now = LocalDateTime.now();
+                
+                if ((now.isAfter(start) || now.equals(start)) && (now.isBefore(end) || now.equals(end))) {
+                    event.setCancelled(true);
+                    return;
+                }
+            }
 
             if (!guild.canBeAttacked()) {
                 event.setCancelled(true);

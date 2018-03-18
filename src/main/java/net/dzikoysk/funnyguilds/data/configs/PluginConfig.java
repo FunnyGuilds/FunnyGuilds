@@ -28,6 +28,10 @@ import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -390,6 +394,26 @@ public class PluginConfig {
     @CfgComment("Czy mozna usunac gildie jezeli ktos spoza gildii jest na jej terenie")
     @CfgName("region-delete-if-near")
     public boolean regionDeleteIfNear = false;
+    
+    @CfgComment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
+    @CfgName("guild-tnt-protection-enabled")
+    public boolean guildTNTProtectionEnabled = false;
+    
+    @CfgComment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
+    @CfgComment("Godzina w formacie HH:mm")
+    @CfgName("guild-tnt-protection-start-time")
+    public String guildTNTProtectionStartTime_ = "22:00";
+    
+    @CfgExclude
+    public LocalDateTime guildTNTProtectionStartTime;
+    
+    @CfgComment("Do której godziny ma dzialac ochrona przed TNT w gildii")
+    @CfgComment("Godzina w formacie HH:mm")
+    @CfgName("guild-tnt-protection-end-time")
+    public String guildTNTProtectionEndTime_ = "06:00";
+    
+    @CfgExclude
+    public LocalDateTime guildTNTProtectionEndTime;
 
     @CfgComment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     @CfgName("region-explode")
@@ -1057,6 +1081,18 @@ public class PluginConfig {
             }
             
             map.put(material, chance);
+        }
+        
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        
+        LocalTime startTime = LocalTime.parse(guildTNTProtectionStartTime_, timeFormatter);
+        LocalTime endTime = LocalTime.parse(guildTNTProtectionEndTime_, timeFormatter);
+                
+        this.guildTNTProtectionStartTime = LocalDateTime.of(LocalDate.now(), startTime);
+        this.guildTNTProtectionEndTime = LocalDateTime.of(LocalDate.now(), endTime);
+        
+        if (this.guildTNTProtectionEndTime.isBefore(guildTNTProtectionStartTime)) {
+            this.guildTNTProtectionEndTime = this.guildTNTProtectionEndTime.plusDays(1);
         }
 
         this.explodeMaterials = map;
