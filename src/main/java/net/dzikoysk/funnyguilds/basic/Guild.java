@@ -195,7 +195,11 @@ public class Guild implements Basic {
     }
 
     public boolean canBeAttacked() {
-        return !(this.getAttacked() != 0 && this.getAttacked() + Settings.getConfig().warWait > System.currentTimeMillis());
+        return this.getProtectionEndTime() < System.currentTimeMillis();
+    }
+    
+    public long getProtectionEndTime() {
+        return this.attacked == this.born ? this.attacked + Settings.getConfig().warProtection : this.attacked + Settings.getConfig().warWait;
     }
 
     public boolean isSomeoneInRegion() {
@@ -206,12 +210,7 @@ public class Guild implements Basic {
     }
 
     public boolean isValid() {
-        if (this.validity == this.born) {
-            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
-            this.changes();
-        }
-        
-        if (this.validity == 0) {
+        if (this.validity == this.born || this.validity == 0) {
             this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
             this.changes();
         }

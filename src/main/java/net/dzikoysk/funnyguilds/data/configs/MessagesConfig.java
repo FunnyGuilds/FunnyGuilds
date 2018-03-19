@@ -184,7 +184,7 @@ public class MessagesConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
     
-    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY}, {LIVES}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
@@ -192,6 +192,7 @@ public class MessagesConfig {
             "&7Zalozyciel: &c{OWNER}",
             "&7Zastepcy: &c{DEPUTIES}",
             "&7Punkty: &c{POINTS} &8[&c{RANK}&8]",
+            "&7Ochrona: &c{GUILD-PROTECTION}",
             "&7Zycia: &4{LIVES}",
             "&7Waznosc: &c{VALIDITY}",
             "&7Czlonkowie: &7{MEMBERS}",

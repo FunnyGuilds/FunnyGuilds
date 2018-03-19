@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Date;
 import java.util.Locale;
+import net.dzikoysk.funnyguilds.util.TimeUtils;
 
 public class ExcInfo implements Executor {
     
@@ -55,6 +56,9 @@ public class ExcInfo implements Executor {
         }
 
         String validity = config.dateFormat.format(new Date(guild.getValidity()));
+        
+        long now = System.currentTimeMillis();
+        long protectionEndTime = guild.getProtectionEndTime();
 
         for (String messageLine : messages.infoList) {
             messageLine = StringUtils.replace(messageLine, "{GUILD}", guild.getName());
@@ -65,6 +69,7 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{MEMBERS}", StringUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
             messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
             messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", String.valueOf(guild.getRegionData().getSize()));
+            messageLine = StringUtils.replace(messageLine, "{GUILD-PROTECTION}", protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now));
             
             Rank rank = guild.getRank();
             messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat));
