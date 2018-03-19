@@ -12,7 +12,7 @@ Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 <br>
 
 #### Current Version
-[FunnyGuilds Tribute 4.1.1 for 1.8.8+](https://github.com/FunnyGuilds/FunnyGuilds/releases)
+[FunnyGuilds Tribute 4.2.0 for 1.8.8+](https://github.com/FunnyGuilds/FunnyGuilds/releases)
 
 #### Placeholder support
 Funnyguilds hooks its placeholders into those plugins:

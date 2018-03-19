@@ -45,7 +45,7 @@ import java.util.Map.Entry;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("         4.1.1 Tribute          #")
+@CfgComment("         4.2.0 Tribute          #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfig {
@@ -811,7 +811,7 @@ public class PluginConfig {
 
     @CfgComment("Wyglad naglowka w liscie graczy.")
     @CfgName("player-list-header")
-    public String playerListHeader = "&7FunnyGuilds &b4.1.1 Tribute";
+    public String playerListHeader = "&7FunnyGuilds &b4.2.0 Tribute";
 
     @CfgComment("Wyglad stopki w liscie graczy.")
     @CfgName("player-list-footer")
