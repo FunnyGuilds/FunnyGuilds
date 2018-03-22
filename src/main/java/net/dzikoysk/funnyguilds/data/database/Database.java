@@ -23,7 +23,7 @@ public class Database {
         PluginConfig.MySQL c = Settings.getConfig().mysql;
 
         int cores = Runtime.getRuntime().availableProcessors();
-        this.dataSource.setMaximumPoolSize(cores * 2);
+        this.dataSource.setMaximumPoolSize((cores * 2) + 1); // (core_count * 2) + spindle [pattern from PostgreSQL wiki]
 
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
 
