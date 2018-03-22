@@ -2,6 +2,7 @@ language: java
 sudo: required
 
 matrix:
+  fast_finish: true
   include:
     - jdk: oraclejdk8
     - jdk: oraclejdk9
@@ -9,6 +10,7 @@ matrix:
         apt:
           packages:
             - oracle-java9-installer # https://docs.travis-ci.com/user/languages/java/#Updating-Oracle-JDK-to-a-recent-release
+  allow_failures:
     - jdk: oraclejdk10
       addons:
         apt:
