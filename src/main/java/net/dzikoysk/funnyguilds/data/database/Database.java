@@ -47,8 +47,8 @@ public class Database {
 
     public void executeQuery(String query, Consumer<ResultSet> action) {
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet result = statement.executeQuery()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet result = statement.executeQuery()) {
 
             action.accept(result);
         } catch (Exception e) {
@@ -60,7 +60,7 @@ public class Database {
 
     public int executeUpdate(String query) {
         try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+            PreparedStatement statement = connection.prepareStatement(query)) {
 
             if (statement == null) {
                 return 0;
