@@ -12,10 +12,6 @@ import java.util.function.Consumer;
 
 public class Database {
 
-    /*
-     * https://github.com/brettwooldridge/HikariCP#popular-datasource-class-names
-     */
-
     private static Database instance;
 
     private final HikariDataSource dataSource;
@@ -38,6 +34,7 @@ public class Database {
         this.dataSource.addDataSourceProperty("cachePrepStmts", true);
         this.dataSource.addDataSourceProperty("prepStmtCacheSize", 250);
         this.dataSource.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
+        this.dataSource.addDataSourceProperty("useServerPrepStmts", true);
     }
 
     public static Database getInstance() {
