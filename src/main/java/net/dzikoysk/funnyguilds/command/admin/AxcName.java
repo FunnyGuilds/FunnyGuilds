@@ -61,7 +61,7 @@ public class AxcName implements Executor {
                 Flat.getRegionFile(region).delete();
             }
             
-            if (dataType.mysql) {
+            if (dataType.sql) {
                 new DatabaseRegion(region).delete();
             }
             
@@ -72,7 +72,7 @@ public class AxcName implements Executor {
             Flat.getGuildFile(guild).delete();
         }
         
-        if (dataType.mysql) {
+        if (dataType.sql) {
             new DatabaseGuild(guild).delete();
         }
         

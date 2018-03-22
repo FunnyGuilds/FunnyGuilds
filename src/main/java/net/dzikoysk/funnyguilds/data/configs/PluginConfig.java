@@ -920,19 +920,23 @@ public class PluginConfig {
     public int dataInterval = 1;
     @CfgComment("Typ zapisu danych")
     @CfgComment("Flat - Lokalne pliki")
-    @CfgComment("MySQL - baza danych")
+    @CfgComment("SQL - Baza danych typu SQL, np MySQL")
+    @CfgComment("Jezeli baza danych to np MySQL to zostaw tutaj samo SQL")
+    @CfgComment("Silnik bazy danych znajduje sie w dalszych sekcjach konfiguracji")
+    @CfgComment("UWAGA! Aktualnie dobrze wspierana baza danych typu SQL jest jedynie MySQL!")
     @CfgName("data-type")
     public DataType dataType = new DataType(true, false);
     @CfgComment("Dane wymagane do polaczenia z baza")
     @CfgComment("UWAGA: connectionTimeout jest w milisekundach!")
+    @CfgComment("UWAGA: Przypominamy ze jedyna dobrze wspierana baza danych SQL jest MySQL!")
     @CfgComment("Sekcje usersTableName, guildsTableName i regionsTableName to nazwy tabel z danymi FG w bazie danych")
     @CfgComment("Najlepiej zmieniac te nazwy tylko wtedy, gdy jest naprawde taka potrzeba (np. wystepuje konflikt z innym pluginem)")
     @CfgComment("Aby zmienic nazwy tabel, gdy masz juz w bazie jakies dane z FG:")
     @CfgComment("1. Wylacz serwer")
     @CfgComment("2. Zmien dane w configu FG")
     @CfgComment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
-    @CfgName("mysql")
-    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 30000, "users", "guilds", "regions");
+    @CfgName("sql")
+    public SQL sql = new SQL("mysql", "localhost", 3306, "db", "root", "passwd", 30000, "users", "guilds", "regions");
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
@@ -1259,17 +1263,18 @@ public class PluginConfig {
 
     public static class DataType {
         public boolean flat;
-        public boolean mysql;
+        public boolean sql;
 
         public DataType() {}
 
-        public DataType(boolean flat, boolean mysql) {
+        public DataType(boolean flat, boolean sql) {
             this.flat = flat;
-            this.mysql = mysql;
+            this.sql = sql;
         }
     }
 
-    public static class MySQL {
+    public static class SQL {
+        public String engine;
         public String hostname;
         public int port;
         public String database;
@@ -1280,9 +1285,10 @@ public class PluginConfig {
         public String guildsTableName;
         public String regionsTableName;
 
-        public MySQL() {}
+        public SQL() {}
 
-        public MySQL(String hostname, int port, String database, String user, String password, int connectionTimeout, String usersTableName, String guildsTableName, String regionsTableName) {
+        public SQL(String engine, String hostname, int port, String database, String user, String password, int connectionTimeout, String usersTableName, String guildsTableName, String regionsTableName) {
+            this.engine = engine;
             this.hostname = hostname;
             this.port = port;
             this.database = database;

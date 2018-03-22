@@ -20,14 +20,18 @@ public class Database {
         instance = this;
 
         this.dataSource = new HikariDataSource();
-        PluginConfig.MySQL c = Settings.getConfig().mysql;
+        PluginConfig.SQL c = Settings.getConfig().sql;
 
         int cores = Runtime.getRuntime().availableProcessors();
         this.dataSource.setMaximumPoolSize((cores * 2) + 1); // (core_count * 2) + spindle [pattern from PostgreSQL wiki]
 
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
+        
+        if (!c.engine.equalsIgnoreCase("MySQL")) {
+            FunnyLogger.warning(c.engine + " is not stable. Please use MySQL or flat.");
+        }
 
-        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database);
+        this.dataSource.setJdbcUrl("jdbc:" + c.engine.toLowerCase() + "://" + c.hostname + ":" + c.port + "/" + c.database);
         this.dataSource.setUsername(c.user);
         if (c.password != null && !c.password.isEmpty()) {
             this.dataSource.setPassword(c.password);

@@ -23,7 +23,7 @@ public class Manager {
         Messages.getInstance();
         Settings.getConfig();
         
-        if (Settings.getConfig().dataType.mysql) {
+        if (Settings.getConfig().dataType.sql) {
             DatabaseBasic.getInstance().load();
         } else {
             Flat.getInstance().load();
@@ -62,7 +62,7 @@ public class Manager {
             }
         }
         
-        if (Settings.getConfig().dataType.mysql) {
+        if (Settings.getConfig().dataType.sql) {
             try {
                 DatabaseBasic.getInstance().save(false);
             } catch (Exception e) {
