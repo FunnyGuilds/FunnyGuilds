@@ -932,7 +932,7 @@ public class PluginConfig {
     @CfgComment("2. Zmien dane w configu FG")
     @CfgComment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
     @CfgName("mysql")
-    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 16, 30000, "users", "guilds", "regions");
+    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 30000, "users", "guilds", "regions");
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
@@ -1275,7 +1275,6 @@ public class PluginConfig {
         public String database;
         public String user;
         public String password;
-        public int poolSize;
         public int connectionTimeout;
         public String usersTableName;
         public String guildsTableName;
@@ -1283,13 +1282,12 @@ public class PluginConfig {
 
         public MySQL() {}
 
-        public MySQL(String hostname, int port, String database, String user, String password, int poolSize, int connectionTimeout, String usersTableName, String guildsTableName, String regionsTableName) {
+        public MySQL(String hostname, int port, String database, String user, String password, int connectionTimeout, String usersTableName, String guildsTableName, String regionsTableName) {
             this.hostname = hostname;
             this.port = port;
             this.database = database;
             this.user = user;
             this.password = password;
-            this.poolSize = poolSize;
             this.connectionTimeout = connectionTimeout;
             this.usersTableName = usersTableName;
             this.guildsTableName = guildsTableName;
