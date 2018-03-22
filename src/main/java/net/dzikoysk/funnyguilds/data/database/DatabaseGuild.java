@@ -143,7 +143,7 @@ public class DatabaseGuild {
             StringBuilder update = new StringBuilder();
             
             update.append("DELETE FROM `");
-            update.append(Settings.getConfig().mysql.guildsTableName);
+            update.append(Settings.getConfig().sql.guildsTableName);
             update.append("` WHERE `uuid`='");
             update.append(guild.getUUID().toString());
             update.append("'");
@@ -154,7 +154,7 @@ public class DatabaseGuild {
             StringBuilder update = new StringBuilder();
             
             update.append("DELETE FROM `");
-            update.append(Settings.getConfig().mysql.guildsTableName);
+            update.append(Settings.getConfig().sql.guildsTableName);
             update.append("` WHERE `name`='");
             update.append(guild.getName());
             update.append("'");
@@ -168,7 +168,7 @@ public class DatabaseGuild {
         StringBuilder update = new StringBuilder();
         
         update.append("UPDATE `");
-        update.append(Settings.getConfig().mysql.guildsTableName);
+        update.append(Settings.getConfig().sql.guildsTableName);
         update.append("` SET `points`=");
         update.append(guild.getRank().getPoints());
         update.append(" WHERE `uuid`='");
@@ -187,7 +187,7 @@ public class DatabaseGuild {
         String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 
         sb.append("INSERT INTO `");
-        sb.append(Settings.getConfig().mysql.guildsTableName);
+        sb.append(Settings.getConfig().sql.guildsTableName);
         sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `regions`, `allies`, ");
         sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
         sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");

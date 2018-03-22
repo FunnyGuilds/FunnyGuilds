@@ -67,7 +67,7 @@ public class DatabaseRegion {
         StringBuilder update = new StringBuilder();
         
         update.append("DELETE FROM `");
-        update.append(Settings.getConfig().mysql.regionsTableName);
+        update.append(Settings.getConfig().sql.regionsTableName);
         update.append("` WHERE `name`='");
         update.append(region.getName());
         update.append("';");
@@ -79,7 +79,7 @@ public class DatabaseRegion {
         StringBuilder sb = new StringBuilder();
         
         sb.append("INSERT INTO `");
-        sb.append(Settings.getConfig().mysql.regionsTableName);
+        sb.append(Settings.getConfig().sql.regionsTableName);
         sb.append("` (`name`, `center`, `size`, `enlarge`) VALUES (");
         sb.append("'" + region.getName() + "',");
         sb.append("'" + LocationUtils.toString(region.getCenter()) + "',");

@@ -90,7 +90,7 @@ public final class RegionUtils {
             Flat.getRegionFile(region).delete();
         }
         
-        if (Settings.getConfig().dataType.mysql) {
+        if (Settings.getConfig().dataType.sql) {
             new DatabaseRegion(region).delete();
         }
         

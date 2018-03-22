@@ -81,7 +81,7 @@ public class GuildUtils {
             Flat.getGuildFile(guild).delete();
         }
 
-        if (Settings.getConfig().dataType.mysql) {
+        if (Settings.getConfig().dataType.sql) {
             new DatabaseGuild(guild).delete();
         }
 

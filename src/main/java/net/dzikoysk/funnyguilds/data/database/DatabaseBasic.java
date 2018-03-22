@@ -38,7 +38,7 @@ public class DatabaseBasic {
         regionsTable(db);
         guildsTable(db);
 
-        Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.usersTableName + "`", usersResult -> {
+        Database.getInstance().executeQuery("SELECT * FROM `" + config.sql.usersTableName + "`", usersResult -> {
             try {
                 while (usersResult.next()) {
                     User user = DatabaseUser.deserialize(usersResult);
@@ -57,7 +57,7 @@ public class DatabaseBasic {
 
 
         if (Settings.getConfig().regionsEnabled) {
-            Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.regionsTableName + "`", regionsResult -> {
+            Database.getInstance().executeQuery("SELECT * FROM `" + config.sql.regionsTableName + "`", regionsResult -> {
                 try {
                     while (regionsResult.next()) {
                         Region region = DatabaseRegion.deserialize(regionsResult);
@@ -78,7 +78,7 @@ public class DatabaseBasic {
             FunnyLogger.info("Regions are disabled and thus - not loaded");
         }
 
-        Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.guildsTableName + "`", guildsResult -> {
+        Database.getInstance().executeQuery("SELECT * FROM `" + config.sql.guildsTableName + "`", guildsResult -> {
             try {
                 while (guildsResult.next()) {
                     Guild guild = DatabaseGuild.deserialize(guildsResult);
@@ -164,7 +164,7 @@ public class DatabaseBasic {
         StringBuilder sb = new StringBuilder();
         
         sb.append("create table if not exists `");
-        sb.append(Settings.getConfig().mysql.guildsTableName);
+        sb.append(Settings.getConfig().sql.guildsTableName);
         sb.append("`(`uuid` varchar(100) not null,");
         sb.append("`name` text not null,");
         sb.append("`tag` text not null,");
@@ -193,7 +193,7 @@ public class DatabaseBasic {
         StringBuilder sb = new StringBuilder();
         
         sb.append("create table if not exists `");
-        sb.append(Settings.getConfig().mysql.regionsTableName);
+        sb.append(Settings.getConfig().sql.regionsTableName);
         sb.append("`(`name` varchar(100) not null,");
         sb.append("`center` text not null,");
         sb.append("`size` int not null,");
@@ -207,7 +207,7 @@ public class DatabaseBasic {
         StringBuilder sb = new StringBuilder();
         
         sb.append("create table if not exists `");
-        sb.append(Settings.getConfig().mysql.usersTableName);
+        sb.append(Settings.getConfig().sql.usersTableName);
         sb.append("`(`uuid` varchar(36) not null,");
         sb.append("`name` text not null,");
         sb.append("`points` int not null,");

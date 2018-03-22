@@ -148,7 +148,7 @@ public class PlayerDeath implements Listener {
             victim.clearDamage();
         }
         
-        if (config.dataType.mysql) {
+        if (config.dataType.sql) {
             if (victim.hasGuild()) {
                 IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
             }

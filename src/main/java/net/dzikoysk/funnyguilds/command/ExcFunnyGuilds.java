@@ -92,7 +92,7 @@ public class ExcFunnyGuilds implements Executor {
             }
         }
 
-        if (Settings.getConfig().dataType.mysql) {
+        if (Settings.getConfig().dataType.sql) {
             try {
                 DatabaseBasic.getInstance().save(true);
             } catch (Exception e) {

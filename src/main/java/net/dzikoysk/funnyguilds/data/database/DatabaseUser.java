@@ -70,7 +70,7 @@ public class DatabaseUser {
         StringBuilder update = new StringBuilder();
         
         update.append("UPDATE `");
-        update.append(Settings.getConfig().mysql.usersTableName);
+        update.append(Settings.getConfig().sql.usersTableName);
         update.append("` SET `points`='");
         update.append(user.getRank().getPoints());
         update.append("' WHERE `uuid`='");
@@ -88,7 +88,7 @@ public class DatabaseUser {
         StringBuilder sb = new StringBuilder();
         
         sb.append("INSERT INTO `");
-        sb.append(Settings.getConfig().mysql.usersTableName);
+        sb.append(Settings.getConfig().sql.usersTableName);
         sb.append("` (`uuid`, `name`, `points`, `kills`, `deaths`, `ban`, `reason`) VALUES (");
         sb.append("'" + user.getUUID().toString() + "',");
         sb.append("'" + user.getName() + "',");
@@ -107,7 +107,7 @@ public class DatabaseUser {
         
         if (user.hasGuild()) {
             sb.append("; UPDATE `");
-            sb.append(Settings.getConfig().mysql.usersTableName);
+            sb.append(Settings.getConfig().sql.usersTableName);
             sb.append("` SET `guild`='");
             sb.append(user.getGuild().getName());
             sb.append("' WHERE `uuid`='");
@@ -115,7 +115,7 @@ public class DatabaseUser {
             sb.append("'");
         } else {
             sb.append("; UPDATE `");
-            sb.append(Settings.getConfig().mysql.usersTableName);
+            sb.append(Settings.getConfig().sql.usersTableName);
             sb.append("` SET `guild`=NULL WHERE `uuid`='");
             sb.append(user.getUUID().toString());
             sb.append("'");
