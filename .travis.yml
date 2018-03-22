@@ -8,7 +8,12 @@ matrix:
       addons:
         apt:
           packages:
-            - oracle-java9-installer
+            - oracle-java9-installer # https://docs.travis-ci.com/user/languages/java/#Updating-Oracle-JDK-to-a-recent-release
+    - jdk: oraclejdk10
+      addons:
+        apt:
+          packages:
+            - oracle-java10-installer # https://docs.travis-ci.com/user/languages/java/#Updating-Oracle-JDK-to-a-recent-release
 
 notifications:
   email: false
