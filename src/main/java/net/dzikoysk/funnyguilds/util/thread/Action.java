@@ -32,10 +32,10 @@ public class Action {
             case SAVE_DATA:
                 Manager.getInstance().save();
                 break;
-            case MYSQL_UPDATE_USER_POINTS:
+            case SQL_UPDATE_USER_POINTS:
                 new DatabaseUser((User) values[0]).updatePoints();
                 break;
-            case MYSQL_UPDATE_GUILD_POINTS:
+            case SQL_UPDATE_GUILD_POINTS:
                 new DatabaseGuild((Guild) values[0]).updatePoints();
                 break;
             case DUMMY_GLOBAL_UPDATE:
