@@ -306,10 +306,14 @@ public class PluginConfig {
     @CfgName("bugged-blocks")
     public boolean buggedBlocks = false;
 
-    @CfgComment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete (warunek wymagany: bugged-blocks = true)")
+    @CfgComment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete")
     @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
     @CfgName("bugged-blocks-timer")
-    public int buggedBlocksTimer = 20;
+    public long buggedBlocksTimer = 20L;
+    
+    @CfgComment("Czy klocki po 'zbugowaniu' maja zostac oddane")
+    @CfgName("bugged-blocks-return")
+    public boolean buggedBlockReturn = false;
 
     @CfgComment("Maksymalna liczba czlonkow w gildii")
     @CfgName("max-members")
@@ -1043,9 +1047,9 @@ public class PluginConfig {
             this.enlargeItems = null;
         }
 
-        if (this.buggedBlocksTimer <= 0) {
-            FunnyLogger.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than or equal to zero!"));
-            this.buggedBlocksTimer = 20; // default value
+        if (this.buggedBlocksTimer < 0L) {
+            FunnyLogger.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than zero!"));
+            this.buggedBlocksTimer = 20L; // default value
         }
 
         try {
