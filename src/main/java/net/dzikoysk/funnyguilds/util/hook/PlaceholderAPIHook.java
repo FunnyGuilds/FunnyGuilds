@@ -42,7 +42,7 @@ public class PlaceholderAPIHook {
             
             Guild g = u.getGuild();
             
-            switch (identifier) {
+            switch (identifier.toLowerCase()) {
                 case "deaths":
                     return String.valueOf(u.getRank().getDeaths());
                 case "kdr":
