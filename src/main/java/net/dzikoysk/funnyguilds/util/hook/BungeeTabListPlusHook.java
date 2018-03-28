@@ -366,7 +366,7 @@ public class BungeeTabListPlusHook {
         // Guild TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
             final int index = i;
-            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_{gtop-" + index + "}") {
+            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_gtop-" + index) {
 
                 @Override
                 public String getReplacement(Player player) {
@@ -378,7 +378,7 @@ public class BungeeTabListPlusHook {
         // User TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
             final int index = i;
-            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_{ptop-" + index + "}") {
+            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_ptop-" + index) {
 
                 @Override
                 public String getReplacement(Player player) {

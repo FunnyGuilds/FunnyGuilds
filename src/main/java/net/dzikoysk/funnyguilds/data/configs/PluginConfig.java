@@ -819,7 +819,7 @@ public class PluginConfig {
 
     @CfgComment("Wyglad stopki w liscie graczy.")
     @CfgName("player-list-footer")
-    public String playerListFooter = "&7Wiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!";
+    public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!";
 
     @CfgComment("Liczba pingu pokazana przy kazdej komorce.")
     @CfgName("player-list-ping")
