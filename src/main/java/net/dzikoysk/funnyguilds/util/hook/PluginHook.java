@@ -28,13 +28,13 @@ public final class PluginHook {
 
         tryInit(PLUGIN_VAULT, VaultHook::initEconomyHook);
         tryInit(PLUGIN_PLACEHOLDESAPI, PlaceholderAPIHook::initPlaceholderHook);
+        
         tryInit(PLUGIN_BUNGEETABLISTPLUS, () -> {
             try {
                 Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
-                BungeeTabListPlusHook.initPlaceholderHook();
+                BungeeTabListPlusHook.initVariableHook();
             }
-            catch (ClassNotFoundException ignored) {
-            }
+            catch (ClassNotFoundException ignored) {}
         });
     }
 

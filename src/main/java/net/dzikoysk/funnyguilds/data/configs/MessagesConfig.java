@@ -12,7 +12,7 @@ public class MessagesConfig {
     @CfgComment("https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds")
     @CfgComment(" ")
     @CfgComment("FunnyGuilds wspiera BungeeTabListPlus, dodawane zmienne sa identyczne z tymi z PlaceholderAPI, nie zawieraja tylko znakow %")
-    @CfgComment("Obecnie zmienne \"funnyguilds_{gtop-x}\" i \"funnyguilds_{ptop-x}\" nie dzialaja")
+    @CfgComment("Zmienne \"funnyguilds_{gtop-x}\" i \"funnyguilds_{ptop-x}\" wspieraja pozycje od 1 do 100")
     @CfgComment(" ")
     @CfgComment(" ")
     @CfgComment("<------- Global Date Format -------> #")

@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
+import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
 import org.bukkit.entity.Player;
 
@@ -18,7 +19,7 @@ import java.util.Locale;
 
 public class BungeeTabListPlusHook {
 
-    public static void initPlaceholderHook() {
+    public static void initVariableHook() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         PluginConfig config = Settings.getConfig();
         MessagesConfig messages = Messages.getInstance();
@@ -362,8 +363,29 @@ public class BungeeTabListPlusHook {
             }
         });
         
-        // TODO
-        // Somehow implement GTOP-x and PTOP-x variables
+        // Guild TOP, positions 1-100
+        for (int i = 1; i <= 100; i++) {
+            final int index = i;
+            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_{gtop-" + index + "}") {
+
+                @Override
+                public String getReplacement(Player player) {
+                    return Parser.parseRank("{GTOP-" + index + "}");
+                }
+            });
+        }
+        
+        // User TOP, positions 1-100
+        for (int i = 1; i <= 100; i++) {
+            final int index = i;
+            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_{ptop-" + index + "}") {
+
+                @Override
+                public String getReplacement(Player player) {
+                    return Parser.parseRank("{PTOP-" + index + "}");
+                }
+            });
+        }
     }
 
 }
