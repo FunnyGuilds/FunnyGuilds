@@ -57,14 +57,14 @@ public class PlayerDeath implements Listener {
         
         if (config.rankFarmingProtect) {
             if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
-                if (attacker.getLastVictimTime() + (config.rankFarmingCooldown * 1000) > System.currentTimeMillis()) {
+                if (attacker.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     v.sendMessage(messages.rankLastVictimV);
                     a.sendMessage(messages.rankLastVictimA);
                     event.setDeathMessage(null);
                     return;
                 }
             } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
-                if (victim.getLastVictimTime() + (config.rankFarmingCooldown * 1000) > System.currentTimeMillis()) {
+                if (victim.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     v.sendMessage(messages.rankLastAttackerV);
                     a.sendMessage(messages.rankLastAttackerA);
                     event.setDeathMessage(null);
