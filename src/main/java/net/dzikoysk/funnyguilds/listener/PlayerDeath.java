@@ -118,12 +118,21 @@ public class PlayerDeath implements Listener {
 
                 Map<User, Double> damage = MapUtil.sortByValue(victim.getDamage());
 
+                int assists = 0;
+
                 for (Entry<User, Double> assist : damage.entrySet()) {
                     double assistFraction = assist.getValue() / totalDamage;
                     int addedPoints = (int) Math.round(assistFraction * toShare);
 
                     if (addedPoints <= 0) {
                         continue;
+                    }
+
+                    if (config.assistsLimit > 0) {
+                        if (assists >= config.assistsLimit) {
+                            continue;
+                        }
+                        assists++;
                     }
 
                     givenPoints += addedPoints;

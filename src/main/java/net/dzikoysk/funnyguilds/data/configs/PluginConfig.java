@@ -501,6 +501,10 @@ public class PluginConfig {
     @CfgComment("Czy system asyst ma byc wlaczony")
     @CfgName("rank-assist-enable")
     public boolean assistEnable = true;
+
+    @CfgComment("Limit asyst (liczba ujemna = wylaczony)")
+    @CfgName("assists-limit")
+    public int assistsLimit = -1;
     
     @CfgComment("Jaka czesc rankingu za zabicie idzie na konto zabojcy")
     @CfgComment("1 to caly ranking, 0 to nic")
