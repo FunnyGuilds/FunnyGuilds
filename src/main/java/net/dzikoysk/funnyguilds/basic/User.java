@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.Dummy;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
-import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
+import net.dzikoysk.funnyguilds.element.ScoreboardStack;
 import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
 import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.Bukkit;

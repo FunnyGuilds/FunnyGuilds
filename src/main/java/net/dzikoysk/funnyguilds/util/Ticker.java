@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.runnable;
+package net.dzikoysk.funnyguilds.util;
 
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;

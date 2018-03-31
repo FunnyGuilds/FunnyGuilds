@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.runnable;
+package net.dzikoysk.funnyguilds.system;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;

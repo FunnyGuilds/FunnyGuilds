@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVariable;
-import net.dzikoysk.funnyguilds.util.runnable.Ticker;
+import net.dzikoysk.funnyguilds.util.Ticker;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
