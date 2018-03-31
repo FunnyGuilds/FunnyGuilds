@@ -9,8 +9,8 @@ import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.thread.ActionType;
-import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
+import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 
 import java.sql.SQLException;
 

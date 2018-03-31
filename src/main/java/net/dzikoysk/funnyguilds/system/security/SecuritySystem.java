@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.system.security;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -50,13 +51,25 @@ public final class SecuritySystem {
         switch (type) {
             case FREECAM:
                 Guild guild = null;
-                for (int i = 0; i < values.length; i++) {
-                    if (values[i] instanceof Guild) {
-                        guild = (Guild) values[i];
+
+                for (Object value : values) {
+                    if (value instanceof Guild) {
+                        guild = (Guild) value;
                     }
                 }
-                
-                int dis = (int) RegionUtils.get(guild.getRegion()).getCenter().distance(player.getLocation());
+
+                if (guild == null) {
+                    return false;
+                }
+
+                Region region = RegionUtils.get(guild.getRegion());
+
+                if (region == null) {
+                    return false;
+                }
+
+                int dis = (int) region.getCenter().distance(player.getLocation());
+
                 if (dis < 6) {
                     return false;
                 }

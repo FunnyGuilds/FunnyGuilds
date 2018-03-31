@@ -7,7 +7,7 @@ import java.util.Map;
 
 public final class MaterialAliaser {
 
-    private static final Map<String, Material> aliases = new HashMap<String, Material>();
+    private static final Map<String, Material> aliases = new HashMap<>();
     
     static {
         aliases.put("SKULL", Material.SKULL_ITEM);

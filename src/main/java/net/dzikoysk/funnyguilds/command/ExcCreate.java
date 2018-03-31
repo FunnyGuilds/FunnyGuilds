@@ -22,8 +22,8 @@ import net.dzikoysk.funnyguilds.util.StringUtils;
 import net.dzikoysk.funnyguilds.element.schematic.SchematicHelper;
 import net.dzikoysk.funnyguilds.util.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import net.dzikoysk.funnyguilds.util.thread.ActionType;
-import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
+import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -64,15 +64,16 @@ public class ExcCreate implements Executor {
         }
 
         if (args.length != 2) {
-            if (args.length == 0) {
-                player.sendMessage(messages.generalNoTagGiven);
-                return;
-            } else if (args.length == 1) {
-                player.sendMessage(messages.generalNoNameGiven);
-                return;
-            } else {
-                player.sendMessage(messages.createMore);
-                return;
+            switch (args.length) {
+                case 0:
+                    player.sendMessage(messages.generalNoTagGiven);
+                    return;
+                case 1:
+                    player.sendMessage(messages.generalNoNameGiven);
+                    return;
+                default:
+                    player.sendMessage(messages.createMore);
+                    return;
             }
         }
 

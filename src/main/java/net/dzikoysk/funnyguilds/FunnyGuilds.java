@@ -39,7 +39,7 @@ import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import net.dzikoysk.funnyguilds.util.runnable.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.util.runnable.ScoreboardStack;
-import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;

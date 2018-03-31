@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.thread;
+package net.dzikoysk.funnyguilds.concurrency.independent;
 
 import com.google.common.collect.ImmutableList;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;

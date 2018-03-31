@@ -7,8 +7,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
-import net.dzikoysk.funnyguilds.util.thread.ActionType;
-import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
+import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

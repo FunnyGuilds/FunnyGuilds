@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.thread;
+package net.dzikoysk.funnyguilds.concurrency.independent;
 
 public enum ActionType {
 

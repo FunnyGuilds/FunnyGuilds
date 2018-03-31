@@ -10,8 +10,8 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
 import net.dzikoysk.funnyguilds.util.StringUtils;
-import net.dzikoysk.funnyguilds.util.thread.ActionType;
-import net.dzikoysk.funnyguilds.util.thread.IndependentThread;
+import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
+import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

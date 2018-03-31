@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.thread;
+package net.dzikoysk.funnyguilds.concurrency.independent;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;

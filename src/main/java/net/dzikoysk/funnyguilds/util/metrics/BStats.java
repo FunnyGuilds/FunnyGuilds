@@ -7,24 +7,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
-
-import javax.net.ssl.HttpsURLConnection;
 
 /**
  * bStats collects some data for plugin authors.
@@ -738,7 +730,7 @@ public class BStats {
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
-            HashMap<String, Integer> map = getValues(new HashMap<String, Integer>());
+            HashMap<String, Integer> map = getValues(new HashMap<>());
             if (map == null || map.isEmpty()) {
                 // Null = skip the chart
                 return null;
@@ -822,7 +814,7 @@ public class BStats {
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
-            HashMap<String, Integer> map = getValues(new HashMap<String, Integer>());
+            HashMap<String, Integer> map = getValues(new HashMap<>());
             if (map == null || map.isEmpty()) {
                 // Null = skip the chart
                 return null;
@@ -872,7 +864,7 @@ public class BStats {
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
-            HashMap<String, Integer> map = getValues(new HashMap<String, Integer>());
+            HashMap<String, Integer> map = getValues(new HashMap<>());
             if (map == null || map.isEmpty()) {
                 // Null = skip the chart
                 return null;
@@ -915,7 +907,7 @@ public class BStats {
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
-            HashMap<String, int[]> map = getValues(new HashMap<String, int[]>());
+            HashMap<String, int[]> map = getValues(new HashMap<>());
             if (map == null || map.isEmpty()) {
                 // Null = skip the chart
                 return null;
@@ -1005,7 +997,7 @@ public class BStats {
         protected JSONObject getChartData() {
             JSONObject data = new JSONObject();
             JSONObject values = new JSONObject();
-            HashMap<Country, Integer> map = getValues(new HashMap<Country, Integer>());
+            HashMap<Country, Integer> map = getValues(new HashMap<>());
             if (map == null || map.isEmpty()) {
                 // Null = skip the chart
                 return null;

@@ -52,23 +52,32 @@ public abstract class AbstractTablist {
             }
         }
 
-        if ("v1_8_R1".equals(Reflections.getFixedVersion())) {
-            AbstractTablist tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
-            TABLIST_CACHE.add(tablist);
+        switch (Reflections.getFixedVersion()) {
+            case "v1_8_R1": {
+                AbstractTablist tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
+                TABLIST_CACHE.add(tablist);
 
-            return tablist;
-        } else if ("v1_8_R2".equals(Reflections.getFixedVersion()) || "v1_8_R3".equals(Reflections.getFixedVersion()) || "v1_9_R1".equals(Reflections.getFixedVersion()) || "v1_9_R2".equals(Reflections.getFixedVersion())) {
-            AbstractTablist tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
-            TABLIST_CACHE.add(tablist);
+                return tablist;
+            }
+            case "v1_8_R2":
+            case "v1_8_R3":
+            case "v1_9_R1":
+            case "v1_9_R2": {
+                AbstractTablist tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
+                TABLIST_CACHE.add(tablist);
 
-            return tablist;
-        } else if ("v1_10_R1".equals(Reflections.getFixedVersion()) || "v1_11_R1".equals(Reflections.getFixedVersion()) || "v1_12_R1".equals(Reflections.getFixedVersion())) {
-            AbstractTablist tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
-            TABLIST_CACHE.add(tablist);
+                return tablist;
+            }
+            case "v1_10_R1":
+            case "v1_11_R1":
+            case "v1_12_R1": {
+                AbstractTablist tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
+                TABLIST_CACHE.add(tablist);
 
-            return tablist;
-        } else {
-            throw new RuntimeException("Could not find tablist for given version.");
+                return tablist;
+            }
+            default:
+                throw new RuntimeException("Could not find tablist for given version.");
         }
     }
 
