@@ -1,13 +1,47 @@
 package net.dzikoysk.funnyguilds.concurrency;
 
-public interface ConcurrencyTask {
+import net.dzikoysk.funnyguilds.FunnyLogger;
 
-    void execute() throws Exception;
+import java.util.concurrent.atomic.AtomicInteger;
 
-    void setExceptionHandler(ConcurrencyExceptionHandler exceptionHandler);
+public class ConcurrencyTask implements Runnable {
 
-    boolean isMuted();
+    private static final AtomicInteger idAssigner = new AtomicInteger();
 
-    ConcurrencyExceptionHandler getExceptionHandler();
+    private final int id;
+    private final ConcurrencyRequest[] requests;
+
+    public ConcurrencyTask(ConcurrencyRequest... requests) {
+        this.id = idAssigner.getAndIncrement();
+        this.requests = requests;
+    }
+
+    @Override
+    public void run() {
+        for (ConcurrencyRequest request : requests) {
+            boolean result = execute(request);
+
+            if (!result) {
+                FunnyLogger.warning("Task #" + id + " has been interrupted");
+                return;
+            }
+        }
+    }
+
+    private boolean execute(ConcurrencyRequest request) {
+        try {
+            request.execute();
+        } catch (Exception exception) {
+            if (request.getExceptionHandler() != null) {
+                request.getExceptionHandler().handleException(exception);
+            }
+
+            if (!request.isMuted()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 }

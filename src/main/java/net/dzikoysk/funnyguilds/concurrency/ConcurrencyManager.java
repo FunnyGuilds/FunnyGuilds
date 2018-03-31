@@ -11,9 +11,9 @@ public class ConcurrencyManager {
         this.executor = Executors.newFixedThreadPool(threads);
     }
 
-    public void postRequest(ConcurrencyTask... tasks) {
-        ConcurrencyRequest request = new ConcurrencyRequest(tasks);
-        this.executor.submit(request);
+    public void postRequests(ConcurrencyRequest... requests) {
+        ConcurrencyTask task = new ConcurrencyTask(requests);
+        this.executor.submit(task);
     }
 
 }

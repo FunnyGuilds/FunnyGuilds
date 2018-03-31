@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.concurrency.util;
 
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyExceptionHandler;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyRequest;
 
-public abstract class DefaultConcurrencyTask implements ConcurrencyTask {
+public abstract class DefaultConcurrencyRequest implements ConcurrencyRequest {
 
     protected ConcurrencyExceptionHandler exceptionHandler = new DefaultConcurrencyExceptionHandler();
 
@@ -22,8 +22,8 @@ public abstract class DefaultConcurrencyTask implements ConcurrencyTask {
         return exceptionHandler;
     }
 
-    public static ConcurrencyTask of(Runnable runnable) {
-        return new DefaultConcurrencyTask() {
+    public static ConcurrencyRequest of(Runnable runnable) {
+        return new DefaultConcurrencyRequest() {
             @Override
             public void execute() throws Exception {
                 runnable.run();
