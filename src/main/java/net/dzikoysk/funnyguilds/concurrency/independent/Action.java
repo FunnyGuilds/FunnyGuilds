@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 
+@Deprecated
 public class Action {
 
     private final ActionType action;

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency.independent;
 
+@Deprecated
 public enum ActionType {
 
     SAVE_DATA,

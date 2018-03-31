@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyLogger;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 public class IndependentThread extends Thread {
 
     private static IndependentThread instance;
