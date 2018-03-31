@@ -31,7 +31,7 @@ import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
-import net.dzikoysk.funnyguilds.util.hook.PluginHook;
+import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.reflect.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;

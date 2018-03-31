@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.hook;
+package net.dzikoysk.funnyguilds.hook;
 
 import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
 import codecrafter47.bungeetablistplus.api.bukkit.Variable;

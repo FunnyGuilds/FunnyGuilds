@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.hook;
+package net.dzikoysk.funnyguilds.hook;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.flags.StateFlag;

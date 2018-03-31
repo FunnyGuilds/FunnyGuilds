@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.hook;
+package net.dzikoysk.funnyguilds.hook;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dzikoysk.funnyguilds.FunnyGuilds;

@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.hook;
+package net.dzikoysk.funnyguilds.hook;
 
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.Bukkit;
