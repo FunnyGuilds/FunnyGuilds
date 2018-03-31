@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.util.ConfigUtils;
+import net.dzikoysk.funnyguilds.util.commons.ConfigUtils;
 
 import java.io.File;
 

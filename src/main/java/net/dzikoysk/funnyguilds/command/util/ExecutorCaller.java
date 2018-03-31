@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.command.util;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig.Commands.FunnyCommand;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

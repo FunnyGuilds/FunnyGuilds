@@ -12,7 +12,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildAcceptAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildRevokeAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildSendAllyInvitationEvent;
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
 import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.command.CommandSender;

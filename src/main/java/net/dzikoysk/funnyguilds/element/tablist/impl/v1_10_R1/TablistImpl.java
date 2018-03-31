@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.element.tablist.impl.v1_10_R1;
 
 import com.google.common.collect.Lists;
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.entity.Player;

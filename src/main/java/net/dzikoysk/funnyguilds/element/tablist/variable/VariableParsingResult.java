@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable;
 
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 
 import java.util.Map;
 

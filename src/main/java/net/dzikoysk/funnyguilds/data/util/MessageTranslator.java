@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.data.util;
 
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util;
 
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;

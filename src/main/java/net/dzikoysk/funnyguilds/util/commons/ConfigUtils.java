@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.commons;
 
 import org.apache.commons.lang.Validate;
 import org.diorite.cfg.system.Template;

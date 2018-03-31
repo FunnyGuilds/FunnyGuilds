@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.element.notification;
 
 import com.google.common.collect.Lists;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.PacketCreator;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 

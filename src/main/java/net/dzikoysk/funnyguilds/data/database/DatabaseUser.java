@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 
 import java.sql.ResultSet;
 

@@ -27,7 +27,6 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;

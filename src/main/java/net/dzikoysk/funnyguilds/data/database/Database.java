@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import com.zaxxer.hikari.HikariDataSource;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

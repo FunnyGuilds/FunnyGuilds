@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;

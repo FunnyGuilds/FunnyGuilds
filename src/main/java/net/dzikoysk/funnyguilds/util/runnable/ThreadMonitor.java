@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.runnable;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;

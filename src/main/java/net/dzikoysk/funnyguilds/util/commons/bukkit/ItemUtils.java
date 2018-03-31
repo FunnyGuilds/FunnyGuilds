@@ -1,5 +1,6 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.system.security;
 
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 
 public final class SecurityUtils {
 

@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.SafeUtils;
+import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.commons.SafeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;

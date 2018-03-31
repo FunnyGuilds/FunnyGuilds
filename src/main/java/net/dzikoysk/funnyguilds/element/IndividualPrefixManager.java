@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.element;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

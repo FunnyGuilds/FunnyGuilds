@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.Cooldown;
-import net.dzikoysk.funnyguilds.util.SpaceUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVariable;

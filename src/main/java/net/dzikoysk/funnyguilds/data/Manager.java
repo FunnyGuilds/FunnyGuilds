@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
 import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.Bukkit;

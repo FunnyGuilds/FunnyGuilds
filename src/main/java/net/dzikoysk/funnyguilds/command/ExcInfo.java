@@ -11,14 +11,14 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Date;
 import java.util.Locale;
-import net.dzikoysk.funnyguilds.util.TimeUtils;
+import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 
 public class ExcInfo implements Executor {
     

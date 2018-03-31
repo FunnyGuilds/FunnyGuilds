@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.meta.ItemMeta;
 

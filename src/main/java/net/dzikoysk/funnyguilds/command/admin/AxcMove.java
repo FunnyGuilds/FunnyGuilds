@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
-import net.dzikoysk.funnyguilds.util.SpaceUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

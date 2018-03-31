@@ -10,8 +10,8 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.IOUtils;
+import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
 import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 

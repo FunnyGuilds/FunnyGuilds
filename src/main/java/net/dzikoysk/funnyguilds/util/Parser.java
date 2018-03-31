@@ -1,11 +1,14 @@
 package net.dzikoysk.funnyguilds.util;
 
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialAliaser;
 import net.dzikoysk.funnyguilds.util.reflect.EggTypeChanger;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;

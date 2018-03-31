@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

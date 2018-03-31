@@ -2,9 +2,9 @@ package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.util.ConfigUtils;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ConfigUtils;
+import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;

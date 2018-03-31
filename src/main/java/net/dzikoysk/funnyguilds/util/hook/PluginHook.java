@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.hook;
 
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;

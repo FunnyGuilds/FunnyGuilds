@@ -1,4 +1,6 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.commons;
+
+import net.dzikoysk.funnyguilds.FunnyLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;

@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.element;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

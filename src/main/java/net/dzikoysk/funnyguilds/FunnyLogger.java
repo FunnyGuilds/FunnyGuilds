@@ -1,6 +1,5 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 
 import java.util.logging.Logger;

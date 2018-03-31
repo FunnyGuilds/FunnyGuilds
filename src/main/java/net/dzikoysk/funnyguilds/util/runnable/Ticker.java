@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.runnable;
 
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 
 import java.lang.reflect.Field;

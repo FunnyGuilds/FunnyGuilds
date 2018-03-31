@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.independent;
 
 import com.google.common.collect.ImmutableList;
-import net.dzikoysk.funnyguilds.util.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.element.tablist;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariablesParser;
