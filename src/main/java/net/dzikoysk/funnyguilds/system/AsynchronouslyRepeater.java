@@ -2,41 +2,23 @@ package net.dzikoysk.funnyguilds.system;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.system.validity.ValiditySystem;
-import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 public class AsynchronouslyRepeater implements Runnable {
 
-    private static AsynchronouslyRepeater instance;
-    private final FunnyGuilds plugin;
+    private static final AsynchronouslyRepeater instance = new AsynchronouslyRepeater();
+
     private volatile BukkitTask repeater;
-    private int ban_system;
-    private int validity_system;
+    private int banSystem;
+    private int validitySystem;
 
-    public AsynchronouslyRepeater(FunnyGuilds plugin) {
-        this.plugin = plugin;
-        instance = this;
-    }
-
-    public static AsynchronouslyRepeater getInstance() {
-        try {
-            if (instance == null) {
-                throw new UnsupportedOperationException("AsynchronouslyRepeater is not setup!");
-            }
-            
-            return instance;
-        } catch (Exception ex) {
-            if (FunnyLogger.exception(ex.getCause())) {
-                ex.printStackTrace();
-            }
-            
-            return null;
-        }
+    private AsynchronouslyRepeater() {
     }
 
     public void start() {
@@ -44,48 +26,59 @@ public class AsynchronouslyRepeater implements Runnable {
             return;
         }
         
-        this.repeater = this.plugin.getServer().getScheduler().runTaskTimerAsynchronously(this.plugin, this, 100, 20);
+        this.repeater = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), this, 100, 20);
     }
 
     @Override
     public void run() {
-        ban_system++;
-        validity_system++;
+        ++banSystem;
+        ++validitySystem;
 
-        if (validity_system >= 10) {
+        if (validitySystem >= 10) {
             validitySystem();
         }
         
-        if (ban_system >= 7) {
+        if (banSystem >= 7) {
             banSystem();
         }
 
-        if (Settings.getConfig().playerlistEnable) {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!AbstractTablist.hasTablist(player)) {
-                    AbstractTablist.createTablist(Settings.getConfig().playerList, Settings.getConfig().playerListHeader, Settings.getConfig().playerListFooter, Settings.getConfig().playerListPing, player);
-                }
-                
-                final AbstractTablist tablist = AbstractTablist.getTablist(player);
-                tablist.send();
-            }
+        PluginConfig config = Settings.getConfig();
+
+        if (!config.playerlistEnable) {
+            return;
         }
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!AbstractTablist.hasTablist(player)) {
+                AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
+            }
+
+            AbstractTablist tablist = AbstractTablist.getTablist(player);
+            tablist.send();
+        }
+    }
+
+    public void stop() {
+        if (repeater == null) {
+            return;
+        }
+
+        repeater.cancel();
+        repeater = null;
     }
 
     private void validitySystem() {
         ValiditySystem.getInstance().run();
-        validity_system = 0;
+        validitySystem = 0;
     }
 
     private void banSystem() {
         BanSystem.getInstance().run();
-        ban_system = 0;
+        banSystem = 0;
     }
 
-    public void stop() {
-        if (repeater != null) {
-            repeater.cancel();
-            repeater = null;
-        }
+    public static AsynchronouslyRepeater getInstance() {
+        return instance;
     }
+
 }

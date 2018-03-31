@@ -77,42 +77,44 @@ public class FunnyGuilds extends JavaPlugin {
         new ScoreboardStack(this).start();
         new IndependentThread().start();
         new Manager().start();
-        new AsynchronouslyRepeater(this).start();
         new MetricsCollector(this).start();
 
-        EventManager em = EventManager.getEventManager();
-        em.enable();
+        AsynchronouslyRepeater repeater = AsynchronouslyRepeater.getInstance();
+        repeater.start();
 
-        PluginManager pm = Bukkit.getPluginManager();
+        EventManager eventManager = EventManager.getEventManager();
+        eventManager.enable();
+
+        PluginManager pluginManager = Bukkit.getPluginManager();
         PluginConfig config = Settings.getConfig();
         
-        pm.registerEvents(new GuiActionHandler(), this);
-        pm.registerEvents(new EntityDamage(), this);
-        pm.registerEvents(new EntityInteract(), this);
-        pm.registerEvents(new PlayerChat(), this);
-        pm.registerEvents(new PlayerDeath(), this);
-        pm.registerEvents(new PlayerJoin(this), this);
-        pm.registerEvents(new PlayerKick(), this);
-        pm.registerEvents(new PlayerLogin(), this);
-        pm.registerEvents(new PlayerQuit(), this);
+        pluginManager.registerEvents(new GuiActionHandler(), this);
+        pluginManager.registerEvents(new EntityDamage(), this);
+        pluginManager.registerEvents(new EntityInteract(), this);
+        pluginManager.registerEvents(new PlayerChat(), this);
+        pluginManager.registerEvents(new PlayerDeath(), this);
+        pluginManager.registerEvents(new PlayerJoin(this), this);
+        pluginManager.registerEvents(new PlayerKick(), this);
+        pluginManager.registerEvents(new PlayerLogin(), this);
+        pluginManager.registerEvents(new PlayerQuit(), this);
 
         if (config.regionsEnabled) {
-            pm.registerEvents(new BlockBreak(), this);
-            pm.registerEvents(new BlockIgnite(), this);
-            pm.registerEvents(new BlockPlace(), this);
-            pm.registerEvents(new BucketAction(), this);
-            pm.registerEvents(new EntityExplode(), this);
-            pm.registerEvents(new HangingBreak(), this);
-            pm.registerEvents(new HangingPlace(), this);
-            pm.registerEvents(new PlayerCommand(), this);
-            pm.registerEvents(new PlayerInteract(), this);
+            pluginManager.registerEvents(new BlockBreak(), this);
+            pluginManager.registerEvents(new BlockIgnite(), this);
+            pluginManager.registerEvents(new BlockPlace(), this);
+            pluginManager.registerEvents(new BucketAction(), this);
+            pluginManager.registerEvents(new EntityExplode(), this);
+            pluginManager.registerEvents(new HangingBreak(), this);
+            pluginManager.registerEvents(new HangingPlace(), this);
+            pluginManager.registerEvents(new PlayerCommand(), this);
+            pluginManager.registerEvents(new PlayerInteract(), this);
 
             if (config.eventMove) {
-                pm.registerEvents(new PlayerMove(), this);
+                pluginManager.registerEvents(new PlayerMove(), this);
             }
             
             if (config.eventPhysics) {
-                pm.registerEvents(new BlockPhysics(), this);
+                pluginManager.registerEvents(new BlockPhysics(), this);
             }
         }
             
