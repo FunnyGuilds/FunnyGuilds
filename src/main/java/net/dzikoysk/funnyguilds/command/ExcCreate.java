@@ -70,7 +70,7 @@ public class ExcCreate implements Executor {
             } else if (args.length == 1) {
                 player.sendMessage(messages.generalNoNameGiven);
                 return;
-            } else if (args.length > 2) {
+            } else {
                 player.sendMessage(messages.createMore);
                 return;
             }

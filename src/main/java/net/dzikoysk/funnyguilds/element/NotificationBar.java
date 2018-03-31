@@ -17,7 +17,7 @@ import java.util.Set;
 
 public class NotificationBar {
 
-    private static final PlayerMap<FakeDragon> DRAGONBAR_CACHE = new PlayerMap<FakeDragon>();
+    private static final PlayerMap<FakeDragon> DRAGONBAR_CACHE = new PlayerMap<>();
 
     public static void remove(Player player) {
         if (has(player)) {
@@ -218,7 +218,7 @@ public class NotificationBar {
         private final Map<String, V> contents;
 
         public PlayerMap() {
-            contents = new HashMap<String, V>();
+            contents = new HashMap<>();
             defaultValue = null;
         }
 
@@ -243,7 +243,7 @@ public class NotificationBar {
         }
 
         public Set<Entry<Player, V>> entrySet() {
-            Set<Entry<Player, V>> toReturn = new HashSet<Entry<Player, V>>();
+            Set<Entry<Player, V>> toReturn = new HashSet<>();
             for (String name : contents.keySet()) {
                 toReturn.add(new PlayerEntry(Bukkit.getPlayer(name), contents.get(name)));
             }
@@ -265,7 +265,7 @@ public class NotificationBar {
         }
 
         public Set<Player> keySet() {
-            Set<Player> toReturn = new HashSet<Player>();
+            Set<Player> toReturn = new HashSet<>();
             for (String name : contents.keySet()) {
                 toReturn.add(Bukkit.getPlayer(name));
             }

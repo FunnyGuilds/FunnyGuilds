@@ -33,16 +33,14 @@ public class ExcItems implements Executor {
         }
 
         GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
-        gui.setCloseEvent(close -> {
-            gui.unregister();
-        });
+        gui.setCloseEvent(close -> gui.unregister());
 
         for (ItemStack item : guiItems) {
             item = item.clone();
             
             if (config.addLoreLines && guildItems.contains(item)) {
                 ItemMeta meta = item.getItemMeta();
-                List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<String>();
+                List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                 
                 int pinvAmount = ItemUtils.getItemAmount(item, player.getInventory());
                 int ecAmount = ItemUtils.getItemAmount(item, player.getEnderChest());

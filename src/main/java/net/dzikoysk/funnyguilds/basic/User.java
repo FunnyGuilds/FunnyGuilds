@@ -320,7 +320,7 @@ public class User implements Basic {
             return 0.0D;
         }
         Double dmg = this.damage.remove(user);
-        return dmg == null ? 0.0D : dmg.doubleValue();
+        return dmg == null ? 0.0D : dmg;
     }
     
     public boolean isAssisted() {

@@ -962,45 +962,47 @@ public class PluginConfig {
 
     private List<ItemStack> loadGUI(List<String> contents) {
         List<ItemStack> items = new ArrayList<>();
-        
-        for (int i=0; i < contents.size(); i++) {
-            String var = contents.get(i);
+
+        for (String var : contents) {
             ItemStack item = null;
-            
+
             if (var.contains("GUI-")) {
                 int index = Parser.getIndex(var);
-                
+
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
                 }
-            } else if (var.contains("VIPITEM-")) {
+            }
+            else if (var.contains("VIPITEM-")) {
                 try {
                     int index = Parser.getIndex(var);
-                    
+
                     if (index > 0 && index <= createItemsVip.size()) {
                         item = createItemsVip.get(index - 1);
                     }
-                } catch(IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     FunnyLogger.parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
-            } else if (var.contains("ITEM-")) {
+            }
+            else if (var.contains("ITEM-")) {
                 try {
                     int index = Parser.getIndex(var);
-                    
+
                     if (index > 0 && index <= createItems.size()) {
                         item = createItems.get(index - 1);
                     }
-                } catch(IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     FunnyLogger.parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
-            } else {
+            }
+            else {
                 item = Parser.parseItem(var);
             }
-            
+
             if (item == null) {
-                item = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, 14).setName("&c&lERROR IN GUI CREATION: " + var , true).getItem();
+                item = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, 14).setName("&c&lERROR IN GUI CREATION: " + var, true).getItem();
             }
-            
+
             items.add(item);
         }
         

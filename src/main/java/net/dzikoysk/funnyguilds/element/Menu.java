@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -67,21 +68,19 @@ public class Menu {
                 int slot = entry.getKey() - 1;
                 ItemStack item = entry.getValue();
                 ItemMeta im = item.getItemMeta();
-                
+
                 if (slot <= slots || item != null) {
                     String l = this.lore.get(slot);
                     if (l != null) {
                         String[] table = l.split(";");
-                        ArrayList<String> lore = new ArrayList<String>();
-                        
-                        for (String line : table) {
-                            lore.add(line);
-                        }
-                        
+
+                        ArrayList<String> lore = new ArrayList<>();
+                        Collections.addAll(lore, table);
+
                         im.setLore(lore);
                         item.setItemMeta(im);
                     }
-                    
+
                     inv.setItem(slot, item);
                 }
             }
