@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.Version;
-import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

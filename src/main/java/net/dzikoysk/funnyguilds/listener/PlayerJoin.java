@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.Version;
-import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import net.dzikoysk.funnyguilds.util.thread.ActionType;

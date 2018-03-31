@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.util.element.NotificationBar;
-import net.dzikoysk.funnyguilds.util.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.element.NotificationBar;
+import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

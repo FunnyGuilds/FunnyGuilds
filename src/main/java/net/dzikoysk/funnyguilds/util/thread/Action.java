@@ -7,8 +7,8 @@ import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
 import net.dzikoysk.funnyguilds.system.war.WarListener;
-import net.dzikoysk.funnyguilds.util.element.DummyManager;
-import net.dzikoysk.funnyguilds.util.element.IndividualPrefixManager;
+import net.dzikoysk.funnyguilds.element.DummyManager;
+import net.dzikoysk.funnyguilds.element.IndividualPrefixManager;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
