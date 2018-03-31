@@ -5,11 +5,13 @@ import codecrafter47.bungeetablistplus.api.bukkit.Variable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.StringUtils;
@@ -23,6 +25,24 @@ public class BungeeTabListPlusHook {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         PluginConfig config = Settings.getConfig();
         MessagesConfig messages = Messages.getInstance();
+        
+        // Guilds number
+        BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_guilds") {
+
+            @Override
+            public String getReplacement(Player player) {
+                return String.valueOf(GuildUtils.getGuilds().size());
+            }
+        });
+        
+        // Users number
+        BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_users") {
+
+            @Override
+            public String getReplacement(Player player) {
+                return String.valueOf(UserUtils.getUsers().size());
+            }
+        });
         
         // User deaths
         BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_deaths") {
@@ -386,6 +406,8 @@ public class BungeeTabListPlusHook {
                 }
             });
         }
+        
+        FunnyLogger.info("BungeeTabListPlus hook has been enabled!");
     }
 
 }

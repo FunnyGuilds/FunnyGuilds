@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.util.element.tablist.variable;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -36,6 +37,9 @@ public final class DefaultTablistVariables {
         parser.add(new TimeFormattedVariable("SECOND", user -> Calendar.getInstance().get(Calendar.SECOND)));
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
+        
+        parser.add(new SimpleTablistVariable("GUILDS", user -> String.valueOf(GuildUtils.getGuilds().size())));
+        parser.add(new SimpleTablistVariable("USERS", user -> String.valueOf(UserUtils.getUsers().size())));
         
         parser.add(new SimpleTablistVariable("PING-FORMAT", user -> IntegerRange.inRange(user.getPing(), config.pingFormat).replace("{PING}", String.valueOf(user.getPing()))));
         parser.add(new SimpleTablistVariable("PING", user -> String.valueOf(user.getPing())));

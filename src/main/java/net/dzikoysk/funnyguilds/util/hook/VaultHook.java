@@ -36,4 +36,5 @@ public class VaultHook {
         Validate.notNull(player, "player can't be null!");
         return economyHook.withdrawPlayer(player, money);
     }
+    
 }

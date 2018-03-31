@@ -55,4 +55,5 @@ public final class WorldGuardHook {
 
         return regionManager.getApplicableRegions(location).size() != 0;
     }
+    
 }

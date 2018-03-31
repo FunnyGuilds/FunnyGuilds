@@ -4,6 +4,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -43,6 +44,10 @@ public class PlaceholderAPIHook {
             Guild g = u.getGuild();
             
             switch (identifier.toLowerCase()) {
+                case "guilds":
+                    return String.valueOf(GuildUtils.getGuilds().size());
+                case "users":
+                    return String.valueOf(UserUtils.getUsers().size());
                 case "deaths":
                     return String.valueOf(u.getRank().getDeaths());
                 case "kdr":
@@ -114,4 +119,5 @@ public class PlaceholderAPIHook {
             return FunnyGuilds.getInstance().getDescription().getVersion();
         }
     }
+    
 }
