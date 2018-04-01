@@ -8,13 +8,17 @@ script: script/script
 matrix:
   fast_finish: false
   include:
-    - jdk: oraclejdk8 # available in Travis CI
-    - jdk: oraclejdk10
+    - env: JDK='Oracle JDK 8'
+      jdk: oraclejdk8
+    - env: JDK='Oracle JDK 9'
+      jdk: oraclejdk9
+    - env: JDK='Oracle JDK 10'
       install: script/setup F 10 -L BCL
+    - env: JDK='Oracle JDK 11'
+      install: script/setup F 11 -L BCL
   allow_failures:
-    - jdk: oraclejdk9 # available in Travis CI
-    - jdk: oraclejdk11
-      install: script/setup -F 11 -L BCL
+    - env: JDK='Oracle JDK 10'
+    - env: JDK='Oracle JDK 11'
 
 notifications:
   email: false
