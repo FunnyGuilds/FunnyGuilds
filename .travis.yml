@@ -17,7 +17,7 @@ matrix:
     - env: JDK='Oracle JDK 11'
       install: script/setup F 11 -L BCL
   allow_failures:
-    - env: JDK='Oracle JDK 10'
+    - env: JDK='Oracle JDK 9'
     - env: JDK='Oracle JDK 11'
 
 notifications:
