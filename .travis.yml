@@ -1,24 +1,24 @@
 language: java
 sudo: required
+dist: trusty
 
-install: script/ciinstall
-script: script/ciscript
+install: script/install
+script: script/script
 
 matrix:
-  fast_finish: true
+  fast_finish: false
   include:
-    - jdk: oraclejdk8
-    - jdk: oraclejdk9
-      addons:
-        apt:
-          packages:
-            - oracle-java9-installer # https://docs.travis-ci.com/user/languages/java/#Updating-Oracle-JDK-to-a-recent-release
+    - env: JDK='Oracle JDK 8'
+      jdk: oraclejdk8
+    - env: JDK='Oracle JDK 9'
+      jdk: oraclejdk9
+    - env: JDK='Oracle JDK 10'
+      install: script/setup F 10 -L BCL
+    - env: JDK='Oracle JDK 11'
+      install: script/setup F 11 -L BCL
   allow_failures:
-    - jdk: oraclejdk10
-      addons:
-        apt:
-          packages:
-            - oracle-java10-installer # https://docs.travis-ci.com/user/languages/java/#Updating-Oracle-JDK-to-a-recent-release
+    - env: JDK='Oracle JDK 10'
+    - env: JDK='Oracle JDK 11'
 
 notifications:
   email: false
