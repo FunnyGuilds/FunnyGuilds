@@ -16,10 +16,10 @@ import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
+import net.dzikoysk.funnyguilds.util.DescriptionManager;
 import net.dzikoysk.funnyguilds.util.Reloader;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
-import net.dzikoysk.funnyguilds.util.reflect.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
 import org.bukkit.Bukkit;
@@ -44,8 +44,11 @@ public class FunnyGuilds extends JavaPlugin {
             this.getDataFolder().mkdir();
         }
 
+        DescriptionManager descriptionManager = new DescriptionManager(super.getDescription());
+        descriptionManager.rename(Settings.getConfig().pluginName);
+        version = descriptionManager.extractVersion();
+
         new Reloader().init();
-        new DescriptionChanger(getDescription()).name(Settings.getConfig().pluginName);
         new Commands().register();
 
         EventManager em = EventManager.getEventManager();
@@ -149,17 +152,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static String getVersion() {
-        if (version != null) {
-            return version;
-        }
-
-        String[] array = funnyguilds.getDescription().getVersion().split("-");
-
-        if (array.length != 2) {
-            return version = funnyguilds.getDescription().getVersion();
-        }
-
-        return version = array[0];
+        return version;
     }
 
     public static FunnyGuilds getInstance() {

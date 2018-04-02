@@ -61,4 +61,5 @@ public final class FunnyLogger {
         error("");
         return false;
     }
+
 }
