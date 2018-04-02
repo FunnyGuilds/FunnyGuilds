@@ -17,7 +17,7 @@ import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.DescriptionManager;
-import net.dzikoysk.funnyguilds.util.Reloader;
+import net.dzikoysk.funnyguilds.util.ReloadHandler;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -32,6 +32,8 @@ public class FunnyGuilds extends JavaPlugin {
     private static FunnyGuilds funnyguilds;
     private static String version;
 
+    private ReloadHandler reloadHandler;
+    private EventManager eventManager;
     private boolean disabling;
 
     public FunnyGuilds() {
@@ -45,14 +47,17 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         DescriptionManager descriptionManager = new DescriptionManager(super.getDescription());
-        descriptionManager.rename(Settings.getConfig().pluginName);
         version = descriptionManager.extractVersion();
+        descriptionManager.rename(Settings.getConfig().pluginName);
 
-        new Reloader().init();
-        new Commands().register();
+        this.reloadHandler = new ReloadHandler();
+        this.reloadHandler.init();
 
-        EventManager em = EventManager.getEventManager();
-        em.load();
+        Commands commands = new Commands();
+        commands.register();
+
+        this.eventManager = new EventManager();
+        this.eventManager.load();
     }
 
     @Override
@@ -64,9 +69,6 @@ public class FunnyGuilds extends JavaPlugin {
 
         AsynchronouslyRepeater repeater = AsynchronouslyRepeater.getInstance();
         repeater.start();
-
-        EventManager eventManager = EventManager.getEventManager();
-        eventManager.enable();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         PluginConfig config = Settings.getConfig();
@@ -100,8 +102,10 @@ public class FunnyGuilds extends JavaPlugin {
                 pluginManager.registerEvents(new BlockPhysics(), this);
             }
         }
-            
-        patch();
+
+        this.eventManager.enable();
+        this.patch();
+
         Version.isNewAvailable(getServer().getConsoleSender(), true);
         PluginHook.init();
 
@@ -113,7 +117,7 @@ public class FunnyGuilds extends JavaPlugin {
         disabling = true;
 
         EntityUtil.despawn();
-        EventManager.getEventManager().disable();
+        this.eventManager.disable();
 
         AsynchronouslyRepeater.getInstance().stop();
         Manager.getInstance().stop();
@@ -149,6 +153,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public boolean isDisabling() {
         return disabling;
+    }
+
+    public ReloadHandler getReloadHandler() {
+        return reloadHandler;
     }
 
     public static String getVersion() {

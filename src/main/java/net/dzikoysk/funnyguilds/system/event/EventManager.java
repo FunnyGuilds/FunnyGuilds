@@ -5,20 +5,10 @@ import java.util.List;
 
 public class EventManager {
 
-    private static EventManager instance;
     private final List<EventExtension> extensions;
 
     public EventManager() {
-        instance = this;
-        extensions = new ArrayList<>();
-    }
-
-    public static EventManager getEventManager() {
-        if (instance == null) {
-            new EventManager();
-        }
-        
-        return instance;
+        this.extensions = new ArrayList<>();
     }
 
     public final void load() {
@@ -42,4 +32,5 @@ public class EventManager {
     public List<EventExtension> getExtensions() {
         return extensions;
     }
+
 }

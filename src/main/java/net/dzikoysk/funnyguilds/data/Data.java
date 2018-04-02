@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
-import net.dzikoysk.funnyguilds.util.Reloader;
+import net.dzikoysk.funnyguilds.util.ReloadHandler;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import org.bukkit.Bukkit;
 import org.panda_lang.panda.utilities.configuration.PandaConfiguration;
@@ -62,7 +62,7 @@ public class Data {
         PandaConfiguration pc = new PandaConfiguration(file);
         if (todo == DO.SAVE) {
             pc.set("played-before", Bukkit.getOnlinePlayers().size());
-            pc.set("reload-count", Reloader.getReloadCount());
+            pc.set("reload-count", ReloadHandler.getReloadCount());
             pc.save();
         }
     }
