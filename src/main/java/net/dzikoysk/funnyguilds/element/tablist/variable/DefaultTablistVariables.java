@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
@@ -8,12 +7,13 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.util.IntegerRange;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVariable;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
+import net.dzikoysk.funnyguilds.util.RandomUtils;
 import net.dzikoysk.funnyguilds.util.Ticker;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -56,7 +56,7 @@ public final class DefaultTablistVariables {
         parser.add(new GuildDependentTablistVariable("G-TAG", user -> user.getGuild().getTag(), user -> messages.gTagNoValue));
         parser.add(new GuildDependentTablistVariable("G-OWNER", user -> user.getGuild().getOwner().getName(), user -> messages.gOwnerNoValue));
         parser.add(new GuildDependentTablistVariable("G-DEPUTIES", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputiesNoValue : StringUtils.toString(UserUtils.getNames(user.getGuild().getDeputies()), false), user -> messages.gDeputiesNoValue));
-        parser.add(new GuildDependentTablistVariable("G-DEPUTY", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputyNoValue : user.getGuild().getDeputies().get(FunnyGuilds.RANDOM_INSTANCE.nextInt(user.getGuild().getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
+        parser.add(new GuildDependentTablistVariable("G-DEPUTY", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputyNoValue : user.getGuild().getDeputies().get(RandomUtils.RANDOM_INSTANCE.nextInt(user.getGuild().getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
         parser.add(new GuildDependentTablistVariable("G-LIVES", user -> String.valueOf(user.getGuild().getLives()), user -> "0"));
         parser.add(new GuildDependentTablistVariable("G-ALLIES", user -> String.valueOf(user.getGuild().getAllies().size()), user -> "0"));
         parser.add(new GuildDependentTablistVariable("G-POINTS-FORMAT", user -> IntegerRange.inRange(user.getGuild().getRank().getPoints(), config.pointsFormat).replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())), user -> IntegerRange.inRange(0, config.pointsFormat).replace("{POINTS}", "0")));

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.hook;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
@@ -10,9 +11,9 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.Parser;
+import net.dzikoysk.funnyguilds.util.RandomUtils;
 import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import org.bukkit.entity.Player;
 
@@ -67,7 +68,7 @@ public class PlaceholderAPIHook {
                 case "g-deputies":
                     return g == null ? messages.gDeputiesNoValue : (g.getDeputies().isEmpty() ? messages.gDeputiesNoValue : StringUtils.toString(UserUtils.getNames(g.getDeputies()), false));
                 case "g-deputy":
-                    return g == null ? messages.gDeputyNoValue : (g.getDeputies().isEmpty() ? messages.gDeputyNoValue : g.getDeputies().get(FunnyGuilds.RANDOM_INSTANCE.nextInt(g.getDeputies().size())).getName());
+                    return g == null ? messages.gDeputyNoValue : (g.getDeputies().isEmpty() ? messages.gDeputyNoValue : g.getDeputies().get(RandomUtils.RANDOM_INSTANCE.nextInt(g.getDeputies().size())).getName());
                 case "g-kdr":
                     return g == null ? "0.00" : String.format(Locale.US, "%.2f", g.getRank().getKDR());
                 case "g-kills":

@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.Parser;
+import net.dzikoysk.funnyguilds.util.RandomUtils;
 import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import org.bukkit.entity.Player;
 
@@ -184,7 +185,7 @@ public class BungeeTabListPlusHook {
                 }
 
                 Guild g = u.getGuild();
-                return g == null ? messages.gDeputyNoValue : (g.getDeputies().isEmpty() ? messages.gDeputyNoValue : g.getDeputies().get(FunnyGuilds.RANDOM_INSTANCE.nextInt(g.getDeputies().size())).getName());
+                return g == null ? messages.gDeputyNoValue : (g.getDeputies().isEmpty() ? messages.gDeputyNoValue : g.getDeputies().get(RandomUtils.RANDOM_INSTANCE.nextInt(g.getDeputies().size())).getName());
             }
         });
 
