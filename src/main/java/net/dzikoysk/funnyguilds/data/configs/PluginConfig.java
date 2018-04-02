@@ -453,6 +453,10 @@ public class PluginConfig {
     @CfgExclude
     public long warWait;
 
+    @CfgComment("Czy gildia podczas okresu ochronnego ma posiadac ochrone przeciw TNT")
+    @CfgName("war-tnt-protection")
+    public boolean warTntProtection = true;
+
     @CfgComment("Jaka waznosc ma gildia po jej zalozeniu")
     @CfgName("validity-start")
     public String validityStart_ = "14d";

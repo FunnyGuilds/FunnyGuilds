@@ -58,7 +58,7 @@ public class EntityExplode implements Listener {
                 }
             }
 
-            if (!guild.canBeAttacked()) {
+            if (pluginConfiguration.warTntProtection & !guild.canBeAttacked()) {
                 event.setCancelled(true);
                 return;
             }
