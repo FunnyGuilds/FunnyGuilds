@@ -14,9 +14,13 @@ Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 #### Current Version
 [FunnyGuilds Tribute 4.3.0 for 1.8.8+](https://github.com/FunnyGuilds/FunnyGuilds/releases)
 
-#### Placeholder support
-Funnyguilds hooks its placeholders into those plugins:
+#### Hooks
+Funnyguilds hooks into those plugins:
+- [WorldEdit](https://dev.bukkit.org/projects/worldedit)
+- [WorldGuard](https://dev.bukkit.org/projects/worldedit)
+- [Vault](https://dev.bukkit.org/projects/vault)
 - [PlaceholderAPI](https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds)
+- [BungeeTabListPlus](https://www.spigotmc.org/resources/bungeetablistplus.313/)
 
 #### Building
 You can build FunnyGuilds as a Maven project or just generate plugin using [FunnyCreator](https://github.com/FunnyGuilds/FunnyCreator)
