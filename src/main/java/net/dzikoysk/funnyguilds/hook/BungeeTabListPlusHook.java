@@ -344,13 +344,17 @@ public class BungeeTabListPlusHook {
 
             @Override
             public String getReplacement(Player player) {
+                if (!config.regionsEnabled) {
+                    return messages.gRegionSizeNoValue;
+                }
+                
                 User u = User.get(player);
                 if (u == null) {
                     return "";
                 }
 
                 Guild g = u.getGuild();
-                return g == null ? messages.minMembersToIncludeNoValue : String.valueOf(g.getRegionData().getSize());
+                return g == null ? messages.gRegionSizeNoValue : String.valueOf(g.getRegionData().getSize());
             }
         });
 

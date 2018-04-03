@@ -90,7 +90,7 @@ public class PlaceholderAPIHook {
                 case "g-position":
                     return g == null ? "0" : String.valueOf(g.getRank().getPosition());
                 case "g-region-size":
-                    return g == null ? messages.minMembersToIncludeNoValue : String.valueOf(g.getRegionData().getSize());
+                    return config.regionsEnabled ? (g == null ? messages.gRegionSizeNoValue : String.valueOf(g.getRegionData().getSize())) : messages.gRegionSizeNoValue;
                 case "g-tag":
                     return g == null ? messages.gTagNoValue : g.getTag();
                 case "g-validity":

@@ -1,17 +1,17 @@
 package net.dzikoysk.funnyguilds.basic;
 
 import com.google.common.base.Charsets;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
-import net.dzikoysk.funnyguilds.element.Dummy;
-import net.dzikoysk.funnyguilds.element.IndividualPrefix;
-import net.dzikoysk.funnyguilds.util.reflect.Reflections;
-import net.dzikoysk.funnyguilds.element.ScoreboardStack;
 import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
 import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
+import net.dzikoysk.funnyguilds.element.Dummy;
+import net.dzikoysk.funnyguilds.element.IndividualPrefix;
+import net.dzikoysk.funnyguilds.element.ScoreboardStack;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
