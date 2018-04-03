@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.Commands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
@@ -70,7 +69,6 @@ public class FunnyGuilds extends JavaPlugin {
     @Override
     public void onEnable() {
         new ScoreboardStack(this).start();
-        new IndependentThread().start();
         new Manager().start();
         new MetricsCollector(this).start();
 
