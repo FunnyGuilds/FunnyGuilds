@@ -1,17 +1,18 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
 import net.dzikoysk.funnyguilds.util.commons.StringUtils;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -72,12 +73,16 @@ public class ExcBreak implements Executor {
         guild.removeAlly(oppositeGuild);
         oppositeGuild.removeAlly(guild);
 
-        for (User u : guild.getMembers()) {
-            IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, oppositeGuild);
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+
+        for (User member : guild.getMembers()) {
+            // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, oppositeGuild);
+            concurrencyManager.postRequests(new PrefixUpdateGuildRequest(member, oppositeGuild));
         }
         
-        for (User u : oppositeGuild.getMembers()) {
-            IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, guild);
+        for (User member : oppositeGuild.getMembers()) {
+            // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, guild);
+            concurrencyManager.postRequests(new PrefixUpdateGuildRequest(member, guild));
         }
 
         Player owner = oppositeGuild.getOwner().getPlayer();

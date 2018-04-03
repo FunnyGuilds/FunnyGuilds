@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.Commands;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -32,6 +33,7 @@ public class FunnyGuilds extends JavaPlugin {
     private static FunnyGuilds funnyguilds;
     private static String version;
 
+    private ConcurrencyManager concurrencyManager;
     private ReloadHandler reloadHandler;
     private EventManager eventManager;
     private boolean disabling;
@@ -48,7 +50,12 @@ public class FunnyGuilds extends JavaPlugin {
 
         DescriptionManager descriptionManager = new DescriptionManager(super.getDescription());
         version = descriptionManager.extractVersion();
-        descriptionManager.rename(Settings.getConfig().pluginName);
+
+        PluginConfig settings = Settings.getConfig();
+        descriptionManager.rename(settings.pluginName);
+
+        this.concurrencyManager = new ConcurrencyManager(settings.concurrencyThreads);
+        this.concurrencyManager.printStatus();
 
         this.reloadHandler = new ReloadHandler();
         this.reloadHandler.init();
@@ -157,6 +164,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public ReloadHandler getReloadHandler() {
         return reloadHandler;
+    }
+
+    public ConcurrencyManager getConcurrencyManager() {
+        return concurrencyManager;
     }
 
     public static String getVersion() {

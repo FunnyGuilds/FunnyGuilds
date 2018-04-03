@@ -1,9 +1,12 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
@@ -13,8 +16,6 @@ import net.dzikoysk.funnyguilds.event.guild.ally.GuildAcceptAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildRevokeAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildSendAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.util.commons.StringUtils;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -58,12 +59,14 @@ public class ExcAlly implements Executor {
         }
 
         String tag = args[0];
+
         if (!GuildUtils.tagExists(tag)) {
             player.sendMessage(StringUtils.replace(messages.generalGuildNotExists, "{TAG}", tag));
             return;
         }
 
         Guild invitedGuild = GuildUtils.getByTag(tag);
+
         if (guild.equals(invitedGuild)) {
             player.sendMessage(messages.allySame);
             return;
@@ -83,25 +86,31 @@ public class ExcAlly implements Executor {
 
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
+
             String allyDoneMessage = messages.allyDone;
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
             player.sendMessage(allyDoneMessage);
 
             Player owner = invitedGuild.getOwner().getPlayer();
-            if (owner !=null) {
+
+            if (owner != null) {
                 String allyIDoneMessage = messages.allyIDone;
                 allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
                 allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
                 owner.sendMessage(allyIDoneMessage);
             }
 
-            for (User u : guild.getMembers()) {
-                IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, invitedGuild);
+            ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+
+            for (User member : guild.getMembers()) {
+                // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, invitedGuild);
+                concurrencyManager.postRequests(new PrefixUpdateGuildRequest(member, invitedGuild));
             }
 
-            for (User u : invitedGuild.getMembers()) {
-                IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, u, guild);
+            for (User member : invitedGuild.getMembers()) {
+                // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, guild);
+                concurrencyManager.postRequests(new PrefixUpdateGuildRequest(member, guild));
             }
 
             return;
@@ -120,6 +129,7 @@ public class ExcAlly implements Executor {
             player.sendMessage(allyReturnMessage);
 
             Player owner = invitedGuild.getOwner().getPlayer();
+
             if (owner !=null) {
                 String allyIReturnMessage = messages.allyIReturn;
                 allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{GUILD}", guild.getName());
@@ -142,6 +152,7 @@ public class ExcAlly implements Executor {
         player.sendMessage(allyInviteDoneMessage);
 
         Player owner = invitedGuild.getOwner().getPlayer();
+
         if (owner !=null) {
             String allyToInvitedMessage = messages.allyToInvited;
             allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{GUILD}", guild.getName());

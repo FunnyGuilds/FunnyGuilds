@@ -3,14 +3,14 @@ package net.dzikoysk.funnyguilds.basic.util;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -64,7 +64,9 @@ public class GuildUtils {
             RegionUtils.delete(Region.get(guild.getRegion()));
         }
 
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_GUILD, guild);
+        // IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_GUILD, guild);
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalRemoveGuildRequest(guild));
 
         UserUtils.removeGuild(guild.getMembers());
         RankManager.getInstance().remove(guild);

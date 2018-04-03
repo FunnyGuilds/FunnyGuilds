@@ -1,12 +1,13 @@
 package net.dzikoysk.funnyguilds.basic;
 
 import com.google.common.base.Charsets;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.util.BasicType;
 import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.element.Dummy;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.element.ScoreboardStack;
@@ -18,11 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class User implements Basic {
 
@@ -92,8 +89,11 @@ public class User implements Basic {
 
     public void removeGuild() {
         this.guild = null;
-        IndependentThread.action(ActionType.RANK_UPDATE_USER, this);
         this.changes();
+
+        // IndependentThread.action(ActionType.RANK_UPDATE_USER, this);
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        concurrencyManager.postRequests(new RankUpdateUserRequest(this));
     }
 
     public boolean hasGuild() {

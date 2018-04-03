@@ -1,29 +1,32 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import net.dzikoysk.funnyguilds.element.schematic.SchematicHelper;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
+import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
-import net.dzikoysk.funnyguilds.element.schematic.SchematicHelper;
-import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -292,9 +295,18 @@ public class ExcCreate implements Executor {
         
         Manager.getInstance().start();
 
+        /*
         IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);
         IndependentThread.actions(ActionType.PREFIX_GLOBAL_ADD_GUILD, guild);
         IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getName());
+        */
+
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        concurrencyManager.postRequests(
+                new RankUpdateGuildRequest(guild),
+                new PrefixGlobalAddGuildRequest(guild),
+                new PrefixGlobalAddPlayerRequest(user.getName())
+        );
 
         MessageTranslator translator = new MessageTranslator()
                 .register("{GUILD}", name)

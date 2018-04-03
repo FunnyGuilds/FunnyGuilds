@@ -924,19 +924,27 @@ public class PluginConfig {
     @CfgComment("Nazwy komend")
     @CfgName("commands")
     public Commands commands = new Commands();
+
     @CfgComment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)")
     @CfgName("event-move")
     public boolean eventMove = true;
     @CfgExclude
     public boolean eventPhysics;
+
+    @CfgComment("Ilość wątków używanych przez ConcurrencyManager")
+    @CfgName("concurrency-threads")
+    public int concurrencyThreads = 1;
+
     @CfgComment("Co ile minut ma automatycznie zapisywac dane")
     @CfgName("data-interval")
     public int dataInterval = 1;
+
     @CfgComment("Typ zapisu danych")
     @CfgComment("Flat - Lokalne pliki")
     @CfgComment("MySQL - baza danych")
     @CfgName("data-type")
     public DataType dataType = new DataType(true, false);
+
     @CfgComment("Dane wymagane do polaczenia z baza")
     @CfgComment("UWAGA: connectionTimeout jest w milisekundach!")
     @CfgComment("Sekcje usersTableName, guildsTableName i regionsTableName to nazwy tabel z danymi FG w bazie danych")
