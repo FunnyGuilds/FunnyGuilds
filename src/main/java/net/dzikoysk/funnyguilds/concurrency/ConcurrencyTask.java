@@ -11,7 +11,7 @@ public class ConcurrencyTask implements Runnable {
     private final int id;
     private final ConcurrencyRequest[] requests;
 
-    public ConcurrencyTask(ConcurrencyRequest... requests) {
+    protected ConcurrencyTask(ConcurrencyRequest... requests) {
         this.id = idAssigner.getAndIncrement();
         this.requests = requests;
     }
@@ -42,6 +42,10 @@ public class ConcurrencyTask implements Runnable {
         }
 
         return true;
+    }
+
+    public static ConcurrencyTaskBuilder builder() {
+        return new ConcurrencyTaskBuilder();
     }
 
 }

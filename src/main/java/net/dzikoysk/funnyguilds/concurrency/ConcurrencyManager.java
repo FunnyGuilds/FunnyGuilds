@@ -17,6 +17,10 @@ public class ConcurrencyManager {
 
     public void postRequests(ConcurrencyRequest... requests) {
         ConcurrencyTask task = new ConcurrencyTask(requests);
+        this.postTask(task);
+    }
+
+    public void postTask(ConcurrencyTask task) {
         this.executor.submit(task);
     }
 

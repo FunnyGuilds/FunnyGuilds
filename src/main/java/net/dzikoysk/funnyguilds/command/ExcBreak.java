@@ -6,6 +6,8 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
@@ -69,27 +71,31 @@ public class ExcBreak implements Executor {
         if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
             return;
         }
-        
+
+        Player owner = oppositeGuild.getOwner().getPlayer();
+
+        if (owner != null) {
+            owner.sendMessage(messages.breakIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        }
+
         guild.removeAlly(oppositeGuild);
         oppositeGuild.removeAlly(guild);
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         for (User member : guild.getMembers()) {
             // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, oppositeGuild);
-            concurrencyManager.postRequests(new PrefixUpdateGuildRequest(member, oppositeGuild));
+            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild));
         }
         
         for (User member : oppositeGuild.getMembers()) {
             // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, guild);
-            concurrencyManager.postRequests(new PrefixUpdateGuildRequest(member, guild));
+            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
         }
 
-        Player owner = oppositeGuild.getOwner().getPlayer();
-
-        if (owner !=null) {
-            owner.sendMessage(messages.breakIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-        }
+        ConcurrencyTask task = taskBuilder.build();
+        concurrencyManager.postTask(task);
 
         player.sendMessage(messages.breakDone.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", oppositeGuild.getTag()));
     }

@@ -1,7 +1,14 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import java.util.Map;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
+import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildPointsRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUserPointsRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
@@ -10,14 +17,12 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
-import net.dzikoysk.funnyguilds.util.IntegerRange;
-import net.dzikoysk.funnyguilds.util.commons.MapUtil;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtil;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
+import net.dzikoysk.funnyguilds.util.commons.MapUtil;
+import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,6 +30,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class PlayerDeath implements Listener {
@@ -156,24 +162,41 @@ public class PlayerDeath implements Listener {
             victim.setLastAttacker(attacker);
             victim.clearDamage();
         }
-        
+
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
+
         if (config.dataType.mysql) {
             if (victim.hasGuild()) {
-                IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
+                // IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
+                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild()));
             }
 
             if (attacker.hasGuild()) {
-                IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, attacker.getGuild());
+                // IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, attacker.getGuild());
+                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(attacker.getGuild()));
             }
 
-            IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
-            IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
+            // IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
+            // IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
+            taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
+            taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
         }
 
+        /*
         IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, victim);
         IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, attacker);
         IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
         IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
+        */
+
+        ConcurrencyTask task = taskBuilder
+                .delegate(new DummyGlobalUpdateUserRequest(victim))
+                .delegate(new DummyGlobalUpdateUserRequest(attacker))
+                .delegate(new RankUpdateUserRequest(victim))
+                .delegate(new RankUpdateUserRequest(attacker))
+                .build();
+        concurrencyManager.postTask(task);
 
         String deathMessage = messages.rankDeathMessage;
         deathMessage = StringUtils.replace(deathMessage, "{ATTACKER}", attacker.getName());

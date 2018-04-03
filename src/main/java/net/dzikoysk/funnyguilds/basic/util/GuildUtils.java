@@ -71,12 +71,12 @@ public class GuildUtils {
         UserUtils.removeGuild(guild.getMembers());
         RankManager.getInstance().remove(guild);
 
-        for (Guild g : guild.getAllies()) {
-            g.removeAlly(guild);
+        for (Guild allay : guild.getAllies()) {
+            allay.removeAlly(guild);
         }
 
-        for (Guild g : guild.getEnemies()) {
-            g.removeEnemy(guild);
+        for (Guild enemy : guild.getEnemies()) {
+            enemy.removeEnemy(guild);
         }
 
         if (Settings.getConfig().dataType.flat) {

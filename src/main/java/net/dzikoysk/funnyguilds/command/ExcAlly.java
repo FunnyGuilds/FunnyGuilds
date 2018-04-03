@@ -6,6 +6,8 @@ import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
@@ -102,17 +104,20 @@ public class ExcAlly implements Executor {
             }
 
             ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+            ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
             for (User member : guild.getMembers()) {
                 // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, invitedGuild);
-                concurrencyManager.postRequests(new PrefixUpdateGuildRequest(member, invitedGuild));
+                taskBuilder.delegate(new PrefixUpdateGuildRequest(member, invitedGuild));
             }
 
             for (User member : invitedGuild.getMembers()) {
                 // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, guild);
-                concurrencyManager.postRequests(new PrefixUpdateGuildRequest(member, guild));
+                taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
             }
 
+            ConcurrencyTask task = taskBuilder.build();
+            concurrencyManager.postTask(task);
             return;
         }
 

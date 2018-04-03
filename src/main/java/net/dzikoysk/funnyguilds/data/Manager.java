@@ -1,13 +1,13 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.DataSaveRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
-import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -84,12 +84,14 @@ public class Manager {
         if (this.task != null) {
             return;
         }
+
+        FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
+        ConcurrencyManager concurrencyManager = funnyGuilds.getConcurrencyManager();
+
+        long interval = this.getSettings().dataInterval * 60 * 20;
+        DataSaveRequest saveRequest = new DataSaveRequest();
         
-        this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(FunnyGuilds.getInstance(), new Runnable() {
-            public void run() {
-                IndependentThread.action(ActionType.SAVE_DATA);
-            }
-        }, Settings.getConfig().dataInterval * 60 * 20, Settings.getConfig().dataInterval * 60 * 20);
+        this.task = Bukkit.getScheduler().runTaskTimerAsynchronously(funnyGuilds, () -> concurrencyManager.postRequests(saveRequest), interval, interval);
     }
 
     public void stop() {

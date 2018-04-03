@@ -1,19 +1,16 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.BasicType;
-import net.dzikoysk.funnyguilds.basic.util.BasicUtils;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
-import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.basic.util.*;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 
 import java.io.File;
 
@@ -224,7 +221,10 @@ public class Flat {
             GuildUtils.deleteGuild(guild);
         }
 
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
+        // IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
+
         FunnyLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
 

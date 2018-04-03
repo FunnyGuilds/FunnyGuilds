@@ -4,14 +4,16 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
+import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,9 +29,9 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        final Player player = e.getPlayer();
-        final User user = User.get(player);
-        final PluginConfig config = Settings.getConfig();
+        Player player = e.getPlayer();
+        User user = User.get(player);
+        PluginConfig config = Settings.getConfig();
 
         if (config.playerlistEnable && !AbstractTablist.hasTablist(player)) {
             AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
@@ -37,9 +39,17 @@ public class PlayerJoin implements Listener {
 
         user.getScoreboard();
 
+        /*
         IndependentThread.actions(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
         IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, user);
         IndependentThread.actions(ActionType.RANK_UPDATE_USER, user);
+         */
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        concurrencyManager.postRequests(
+                new PrefixGlobalUpdatePlayer(player),
+                new DummyGlobalUpdateUserRequest(user),
+                new RankUpdateUserRequest(user)
+        );
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             PacketExtension.registerPlayer(player);

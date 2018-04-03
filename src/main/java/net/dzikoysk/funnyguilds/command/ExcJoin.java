@@ -1,9 +1,12 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
@@ -13,10 +16,8 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberAcceptInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.StringUtils;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -90,7 +91,10 @@ public class ExcJoin implements Executor {
         guild.addMember(user);
         user.setGuild(guild);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getName());
+
+        // IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getName());
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(user.getName()));
 
         MessageTranslator translator = new MessageTranslator()
                 .register("{GUILD}", guild.getName())

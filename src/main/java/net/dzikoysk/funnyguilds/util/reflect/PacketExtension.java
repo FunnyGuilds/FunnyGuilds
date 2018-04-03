@@ -1,14 +1,10 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelDuplexHandler;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
-import io.netty.channel.ChannelPromise;
+import io.netty.channel.*;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.WarUseRequest;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
-import net.dzikoysk.funnyguilds.concurrency.independent.ActionType;
-import net.dzikoysk.funnyguilds.concurrency.independent.IndependentThread;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
@@ -32,9 +28,9 @@ public class PacketExtension {
         }
     }
 
-    private static Channel getChannel(Player p) {
+    private static Channel getChannel(Player player) {
         try {
-            Object eP = handleMethod.invoke(p);
+            Object eP = handleMethod.invoke(player);
             return clientChannel.get(networkManager.get(playerConnection.get(eP)));
         } catch (Exception e) {
             e.printStackTrace();
@@ -42,9 +38,11 @@ public class PacketExtension {
         }
     }
 
-    public static void registerPlayer(final Player p) {
+    public static void registerPlayer(Player player) {
         try {
-            Channel c = getChannel(p);
+            ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+            Channel channel = getChannel(player);
+
             ChannelHandler handler = new ChannelDuplexHandler() {
                 @Override
                 public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
@@ -56,26 +54,33 @@ public class PacketExtension {
                 }
 
                 @Override
-                public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+                public void channelRead(ChannelHandlerContext ctx, Object packet) throws Exception {
                     try {
-                        if (msg == null) {
+                        if (packet == null) {
                             return;
                         }
 
-                        IndependentThread.action(ActionType.PACKET_PLAY_IN_USE_ENTITY, p, msg);
-                        super.channelRead(ctx, msg);
+                        //IndependentThread.action(ActionType.PACKET_PLAY_IN_USE_ENTITY, p, msg);
+                        concurrencyManager.postRequests(new WarUseRequest(player, packet));
+
+                        super.channelRead(ctx, packet);
                     } catch (Exception e) {
-                        super.channelRead(ctx, msg);
+                        super.channelRead(ctx, packet);
                     }
                 }
             };
 
-            ChannelPipeline cp = c.pipeline();
-            if (cp.names().contains("packet_handler")) {
-                if (cp.names().contains("FunnyGuilds")) {
-                    cp.replace("FunnyGuilds", "FunnyGuilds", handler);
+            if (channel == null) {
+                return;
+            }
+
+            ChannelPipeline pipeline = channel.pipeline();
+
+            if (pipeline.names().contains("packet_handler")) {
+                if (pipeline.names().contains("FunnyGuilds")) {
+                    pipeline.replace("FunnyGuilds", "FunnyGuilds", handler);
                 } else {
-                    cp.addBefore("packet_handler", "FunnyGuilds", handler);
+                    pipeline.addBefore("packet_handler", "FunnyGuilds", handler);
                 }
             }
         } catch (Exception e) {
