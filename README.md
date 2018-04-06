@@ -6,13 +6,10 @@ FunnyGuilds
 ===========
 
 #### About
-FunnyGuilds is a fully customisable RPG plugin that allows you to create guilds
+FunnyGuilds is a fully customisable RPG plugin that allows you to create guilds.
 <br>
 Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 <br>
-
-#### Current Version
-[FunnyGuilds Tribute 4.3.0 for 1.8.8+](https://github.com/FunnyGuilds/FunnyGuilds/releases)
 
 #### Hooks
 Funnyguilds hooks into those plugins:
@@ -22,9 +19,8 @@ Funnyguilds hooks into those plugins:
 - [PlaceholderAPI](https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds)
 - [BungeeTabListPlus](https://www.spigotmc.org/resources/bungeetablistplus.313/)
 
-#### Building
-You can build FunnyGuilds as a Maven project or just generate plugin using [FunnyCreator](https://github.com/FunnyGuilds/FunnyCreator)
-![FunnyCreator](https://dzikoysk.net/projects/funnycreator/funnycreator-short.gif)
+#### Download
+You can download FunnyGuilds via [GitHub Releases](https://github.com/FunnyGuilds/FunnyGuilds/releases) (stable versions) or via [Jenkins CI](https://ci.kacperduras.pl/job/FunnyGuilds/) (development versions).
 
 #### Stats
 Current statistics (since 3.9.9.2) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
