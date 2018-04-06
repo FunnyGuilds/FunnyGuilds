@@ -6,7 +6,7 @@ FunnyGuilds
 ===========
 
 #### About
-FunnyGuilds is a fully customisable RPG plugin that allows you to create guilds.
+FunnyGuilds is a fully customizable RPG plugin that allows you to create guilds.
 <br>
 Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 <br>
@@ -16,7 +16,7 @@ Get the latest stable version: [FunnyGuilds Tribute 4.3.0 (1.8.8+)](https://gith
 Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Nightly](https://ci.kacperduras.pl/job/FunnyGuilds/)
 
 #### Hooks
-Funnyguilds hooks into those plugins:
+FunnyGuilds hooks into those plugins:
 - [WorldEdit](https://dev.bukkit.org/projects/worldedit)
 - [WorldGuard](https://dev.bukkit.org/projects/worldedit)
 - [Vault](https://dev.bukkit.org/projects/vault)
