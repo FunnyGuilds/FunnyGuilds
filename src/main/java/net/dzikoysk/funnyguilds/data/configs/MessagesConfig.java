@@ -11,10 +11,6 @@ public class MessagesConfig {
     @CfgComment("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
     @CfgComment("https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds")
     @CfgComment(" ")
-    @CfgComment("FunnyGuilds wspiera BungeeTabListPlus, dodawane zmienne sa identyczne z tymi z PlaceholderAPI, nie zawieraja tylko znakow %")
-    @CfgComment("Do wyswietlania TOP rankingow gildii uzyj funnyguilds_gtop-x, wspiera ono pozycje od 1 do 100")
-    @CfgComment("Do wyswietlania TOP rankingow graczy uzyj funnyguilds_ptop-x, wspiera ono pozycje od 1 do 100")
-    @CfgComment(" ")
     @CfgComment(" ")
     @CfgComment("<------- Global Date Format -------> #")
     public String dateFormat = "dd.MM.yyyy HH:mm:ss";
