@@ -46,11 +46,7 @@ public class GuildUtils {
                 } else if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
                     Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
                         Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-                        if (block == null) {
-                            return;
-                        }
-                        
-                        if (block.getLocation().getBlockY() > 1) {
+                        if (block != null && block.getLocation().getBlockY() > 1) {
                             block.setType(Material.AIR);
                         }
                     });
