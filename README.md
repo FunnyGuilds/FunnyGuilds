@@ -21,7 +21,6 @@ FunnyGuilds hooks into those plugins:
 - [WorldGuard](https://dev.bukkit.org/projects/worldedit)
 - [Vault](https://dev.bukkit.org/projects/vault)
 - [PlaceholderAPI](https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds)
-- [BungeeTabListPlus](https://www.spigotmc.org/resources/bungeetablistplus.313/)
 
 #### Stats
 Current statistics (since 3.9.9.2) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
