@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -44,12 +43,10 @@ public class GuildUtils {
                 if (config.createEntityType != null) {
                     EntityUtil.despawn(guild);
                 } else if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
-                    Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
-                        Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-                        if (block != null && block.getLocation().getBlockY() > 1) {
-                            block.setType(Material.AIR);
-                        }
-                    });
+                    Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
+                    if (block != null && block.getLocation().getBlockY() > 1) {
+                        block.setType(Material.AIR);
+                    }
                 }
             }
 
