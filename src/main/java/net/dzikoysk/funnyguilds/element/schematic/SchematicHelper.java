@@ -33,7 +33,7 @@ public final class SchematicHelper {
             EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
 
             Operation operation = clipboardHolder
-                    .createPaste(editSession, editSession.getWorld().getWorldData())
+                    .createPaste(editSession, pasteWorldData)
                     .to(pasteLocation)
                     .ignoreAirBlocks(!withAir)
                     .build();
