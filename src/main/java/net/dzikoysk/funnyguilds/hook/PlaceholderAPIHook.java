@@ -96,7 +96,7 @@ public class PlaceholderAPIHook {
                 case "g-validity":
                     return g == null ? messages.gValidityNoValue : config.dateFormat.format(g.getValidityDate());
                 default:
-                    return Parser.parseRank(identifier.toUpperCase());
+                    return Parser.parseRank("{" + identifier.toUpperCase() + "}");
             }
         }
 
