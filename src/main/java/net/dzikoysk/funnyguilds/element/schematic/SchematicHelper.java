@@ -1,17 +1,15 @@
 package net.dzikoysk.funnyguilds.element.schematic;
 
+import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.Vector;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
-import com.sk89q.worldedit.extent.Extent;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.function.mask.ExistingBlockMask;
-import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
+import com.sk89q.worldedit.function.operation.Operation;
 import com.sk89q.worldedit.function.operation.Operations;
-import com.sk89q.worldedit.math.transform.AffineTransform;
-import com.sk89q.worldedit.regions.Region;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.registry.WorldData;
 import net.dzikoysk.funnyguilds.FunnyLogger;
@@ -28,24 +26,22 @@ public final class SchematicHelper {
             Vector pasteLocation = new Vector(location.getX(), location.getY(), location.getZ());
             World pasteWorld = new BukkitWorld(location.getWorld());
             WorldData pasteWorldData = pasteWorld.getWorldData();
+
             Clipboard clipboard = ClipboardFormat.SCHEMATIC.getReader(new FileInputStream(schematicFile)).read(pasteWorldData);
-            Region pasteRegion = clipboard.getRegion();
+            ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard, pasteWorldData);
 
-            Extent pasteExtent = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
-            AffineTransform transform = new AffineTransform();
+            EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
 
-            ForwardExtentCopy copy = new ForwardExtentCopy(pasteExtent, pasteRegion, clipboard.getOrigin(), pasteExtent, pasteLocation);
-            if (!transform.isIdentity()) {
-                copy.setTransform(transform);
-            }
-            
-            if (!withAir) {
-                copy.setSourceMask(new ExistingBlockMask(clipboard));
-            }
+            Operation operation = clipboardHolder
+                    .createPaste(editSession, editSession.getWorld().getWorldData())
+                    .to(pasteLocation)
+                    .ignoreAirBlocks(!withAir)
+                    .build();
 
-            Operations.completeLegacy(copy);
+            Operations.completeLegacy(operation);
             return true;
-        } catch (IOException | MaxChangedBlocksException e) {
+        }
+        catch (IOException | MaxChangedBlocksException e) {
             FunnyLogger.exception(e);
             return false;
         }
