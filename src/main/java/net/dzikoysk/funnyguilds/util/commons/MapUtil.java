@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -39,6 +40,22 @@ public final class MapUtil {
 
     public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(Map<K, V> map) {
         return sortByValue(map, true);
+    }
+
+    public static <K extends Comparable<? super K>, V> Entry<K, V> findTheMaximumEntryByKey(Map<K, V> map) {
+        return map.entrySet().stream().max(Comparator.comparing(Entry::getKey)).orElse(null);
+    }
+
+    public static <K, V extends Comparable<? super V>> Entry<K, V> findTheMaximumEntryByValue(Map<K, V> map) {
+        return map.entrySet().stream().max(Comparator.comparing(Entry::getValue)).orElse(null);
+    }
+
+    public static <K extends Comparable<? super K>, V> Entry<K, V> findTheMinimumEntryByKey(Map<K, V> map) {
+        return map.entrySet().stream().min(Comparator.comparing(Entry::getKey)).orElse(null);
+    }
+
+    public static <K, V extends Comparable<? super V>> Entry<K, V> findTheMinimumEntryByValue(Map<K, V> map) {
+        return map.entrySet().stream().min(Comparator.comparing(Entry::getValue)).orElse(null);
     }
 
 }

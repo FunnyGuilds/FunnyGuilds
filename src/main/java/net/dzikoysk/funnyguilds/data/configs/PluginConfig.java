@@ -835,6 +835,10 @@ public class PluginConfig {
     @CfgName("player-list-ping")
     public int playerListPing = 0;
 
+    @CfgComment("Czy wszystkie mozliwe komorki maja zostac zapelnione, nie zwazywszy na liczbe graczy online")
+    @CfgName("player-list-fill-cells")
+    public boolean playerlistFillCells = true;
+
     @CfgComment("Czy tablista ma byc wlaczona")
     @CfgName("player-list-enable")
     public boolean playerlistEnable = true;

@@ -1,7 +1,11 @@
 package net.dzikoysk.funnyguilds.element.tablist;
 
+import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.Parser;
+import net.dzikoysk.funnyguilds.util.commons.MapUtil;
 import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
@@ -21,6 +25,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractTablist {
 
+    public final static Integer DEFAULT_CELLS_AMOUNT = 80;
+
     private static final Set<AbstractTablist> TABLIST_CACHE = ConcurrentHashMap.newKeySet();
 
     protected final TablistVariablesParser variables = new TablistVariablesParser();
@@ -28,6 +34,7 @@ public abstract class AbstractTablist {
     protected final String header;
     protected final String footer;
     protected final UUID player;
+    protected final int cells;
     protected final int ping;
     protected boolean firstPacket = true;
 
@@ -37,6 +44,18 @@ public abstract class AbstractTablist {
         this.footer = footer;
         this.ping = ping;
         this.player = player.getUniqueId();
+
+        PluginConfig config = Settings.getConfig();
+        if (!config.playerlistFillCells) {
+            Entry<Integer, String> entry = MapUtil.findTheMaximumEntryByKey(config.playerList);
+            if (entry != null) {
+                this.cells = entry.getKey();
+            } else {
+                this.cells = DEFAULT_CELLS_AMOUNT;
+            }
+        } else {
+            this.cells = DEFAULT_CELLS_AMOUNT;
+        }
 
         DefaultTablistVariables.install(this.variables);
     }

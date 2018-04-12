@@ -85,7 +85,7 @@ public class TablistImpl extends AbstractTablist {
             final Object addPlayerPacket = PLAYER_INFO_CLASS.newInstance();
             final Object updatePlayerPacket = PLAYER_INFO_CLASS.newInstance();
 
-            for (int i = 0; i < 80; i++) {
+            for (int i = 0; i < cells; i++) {
                 if (profileCache[i] == null) {
                     profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, StringUtils.appendDigit(i))), TOKEN + StringUtils.appendDigit(i));
                 }
