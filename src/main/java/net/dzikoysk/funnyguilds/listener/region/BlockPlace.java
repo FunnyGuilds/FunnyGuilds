@@ -17,7 +17,7 @@ public class BlockPlace implements Listener {
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
         if (ProtectionSystem.build(e.getPlayer(), e.getBlock().getLocation(), true)) {
-            if (config.buggedBlocks) {
+            if (config.buggedBlocks && !config.buggedBlocksExclude.contains(e.getBlock().getType())) {
                 Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> {
                     e.getBlockReplacedState().update(true);
 

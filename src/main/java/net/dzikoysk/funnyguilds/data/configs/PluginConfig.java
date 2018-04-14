@@ -2,16 +2,16 @@ package net.dzikoysk.funnyguilds.data.configs;
 
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.util.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.util.RankSystem;
 import net.dzikoysk.funnyguilds.data.Messages;
+import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.util.Cooldown;
-import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.commons.StringUtils;
-import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -262,7 +262,8 @@ public class PluginConfig {
 
     @CfgComment("Blok lub entity, ktore jest sercem gildii")
     @CfgComment("Zmiana entity wymaga pelnego restartu serwera")
-    @CfgComment("Bloki musza byc podawane w formacie - material:metadata (tak jak przedmioty na gildie, tylko bez ilosci, nazwy czy opisu)")
+    @CfgComment("Bloki musza byc podawane w formacie - material:metadata")
+    @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
     @CfgComment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
     @CfgComment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
     @CfgName("create-type")
@@ -310,6 +311,14 @@ public class PluginConfig {
     @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
     @CfgName("bugged-blocks-timer")
     public long buggedBlocksTimer = 20L;
+    
+    @CfgComment("Bloki, ktorych nie mozna 'bugowac'")
+    @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
+    @CfgName("bugged-blocks-exclude")
+    public List<String> buggedBlocksExclude_ = Arrays.asList("TNT", "STATIONARY_LAVA", "STATIONARY_WATER");
+    
+    @CfgExclude
+    public List<Material> buggedBlocksExclude;
     
     @CfgComment("Czy klocki po 'zbugowaniu' maja zostac oddane")
     @CfgName("bugged-blocks-return")
@@ -1074,6 +1083,11 @@ public class PluginConfig {
         if (this.buggedBlocksTimer < 0L) {
             FunnyLogger.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than zero!"));
             this.buggedBlocksTimer = 20L; // default value
+        }
+        
+        this.buggedBlocksExclude = new ArrayList<>();
+        for (String s : this.buggedBlocksExclude_) {
+            this.buggedBlocksExclude.add(Parser.parseMaterial(s, false));
         }
 
         try {
