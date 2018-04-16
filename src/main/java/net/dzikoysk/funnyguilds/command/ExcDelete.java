@@ -12,6 +12,8 @@ import org.bukkit.entity.Player;
 
 public class ExcDelete implements Executor {
 
+    private static final ExcConfirm confirmExecutor = new ExcConfirm();
+    
     @Override
     public void execute(CommandSender sender, String[] args) {
         PluginConfig config = Settings.getConfig();
@@ -39,7 +41,7 @@ public class ExcDelete implements Executor {
         if (config.commands.confirm.enabled) {
             player.sendMessage(messages.deleteConfirm);
         } else {
-            new ExcConfirm().execute(sender, null);
+            confirmExecutor.execute(sender, null);
         }
     }
 
