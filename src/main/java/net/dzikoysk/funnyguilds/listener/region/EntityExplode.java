@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import java.time.LocalDateTime;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -19,6 +18,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -47,12 +48,13 @@ public class EntityExplode implements Listener {
             Guild guild = region.getGuild();
 
             if (pluginConfiguration.guildTNTProtectionEnabled) {
-                LocalDateTime start = pluginConfiguration.guildTNTProtectionStartTime;
-                LocalDateTime end = pluginConfiguration.guildTNTProtectionEndTime;
+                LocalTime start = pluginConfiguration.guildTNTProtectionStartTime;
+                LocalTime end = pluginConfiguration.guildTNTProtectionEndTime;
+                LocalTime now = LocalDateTime.now().toLocalTime();
                 
-                LocalDateTime now = LocalDateTime.now();
+                boolean or = pluginConfiguration.guildTNTProtectionOrMode;
                 
-                if ((now.isAfter(start) || now.equals(start)) && (now.isBefore(end) || now.equals(end))) {
+                if (or ? now.isAfter(start) || now.isBefore(end) : now.isAfter(start) && now.isBefore(end)) {
                     event.setCancelled(true);
                     return;
                 }

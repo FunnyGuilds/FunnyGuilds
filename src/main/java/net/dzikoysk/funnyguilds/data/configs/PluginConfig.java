@@ -28,8 +28,6 @@ import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -418,7 +416,7 @@ public class PluginConfig {
     public String guildTNTProtectionStartTime_ = "22:00";
     
     @CfgExclude
-    public LocalDateTime guildTNTProtectionStartTime;
+    public LocalTime guildTNTProtectionStartTime;
     
     @CfgComment("Do której godziny ma dzialac ochrona przed TNT w gildii")
     @CfgComment("Godzina w formacie HH:mm")
@@ -426,7 +424,10 @@ public class PluginConfig {
     public String guildTNTProtectionEndTime_ = "06:00";
     
     @CfgExclude
-    public LocalDateTime guildTNTProtectionEndTime;
+    public LocalTime guildTNTProtectionEndTime;
+    
+    @CfgExclude
+    public boolean guildTNTProtectionOrMode;
 
     @CfgComment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     @CfgName("region-explode")
@@ -1127,15 +1128,9 @@ public class PluginConfig {
         
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         
-        LocalTime startTime = LocalTime.parse(guildTNTProtectionStartTime_, timeFormatter);
-        LocalTime endTime = LocalTime.parse(guildTNTProtectionEndTime_, timeFormatter);
-                
-        this.guildTNTProtectionStartTime = LocalDateTime.of(LocalDate.now(), startTime);
-        this.guildTNTProtectionEndTime = LocalDateTime.of(LocalDate.now(), endTime);
-        
-        if (this.guildTNTProtectionEndTime.isBefore(guildTNTProtectionStartTime)) {
-            this.guildTNTProtectionEndTime = this.guildTNTProtectionEndTime.plusDays(1);
-        }
+        this.guildTNTProtectionStartTime = LocalTime.parse(guildTNTProtectionStartTime_, timeFormatter);
+        this.guildTNTProtectionEndTime = LocalTime.parse(guildTNTProtectionEndTime_, timeFormatter);
+        this.guildTNTProtectionOrMode = this.guildTNTProtectionStartTime.isAfter(this.guildTNTProtectionEndTime);
 
         this.explodeMaterials = map;
 
