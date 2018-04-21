@@ -61,7 +61,7 @@ public class PlaceholderAPIHook {
                 case "kills":
                     return String.valueOf(u.getRank().getKills());
                 case "points-format":
-                    return IntegerRange.inRange(u.getRank().getPoints(), config.pointsFormat).replace("{POINTS}", String.valueOf(u.getRank().getPoints()));
+                    return IntegerRange.inRange(u.getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(u.getRank().getPoints()));
                 case "points":
                     return String.valueOf(u.getRank().getPoints());
                 case "position":
@@ -89,7 +89,7 @@ public class PlaceholderAPIHook {
                 case "g-owner":
                     return g == null ? messages.gOwnerNoValue : g.getOwner().getName();
                 case "g-points-format":
-                    return g == null ? IntegerRange.inRange(0, config.pointsFormat).replace("{POINTS}", "0") : IntegerRange.inRange(g.getRank().getPoints(), config.pointsFormat).replace("{POINTS}", String.valueOf(g.getRank().getPoints()));
+                    return g == null ? IntegerRange.inRange(0, config.pointsFormat, "POINTS").replace("{POINTS}", "0") : IntegerRange.inRange(g.getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(g.getRank().getPoints()));
                 case "g-points":
                     return g == null ? "0" : String.valueOf(g.getRank().getPoints());
                 case "g-position":

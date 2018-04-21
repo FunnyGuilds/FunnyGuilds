@@ -21,7 +21,7 @@ public class IntegerRange {
         return this.maxRange;
     }
     
-    public static <V> V inRange(int value, Map<IntegerRange, V> rangeMap) {
+    public static <V> V inRange(int value, Map<IntegerRange, V> rangeMap, String rangeType) {
         for (Entry<IntegerRange, V> entry : rangeMap.entrySet()) {
             IntegerRange range = entry.getKey();
             if (value >= range.getMinRange() && value <= range.getMaxRange()) {
@@ -29,6 +29,16 @@ public class IntegerRange {
             }
         }
         
-        return null;
+        throw new MissingFormatException(value, rangeType);
     }
+    
+    private static class MissingFormatException extends RuntimeException {
+        
+        private static final long serialVersionUID = -3686306422518954346L;
+
+        public MissingFormatException(int value, String rangeType) {
+            super("No format for value " + value + " and range " + rangeType + " found!");
+        }
+    }
+    
 }

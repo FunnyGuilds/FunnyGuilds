@@ -61,7 +61,7 @@ public class ExcPlayer implements Executor {
             }
 
             messageLine = StringUtils.replace(messageLine, "{PLAYER}", infoUser.getName());
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat));
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat, "POINTS"));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));

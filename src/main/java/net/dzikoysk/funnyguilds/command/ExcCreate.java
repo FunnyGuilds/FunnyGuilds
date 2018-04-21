@@ -164,9 +164,9 @@ public class ExcCreate implements Executor {
             if (points < requiredRank) {
                 String msg = messages.createRank;
                 
-                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", IntegerRange.inRange(requiredRank, config.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
+                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", IntegerRange.inRange(requiredRank, config.pointsFormat, "POINTS").replace("{POINTS}", "{REQUIRED}"));
                 msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
-                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", IntegerRange.inRange(points, config.pointsFormat));
+                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", IntegerRange.inRange(points, config.pointsFormat, "POINTS"));
                 msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
                 
                 player.sendMessage(msg);

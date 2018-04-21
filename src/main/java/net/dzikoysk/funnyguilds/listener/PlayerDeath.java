@@ -203,7 +203,7 @@ public class PlayerDeath implements Listener {
         deathMessage = StringUtils.replace(deathMessage, "{VICTIM}", victim.getName());
         deathMessage = StringUtils.replace(deathMessage, "{+}", Integer.toString(attackerEvent.getChange()));
         deathMessage = StringUtils.replace(deathMessage, "{-}", Integer.toString(victimEvent.getChange()));
-        deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", IntegerRange.inRange(vP, config.pointsFormat));
+        deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", IntegerRange.inRange(vP, config.pointsFormat, "POINTS"));
         deathMessage = StringUtils.replace(deathMessage, "{POINTS}", String.valueOf(victim.getRank().getPoints()));
         deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
         deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", Double.toString(a.getHealth()));
@@ -227,8 +227,8 @@ public class PlayerDeath implements Listener {
         PluginConfig config = Settings.getConfig();
         int[] rankChanges = new int[2];
         
-        int aC = IntegerRange.inRange(aP, config.eloConstants);
-        int vC = IntegerRange.inRange(vP, config.eloConstants);
+        int aC = IntegerRange.inRange(aP, config.eloConstants, "ELO_CONSTANTS");
+        int vC = IntegerRange.inRange(vP, config.eloConstants, "ELO_CONSTANTS");
         
         rankChanges[0] = (int) Math.round(aC * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (vP - aP) / config.eloDivider)))));
         rankChanges[1] = (int) Math.round(vC * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (aP - vP) / config.eloDivider)))) * -1);

@@ -219,7 +219,7 @@ public final class Parser {
                 String pointsFormat = c.gtopPoints;
                 
                 if (!pointsFormat.isEmpty()) {
-                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRange(points, c.pointsFormat));
+                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRange(points, c.pointsFormat, "POINTS"));
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
@@ -233,7 +233,7 @@ public final class Parser {
                 String pointsFormat = c.ptopPoints;
                 
                 if (!pointsFormat.isEmpty()) {
-                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRange(points, c.pointsFormat));
+                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRange(points, c.pointsFormat, "POINTS"));
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
                 
