@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.List;
 import java.util.Locale;
 
 public class ExcPlayer implements Executor {
@@ -41,19 +42,25 @@ public class ExcPlayer implements Executor {
             return;
         }
 
-        Rank rank = user.getRank();
+        sendInfoMessage(messages.playerInfoList, user, sender);
+    }
+    
+    public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
+        MessagesConfig messages = Messages.getInstance();
+        PluginConfig config = Settings.getConfig();
+        
+        Rank rank = infoUser.getRank();
 
-        for (String messageLine : messages.playerInfoList) {
-            if (user.hasGuild()) {
-                messageLine = StringUtils.replace(messageLine, "{GUILD}", user.getGuild().getName());
-                messageLine = StringUtils.replace(messageLine, "{TAG}", user.getGuild().getTag());
-            }
-            else {
+        for (String messageLine : baseMessage) {
+            if (infoUser.hasGuild()) {
+                messageLine = StringUtils.replace(messageLine, "{GUILD}", infoUser.getGuild().getName());
+                messageLine = StringUtils.replace(messageLine, "{TAG}", infoUser.getGuild().getTag());
+            } else {
                 messageLine = StringUtils.replace(messageLine, "{GUILD}", messages.gNameNoValue);
                 messageLine = StringUtils.replace(messageLine, "{TAG}", messages.gTagNoValue);
             }
 
-            messageLine = StringUtils.replace(messageLine, "{PLAYER}", user.getName());
+            messageLine = StringUtils.replace(messageLine, "{PLAYER}", infoUser.getName());
             messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
@@ -61,7 +68,7 @@ public class ExcPlayer implements Executor {
             messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()));
             messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(rank.getPosition()));
             
-            sender.sendMessage(messageLine);
+            messageTarget.sendMessage(messageLine);
         }
     }
 

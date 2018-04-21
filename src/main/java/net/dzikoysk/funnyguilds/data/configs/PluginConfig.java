@@ -579,10 +579,15 @@ public class PluginConfig {
     @CfgComment("Czy pokazywac informacje przy kliknieciu PPM na gracza")
     @CfgName("info-player-enabled")
     public boolean infoPlayerEnabled = true;
+    
+    @CfgComment("Czy pokazac informacje z komendy /gracz przy kliknieciu PPM")
+    @CfgComment("Jesli wylaczone - pokazywane beda informacje z sekcji \"playerRightClickInfo\" z messages.yml")
+    @CfgName("info-player-command")
+    public boolean infoPlayerCommand = true;
 
     @CfgComment("Cooldown pomiedzy pokazywaniem informacji przez PPM (w sekundach)")
     @CfgName("info-player-cooldown")
-    public int infoPlayerCooldown = 0;
+    public int infoPlayerCooldown = 5;
 
     @CfgComment("Czy trzeba kucac, zeby przy klikniecu PPM na gracza wyswietlilo informacje o nim")
     @CfgName("info-player-sneaking")

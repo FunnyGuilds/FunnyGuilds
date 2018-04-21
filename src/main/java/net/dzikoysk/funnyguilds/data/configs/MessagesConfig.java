@@ -179,6 +179,15 @@ public class MessagesConfig {
             "&7Smierci: &a{DEATHS}",
             "&7KDR: &a{KDR}",
             "&8-------------.------------------");
+    
+    @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
+    @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> playerRightClickInfo = Arrays.asList(
+            "&8--------------.-----------------",
+            "&7Gracz: &a{PLAYER}",
+            "&7Gildia: &a{TAG}",
+            "&7Miejsce: &a{RANK} &8(&a{POINTS}&8)",
+            "&8-------------.------------------");
 
     @CfgComment("<------- Info Messages -------> #")
     public String infoTag = "&cPodaj tag gildii!";
