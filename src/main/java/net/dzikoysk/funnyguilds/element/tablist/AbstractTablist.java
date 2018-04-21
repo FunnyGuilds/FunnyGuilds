@@ -11,6 +11,8 @@ import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariablesParser;
 import net.dzikoysk.funnyguilds.element.tablist.variable.VariableParsingResult;
+import net.dzikoysk.funnyguilds.hook.PlaceholderAPIHook;
+import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.Bukkit;
@@ -156,11 +158,15 @@ public abstract class AbstractTablist {
         formatted = result.replaceInString(formatted);
         formatted = StringUtils.colored(formatted);
 
-        String temp = Parser.parseRank(formatted); // TODO
+        String temp = Parser.parseRank(formatted);
         if (temp != null) {
             formatted = temp;
         }
 
+        if (PluginHook.isPresent("PlaceholderAPI")) {
+            PlaceholderAPIHook.replacePlaceholders(user.getPlayer(), formatted);
+        }
+        
         return formatted;
     }
 

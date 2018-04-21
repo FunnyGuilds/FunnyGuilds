@@ -1,12 +1,17 @@
 package net.dzikoysk.funnyguilds.hook;
 
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
+import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public final class WorldGuardHook {
+    
     private static WorldGuardPlugin worldGuard;
     private static StateFlag noPointsFlag;
 
@@ -16,21 +21,12 @@ public final class WorldGuardHook {
         worldGuard.getFlagRegistry().register(noPointsFlag);
     }
 
-    public static boolean isOnNonPointsRegion(Location location) {
-        if (location == null) {
+    public static boolean isInNonPointsRegion(Location location) {
+        if (!isInRegion(location)) {
             return false;
         }
         
-        if (worldGuard == null) {
-            return false;
-        }
-        
-        RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
-        if (regionManager == null) {
-            return false;
-        }
-        
-        for (ProtectedRegion region : regionManager.getApplicableRegions(location)) {
+        for (ProtectedRegion region : getRegionSet(location)) {
             if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
                 return true;
             }
@@ -39,21 +35,37 @@ public final class WorldGuardHook {
         return false;
     }
 
-    public static boolean isOnRegion(Location location) {
-        if (location == null) {
+    public static boolean isInRegion(Location location) {
+        ApplicableRegionSet regionSet = getRegionSet(location);
+        if (regionSet == null) {
             return false;
         }
-        
-        if (worldGuard == null) {
-            return false;
+
+        return regionSet.size() != 0;
+    }
+    
+    public static ApplicableRegionSet getRegionSet(Location location) {        
+        if (location == null || worldGuard == null) {
+            return null;
         }
         
         RegionManager regionManager = worldGuard.getRegionManager(location.getWorld());
         if (regionManager == null) {
-            return false;
+            return null;
         }
 
-        return regionManager.getApplicableRegions(location).size() != 0;
+        return regionManager.getApplicableRegions(location);
+    }
+    
+    public static List<String> getRegionNames(Location location) {
+        if (!isInRegion(location)) {
+            return null;
+        }
+        
+        List<String> regionNames = new ArrayList<>();
+        getRegionSet(location).getRegions().forEach(r -> regionNames.add(r.getId()));
+        
+        return regionNames;
     }
     
 }

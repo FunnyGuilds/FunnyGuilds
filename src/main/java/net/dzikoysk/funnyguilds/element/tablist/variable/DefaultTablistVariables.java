@@ -10,6 +10,8 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVariable;
+import net.dzikoysk.funnyguilds.hook.PluginHook;
+import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.RandomUtils;
 import net.dzikoysk.funnyguilds.util.Ticker;
@@ -37,6 +39,7 @@ public final class DefaultTablistVariables {
         parser.add(new TimeFormattedVariable("SECOND", user -> Calendar.getInstance().get(Calendar.SECOND)));
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
+        parser.add(new SimpleTablistVariable("WORLD", user -> user.getPlayer().getWorld().getName()));
         
         parser.add(new SimpleTablistVariable("GUILDS", user -> String.valueOf(GuildUtils.getGuilds().size())));
         parser.add(new SimpleTablistVariable("USERS", user -> String.valueOf(UserUtils.getUsers().size())));
@@ -71,6 +74,11 @@ public final class DefaultTablistVariables {
         parser.add(new GuildDependentTablistVariable("G-VALIDITY", user -> Settings.getConfig().dateFormat.format(user.getGuild().getValidityDate()), user -> messages.gValidityNoValue));
         parser.add(new GuildDependentTablistVariable("G-REGION-SIZE", user -> Settings.getConfig().regionsEnabled ? String.valueOf(user.getGuild().getRegionData().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
 
+        if (PluginHook.isPresent("WorldGuard")) {
+            parser.add(new SimpleTablistVariable("WG-REGION", user -> WorldGuardHook.getRegionNames(user.getPlayer().getLocation()) == null ? "-" : WorldGuardHook.getRegionNames(user.getPlayer().getLocation()).get(0)));
+            parser.add(new SimpleTablistVariable("WG-REGIONS", user -> WorldGuardHook.getRegionNames(user.getPlayer().getLocation()) == null ? "-" : org.apache.commons.lang.StringUtils.join(WorldGuardHook.getRegionNames(user.getPlayer().getLocation()), ", ")));
+        }
+        
         for (Consumer<TablistVariablesParser> installer : installers) {
             installer.accept(parser);
         }

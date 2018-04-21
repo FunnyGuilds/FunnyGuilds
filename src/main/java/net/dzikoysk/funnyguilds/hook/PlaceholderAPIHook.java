@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.hook;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyLogger;
@@ -24,6 +25,10 @@ public class PlaceholderAPIHook {
     public static void initPlaceholderHook() {
         new FunnyGuildsPlaceholder().register();
         FunnyLogger.info("PlaceholderAPI hook has been enabled!");
+    }
+    
+    public static String replacePlaceholders(Player user, String base) {
+        return PlaceholderAPI.setPlaceholders(user, base);
     }
     
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion {
