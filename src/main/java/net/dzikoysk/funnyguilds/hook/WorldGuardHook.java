@@ -59,9 +59,9 @@ public final class WorldGuardHook {
 
     public static List<String> getRegionNames(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
-        return regionSet != null ? regionSet.getRegions().stream().map(ProtectedRegion::getId)
-                                                                  .collect(Collectors.toList())
-                                 : null;
+        return regionSet == null ? null : regionSet.getRegions().stream()
+                .map(ProtectedRegion::getId)
+                .collect(Collectors.toList());
     }
     
 }
