@@ -7,8 +7,8 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Location;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class WorldGuardHook {
     
@@ -56,16 +56,12 @@ public final class WorldGuardHook {
 
         return regionManager.getApplicableRegions(location);
     }
-    
+
     public static List<String> getRegionNames(Location location) {
-        if (!isInRegion(location)) {
-            return null;
-        }
-        
-        List<String> regionNames = new ArrayList<>();
-        getRegionSet(location).getRegions().forEach(r -> regionNames.add(r.getId()));
-        
-        return regionNames;
+        ApplicableRegionSet regionSet = getRegionSet(location);
+        return regionSet != null ? regionSet.getRegions().stream().map(ProtectedRegion::getId)
+                                                                  .collect(Collectors.toList())
+                                 : null;
     }
     
 }

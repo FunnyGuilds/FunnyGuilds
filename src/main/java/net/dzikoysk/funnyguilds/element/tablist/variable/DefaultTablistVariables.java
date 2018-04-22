@@ -17,10 +17,12 @@ import net.dzikoysk.funnyguilds.util.RandomUtils;
 import net.dzikoysk.funnyguilds.util.Ticker;
 import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
@@ -75,8 +77,15 @@ public final class DefaultTablistVariables {
         parser.add(new GuildDependentTablistVariable("G-REGION-SIZE", user -> Settings.getConfig().regionsEnabled ? String.valueOf(user.getGuild().getRegionData().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
 
         if (PluginHook.isPresent("WorldGuard")) {
-            parser.add(new SimpleTablistVariable("WG-REGION", user -> WorldGuardHook.getRegionNames(user.getPlayer().getLocation()) == null ? "-" : WorldGuardHook.getRegionNames(user.getPlayer().getLocation()).get(0)));
-            parser.add(new SimpleTablistVariable("WG-REGIONS", user -> WorldGuardHook.getRegionNames(user.getPlayer().getLocation()) == null ? "-" : org.apache.commons.lang.StringUtils.join(WorldGuardHook.getRegionNames(user.getPlayer().getLocation()), ", ")));
+            parser.add(new SimpleTablistVariable("WG-REGION", user -> {
+                List<String> regionNames = getWorldGuardRegionNames(user);
+                return regionNames != null ? regionNames.get(0) : "-";
+            }));
+
+            parser.add(new SimpleTablistVariable("WG-REGIONS", user -> {
+                List<String> regionNames = getWorldGuardRegionNames(user);
+                return regionNames != null ? org.apache.commons.lang3.StringUtils.join(regionNames, ", ") : "-";
+            }));
         }
         
         for (Consumer<TablistVariablesParser> installer : installers) {
@@ -86,6 +95,18 @@ public final class DefaultTablistVariables {
 
     public static void registerInstaller(Consumer<TablistVariablesParser> parser) {
         installers.add(parser);
+    }
+
+    private static List<String> getWorldGuardRegionNames(User user) {
+        Location location = user.getPlayer().getLocation();
+        if (location != null) {
+            List<String> regionNames = WorldGuardHook.getRegionNames(location);
+            if (regionNames != null && !regionNames.isEmpty()) {
+                return regionNames;
+            }
+        }
+
+        return null;
     }
     
 }
