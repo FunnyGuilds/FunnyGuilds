@@ -33,8 +33,6 @@ public class IntegerRange {
     }
     
     private static class MissingFormatException extends RuntimeException {
-        
-        private static final long serialVersionUID = -3686306422518954346L;
 
         public MissingFormatException(int value, String rangeType) {
             super("No format for value " + value + " and range " + rangeType + " found!");
