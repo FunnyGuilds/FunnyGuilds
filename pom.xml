@@ -112,7 +112,7 @@
 
     <build>
         <defaultGoal>clean install</defaultGoal>
-        <finalName>${project.name} ${project.version}-${git.commit.id.abbrev} (src)</finalName>
+        <finalName>${project.name} ${project.version} (src)</finalName>
 
         <resources>
             <resource>
@@ -147,7 +147,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>${project.name} ${project.version}-${git.commit.id.abbrev}</finalName>
+                    <finalName>${project.name} ${project.version}</finalName>
                     <relocations>
                         <relocation>
                             <pattern>com.google.common.</pattern>
