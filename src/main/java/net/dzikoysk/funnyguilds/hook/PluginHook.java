@@ -11,6 +11,7 @@ public final class PluginHook {
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
     public static final String PLUGIN_VAULT = "Vault";
     public static final String PLUGIN_PLACEHOLDERAPI = "PlaceholderAPI";
+    public static final String PLUGIN_FUNNYTAB = "FunnyTab";
     
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
@@ -27,6 +28,7 @@ public final class PluginHook {
 
         tryInit(PLUGIN_VAULT, VaultHook::initEconomyHook);
         tryInit(PLUGIN_PLACEHOLDERAPI, PlaceholderAPIHook::initPlaceholderHook);
+        tryInit(PLUGIN_FUNNYTAB, FunnyTabHook::initFunnyDisabler);
     }
 
     public static void tryInit(String plugin, Runnable init) {
