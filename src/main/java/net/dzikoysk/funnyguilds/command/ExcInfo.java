@@ -68,7 +68,7 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{MEMBERS-ALL}", String.valueOf(guild.getMembers().size()));
             messageLine = StringUtils.replace(messageLine, "{MEMBERS}", StringUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
             messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
-            messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", String.valueOf(guild.getRegionData().getSize()));
+            messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", config.regionsEnabled ? String.valueOf(guild.getRegionData().getSize()) : messages.gRegionSizeNoValue);
             messageLine = StringUtils.replace(messageLine, "{GUILD-PROTECTION}", protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now));
             
             Rank rank = guild.getRank();
