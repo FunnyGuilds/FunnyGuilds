@@ -7,7 +7,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class EggTypeChanger {
+public final class EggTypeChanger {
 
     private static Class<?> spawnEggMetaClass;
     private static Method setSpawnedTypeMethod;
@@ -42,5 +42,7 @@ public class EggTypeChanger {
             FunnyLogger.exception("Failed to set entity type for SpawnEggMeta object", e.getStackTrace());
         }
     }
+
+    private EggTypeChanger() {}
     
 }

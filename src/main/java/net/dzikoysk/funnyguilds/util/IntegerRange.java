@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.util;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class IntegerRange {
+public final class IntegerRange {
 
     private int minRange;
     private int maxRange;

@@ -6,7 +6,7 @@ import org.panda_lang.panda.utilities.configuration.PandaConfiguration;
 
 import java.io.File;
 
-public class ReloadHandler {
+public final class ReloadHandler {
 
     private static final File DATA_FILE = new File(Data.getDataFolder(), "funnyguilds.dat");
     private static int reloadCount;

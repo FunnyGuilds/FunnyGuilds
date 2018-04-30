@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public class PacketSender {
+public final class PacketSender {
 
     private static Method getHandle;
     private static Field playerConnection;
@@ -71,4 +71,7 @@ public class PacketSender {
             ex.printStackTrace();
         }
     }
+
+    private PacketSender() {}
+
 }

@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Reflections {
+public final class Reflections {
     private static final Map<String, Class<?>> classCache = new HashMap<>();
     private static final Map<String, Field> fieldCache = new HashMap<>();
     private static final Map<String, FieldAccessor<?>> fieldAccessorCache = new HashMap<>();
@@ -276,4 +276,7 @@ public class Reflections {
             
         }
     }
+
+    private Reflections() {}
+
 }

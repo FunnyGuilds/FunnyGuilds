@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ItemBuilder {
+public final class ItemBuilder {
 
     private final ItemStack itemStack;
     private final ItemMeta itemMeta;

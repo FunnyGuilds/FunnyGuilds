@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
-public class Cooldown<T> {
+public final class Cooldown<T> {
     private final Map<T, Long> cooldowns = new WeakHashMap<>(32);
 
     public boolean isOnCooldown(T key) {
@@ -41,4 +41,5 @@ public class Cooldown<T> {
         this.putOnCooldown(key, cooldown);
         return false;
     }
+
 }

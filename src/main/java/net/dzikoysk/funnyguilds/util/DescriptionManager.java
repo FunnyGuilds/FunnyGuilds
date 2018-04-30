@@ -6,7 +6,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.lang.reflect.Field;
 
-public class DescriptionManager {
+public final class DescriptionManager {
 
     private final PluginDescriptionFile desc;
 

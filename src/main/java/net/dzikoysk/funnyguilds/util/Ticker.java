@@ -7,9 +7,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 
-public class Ticker {
+public final class Ticker {
 
-    private static final DecimalFormat format = new DecimalFormat("##.##");
+    private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
 
     private static Object serverInstance;
     private static Field tpsField;
@@ -29,11 +29,13 @@ public class Ticker {
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
     public static String getRecentTPS(int last) {
         try {
-            return tpsField != null ? format.format(Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last])) : "N/A";
+            return tpsField != null ? FORMAT.format(Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last])) : "N/A";
         } catch (IllegalAccessException ex) {
             FunnyLogger.exception(ex.getMessage(), ex.getStackTrace());
             return null;
         }
     }
+
+    private Ticker() {}
     
 }
