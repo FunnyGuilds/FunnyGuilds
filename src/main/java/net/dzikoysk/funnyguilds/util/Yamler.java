@@ -5,7 +5,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public class Yamler extends YamlConfiguration {
+public final class Yamler extends YamlConfiguration {
 
     private final File file;
 

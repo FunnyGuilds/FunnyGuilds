@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityUtil {
+public final class EntityUtil {
 
     private static final Constructor<?> SPAWN_ENTITY_CONSTRUCTOR;
     private static final Constructor<?> SPAWN_ENTITY_LIVING_CONSTRUCTOR;
@@ -151,6 +151,5 @@ public class EntityUtil {
     }
 
     private EntityUtil() {}
-    
-    
+
 }

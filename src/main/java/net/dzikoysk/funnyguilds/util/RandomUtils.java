@@ -2,8 +2,10 @@ package net.dzikoysk.funnyguilds.util;
 
 import java.util.Random;
 
-public class RandomUtils {
+public final class RandomUtils {
 
     public static final Random RANDOM_INSTANCE = new Random();
+
+    private RandomUtils() {}
 
 }

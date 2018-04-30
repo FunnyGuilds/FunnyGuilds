@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-public class PacketExtension {
+public final class PacketExtension {
 
     private static FieldAccessor<Channel> clientChannel;
     private static Field playerConnection;
@@ -87,5 +87,7 @@ public class PacketExtension {
             e.printStackTrace();
         }
     }
+
+    private PacketExtension() {}
 
 }

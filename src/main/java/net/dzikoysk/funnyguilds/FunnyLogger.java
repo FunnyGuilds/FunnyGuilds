@@ -64,4 +64,6 @@ public final class FunnyLogger {
         return false;
     }
 
+    private FunnyLogger() {}
+
 }
