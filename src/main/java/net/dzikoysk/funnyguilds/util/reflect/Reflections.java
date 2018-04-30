@@ -14,10 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Reflections {
-    private static final Map<String, Class<?>> classCache = new HashMap<>();
-    private static final Map<String, Field> fieldCache = new HashMap<>();
-    private static final Map<String, FieldAccessor<?>> fieldAccessorCache = new HashMap<>();
-    private static final Map<String, Method> methodCache = new HashMap<>();
+    private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
+    private static final Map<String, Field> FIELD_CACHE = new HashMap<>();
+    private static final Map<String, FieldAccessor<?>> FIELD_ACCESSOR_CACHE = new HashMap<>();
+    private static final Map<String, Method> METHOD_CACHE = new HashMap<>();
     private static final Class<?> INVALID_CLASS = InvalidMarker.class;
     private static final Method INVALID_METHOD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredMethod("invalidMethodMaker"));
     private static final Field INVALID_FIELD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredField("invalidFieldMarker"));
@@ -33,12 +33,12 @@ public final class Reflections {
     }
 
     public static Class<?> getClassOmitCache(String className) {
-        classCache.remove(className);
+        CLASS_CACHE.remove(className);
         return getClass(className);
     }
 
     public static Class<?> getClass(String className) {
-        Class<?> c = classCache.get(className);
+        Class<?> c = CLASS_CACHE.get(className);
 
         if (c != null) {
             return c != INVALID_CLASS ? c : null;
@@ -46,12 +46,12 @@ public final class Reflections {
 
         try {
             c = Class.forName(className);
-            classCache.put(className, c);
+            CLASS_CACHE.put(className, c);
         } catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
-            classCache.put(className, INVALID_CLASS);
+            CLASS_CACHE.put(className, INVALID_CLASS);
         }
         return c;
     }
@@ -97,7 +97,7 @@ public final class Reflections {
     public static Field getField(Class<?> cl, String fieldName) {
         String cacheKey = constructFieldCacheKey(cl, fieldName);
 
-        Field field = fieldCache.get(cacheKey);
+        Field field = FIELD_CACHE.get(cacheKey);
 
         if (field != null) {
             return field != INVALID_FIELD ? field : null;
@@ -105,12 +105,12 @@ public final class Reflections {
 
         try {
             field = cl.getDeclaredField(fieldName);
-            fieldCache.put(cacheKey, field);
+            FIELD_CACHE.put(cacheKey, field);
         } catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
-            fieldCache.put(cacheKey, INVALID_FIELD);
+            FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }
 
         return field;
@@ -124,7 +124,7 @@ public final class Reflections {
     private static <T> FieldAccessor<T> getField(Class<?> target, String name, Class<T> fieldType, int index) {
         final String cacheKey = target.getName() + "." + (name != null ? name : "NONE") + "." + fieldType.getName() + "." + index;
 
-        FieldAccessor<T> output = (FieldAccessor<T>) fieldAccessorCache.get(cacheKey);
+        FieldAccessor<T> output = (FieldAccessor<T>) FIELD_ACCESSOR_CACHE.get(cacheKey);
 
         if (output != null) {
             if (output == INVALID_FIELD_ACCESSOR) {
@@ -172,7 +172,7 @@ public final class Reflections {
             output = getField(target.getSuperclass(), name, fieldType, index);
         }
 
-        fieldAccessorCache.put(cacheKey, output != null ? output : INVALID_FIELD_ACCESSOR);
+        FIELD_ACCESSOR_CACHE.put(cacheKey, output != null ? output : INVALID_FIELD_ACCESSOR);
 
         if (output == null) {
             throw new IllegalArgumentException("Cannot find field with type " + fieldType);
@@ -184,7 +184,7 @@ public final class Reflections {
     public static Field getPrivateField(Class<?> cl, String fieldName) {
         String cacheKey = constructFieldCacheKey(cl, fieldName);
 
-        Field c = fieldCache.get(cacheKey);
+        Field c = FIELD_CACHE.get(cacheKey);
 
         if (c != null) {
             return c != INVALID_FIELD ? c : null;
@@ -193,12 +193,12 @@ public final class Reflections {
         try {
             c = cl.getDeclaredField(fieldName);
             c.setAccessible(true);
-            fieldCache.put(cacheKey, c);
+            FIELD_CACHE.put(cacheKey, c);
         } catch (Exception e) {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
-            fieldCache.put(cacheKey, INVALID_FIELD);
+            FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }
 
         return c;
@@ -207,7 +207,7 @@ public final class Reflections {
     public static Method getMethod(Class<?> cl, String method, Class<?>... args) {
         String cacheKey = cl.getName() + "." + method + "." + (args == null ? "NONE" : Arrays.toString(args));
 
-        Method output = methodCache.get(cacheKey);
+        Method output = METHOD_CACHE.get(cacheKey);
 
         if (output != null) {
             return output != INVALID_METHOD ? output : null;
@@ -220,7 +220,7 @@ public final class Reflections {
             }
         }
 
-        methodCache.put(cacheKey, output == null ? INVALID_METHOD : output);
+        METHOD_CACHE.put(cacheKey, output == null ? INVALID_METHOD : output);
 
         return output;
     }
