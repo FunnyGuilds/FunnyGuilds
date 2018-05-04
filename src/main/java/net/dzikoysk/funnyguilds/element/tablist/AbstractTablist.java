@@ -163,8 +163,8 @@ public abstract class AbstractTablist {
             formatted = temp;
         }
 
-        if (PluginHook.isPresent("PlaceholderAPI")) {
-            PlaceholderAPIHook.replacePlaceholders(user.getPlayer(), formatted);
+        if (PluginHook.isPresent(PluginHook.PLUGIN_PLACEHOLDERAPI)) {
+            formatted = PlaceholderAPIHook.replacePlaceholders(user.getPlayer(), formatted);
         }
         
         return formatted;

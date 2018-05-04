@@ -26,7 +26,7 @@ public class MessagesConfig {
     public String alliesNoValue = "Brak (ALLIES)";
     public String gtopNoValue = "Brak (GTOP-x)";
     public String ptopNoValue = "Brak (PTOP-x)";
-    public String minMembersToIncludeNoValue = "Brak (minMembersToInclude w config.yml)";
+    public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
     
     @CfgComment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";

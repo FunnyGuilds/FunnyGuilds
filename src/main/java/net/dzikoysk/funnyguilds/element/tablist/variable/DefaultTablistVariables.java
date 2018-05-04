@@ -76,7 +76,7 @@ public final class DefaultTablistVariables {
         parser.add(new GuildDependentTablistVariable("G-VALIDITY", user -> Settings.getConfig().dateFormat.format(user.getGuild().getValidityDate()), user -> messages.gValidityNoValue));
         parser.add(new GuildDependentTablistVariable("G-REGION-SIZE", user -> Settings.getConfig().regionsEnabled ? String.valueOf(user.getGuild().getRegionData().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
 
-        if (PluginHook.isPresent("WorldGuard")) {
+        if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
             parser.add(new SimpleTablistVariable("WG-REGION", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
                 return regionNames != null ? regionNames.get(0) : "-";
