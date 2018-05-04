@@ -25,10 +25,10 @@ public final class PluginHook {
             } catch (final ClassNotFoundException e) {
                 FunnyLogger.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
             }
-        }, true);
+        });
 
-        tryInit(PLUGIN_VAULT, VaultHook::initEconomyHook, true);
-        tryInit(PLUGIN_PLACEHOLDERAPI, PlaceholderAPIHook::initPlaceholderHook, true);
+        tryInit(PLUGIN_VAULT, VaultHook::initEconomyHook);
+        tryInit(PLUGIN_PLACEHOLDERAPI, PlaceholderAPIHook::initPlaceholderHook);
     }
 
     public static void tryInit(String plugin, Runnable init, boolean notifyIfMissing) {
@@ -42,6 +42,10 @@ public final class PluginHook {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void tryInit(String plugin, Runnable init) {
+        tryInit(plugin, init, true);
     }
 
     public static boolean isPresent(String plugin) {
