@@ -22,12 +22,10 @@ public class ExcItems implements Executor {
         Player player = (Player) sender;
         PluginConfig config = Settings.getConfig();
 
-        List<ItemStack> guildItems = config.createItems;
         List<ItemStack> guiItems = config.guiItems;
         String title = config.guiItemsTitle;
 
         if (!config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
-            guildItems = config.createItemsVip;
             guiItems = config.guiItemsVip;
             title = config.guiItemsVipTitle;
         }
@@ -38,7 +36,7 @@ public class ExcItems implements Executor {
         for (ItemStack item : guiItems) {
             item = item.clone();
             
-            if (config.addLoreLines && guildItems.contains(item)) {
+            if (config.addLoreLines && (config.createItems.contains(item) || config.createItemsVip.contains(item))) {
                 ItemMeta meta = item.getItemMeta();
                 List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
                 
