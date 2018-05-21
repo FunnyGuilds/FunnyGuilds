@@ -372,7 +372,8 @@ public final class Parser {
                 continue;
             }
 
-            parsed.put(new IntegerRange(minRange, maxRange), color ? StringUtils.colored(split[1]) : split[1]);
+            String valueString = org.apache.commons.lang.StringUtils.join(split, " ", 1, split.length);
+            parsed.put(new IntegerRange(minRange, maxRange), color ? StringUtils.colored(valueString) : valueString);
         }
         
         return parsed;
