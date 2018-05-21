@@ -496,6 +496,11 @@ public class PluginConfig {
     @CfgExclude
     public List<ItemStack> validityItems;
 
+    @CfgComment("Czy wiadomosc o zabiciu gracza powinna byc pokazywana wszystkim")
+    @CfgComment("Jesli wylaczone - bedzie pokazywana tylko graczom, ktorzy brali udzial w walce")
+    @CfgName("broadcast-death-message")
+    public boolean broadcastDeathMessage = true;
+    
     @CfgComment("Ranking od ktorego rozpoczyna gracz")
     @CfgName("rank-start")
     public int rankStart = 1000;

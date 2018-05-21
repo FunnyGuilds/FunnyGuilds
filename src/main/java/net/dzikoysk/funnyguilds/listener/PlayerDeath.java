@@ -30,6 +30,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -44,16 +45,19 @@ public class PlayerDeath implements Listener {
         victim.getRank().addDeath();
 
         if (a == null) {
+            victim.clearDamage();
             return;
         }
 
         User attacker = User.get(a);
         if (victim.equals(attacker)) {
+            victim.clearDamage();
             return;
         }
 
         if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
             if (WorldGuardHook.isInNonPointsRegion(v.getLocation()) || WorldGuardHook.isInNonPointsRegion(a.getLocation())) {
+                victim.clearDamage();
                 return;
             }
         }
@@ -66,14 +70,20 @@ public class PlayerDeath implements Listener {
                 if (attacker.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     v.sendMessage(messages.rankLastVictimV);
                     a.sendMessage(messages.rankLastVictimA);
+                    
+                    victim.clearDamage();
                     event.setDeathMessage(null);
+                    
                     return;
                 }
             } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
                 if (victim.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     v.sendMessage(messages.rankLastAttackerV);
                     a.sendMessage(messages.rankLastAttackerA);
+                    
+                    victim.clearDamage();
                     event.setDeathMessage(null);
+                    
                     return;
                 }
             }
@@ -83,7 +93,10 @@ public class PlayerDeath implements Listener {
             if (a.getAddress().getHostString().equalsIgnoreCase(v.getAddress().getHostString())) {
                 v.sendMessage(messages.rankIPVictim);
                 a.sendMessage(messages.rankIPAttacker);
+                
+                victim.clearDamage();
                 event.setDeathMessage(null);
+                
                 return;
             }
         }
@@ -93,9 +106,6 @@ public class PlayerDeath implements Listener {
         int vP = victim.getRank().getPoints();
 
         switch (config.rankSystem) {
-            case ELO:
-                rankChanges = getEloValues(vP, aP);
-                break;
             case PERCENT:
                 Double d = victim.getRank().getPoints() * (config.percentRankChange / 100);
                 rankChanges[0] = d.intValue();
@@ -105,6 +115,7 @@ public class PlayerDeath implements Listener {
                 rankChanges[0] = config.staticAttackerChange;
                 rankChanges[1] = config.staticVictimChange;
                 break;
+            case ELO:
             default:
                 rankChanges = getEloValues(vP, aP);
                 break;
@@ -114,6 +125,8 @@ public class PlayerDeath implements Listener {
         RankChangeEvent victimEvent = new PointsChangeEvent(EventCause.USER, victim.getRank(), attacker, rankChanges[1]);
         
         List<String> assistEntries = new ArrayList<>();
+        List<User> messageReceivers = new ArrayList<>();
+        
         if (SimpleEventHandler.handle(attackerEvent) && SimpleEventHandler.handle(victimEvent)) {
             double attackerDamage = victim.killedBy(attacker);
             
@@ -138,15 +151,21 @@ public class PlayerDeath implements Listener {
                         if (assists >= config.assistsLimit) {
                             continue;
                         }
+                        
                         assists++;
                     }
 
+                    if (!config.broadcastDeathMessage) {
+                        messageReceivers.add(assist.getKey());
+                    }
+                    
                     givenPoints += addedPoints;
                     
                     String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assist.getKey().getName());
                     assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", StringUtils.getPercent(assistFraction));
                     assistEntries.add(assistEntry);
+                    
                     assist.getKey().getRank().addPoints(addedPoints);
                 }
                 
@@ -161,6 +180,11 @@ public class PlayerDeath implements Listener {
             victim.getRank().removePoints(victimEvent.getChange());
             victim.setLastAttacker(attacker);
             victim.clearDamage();
+            
+            if (!config.broadcastDeathMessage) {
+                messageReceivers.add(attacker);
+                messageReceivers.add(victim);
+            }
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
@@ -168,27 +192,16 @@ public class PlayerDeath implements Listener {
 
         if (config.dataType.mysql) {
             if (victim.hasGuild()) {
-                // IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, victim.getGuild());
                 taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild()));
             }
 
             if (attacker.hasGuild()) {
-                // IndependentThread.actions(ActionType.MYSQL_UPDATE_GUILD_POINTS, attacker.getGuild());
                 taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(attacker.getGuild()));
             }
 
-            // IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, victim);
-            // IndependentThread.actions(ActionType.MYSQL_UPDATE_USER_POINTS, attacker);
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
         }
-
-        /*
-        IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, victim);
-        IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, attacker);
-        IndependentThread.actions(ActionType.RANK_UPDATE_USER, victim);
-        IndependentThread.action(ActionType.RANK_UPDATE_USER, attacker);
-        */
 
         ConcurrencyTask task = taskBuilder
                 .delegate(new DummyGlobalUpdateUserRequest(victim))
@@ -204,10 +217,10 @@ public class PlayerDeath implements Listener {
         deathMessage = StringUtils.replace(deathMessage, "{+}", Integer.toString(attackerEvent.getChange()));
         deathMessage = StringUtils.replace(deathMessage, "{-}", Integer.toString(victimEvent.getChange()));
         deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", IntegerRange.inRange(vP, config.pointsFormat, "POINTS"));
-        deathMessage = StringUtils.replace(deathMessage, "{POINTS}", String.valueOf(victim.getRank().getPoints()));
+        deathMessage = StringUtils.replace(deathMessage, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
         deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
-        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", Double.toString(a.getHealth()));
-        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEARTS}", Double.toString(a.getHealth() / 2));
+        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", a.getHealth()));
+        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEARTS}", Integer.toString((int) (a.getHealth() / 2)));
 
         if (victim.hasGuild()) {
             deathMessage = StringUtils.replace(deathMessage, "{VTAG}", StringUtils.replace(config.chatGuild, "{TAG}", victim.getGuild().getTag()));
@@ -220,7 +233,22 @@ public class PlayerDeath implements Listener {
         deathMessage = StringUtils.replace(deathMessage, "{VTAG}", "");
         deathMessage = StringUtils.replace(deathMessage, "{ATAG}", "");
         
-        event.setDeathMessage(deathMessage);
+        if (config.assistEnable && !assistEntries.isEmpty()) {
+            deathMessage += "\n" + StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries));    
+        }
+        
+        if (config.broadcastDeathMessage) {
+            event.setDeathMessage(deathMessage);
+        } else {
+            event.setDeathMessage(null);
+            
+            for (User fighter : messageReceivers) {
+                if (fighter.isOnline()) {
+                    fighter.getPlayer().sendMessage(deathMessage);
+                }
+            }
+        }
+        
     }
 	
     private int[] getEloValues(int vP, int aP) {
