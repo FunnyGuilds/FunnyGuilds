@@ -5,6 +5,8 @@ import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import org.bukkit.Location;
 
 import java.util.List;
@@ -33,6 +35,18 @@ public final class WorldGuardHook {
         }
 
         return false;
+    }
+
+    public static boolean isInIgnoredRegion(Location location) {
+        if (!isInRegion(location)) {
+            return false;
+        }
+
+        PluginConfig config = Settings.getConfig();
+
+        return getRegionSet(location).getRegions()
+            .stream()
+            .anyMatch(region -> config.assistsRegionsIgnored.contains(region.getId()));
     }
 
     public static boolean isInRegion(Location location) {

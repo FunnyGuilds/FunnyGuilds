@@ -530,6 +530,11 @@ public class PluginConfig {
     @CfgComment("Reszta rankingu rozdzielana jest miedzy osoby asystujace w zaleznosci od zadanych obrazen")
     @CfgName("rank-assist-killer-share")
     public double assistKillerShare = 0.5;
+
+    @CfgComment("Na jakich regionach ma ignorowac nadawanie asyst")
+    @CfgComment("UWAGA: Wymagany plugin WorldGuard")
+    @CfgName("assists-regions-ignored")
+    public List<String> assistsRegionsIgnored = Collections.singletonList("spawn");
     
     @CfgComment("System rankingowy uzywany przez plugin, do wyboru:")
     @CfgComment("ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")

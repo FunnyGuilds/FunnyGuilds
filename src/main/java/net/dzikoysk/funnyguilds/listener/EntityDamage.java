@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.listener;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -61,7 +62,7 @@ public class EntityDamage implements Listener {
             }
         }
         
-        if (config.assistEnable && !event.isCancelled()) {
+        if (config.assistEnable && !event.isCancelled() && !WorldGuardHook.isInIgnoredRegion(entity.getLocation())) {
             victimUser.addDamage(attackerUser, event.getDamage());
         }
     }
