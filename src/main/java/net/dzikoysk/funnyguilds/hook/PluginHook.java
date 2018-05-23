@@ -12,6 +12,7 @@ public final class PluginHook {
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
     public static final String PLUGIN_VAULT = "Vault";
     public static final String PLUGIN_PLACEHOLDERAPI = "PlaceholderAPI";
+    public static final String PLUGIN_MVDWPLACEHOLDERAPI = "MVdWPlaceholderAPI";
     
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
@@ -25,6 +26,13 @@ public final class PluginHook {
             } catch (final ClassNotFoundException e) {
                 FunnyLogger.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
             }
+        });
+        
+        tryInit(PLUGIN_MVDWPLACEHOLDERAPI, () -> {
+            try {
+                Class.forName("be.maximvdw.placeholderapi.PlaceholderReplacer");
+                MVdWPlaceholderAPIHook.initPlaceholderHook();
+            } catch (Exception ignored) {}
         });
 
         tryInit(PLUGIN_VAULT, VaultHook::initEconomyHook);

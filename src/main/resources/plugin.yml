@@ -3,7 +3,7 @@ main: net.dzikoysk.funnyguilds.FunnyGuilds
 version: '${project.version} Tribute-${git.commit.id.abbrev}'
 author: 'FunnyGuilds Team'
 website: https://github.com/FunnyGuilds
-softdepend: [WorldEdit, Vault, PlaceholderAPI, BungeeTabListPlus, FunnyTab]
+softdepend: [WorldEdit, Vault, PlaceholderAPI, FunnyTab, MVdWPlaceholderAPI]
 loadbefore: [WorldGuard]
 
 permissions:
