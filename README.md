@@ -24,17 +24,17 @@ FunnyGuilds hooks into those plugins:
 
 #### Maven
 ```xml
+<repository>
+    <id>panda-repository</id>
+    <url>https://repo.panda-lang.org/</url>
+</repository>
+```
+```xml
 <dependency>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
     <version>4.3.0</version>
 </dependency>
-```
-```xml
-<repository>
-    <id>panda-repository</id>
-    <url>https://repo.panda-lang.org/</url>
-</repository>
 ```
 
 #### Stats
