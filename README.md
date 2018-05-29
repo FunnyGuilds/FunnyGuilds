@@ -22,6 +22,21 @@ FunnyGuilds hooks into those plugins:
 - [Vault](https://dev.bukkit.org/projects/vault)
 - [PlaceholderAPI](https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds)
 
+#### Maven
+```xml
+<dependency>
+    <groupId>net.dzikoysk</groupId>
+    <artifactId>funnyguilds</artifactId>
+    <version>4.3.0</version>
+</dependency>
+```
+```xml
+<repository>
+    <id>panda-repository</id>
+    <url>https://repo.panda-lang.org/</url>
+</repository>
+```
+
 #### Stats
 Current statistics (since 3.9.9.2) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
 <br>
