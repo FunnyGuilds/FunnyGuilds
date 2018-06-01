@@ -8,17 +8,15 @@ script: script/script
 matrix:
   fast_finish: false
   include:
-    - env: JDK='Oracle JDK 8'
-      jdk: oraclejdk8
-    - env: JDK='Oracle JDK 9'
-      jdk: oraclejdk9
-    - env: JDK='Oracle JDK 10'
-      install: script/setup F 10
-    - env: JDK='Oracle JDK 11'
-      install: script/setup F 11 -L BCL
+    - jdk: openjdk8
+    - jdk: openjdk9
+    - jdk: openjdk10
+    - jdk: openjdk11
+    - jdk: openjdk-ea
   allow_failures:
-    - env: JDK='Oracle JDK 9'
-    - env: JDK='Oracle JDK 11'
+    - jdk: openjdk9
+    - jdk: openjdk11
+    - jdk: openjdk-ea
 
 notifications:
   email: false
