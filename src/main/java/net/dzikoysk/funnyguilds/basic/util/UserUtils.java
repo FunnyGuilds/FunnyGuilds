@@ -22,7 +22,9 @@ public class UserUtils {
     private final static Cache<String, User> nameUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
     public static List<User> getUsers() {
-        return new ArrayList<>(uuidUserMap.values());
+        synchronized (uuidUserMap) {
+            return new ArrayList<>(uuidUserMap.values());
+        }
     }
 
     public static User get(String nickname) {
