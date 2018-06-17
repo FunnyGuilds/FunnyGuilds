@@ -20,7 +20,7 @@
         <dependency>
             <groupId>org.panda-lang</groupId>
             <artifactId>panda</artifactId>
-            <version>indev-0.7.6</version>
+            <version>indev-0.7.11</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -93,7 +93,7 @@
 
     <repositories>
         <repository>
-            <id>panda-repo</id>
+            <id>panda-repository</id>
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/</url>
         </repository>
