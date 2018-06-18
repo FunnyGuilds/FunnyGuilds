@@ -66,6 +66,7 @@ public final class NotificationUtil {
 
     public static Object createBaseComponent(String text, boolean keepNewLines) {
         String text0 = text != null ? text : "";
+        
         try {
             return keepNewLines ? Array.get(CREATE_BASE_COMPONENT_CRAFTBUKKIT.invoke(null, text0, true), 0) : CREATE_BASE_COMPONENT_NMS.invoke(null, StringUtils.replace(BASE_COMPONENT_JSON_PATTERN, "{TEXT}", text0));
         } catch (IllegalAccessException | InvocationTargetException ex) {

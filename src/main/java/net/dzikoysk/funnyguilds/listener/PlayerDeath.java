@@ -90,7 +90,9 @@ public class PlayerDeath implements Listener {
         }
         
         if (config.rankIPProtect) {
-            if (a.getAddress().getHostString().equalsIgnoreCase(v.getAddress().getHostString())) {
+            String attackerIP = a.getAddress().getHostString();
+            
+            if (attackerIP != null && attackerIP.equalsIgnoreCase(v.getAddress().getHostString())) {
                 v.sendMessage(messages.rankIPVictim);
                 a.sendMessage(messages.rankIPAttacker);
                 
