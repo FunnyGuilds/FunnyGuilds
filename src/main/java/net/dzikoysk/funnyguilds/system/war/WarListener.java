@@ -15,6 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 public final class WarListener {
 
+    private final static ExcInfo infoExecutor = new ExcInfo();
+    
     private static final Class<?> USE_ENTITY_CLASS;
     private static final Field PACKET_ID_FIELD;
     private static final Field PACKET_ACTION_FIELD;
@@ -86,7 +88,7 @@ public final class WarListener {
                     return;
                 }
 
-                new ExcInfo().execute(player, new String[]{entry.getKey().getTag()});
+                infoExecutor.execute(player, new String[]{entry.getKey().getTag()});
             }
         }
     }

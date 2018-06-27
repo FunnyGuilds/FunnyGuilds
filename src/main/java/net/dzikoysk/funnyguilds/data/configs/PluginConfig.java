@@ -264,6 +264,9 @@ public class PluginConfig {
     @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
     @CfgComment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
     @CfgComment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
+    @CfgComment(" ")
+    @CfgComment("UWAGA: Jesli jako serca gildii chcesz uzyc jajka smoka (DRAGON_EGG) - upewnij sie, ze bedzie ono stalo na jakims bloku!")
+    @CfgComment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie go odczytywal poprawnie!")
     @CfgName("create-type")
     public String createType = "ender_crystal";
 

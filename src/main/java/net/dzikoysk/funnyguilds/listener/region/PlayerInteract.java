@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.system.protection.ProtectionUtils;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.system.war.WarSystem;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -21,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerInteract implements Listener {
 
+    private final ExcInfo infoExecutor = new ExcInfo();
+    
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         Action eventAction = event.getAction();
@@ -34,8 +37,11 @@ public class PlayerInteract implements Listener {
                 Block heart = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                 
                 if (clicked.equals(heart)) {
-                    Guild g = region.getGuild();
+                    if (heart.getType() == Material.DRAGON_EGG) {
+                        event.setCancelled(true);
+                    }
                     
+                    Guild g = region.getGuild();
                     if (SecuritySystem.getSecurity().checkPlayer(p, g)) {
                         return;
                     }
@@ -45,16 +51,13 @@ public class PlayerInteract implements Listener {
                         
                         event.setCancelled(true);
                         return;
-                    }
-                    
-                    else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
+                    } else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
                         PluginConfig config = Settings.getConfig();
-                        
                         if(config.informationMessageCooldowns.cooldown(p, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                             return;
                         }
 
-                        new ExcInfo().execute(p, new String[]{g.getTag()});
+                        infoExecutor.execute(p, new String[]{g.getTag()});
                         
                         event.setCancelled(true);
                         return;

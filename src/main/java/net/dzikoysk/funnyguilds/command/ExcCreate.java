@@ -279,6 +279,8 @@ public class ExcCreate implements Executor {
                         l.getBlock().setType(Material.OBSIDIAN);
                     }
                 }
+                
+                guildLocation.clone().subtract(0.0D, 2.0D, 0.0D).getBlock().setType(Material.OBSIDIAN);
             }
             
             if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
@@ -294,12 +296,6 @@ public class ExcCreate implements Executor {
         }
         
         Manager.getInstance().start();
-
-        /*
-        IndependentThread.actions(ActionType.RANK_UPDATE_GUILD, guild);
-        IndependentThread.actions(ActionType.PREFIX_GLOBAL_ADD_GUILD, guild);
-        IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getName());
-        */
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(

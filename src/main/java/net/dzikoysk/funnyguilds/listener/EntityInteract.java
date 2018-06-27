@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class EntityInteract implements Listener {
 
-    private static final ExcPlayer playerExecutor = new ExcPlayer();
+    private final ExcPlayer playerExecutor = new ExcPlayer();
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
 
     @EventHandler
@@ -29,7 +29,6 @@ public class EntityInteract implements Listener {
 
         if (clickedEntity instanceof Player) {
             Player clickedPlayer = (Player) clickedEntity;
-            
             if (!config.infoPlayerEnabled || (config.infoPlayerSneaking && !eventCaller.isSneaking())
                             || informationMessageCooldowns.cooldown(eventCaller, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 return;
