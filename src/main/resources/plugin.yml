@@ -19,6 +19,7 @@ permissions:
         children:
             funnyguilds.reload: true
             funnyguilds.admin.build: true
+            funnyguilds.admin.interact: true
             funnyguilds.admin.notification: true
 
     funnyguilds.vip:

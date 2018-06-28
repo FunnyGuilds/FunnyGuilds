@@ -20,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 import org.diorite.cfg.annotations.CfgClass;
 import org.diorite.cfg.annotations.CfgCollectionStyle;
+import org.diorite.cfg.annotations.CfgCollectionStyle.CollectionStyle;
 import org.diorite.cfg.annotations.CfgComment;
 import org.diorite.cfg.annotations.CfgExclude;
 import org.diorite.cfg.annotations.CfgName;
@@ -35,9 +36,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 @CfgClass(name = "PluginConfig")
 @CfgDelegateDefault("{new}")
@@ -305,6 +308,15 @@ public class PluginConfig {
     @CfgExclude
     public File guildSchematicFile;
 
+    @CfgComment("Typy blokow, z ktorymi osoba spoza gildii moze prowadzic interakcje na terenie innej gildii")
+    @CfgName("allowed-interact")
+    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    public List<String> _allowedInteract = Arrays.asList("CHEST", "TRAPPED_CHEST");
+    
+    @CfgExclude
+    public Set<Material> allowedInteract;
+    
     @CfgComment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
     @CfgName("bugged-blocks")
     public boolean buggedBlocks = false;
@@ -320,7 +332,7 @@ public class PluginConfig {
     public List<String> buggedBlocksExclude_ = Arrays.asList("TNT", "STATIONARY_LAVA", "STATIONARY_WATER");
     
     @CfgExclude
-    public List<Material> buggedBlocksExclude;
+    public Set<Material> buggedBlocksExclude;
     
     @CfgComment("Czy klocki po 'zbugowaniu' maja zostac oddane")
     @CfgName("bugged-blocks-return")
@@ -1110,7 +1122,12 @@ public class PluginConfig {
             this.buggedBlocksTimer = 20L; // default value
         }
         
-        this.buggedBlocksExclude = new ArrayList<>();
+        this.allowedInteract = new HashSet<>();
+        for (String s : this._allowedInteract) {
+            this.allowedInteract.add(Parser.parseMaterial(s, false));
+        }
+        
+        this.buggedBlocksExclude = new HashSet<>();
         for (String s : this.buggedBlocksExclude_) {
             this.buggedBlocksExclude.add(Parser.parseMaterial(s, false));
         }

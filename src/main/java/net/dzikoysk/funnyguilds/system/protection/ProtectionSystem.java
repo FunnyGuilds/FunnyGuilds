@@ -16,14 +16,14 @@ import java.util.concurrent.TimeUnit;
 
 public final class ProtectionSystem {
 
-    public static boolean center(Location loc) {
+    /*public static boolean center(Location loc) {
         Region region = RegionUtils.getAt(loc);
         if (region == null) {
             return false;
         }
         
         return region.getCenter().getBlock().getRelative(BlockFace.UP).getLocation().toVector().equals(loc.getBlock().getLocation().toVector());
-    }
+    }*/
 
     public static boolean build(Player player, Location location, boolean build) {
         if (player == null || location == null) {

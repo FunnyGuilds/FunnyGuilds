@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.ExcInfo;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.system.protection.ProtectionUtils;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.system.war.WarSystem;
 import org.bukkit.Material;
@@ -26,14 +25,15 @@ public class PlayerInteract implements Listener {
     
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
+        PluginConfig config = Settings.getConfig();
         Action eventAction = event.getAction();
-        Player p = event.getPlayer();
+        Player player = event.getPlayer();
         
         if (eventAction == Action.RIGHT_CLICK_BLOCK || eventAction == Action.LEFT_CLICK_BLOCK) {
             Block clicked = event.getClickedBlock();
+            Region region = RegionUtils.getAt(clicked.getLocation());
             
-            if (RegionUtils.isIn(clicked.getLocation())) {
-                Region region = RegionUtils.getAt(clicked.getLocation());
+            if (region != null) {
                 Block heart = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                 
                 if (clicked.equals(heart)) {
@@ -41,33 +41,27 @@ public class PlayerInteract implements Listener {
                         event.setCancelled(true);
                     }
                     
-                    Guild g = region.getGuild();
-                    if (SecuritySystem.getSecurity().checkPlayer(p, g)) {
+                    Guild guild = region.getGuild();
+                    if (SecuritySystem.getSecurity().checkPlayer(player, guild)) {
                         return;
                     }
 
+                    event.setCancelled(true);
+                    
                     if (eventAction == Action.LEFT_CLICK_BLOCK) {
-                        WarSystem.getInstance().attack(p, g);
-                        
-                        event.setCancelled(true);
+                        WarSystem.getInstance().attack(player, guild);
                         return;
                     } else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
-                        PluginConfig config = Settings.getConfig();
-                        if(config.informationMessageCooldowns.cooldown(p, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                            return;
+                        if(!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                            infoExecutor.execute(player, new String[]{guild.getTag()});
                         }
-
-                        infoExecutor.execute(p, new String[]{g.getTag()});
                         
-                        event.setCancelled(true);
                         return;
                     }
+                } else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
+                    event.setCancelled(!config.allowedInteract.contains(clicked.getType()) && !player.hasPermission("funnyguilds.admin.interact"));
                 }
             }
-        }
-        
-        if (ProtectionUtils.action(eventAction, event.getClickedBlock())) {
-            event.setCancelled(false);
         }
     }
 
