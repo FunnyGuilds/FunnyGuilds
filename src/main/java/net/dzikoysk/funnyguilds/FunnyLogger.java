@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds;
 
-import net.dzikoysk.funnyguilds.util.ReloadHandler;
 import org.bukkit.Bukkit;
 
 import java.util.logging.Logger;
@@ -41,7 +40,6 @@ public final class FunnyLogger {
         error("  FunnyGuilds: " + FunnyGuilds.getFullVersion());
         error("  Bukkit: " + Bukkit.getBukkitVersion());
         error("  Java: " + System.getProperty("java.version"));
-        error("  Reloads: " + ReloadHandler.getReloadCount());
         error("  Thread: " + Thread.currentThread());
         error("  Running CraftBukkit: " + Bukkit.getServer().getClass().getName().equals("org.bukkit.craftbukkit.CraftServer"));
         error("");

@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -265,8 +266,8 @@ public class PluginConfig {
     @CfgComment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
     @CfgComment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
     @CfgComment(" ")
-    @CfgComment("UWAGA: Jesli jako serca gildii chcesz uzyc jajka smoka (DRAGON_EGG) - upewnij sie, ze bedzie ono stalo na jakims bloku!")
-    @CfgComment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie go odczytywal poprawnie!")
+    @CfgComment("UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
+    @CfgComment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie odczytywal go poprawnie!")
     @CfgName("create-type")
     public String createType = "ender_crystal";
 
@@ -964,6 +965,7 @@ public class PluginConfig {
     @CfgComment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)")
     @CfgName("event-move")
     public boolean eventMove = true;
+    
     @CfgExclude
     public boolean eventPhysics;
 
@@ -1088,11 +1090,11 @@ public class PluginConfig {
         
         try {
             this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
-        } catch (Exception e) {
+        } catch (Exception materialThen) {
             this.createMaterialData = Parser.parseMaterialData(this.createType, true);
         }
 
-        if (this.createMaterialData != null && this.createMaterialData.getItemType() == Material.DRAGON_EGG) {
+        if (this.createMaterialData != null && MaterialUtil.hasGravity(this.createMaterialData.getItemType())) {
             this.eventPhysics = true;
         }
 

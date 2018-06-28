@@ -34,7 +34,6 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.DescriptionManager;
-import net.dzikoysk.funnyguilds.util.ReloadHandler;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
@@ -52,7 +51,6 @@ public class FunnyGuilds extends JavaPlugin {
     private static String mainVersion;
 
     private ConcurrencyManager concurrencyManager;
-    private ReloadHandler reloadHandler;
     private EventManager eventManager;
     private boolean disabling;
 
@@ -77,9 +75,6 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.concurrencyManager = new ConcurrencyManager(settings.concurrencyThreads);
         this.concurrencyManager.printStatus();
-
-        this.reloadHandler = new ReloadHandler();
-        this.reloadHandler.init();
 
         Commands commands = new Commands();
         commands.register();
@@ -180,10 +175,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public boolean isDisabling() {
         return disabling;
-    }
-
-    public ReloadHandler getReloadHandler() {
-        return reloadHandler;
     }
 
     public ConcurrencyManager getConcurrencyManager() {

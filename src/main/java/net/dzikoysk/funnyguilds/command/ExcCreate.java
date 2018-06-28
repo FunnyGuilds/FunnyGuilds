@@ -280,7 +280,9 @@ public class ExcCreate implements Executor {
                     }
                 }
                 
-                guildLocation.clone().subtract(0.0D, 2.0D, 0.0D).getBlock().setType(Material.OBSIDIAN);
+                if (config.eventPhysics) {
+                    guildLocation.clone().subtract(0.0D, 2.0D, 0.0D).getBlock().setType(Material.OBSIDIAN);
+                }
             }
             
             if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {

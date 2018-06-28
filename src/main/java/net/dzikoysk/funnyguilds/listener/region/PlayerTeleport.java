@@ -20,18 +20,12 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-public class PlayerMove implements Listener {
+public class PlayerTeleport implements Listener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        onMove(event);
-    }
-    
-    @EventHandler
-    public void onMove(PlayerMoveEvent event) {
         final Location from = event.getFrom();
         final Location to = event.getTo();
         final Player player = event.getPlayer();
@@ -57,11 +51,12 @@ public class PlayerMove implements Listener {
                 if (region != null) {
                     Guild guild = region.getGuild();
 
-                    FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
-                        if (config.createEntityType != null) {
-                            EntityUtil.despawn(guild, player);
-                        }
-                    }, 40L);
+                    FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(),
+                                    () -> {
+                                        if (config.createEntityType != null) {
+                                            EntityUtil.despawn(guild, player);
+                                        }
+                                    }, 40L);
 
                     MessageTranslator translator = new MessageTranslator()
                                     .register("{GUILD}", guild.getName())
