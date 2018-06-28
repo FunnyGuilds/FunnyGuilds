@@ -7,9 +7,10 @@ import net.dzikoysk.funnyguilds.basic.util.RankManager;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialAliaser;
 import net.dzikoysk.funnyguilds.util.reflect.EggTypeChanger;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -57,7 +58,7 @@ public final class Parser {
 
             if (str.contains("name")) {
                 String[] splitName = str.split(":");
-                item.setName(StringUtils.replace(StringUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_", " "), true);
+                item.setName(StringUtils.replace(ChatUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_", " "), true);
             } else if (str.contains("lore")) {
                 String[] splitLore = str.split(":");
                 String loreArgs = String.join(":", Arrays.copyOfRange(splitLore, 1, splitLore.length));
@@ -65,7 +66,7 @@ public final class Parser {
                 List<String> lore = new ArrayList<>();
 
                 for (String s : lores) {
-                    lore.add(StringUtils.replace(StringUtils.replace(StringUtils.colored(s), "_", " "), "{HASH}", "#"));
+                    lore.add(StringUtils.replace(StringUtils.replace(ChatUtils.colored(s), "_", " "), "{HASH}", "#"));
                 }
                 
                 item.setLore(lore);
@@ -372,8 +373,8 @@ public final class Parser {
                 continue;
             }
 
-            String valueString = org.apache.commons.lang.StringUtils.join(split, " ", 1, split.length);
-            parsed.put(new IntegerRange(minRange, maxRange), color ? StringUtils.colored(valueString) : valueString);
+            String valueString = StringUtils.join(split, " ", 1, split.length);
+            parsed.put(new IntegerRange(minRange, maxRange), color ? ChatUtils.colored(valueString) : valueString);
         }
         
         return parsed;

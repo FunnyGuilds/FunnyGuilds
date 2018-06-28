@@ -17,7 +17,8 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildAcceptAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildRevokeAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildSendAllyInvitationEvent;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -51,7 +52,7 @@ public class ExcAlly implements Executor {
             }
 
             List<String> list = messages.allyInvitationList;
-            String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
+            String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
             for (String msg : list) {
                 player.sendMessage(msg.replace("{GUILDS}", guildNames));
@@ -107,12 +108,10 @@ public class ExcAlly implements Executor {
             ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
             for (User member : guild.getMembers()) {
-                // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, invitedGuild);
                 taskBuilder.delegate(new PrefixUpdateGuildRequest(member, invitedGuild));
             }
 
             for (User member : invitedGuild.getMembers()) {
-                // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, guild);
                 taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
             }
 

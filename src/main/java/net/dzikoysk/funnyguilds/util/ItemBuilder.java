@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util;
 
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -41,7 +41,7 @@ public final class ItemBuilder {
     }
 
     public ItemBuilder setName(String name, boolean color) {
-        this.itemMeta.setDisplayName(color ? StringUtils.colored(name) : name);
+        this.itemMeta.setDisplayName(color ? ChatUtils.colored(name) : name);
         this.refreshMeta();
         
         return this;
@@ -50,7 +50,7 @@ public final class ItemBuilder {
     public ItemBuilder setLore(List<String> lore) {
         final List<String> formatted = new ArrayList<>();
         for (String str : lore) {
-            formatted.add(StringUtils.colored(str));
+            formatted.add(ChatUtils.colored(str));
         }
         
         this.itemMeta.setLore(formatted);

@@ -16,7 +16,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberAcceptInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -46,7 +46,7 @@ public class ExcJoin implements Executor {
         }
 
         if (args.length < 1) {
-            String guildNames = StringUtils.toString(InvitationList.getInvitationGuildNames(player), false);
+            String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(player), false);
             for (String msg : messages.joinInvitationList) {
                 player.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
@@ -92,7 +92,6 @@ public class ExcJoin implements Executor {
         user.setGuild(guild);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
-        // IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getName());
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(user.getName()));
 

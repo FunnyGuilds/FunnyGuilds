@@ -60,7 +60,6 @@ public final class PacketExtension {
                             return;
                         }
 
-                        //IndependentThread.action(ActionType.PACKET_PLAY_IN_USE_ENTITY, p, msg);
                         concurrencyManager.postRequests(new WarUseRequest(player, packet));
 
                         super.channelRead(ctx, packet);

@@ -66,7 +66,6 @@ public class AxcAdd implements Executor {
         guild.addMember(user);
         user.setGuild(guild);
 
-        // IndependentThread.action(ActionType.PREFIX_GLOBAL_ADD_PLAYER, user.getName());
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(user.getName()));
 

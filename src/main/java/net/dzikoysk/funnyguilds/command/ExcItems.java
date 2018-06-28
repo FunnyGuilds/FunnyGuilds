@@ -3,10 +3,11 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.gui.GuiItem;
 import net.dzikoysk.funnyguilds.element.gui.GuiWindow;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -45,11 +46,11 @@ public class ExcItems implements Executor {
                 
                 for (String line : config.guiItemsLore) {
                     line = StringUtils.replace(line, "{PINV-AMOUNT}", Integer.toString(pinvAmount));
-                    line = StringUtils.replace(line, "{PINV-PERCENT}", StringUtils.getPercent(pinvAmount, item.getAmount()));
+                    line = StringUtils.replace(line, "{PINV-PERCENT}", ChatUtils.getPercent(pinvAmount, item.getAmount()));
                     line = StringUtils.replace(line, "{EC-AMOUNT}", Integer.toString(ecAmount));
-                    line = StringUtils.replace(line, "{EC-PERCENT}", StringUtils.getPercent(ecAmount, item.getAmount()));
+                    line = StringUtils.replace(line, "{EC-PERCENT}", ChatUtils.getPercent(ecAmount, item.getAmount()));
                     line = StringUtils.replace(line, "{ALL-AMOUNT}", Integer.toString(pinvAmount + ecAmount));
-                    line = StringUtils.replace(line, "{ALL-PERCENT}", StringUtils.getPercent(pinvAmount + ecAmount, item.getAmount()));
+                    line = StringUtils.replace(line, "{ALL-PERCENT}", ChatUtils.getPercent(pinvAmount + ecAmount, item.getAmount()));
                     
                     lore.add(line);
                 }

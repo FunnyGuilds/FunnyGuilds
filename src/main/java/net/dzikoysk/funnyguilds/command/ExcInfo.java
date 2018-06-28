@@ -11,14 +11,15 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Date;
 import java.util.Locale;
-import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 
 public class ExcInfo implements Executor {
     
@@ -66,8 +67,8 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{OWNER}", guild.getOwner().getName());
             messageLine = StringUtils.replace(messageLine, "{MEMBERS-ONLINE}", String.valueOf(guild.getOnlineMembers().size()));
             messageLine = StringUtils.replace(messageLine, "{MEMBERS-ALL}", String.valueOf(guild.getMembers().size()));
-            messageLine = StringUtils.replace(messageLine, "{MEMBERS}", StringUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
-            messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
+            messageLine = StringUtils.replace(messageLine, "{MEMBERS}", ChatUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
+            messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
             messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", config.regionsEnabled ? String.valueOf(guild.getRegionData().getSize()) : messages.gRegionSizeNoValue);
             messageLine = StringUtils.replace(messageLine, "{GUILD-PROTECTION}", protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now));
             
@@ -87,7 +88,7 @@ public class ExcInfo implements Executor {
             }
             
             if (!guild.getAllies().isEmpty()) {
-                messageLine = StringUtils.replace(messageLine, "{ALLIES}", StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
+                messageLine = StringUtils.replace(messageLine, "{ALLIES}", ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
             } else {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", messages.alliesNoValue);
             }

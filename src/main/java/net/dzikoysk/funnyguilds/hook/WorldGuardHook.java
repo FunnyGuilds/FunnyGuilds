@@ -78,4 +78,6 @@ public final class WorldGuardHook {
                 .collect(Collectors.toList());
     }
     
+    private WorldGuardHook() {}
+    
 }

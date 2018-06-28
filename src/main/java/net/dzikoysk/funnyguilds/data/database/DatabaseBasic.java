@@ -105,7 +105,6 @@ public class DatabaseBasic {
             GuildUtils.deleteGuild(guild);
         }
 
-        // IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE);
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
     }

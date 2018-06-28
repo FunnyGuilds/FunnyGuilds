@@ -15,67 +15,47 @@ import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.RandomUtils;
 import net.dzikoysk.funnyguilds.util.Ticker;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class DefaultTablistVariables {
 
-    private static final Collection<Consumer<TablistVariablesParser>> installers = new ArrayList<>();
-
-    private DefaultTablistVariables() {}
-
+    private static final Map<String, TablistVariable> FUNNY_VARIABLES = new ConcurrentHashMap<>();
+    
+    public static Map<String, TablistVariable> getFunnyVariables() {
+        if (FUNNY_VARIABLES.isEmpty()) {
+            createFunnyVariables();
+        }
+        
+        return new ConcurrentHashMap<>(FUNNY_VARIABLES);
+    }
+    
+    public static void clearFunnyVariables() {
+        FUNNY_VARIABLES.clear();
+    }
+    
     public static void install(TablistVariablesParser parser) {
-        PluginConfig config = Settings.getConfig();
-        MessagesConfig messages = Messages.getInstance();
-
         parser.add(new TimeFormattedVariable("HOUR", user -> Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
         parser.add(new TimeFormattedVariable("MINUTE", user -> Calendar.getInstance().get(Calendar.MINUTE)));
         parser.add(new TimeFormattedVariable("SECOND", user -> Calendar.getInstance().get(Calendar.SECOND)));
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
         parser.add(new SimpleTablistVariable("WORLD", user -> user.getPlayer().getWorld().getName()));
-        
-        parser.add(new SimpleTablistVariable("GUILDS", user -> String.valueOf(GuildUtils.getGuilds().size())));
-        parser.add(new SimpleTablistVariable("USERS", user -> String.valueOf(UserUtils.getUsers().size())));
-        
-        parser.add(new SimpleTablistVariable("PING-FORMAT", user -> IntegerRange.inRange(user.getPing(), config.pingFormat, "PING").replace("{PING}", String.valueOf(user.getPing()))));
-        parser.add(new SimpleTablistVariable("PING", user -> String.valueOf(user.getPing())));
-        parser.add(new SimpleTablistVariable("POINTS-FORMAT", user -> IntegerRange.inRange(user.getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(user.getRank().getPoints()))));
-        parser.add(new SimpleTablistVariable("POINTS", user -> String.valueOf(user.getRank().getPoints())));
-        parser.add(new SimpleTablistVariable("POSITION", user -> String.valueOf(user.getRank().getPosition())));
-        parser.add(new SimpleTablistVariable("KILLS", user -> String.valueOf(user.getRank().getKills())));
-        parser.add(new SimpleTablistVariable("DEATHS", user -> String.valueOf(user.getRank().getDeaths())));
-        parser.add(new SimpleTablistVariable("KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR())));
         parser.add(new SimpleTablistVariable("ONLINE", user -> user.getPlayer() == null ? "" : String.valueOf(Bukkit.getOnlinePlayers().stream().filter(p -> p != null && user.getPlayer().canSee(p)).count())));
         parser.add(new SimpleTablistVariable("TPS", user -> Ticker.getRecentTPS(0)));
 
-        parser.add(new GuildDependentTablistVariable("G-NAME", user -> user.getGuild().getName(), user -> messages.gNameNoValue));
-        parser.add(new GuildDependentTablistVariable("G-TAG", user -> user.getGuild().getTag(), user -> messages.gTagNoValue));
-        parser.add(new GuildDependentTablistVariable("G-OWNER", user -> user.getGuild().getOwner().getName(), user -> messages.gOwnerNoValue));
-        parser.add(new GuildDependentTablistVariable("G-DEPUTIES", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputiesNoValue : StringUtils.toString(UserUtils.getNames(user.getGuild().getDeputies()), false), user -> messages.gDeputiesNoValue));
-        parser.add(new GuildDependentTablistVariable("G-DEPUTY", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputyNoValue : user.getGuild().getDeputies().get(RandomUtils.RANDOM_INSTANCE.nextInt(user.getGuild().getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
-        parser.add(new GuildDependentTablistVariable("G-LIVES", user -> String.valueOf(user.getGuild().getLives()), user -> "0"));
-        parser.add(new GuildDependentTablistVariable("G-ALLIES", user -> String.valueOf(user.getGuild().getAllies().size()), user -> "0"));
-        parser.add(new GuildDependentTablistVariable("G-POINTS-FORMAT", user -> IntegerRange.inRange(user.getGuild().getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())), user -> IntegerRange.inRange(0, config.pointsFormat, "POINTS").replace("{POINTS}", "0")));
-        parser.add(new GuildDependentTablistVariable("G-POINTS", user -> String.valueOf(user.getGuild().getRank().getPoints()), user -> "0"));
-        parser.add(new GuildDependentTablistVariable("G-KILLS", user -> String.valueOf(user.getGuild().getRank().getKills()), user -> "0"));
-        parser.add(new GuildDependentTablistVariable("G-DEATHS", user -> String.valueOf(user.getGuild().getRank().getDeaths()), user -> "0"));
-        parser.add(new GuildDependentTablistVariable("G-KDR", user -> String.format(Locale.US, "%.2f", user.getGuild().getRank().getKDR()), user -> "0.00"));
-        parser.add(new GuildDependentTablistVariable("G-MEMBERS-ONLINE", user -> String.valueOf(user.getGuild().getOnlineMembers().size()), user -> "0"));
-        parser.add(new GuildDependentTablistVariable("G-MEMBERS-ALL", user -> String.valueOf(user.getGuild().getMembers().size()), user -> "0"));
-
-        parser.add(new GuildDependentTablistVariable("G-POSITION", user -> user.getGuild().getMembers().size() >= Settings.getConfig().minMembersToInclude ? String.valueOf(user.getGuild().getRank().getPosition()) : messages.minMembersToIncludeNoValue, user -> messages.minMembersToIncludeNoValue));
-        parser.add(new GuildDependentTablistVariable("G-VALIDITY", user -> Settings.getConfig().dateFormat.format(user.getGuild().getValidityDate()), user -> messages.gValidityNoValue));
-        parser.add(new GuildDependentTablistVariable("G-REGION-SIZE", user -> Settings.getConfig().regionsEnabled ? String.valueOf(user.getGuild().getRegionData().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
-
+        for (TablistVariable variable : getFunnyVariables().values()) {
+            parser.add(variable);
+        }
+        
         if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
             parser.add(new SimpleTablistVariable("WG-REGION", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
@@ -84,19 +64,47 @@ public final class DefaultTablistVariables {
 
             parser.add(new SimpleTablistVariable("WG-REGIONS", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
-                return regionNames != null ? org.apache.commons.lang3.StringUtils.join(regionNames, ", ") : "-";
+                return regionNames != null ? StringUtils.join(regionNames, ", ") : "-";
             }));
         }
+    }
+
+    private static void createFunnyVariables() {
+        PluginConfig config = Settings.getConfig();
+        MessagesConfig messages = Messages.getInstance();
         
-        for (Consumer<TablistVariablesParser> installer : installers) {
-            installer.accept(parser);
-        }
-    }
+        FUNNY_VARIABLES.put("guilds", new SimpleTablistVariable("GUILDS", user -> String.valueOf(GuildUtils.getGuilds().size())));
+        FUNNY_VARIABLES.put("users", new SimpleTablistVariable("USERS", user -> String.valueOf(UserUtils.getUsers().size())));
+        
+        FUNNY_VARIABLES.put("ping-format", new SimpleTablistVariable("PING-FORMAT", user -> IntegerRange.inRange(user.getPing(), config.pingFormat, "PING").replace("{PING}", String.valueOf(user.getPing()))));
+        FUNNY_VARIABLES.put("ping", new SimpleTablistVariable("PING", user -> String.valueOf(user.getPing())));
+        FUNNY_VARIABLES.put("points-format", new SimpleTablistVariable("POINTS-FORMAT", user -> IntegerRange.inRange(user.getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(user.getRank().getPoints()))));
+        FUNNY_VARIABLES.put("points", new SimpleTablistVariable("POINTS", user -> String.valueOf(user.getRank().getPoints())));
+        FUNNY_VARIABLES.put("position", new SimpleTablistVariable("POSITION", user -> String.valueOf(user.getRank().getPosition())));
+        FUNNY_VARIABLES.put("kills", new SimpleTablistVariable("KILLS", user -> String.valueOf(user.getRank().getKills())));
+        FUNNY_VARIABLES.put("deaths", new SimpleTablistVariable("DEATHS", user -> String.valueOf(user.getRank().getDeaths())));
+        FUNNY_VARIABLES.put("kdr", new SimpleTablistVariable("KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR())));
 
-    public static void registerInstaller(Consumer<TablistVariablesParser> parser) {
-        installers.add(parser);
-    }
+        FUNNY_VARIABLES.put("g-name", new GuildDependentTablistVariable("G-NAME", user -> user.getGuild().getName(), user -> messages.gNameNoValue));
+        FUNNY_VARIABLES.put("g-tag", new GuildDependentTablistVariable("G-TAG", user -> user.getGuild().getTag(), user -> messages.gTagNoValue));
+        FUNNY_VARIABLES.put("g-owner", new GuildDependentTablistVariable("G-OWNER", user -> user.getGuild().getOwner().getName(), user -> messages.gOwnerNoValue));
+        FUNNY_VARIABLES.put("g-deputies", new GuildDependentTablistVariable("G-DEPUTIES", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputiesNoValue : ChatUtils.toString(UserUtils.getNames(user.getGuild().getDeputies()), false), user -> messages.gDeputiesNoValue));
+        FUNNY_VARIABLES.put("g-deputy", new GuildDependentTablistVariable("G-DEPUTY", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputyNoValue : user.getGuild().getDeputies().get(RandomUtils.RANDOM_INSTANCE.nextInt(user.getGuild().getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
+        FUNNY_VARIABLES.put("g-lives", new GuildDependentTablistVariable("G-LIVES", user -> String.valueOf(user.getGuild().getLives()), user -> "0"));
+        FUNNY_VARIABLES.put("g-allies", new GuildDependentTablistVariable("G-ALLIES", user -> String.valueOf(user.getGuild().getAllies().size()), user -> "0"));
+        FUNNY_VARIABLES.put("g-points-format", new GuildDependentTablistVariable("G-POINTS-FORMAT", user -> IntegerRange.inRange(user.getGuild().getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())), user -> IntegerRange.inRange(0, config.pointsFormat, "POINTS").replace("{POINTS}", "0")));
+        FUNNY_VARIABLES.put("g-points", new GuildDependentTablistVariable("G-POINTS", user -> String.valueOf(user.getGuild().getRank().getPoints()), user -> "0"));
+        FUNNY_VARIABLES.put("g-kills", new GuildDependentTablistVariable("G-KILLS", user -> String.valueOf(user.getGuild().getRank().getKills()), user -> "0"));
+        FUNNY_VARIABLES.put("g-deaths", new GuildDependentTablistVariable("G-DEATHS", user -> String.valueOf(user.getGuild().getRank().getDeaths()), user -> "0"));
+        FUNNY_VARIABLES.put("g-kdr", new GuildDependentTablistVariable("G-KDR", user -> String.format(Locale.US, "%.2f", user.getGuild().getRank().getKDR()), user -> "0.00"));
+        FUNNY_VARIABLES.put("g-members-online", new GuildDependentTablistVariable("G-MEMBERS-ONLINE", user -> String.valueOf(user.getGuild().getOnlineMembers().size()), user -> "0"));
+        FUNNY_VARIABLES.put("g-members-all", new GuildDependentTablistVariable("G-MEMBERS-ALL", user -> String.valueOf(user.getGuild().getMembers().size()), user -> "0"));
 
+        FUNNY_VARIABLES.put("g-position", new GuildDependentTablistVariable("G-POSITION", user -> user.getGuild().getMembers().size() >= Settings.getConfig().minMembersToInclude ? String.valueOf(user.getGuild().getRank().getPosition()) : messages.minMembersToIncludeNoValue, user -> messages.minMembersToIncludeNoValue));
+        FUNNY_VARIABLES.put("g-validity", new GuildDependentTablistVariable("G-VALIDITY", user -> Settings.getConfig().dateFormat.format(user.getGuild().getValidityDate()), user -> messages.gValidityNoValue));
+        FUNNY_VARIABLES.put("g-region-size", new GuildDependentTablistVariable("G-REGION-SIZE", user -> Settings.getConfig().regionsEnabled ? String.valueOf(user.getGuild().getRegionData().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
+    }
+    
     private static List<String> getWorldGuardRegionNames(User user) {
         Location location = user.getPlayer().getLocation();
         if (location != null) {
@@ -108,5 +116,7 @@ public final class DefaultTablistVariables {
 
         return null;
     }
+    
+    private DefaultTablistVariables() {}
     
 }

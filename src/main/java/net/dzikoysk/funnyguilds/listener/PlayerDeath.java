@@ -20,9 +20,10 @@ import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.MapUtil;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -165,7 +166,7 @@ public class PlayerDeath implements Listener {
                     
                     String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assist.getKey().getName());
                     assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
-                    assistEntry = StringUtils.replace(assistEntry, "{SHARE}", StringUtils.getPercent(assistFraction));
+                    assistEntry = StringUtils.replace(assistEntry, "{SHARE}", ChatUtils.getPercent(assistFraction));
                     assistEntries.add(assistEntry);
                     
                     assist.getKey().getRank().addPoints(addedPoints);

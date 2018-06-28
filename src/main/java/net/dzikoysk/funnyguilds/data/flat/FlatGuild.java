@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.Yamler;
 import org.bukkit.Location;
 
@@ -81,7 +81,7 @@ public class FlatGuild {
         
         List<User> deputies = new ArrayList<>();
         if (dp != null && !dp.isEmpty()) {
-            deputies = UserUtils.getUsers(StringUtils.fromString(dp));
+            deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
         }
 
         Location home = null;
@@ -200,7 +200,7 @@ public class FlatGuild {
         pc.set("lives", guild.getLives());
         pc.set("ban", guild.getBan());
         pc.set("pvp", guild.getPvP());
-        pc.set("deputy", StringUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
+        pc.set("deputy", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
         
         pc.save();
         return true;

@@ -21,7 +21,6 @@ public final class DescriptionManager {
         
         try {
             Field field = Reflections.getPrivateField(desc.getClass(), "name");
-
             if (field == null) {
                 return;
             }
@@ -32,15 +31,10 @@ public final class DescriptionManager {
         }
     }
 
-    public String extractVersion() {
+    public String[] extractVersion() {
         String version = desc.getVersion();
-        String[] array = version.split("-");
-
-        if (array.length != 2) {
-            return version;
-        }
-
-        return array[0];
+        
+        return new String[]{version, version.split("-")[0]};
     }
 
 }

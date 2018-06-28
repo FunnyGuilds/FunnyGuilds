@@ -1,15 +1,16 @@
 package net.dzikoysk.funnyguilds.data.database;
 
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -62,24 +63,24 @@ public class DatabaseGuild {
             
             List<User> deputies = new ArrayList<>();
             if (dp != null && !dp.isEmpty()) {
-                deputies = UserUtils.getUsers(StringUtils.fromString(dp));
+                deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
             }
             
             List<User> members = new ArrayList<>();
             if (m != null && !m.equals("")) {
-                members = UserUtils.getUsers(StringUtils.fromString(m));
+                members = UserUtils.getUsers(ChatUtils.fromString(m));
             }
             
-            List<String> regions = StringUtils.fromString(rgs);
+            List<String> regions = ChatUtils.fromString(rgs);
             
             List<Guild> allies = new ArrayList<>();
             if (als != null && !als.equals("")) {
-                allies = GuildUtils.getGuilds(StringUtils.fromString(als));
+                allies = GuildUtils.getGuilds(ChatUtils.fromString(als));
             }
             
             List<Guild> enemies = new ArrayList<>();
             if (ens != null && !ens.equals("")) {
-                enemies = GuildUtils.getGuilds(StringUtils.fromString(ens));
+                enemies = GuildUtils.getGuilds(ChatUtils.fromString(ens));
             }
 
             if (born == 0) {
@@ -180,11 +181,11 @@ public class DatabaseGuild {
 
     public String getInsert() {
         StringBuilder sb = new StringBuilder();
-        String members = StringUtils.toString(UserUtils.getNames(guild.getMembers()), false);
-        String deputies = StringUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
-        String regions = StringUtils.toString(guild.getRegions(), false);
-        String allies = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
-        String enemies = StringUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
+        String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
+        String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
+        String regions = ChatUtils.toString(guild.getRegions(), false);
+        String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
+        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 
         sb.append("INSERT INTO `");
         sb.append(Settings.getConfig().mysql.guildsTableName);

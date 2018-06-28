@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.element.tablist.variable.impl;
 
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
 import java.util.function.Function;
 
@@ -25,12 +26,7 @@ public class TimeFormattedVariable implements TablistVariable {
 
     @Override
     public String get(User user) {
-        long result = this.function.apply(user);
-
-        if (result < 10) {
-            return "0" + String.valueOf(result);
-        } else {
-            return String.valueOf(result);
-        }
+        return ChatUtils.appendDigit(this.function.apply(user));
     }
+    
 }

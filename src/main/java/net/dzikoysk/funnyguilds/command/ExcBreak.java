@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -47,7 +47,7 @@ public class ExcBreak implements Executor {
 
         if (args.length < 1) {
             List<String> list = messages.breakAlliesList;
-            String iss = StringUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
+            String iss = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
             
             for (String msg : list) {
                 player.sendMessage(msg.replace("{GUILDS}", iss));
@@ -85,12 +85,10 @@ public class ExcBreak implements Executor {
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         for (User member : guild.getMembers()) {
-            // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, oppositeGuild);
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild));
         }
         
         for (User member : oppositeGuild.getMembers()) {
-            // IndependentThread.action(ActionType.PREFIX_UPDATE_GUILD, member, guild);
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
         }
 

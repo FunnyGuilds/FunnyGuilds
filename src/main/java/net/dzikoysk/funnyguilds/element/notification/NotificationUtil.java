@@ -2,9 +2,9 @@ package net.dzikoysk.funnyguilds.element.notification;
 
 import com.google.common.collect.Lists;
 import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.util.reflect.PacketCreator;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,7 +34,7 @@ public final class ItemUtils {
                 translatedItems.add(contentBuilder.toString());
             }
 
-            message = StringUtils.replace(message, "{ITEMS}", StringUtils.toString(translatedItems, true));
+            message = StringUtils.replace(message, "{ITEMS}", ChatUtils.toString(translatedItems, true));
         }
 
         return message;

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.system.security;
 
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
 public final class SecurityUtils {
 
@@ -11,7 +11,7 @@ public final class SecurityUtils {
     }
 
     public static String getBustedMessage(String name, String cheat) {
-        return StringUtils.colored(
+        return ChatUtils.colored(
                 getSecurityTag() +
                         "Przylapano gracza &d" + name +
                         " &cna uzywaniu cheatu &d" + cheat +
@@ -20,7 +20,7 @@ public final class SecurityUtils {
     }
 
     public static String getNoteMessage(String note) {
-        return StringUtils.colored(
+        return ChatUtils.colored(
                 getSecurityTag() +
                         "Notatka: &7" + note
         );

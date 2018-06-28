@@ -22,11 +22,11 @@ public final class Version {
         FunnyGuilds.getInstance().getServer().getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
             String latest = IOUtils.getContent(VERSION_FILE_URL);
 
-            if (latest != null && !latest.equalsIgnoreCase(FunnyGuilds.getVersion())) {
+            if (latest != null && !latest.equalsIgnoreCase(FunnyGuilds.getMainVersion())) {
                 sender.sendMessage("");
                 sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
                 sender.sendMessage(ChatColor.GRAY + "Dostepna jest nowa wersja " + ChatColor.AQUA + "FunnyGuilds" + ChatColor.GRAY + '!');
-                sender.sendMessage(ChatColor.GRAY + "Obecna: " + ChatColor.AQUA + FunnyGuilds.getVersion());
+                sender.sendMessage(ChatColor.GRAY + "Obecna: " + ChatColor.AQUA + FunnyGuilds.getFullVersion());
                 sender.sendMessage(ChatColor.GRAY + "Najnowsza: " + ChatColor.AQUA + latest);
                 sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
                 sender.sendMessage("");

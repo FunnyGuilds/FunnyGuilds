@@ -38,7 +38,7 @@ public final class FunnyLogger {
         error("[FunnyGuilds] Severe error:");
         error("");
         error("Server Information:");
-        error("  FunnyGuilds: " + FunnyGuilds.getVersion());
+        error("  FunnyGuilds: " + FunnyGuilds.getFullVersion());
         error("  Bukkit: " + Bukkit.getBukkitVersion());
         error("  Java: " + System.getProperty("java.version"));
         error("  Reloads: " + ReloadHandler.getReloadCount());

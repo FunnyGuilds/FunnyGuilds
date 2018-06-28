@@ -12,7 +12,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildBanEvent;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -73,7 +73,7 @@ public class AxcBan implements Executor {
                 .register("{GUILD", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{TIME}", args[1])
-                .register("{REASON}", StringUtils.colored(reason));
+                .register("{REASON}", ChatUtils.colored(reason));
 
         sender.sendMessage(translator.translate(messages.adminGuildBan));
         Bukkit.broadcastMessage(translator.translate(messages.broadcastBan));

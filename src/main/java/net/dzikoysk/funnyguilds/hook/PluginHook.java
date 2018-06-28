@@ -12,6 +12,7 @@ public final class PluginHook {
     public static final String PLUGIN_WORLDGUARD = "WorldGuard";
     public static final String PLUGIN_VAULT = "Vault";
     public static final String PLUGIN_PLACEHOLDERAPI = "PlaceholderAPI";
+    public static final String PLUGIN_BUNGEETABLISTPLUS = "BungeeTabListPlus";
     public static final String PLUGIN_MVDWPLACEHOLDERAPI = "MVdWPlaceholderAPI";
     
     private static final List<String> HOOK_LIST = new ArrayList<>();
@@ -23,16 +24,24 @@ public final class PluginHook {
                 Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
                 Class.forName("com.sk89q.worldguard.protection.flags.Flag");
                 WorldGuardHook.initWorldGuard();
-            } catch (final ClassNotFoundException e) {
+            } catch (ClassNotFoundException wgToOld) {
                 FunnyLogger.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
             }
+        });
+        
+        tryInit(PLUGIN_BUNGEETABLISTPLUS, () -> {
+            try {
+                Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
+                BungeeTabListPlusHook.initVariableHook();
+            }
+            catch (ClassNotFoundException ignored) {}
         });
         
         tryInit(PLUGIN_MVDWPLACEHOLDERAPI, () -> {
             try {
                 Class.forName("be.maximvdw.placeholderapi.PlaceholderReplacer");
                 MVdWPlaceholderAPIHook.initPlaceholderHook();
-            } catch (Exception ignored) {}
+            } catch (ClassNotFoundException ignored) {}
         });
 
         tryInit(PLUGIN_VAULT, VaultHook::initEconomyHook);
@@ -59,5 +68,7 @@ public final class PluginHook {
     public static boolean isPresent(String plugin) {
         return HOOK_LIST.contains(plugin);
     }
+    
+    private PluginHook() {}
     
 }

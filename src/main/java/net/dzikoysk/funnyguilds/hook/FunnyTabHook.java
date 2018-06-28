@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.Bukkit;
 
-public class FunnyTabHook {
+public final class FunnyTabHook {
 
     public static void initFunnyDisabler() {
         FunnyLogger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
@@ -21,4 +21,7 @@ public class FunnyTabHook {
         
         Bukkit.getPluginManager().disablePlugin(FunnyGuilds.getInstance());
     }
+    
+    private FunnyTabHook() {}
+    
 }

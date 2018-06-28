@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-public class VaultHook {
+public final class VaultHook {
 
     private static Economy economyHook;
 
@@ -16,7 +16,7 @@ public class VaultHook {
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
 
         if (rsp == null) {
-            FunnyLogger.warning("Economy provider could not be found, some features may not be available.");
+            FunnyLogger.warning("No economy provider found, some features may not be available");
             return;
         }
 
@@ -28,13 +28,15 @@ public class VaultHook {
     }
 
     public static boolean canAfford(Player player, double money) {
-        Validate.notNull(player, "player can't be null!");
+        Validate.notNull(player, "Player can not be null!");
         return economyHook.has(player, money);
     }
 
     public static EconomyResponse withdrawFromPlayerBank(Player player, double money) {
-        Validate.notNull(player, "player can't be null!");
+        Validate.notNull(player, "Player can not be null!");
         return economyHook.withdrawPlayer(player, money);
     }
+    
+    private VaultHook() {}
     
 }

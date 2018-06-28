@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.element.Dummy;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.element.ScoreboardStack;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -91,7 +91,6 @@ public class User implements Basic {
         this.guild = null;
         this.changes();
 
-        // IndependentThread.action(ActionType.RANK_UPDATE_USER, this);
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new RankUpdateUserRequest(this));
     }
@@ -244,7 +243,7 @@ public class User implements Basic {
 
     public String getReason() {
         if (this.reason != null) {
-            return StringUtils.colored(this.reason);
+            return ChatUtils.colored(this.reason);
         }
         
         return "";

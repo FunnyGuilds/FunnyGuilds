@@ -53,7 +53,6 @@ public class AxcKick implements Executor {
             return;
         }
 
-        // IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, user.getName());
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
 
@@ -67,7 +66,6 @@ public class AxcKick implements Executor {
                 .register("{PLAYER}", user.getName());
 
         if (player != null) {
-            // IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
             concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
             player.sendMessage(translator.translate(messages.kickToPlayer));
         }

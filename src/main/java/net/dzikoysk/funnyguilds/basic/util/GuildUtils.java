@@ -67,7 +67,6 @@ public class GuildUtils {
             RegionUtils.delete(Region.get(guild.getRegion()));
         }
 
-        // IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_GUILD, guild);
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalRemoveGuildRequest(guild));
 

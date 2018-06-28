@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.commons.ConfigUtils;
 import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -22,14 +22,14 @@ public class Messages {
         try {
             for (Field field : instance.getClass().getDeclaredFields()) {
                 if (field.getType().equals(String.class)) {
-                    field.set(instance, StringUtils.colored((String) field.get(instance)));
+                    field.set(instance, ChatUtils.colored((String) field.get(instance)));
                 }
                 
                 if (field.getType().equals(List.class)) {
                     List<String> list = (List<String>) field.get(instance);
                     
                     for (int i = 0; i < list.size(); i++) {
-                        list.set(i, StringUtils.colored(list.get(i)));
+                        list.set(i, ChatUtils.colored(list.get(i)));
                     }
                 }
             }

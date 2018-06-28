@@ -63,7 +63,6 @@ public class ExcKick implements Executor {
             return;
         }
         
-        // IndependentThread.action(ActionType.PREFIX_GLOBAL_REMOVE_PLAYER, formerUser.getName());
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(formerUser.getName()));
 
@@ -71,7 +70,6 @@ public class ExcKick implements Executor {
         formerUser.removeGuild();
 
         if (formerUser.isOnline()) {
-            // IndependentThread.action(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
             concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
         }
 

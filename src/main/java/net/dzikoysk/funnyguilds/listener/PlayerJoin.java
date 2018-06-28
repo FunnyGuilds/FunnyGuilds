@@ -39,11 +39,6 @@ public class PlayerJoin implements Listener {
 
         user.getScoreboard();
 
-        /*
-        IndependentThread.actions(ActionType.PREFIX_GLOBAL_UPDATE_PLAYER, player);
-        IndependentThread.actions(ActionType.DUMMY_GLOBAL_UPDATE_USER, user);
-        IndependentThread.actions(ActionType.RANK_UPDATE_USER, user);
-         */
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(
                 new PrefixGlobalUpdatePlayer(player),

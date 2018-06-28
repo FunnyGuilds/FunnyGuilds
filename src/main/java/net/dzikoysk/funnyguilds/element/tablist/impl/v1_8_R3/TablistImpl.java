@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R3;
 
 import com.google.common.collect.Lists;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
-import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -71,7 +70,7 @@ public class TablistImpl extends AbstractTablist {
 
     private final Object[] profileCache = new Object[80];
 
-    public TablistImpl(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final Player player) {
+    public TablistImpl(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final UUID player) {
         super(tablistPattern, header, footer, ping, player);
     }
 
@@ -87,7 +86,7 @@ public class TablistImpl extends AbstractTablist {
 
             for (int i = 0; i < cells; i++) {
                 if (profileCache[i] == null) {
-                    profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, StringUtils.appendDigit(i))), TOKEN + StringUtils.appendDigit(i));
+                    profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, ChatUtils.appendDigit(i))), TOKEN + ChatUtils.appendDigit(i));
                 }
 
                 String text = this.putVars(tablistPattern.getOrDefault(i + 1, ""));

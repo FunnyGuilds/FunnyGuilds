@@ -4,7 +4,8 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -54,7 +55,7 @@ public final class BanUtils {
         message = StringUtils.replace(message, "{DATE}", Settings.getConfig().dateFormat.format(new Date(user.getBan())));
         message = StringUtils.replace(message, "{REASON}", user.getReason());
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
-        return ChatColor.translateAlternateColorCodes('&', message);
+        return ChatUtils.colored(message);
     }
     
     private BanUtils() {}

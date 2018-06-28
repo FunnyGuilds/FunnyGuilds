@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.commons.StringUtils;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -1082,9 +1082,9 @@ public class PluginConfig {
             this.guiItemsVip = loadGUI(this.guiItemsVip_);
         }
         
-        this.guiItemsTitle = StringUtils.colored(this.guiItemsTitle_);
-        this.guiItemsVipTitle = StringUtils.colored(this.guiItemsVipTitle_);
-        this.guiItemsLore = StringUtils.colored(this.guiItemsLore_);
+        this.guiItemsTitle = ChatUtils.colored(this.guiItemsTitle_);
+        this.guiItemsVipTitle = ChatUtils.colored(this.guiItemsVipTitle_);
+        this.guiItemsLore = ChatUtils.colored(this.guiItemsLore_);
         
         try {
             this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
@@ -1199,29 +1199,29 @@ public class PluginConfig {
         this.joinItems = this.loadItemStackList(this.joinItems_);
         this.baseItems = this.loadItemStackList(this.baseItems_);
 
-        this.prefixOur = StringUtils.colored(this.prefixOur_);
-        this.prefixAllies = StringUtils.colored(this.prefixAllies_);
-        this.prefixOther = StringUtils.colored(this.prefixOther_);
+        this.prefixOur = ChatUtils.colored(this.prefixOur_);
+        this.prefixAllies = ChatUtils.colored(this.prefixAllies_);
+        this.prefixOther = ChatUtils.colored(this.prefixOther_);
         
-        this.ptopOnline = StringUtils.colored(this.ptopOnline_);
-        this.ptopOffline = StringUtils.colored(this.ptopOffline_);
+        this.ptopOnline = ChatUtils.colored(this.ptopOnline_);
+        this.ptopOffline = ChatUtils.colored(this.ptopOffline_);
 
-        this.dummySuffix = StringUtils.colored(this.dummySuffix_);
+        this.dummySuffix = ChatUtils.colored(this.dummySuffix_);
 
-        this.chatPosition = StringUtils.colored(this.chatPosition_);
-        this.chatGuild = StringUtils.colored(this.chatGuild_);
-        this.chatRank = StringUtils.colored(this.chatRank_);
-        this.chatPoints = StringUtils.colored(this.chatPoints_);
+        this.chatPosition = ChatUtils.colored(this.chatPosition_);
+        this.chatGuild = ChatUtils.colored(this.chatGuild_);
+        this.chatRank = ChatUtils.colored(this.chatRank_);
+        this.chatPoints = ChatUtils.colored(this.chatPoints_);
 
         this.pointsFormat = Parser.parseIntegerRange(this.pointsFormat_, true);
         this.pingFormat = Parser.parseIntegerRange(this.pingFormat_, true);
         
-        this.ptopPoints = StringUtils.colored(this.ptopPoints_);
-        this.gtopPoints = StringUtils.colored(this.gtopPoints_);
+        this.ptopPoints = ChatUtils.colored(this.ptopPoints_);
+        this.gtopPoints = ChatUtils.colored(this.gtopPoints_);
 
-        this.chatPrivDesign = StringUtils.colored(this.chatPrivDesign_);
-        this.chatAllyDesign = StringUtils.colored(this.chatAllyDesign_);
-        this.chatGlobalDesign = StringUtils.colored(this.chatGlobalDesign_);
+        this.chatPrivDesign = ChatUtils.colored(this.chatPrivDesign_);
+        this.chatAllyDesign = ChatUtils.colored(this.chatAllyDesign_);
+        this.chatGlobalDesign = ChatUtils.colored(this.chatGlobalDesign_);
 
         if (this.pasteSchematicOnCreation) {
             if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {

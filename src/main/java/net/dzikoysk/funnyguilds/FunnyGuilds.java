@@ -12,8 +12,25 @@ import net.dzikoysk.funnyguilds.element.ScoreboardStack;
 import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
-import net.dzikoysk.funnyguilds.listener.*;
-import net.dzikoysk.funnyguilds.listener.region.*;
+import net.dzikoysk.funnyguilds.listener.EntityDamage;
+import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.PlayerChat;
+import net.dzikoysk.funnyguilds.listener.PlayerDeath;
+import net.dzikoysk.funnyguilds.listener.PlayerJoin;
+import net.dzikoysk.funnyguilds.listener.PlayerKick;
+import net.dzikoysk.funnyguilds.listener.PlayerLogin;
+import net.dzikoysk.funnyguilds.listener.PlayerQuit;
+import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
+import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
+import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
+import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
+import net.dzikoysk.funnyguilds.listener.region.BucketAction;
+import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
+import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
+import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
+import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
+import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.DescriptionManager;
@@ -30,7 +47,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class FunnyGuilds extends JavaPlugin {
 
     private static FunnyGuilds funnyguilds;
-    private static String version;
+    
+    private static String fullVersion;
+    private static String mainVersion;
 
     private ConcurrencyManager concurrencyManager;
     private ReloadHandler reloadHandler;
@@ -48,7 +67,10 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         DescriptionManager descriptionManager = new DescriptionManager(super.getDescription());
-        version = descriptionManager.extractVersion();
+        String[] versions = descriptionManager.extractVersion();
+        
+        fullVersion = versions[0];
+        mainVersion = versions[1];
 
         PluginConfig settings = Settings.getConfig();
         descriptionManager.rename(settings.pluginName);
@@ -113,7 +135,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         Version.isNewAvailable(getServer().getConsoleSender(), true);
         PluginHook.init();
-
+        
         FunnyLogger.info("~ Created by FunnyGuilds Team ~");
     }
 
@@ -168,8 +190,12 @@ public class FunnyGuilds extends JavaPlugin {
         return concurrencyManager;
     }
 
-    public static String getVersion() {
-        return version;
+    public static String getFullVersion() {
+        return fullVersion;
+    }
+    
+    public static String getMainVersion() {
+        return mainVersion;
     }
 
     public static FunnyGuilds getInstance() {
