@@ -21,6 +21,8 @@ FunnyGuilds hooks into those plugins:
 - [WorldGuard](https://dev.bukkit.org/projects/worldedit)
 - [Vault](https://dev.bukkit.org/projects/vault)
 - [PlaceholderAPI](https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds)
+- [MVdWPlaceholderAPI](https://www.spigotmc.org/resources/mvdwplaceholderapi.11182/)
+- [BungeeTabListPlus](https://www.spigotmc.org/resources/bungeetablistplus.313/)
 
 #### Maven
 ```xml
