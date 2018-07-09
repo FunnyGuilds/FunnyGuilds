@@ -30,7 +30,9 @@ public class RankManager {
             this.users.add(user.getRank());
         }
 
-        Collections.sort(users);
+        synchronized (users) {
+            Collections.sort(users);
+        }
 
         if (user.hasGuild()) {
             update(user.getGuild());
@@ -46,7 +48,9 @@ public class RankManager {
         if (!this.guilds.contains(guild.getRank())) {
             this.guilds.add(guild.getRank());
         } else {
-            Collections.sort(guilds);
+            synchronized (guilds) {
+                Collections.sort(guilds);
+            }
 
             for (int i = 0; i < guilds.size(); i++) {
                 Rank rank = guilds.get(i);
@@ -79,12 +83,19 @@ public class RankManager {
 
     public void remove(User user) {
         this.users.remove(user.getRank());
-        Collections.sort(this.users);
+
+        synchronized (users) {
+            Collections.sort(this.users);
+        }
     }
 
     public void remove(Guild guild) {
         this.guilds.remove(guild.getRank());
-        Collections.sort(this.guilds);
+
+        synchronized (guilds) {
+            Collections.sort(this.guilds);
+        }
+
     }
 
 }
