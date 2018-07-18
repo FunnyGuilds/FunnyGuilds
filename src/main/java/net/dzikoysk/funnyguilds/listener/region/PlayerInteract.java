@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.ExcInfo;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -59,7 +60,15 @@ public class PlayerInteract implements Listener {
                         return;
                     }
                 } else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
-                    event.setCancelled(!config.allowedInteract.contains(clicked.getType()) && !player.hasPermission("funnyguilds.admin.interact"));
+                    Guild guild = region.getGuild();
+                    if (guild == null || guild.getName() == null) {
+                        return;
+                    }
+                    
+                    User user = User.get(player);
+                    if (!guild.getMembers().contains(user)) {
+                        event.setCancelled(!config.allowedInteract.contains(clicked.getType()) && !player.hasPermission("funnyguilds.admin.interact"));
+                    }
                 }
             }
         }

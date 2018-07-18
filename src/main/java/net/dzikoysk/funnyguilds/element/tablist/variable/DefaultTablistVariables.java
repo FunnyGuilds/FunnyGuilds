@@ -48,7 +48,7 @@ public final class DefaultTablistVariables {
         parser.add(new TimeFormattedVariable("SECOND", user -> Calendar.getInstance().get(Calendar.SECOND)));
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
-        parser.add(new SimpleTablistVariable("WORLD", user -> user.getPlayer().getWorld().getName()));
+        parser.add(new SimpleTablistVariable("WORLD", user -> user.getPlayer() == null ? "" : user.getPlayer().getWorld().getName()));
         parser.add(new SimpleTablistVariable("ONLINE", user -> user.getPlayer() == null ? "" : String.valueOf(Bukkit.getOnlinePlayers().stream().filter(p -> p != null && user.getPlayer().canSee(p)).count())));
         parser.add(new SimpleTablistVariable("TPS", user -> Ticker.getRecentTPS(0)));
 

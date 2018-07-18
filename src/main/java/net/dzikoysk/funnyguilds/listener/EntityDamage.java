@@ -63,6 +63,10 @@ public class EntityDamage implements Listener {
             }
         }
         
+        if (attacker.equals(entity)) {
+            return;
+        }
+        
         if (config.assistEnable && !event.isCancelled()) {
             if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD) && WorldGuardHook.isInIgnoredRegion(entity.getLocation())) {
                 return;
