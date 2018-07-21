@@ -308,14 +308,14 @@ public class PluginConfig {
     @CfgExclude
     public File guildSchematicFile;
 
-    @CfgComment("Typy blokow, z ktorymi osoba spoza gildii moze prowadzic interakcje na terenie innej gildii")
-    @CfgName("allowed-interact")
+    @CfgComment("Typy blokow, z ktorymi osoba spoza gildii NIE moze prowadzic interakcji na terenie innej gildii")
+    @CfgName("blocked-interact")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> _allowedInteract = Arrays.asList("CHEST", "TRAPPED_CHEST");
+    public List<String> _blockedInteract = Arrays.asList("CHEST", "TRAPPED_CHEST");
     
     @CfgExclude
-    public Set<Material> allowedInteract;
+    public Set<Material> blockedInteract;
     
     @CfgComment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
     @CfgName("bugged-blocks")
@@ -1122,9 +1122,9 @@ public class PluginConfig {
             this.buggedBlocksTimer = 20L; // default value
         }
         
-        this.allowedInteract = new HashSet<>();
-        for (String s : this._allowedInteract) {
-            this.allowedInteract.add(Parser.parseMaterial(s, false));
+        this.blockedInteract = new HashSet<>();
+        for (String s : this._blockedInteract) {
+            this.blockedInteract.add(Parser.parseMaterial(s, false));
         }
         
         this.buggedBlocksExclude = new HashSet<>();

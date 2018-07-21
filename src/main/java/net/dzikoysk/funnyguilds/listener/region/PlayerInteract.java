@@ -67,7 +67,7 @@ public class PlayerInteract implements Listener {
                     
                     User user = User.get(player);
                     if (!guild.getMembers().contains(user)) {
-                        event.setCancelled(!config.allowedInteract.contains(clicked.getType()) && !player.hasPermission("funnyguilds.admin.interact"));
+                        event.setCancelled(config.blockedInteract.contains(clicked.getType()) && !player.hasPermission("funnyguilds.admin.interact"));
                     }
                 }
             }
