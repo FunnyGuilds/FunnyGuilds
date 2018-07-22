@@ -27,7 +27,7 @@ public class Database {
 
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
 
-        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database);
+        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
         this.dataSource.setUsername(c.user);
         if (c.password != null && !c.password.isEmpty()) {
             this.dataSource.setPassword(c.password);
