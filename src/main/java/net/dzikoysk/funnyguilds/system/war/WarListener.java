@@ -26,7 +26,7 @@ public final class WarListener {
         USE_ENTITY_CLASS = Reflections.getNMSClass("PacketPlayInUseEntity");
         PACKET_ID_FIELD = Reflections.getPrivateField(USE_ENTITY_CLASS, "a");
         PACKET_ACTION_FIELD = Reflections.getPrivateField(USE_ENTITY_CLASS, "action");
-        ENUM_HAND_FIELD = Reflections.getFixedVersion().startsWith("v1_8") ? null : Reflections.getPrivateField(USE_ENTITY_CLASS, "d");
+        ENUM_HAND_FIELD = Reflections.SERVER_VERSION.startsWith("v1_8") ? null : Reflections.getPrivateField(USE_ENTITY_CLASS, "d");
     }
 
     public static void use(Player player, Object packet) {

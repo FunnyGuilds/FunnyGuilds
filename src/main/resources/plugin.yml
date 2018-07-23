@@ -5,6 +5,7 @@ author: 'FunnyGuilds Team'
 website: https://github.com/FunnyGuilds
 softdepend: [WorldEdit, Vault, PlaceholderAPI, FunnyTab, BungeeTabListPlus, MVdWPlaceholderAPI]
 loadbefore: [WorldGuard]
+api-version: 1.13
 
 permissions:
     funnyguilds.*:

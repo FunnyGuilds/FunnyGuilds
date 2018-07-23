@@ -27,9 +27,9 @@ public final class NotificationUtil {
     static {
         PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getNMSClass("PacketPlayOutTitle");
         PACKET_PLAY_OUT_CHAT_CLASS = Reflections.getNMSClass("PacketPlayOutChat");
-        TITLE_ACTION_CLASS = "v1_8_R1".equals(Reflections.getFixedVersion()) ? Reflections.getNMSClass("EnumTitleAction") : Reflections.getNMSClass("PacketPlayOutTitle$EnumTitleAction");
+        TITLE_ACTION_CLASS = "v1_8_R1".equals(Reflections.SERVER_VERSION) ? Reflections.getNMSClass("EnumTitleAction") : Reflections.getNMSClass("PacketPlayOutTitle$EnumTitleAction");
 
-        if ("v1_12_R1".equals(Reflections.getFixedVersion())) {
+        if ("v1_12_R1".equals(Reflections.SERVER_VERSION)) {
             CHAT_MESSAGE_TYPE_CLASS = Reflections.getNMSClass("ChatMessageType");
         } else {
             CHAT_MESSAGE_TYPE_CLASS = null;

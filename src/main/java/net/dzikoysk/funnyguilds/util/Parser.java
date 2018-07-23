@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialAliaser;
 import net.dzikoysk.funnyguilds.util.reflect.EggTypeChanger;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -21,7 +22,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.MaterialData;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +83,6 @@ public final class Parser {
                 }
 
                 Enchantment enchant = Enchantment.getByName(enchantName.toUpperCase());
-
                 if (enchant == null) {
                     FunnyLogger.parser("Unknown enchant: " + parse[1]);
                 }
@@ -151,11 +150,10 @@ public final class Parser {
         return material;
     }
     
-    @SuppressWarnings("deprecation")
-    public static MaterialData parseMaterialData(String string, boolean allowNullReturn) {
+    public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
         if (string == null) {
             FunnyLogger.parser("Unknown materialdata: null");
-            return allowNullReturn ? null : new MaterialData(Material.AIR);
+            return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
         
         String[] data = string.split(":");
@@ -163,10 +161,11 @@ public final class Parser {
         
         if (material == null) {
             FunnyLogger.parser("Unknown material in materialdata: " + string);
-            return allowNullReturn ? null : new MaterialData(Material.AIR);
+            return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
         
-        return new MaterialData(material, data.length == 2 ? Byte.parseByte(data[1]) : 0);
+        
+        return Pair.of(material, data.length == 2 ? Byte.parseByte(data[1]) : (byte) 0);
     }
 
     public static Location parseLocation(String string) {

@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
 public class Region implements Basic {
@@ -148,6 +149,10 @@ public class Region implements Basic {
         this.world = loc.getWorld();
         this.update();
         this.changes();
+    }
+    
+    public Location getHeart() {
+        return getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
     }
 
     public int getSize() {

@@ -78,7 +78,7 @@ public abstract class AbstractTablist {
             return tablist;
         }
 
-        switch (Reflections.getFixedVersion()) {
+        switch (Reflections.SERVER_VERSION) {
             case "v1_8_R1":
                 tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
                 TABLIST_CACHE.put(player, tablist);
@@ -93,6 +93,7 @@ public abstract class AbstractTablist {
             case "v1_10_R1":
             case "v1_11_R1":
             case "v1_12_R1":
+            case "v1_13_R1":
                 tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
                 TABLIST_CACHE.put(player, tablist);
                 return tablist;

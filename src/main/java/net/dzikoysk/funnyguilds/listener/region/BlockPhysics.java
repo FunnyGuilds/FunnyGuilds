@@ -3,19 +3,19 @@ package net.dzikoysk.funnyguilds.listener.region;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.material.MaterialData;
 
 public class BlockPhysics implements Listener {
 
     @EventHandler
     public void onPhysics(BlockPhysicsEvent event) {
-        MaterialData md = Settings.getConfig().createMaterialData;
-        if (md == null || !event.getBlock().getState().getData().equals(md)) {
+        Pair<Material, Byte> md = Settings.getConfig().createMaterial;
+        if (md == null || event.getBlock().getType() != md.getLeft()) {
             return;
         }
 
@@ -26,7 +26,7 @@ public class BlockPhysics implements Listener {
             return;
         }
 
-        if (loc.equals(region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation())) {
+        if (loc.equals(region.getHeart())) {
             event.setCancelled(true);
         }
     }

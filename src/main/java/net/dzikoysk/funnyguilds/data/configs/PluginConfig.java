@@ -12,12 +12,13 @@ import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialAliaser;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtil;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.diorite.cfg.annotations.CfgClass;
 import org.diorite.cfg.annotations.CfgCollectionStyle;
 import org.diorite.cfg.annotations.CfgCollectionStyle.CollectionStyle;
@@ -195,7 +196,7 @@ public class PluginConfig {
     @CfgComment("Aby wstawic przedmiot na gildie z listy vip nalezy uzyc {VIPITEM-nr}")
     @CfgName("gui-items")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> guiItems_ = Arrays.asList("1 stained_glass_pane name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
+    public List<String> guiItems_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
                     "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
                     "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
     
@@ -215,7 +216,7 @@ public class PluginConfig {
     @CfgComment("Ponizsze GUI bedzie ignorowane jesli wlaczone jest use-common-gui")
     @CfgName("gui-items-vip")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> guiItemsVip_ = Arrays.asList("1 stained_glass_pane name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
+    public List<String> guiItemsVip_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
                     "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
                     "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
 
@@ -275,7 +276,7 @@ public class PluginConfig {
     public String createType = "ender_crystal";
 
     @CfgExclude
-    public MaterialData createMaterialData;
+    public Pair<Material, Byte> createMaterial;
     
     @CfgExclude
     public EntityType createEntityType;
@@ -1062,7 +1063,7 @@ public class PluginConfig {
             }
 
             if (item == null) {
-                item = new ItemBuilder(Material.STAINED_GLASS_PANE, 1, 14).setName("&c&lERROR IN GUI CREATION: " + var, true).getItem();
+                item = new ItemBuilder(MaterialAliaser.getByAlias("GUI_ERROR"), 1, 14).setName("&c&lERROR IN GUI CREATION: " + var, true).getItem();
             }
 
             items.add(item);
@@ -1103,10 +1104,10 @@ public class PluginConfig {
         try {
             this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
         } catch (Exception materialThen) {
-            this.createMaterialData = Parser.parseMaterialData(this.createType, true);
+            this.createMaterial = Parser.parseMaterialData(this.createType, true);
         }
 
-        if (this.createMaterialData != null && MaterialUtil.hasGravity(this.createMaterialData.getItemType())) {
+        if (this.createMaterial != null && MaterialUtil.hasGravity(this.createMaterial.getLeft())) {
             this.eventPhysics = true;
         }
 

@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class Reflections {
+    
+    public static final String SERVER_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+    public static final boolean USE_PRE_13_METHODS = Integer.parseInt(SERVER_VERSION.split("_")[1]) < 13;
+    
     private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
     private static final Map<String, Field> FIELD_CACHE = new HashMap<>();
     private static final Map<String, FieldAccessor<?>> FIELD_ACCESSOR_CACHE = new HashMap<>();
@@ -22,15 +26,6 @@ public final class Reflections {
     private static final Method INVALID_METHOD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredMethod("invalidMethodMaker"));
     private static final Field INVALID_FIELD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredField("invalidFieldMarker"));
     private static final FieldAccessor<?> INVALID_FIELD_ACCESSOR = getField(INVALID_CLASS, Void.class, 0);
-
-    public static String getVersion() {
-        String name = Bukkit.getServer().getClass().getPackage().getName();
-        return name.substring(name.lastIndexOf('.') + 1) + ".";
-    }
-
-    public static String getFixedVersion() {
-        return Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
-    }
 
     public static Class<?> getClassOmitCache(String className) {
         CLASS_CACHE.remove(className);
@@ -51,17 +46,18 @@ public final class Reflections {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
+            
             CLASS_CACHE.put(className, INVALID_CLASS);
         }
         return c;
     }
 
     public static Class<?> getNMSClass(String name) {
-        return getClass("net.minecraft.server." + getVersion() + name);
+        return getClass("net.minecraft.server." + SERVER_VERSION + "." + name);
     }
 
     public static Class<?> getCraftBukkitClass(String name) {
-        return getClass("org.bukkit.craftbukkit." + getVersion() + name);
+        return getClass("org.bukkit.craftbukkit." + SERVER_VERSION + "." + name);
     }
     
     public static Class<?> getBukkitClass(String name) {
@@ -75,6 +71,7 @@ public final class Reflections {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
+            
             return null;
         }
     }
@@ -86,6 +83,7 @@ public final class Reflections {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
+            
             return null;
         }
     }
@@ -110,6 +108,7 @@ public final class Reflections {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
+            
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }
 
@@ -183,9 +182,8 @@ public final class Reflections {
 
     public static Field getPrivateField(Class<?> cl, String fieldName) {
         String cacheKey = constructFieldCacheKey(cl, fieldName);
-
+        
         Field c = FIELD_CACHE.get(cacheKey);
-
         if (c != null) {
             return c != INVALID_FIELD ? c : null;
         }
@@ -198,6 +196,7 @@ public final class Reflections {
             if (FunnyLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
+            
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }
 
@@ -208,7 +207,6 @@ public final class Reflections {
         String cacheKey = cl.getName() + "." + method + "." + (args == null ? "NONE" : Arrays.toString(args));
 
         Method output = METHOD_CACHE.get(cacheKey);
-
         if (output != null) {
             return output != INVALID_METHOD ? output : null;
         }
@@ -221,7 +219,6 @@ public final class Reflections {
         }
 
         METHOD_CACHE.put(cacheKey, output == null ? INVALID_METHOD : output);
-
         return output;
     }
 
@@ -271,10 +268,7 @@ public final class Reflections {
 
     private static class InvalidMarker {
         public Void invalidFieldMarker;
-
-        public void invalidMethodMaker() {
-            
-        }
+        public void invalidMethodMaker() {}
     }
 
     private Reflections() {}

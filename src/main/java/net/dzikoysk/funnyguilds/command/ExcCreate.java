@@ -25,6 +25,7 @@ import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
+import net.dzikoysk.funnyguilds.util.reflect.BlockDataChanger;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -41,7 +42,6 @@ import java.util.List;
 
 public class ExcCreate implements Executor {
 
-    @SuppressWarnings("deprecation")
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
@@ -285,11 +285,11 @@ public class ExcCreate implements Executor {
                 }
             }
             
-            if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
+            if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                 Block heart = guildLocation.getBlock().getRelative(BlockFace.DOWN);
                 
-                heart.setType(config.createMaterialData.getItemType());
-                heart.setData(config.createMaterialData.getData());
+                heart.setType(config.createMaterial.getLeft());
+                BlockDataChanger.applyChanges(heart, config.createMaterial.getRight());
             } else if (config.createEntityType != null) {
                 EntityUtil.spawn(guild);
             }

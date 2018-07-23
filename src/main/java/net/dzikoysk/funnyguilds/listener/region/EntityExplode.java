@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -64,8 +63,7 @@ public class EntityExplode implements Listener {
                 return;
             }
 
-            Location protect = region.getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
-
+            Location protect = region.getHeart();
             destroyedBlocks.removeIf(block -> block.getLocation().equals(protect));
 
             guild.setBuild(System.currentTimeMillis() + Settings.getConfig().regionExplode * 1000L);

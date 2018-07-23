@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
+import net.dzikoysk.funnyguilds.util.reflect.BlockDataChanger;
 import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -28,7 +29,6 @@ import java.util.List;
 
 public class AxcMove implements Executor {
 
-    @SuppressWarnings("deprecation")
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
@@ -46,14 +46,12 @@ public class AxcMove implements Executor {
         }
 
         Guild guild = GuildUtils.getByTag(args[0]);
-
         if (guild == null) {
             player.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
         Location location = player.getLocation();
-
         if (config.createCenterY != 0) {
             location.setY(config.createCenterY);
         }
@@ -80,13 +78,12 @@ public class AxcMove implements Executor {
         }
         
         Region region = RegionUtils.get(guild.getRegion());
-        
         if (region == null) {
             region = new Region(guild, location, config.regionSize);
         } else {
             if (config.createEntityType != null) {
                 EntityUtil.despawn(guild);
-            } else if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
+            } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                 
                 Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
@@ -108,11 +105,11 @@ public class AxcMove implements Executor {
             }
         }
         
-        if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
+        if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
             Block heart = location.getBlock().getRelative(BlockFace.DOWN);
             
-            heart.setType(config.createMaterialData.getItemType());
-            heart.setData(config.createMaterialData.getData());
+            heart.setType(config.createMaterial.getLeft());
+            BlockDataChanger.applyChanges(heart, config.createMaterial.getRight());
         } else if (config.createEntityType != null) {
             EntityUtil.spawn(guild);
         }

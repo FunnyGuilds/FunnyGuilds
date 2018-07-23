@@ -44,7 +44,7 @@ public class GuildUtils {
             if (region != null) {
                 if (config.createEntityType != null) {
                     EntityUtil.despawn(guild);
-                } else if (config.createMaterialData != null && config.createMaterialData.getItemType() != Material.AIR) {
+                } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                     Location centerLocation = region.getCenter().clone();
 
                     Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
