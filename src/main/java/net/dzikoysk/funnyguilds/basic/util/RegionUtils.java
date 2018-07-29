@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
 import org.bukkit.Location;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +86,11 @@ public final class RegionUtils {
         return false;
     }
 
-    public static void delete(Region region) {
+    public static void delete(@Nullable Region region) {
+        if (region == null) {
+            return;
+        }
+
         if (Settings.getConfig().dataType.flat) {
             Flat.getRegionFile(region).delete();
         }
@@ -119,4 +124,9 @@ public final class RegionUtils {
     public static void removeRegion(Region region) {
         REGION_LIST.remove(region);
     }
+
+    public static String toString(@Nullable Region region) {
+        return region != null ? region.getName() : null;
+    }
+
 }

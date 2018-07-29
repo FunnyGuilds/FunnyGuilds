@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -37,7 +38,7 @@ public class DatabaseGuild {
             String os = rs.getString("owner");
             String dp = rs.getString("deputy");
             String home = rs.getString("home");
-            String region = rs.getString("region");
+            String regionName = rs.getString("region");
             String m = rs.getString("members");
             String rgs = rs.getString("regions");
             String als = rs.getString("allies");
@@ -55,6 +56,7 @@ public class DatabaseGuild {
             }
 
             UUID uuid = UUID.randomUUID();
+
             if (id != null) {
                 uuid = UUID.fromString(id);
             }
@@ -62,23 +64,25 @@ public class DatabaseGuild {
             User owner = User.get(os);
             
             List<User> deputies = new ArrayList<>();
+
             if (dp != null && !dp.isEmpty()) {
                 deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
             }
             
             List<User> members = new ArrayList<>();
+
             if (m != null && !m.equals("")) {
                 members = UserUtils.getUsers(ChatUtils.fromString(m));
             }
-            
-            List<String> regions = ChatUtils.fromString(rgs);
-            
+
             List<Guild> allies = new ArrayList<>();
+
             if (als != null && !als.equals("")) {
                 allies = GuildUtils.getGuilds(ChatUtils.fromString(als));
             }
             
             List<Guild> enemies = new ArrayList<>();
+
             if (ens != null && !ens.equals("")) {
                 enemies = GuildUtils.getGuilds(ChatUtils.fromString(ens));
             }
@@ -102,9 +106,9 @@ public class DatabaseGuild {
             values[2] = tag;
             values[3] = owner;
             values[4] = Parser.parseLocation(home);
-            values[5] = region;
+            values[5] = RegionUtils.get(regionName);
             values[6] = members;
-            values[7] = regions;
+            // values[7] = regions;
             values[8] = allies;
             values[9] = enemies;
             values[10] = born;
@@ -183,7 +187,6 @@ public class DatabaseGuild {
         StringBuilder sb = new StringBuilder();
         String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
-        String regions = ChatUtils.toString(guild.getRegions(), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 
@@ -206,9 +209,9 @@ public class DatabaseGuild {
         is = StringUtils.replace(is, "%tag%", guild.getTag());
         is = StringUtils.replace(is, "%owner%", guild.getOwner().getName());
         is = StringUtils.replace(is, "%home%", LocationUtils.toString(guild.getHome()));
-        is = StringUtils.replace(is, "%region%", guild.getRegion());
+        is = StringUtils.replace(is, "%region%", RegionUtils.toString(guild.getRegion()));
         is = StringUtils.replace(is, "%members%", members);
-        is = StringUtils.replace(is, "%regions%", regions);
+        is = StringUtils.replace(is, "%regions%", "#abandoned");
         is = StringUtils.replace(is, "%allies%", allies);
         is = StringUtils.replace(is, "%enemies%", enemies);
         is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));

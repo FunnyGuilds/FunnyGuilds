@@ -1,10 +1,6 @@
 package net.dzikoysk.funnyguilds.basic;
 
-import net.dzikoysk.funnyguilds.basic.util.BasicType;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.RankManager;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
-import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.basic.util.*;
 import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -22,12 +18,10 @@ public class Guild implements Basic {
     private String tag;
     private User owner;
     private Rank rank;
-    private String region;
-    private Region regionData;
+    private Region region;
     private Location home;
     private List<User> members = new ArrayList<>();
     private List<User> deputies = new ArrayList<>();
-    private List<String> regions = new ArrayList<>();
     private List<Guild> allies = new ArrayList<>();
     private List<Guild> enemies = new ArrayList<>();
     private Location endercrystal;
@@ -100,15 +94,6 @@ public class Guild implements Basic {
         this.changes();
     }
 
-    public void addRegion(String s) {
-        if (this.regions.contains(s)) {
-            return;
-        }
-        
-        this.regions.add(s);
-        this.changes();
-    }
-
     public void addAlly(Guild guild) {
         this.changes();
         if (this.allies.contains(guild)) {
@@ -130,12 +115,6 @@ public class Guild implements Basic {
     public void deserializationUpdate() {
         this.owner.setGuild(this);
         UserUtils.setGuild(this.members, this);
-        for (String r : this.regions) {
-            Region region = RegionUtils.get(r);
-            if (region != null) {
-                region.setGuild(this);
-            }
-        }
     }
 
     public void removeLive() {
@@ -182,10 +161,11 @@ public class Guild implements Basic {
     @Override
     public boolean changed() {
         boolean c = changes;
+
         if (c) {
             this.changes = false;
         }
-        
+
         return c;
     }
 
@@ -289,27 +269,21 @@ public class Guild implements Basic {
         this.changes();
     }
 
-    public String getRegion() {
-        return this.region;
+    public Region getRegion() {
+        return region;
     }
 
-    public Region getRegionData() {
-        return this.regionData == null ? this.regionData = RegionUtils.get(this.region) : this.regionData;
-    }
-
-    public void setRegion(String s) {
+    public void setRegion(Region region) {
         if (!Settings.getConfig().regionsEnabled) {
             return;
         }
         
-        this.region = s;
+        this.region = region;
+
         if (this.home == null) {
-            Region region = Region.get(s);
             this.home = region.getCenter();
         }
 
-        this.regionData = RegionUtils.get(this.region);
-        
         this.changes();
     }
 
@@ -337,19 +311,6 @@ public class Guild implements Basic {
                 .stream()
                 .filter(User::isOnline)
                 .collect(Collectors.toList());
-    }
-
-    public List<String> getRegions() {
-        return this.regions;
-    }
-
-    public void setRegions(List<String> regions) {
-        if (!Settings.getConfig().regionsEnabled) {
-            return;
-        }
-        
-        this.regions = regions;
-        this.changes();
     }
 
     public List<Guild> getAllies() {

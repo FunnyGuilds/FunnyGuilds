@@ -25,16 +25,19 @@ public final class ProtectionSystem {
         }
         
         Region region = RegionUtils.getAt(location);
+
         if (region == null) {
             return false;
         }
         
         Guild guild = region.getGuild();
+
         if (guild == null || guild.getName() == null) {
             return false;
         }
         
         User user = User.get(player);
+
         if (guild.getMembers().contains(user)) {
             if (build && !guild.canBuild()) {
                 player.sendMessage(Messages.getInstance().regionExplodeInteract.replace("{TIME}",
@@ -42,6 +45,7 @@ public final class ProtectionSystem {
                 return true;
             } else if (location.equals(region.getHeart())) {
                 Pair<Material,Byte> md = Settings.getConfig().createMaterial;
+
                 if (md != null && md.getLeft() != Material.AIR) {
                     return true;
                 }
@@ -57,4 +61,5 @@ public final class ProtectionSystem {
     public static boolean build(Player player, Location loc) {
         return build(player, loc, false);
     }
+
 }

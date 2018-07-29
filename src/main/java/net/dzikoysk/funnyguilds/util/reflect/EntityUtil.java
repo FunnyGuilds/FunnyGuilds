@@ -85,22 +85,30 @@ public final class EntityUtil {
 
     public static void spawn(Guild guild, Player... players) {
         try {
-            Object o = null;
+            Object value;
+
             if (!ENTITY_MAP.containsKey(guild)) {
-                Location center = Region.get(guild.getRegion()).getCenter();
+                Region region = guild.getRegion();
+
+                if (region == null) {
+                    return;
+                }
+
+                Location center = region.getCenter();
+
                 if (center == null) {
                     return;
                 }
                 
                 int id = spawnPacket(center.clone().add(0.5D, -1.0D, 0.5D));
                 
-                o = ID_MAP.get(id);
+                value = ID_MAP.get(id);
                 ENTITY_MAP.put(guild, id);
             } else {
-                o = ID_MAP.get(ENTITY_MAP.get(guild));
+                value = ID_MAP.get(ENTITY_MAP.get(guild));
             }
             
-            PacketSender.sendPacket(players, o);
+            PacketSender.sendPacket(players, value);
         } catch (Exception e) {
             e.printStackTrace();
         }

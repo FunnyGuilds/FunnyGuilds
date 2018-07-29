@@ -25,9 +25,8 @@ public class DeserializationUtils {
         guild.setTag(Settings.getConfig().guildTagKeepCase ? (String) values[2] : (Settings.getConfig().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase()));
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
-        guild.setRegion((String) values[5]);
+        guild.setRegion((Region) values[5]);
         guild.setMembers((List<User>) values[6]);
-        guild.setRegions((List<String>) values[7]);
         guild.setAllies((List<Guild>) values[8]);
         guild.setEnemies((List<Guild>) values[9]);
         guild.setBorn((long) values[10]);

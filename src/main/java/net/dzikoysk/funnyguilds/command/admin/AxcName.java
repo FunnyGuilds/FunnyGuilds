@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Manager;
 import net.dzikoysk.funnyguilds.data.Messages;
@@ -56,7 +55,8 @@ public class AxcName implements Executor {
         PluginConfig.DataType dataType = Settings.getConfig().dataType;
 
         if (config.regionsEnabled) {
-            Region region = RegionUtils.get(guild.getRegion());
+            Region region = guild.getRegion();
+
             if (dataType.flat) {
                 Flat.getRegionFile(region).delete();
             }

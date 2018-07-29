@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable.impl;
 
+import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 
@@ -14,7 +15,6 @@ public final class GuildDependentTablistVariable implements TablistVariable {
     public GuildDependentTablistVariable(String name, Function<User, String> whenInGuild, Function<User, String> whenNotInGuild) {
         this(new String[]{ name }, whenInGuild, whenNotInGuild);
     }
-
 
     public GuildDependentTablistVariable(String[] names, Function<User, String> whenInGuild, Function<User, String> whenNotInGuild) {
         this.names = names.clone();
@@ -34,6 +34,10 @@ public final class GuildDependentTablistVariable implements TablistVariable {
         } else {
             return this.whenNotInGuild.apply(user);
         }
+    }
+
+    public static GuildDependentTablistVariable ofGuild(String name, Function<Guild, String> whenInGuild, Function<User, String> whenNotInGuild) {
+        return new GuildDependentTablistVariable(new String[]{ name }, user -> whenInGuild.apply(user.getGuild()), whenNotInGuild);
     }
 
 }

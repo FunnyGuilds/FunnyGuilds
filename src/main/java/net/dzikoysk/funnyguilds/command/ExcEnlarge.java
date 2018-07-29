@@ -43,7 +43,13 @@ public class ExcEnlarge implements Executor {
             return;
         }
 
-        Region region = Region.get(user.getGuild().getRegion());
+        Region region = user.getGuild().getRegion();
+
+        if (region == null) {
+            player.sendMessage(messages.regionsDisabled);
+            return;
+        }
+
         int enlarge = region.getEnlarge();
 
         if (enlarge > config.enlargeItems.size() - 1) {

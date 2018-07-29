@@ -73,18 +73,20 @@ public class FlatGuild {
         }
 
         UUID uuid = UUID.randomUUID();
+
         if (id != null) {
             uuid = UUID.fromString(id);
         }
 
         User owner = User.get(os);
-        
         List<User> deputies = new ArrayList<>();
+
         if (dp != null && !dp.isEmpty()) {
             deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
         }
 
         Location home = null;
+
         if (rg !=null) {
             home = rg.getCenter();
             if (hs != null) {
@@ -99,16 +101,8 @@ public class FlatGuild {
         
         List<User> members = UserUtils.getUsers(ms);
 
-        List<String> regions = new ArrayList<>();
-        if (rgs != null) {
-            for (String n : rgs) {
-                if (RegionUtils.get(n) != null) {
-                    regions.add(n);
-                }
-            }
-        }
-
         List<Guild> allies = new ArrayList<>();
+
         if (als != null) {
             for (String s : als) {
                 Guild guild = GuildUtils.getByName(s);
@@ -120,6 +114,7 @@ public class FlatGuild {
         }
 
         List<Guild> enemies = new ArrayList<>();
+
         if (ens != null) {
             for (String s : ens) {
                 Guild guild = GuildUtils.getByName(s);
@@ -148,9 +143,9 @@ public class FlatGuild {
         values[2] = tag;
         values[3] = owner;
         values[4] = home;
-        values[5] = region;
+        values[5] = RegionUtils.get(region);
         values[6] = members;
-        values[7] = regions;
+        // values[7] = regions;
         values[8] = allies;
         values[9] = enemies;
         values[10] = born;
@@ -191,7 +186,7 @@ public class FlatGuild {
         pc.set("home", LocationUtils.toString(guild.getHome()));
         pc.set("members", UserUtils.getNames(guild.getMembers()));
         pc.set("region", guild.getRegion());
-        pc.set("regions", guild.getRegions());
+        pc.set("regions", null);
         pc.set("allies", GuildUtils.getNames(guild.getAllies()));
         pc.set("enemies", GuildUtils.getNames(guild.getEnemies()));
         pc.set("born", guild.getBorn());

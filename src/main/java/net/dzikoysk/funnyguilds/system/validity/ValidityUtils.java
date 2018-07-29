@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.system.validity;
 
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.Region;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import org.bukkit.Bukkit;
 
@@ -12,13 +11,14 @@ public class ValidityUtils {
         if (guild == null || guild.getName() == null) {
             return;
         }
-        
-        Region region = RegionUtils.get(guild.getRegion());
+
         String message = Messages.getInstance().broadcastValidity
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", guild.getTag())
                 .replace("{GUILD}", guild.getName());
-        
+
+        Region region = guild.getRegion();
+
         if (region != null && region.getCenter() != null) {
             message = message
                     .replace("{X}", Integer.toString(region.getCenter().getBlockX()))

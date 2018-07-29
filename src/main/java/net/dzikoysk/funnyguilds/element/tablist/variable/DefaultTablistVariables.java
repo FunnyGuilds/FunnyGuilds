@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable;
 
+import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
 import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.util.UserUtils;
@@ -85,11 +86,12 @@ public final class DefaultTablistVariables {
         FUNNY_VARIABLES.put("deaths", new SimpleTablistVariable("DEATHS", user -> String.valueOf(user.getRank().getDeaths())));
         FUNNY_VARIABLES.put("kdr", new SimpleTablistVariable("KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR())));
 
-        FUNNY_VARIABLES.put("g-name", new GuildDependentTablistVariable("G-NAME", user -> user.getGuild().getName(), user -> messages.gNameNoValue));
-        FUNNY_VARIABLES.put("g-tag", new GuildDependentTablistVariable("G-TAG", user -> user.getGuild().getTag(), user -> messages.gTagNoValue));
-        FUNNY_VARIABLES.put("g-owner", new GuildDependentTablistVariable("G-OWNER", user -> user.getGuild().getOwner().getName(), user -> messages.gOwnerNoValue));
-        FUNNY_VARIABLES.put("g-deputies", new GuildDependentTablistVariable("G-DEPUTIES", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputiesNoValue : ChatUtils.toString(UserUtils.getNames(user.getGuild().getDeputies()), false), user -> messages.gDeputiesNoValue));
-        FUNNY_VARIABLES.put("g-deputy", new GuildDependentTablistVariable("G-DEPUTY", user -> user.getGuild().getDeputies().isEmpty() ? messages.gDeputyNoValue : user.getGuild().getDeputies().get(RandomUtils.RANDOM_INSTANCE.nextInt(user.getGuild().getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
+        FUNNY_VARIABLES.put("g-name", GuildDependentTablistVariable.ofGuild("G-NAME", Guild::getName, user -> messages.gNameNoValue));
+        FUNNY_VARIABLES.put("g-tag", GuildDependentTablistVariable.ofGuild("G-TAG", Guild::getTag, user -> messages.gTagNoValue));
+        FUNNY_VARIABLES.put("g-owner", GuildDependentTablistVariable.ofGuild("G-OWNER", guild -> guild.getOwner().getName(), user -> messages.gOwnerNoValue));
+        FUNNY_VARIABLES.put("g-deputies", GuildDependentTablistVariable.ofGuild("G-DEPUTIES", guild -> guild.getDeputies().isEmpty() ? messages.gDeputiesNoValue : ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false), user -> messages.gDeputiesNoValue));
+        FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY", guild -> guild.getDeputies().isEmpty() ? messages.gDeputyNoValue : guild.getDeputies().get(RandomUtils.RANDOM_INSTANCE.nextInt(guild.getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
+
         FUNNY_VARIABLES.put("g-lives", new GuildDependentTablistVariable("G-LIVES", user -> String.valueOf(user.getGuild().getLives()), user -> "0"));
         FUNNY_VARIABLES.put("g-allies", new GuildDependentTablistVariable("G-ALLIES", user -> String.valueOf(user.getGuild().getAllies().size()), user -> "0"));
         FUNNY_VARIABLES.put("g-points-format", new GuildDependentTablistVariable("G-POINTS-FORMAT", user -> IntegerRange.inRange(user.getGuild().getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())), user -> IntegerRange.inRange(0, config.pointsFormat, "POINTS").replace("{POINTS}", "0")));
@@ -102,13 +104,15 @@ public final class DefaultTablistVariables {
 
         FUNNY_VARIABLES.put("g-position", new GuildDependentTablistVariable("G-POSITION", user -> user.getGuild().getMembers().size() >= Settings.getConfig().minMembersToInclude ? String.valueOf(user.getGuild().getRank().getPosition()) : messages.minMembersToIncludeNoValue, user -> messages.minMembersToIncludeNoValue));
         FUNNY_VARIABLES.put("g-validity", new GuildDependentTablistVariable("G-VALIDITY", user -> Settings.getConfig().dateFormat.format(user.getGuild().getValidityDate()), user -> messages.gValidityNoValue));
-        FUNNY_VARIABLES.put("g-region-size", new GuildDependentTablistVariable("G-REGION-SIZE", user -> Settings.getConfig().regionsEnabled ? String.valueOf(user.getGuild().getRegionData().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
+        FUNNY_VARIABLES.put("g-region-size", new GuildDependentTablistVariable("G-REGION-SIZE", user -> Settings.getConfig().regionsEnabled ? String.valueOf(user.getGuild().getRegion().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
     }
     
     private static List<String> getWorldGuardRegionNames(User user) {
         Location location = user.getPlayer().getLocation();
+
         if (location != null) {
             List<String> regionNames = WorldGuardHook.getRegionNames(location);
+
             if (regionNames != null && !regionNames.isEmpty()) {
                 return regionNames;
             }

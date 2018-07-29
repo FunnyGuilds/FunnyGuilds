@@ -260,8 +260,7 @@ public class ExcCreate implements Executor {
         
         if (config.regionsEnabled) {
             Region region = new Region(guild, guildLocation, config.regionSize);
-            guild.setRegion(region.getName());
-            guild.addRegion(region.getName());
+            guild.setRegion(region);
 
             if (config.pasteSchematicOnCreation) {
                 if (!SchematicHelper.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir)) {

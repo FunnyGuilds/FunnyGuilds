@@ -77,7 +77,8 @@ public class AxcMove implements Executor {
             return;
         }
         
-        Region region = RegionUtils.get(guild.getRegion());
+        Region region = guild.getRegion();
+
         if (region == null) {
             region = new Region(guild, location, config.regionSize);
         } else {

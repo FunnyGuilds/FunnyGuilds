@@ -39,7 +39,7 @@ public class GuildUtils {
         Manager.getInstance().stop();
 
         if (config.regionsEnabled) {
-            Region region = RegionUtils.get(guild.getRegion());
+            Region region = guild.getRegion();
 
             if (region != null) {
                 if (config.createEntityType != null) {
@@ -56,15 +56,7 @@ public class GuildUtils {
                 }
             }
 
-            for (String name : guild.getRegions()) {
-                Region r = RegionUtils.get(name);
-
-                if (r != null) {
-                    RegionUtils.delete(r);
-                }
-            }
-
-            RegionUtils.delete(Region.get(guild.getRegion()));
+            RegionUtils.delete(guild.getRegion());
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
