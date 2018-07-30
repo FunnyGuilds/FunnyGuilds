@@ -29,10 +29,10 @@ public final class NotificationUtil {
         PACKET_PLAY_OUT_CHAT_CLASS = Reflections.getNMSClass("PacketPlayOutChat");
         TITLE_ACTION_CLASS = "v1_8_R1".equals(Reflections.SERVER_VERSION) ? Reflections.getNMSClass("EnumTitleAction") : Reflections.getNMSClass("PacketPlayOutTitle$EnumTitleAction");
 
-        if ("v1_12_R1".equals(Reflections.SERVER_VERSION)) {
-            CHAT_MESSAGE_TYPE_CLASS = Reflections.getNMSClass("ChatMessageType");
-        } else {
+        if (Reflections.USE_PRE_12_METHODS) {
             CHAT_MESSAGE_TYPE_CLASS = null;
+        } else {
+            CHAT_MESSAGE_TYPE_CLASS = Reflections.getNMSClass("ChatMessageType");
         }
         
         CREATE_BASE_COMPONENT_NMS = Reflections.getMethod(Reflections.getNMSClass("IChatBaseComponent$ChatSerializer"), "a", String.class);

@@ -17,6 +17,7 @@ public final class Reflections {
     
     public static final String SERVER_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     public static final boolean USE_PRE_13_METHODS = Integer.parseInt(SERVER_VERSION.split("_")[1]) < 13;
+    public static final boolean USE_PRE_12_METHODS = Integer.parseInt(SERVER_VERSION.split("_")[1]) < 12;
     
     private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
     private static final Map<String, Field> FIELD_CACHE = new HashMap<>();
