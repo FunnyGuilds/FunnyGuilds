@@ -153,7 +153,7 @@ public class NotificationBar {
 
                 Reflections.getMethod(EntityEnderDragon, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
                 Reflections.getMethod(EntityEnderDragon, "setInvisible", boolean.class).invoke(dragon, visible);
-                Reflections.getMethod(EntityEnderDragon, "setCustomName", String.class).invoke(dragon, name);
+                Reflections.getMethod(EntityEnderDragon, "setCustomName").invoke(dragon, name);
                 Reflections.getMethod(EntityEnderDragon, "setHealth", float.class).invoke(dragon, health);
 
                 Reflections.getField(Entity, "motX").set(dragon, xvel);
