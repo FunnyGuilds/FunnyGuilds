@@ -144,26 +144,26 @@ public class NotificationBar {
         }
 
         public Object getSpawnPacket() {
-            Class<?> Entity = Reflections.getNMSClass("Entity");
-            Class<?> EntityLiving = Reflections.getNMSClass("EntityLiving");
-            Class<?> EntityEnderDragon = Reflections.getNMSClass("EntityEnderDragon");
+            Class<?> entityClass = Reflections.getNMSClass("Entity");
+            Class<?> entityLivingClass = Reflections.getNMSClass("EntityLiving");
+            Class<?> entityEnderDragonClass = Reflections.getNMSClass("EntityEnderDragon");
 
             try {
-                dragon = EntityEnderDragon.getConstructor(Reflections.getNMSClass("World")).newInstance(world);
+                dragon = entityEnderDragonClass.getConstructor(Reflections.getNMSClass("World")).newInstance(world);
 
-                Reflections.getMethod(EntityEnderDragon, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
-                Reflections.getMethod(EntityEnderDragon, "setInvisible", boolean.class).invoke(dragon, visible);
-                Reflections.getMethod(EntityEnderDragon, "setCustomName", String.class).invoke(dragon, name);
-                Reflections.getMethod(EntityEnderDragon, "setHealth", float.class).invoke(dragon, health);
+                Reflections.getMethod(entityEnderDragonClass, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
+                Reflections.getMethod(entityEnderDragonClass, "setInvisible", boolean.class).invoke(dragon, visible);
+                Reflections.getMethod(entityEnderDragonClass, "setCustomName").invoke(dragon, name);
+                Reflections.getMethod(entityEnderDragonClass, "setHealth", float.class).invoke(dragon, health);
 
-                Reflections.getField(Entity, "motX").set(dragon, xvel);
-                Reflections.getField(Entity, "motY").set(dragon, yvel);
-                Reflections.getField(Entity, "motZ").set(dragon, zvel);
+                Reflections.getField(entityClass, "motX").set(dragon, xvel);
+                Reflections.getField(entityClass, "motY").set(dragon, yvel);
+                Reflections.getField(entityClass, "motZ").set(dragon, zvel);
 
-                this.id = (Integer) Reflections.getMethod(EntityEnderDragon, "getId").invoke(dragon);
+                this.id = (Integer) Reflections.getMethod(entityEnderDragonClass, "getId").invoke(dragon);
 
                 Class<?> packetClass = Reflections.getNMSClass("PacketPlayOutSpawnEntityLiving");
-                return packetClass.getConstructor(new Class<?>[]{EntityLiving}).newInstance(dragon);
+                return packetClass.getConstructor(new Class<?>[]{entityLivingClass}).newInstance(dragon);
             } catch (Exception e) {
                 if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
@@ -187,12 +187,12 @@ public class NotificationBar {
         }
 
         public Object getWatcher() {
-            Class<?> Entity = Reflections.getNMSClass("Entity");
-            Class<?> DataWatcher = Reflections.getNMSClass("DataWatcher");
+            Class<?> entityClass = Reflections.getNMSClass("Entity");
+            Class<?> dataWatcherClass = Reflections.getNMSClass("DataWatcher");
 
             try {
-                Object watcher = DataWatcher.getConstructor(new Class<?>[]{Entity}).newInstance(dragon);
-                Method a = Reflections.getMethod(DataWatcher, "a", int.class, Object.class);
+                Object watcher = dataWatcherClass.getConstructor(new Class<?>[]{entityClass}).newInstance(dragon);
+                Method a = Reflections.getMethod(dataWatcherClass, "a", int.class, Object.class);
 
                 a.invoke(watcher, 0, visible ? (byte) 0 : (byte) 0x20);
                 a.invoke(watcher, 6, health);
