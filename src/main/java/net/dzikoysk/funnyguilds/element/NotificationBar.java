@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.element;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -147,13 +148,16 @@ public class NotificationBar {
             Class<?> Entity = Reflections.getNMSClass("Entity");
             Class<?> EntityLiving = Reflections.getNMSClass("EntityLiving");
             Class<?> EntityEnderDragon = Reflections.getNMSClass("EntityEnderDragon");
-
+            
             try {
                 dragon = EntityEnderDragon.getConstructor(Reflections.getNMSClass("World")).newInstance(world);
 
                 Reflections.getMethod(EntityEnderDragon, "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(dragon, x, y, z, pitch, yaw);
                 Reflections.getMethod(EntityEnderDragon, "setInvisible", boolean.class).invoke(dragon, visible);
-                Reflections.getMethod(EntityEnderDragon, "setCustomName").invoke(dragon, name);
+                
+                Reflections.getMethod(EntityEnderDragon, "setCustomName", Reflections.USE_PRE_13_METHODS ? String.class : Reflections.getNMSClass("IChatBaseComponent"))
+                .invoke(dragon, Reflections.USE_PRE_13_METHODS ? name : NotificationUtil.createBaseComponent(name, false));
+                
                 Reflections.getMethod(EntityEnderDragon, "setHealth", float.class).invoke(dragon, health);
 
                 Reflections.getField(Entity, "motX").set(dragon, xvel);
