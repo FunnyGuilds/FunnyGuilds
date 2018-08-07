@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildUnbanEvent;
@@ -45,13 +45,13 @@ public class AxcUnban implements Executor {
 
         BanUtils.unban(guild);
 
-        MessageTranslator translator = new MessageTranslator()
+        MessageFormatter formatter = new MessageFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getName())
                 .register("{ADMIN}", sender.getName());
 
-        sender.sendMessage(translator.translate(messages.adminGuildUnban));
-        Bukkit.broadcastMessage(translator.translate(messages.broadcastUnban));
+        sender.sendMessage(formatter.format(messages.adminGuildUnban));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastUnban));
     }
 
 }

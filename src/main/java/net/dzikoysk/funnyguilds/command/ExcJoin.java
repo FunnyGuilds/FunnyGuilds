@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberAcceptInviteEvent;
@@ -95,17 +95,17 @@ public class ExcJoin implements Executor {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(user.getName()));
 
-        MessageTranslator translator = new MessageTranslator()
+        MessageFormatter formatter = new MessageFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(translator.translate(messages.joinToMember));
-        Bukkit.broadcastMessage(translator.translate(messages.broadcastJoin));
+        player.sendMessage(formatter.format(messages.joinToMember));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
 
         Player owner = guild.getOwner().getPlayer();
         if (owner != null) {
-            owner.sendMessage(translator.translate(messages.joinToOwner));
+            owner.sendMessage(formatter.format(messages.joinToOwner));
         }
     }
 

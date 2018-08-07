@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePl
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaveEvent;
@@ -47,13 +47,13 @@ public class ExcLeave implements Executor {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()), new PrefixGlobalUpdatePlayer(player));
 
-        MessageTranslator translator = new MessageTranslator()
+        MessageFormatter formatter = new MessageFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        player.sendMessage(translator.translate(messages.leaveToUser));
-        Bukkit.broadcastMessage(translator.translate(messages.broadcastLeave));
+        player.sendMessage(formatter.format(messages.leaveToUser));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastLeave));
     }
 
 }

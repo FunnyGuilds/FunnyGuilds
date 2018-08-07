@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
@@ -69,7 +69,7 @@ public class AxcAdd implements Executor {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(user.getName()));
 
-        MessageTranslator translator = new MessageTranslator()
+        MessageFormatter formatter = new MessageFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
@@ -78,14 +78,14 @@ public class AxcAdd implements Executor {
         Player owner = guild.getOwner().getPlayer();
 
         if (player != null) {
-            player.sendMessage(translator.translate(messages.joinToMember));
+            player.sendMessage(formatter.format(messages.joinToMember));
         }
 
         if (owner != null) {
-            owner.sendMessage(translator.translate(messages.joinToOwner));
+            owner.sendMessage(formatter.format(messages.joinToOwner));
         }
 
-        Bukkit.broadcastMessage(translator.translate(messages.broadcastJoin));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
     }
 
 }

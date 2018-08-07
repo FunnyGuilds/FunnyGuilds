@@ -8,13 +8,13 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 
 public class ExcConfirm implements Executor {
 
@@ -50,17 +50,16 @@ public class ExcConfirm implements Executor {
         if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.USER, user, guild))) {
             return;
         }
-        
-        
+
         GuildUtils.deleteGuild(user.getGuild());
 
-        MessageTranslator translator = new MessageTranslator()
+        MessageFormatter formatter = new MessageFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(translator.translate(messages.deleteSuccessful));
-        Bukkit.getServer().broadcastMessage(translator.translate(messages.broadcastDelete));
+        player.sendMessage(formatter.format(messages.deleteSuccessful));
+        Bukkit.getServer().broadcastMessage(formatter.format(messages.broadcastDelete));
     }
 
 }

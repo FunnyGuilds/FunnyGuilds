@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildBanEvent;
@@ -16,6 +15,7 @@ import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 
 public class AxcBan implements Executor {
 
@@ -69,14 +69,14 @@ public class AxcBan implements Executor {
         
         BanUtils.ban(guild, time, reason);
 
-        MessageTranslator translator = new MessageTranslator()
+        MessageFormatter formatter = new MessageFormatter()
                 .register("{GUILD", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{TIME}", args[1])
                 .register("{REASON}", ChatUtils.colored(reason));
 
-        sender.sendMessage(translator.translate(messages.adminGuildBan));
-        Bukkit.broadcastMessage(translator.translate(messages.broadcastBan));
+        sender.sendMessage(formatter.format(messages.adminGuildBan));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastBan));
     }
 
 }

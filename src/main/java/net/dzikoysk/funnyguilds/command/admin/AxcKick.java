@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePl
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
@@ -60,18 +60,18 @@ public class AxcKick implements Executor {
         guild.removeMember(user);
         user.removeGuild();
 
-        MessageTranslator translator = new MessageTranslator()
+        MessageFormatter formatter = new MessageFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
         if (player != null) {
             concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
-            player.sendMessage(translator.translate(messages.kickToPlayer));
+            player.sendMessage(formatter.format(messages.kickToPlayer));
         }
 
-        sender.sendMessage(translator.translate(messages.kickToOwner));
-        Bukkit.broadcastMessage(translator.translate(messages.broadcastKick));
+        sender.sendMessage(formatter.format(messages.kickToOwner));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
     }
 
 }

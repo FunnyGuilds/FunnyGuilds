@@ -16,7 +16,7 @@ import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.data.util.MessageTranslator;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 import net.dzikoysk.funnyguilds.element.schematic.SchematicHelper;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -305,12 +305,12 @@ public class ExcCreate implements Executor {
                 new PrefixGlobalAddPlayerRequest(user.getName())
         );
 
-        MessageTranslator translator = new MessageTranslator()
+        MessageFormatter formatter = new MessageFormatter()
                 .register("{GUILD}", name)
                 .register("{TAG}", tag)
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(translator.translate(messages.createGuild));
-        Bukkit.broadcastMessage(translator.translate(messages.broadcastCreate));
+        player.sendMessage(formatter.format(messages.createGuild));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastCreate));
     }
 }
