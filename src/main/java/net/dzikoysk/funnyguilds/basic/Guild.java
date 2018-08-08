@@ -34,6 +34,7 @@ public class Guild implements Basic {
     private int lives;
     private long build;
     private boolean changes;
+    private long additionalProtection;
 
     private Guild(UUID uuid) {
         this.born = System.currentTimeMillis();
@@ -175,11 +176,19 @@ public class Guild implements Basic {
     }
 
     public boolean canBeAttacked() {
-        return this.getProtectionEndTime() < System.currentTimeMillis();
+        return this.getProtectionEndTime() < System.currentTimeMillis() && this.additionalProtection < System.currentTimeMillis();
+    }
+
+    public void setAdditionalProtection(long timestamp) {
+        this.additionalProtection = timestamp;
     }
     
     public long getProtectionEndTime() {
         return this.attacked == this.born ? this.attacked + Settings.getConfig().warProtection : this.attacked + Settings.getConfig().warWait;
+    }
+
+    public long getAdditionalProtectionEndTime() {
+        return this.additionalProtection;
     }
 
     public boolean isSomeoneInRegion() {

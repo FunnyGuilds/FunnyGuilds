@@ -196,7 +196,7 @@ public class MessagesConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
     
-    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}, {GUILD-ADDITIONAL-PROTECTION}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
@@ -253,6 +253,7 @@ public class MessagesConfig {
     public String generalUserHasGuild = "&cTen gracz ma juz gildie!";
     public String generalNoGuildFound = "&cTaka gildia nie istnieje!";
     public String generalNotPlayedBefore = "&cTen gracz nigdy nie byl na serwerze!";
+
     @CfgComment("Dostepne zmienne: {TAG}")
     public String generalGuildNotExists = "&7Gildia o tagu &c{TAG} &7nie istnieje!";
     public String generalIsNotMember = "&cTen gracz nie jest czlonkiem twojej gildii!";
@@ -517,5 +518,8 @@ public class MessagesConfig {
     public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
     public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
     public String adminAlreadyDeputy = "&cTen gracz jest juz zastepca gildii!";
-	
+
+    public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
+    public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data!";
+    public String adminAdditionalProtectionSetSuccessfully = "&aPomyslnie nadano dodatkowa ochrone dla gildii &7{TAG} &ado &7{DATE}";
 }

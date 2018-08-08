@@ -1333,6 +1333,7 @@ public class PluginConfig {
             public String enabled = "ga enabled";
             public String leader = "ga lider";
             public String deputy = "ga zastepca";
+            public String protection = "ga ochrona";
         }
     }
 
