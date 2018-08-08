@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.Yamler;
 

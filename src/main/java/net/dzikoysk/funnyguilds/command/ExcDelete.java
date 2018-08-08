@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.command;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;

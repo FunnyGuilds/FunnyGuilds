@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
@@ -12,13 +13,13 @@ public class AxcSpy implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessagesConfig messages = Messages.getInstance();
-        User user = User.get((Player) sender);
+        UserCache cache = User.get((Player) sender).getCache();
 
-        if (user.isSpy()) {
-            user.setSpy(false);
+        if (cache.isSpy()) {
+            cache.setSpy(false);
             sender.sendMessage(messages.adminStopSpy);
         } else {
-            user.setSpy(true);
+            cache.setSpy(true);
             sender.sendMessage(messages.adminStartSpy);
         }
     }

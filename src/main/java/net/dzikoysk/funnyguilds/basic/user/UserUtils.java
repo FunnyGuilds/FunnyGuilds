@@ -1,15 +1,10 @@
-package net.dzikoysk.funnyguilds.basic.util;
+package net.dzikoysk.funnyguilds.basic.user;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 

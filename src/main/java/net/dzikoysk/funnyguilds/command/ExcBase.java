@@ -1,8 +1,9 @@
 package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -45,7 +46,7 @@ public class ExcBase implements Executor {
 
         Guild guild = user.getGuild();
 
-        if (user.getTeleportation() != null) {
+        if (user.getCache().getTeleportation() != null) {
             player.sendMessage(messages.baseIsTeleportation);
             return;
         }
@@ -73,28 +74,29 @@ public class ExcBase implements Executor {
 
         int time = config.baseDelay;
         Location before = player.getLocation();
-        AtomicInteger i = new AtomicInteger(1);
+        AtomicInteger timeCounter = new AtomicInteger(1);
+        UserCache cache = user.getCache();
 
-        user.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
+        cache.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
             if (!player.isOnline()) {
-                user.getTeleportation().cancel();
-                user.setTeleportation(null);
+                cache.getTeleportation().cancel();
+                cache.setTeleportation(null);
                 return;
             }
             
             if (!LocationUtils.equals(player.getLocation(), before)) {
-                user.getTeleportation().cancel();
+                cache.getTeleportation().cancel();
                 player.sendMessage(messages.baseMove);
-                user.setTeleportation(null);
+                cache.setTeleportation(null);
                 player.getInventory().addItem(items);
                 return;
             }
 
-            if (i.getAndIncrement() > time) {
-                user.getTeleportation().cancel();
+            if (timeCounter.getAndIncrement() > time) {
+                cache.getTeleportation().cancel();
                 player.sendMessage(messages.baseTeleport);
                 player.teleport(guild.getHome());
-                user.setTeleportation(null);
+                cache.setTeleportation(null);
             }
         }, 0L, 20L));
 

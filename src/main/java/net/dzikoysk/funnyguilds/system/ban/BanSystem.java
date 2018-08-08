@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.system.ban;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 
 public class BanSystem {
 

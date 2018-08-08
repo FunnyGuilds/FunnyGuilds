@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.util.reflect;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.Region;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

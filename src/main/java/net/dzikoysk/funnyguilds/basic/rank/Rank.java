@@ -1,6 +1,9 @@
-package net.dzikoysk.funnyguilds.basic;
+package net.dzikoysk.funnyguilds.basic.rank;
 
-import net.dzikoysk.funnyguilds.basic.util.BasicType;
+import net.dzikoysk.funnyguilds.basic.Basic;
+import net.dzikoysk.funnyguilds.basic.BasicType;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Rank implements Comparable<Rank> {

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable.impl;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 

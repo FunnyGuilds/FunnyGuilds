@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.event.guild.member;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
 
 public class GuildMemberLeaderEvent extends GuildMemberEvent {
 

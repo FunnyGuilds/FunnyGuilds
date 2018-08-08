@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 
 import java.util.ArrayList;

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.element;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,7 +23,7 @@ public class Dummy {
             return;
         }
         
-        Objective objective = this.user.getScoreboard().getObjective(name);
+        Objective objective = this.user.getCache().getScoreboard().getObjective(name);
         if (objective == null || !objective.getName().equals(name)) {
             initialize();
         } else {
@@ -36,7 +36,7 @@ public class Dummy {
             return;
         }
         
-        Scoreboard scoreboard = this.user.getScoreboard();
+        Scoreboard scoreboard = this.user.getCache().getScoreboard();
         Objective objective = scoreboard.getObjective(name);
         
         if (objective == null || !objective.getName().equals(name)) {
@@ -50,4 +50,5 @@ public class Dummy {
             objective.getScore(user.getName()).setScore(user.getRank().getPoints());
         }
     }
+
 }

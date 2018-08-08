@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.GuildRegex;
-import net.dzikoysk.funnyguilds.basic.util.UserUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.guild.GuildRegex;
+import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.bukkit.Bukkit;

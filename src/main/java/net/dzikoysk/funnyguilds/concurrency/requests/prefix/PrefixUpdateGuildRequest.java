@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.prefix;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 
 public class PrefixUpdateGuildRequest extends DefaultConcurrencyRequest {
@@ -15,8 +15,8 @@ public class PrefixUpdateGuildRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() throws Exception {
-        user.getIndividualPrefix().addGuild(guild);
+    public void execute() {
+        user.getCache().getIndividualPrefix().addGuild(guild);
     }
 
 }

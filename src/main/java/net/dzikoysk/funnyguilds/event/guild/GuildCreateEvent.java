@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.event.guild;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.Location;
 
 public class GuildCreateEvent extends GuildEvent {

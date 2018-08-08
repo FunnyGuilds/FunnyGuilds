@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.Region;
-import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
@@ -178,30 +178,28 @@ public class ExcCreate implements Executor {
         int requiredExperience = player.hasPermission("funnyguilds.vip.items") ? config.requiredExperienceVip : config.requiredExperience;
         double requiredMoney = player.hasPermission("funnyguilds.vip.items") ? config.requiredMoneyVip : config.requiredMoney;
 
-        if (!user.getBypass()) {
-            if (player.getTotalExperience() < requiredExperience) {
-                String msg = messages.createExperience;
-                msg = StringUtils.replace(msg, "{EXP}", String.valueOf(requiredExperience));
-                player.sendMessage(msg);
-                return;
+        if (player.getTotalExperience() < requiredExperience) {
+            String msg = messages.createExperience;
+            msg = StringUtils.replace(msg, "{EXP}", String.valueOf(requiredExperience));
+            player.sendMessage(msg);
+            return;
+        }
+
+        if (VaultHook.isHooked() && !VaultHook.canAfford(player, requiredMoney)) {
+            String notEnoughMoneyMessage = messages.createMoney;
+            notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
+            player.sendMessage(notEnoughMoneyMessage);
+            return;
+        }
+
+        for (ItemStack requiredItem : requiredItems) {
+            if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
+                continue;
             }
 
-            if (VaultHook.isHooked() && !VaultHook.canAfford(player, requiredMoney)) {
-                String notEnoughMoneyMessage = messages.createMoney;
-                notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
-                player.sendMessage(notEnoughMoneyMessage);
-                return;
-            }
-
-            for (ItemStack requiredItem : requiredItems) {
-                if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
-                    continue;
-                }
-                
-                String msg = ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem);
-                player.sendMessage(msg);
-                return;
-            }
+            String msg = ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem);
+            player.sendMessage(msg);
+            return;
         }
 
         if (config.regionsEnabled) {
@@ -235,15 +233,12 @@ public class ExcCreate implements Executor {
         if (!SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, name, tag, guildLocation))) {
             return;
         }
-        
-        if (user.getBypass()) {
-            user.setBypass(false);
-        } else {
-            player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
-            player.setTotalExperience(player.getTotalExperience() - requiredExperience);
-            if (VaultHook.isHooked()) {
-                VaultHook.withdrawFromPlayerBank(player, requiredMoney);
-            }
+
+        player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
+        player.setTotalExperience(player.getTotalExperience() - requiredExperience);
+
+        if (VaultHook.isHooked()) {
+            VaultHook.withdrawFromPlayerBank(player, requiredMoney);
         }
 
         Manager.getInstance().stop();
@@ -324,4 +319,5 @@ public class ExcCreate implements Executor {
             }
         }
     }
+
 }

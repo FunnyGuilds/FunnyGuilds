@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.element.tablist;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
@@ -16,9 +16,9 @@ import net.dzikoysk.funnyguilds.util.commons.MapUtil;
 import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -36,27 +36,31 @@ public abstract class AbstractTablist {
     protected final Map<Integer, String> tablistPattern;
     protected final String header;
     protected final String footer;
-    protected final UUID player;
+    protected final User user;
     protected final int cells;
     protected final int ping;
     protected boolean firstPacket = true;
 
-    public AbstractTablist(Map<Integer, String> tablistPattern, String header, String footer, int ping, UUID player) {
+    public AbstractTablist(Map<Integer, String> tablistPattern, String header, String footer, int ping, User user) {
         this.tablistPattern = tablistPattern;
         this.header = header;
         this.footer = footer;
         this.ping = ping;
-        this.player = player;
+        this.user = user;
 
         PluginConfig config = Settings.getConfig();
+
         if (!config.playerlistFillCells) {
             Entry<Integer, String> entry = MapUtil.findTheMaximumEntryByKey(config.playerList);
+
             if (entry != null) {
                 this.cells = entry.getKey();
-            } else {
+            }
+            else {
                 this.cells = DEFAULT_CELLS_AMOUNT;
             }
-        } else {
+        }
+        else {
             this.cells = DEFAULT_CELLS_AMOUNT;
         }
 
@@ -69,33 +73,33 @@ public abstract class AbstractTablist {
     }
 
     public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, Player player) {
-        return createTablist(pattern, header, footer, ping, player.getUniqueId());
+        return createTablist(pattern, header, footer, ping, User.get(player));
     }
     
-    public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, UUID player) {
-        AbstractTablist tablist = TABLIST_CACHE.get(player);
+    public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, User user) {
+        AbstractTablist tablist = TABLIST_CACHE.get(user.getUUID());
         if (tablist != null) {
             return tablist;
         }
 
         switch (Reflections.SERVER_VERSION) {
             case "v1_8_R1":
-                tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, player);
-                TABLIST_CACHE.put(player, tablist);
+                tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, user);
+                TABLIST_CACHE.put(user.getUUID(), tablist);
                 return tablist;
             case "v1_8_R2":
             case "v1_8_R3":
             case "v1_9_R1":
             case "v1_9_R2":
-                tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, player);
-                TABLIST_CACHE.put(player, tablist);
+                tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, user);
+                TABLIST_CACHE.put(user.getUUID(), tablist);
                 return tablist;
             case "v1_10_R1":
             case "v1_11_R1":
             case "v1_12_R1":
             case "v1_13_R1":
-                tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, player);
-                TABLIST_CACHE.put(player, tablist);
+                tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, user);
+                TABLIST_CACHE.put(user.getUUID(), tablist);
                 return tablist;
             default:
                 throw new RuntimeException("Could not find tablist for given version.");
@@ -122,7 +126,8 @@ public abstract class AbstractTablist {
     public abstract void send();
 
     protected void sendPackets(List<Object> packets) {
-        Player target = Bukkit.getPlayer(player);
+        Player target = user.getPlayer();
+
         if (target == null) {
             return;
         }
@@ -136,7 +141,6 @@ public abstract class AbstractTablist {
 
     protected String putVars(String cell) {
         String formatted = cell;
-        User user = User.get(player);
 
         if (user == null) {
             throw new IllegalStateException("Given player is null!");

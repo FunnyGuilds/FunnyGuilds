@@ -1,6 +1,11 @@
-package net.dzikoysk.funnyguilds.basic;
+package net.dzikoysk.funnyguilds.basic.guild;
 
-import net.dzikoysk.funnyguilds.basic.util.*;
+import net.dzikoysk.funnyguilds.basic.Basic;
+import net.dzikoysk.funnyguilds.basic.BasicType;
+import net.dzikoysk.funnyguilds.basic.rank.Rank;
+import net.dzikoysk.funnyguilds.basic.rank.RankManager;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

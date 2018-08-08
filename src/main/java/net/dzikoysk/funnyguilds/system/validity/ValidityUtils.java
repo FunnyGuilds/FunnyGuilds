@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.system.validity;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.Region;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.data.Messages;
 import org.bukkit.Bukkit;
 

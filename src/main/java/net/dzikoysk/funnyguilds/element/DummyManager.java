@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.element;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -14,7 +14,7 @@ public class DummyManager {
 
     public static void updateScore(User user) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            User.get(player).getDummy().updateScore(user);
+            User.get(player).getCache().getDummy().updateScore(user);
         }
     }
 }

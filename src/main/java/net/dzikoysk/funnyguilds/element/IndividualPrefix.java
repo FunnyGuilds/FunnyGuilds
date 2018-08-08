@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.element;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import org.bukkit.scoreboard.Scoreboard;
@@ -17,7 +17,7 @@ public class IndividualPrefix {
     public IndividualPrefix(User user) {
         this.user = user;
         this.initialize();
-        user.setIndividualPrefix(this);
+        user.getCache().setPrefix(this);
     }
 
     protected void addPlayer(String player) {
@@ -30,7 +30,7 @@ public class IndividualPrefix {
             return;
         }
         
-        Scoreboard scoreboard = this.getUser().getScoreboard();
+        Scoreboard scoreboard = getScoreboard();
         Team team = scoreboard.getEntryTeam(player);
         
         if (team != null) {
@@ -57,8 +57,9 @@ public class IndividualPrefix {
             return;
         }
         
-        Scoreboard scoreboard = getUser().getScoreboard();
+        Scoreboard scoreboard = getScoreboard();
         Guild guild = getUser().getGuild();
+
         if (guild != null) {
             if (guild.equals(to)) {
                 initialize();
@@ -66,6 +67,7 @@ public class IndividualPrefix {
             }
             
             Team team = scoreboard.getTeam(to.getTag());
+
             if (team == null) {
                 team = scoreboard.registerNewTeam(to.getTag());
             }
@@ -77,6 +79,7 @@ public class IndividualPrefix {
             }
             
             String prefix = Settings.getConfig().prefixOther;
+
             if (guild.getAllies().contains(to)) {
                 prefix = Settings.getConfig().prefixAllies;
             }
@@ -86,8 +89,10 @@ public class IndividualPrefix {
             }
             
             team.setPrefix(replace(prefix, "{TAG}", to.getTag()));
-        } else {
+        }
+        else {
             Team team = scoreboard.getTeam(to.getTag());
+
             if (team == null) {
                 team = scoreboard.registerNewTeam(to.getTag());
             }
@@ -107,7 +112,7 @@ public class IndividualPrefix {
             return;
         }
         
-        Team team = getUser().getScoreboard().getEntryTeam(player);
+        Team team = getScoreboard().getEntryTeam(player);
         if (team != null) {
             team.removeEntry(player);
             if (team.getName() != null) {
@@ -121,7 +126,8 @@ public class IndividualPrefix {
             return;
         }
         
-        Team team = getUser().getScoreboard().getTeam(guild.getTag());
+        Team team = this.getUser().getCache().getScoreboard().getTeam(guild.getTag());
+
         if (team != null) {
             team.unregister();
         }
@@ -133,7 +139,7 @@ public class IndividualPrefix {
         }
         
         List<Guild> guilds = GuildUtils.getGuilds();
-        Scoreboard scoreboard = getUser().getScoreboard();
+        Scoreboard scoreboard = getScoreboard();
         Guild guild = getUser().getGuild();
         
         if (guild != null) {
@@ -161,12 +167,14 @@ public class IndividualPrefix {
             }
             
             team.setPrefix(replace(our, "{TAG}", guild.getTag()));
+
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {
                     continue;
                 }
                 
                 team = scoreboard.getTeam(one.getTag());
+
                 if (team == null) {
                     team = scoreboard.registerNewTeam(one.getTag());
                 }
@@ -183,20 +191,25 @@ public class IndividualPrefix {
                 
                 if (guild.getAllies().contains(one)) {
                     team.setPrefix(replace(ally, "{TAG}", one.getTag()));
-                } else if (guild.getEnemies().contains(one)) {
+                }
+                else if (guild.getEnemies().contains(one)) {
                     team.setPrefix(replace(enemy, "{TAG}", one.getTag()));
-                } else {
+                }
+                else {
                     team.setPrefix(replace(other, "{TAG}", one.getTag()));
                 }
             }
-        } else {
+        }
+        else {
             String other = Settings.getConfig().prefixOther;
+
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {
                     continue;
                 }
                 
                 Team team = scoreboard.getTeam(one.getTag());
+
                 if (team == null) {
                     team = scoreboard.registerNewTeam(one.getTag());
                 }
@@ -226,11 +239,12 @@ public class IndividualPrefix {
         return s;
     }
 
+    public Scoreboard getScoreboard() {
+        return this.user.getCache().getScoreboard();
+    }
+
     public User getUser() {
         return this.user;
     }
 
-    public Scoreboard getScoreboard() {
-        return this.user.getScoreboard();
-    }
 }

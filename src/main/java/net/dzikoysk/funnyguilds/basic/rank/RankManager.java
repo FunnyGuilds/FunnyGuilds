@@ -1,8 +1,7 @@
-package net.dzikoysk.funnyguilds.basic.util;
+package net.dzikoysk.funnyguilds.basic.rank;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.Rank;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
 
 import java.util.ArrayList;
 import java.util.Collections;

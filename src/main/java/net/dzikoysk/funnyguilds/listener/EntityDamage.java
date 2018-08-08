@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
@@ -26,10 +26,13 @@ public class EntityDamage implements Listener {
         }
 
         Player attacker = null;
+
         if (damager instanceof Player) {
             attacker = (Player) damager;
-        } else if (damager instanceof Projectile) {
+        }
+        else if (damager instanceof Projectile) {
             ProjectileSource shooter = ((Projectile) damager).getShooter();
+
             if (shooter instanceof Player) {
                 attacker = (Player) shooter;
             }
@@ -72,7 +75,7 @@ public class EntityDamage implements Listener {
                 return;
             }
             
-            victimUser.addDamage(attackerUser, event.getDamage());
+            victimUser.getCache().addDamage(attackerUser, event.getDamage());
         }
     }
     

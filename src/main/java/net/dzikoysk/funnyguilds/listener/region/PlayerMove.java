@@ -1,10 +1,11 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.Region;
-import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserCache;
+import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
@@ -48,10 +49,11 @@ public class PlayerMove implements Listener {
             }
 
             User user = User.get(player);
+            UserCache cache = user.getCache();
             Region region = RegionUtils.getAt(to);
             
-            if (region == null && user.getEnter()) {
-                user.setEnter(false);
+            if (region == null && user.getCache().getEnter()) {
+                cache.setEnter(false);
                 region = RegionUtils.getAt(from);
 
                 if (region != null) {
@@ -89,14 +91,14 @@ public class PlayerMove implements Listener {
                                         config.notificationTitleFadeOut));
                     }
                 }
-            } else if (!user.getEnter() && region != null) {
+            } else if (!cache.getEnter() && region != null) {
                 Guild guild = region.getGuild();
 
                 if (guild == null || guild.getName() == null) {
                     return;
                 }
 
-                user.setEnter(true);
+                cache.setEnter(true);
 
                 FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
                     if (config.createEntityType != null) {
@@ -135,7 +137,7 @@ public class PlayerMove implements Listener {
                     return;
                 }
 
-                if (user.getNotificationTime() > 0 && System.currentTimeMillis() < user.getNotificationTime()) {
+                if (cache.getNotificationTime() > 0 && System.currentTimeMillis() < cache.getNotificationTime()) {
                     return;
                 }
 
@@ -177,7 +179,7 @@ public class PlayerMove implements Listener {
                     }
                 }
 
-                user.setNotificationTime(System.currentTimeMillis() + 1000 * config.regionNotificationCooldown);
+                cache.setNotificationTime(System.currentTimeMillis() + 1000 * config.regionNotificationCooldown);
             }
         });
     }

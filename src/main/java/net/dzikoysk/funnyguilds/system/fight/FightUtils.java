@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.system.fight;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 
 import java.util.HashMap;
 import java.util.Map;

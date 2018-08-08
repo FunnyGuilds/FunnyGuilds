@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.dummy;
 
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.element.Dummy;
 
 public class DummyUpdateUserRequest extends DefaultConcurrencyRequest {
 
@@ -13,9 +12,8 @@ public class DummyUpdateUserRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() throws Exception {
-        Dummy dummy = user.getDummy();
-        dummy.updateScore(user);
+    public void execute() {
+        user.getCache().getDummy().updateScore(user);
     }
 
 }

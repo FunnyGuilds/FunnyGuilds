@@ -1,7 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
@@ -43,22 +44,26 @@ public class PlayerDeath implements Listener {
         Player a = event.getEntity().getKiller();
 
         User victim = User.get(v);
+        UserCache victimCache = victim.getCache();
+
         victim.getRank().addDeath();
 
         if (a == null) {
-            victim.clearDamage();
+            victimCache.clearDamage();
             return;
         }
 
         User attacker = User.get(a);
+        UserCache attackerCache = attacker.getCache();
+
         if (victim.equals(attacker)) {
-            victim.clearDamage();
+            victimCache.clearDamage();
             return;
         }
 
         if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
             if (WorldGuardHook.isInNonPointsRegion(v.getLocation()) || WorldGuardHook.isInNonPointsRegion(a.getLocation())) {
-                victim.clearDamage();
+                victimCache.clearDamage();
                 return;
             }
         }
@@ -67,22 +72,22 @@ public class PlayerDeath implements Listener {
         MessagesConfig messages = Messages.getInstance();
         
         if (config.rankFarmingProtect) {
-            if (attacker.getLastVictim() != null && attacker.getLastVictim().equals(victim)) {
-                if (attacker.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
+            if (attackerCache.getLastVictim() != null && attackerCache.getLastVictim().equals(victim)) {
+                if (attackerCache.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     v.sendMessage(messages.rankLastVictimV);
                     a.sendMessage(messages.rankLastVictimA);
                     
-                    victim.clearDamage();
+                    victimCache.clearDamage();
                     event.setDeathMessage(null);
                     
                     return;
                 }
-            } else if (victim.getLastAttacker() != null && victim.getLastAttacker().equals(attacker)) {
-                if (victim.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
+            } else if (victimCache.getLastAttacker() != null && victimCache.getLastAttacker().equals(attacker)) {
+                if (victimCache.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     v.sendMessage(messages.rankLastAttackerV);
                     a.sendMessage(messages.rankLastAttackerA);
                     
-                    victim.clearDamage();
+                    victimCache.clearDamage();
                     event.setDeathMessage(null);
                     
                     return;
@@ -96,8 +101,8 @@ public class PlayerDeath implements Listener {
             if (attackerIP != null && attackerIP.equalsIgnoreCase(v.getAddress().getHostString())) {
                 v.sendMessage(messages.rankIPVictim);
                 a.sendMessage(messages.rankIPAttacker);
-                
-                victim.clearDamage();
+
+                victimCache.clearDamage();
                 event.setDeathMessage(null);
                 
                 return;
@@ -131,14 +136,14 @@ public class PlayerDeath implements Listener {
         List<User> messageReceivers = new ArrayList<>();
         
         if (SimpleEventHandler.handle(attackerEvent) && SimpleEventHandler.handle(victimEvent)) {
-            double attackerDamage = victim.killedBy(attacker);
+            double attackerDamage = victimCache.killedBy(attacker);
             
-            if (config.assistEnable && victim.isAssisted()) {
+            if (config.assistEnable && victimCache.isAssisted()) {
                 double toShare = attackerEvent.getChange() * (1 - config.assistKillerShare);
-                double totalDamage = victim.getTotalDamage() + attackerDamage;
+                double totalDamage = victimCache.getTotalDamage() + attackerDamage;
                 int givenPoints = 0;
 
-                Map<User, Double> damage = MapUtil.sortByValue(victim.getDamage());
+                Map<User, Double> damage = MapUtil.sortByValue(victimCache.getDamage());
 
                 int assists = 0;
 
@@ -178,11 +183,11 @@ public class PlayerDeath implements Listener {
             
             attacker.getRank().addKill();
             attacker.getRank().addPoints(attackerEvent.getChange());
-            attacker.setLastVictim(victim);
+            attackerCache.setLastVictim(victim);
 
             victim.getRank().removePoints(victimEvent.getChange());
-            victim.setLastAttacker(attacker);
-            victim.clearDamage();
+            victimCache.setLastAttacker(attacker);
+            victimCache.clearDamage();
             
             if (!config.broadcastDeathMessage) {
                 messageReceivers.add(attacker);

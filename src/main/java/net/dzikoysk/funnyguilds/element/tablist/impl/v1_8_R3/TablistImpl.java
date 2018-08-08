@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R3;
 
 import com.google.common.collect.Lists;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.reflect.Reflections;
@@ -70,8 +71,8 @@ public class TablistImpl extends AbstractTablist {
 
     private final Object[] profileCache = new Object[80];
 
-    public TablistImpl(final Map<Integer, String> tablistPattern, final String header, final String footer, final int ping, final UUID player) {
-        super(tablistPattern, header, footer, ping, player);
+    public TablistImpl(Map<Integer, String> tablistPattern, String header, String footer, int ping, User user) {
+        super(tablistPattern, header, footer, ping, user);
     }
 
     @Override

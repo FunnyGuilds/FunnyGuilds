@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.basic.util;
+package net.dzikoysk.funnyguilds.basic.guild;
 
 public enum GuildRegex {
 

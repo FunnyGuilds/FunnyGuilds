@@ -1,8 +1,9 @@
 package net.dzikoysk.funnyguilds.element;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -19,19 +20,20 @@ public class IndividualPrefixManager {
             return;
         }
         
-        User user = User.get(player);
+        UserCache cache = User.get(player).getCache();
+
         try {
-            player.setScoreboard(user.getIndividualPrefix().getScoreboard());
+            player.setScoreboard(cache.getIndividualPrefix().getScoreboard());
         } catch (IllegalStateException e) {
             FunnyLogger.warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
         }
         
-        user.setScoreboard(user.getIndividualPrefix().getScoreboard());
+        cache.setScoreboard(cache.getIndividualPrefix().getScoreboard());
     }
 
     public static void addGuild(Guild to) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            User.get(p).getIndividualPrefix().addGuild(to);
+            User.get(p).getCache().getIndividualPrefix().addGuild(to);
         }
         
         updatePlayers();
@@ -39,7 +41,7 @@ public class IndividualPrefixManager {
 
     public static void addPlayer(String player) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            User.get(p).getIndividualPrefix().addPlayer(player);
+            User.get(p).getCache().getIndividualPrefix().addPlayer(player);
         }
         
         updatePlayers();
@@ -47,7 +49,7 @@ public class IndividualPrefixManager {
 
     public static void removeGuild(Guild guild) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            User.get(player).getIndividualPrefix().removeGuild(guild);
+            User.get(player).getCache().getIndividualPrefix().removeGuild(guild);
         }
         
         updatePlayers();
@@ -55,9 +57,10 @@ public class IndividualPrefixManager {
 
     public static void removePlayer(String player) {
         for (Player ps : Bukkit.getOnlinePlayers()) {
-            User.get(ps).getIndividualPrefix().removePlayer(player);
+            User.get(ps).getCache().getIndividualPrefix().removePlayer(player);
         }
         
         updatePlayers();
     }
+
 }

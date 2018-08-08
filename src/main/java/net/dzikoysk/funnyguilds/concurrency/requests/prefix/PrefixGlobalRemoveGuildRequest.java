@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.prefix;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.element.IndividualPrefixManager;
 

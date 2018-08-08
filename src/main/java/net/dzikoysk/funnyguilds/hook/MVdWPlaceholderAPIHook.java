@@ -5,12 +5,13 @@ import be.maximvdw.placeholderapi.PlaceholderReplaceEvent;
 import be.maximvdw.placeholderapi.PlaceholderReplacer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.util.Parser;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.panda_lang.panda.utilities.commons.objects.StringUtils;
 
 import java.util.Map.Entry;
 
@@ -25,17 +26,20 @@ public final class MVdWPlaceholderAPIHook {
                 @Override
                 public String onPlaceholderReplace(PlaceholderReplaceEvent event) {
                     OfflinePlayer target = event.getOfflinePlayer();
+
                     if (target == null) {
                         return "";
                     }
                     
-                    User user = User.get(target.getUniqueId());
+                    User user = User.get(target.getUniqueId(), target.getName());
+
                     if (user == null) {
-                        return "";
+                        return StringUtils.EMPTY;
                     }
                     
                     return variable.getValue().get(user);
                 }
+
             });
         }
         
@@ -48,6 +52,7 @@ public final class MVdWPlaceholderAPIHook {
                 public String onPlaceholderReplace(PlaceholderReplaceEvent event) {
                     return Parser.parseRank("{GTOP-" + index + "}");
                 }
+
             });
         }
         
@@ -60,6 +65,7 @@ public final class MVdWPlaceholderAPIHook {
                 public String onPlaceholderReplace(PlaceholderReplaceEvent event) {
                     return Parser.parseRank("{PTOP-" + index + "}");
                 }
+
             });
         }
         

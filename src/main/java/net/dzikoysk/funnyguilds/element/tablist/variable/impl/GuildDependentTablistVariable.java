@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable.impl;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 
 import java.util.function.Function;

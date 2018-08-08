@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.data.util;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.Region;
-import net.dzikoysk.funnyguilds.basic.User;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.Location;
@@ -47,7 +47,7 @@ public class DeserializationUtils {
         }
         
         Region region = Region.get((String) values[0]);
-        
+
         region.setCenter((Location) values[1]);
         region.setSize((int) values[2]);
         region.setEnlarge((int) values[3]);
@@ -57,9 +57,8 @@ public class DeserializationUtils {
     }
 
     public static User deserializeUser(Object[] values) {
-        User user = User.get(UUID.fromString((String) values[0]));
+        User user = User.get(UUID.fromString((String) values[0]), (String) values[1]);
         
-        user.setName((String) values[1]);
         user.getRank().setPoints((int) values[2]);
         user.getRank().setKills((int) values[3]);
         user.getRank().setDeaths((int) values[4]);

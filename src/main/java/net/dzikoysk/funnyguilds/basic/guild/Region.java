@@ -1,7 +1,7 @@
-package net.dzikoysk.funnyguilds.basic;
+package net.dzikoysk.funnyguilds.basic.guild;
 
-import net.dzikoysk.funnyguilds.basic.util.BasicType;
-import net.dzikoysk.funnyguilds.basic.util.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.AbstractBasic;
+import net.dzikoysk.funnyguilds.basic.BasicType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -123,6 +123,7 @@ public class Region extends AbstractBasic {
         this.size = i;
         this.update();
     }
+
 
     public void setEnlarge(int i) {
         this.enlarge = i;

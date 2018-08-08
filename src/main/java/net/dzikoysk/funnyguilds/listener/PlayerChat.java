@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.basic.Guild;
-import net.dzikoysk.funnyguilds.basic.User;
-import net.dzikoysk.funnyguilds.basic.util.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
@@ -16,7 +16,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerChat implements Listener {
-
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
@@ -65,8 +64,9 @@ public class PlayerChat implements Listener {
 
     private void spy(Player player, String message) {
         String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
+
         for (Player looped : Bukkit.getOnlinePlayers()) {
-            if (User.get(looped).isSpy()) {
+            if (User.get(looped).getCache().isSpy()) {
                 looped.sendMessage(spyMessage);
             }
         }
@@ -171,7 +171,7 @@ public class PlayerChat implements Listener {
                 continue;
             }
             
-            if (!p.equals(player) || !user.isSpy()) {
+            if (!p.equals(player) || !user.getCache().isSpy()) {
                 p.sendMessage(message);
             }
         }
@@ -188,4 +188,5 @@ public class PlayerChat implements Listener {
         
         return c.chatPositionMember;
     }
+
 }
