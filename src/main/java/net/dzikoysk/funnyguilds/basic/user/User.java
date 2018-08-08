@@ -31,8 +31,8 @@ public class User extends AbstractBasic {
 
     private User(UUID uuid, String name) {
         this.uuid = uuid;
+        this.name = name;
         this.cache = new UserCache(this);
-        this.name = Bukkit.getOfflinePlayer(uuid).getName();
         this.updateCache();
         this.changes();
     }
