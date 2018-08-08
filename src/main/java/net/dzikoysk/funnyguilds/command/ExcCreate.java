@@ -312,5 +312,16 @@ public class ExcCreate implements Executor {
 
         player.sendMessage(formatter.format(messages.createGuild));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastCreate));
+
+        if (config.giveRewardsForFirstGuild) {
+            for (ItemStack item : config.firstGuildRewards) {
+                if (player.getInventory().firstEmpty() == -1) {
+                    player.getWorld().dropItemNaturally(player.getLocation(), item);
+                    continue;
+                }
+
+                player.getInventory().addItem(item);
+            }
+        }
     }
 }
