@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.util;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserBan;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.Location;
@@ -62,8 +63,12 @@ public class DeserializationUtils {
         user.getRank().setPoints((int) values[2]);
         user.getRank().setKills((int) values[3]);
         user.getRank().setDeaths((int) values[4]);
-        user.setBan((long) values[5]);
-        user.setReason((String) values[6]);
+
+        long banTime = (long) values[5];
+
+        if (banTime > 0) {
+            user.setBan(new UserBan((String) values[6], banTime));
+        }
         
         return user;
     }

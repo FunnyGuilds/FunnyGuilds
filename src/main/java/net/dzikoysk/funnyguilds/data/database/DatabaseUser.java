@@ -95,15 +95,15 @@ public class DatabaseUser {
         sb.append("'" + user.getRank().getPoints() + "',");
         sb.append("'" + user.getRank().getKills() + "',");
         sb.append("'" + user.getRank().getDeaths() + "',");
-        sb.append("'" + user.getBan() + "',");
-        sb.append("'" + user.getReason() + "'");
+        sb.append("'" + (user.isBanned() ? user.getBan().getBanTime() : 0) + "',");
+        sb.append("'" + (user.isBanned() ? user.getBan().getReason() : null) + "'");
         sb.append(") ON DUPLICATE KEY UPDATE ");
         sb.append("`name`='" + user.getName() + "',");
         sb.append("`points`='" + user.getRank().getPoints() + "',");
         sb.append("`kills`='" + user.getRank().getKills() + "',");
         sb.append("`deaths`='" + user.getRank().getDeaths() + "',");
-        sb.append("`ban`='" + user.getBan() + "',");
-        sb.append("`reason`='" + user.getReason() + "'");
+        sb.append("`ban`='" + (user.isBanned() ? user.getBan().getBanTime() : 0) + "',");
+        sb.append("`reason`='" + (user.isBanned() ? user.getBan().getReason() : null) + "'");
         
         if (user.hasGuild()) {
             sb.append("; UPDATE `");

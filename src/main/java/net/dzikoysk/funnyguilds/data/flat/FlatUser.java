@@ -58,10 +58,13 @@ public class FlatUser {
         pc.set("points", user.getRank().getPoints());
         pc.set("kills", user.getRank().getKills());
         pc.set("deaths", user.getRank().getDeaths());
-        pc.set("ban", user.getBan());
-        pc.set("reason", user.getReason());
+
+        if (user.isBanned()) {
+            pc.set("ban", user.getBan().getBanTime());
+            pc.set("reason", user.getBan().getReason());
+        }
+
         pc.save();
-        
         return true;
     }
 }

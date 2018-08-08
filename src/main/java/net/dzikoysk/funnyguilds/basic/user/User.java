@@ -9,12 +9,10 @@ import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
-import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.PingUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.panda_lang.panda.utilities.commons.objects.StringUtils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,8 +27,7 @@ public class User extends AbstractBasic {
     private final UserCache cache;
     private Guild guild;
     private Rank rank;
-    private long ban;
-    private String reason;
+    private UserBan ban;
 
     private User(UUID uuid, String name) {
         this.uuid = uuid;
@@ -78,14 +75,8 @@ public class User extends AbstractBasic {
         this.changes();
     }
 
-    public void setBan(long l) {
-        this.ban = l;
-        this.changes();
-    }
-
-    public void setReason(String s) {
-        this.reason = s;
-        this.changes();
+    public void setBan(UserBan ban) {
+        this.ban = ban;
     }
 
     public boolean isOwner() {
@@ -123,7 +114,7 @@ public class User extends AbstractBasic {
     }
 
     public boolean isBanned() {
-        return this.ban != 0;
+        return this.ban != null && this.ban.isBanned();
     }
 
     public UUID getUUID() {
@@ -146,16 +137,8 @@ public class User extends AbstractBasic {
         return this.rank;
     }
 
-    public long getBan() {
-        return this.ban;
-    }
-
-    public String getReason() {
-        if (this.reason != null) {
-            return ChatUtils.colored(this.reason);
-        }
-
-        return StringUtils.EMPTY;
+    public UserBan getBan() {
+        return ban;
     }
 
     public Player getPlayer() {
