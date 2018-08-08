@@ -59,7 +59,6 @@ public class FlatRegion {
         pc.set("size", region.getSize());
         pc.set("enlarge", region.getEnlarge());
         pc.save();
-        pc = null;
         return true;
     }
 

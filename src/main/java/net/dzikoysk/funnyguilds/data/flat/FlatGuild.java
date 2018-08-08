@@ -185,7 +185,7 @@ public class FlatGuild {
         pc.set("owner", guild.getOwner().getName());
         pc.set("home", LocationUtils.toString(guild.getHome()));
         pc.set("members", UserUtils.getNames(guild.getMembers()));
-        pc.set("region", guild.getRegion());
+        pc.set("region", RegionUtils.toString(guild.getRegion()));
         pc.set("regions", null);
         pc.set("allies", GuildUtils.getNames(guild.getAllies()));
         pc.set("enemies", GuildUtils.getNames(guild.getEnemies()));
