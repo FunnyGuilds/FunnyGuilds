@@ -8,7 +8,7 @@ import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 
-public class Region implements Basic {
+public class Region extends AbstractBasic {
 
     private String name;
     private Guild guild;
@@ -16,13 +16,11 @@ public class Region implements Basic {
     private World world;
     private int size;
     private int enlarge;
-    private Location l;
-    private Location p;
-    private boolean changes;
+    private Location firstCorner;
+    private Location secondCorner;
 
     private Region(String name) {
         this.name = name;
-        this.changes = true;
         RegionUtils.addRegion(this);
     }
 
@@ -34,32 +32,23 @@ public class Region implements Basic {
         this.size = size;
         this.update();
         RegionUtils.addRegion(this);
-        this.changes = true;
     }
 
-    public static Region get(String name) {
-        for (Region region : RegionUtils.getRegions()) {
-            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
-                return region;
-            }
-        }
-        
-        return new Region(name);
-    }
+    public synchronized void update() {
+        super.changes();
 
-    public void update() {
         if (this.center == null) {
             return;
         }
-        
+
         if (this.size < 1) {
             return;
         }
-        
+
         if (this.world == null) {
             this.world = Bukkit.getWorlds().get(0);
         }
-        
+
         if (this.world != null) {
             int lx = this.center.getBlockX() + this.size;
             int lz = this.center.getBlockZ() + this.size;
@@ -70,11 +59,9 @@ public class Region implements Basic {
             Vector l = new Vector(lx, 0, lz);
             Vector p = new Vector(px, this.world.getMaxHeight(), pz);
 
-            this.l = l.toLocation(this.world);
-            this.p = p.toLocation(this.world);
+            this.firstCorner = l.toLocation(this.world);
+            this.secondCorner = p.toLocation(this.world);
         }
-        
-        this.changes();
     }
 
     public void delete() {
@@ -82,75 +69,74 @@ public class Region implements Basic {
         this.guild = null;
         this.world = null;
         this.center = null;
-        this.l = null;
-        this.p = null;
+        this.firstCorner = null;
+        this.secondCorner = null;
     }
 
     public boolean isIn(Location loc) {
         this.update();
-        if (loc == null || this.l == null || this.p == null) {
+
+        if (loc == null || this.firstCorner == null || this.secondCorner == null) {
             return false;
         }
-        
+
         if (!this.center.getWorld().equals(loc.getWorld())) {
             return false;
         }
-        
+
         if (loc.getBlockX() > this.getLowerX() && loc.getBlockX() < this.getUpperX()) {
             if (loc.getBlockY() > this.getLowerY() && loc.getBlockY() < this.getUpperY()) {
-                if (loc.getBlockZ() > this.getLowerZ() && loc.getBlockZ() < this.getUpperZ()) {
-                    return true;
-                }
+                return loc.getBlockZ() > this.getLowerZ() && loc.getBlockZ() < this.getUpperZ();
             }
         }
-        
+
         return false;
     }
 
-    @Override
-    public boolean changed() {
-        boolean c = changes;
-        if (c) {
-            this.changes = false;
+    private int compareCoordinates(boolean upper, int a, int b) {
+        if (upper) {
+            return b < a ? a : b;
         }
-        
-        return c;
-    }
-
-    @Override
-    public void changes() {
-        this.changes = true;
-    }
-
-    public String getName() {
-        return this.name;
+        else {
+            return a > b ? b : a;
+        }
     }
 
     public void setName(String s) {
         this.name = s;
-        this.changes();
-    }
-
-    public Guild getGuild() {
-        return this.guild;
+        super.changes();
     }
 
     public void setGuild(Guild guild) {
         this.guild = guild;
-        this.changes();
-    }
-
-    public Location getCenter() {
-        return this.center;
+        super.changes();
     }
 
     public void setCenter(Location loc) {
         this.center = loc;
         this.world = loc.getWorld();
         this.update();
-        this.changes();
+        super.changes();
     }
-    
+
+    public void setSize(int i) {
+        this.size = i;
+        this.update();
+    }
+
+    public void setEnlarge(int i) {
+        this.enlarge = i;
+        super.changes();
+    }
+
+    public Guild getGuild() {
+        return this.guild;
+    }
+
+    public Location getCenter() {
+        return this.center;
+    }
+
     public Location getHeart() {
         return getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
     }
@@ -159,113 +145,36 @@ public class Region implements Basic {
         return this.size;
     }
 
-    public void setSize(int i) {
-        this.size = i;
-        this.update();
-        this.changes();
-    }
-
     public World getWorld() {
         return this.world;
-    }
-
-    public void setWorld(World world) {
-        this.world = world;
-        this.update();
-        this.changes();
-    }
-
-    public Location getL() {
-        return this.l;
-    }
-
-    public void setL(Location loc) {
-        this.l = loc;
-        this.changes();
-    }
-
-    public Location getP() {
-        return this.p;
-    }
-
-    public void setP(Location loc) {
-        this.p = loc;
-        this.changes();
     }
 
     public int getEnlarge() {
         return this.enlarge;
     }
 
-    public void setEnlarge(int i) {
-        this.enlarge = i;
-        this.changes();
-    }
-
     public int getUpperX() {
-        int x = this.l.getBlockX();
-        int y = this.p.getBlockX();
-        
-        if (y < x) {
-            return x;
-        }
-        
-        return y;
+        return compareCoordinates(true, firstCorner.getBlockX(), secondCorner.getBlockX());
     }
 
     public int getUpperY() {
-        int x = this.l.getBlockY();
-        int y = this.p.getBlockY();
-        
-        if (y < x) {
-            return x;
-        }
-        
-        return y;
+        return compareCoordinates(true, firstCorner.getBlockY(), secondCorner.getBlockY());
     }
 
     public int getUpperZ() {
-        int x = this.l.getBlockZ();
-        int y = this.p.getBlockZ();
-        
-        if (y < x) {
-            return x;
-        }
-        
-        return y;
+        return compareCoordinates(true, firstCorner.getBlockZ(), secondCorner.getBlockZ());
     }
 
     public int getLowerX() {
-        int x = this.l.getBlockX();
-        int y = this.p.getBlockX();
-        
-        if (x > y) {
-            return y;
-        }
-        
-        return x;
+        return compareCoordinates(false, firstCorner.getBlockX(), secondCorner.getBlockX());
     }
 
     public int getLowerY() {
-        int x = this.l.getBlockY();
-        int y = this.p.getBlockY();
-        
-        if (x > y) {
-            return y;
-        }
-        
-        return x;
+        return compareCoordinates(false, firstCorner.getBlockY(), secondCorner.getBlockY());
     }
 
     public int getLowerZ() {
-        int x = this.l.getBlockZ();
-        int y = this.p.getBlockZ();
-        
-        if (x > y) {
-            return y;
-        }
-        
-        return x;
+        return compareCoordinates(false, firstCorner.getBlockZ(), secondCorner.getBlockZ());
     }
 
     @Override
@@ -274,8 +183,23 @@ public class Region implements Basic {
     }
 
     @Override
+    public String getName() {
+        return this.name;
+    }
+
+    @Override
     public String toString() {
         return this.name;
+    }
+
+    public static Region get(String name) {
+        for (Region region : RegionUtils.getRegions()) {
+            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
+                return region;
+            }
+        }
+
+        return new Region(name);
     }
 
 }
