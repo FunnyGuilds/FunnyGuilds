@@ -16,9 +16,9 @@ public class UserUtils {
     private final static Cache<UUID, User> uuidUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
     private final static Cache<String, User> nameUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
-    public static List<User> getUsers() {
+    public static Set<User> getUsers() {
         synchronized (uuidUserMap) {
-            return new ArrayList<>(uuidUserMap.values());
+            return new HashSet<>(uuidUserMap.values());
         }
     }
 
@@ -117,31 +117,31 @@ public class UserUtils {
         }
     }
 
-    public static List<String> getNames(List<User> users) {
-        return users.stream().map(User::getName).collect(Collectors.toList());
+    public static Set<String> getNames(Collection<User> users) {
+        return users.stream().map(User::getName).collect(Collectors.toSet());
     }
 
-    public static List<User> getUsers(List<String> names) {
-        return names.stream().map(User::get).collect(Collectors.toList());
+    public static Set<User> getUsers(Collection<String> names) {
+        return names.stream().map(User::get).collect(Collectors.toSet());
     }
 
-    public static List<String> getOnlineNames(List<User> users) {
-        List<String> list = new ArrayList<>();
+    public static Set<String> getOnlineNames(Collection<User> users) {
+        Set<String> set = new HashSet<>();
 
         for (User user : users) {
-            list.add(user.isOnline() ? "<online>" + user.getName() + "</online>" : user.getName());
+            set.add(user.isOnline() ? "<online>" + user.getName() + "</online>" : user.getName());
         }
 
-        return list;
+        return set;
     }
 
-    public static void removeGuild(List<User> users) {
+    public static void removeGuild(Collection<User> users) {
         for (User user : users) {
             user.removeGuild();
         }
     }
 
-    public static void setGuild(List<User> users, Guild guild) {
+    public static void setGuild(Collection<User> users, Guild guild) {
         for (User user : users) {
             user.setGuild(guild);
         }

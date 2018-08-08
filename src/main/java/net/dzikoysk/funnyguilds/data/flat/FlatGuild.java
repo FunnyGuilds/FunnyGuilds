@@ -1,26 +1,24 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.BasicType;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.util.Parser;
-import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.Yamler;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class FlatGuild {
 
@@ -31,43 +29,47 @@ public class FlatGuild {
     }
 
     public static Guild deserialize(File file) {
-        PluginConfig config = Settings.getConfig();
-        Yamler pc = new Yamler(file);
+        PluginConfig configuration = Settings.getConfig();
+        Yamler data = new Yamler(file);
         
-        String id = pc.getString("uuid");
-        String name = pc.getString("name");
-        String tag = pc.getString("tag");
-        String os = pc.getString("owner");
-        String dp = pc.getString("deputy");
-        String hs = pc.getString("home");
-        String region = pc.getString("region");
-        List<String> ms = pc.getStringList("members");
-        List<String> rgs = pc.getStringList("regions");
-        List<String> als = pc.getStringList("allies");
-        List<String> ens = pc.getStringList("enemies");
-        boolean pvp = pc.getBoolean("pvp");
-        long born = pc.getLong("born");
-        long validity = pc.getLong("validity");
-        long attacked = pc.getLong("attacked");
-        long ban = pc.getLong("ban");
-        int lives = pc.getInt("lives");
+        String id = data.getString("uuid");
+        String name = data.getString("name");
+        String tag = data.getString("tag");
+        String ownerName = data.getString("owner");
+        String deputyName = data.getString("deputy");
+        String hs = data.getString("home");
+        String regionName = data.getString("region");
+        List<String> memberNames = data.getStringList("members");
+        // List<String> regionNames = data.getStringList("regions");
+        List<String> allyNames = data.getStringList("allies");
+        List<String> enemyNames = data.getStringList("enemies");
+        boolean pvp = data.getBoolean("pvp");
+        long born = data.getLong("born");
+        long validity = data.getLong("validity");
+        long attacked = data.getLong("attacked");
+        long ban = data.getLong("ban");
+        int lives = data.getInt("lives");
 
         if (name == null) {
             FunnyLogger.error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
             return null;
-        } else if (tag == null) {
+        }
+        else if (tag == null) {
             FunnyLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
             return null;
-        } else if (os == null) {
+        }
+        else if (ownerName == null) {
             FunnyLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
             return null;
-        } else if (region == null && config.regionsEnabled) {
+        }
+        else if (regionName == null && configuration.regionsEnabled) {
             FunnyLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
             return null;
         }
         
-        Region rg = RegionUtils.get(region);
-        if (rg == null && config.regionsEnabled) {
+        Region region = RegionUtils.get(regionName);
+
+        if (region == null && configuration.regionsEnabled) {
             FunnyLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
             return null;
         }
@@ -78,63 +80,42 @@ public class FlatGuild {
             uuid = UUID.fromString(id);
         }
 
-        User owner = User.get(os);
-        List<User> deputies = new ArrayList<>();
+        User owner = User.get(ownerName);
+        Set<User> deputies = new HashSet<>(1);
 
-        if (dp != null && !dp.isEmpty()) {
-            deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
+        if (deputyName != null && !deputyName.isEmpty()) {
+            deputies = UserUtils.getUsers(ChatUtils.fromString(deputyName));
         }
 
         Location home = null;
 
-        if (rg !=null) {
-            home = rg.getCenter();
+        if (region !=null) {
+            home = region.getCenter();
+
             if (hs != null) {
                 home = Parser.parseLocation(hs);
             }
         }
 
-        if (ms == null || ms.isEmpty()) {
-            ms = new ArrayList<>();
-            ms.add(os);
+        if (memberNames == null || memberNames.isEmpty()) {
+            memberNames = new ArrayList<>();
+            memberNames.add(ownerName);
         }
         
-        List<User> members = UserUtils.getUsers(ms);
-
-        List<Guild> allies = new ArrayList<>();
-
-        if (als != null) {
-            for (String s : als) {
-                Guild guild = GuildUtils.getByName(s);
-
-                if (guild != null) {
-                    allies.add(guild);
-                }
-            }
-        }
-
-        List<Guild> enemies = new ArrayList<>();
-
-        if (ens != null) {
-            for (String s : ens) {
-                Guild guild = GuildUtils.getByName(s);
-
-                if (guild != null) {
-                    enemies.add(guild);
-                }
-            }
-        }
+        Set<User> members = UserUtils.getUsers(memberNames);
+        Set<Guild> allies = loadGuilds(allyNames);
+        Set<Guild> enemies = loadGuilds(enemyNames);
 
         if (born == 0) {
             born = System.currentTimeMillis();
         }
         
         if (validity == 0) {
-            validity = System.currentTimeMillis() + config.validityStart;
+            validity = System.currentTimeMillis() + configuration.validityStart;
         }
         
         if (lives == 0) {
-            lives = config.warLives;
+            lives = configuration.warLives;
         }
 
         Object[] values = new Object[17];
@@ -143,7 +124,7 @@ public class FlatGuild {
         values[2] = tag;
         values[3] = owner;
         values[4] = home;
-        values[5] = RegionUtils.get(region);
+        values[5] = region;
         values[6] = members;
         // values[7] = regions;
         values[8] = allies;
@@ -199,6 +180,24 @@ public class FlatGuild {
         
         pc.save();
         return true;
+    }
+
+    private static Set<Guild> loadGuilds(Collection<String> guilds) {
+        Set<Guild> set = new HashSet<>();
+        
+        if (guilds == null) {
+            return set;
+        }
+
+        for (String guildName : guilds) {
+            Guild guild = GuildUtils.getByName(guildName);
+
+            if (guild != null) {
+                set.add(guild);
+            }
+        }
+        
+        return set;
     }
 
 }

@@ -1,14 +1,14 @@
 package net.dzikoysk.funnyguilds.data.util;
 
+import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserBan;
 import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.FunnyLogger;
 import org.bukkit.Location;
 
-import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class DeserializationUtils {
@@ -27,15 +27,15 @@ public class DeserializationUtils {
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
         guild.setRegion((Region) values[5]);
-        guild.setMembers((List<User>) values[6]);
-        guild.setAllies((List<Guild>) values[8]);
-        guild.setEnemies((List<Guild>) values[9]);
+        guild.setMembers((Set<User>) values[6]);
+        guild.setAllies((Set<Guild>) values[8]);
+        guild.setEnemies((Set<Guild>) values[9]);
         guild.setBorn((long) values[10]);
         guild.setValidity((long) values[11]);
         guild.setAttacked((long) values[12]);
         guild.setLives((int) values[13]);
         guild.setBan((long) values[14]);
-        guild.setDeputies((List<User>) values[15]);
+        guild.setDeputies((Set<User>) values[15]);
         guild.deserializationUpdate();
         
         return guild;

@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.Data;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -97,6 +98,7 @@ public class Flat {
         if (UserUtils.getUsers().isEmpty()) {
             return;
         }
+
         for (User user : UserUtils.getUsers()) {
             if (user.getUUID() != null && user.getName() != null) {
                 if (!b) {
@@ -104,6 +106,7 @@ public class Flat {
                         continue;
                     }
                 }
+
                 new FlatUser(user).serialize();
             }
         }
@@ -168,6 +171,7 @@ public class Flat {
         }
         
         File[] path = REGIONS.listFiles();
+
         if (path != null) {
             for (File file : path) {
                 Region region = FlatRegion.deserialize(file);
@@ -182,32 +186,33 @@ public class Flat {
         FunnyLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
     }
 
-    private void saveGuilds(boolean b) {
-        int i = 0;
+    private void saveGuilds(boolean forceSave) {
+        int deleted = 0;
+
         for (Guild guild : GuildUtils.getGuilds()) {
-            if (!b) {
-                if (!guild.changed()) {
-                    continue;
-                }
+            if (!forceSave && !guild.changed()) {
+                continue;
             }
             
             if (!new FlatGuild(guild).serialize()) {
                 GuildUtils.deleteGuild(guild);
-                i++;
+                deleted++;
             }
         }
         
-        if (i > 0) {
-            FunnyLogger.warning("Deleted defective guild: " + i);
+        if (deleted > 0) {
+            FunnyLogger.warning("Deleted defective guild: " + deleted);
         }
     }
 
     private void loadGuilds() {
         GuildUtils.getGuilds().clear();
         File[] path = GUILDS.listFiles();
+
         if (path != null) {
             for (File file : path) {
                 Guild guild = FlatGuild.deserialize(file);
+
                 if (guild == null) {
                     file.delete();
                 } else {
@@ -226,7 +231,7 @@ public class Flat {
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
+        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest());
 
         FunnyLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }

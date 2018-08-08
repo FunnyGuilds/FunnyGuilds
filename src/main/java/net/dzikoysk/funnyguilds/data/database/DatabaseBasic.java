@@ -3,10 +3,10 @@ package net.dzikoysk.funnyguilds.data.database;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
@@ -16,7 +16,9 @@ import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DatabaseBasic {
 
@@ -111,13 +113,13 @@ public class DatabaseBasic {
                     String alliesList = result.getString("allies");
                     String enemiesList = result.getString("enemies");
 
-                    List<Guild> allies = new ArrayList<>();
+                    Set<Guild> allies = new HashSet<>();
 
                     if (alliesList != null && !alliesList.equals("")) {
                         allies = GuildUtils.getGuilds(ChatUtils.fromString(alliesList));
                     }
 
-                    List<Guild> enemies = new ArrayList<>();
+                    Set<Guild> enemies = new HashSet<>();
 
                     if (enemiesList != null && !enemiesList.equals("")) {
                         enemies = GuildUtils.getGuilds(ChatUtils.fromString(enemiesList));

@@ -10,10 +10,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Guild implements Basic {
@@ -25,10 +22,10 @@ public class Guild implements Basic {
     private Rank rank;
     private Region region;
     private Location home;
-    private List<User> members = new ArrayList<>();
-    private List<User> deputies = new ArrayList<>();
-    private List<Guild> allies = new ArrayList<>();
-    private List<Guild> enemies = new ArrayList<>();
+    private Set<User> members = new HashSet<>();
+    private Set<User> deputies = new HashSet<>();
+    private Set<Guild> allies = new HashSet<>();
+    private Set<Guild> enemies = new HashSet<>();
     private Location endercrystal;
     private boolean pvp;
     private long born;
@@ -260,7 +257,7 @@ public class Guild implements Basic {
         this.changes();
     }
 
-    public List<User> getDeputies() {
+    public Set<User> getDeputies() {
         return this.deputies;
     }
     
@@ -278,7 +275,7 @@ public class Guild implements Basic {
         this.changes();
     }
 
-    public void setDeputies(List<User> users) {
+    public void setDeputies(Set<User> users) {
         this.deputies = users;
         this.changes();
     }
@@ -310,37 +307,37 @@ public class Guild implements Basic {
         this.changes();
     }
 
-    public List<User> getMembers() {
+    public Set<User> getMembers() {
         return this.members;
     }
 
-    public void setMembers(List<User> members) {
+    public void setMembers(Set<User> members) {
         this.members = members;
         this.updateRank();
         this.changes();
     }
 
-    public List<User> getOnlineMembers() {
+    public Set<User> getOnlineMembers() {
         return this.members
                 .stream()
                 .filter(User::isOnline)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
-    public List<Guild> getAllies() {
+    public Set<Guild> getAllies() {
         return this.allies;
     }
 
-    public void setAllies(List<Guild> guilds) {
+    public void setAllies(Set<Guild> guilds) {
         this.allies = guilds;
         this.changes();
     }
 
-    public List<Guild> getEnemies() {
+    public Set<Guild> getEnemies() {
         return this.enemies;
     }
 
-    public void setEnemies(List<Guild> guilds) {
+    public void setEnemies(Set<Guild> guilds) {
         this.enemies = guilds;
         this.changes();
     }

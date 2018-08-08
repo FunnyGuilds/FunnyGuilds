@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.basic.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
+import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.data.Manager;
@@ -17,16 +17,14 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class GuildUtils {
 
-    private static final List<Guild> guilds = new ArrayList<>();
+    private static final Set<Guild> guilds = new HashSet<>();
 
-    public static List<Guild> getGuilds() {
-        return new ArrayList<>(guilds);
+    public static Set<Guild> getGuilds() {
+        return new HashSet<>(guilds);
     }
 
     public static void deleteGuild(final Guild guild) {
@@ -135,8 +133,9 @@ public class GuildUtils {
         return false;
     }
 
-    public static List<String> getNames(List<Guild> lsg) {
+    public static List<String> getNames(Collection<Guild> lsg) {
         List<String> list = new ArrayList<>();
+
         if (lsg == null) {
             return list;
         }
@@ -154,12 +153,13 @@ public class GuildUtils {
         return list;
     }
 
-    public static List<String> getTags(List<Guild> lsg) {
+    public static List<String> getTags(Collection<Guild> lsg) {
         if (lsg == null) {
             return null;
         }
 
         List<String> list = new ArrayList<>();
+
         for (Guild g : lsg) {
             if (g.getName() != null) {
                 list.add(g.getTag());
@@ -169,12 +169,12 @@ public class GuildUtils {
         return list;
     }
 
-    public static List<Guild> getGuilds(List<String> names) {
+    public static Set<Guild> getGuilds(Collection<String> names) {
         if (names == null) {
             return null;
         }
 
-        List<Guild> list = new ArrayList<>();
+        Set<Guild> list = new HashSet<>();
 
         for (String name : names) {
             Guild guild = GuildUtils.getByName(name);
@@ -210,4 +210,5 @@ public class GuildUtils {
     }
 
     private GuildUtils() {}
+
 }

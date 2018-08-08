@@ -1,14 +1,14 @@
 package net.dzikoysk.funnyguilds.element;
 
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.List;
+import java.util.Set;
 
 public class IndividualPrefix {
 
@@ -138,7 +138,7 @@ public class IndividualPrefix {
             return;
         }
         
-        List<Guild> guilds = GuildUtils.getGuilds();
+        Set<Guild> guilds = GuildUtils.getGuilds();
         Scoreboard scoreboard = getScoreboard();
         Guild guild = getUser().getGuild();
         

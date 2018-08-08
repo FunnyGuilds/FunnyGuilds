@@ -3,9 +3,9 @@ package net.dzikoysk.funnyguilds.data.database;
 import com.google.common.collect.Lists;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -15,9 +15,7 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class DatabaseGuild {
 
@@ -60,14 +58,13 @@ public class DatabaseGuild {
             }
 
             User owner = User.get(os);
-            
-            List<User> deputies = new ArrayList<>();
+            Set<User> deputies = new HashSet<>();
 
             if (dp != null && !dp.isEmpty()) {
                 deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
             }
-            
-            List<User> members = new ArrayList<>();
+
+            Set<User> members = new HashSet<>();
 
             if (m != null && !m.equals("")) {
                 members = UserUtils.getUsers(ChatUtils.fromString(m));
