@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.database;
 
+import com.google.common.collect.Lists;
 import net.dzikoysk.funnyguilds.FunnyLogger;
 import net.dzikoysk.funnyguilds.basic.Guild;
 import net.dzikoysk.funnyguilds.basic.User;
@@ -40,9 +41,6 @@ public class DatabaseGuild {
             String home = rs.getString("home");
             String regionName = rs.getString("region");
             String m = rs.getString("members");
-            String rgs = rs.getString("regions");
-            String als = rs.getString("allies");
-            String ens = rs.getString("enemies");
             boolean pvp = rs.getBoolean("pvp");
             long born = rs.getLong("born");
             long validity = rs.getLong("validity");
@@ -75,18 +73,6 @@ public class DatabaseGuild {
                 members = UserUtils.getUsers(ChatUtils.fromString(m));
             }
 
-            List<Guild> allies = new ArrayList<>();
-
-            if (als != null && !als.equals("")) {
-                allies = GuildUtils.getGuilds(ChatUtils.fromString(als));
-            }
-            
-            List<Guild> enemies = new ArrayList<>();
-
-            if (ens != null && !ens.equals("")) {
-                enemies = GuildUtils.getGuilds(ChatUtils.fromString(ens));
-            }
-
             if (born == 0) {
                 born = System.currentTimeMillis();
             }
@@ -109,8 +95,8 @@ public class DatabaseGuild {
             values[5] = RegionUtils.get(regionName);
             values[6] = members;
             // values[7] = regions;
-            values[8] = allies;
-            values[9] = enemies;
+            values[8] = Lists.newArrayList();
+            values[9] = Lists.newArrayList();
             values[10] = born;
             values[11] = validity;
             values[12] = attacked;
