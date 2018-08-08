@@ -7,15 +7,14 @@ import net.dzikoysk.funnyguilds.data.flat.Flat;
 import org.bukkit.Location;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class RegionUtils {
 
-    public static final List<Region> REGION_LIST = new ArrayList<>();
+    public static final Set<Region> REGION_LIST = new HashSet<>();
 
-    public static List<Region> getRegions() {
-        return new ArrayList<>(REGION_LIST);
+    public static Set<Region> getRegions() {
+        return new HashSet<>(REGION_LIST);
     }
 
     public static Region get(String name) {
@@ -101,7 +100,7 @@ public final class RegionUtils {
         region.delete();
     }
 
-    public static List<String> getNames(List<Region> lsg) {
+    public static List<String> getNames(Collection<Region> lsg) {
         List<String> list = new ArrayList<>();
         if (lsg == null) {
             return list;

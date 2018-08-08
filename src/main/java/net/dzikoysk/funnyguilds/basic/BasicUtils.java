@@ -19,7 +19,8 @@ public class BasicUtils {
         List<String> guilds = GuildUtils.getNames(GuildUtils.getGuilds());
         List<String> regions = RegionUtils.getNames(RegionUtils.getRegions());
         
-        int i = 0;
+        int repaired = 0;
+
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getName() != null && regions.contains(guild.getName())) {
                 guilds.remove(guild.getName());
@@ -27,7 +28,7 @@ public class BasicUtils {
             }
             
             GuildUtils.deleteGuild(guild);
-            i++;
+            repaired++;
         }
 
         guilds = GuildUtils.getNames(GuildUtils.getGuilds());
@@ -40,11 +41,12 @@ public class BasicUtils {
             }
             
             RegionUtils.delete(region);
-            i++;
+            repaired++;
         }
         
-        if (i > 0) {
-            FunnyLogger.warning("Repaired conflicts: " + i);
+        if (repaired > 0) {
+            FunnyLogger.warning("Repaired conflicts: " + repaired);
         }
     }
+
 }

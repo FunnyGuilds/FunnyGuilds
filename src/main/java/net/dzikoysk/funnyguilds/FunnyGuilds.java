@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds;
 
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.Commands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.data.Manager;
@@ -15,7 +15,6 @@ import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
-import net.dzikoysk.funnyguilds.system.event.EventManager;
 import net.dzikoysk.funnyguilds.util.DescriptionManager;
 import net.dzikoysk.funnyguilds.util.Version;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -34,7 +33,6 @@ public class FunnyGuilds extends JavaPlugin {
     private static String mainVersion;
 
     private ConcurrencyManager concurrencyManager;
-    private EventManager eventManager;
     private boolean disabling;
 
     public FunnyGuilds() {
@@ -61,9 +59,6 @@ public class FunnyGuilds extends JavaPlugin {
 
         Commands commands = new Commands();
         commands.register();
-
-        this.eventManager = new EventManager();
-        this.eventManager.load();
     }
 
     @Override
@@ -107,7 +102,6 @@ public class FunnyGuilds extends JavaPlugin {
             }
         }
 
-        this.eventManager.enable();
         this.patch();
 
         Version.isNewAvailable(getServer().getConsoleSender(), true);
@@ -121,9 +115,8 @@ public class FunnyGuilds extends JavaPlugin {
         disabling = true;
 
         EntityUtil.despawn();
-        this.eventManager.disable();
-
         AsynchronouslyRepeater.getInstance().stop();
+
         Manager.getInstance().stop();
         Manager.getInstance().save();
 
