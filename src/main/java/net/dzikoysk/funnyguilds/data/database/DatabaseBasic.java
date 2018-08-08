@@ -12,8 +12,11 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseBasic {
 
@@ -92,6 +95,41 @@ public class DatabaseBasic {
             } catch (Exception e) {
                 if (FunnyLogger.exception(e.getCause())) {
                     e.printStackTrace();
+                }
+            }
+        });
+
+        Database.getInstance().executeQuery("SELECT `tag`, `allies`, `enemies` FROM `" + config.mysql.guildsTableName + "`", result -> {
+            try {
+                while (result.next()) {
+                    Guild guild = GuildUtils.getByTag(result.getString("tag"));
+
+                    if (guild == null) {
+                        continue;
+                    }
+
+                    String alliesList = result.getString("allies");
+                    String enemiesList = result.getString("enemies");
+
+                    List<Guild> allies = new ArrayList<>();
+
+                    if (alliesList != null && !alliesList.equals("")) {
+                        allies = GuildUtils.getGuilds(ChatUtils.fromString(alliesList));
+                    }
+
+                    List<Guild> enemies = new ArrayList<>();
+
+                    if (enemiesList != null && !enemiesList.equals("")) {
+                        enemies = GuildUtils.getGuilds(ChatUtils.fromString(enemiesList));
+                    }
+
+                    guild.setAllies(allies);
+                    guild.setEnemies(enemies);
+                }
+            }
+            catch (Exception ex) {
+                if (FunnyLogger.exception(ex.getCause())) {
+                    ex.printStackTrace();
                 }
             }
         });
