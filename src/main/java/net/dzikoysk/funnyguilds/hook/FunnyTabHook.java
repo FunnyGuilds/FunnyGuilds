@@ -1,23 +1,23 @@
 package net.dzikoysk.funnyguilds.hook;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import org.bukkit.Bukkit;
 
 public final class FunnyTabHook {
 
     public static void initFunnyDisabler() {
-        FunnyLogger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        FunnyLogger.info("!!!      FUNNYTAB JEST JUZ      !!!");
-        FunnyLogger.info("!!!        PRZESTARZALY         !!!");
-        FunnyLogger.info("!!!                             !!!");
-        FunnyLogger.info("!!!       SKASUJ GO PRZED       !!!");
-        FunnyLogger.info("!!!    UZYWANIEM FUNNYGUILDS    !!!");
-        FunnyLogger.info("!!!                             !!!");
-        FunnyLogger.info("!!!     DO CZASU USUNIECIA      !!!");
-        FunnyLogger.info("!!!     FUNNYGUILDS BEDZIE      !!!");
-        FunnyLogger.info("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
-        FunnyLogger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        FunnyGuildsLogger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        FunnyGuildsLogger.info("!!!      FUNNYTAB JEST JUZ      !!!");
+        FunnyGuildsLogger.info("!!!        PRZESTARZALY         !!!");
+        FunnyGuildsLogger.info("!!!                             !!!");
+        FunnyGuildsLogger.info("!!!       SKASUJ GO PRZED       !!!");
+        FunnyGuildsLogger.info("!!!    UZYWANIEM FUNNYGUILDS    !!!");
+        FunnyGuildsLogger.info("!!!                             !!!");
+        FunnyGuildsLogger.info("!!!     DO CZASU USUNIECIA      !!!");
+        FunnyGuildsLogger.info("!!!     FUNNYGUILDS BEDZIE      !!!");
+        FunnyGuildsLogger.info("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
+        FunnyGuildsLogger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         
         Bukkit.getPluginManager().disablePlugin(FunnyGuilds.getInstance());
     }

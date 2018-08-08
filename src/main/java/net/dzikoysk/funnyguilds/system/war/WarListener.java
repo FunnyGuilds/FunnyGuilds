@@ -5,8 +5,8 @@ import net.dzikoysk.funnyguilds.command.ExcInfo;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
-import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

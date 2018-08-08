@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import com.google.common.collect.Lists;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
@@ -9,13 +9,14 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.ResultSet;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class DatabaseGuild {
 
@@ -47,7 +48,7 @@ public class DatabaseGuild {
             int lives = rs.getInt("lives");
 
             if (name == null || tag == null || os == null) {
-                FunnyLogger.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
+                FunnyGuildsLogger.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
                 return null;
             }
 
@@ -88,7 +89,7 @@ public class DatabaseGuild {
             values[1] = name;
             values[2] = tag;
             values[3] = owner;
-            values[4] = Parser.parseLocation(home);
+            values[4] = LocationUtils.parseLocation(home);
             values[5] = RegionUtils.get(regionName);
             values[6] = members;
             // values[7] = regions;
@@ -104,7 +105,7 @@ public class DatabaseGuild {
 
             return DeserializationUtils.deserializeGuild(values);
         } catch (Exception e) {
-            if (FunnyLogger.exception(e.getCause())) {
+            if (FunnyGuildsLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }

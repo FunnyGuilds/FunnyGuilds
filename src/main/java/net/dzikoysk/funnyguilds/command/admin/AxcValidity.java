@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
-import net.dzikoysk.funnyguilds.util.Parser;
+import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -44,7 +44,7 @@ public class AxcValidity implements Executor {
             return;
         }
 
-        long time = Parser.parseTime(args[1]);
+        long time = TimeUtils.parseTime(args[1]);
 
         if (time < 1) {
             sender.sendMessage(messages.adminTimeError);

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.element.tablist;
 
+import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
@@ -10,15 +11,13 @@ import net.dzikoysk.funnyguilds.element.tablist.variable.VariableParsingResult;
 import net.dzikoysk.funnyguilds.hook.MVdWPlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.hook.PlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
-import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.MapUtil;
-import net.dzikoysk.funnyguilds.util.reflect.PacketSender;
-import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import net.dzikoysk.funnyguilds.util.nms.PacketSender;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -150,7 +149,7 @@ public abstract class AbstractTablist {
         formatted = result.replaceInString(formatted);
         formatted = ChatUtils.colored(formatted);
 
-        String temp = Parser.parseRank(formatted);
+        String temp = RankUtils.parseRank(formatted);
         if (temp != null) {
             formatted = temp;
         }

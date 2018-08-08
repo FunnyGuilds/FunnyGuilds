@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
-import net.dzikoysk.funnyguilds.util.Yamler;
+import net.dzikoysk.funnyguilds.util.YamlWrapper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class Data {
         File file = new File(folder, "invitations.yml");
         if (todo == DO.SAVE) {
             file.delete();
-            Yamler pc = new Yamler(file);
+            YamlWrapper pc = new YamlWrapper(file);
             
             for (Guild guild : GuildUtils.getGuilds()) {
                 List<InvitationList.Invitation> invitationList = InvitationList.getInvitationsFrom(guild);
@@ -72,7 +72,7 @@ public class Data {
                 return;
             }
             
-            Yamler pc = new Yamler(file);
+            YamlWrapper pc = new YamlWrapper(file);
             for (String key : pc.getKeys(false)) {
                 Guild guild = GuildUtils.getByUUID(UUID.fromString(key));
                 

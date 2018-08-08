@@ -5,11 +5,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 
-public final class Yamler extends YamlConfiguration {
+public final class YamlWrapper extends YamlConfiguration {
 
     private final File file;
 
-    public Yamler(File file) {
+    public YamlWrapper(File file) {
         super();
         
         try {

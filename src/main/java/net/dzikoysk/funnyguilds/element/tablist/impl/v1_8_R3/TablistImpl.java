@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

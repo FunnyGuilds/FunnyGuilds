@@ -4,11 +4,11 @@ import be.maximvdw.placeholderapi.PlaceholderAPI;
 import be.maximvdw.placeholderapi.PlaceholderReplaceEvent;
 import be.maximvdw.placeholderapi.PlaceholderReplacer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
-import net.dzikoysk.funnyguilds.util.Parser;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.panda_lang.panda.utilities.commons.objects.StringUtils;
@@ -50,7 +50,7 @@ public final class MVdWPlaceholderAPIHook {
                 
                 @Override
                 public String onPlaceholderReplace(PlaceholderReplaceEvent event) {
-                    return Parser.parseRank("{GTOP-" + index + "}");
+                    return RankUtils.parseRank("{GTOP-" + index + "}");
                 }
 
             });
@@ -63,13 +63,13 @@ public final class MVdWPlaceholderAPIHook {
                 
                 @Override
                 public String onPlaceholderReplace(PlaceholderReplaceEvent event) {
-                    return Parser.parseRank("{PTOP-" + index + "}");
+                    return RankUtils.parseRank("{PTOP-" + index + "}");
                 }
 
             });
         }
         
-        FunnyLogger.info("MVdWPlaceholderAPI hook has been enabled!");
+        FunnyGuildsLogger.info("MVdWPlaceholderAPI hook has been enabled!");
     }
     
     public static String replacePlaceholders(Player user, String base) {

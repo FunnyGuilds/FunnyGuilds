@@ -2,30 +2,27 @@ package net.dzikoysk.funnyguilds.data.configs;
 
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.rank.RankSystem;
+import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
-import net.dzikoysk.funnyguilds.util.ItemBuilder;
-import net.dzikoysk.funnyguilds.util.Parser;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemBuilder;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialAliaser;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtil;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.diorite.cfg.annotations.CfgClass;
-import org.diorite.cfg.annotations.CfgCollectionStyle;
+import org.diorite.cfg.annotations.*;
 import org.diorite.cfg.annotations.CfgCollectionStyle.CollectionStyle;
-import org.diorite.cfg.annotations.CfgComment;
-import org.diorite.cfg.annotations.CfgExclude;
-import org.diorite.cfg.annotations.CfgName;
-import org.diorite.cfg.annotations.CfgStringStyle;
 import org.diorite.cfg.annotations.CfgStringStyle.StringStyle;
 import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
 
@@ -33,15 +30,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 @CfgClass(name = "PluginConfig")
 @CfgDelegateDefault("{new}")
@@ -1026,7 +1016,7 @@ public class PluginConfig {
                 continue;
             }
             
-            ItemStack itemstack = Parser.parseItem(item);
+            ItemStack itemstack = ItemUtils.parseItem(item);
             if (itemstack != null) {
                 items.add(itemstack);
             }
@@ -1042,7 +1032,7 @@ public class PluginConfig {
             ItemStack item = null;
 
             if (var.contains("GUI-")) {
-                int index = Parser.getIndex(var);
+                int index = RankUtils.getIndex(var);
 
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
@@ -1050,28 +1040,28 @@ public class PluginConfig {
             }
             else if (var.contains("VIPITEM-")) {
                 try {
-                    int index = Parser.getIndex(var);
+                    int index = RankUtils.getIndex(var);
 
                     if (index > 0 && index <= createItemsVip.size()) {
                         item = createItemsVip.get(index - 1);
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    FunnyLogger.parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
+                    FunnyGuildsLogger.parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
             }
             else if (var.contains("ITEM-")) {
                 try {
-                    int index = Parser.getIndex(var);
+                    int index = RankUtils.getIndex(var);
 
                     if (index > 0 && index <= createItems.size()) {
                         item = createItems.get(index - 1);
                     }
                 } catch (IndexOutOfBoundsException e) {
-                    FunnyLogger.parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
+                    FunnyGuildsLogger.parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
             }
             else {
-                item = Parser.parseItem(var);
+                item = ItemUtils.parseItem(var);
             }
 
             if (item == null) {
@@ -1091,14 +1081,14 @@ public class PluginConfig {
             this.nameRegex = GuildRegex.valueOf(this.nameRegex_.toUpperCase());
         } catch (Exception e) {
             this.nameRegex = GuildRegex.LETTERS;
-            FunnyLogger.exception(new IllegalArgumentException("\"" + this.nameRegex_ + "\" is not a valid regex option!"));
+            FunnyGuildsLogger.exception(new IllegalArgumentException("\"" + this.nameRegex_ + "\" is not a valid regex option!"));
         }
         
         try {
             this.tagRegex = GuildRegex.valueOf(this.tagRegex_.toUpperCase());
         } catch (Exception e) {
             this.tagRegex = GuildRegex.LETTERS;
-            FunnyLogger.exception(new IllegalArgumentException("\"" + this.tagRegex_ + "\" is not a valid regex option!"));
+            FunnyGuildsLogger.exception(new IllegalArgumentException("\"" + this.tagRegex_ + "\" is not a valid regex option!"));
         }
         
         this.createItems = loadItemStackList(this.items_);
@@ -1116,10 +1106,10 @@ public class PluginConfig {
         try {
             this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
         } catch (Exception materialThen) {
-            this.createMaterial = Parser.parseMaterialData(this.createType, true);
+            this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);
         }
 
-        if (this.createMaterial != null && MaterialUtil.hasGravity(this.createMaterial.getLeft())) {
+        if (this.createMaterial != null && MaterialUtils.hasGravity(this.createMaterial.getLeft())) {
             this.eventPhysics = true;
         }
 
@@ -1131,34 +1121,34 @@ public class PluginConfig {
         }
 
         if (this.buggedBlocksTimer < 0L) {
-            FunnyLogger.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than zero!"));
+            FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than zero!"));
             this.buggedBlocksTimer = 20L; // default value
         }
         
         this.blockedInteract = new HashSet<>();
         for (String s : this._blockedInteract) {
-            this.blockedInteract.add(Parser.parseMaterial(s, false));
+            this.blockedInteract.add(MaterialUtils.parseMaterial(s, false));
         }
         
         this.buggedBlocksExclude = new HashSet<>();
         for (String s : this.buggedBlocksExclude_) {
-            this.buggedBlocksExclude.add(Parser.parseMaterial(s, false));
+            this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(s, false));
         }
 
         try {
             this.rankSystem = RankSystem.valueOf(this.rankSystem_.toUpperCase());
         } catch (Exception e) {
             this.rankSystem = RankSystem.ELO;
-            FunnyLogger.exception(new IllegalArgumentException("\"" + this.rankSystem_ + "\" is not a valid rank system!"));
+            FunnyGuildsLogger.exception(new IllegalArgumentException("\"" + this.rankSystem_ + "\" is not a valid rank system!"));
         }
 
         if (this.rankSystem == RankSystem.ELO) {
             Map<IntegerRange, Integer> parsedData = new HashMap<>();
-            for(Entry<IntegerRange, String> entry : Parser.parseIntegerRange(this.eloConstants_, false).entrySet()) {
+            for(Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
                 try {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
                 } catch (NumberFormatException e) {
-                    FunnyLogger.parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
+                    FunnyGuildsLogger.parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
                 }
             }
             
@@ -1167,7 +1157,7 @@ public class PluginConfig {
 
         HashMap<Material, Double> map = new HashMap<>();
         for (Map.Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
-            Material material = Parser.parseMaterial(entry.getKey(), true);
+            Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
             if (material == null || material == Material.AIR) {
                 continue;
             }
@@ -1203,17 +1193,17 @@ public class PluginConfig {
         }
 
         if (this.notificationTitleFadeIn <= 0) {
-            FunnyLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-in\" can not be less than or equal to zero!"));
+            FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-in\" can not be less than or equal to zero!"));
             this.notificationTitleFadeIn = 10;
         }
 
         if (this.notificationTitleStay <= 0) {
-            FunnyLogger.exception(new IllegalArgumentException("The field named \"notification-title-stay\" can not be less than or equal to zero!"));
+            FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"notification-title-stay\" can not be less than or equal to zero!"));
             this.notificationTitleStay = 10;
         }
 
         if (this.notificationTitleFadeOut <= 0) {
-            FunnyLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-out\" can not be less than or equal to zero!"));
+            FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-out\" can not be less than or equal to zero!"));
             this.notificationTitleFadeOut = 10;
         }
 
@@ -1221,12 +1211,12 @@ public class PluginConfig {
 
         this.firstGuildRewards = loadItemStackList(this.firstGuildRewards_);
 
-        this.warProtection = Parser.parseTime(this.warProtection_);
-        this.warWait = Parser.parseTime(this.warWait_);
+        this.warProtection = TimeUtils.parseTime(this.warProtection_);
+        this.warWait = TimeUtils.parseTime(this.warWait_);
 
-        this.validityStart = Parser.parseTime(this.validityStart_);
-        this.validityTime = Parser.parseTime(this.validityTime_);
-        this.validityWhen = Parser.parseTime(this.validityWhen_);
+        this.validityStart = TimeUtils.parseTime(this.validityStart_);
+        this.validityTime = TimeUtils.parseTime(this.validityTime_);
+        this.validityWhen = TimeUtils.parseTime(this.validityWhen_);
 
         this.validityItems = this.loadItemStackList(this.validityItems_);
 
@@ -1247,8 +1237,8 @@ public class PluginConfig {
         this.chatRank = ChatUtils.colored(this.chatRank_);
         this.chatPoints = ChatUtils.colored(this.chatPoints_);
 
-        this.pointsFormat = Parser.parseIntegerRange(this.pointsFormat_, true);
-        this.pingFormat = Parser.parseIntegerRange(this.pingFormat_, true);
+        this.pointsFormat = IntegerRange.parseIntegerRange(this.pointsFormat_, true);
+        this.pingFormat = IntegerRange.parseIntegerRange(this.pingFormat_, true);
         
         this.ptopPoints = ChatUtils.colored(this.ptopPoints_);
         this.gtopPoints = ChatUtils.colored(this.gtopPoints_);
@@ -1259,13 +1249,13 @@ public class PluginConfig {
 
         if (this.pasteSchematicOnCreation) {
             if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
-                FunnyLogger.exception(new IllegalArgumentException("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!"));
+                FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!"));
                 this.pasteSchematicOnCreation = false;
             } else {
                 this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName);
 
                 if (!this.guildSchematicFile.exists()) {
-                    FunnyLogger.exception(new IllegalArgumentException("File with given name in field \"guild-schematic-file-name\" does not exist!"));
+                    FunnyGuildsLogger.exception(new IllegalArgumentException("File with given name in field \"guild-schematic-file-name\" does not exist!"));
                     this.pasteSchematicOnCreation = false;
                 }
             }

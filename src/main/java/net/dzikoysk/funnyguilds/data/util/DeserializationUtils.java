@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.data.util;
 
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.user.User;
@@ -16,7 +16,7 @@ public class DeserializationUtils {
     @SuppressWarnings("unchecked")
     public static Guild deserializeGuild(Object[] values) {
         if (values == null) {
-            FunnyLogger.error("[Deserialize] Cannot deserialize guild! Caused by: null");
+            FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild! Caused by: null");
             return null;
         }
         
@@ -43,7 +43,7 @@ public class DeserializationUtils {
 
     public static Region deserializeRegion(Object[] values) {
         if (values == null) {
-            FunnyLogger.error("Cannot deserialize region! Caused by: null");
+            FunnyGuildsLogger.error("Cannot deserialize region! Caused by: null");
             return null;
         }
         

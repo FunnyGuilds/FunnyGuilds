@@ -12,7 +12,7 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import com.sk89q.worldedit.world.registry.WorldData;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import org.bukkit.Location;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public final class SchematicHelper {
             return true;
         }
         catch (IOException | MaxChangedBlocksException e) {
-            FunnyLogger.exception(e);
+            FunnyGuildsLogger.exception(e);
             return false;
         }
     }

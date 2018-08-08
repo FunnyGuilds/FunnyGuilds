@@ -23,7 +23,7 @@ import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.MapUtil;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtil;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -226,7 +226,7 @@ public class PlayerDeath implements Listener {
         deathMessage = StringUtils.replace(deathMessage, "{-}", Integer.toString(victimEvent.getChange()));
         deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", IntegerRange.inRange(vP, config.pointsFormat, "POINTS"));
         deathMessage = StringUtils.replace(deathMessage, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
-        deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtil.getMaterialName(a.getItemInHand().getType()));
+        deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtils.getMaterialName(a.getItemInHand().getType()));
         deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", a.getHealth()));
         deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEARTS}", Integer.toString((int) (a.getHealth() / 2)));
 

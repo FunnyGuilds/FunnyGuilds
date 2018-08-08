@@ -11,9 +11,9 @@ import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
-import net.dzikoysk.funnyguilds.util.Version;
-import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
+import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
+import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -48,7 +48,7 @@ public class PlayerJoin implements Listener {
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             PacketExtension.registerPlayer(player);
-            Version.isNewAvailable(player, false);
+            FunnyGuildsVersion.isNewAvailable(player, false);
 
             Region region = RegionUtils.getAt(player.getLocation());
             if (region == null || region.getGuild() == null) {

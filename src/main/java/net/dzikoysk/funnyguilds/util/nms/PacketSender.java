@@ -1,6 +1,6 @@
-package net.dzikoysk.funnyguilds.util.reflect;
+package net.dzikoysk.funnyguilds.util.nms;
 
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -24,7 +24,7 @@ public final class PacketSender {
             playerConnection = Reflections.getField(Reflections.getNMSClass("EntityPlayer"), "playerConnection");
 
         } catch (Exception e) {
-            if (FunnyLogger.exception(e.getCause())) {
+            if (FunnyGuildsLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }

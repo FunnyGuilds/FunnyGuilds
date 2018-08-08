@@ -9,8 +9,8 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
 import net.dzikoysk.funnyguilds.data.flat.Flat;
-import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.Version;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,7 +30,7 @@ public class ExcFunnyGuilds implements Executor {
                 break;
             case "check":
             case "update":
-                Version.isNewAvailable(sender, true);
+                FunnyGuildsVersion.isNewAvailable(sender, true);
                 break;
             case "save-all":
                 saveAll(sender);
@@ -85,8 +85,8 @@ public class ExcFunnyGuilds implements Executor {
             try {
                 Flat.getInstance().save(true);
             } catch (Exception e) {
-                FunnyLogger.error("An error occurred while saving data to flat file! Caused by: Exception");
-                if (FunnyLogger.exception(e.getCause())) {
+                FunnyGuildsLogger.error("An error occurred while saving data to flat file! Caused by: Exception");
+                if (FunnyGuildsLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
@@ -96,8 +96,8 @@ public class ExcFunnyGuilds implements Executor {
             try {
                 DatabaseBasic.getInstance().save(true);
             } catch (Exception e) {
-                FunnyLogger.error("An error occurred while saving data to database! Caused by: Exception");
-                if (FunnyLogger.exception(e.getCause())) {
+                FunnyGuildsLogger.error("An error occurred while saving data to database! Caused by: Exception");
+                if (FunnyGuildsLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }

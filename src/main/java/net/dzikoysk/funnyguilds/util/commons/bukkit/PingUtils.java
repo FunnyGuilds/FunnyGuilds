@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
-import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.entity.Player;
 
 public class PingUtils {
@@ -19,7 +19,7 @@ public class PingUtils {
             Object handle = craftPlayer.getMethod("getHandle").invoke(cp);
             ping = (int) handle.getClass().getField("ping").get(handle);
         } catch (Exception e) {
-            if (FunnyLogger.exception(e.getCause())) {
+            if (FunnyGuildsLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }

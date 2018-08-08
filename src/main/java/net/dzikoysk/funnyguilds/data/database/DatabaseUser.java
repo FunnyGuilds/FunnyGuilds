@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 
 import java.sql.ResultSet;
 
@@ -41,7 +41,7 @@ public class DatabaseUser {
             
             return DeserializationUtils.deserializeUser(values);
         } catch (Exception e) {
-            if (FunnyLogger.exception(e.getCause())) {
+            if (FunnyGuildsLogger.exception(e.getCause())) {
                 e.printStackTrace();
             }
         }
@@ -56,8 +56,8 @@ public class DatabaseUser {
                 try {
                     db.executeUpdate(query);
                 } catch (Exception e) {
-                    FunnyLogger.error("[MySQL] Update: " + query);
-                    if (FunnyLogger.exception(e.getCause())) {
+                    FunnyGuildsLogger.error("[MySQL] Update: " + query);
+                    if (FunnyGuildsLogger.exception(e.getCause())) {
                         e.printStackTrace();
                     }
                 }

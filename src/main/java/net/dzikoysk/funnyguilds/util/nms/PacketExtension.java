@@ -1,10 +1,10 @@
-package net.dzikoysk.funnyguilds.util.reflect;
+package net.dzikoysk.funnyguilds.util.nms;
 
 import io.netty.channel.*;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.WarUseRequest;
-import net.dzikoysk.funnyguilds.util.reflect.Reflections.FieldAccessor;
+import net.dzikoysk.funnyguilds.util.nms.Reflections.FieldAccessor;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;

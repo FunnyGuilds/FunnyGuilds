@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.reflect;
+package net.dzikoysk.funnyguilds.util.nms;
 
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;

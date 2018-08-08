@@ -1,13 +1,13 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
-import net.dzikoysk.funnyguilds.FunnyLogger;
-import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 
-public final class Ticker {
+public final class MinecraftServerUtils {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
 
@@ -20,7 +20,7 @@ public final class Ticker {
             serverInstance = Reflections.getMethod(Reflections.getNMSClass("MinecraftServer"), "getServer").invoke(null);
             tpsField = minecraftServerClass.getDeclaredField("recentTps");
         } catch (IllegalAccessException | InvocationTargetException ex) {
-            FunnyLogger.exception(ex.getMessage(), ex.getStackTrace());
+            FunnyGuildsLogger.exception(ex.getMessage(), ex.getStackTrace());
         } catch (NoSuchFieldException ex) {
             tpsField = null;
         }
@@ -31,11 +31,11 @@ public final class Ticker {
         try {
             return tpsField != null ? FORMAT.format(Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last])) : "N/A";
         } catch (IllegalAccessException ex) {
-            FunnyLogger.exception(ex.getMessage(), ex.getStackTrace());
+            FunnyGuildsLogger.exception(ex.getMessage(), ex.getStackTrace());
             return null;
         }
     }
 
-    private Ticker() {}
+    private MinecraftServerUtils() {}
     
 }

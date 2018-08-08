@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
-import net.dzikoysk.funnyguilds.util.RandomUtils;
+import net.dzikoysk.funnyguilds.util.commons.RandomUtils;
 import org.bukkit.Location;
 
 import java.util.ArrayList;

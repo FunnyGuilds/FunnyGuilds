@@ -3,11 +3,11 @@ package net.dzikoysk.funnyguilds.hook;
 import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
 import codecrafter47.bungeetablistplus.api.bukkit.Variable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
-import net.dzikoysk.funnyguilds.util.Parser;
 import org.bukkit.entity.Player;
 
 import java.util.Map.Entry;
@@ -39,7 +39,7 @@ public final class BungeeTabListPlusHook {
 
                 @Override
                 public String getReplacement(Player player) {
-                    return Parser.parseRank("{GTOP-" + index + "}");
+                    return RankUtils.parseRank("{GTOP-" + index + "}");
                 }
             });
         }
@@ -51,12 +51,12 @@ public final class BungeeTabListPlusHook {
 
                 @Override
                 public String getReplacement(Player player) {
-                    return Parser.parseRank("{PTOP-" + index + "}");
+                    return RankUtils.parseRank("{PTOP-" + index + "}");
                 }
             });
         }
 
-        FunnyLogger.info("BungeeTabListPlus hook has been enabled!");
+        FunnyGuildsLogger.info("BungeeTabListPlus hook has been enabled!");
     }
 
     private BungeeTabListPlusHook() {}

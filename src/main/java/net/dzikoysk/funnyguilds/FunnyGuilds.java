@@ -15,11 +15,10 @@ import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
-import net.dzikoysk.funnyguilds.util.DescriptionManager;
-import net.dzikoysk.funnyguilds.util.Version;
+import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
-import net.dzikoysk.funnyguilds.util.reflect.EntityUtil;
-import net.dzikoysk.funnyguilds.util.reflect.PacketExtension;
+import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -45,14 +44,14 @@ public class FunnyGuilds extends JavaPlugin {
             this.getDataFolder().mkdir();
         }
 
-        DescriptionManager descriptionManager = new DescriptionManager(super.getDescription());
-        String[] versions = descriptionManager.extractVersion();
+        DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
+        String[] versions = descriptionChanger.extractVersion();
         
         fullVersion = versions[0];
         mainVersion = versions[1];
 
         PluginConfig settings = Settings.getConfig();
-        descriptionManager.rename(settings.pluginName);
+        descriptionChanger.rename(settings.pluginName);
 
         this.concurrencyManager = new ConcurrencyManager(settings.concurrencyThreads);
         this.concurrencyManager.printStatus();
@@ -104,10 +103,10 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.patch();
 
-        Version.isNewAvailable(getServer().getConsoleSender(), true);
+        FunnyGuildsVersion.isNewAvailable(getServer().getConsoleSender(), true);
         PluginHook.init();
         
-        FunnyLogger.info("~ Created by FunnyGuilds Team ~");
+        FunnyGuildsLogger.info("~ Created by FunnyGuilds Team ~");
     }
 
     @Override

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.basic;
 
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
@@ -45,7 +45,7 @@ public class BasicUtils {
         }
         
         if (repaired > 0) {
-            FunnyLogger.warning("Repaired conflicts: " + repaired);
+            FunnyGuildsLogger.warning("Repaired conflicts: " + repaired);
         }
     }
 

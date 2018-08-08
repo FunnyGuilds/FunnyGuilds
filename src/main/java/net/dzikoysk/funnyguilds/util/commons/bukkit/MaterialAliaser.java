@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
-import net.dzikoysk.funnyguilds.util.reflect.Reflections;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.Material;
 
 import java.util.HashMap;

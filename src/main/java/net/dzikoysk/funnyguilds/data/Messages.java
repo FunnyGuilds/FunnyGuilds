@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.data;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.util.commons.ConfigUtils;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class Messages {
                 }
             }
         } catch (Exception e) {
-            FunnyLogger.exception(e);
+            FunnyGuildsLogger.exception(e);
         }
     }
 

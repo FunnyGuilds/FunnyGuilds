@@ -1,12 +1,11 @@
-package net.dzikoysk.funnyguilds.util;
+package net.dzikoysk.funnyguilds;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
-public final class Version {
+public final class FunnyGuildsVersion {
 
     private static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
 
@@ -34,6 +33,6 @@ public final class Version {
         });
     }
 
-    private Version() {}
+    private FunnyGuildsVersion() {}
 
 }

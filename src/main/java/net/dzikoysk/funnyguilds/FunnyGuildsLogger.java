@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 
 import java.util.logging.Logger;
 
-public final class FunnyLogger {
+public final class FunnyGuildsLogger {
 
     private static final Logger bukkitLogger = Bukkit.getLogger();
     
@@ -62,6 +62,6 @@ public final class FunnyLogger {
         return false;
     }
 
-    private FunnyLogger() {}
+    private FunnyGuildsLogger() {}
 
 }

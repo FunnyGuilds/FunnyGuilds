@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -23,7 +23,7 @@ public final class IOUtils {
                     file.mkdir();
                 }
             } catch (IOException e) {
-                if (FunnyLogger.exception(e.getCause())) {
+                if (FunnyGuildsLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
@@ -48,7 +48,7 @@ public final class IOUtils {
             body = IOUtils.toString(in, encoding);
             in.close();
         } catch (Exception e) {
-            FunnyLogger.update("Connection to the update server (" + s + ") failed!");
+            FunnyGuildsLogger.update("Connection to the update server (" + s + ") failed!");
         } finally {
             close(in);
         }

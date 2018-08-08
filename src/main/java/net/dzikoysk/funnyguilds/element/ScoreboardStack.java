@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.element;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -30,7 +30,7 @@ public class ScoreboardStack implements Runnable {
             
             return instance;
         } catch (Exception ex) {
-            if (FunnyLogger.exception(ex.getCause())) {
+            if (FunnyGuildsLogger.exception(ex.getCause())) {
                 ex.printStackTrace();
             }
             
@@ -60,7 +60,7 @@ public class ScoreboardStack implements Runnable {
         if (stack.size() < required) {
             ScoreboardManager sm = Bukkit.getScoreboardManager();
             if (sm == null) {
-                FunnyLogger.error("[ScoreboardStack] ScoreboardManager is null!");
+                FunnyGuildsLogger.error("[ScoreboardStack] ScoreboardManager is null!");
                 return;
             }
             

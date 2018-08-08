@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.DataSaveRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
@@ -55,8 +55,8 @@ public class Manager {
             try {
                 Flat.getInstance().save(false);
             } catch (Exception e) {
-                FunnyLogger.error("An error occurred while saving data to flat file! Caused by: Exception");
-                if (FunnyLogger.exception(e.getCause())) {
+                FunnyGuildsLogger.error("An error occurred while saving data to flat file! Caused by: Exception");
+                if (FunnyGuildsLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }
@@ -66,8 +66,8 @@ public class Manager {
             try {
                 DatabaseBasic.getInstance().save(false);
             } catch (Exception e) {
-                FunnyLogger.error("An error occurred while saving data to database! Caused by: Exception");
-                if (FunnyLogger.exception(e.getCause())) {
+                FunnyGuildsLogger.error("An error occurred while saving data to database! Caused by: Exception");
+                if (FunnyGuildsLogger.exception(e.getCause())) {
                     e.printStackTrace();
                 }
             }

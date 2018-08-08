@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.Yamler;
+import net.dzikoysk.funnyguilds.util.YamlWrapper;
 
 import java.io.File;
 
@@ -19,7 +19,7 @@ public class FlatUser {
             return null;
         }
 
-        Yamler pc = new Yamler(file);
+        YamlWrapper pc = new YamlWrapper(file);
 
         String id = pc.getString("uuid");
         String name = pc.getString("name");
@@ -51,7 +51,7 @@ public class FlatUser {
             return false;
         }
 
-        Yamler pc = new Yamler(file);
+        YamlWrapper pc = new YamlWrapper(file);
         
         pc.set("uuid", user.getUUID().toString());
         pc.set("name", user.getName());

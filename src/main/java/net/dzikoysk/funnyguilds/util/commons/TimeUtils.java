@@ -1,8 +1,65 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+
+import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 
 public final class TimeUtils {
+
+    public static long parseTime(String string) {
+        if (string == null || string.isEmpty()) {
+            return 0;
+        }
+
+        Stack<Character> type = new Stack<>();
+        StringBuilder value = new StringBuilder();
+
+        boolean calc = false;
+        long time = 0;
+
+        for (char c : string.toCharArray()) {
+            switch (c) {
+                case 'd':
+                case 'h':
+                case 'm':
+                case 's':
+                    if (!calc) {
+                        type.push(c);
+                    }
+
+                    try {
+                        long i = Integer.valueOf(value.toString());
+                        switch (type.pop()) {
+                            case 'd':
+                                time += i * 86400000L;
+                                break;
+                            case 'h':
+                                time += i * 3600000L;
+                                break;
+                            case 'm':
+                                time += i * 60000L;
+                                break;
+                            case 's':
+                                time += i * 1000L;
+                                break;
+                        }
+                    } catch (NumberFormatException e) {
+                        FunnyGuildsLogger.parser("Unknown number: " + value.toString());
+                        return time;
+                    }
+
+                    type.push(c);
+                    calc = true;
+                    break;
+                default:
+                    value.append(c);
+                    break;
+            }
+        }
+
+        return time;
+    }
 
     public static String getDurationBreakdown(long millis) {
         if (millis == 0) {

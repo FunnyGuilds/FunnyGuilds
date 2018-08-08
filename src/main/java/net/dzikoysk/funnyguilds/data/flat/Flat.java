@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.BasicUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
@@ -136,10 +136,10 @@ public class Flat {
         }
 
         if (i > 0) {
-            FunnyLogger.warning("Repaired conflicts: " + i);
+            FunnyGuildsLogger.warning("Repaired conflicts: " + i);
         }
 
-        FunnyLogger.info("Loaded users: " + UserUtils.getUsers().size());
+        FunnyGuildsLogger.info("Loaded users: " + UserUtils.getUsers().size());
     }
 
     private void saveRegions(boolean b) {
@@ -160,13 +160,13 @@ public class Flat {
             }
         }
         if (i > 0) {
-            FunnyLogger.warning("Deleted defective regions: " + i);
+            FunnyGuildsLogger.warning("Deleted defective regions: " + i);
         }
     }
 
     private void loadRegions() {
         if (!Settings.getConfig().regionsEnabled) {
-            FunnyLogger.info("Regions are disabled and thus - not loaded");
+            FunnyGuildsLogger.info("Regions are disabled and thus - not loaded");
             return;
         }
         
@@ -183,7 +183,7 @@ public class Flat {
             }
         }
         
-        FunnyLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
+        FunnyGuildsLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
     }
 
     private void saveGuilds(boolean forceSave) {
@@ -201,7 +201,7 @@ public class Flat {
         }
         
         if (deleted > 0) {
-            FunnyLogger.warning("Deleted defective guild: " + deleted);
+            FunnyGuildsLogger.warning("Deleted defective guild: " + deleted);
         }
     }
 
@@ -233,7 +233,7 @@ public class Flat {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest());
 
-        FunnyLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
+        FunnyGuildsLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
 
 }

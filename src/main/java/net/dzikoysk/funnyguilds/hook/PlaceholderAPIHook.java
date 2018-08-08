@@ -3,18 +3,18 @@ package net.dzikoysk.funnyguilds.hook;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyLogger;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
-import net.dzikoysk.funnyguilds.util.Parser;
 import org.bukkit.entity.Player;
 
 public final class PlaceholderAPIHook {
 
     public static void initPlaceholderHook() {
         new FunnyGuildsPlaceholder().register();
-        FunnyLogger.info("PlaceholderAPI hook has been enabled!");
+        FunnyGuildsLogger.info("PlaceholderAPI hook has been enabled!");
     }
     
     public static String replacePlaceholders(Player user, String base) {
@@ -41,7 +41,7 @@ public final class PlaceholderAPIHook {
                 return variable.get(user);
             }
             
-            return Parser.parseRank("{" + identifier.toUpperCase() + "}");
+            return RankUtils.parseRank("{" + identifier.toUpperCase() + "}");
         }
 
         @Override
@@ -63,6 +63,7 @@ public final class PlaceholderAPIHook {
         public String getVersion() {
             return FunnyGuilds.getInstance().getDescription().getVersion();
         }
+
     }
     
 }

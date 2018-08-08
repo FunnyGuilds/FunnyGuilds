@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVaria
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
-import net.dzikoysk.funnyguilds.util.Ticker;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -50,7 +50,7 @@ public final class DefaultTablistVariables {
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
         parser.add(new SimpleTablistVariable("WORLD", user -> user.getPlayer() == null ? "" : user.getPlayer().getWorld().getName()));
         parser.add(new SimpleTablistVariable("ONLINE", user -> user.getPlayer() == null ? "" : String.valueOf(Bukkit.getOnlinePlayers().stream().filter(p -> p != null && user.getPlayer().canSee(p)).count())));
-        parser.add(new SimpleTablistVariable("TPS", user -> Ticker.getRecentTPS(0)));
+        parser.add(new SimpleTablistVariable("TPS", user -> MinecraftServerUtils.getRecentTPS(0)));
 
         for (TablistVariable variable : getFunnyVariables().values()) {
             parser.add(variable);

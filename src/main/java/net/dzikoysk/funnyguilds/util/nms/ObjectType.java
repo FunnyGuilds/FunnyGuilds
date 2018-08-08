@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.util.reflect;
+package net.dzikoysk.funnyguilds.util.nms;
 
 import org.bukkit.entity.EntityType;
 
