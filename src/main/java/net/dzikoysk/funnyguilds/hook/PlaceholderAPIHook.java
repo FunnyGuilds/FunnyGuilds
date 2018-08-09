@@ -10,15 +10,19 @@ import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 import org.bukkit.entity.Player;
 
+import java.util.regex.Pattern;
+
 public final class PlaceholderAPIHook {
 
+    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[%]([^%]+)[%]");
+    
     public static void initPlaceholderHook() {
         new FunnyGuildsPlaceholder().register();
         FunnyGuildsLogger.info("PlaceholderAPI hook has been enabled!");
     }
     
     public static String replacePlaceholders(Player user, String base) {
-        return PlaceholderAPI.setPlaceholders(user, base);
+        return PlaceholderAPI.setPlaceholders(user, base, PLACEHOLDER_PATTERN);
     }
     
     private PlaceholderAPIHook() {}

@@ -56,8 +56,7 @@ public class ExcValidity implements Executor {
                 continue;
             }
 
-            String msg = ItemUtils.translatePlaceholder(messages.validityItems, requiredItems, requiredItem);
-            player.sendMessage(msg);
+            player.spigot().sendMessage(ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem));
             return;
         }
         

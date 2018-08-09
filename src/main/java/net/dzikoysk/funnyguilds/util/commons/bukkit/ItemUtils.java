@@ -3,6 +3,13 @@ package net.dzikoysk.funnyguilds.util.commons.bukkit;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.nms.EggTypeChanger;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -13,6 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,36 +30,105 @@ import java.util.List;
 
 public final class ItemUtils {
 
-    public static String translatePlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
-        StringBuilder contentBuilder = new StringBuilder();
+    private static final Constructor<?> NBT_TAG_COMPOUND_CONSTRUCTOR;
 
-        if (message.contains("{ITEM}")) {
-            contentBuilder.append(item.getAmount());
-            contentBuilder.append(" ");
-            contentBuilder.append(item.getType().toString().toLowerCase());
+    private static final Method AS_NMS_COPY;
+    private static final Method SAVE;
 
-            message = StringUtils.replace(message, "{ITEM}", contentBuilder.toString());
-        }
+    static {
+        final Class<?> craftItemStack = Reflections.getCraftBukkitClass("inventory.CraftItemStack");
+        AS_NMS_COPY = Reflections.getMethod(craftItemStack, "asNMSCopy", ItemStack.class);
 
-        if (message.contains("{ITEMS}")) {
-            Collection<String> translatedItems = new ArrayList<>();
+        final Class<?> nmsItemStack = Reflections.getNMSClass("ItemStack");
+        final Class<?> nbtTagCompound = Reflections.getNMSClass("NBTTagCompound");
 
-            for (ItemStack itemStack : items) {
-                contentBuilder.setLength(0);
-
-                contentBuilder.append(itemStack.getAmount());
-                contentBuilder.append(" ");
-                contentBuilder.append(itemStack.getType().toString().toLowerCase());
-
-                translatedItems.add(contentBuilder.toString());
-            }
-
-            message = StringUtils.replace(message, "{ITEMS}", ChatUtils.toString(translatedItems, true));
-        }
-
-        return message;
+        NBT_TAG_COMPOUND_CONSTRUCTOR = Reflections.getConstructor(nbtTagCompound);
+        SAVE = Reflections.getMethod(nmsItemStack, "save", nbtTagCompound);
     }
 
+    public static TextComponent translatePlaceholder(String message, List<ItemStack> items, ItemStack item) {
+        TextComponent translatedMessage = new TextComponent();
+        String messagePart = "";
+        String messageColor = "";
+        
+        char[] messageChars = message.toCharArray();
+        for (int i = 0; i < messageChars.length; i++) {
+            char c = messageChars[i];
+            if (c != '{') {
+                messagePart += c;
+                
+                if (c == ChatColor.COLOR_CHAR) {
+                    messageColor += c;
+                    messageColor += messageChars[i + 1];
+                }
+                
+                continue;
+            }
+            
+            String subItem = message.substring(i, Math.min(message.length(), i + 6));
+            if (subItem.equals("{ITEM}")) {
+                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
+                    translatedMessage.addExtra(extra);
+                }
+                
+                messagePart = "";
+
+                for (BaseComponent extra : getItemComponent(item, messageColor)) {
+                    translatedMessage.addExtra(extra);
+                }
+                
+                i += 5;
+                continue;
+            }
+
+            String subItems = message.substring(i, Math.min(message.length(), i + 7));
+            if (subItems.equals("{ITEMS}")) {
+                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
+                    translatedMessage.addExtra(extra);
+                }
+
+                messagePart = "";
+                
+                for (int itemNum = 0; itemNum < items.size(); itemNum++) {
+                    for (BaseComponent extra : getItemComponent(items.get(itemNum), messageColor)) {
+                        translatedMessage.addExtra(extra);
+                    }
+                    
+                    if (itemNum != items.size() - 1) {
+                        for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + ", ")) {
+                            translatedMessage.addExtra(extra);
+                        }
+                    }
+                }
+                
+                i += 6;
+                continue;
+            }
+
+            messagePart += c;
+        }
+        
+        for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
+            translatedMessage.addExtra(extra);
+        }
+        
+        return translatedMessage;
+    }
+
+    public static BaseComponent[] getItemComponent(ItemStack item, String messageColor) {
+        ComponentBuilder extraBuilder = new ComponentBuilder("");
+        extraBuilder.append(TextComponent.fromLegacyText(messageColor + item.getAmount() + " " + item.getType().toString().toLowerCase()));
+        
+        try {
+            String jsonItem = SAVE.invoke(AS_NMS_COPY.invoke(null, item), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
+            extraBuilder.event(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[]{new TextComponent(jsonItem)}));
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
+            e.printStackTrace();
+        }
+        
+        return extraBuilder.create();
+    }
+    
     public static ItemStack parseItem(String string) {
         String[] split = string.split(" ");
         String[] typeSplit = split[1].split(":");
@@ -76,9 +155,10 @@ public final class ItemUtils {
 
             if (str.contains("name")) {
                 String[] splitName = str.split(":");
-                item.setName(StringUtils.replace(ChatUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_", " "), true);
-            }
-            else if (str.contains("lore")) {
+                item.setName(StringUtils.replace(
+                                ChatUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_",
+                                " "), true);
+            } else if (str.contains("lore")) {
                 String[] splitLore = str.split(":");
                 String loreArgs = String.join(":", Arrays.copyOfRange(splitLore, 1, splitLore.length));
                 String[] lores = loreArgs.split("#");
@@ -89,8 +169,7 @@ public final class ItemUtils {
                 }
 
                 item.setLore(lore);
-            }
-            else if (str.contains("enchant")) {
+            } else if (str.contains("enchant")) {
                 String[] parse = str.split(":");
                 String enchantName = parse[1];
                 int level;
@@ -108,26 +187,24 @@ public final class ItemUtils {
                 }
 
                 item.addEnchant(enchant, level);
-            }
-            else if (str.contains("skullowner")) {
+            } else if (str.contains("skullowner")) {
                 if (item.getMeta() instanceof SkullMeta) {
                     ((SkullMeta) item.getMeta()).setOwner(str.split(":")[1]);
                     item.refreshMeta();
                 }
-            }
-            else if (str.contains("armorcolor")) {
+            } else if (str.contains("armorcolor")) {
                 if (item.getMeta() instanceof LeatherArmorMeta) {
                     String[] color = str.split(":")[1].split("_");
 
                     try {
-                        ((LeatherArmorMeta) item.getMeta()).setColor(Color.fromRGB(Integer.parseInt(color[0]), Integer.parseInt(color[1]), Integer.parseInt(color[2])));
+                        ((LeatherArmorMeta) item.getMeta()).setColor(Color.fromRGB(Integer.parseInt(color[0]),
+                                        Integer.parseInt(color[1]), Integer.parseInt(color[2])));
                         item.refreshMeta();
                     } catch (NumberFormatException e) {
                         FunnyGuildsLogger.parser("Unknown armor color: " + str.split(":")[1]);
                     }
                 }
-            }
-            else if (str.contains("eggtype")) {
+            } else if (str.contains("eggtype")) {
                 if (EggTypeChanger.needsSpawnEggMeta()) {
                     EntityType type = null;
 
@@ -141,9 +218,9 @@ public final class ItemUtils {
                         EggTypeChanger.applyChanges(item.getMeta(), type);
                         item.refreshMeta();
                     }
-                }
-                else {
-                    FunnyGuildsLogger.info("This MC version supports metadata for spawn egg type, no need to use eggtype in item creation!");
+                } else {
+                    FunnyGuildsLogger.info(
+                                    "This MC version supports metadata for spawn egg type, no need to use eggtype in item creation!");
                 }
             }
         }
@@ -153,16 +230,16 @@ public final class ItemUtils {
 
     public static int getItemAmount(ItemStack item, Inventory inv) {
         int amount = 0;
-        
+
         for (ItemStack is : inv.getContents()) {
             if (item.isSimilar(is)) {
                 amount += is.getAmount();
             }
         }
-        
+
         return amount;
     }
-    
+
     public static ItemStack[] toArray(Collection<ItemStack> collection) {
         return collection.toArray(new ItemStack[0]);
     }
