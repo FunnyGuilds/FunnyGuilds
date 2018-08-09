@@ -124,7 +124,7 @@ public final class RegionUtils {
     }
 
     public static String toString(@Nullable Region region) {
-        return region != null ? region.getName() : null;
+        return region != null ? region.getName() : "null";
     }
 
 }
