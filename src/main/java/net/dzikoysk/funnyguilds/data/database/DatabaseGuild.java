@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.data.database;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -93,8 +93,8 @@ public class DatabaseGuild {
             values[5] = RegionUtils.get(regionName);
             values[6] = members;
             // values[7] = regions;
-            values[8] = Lists.newArrayList();
-            values[9] = Lists.newArrayList();
+            values[8] = Sets.newHashSet();
+            values[9] = Sets.newHashSet();
             values[10] = born;
             values[11] = validity;
             values[12] = attacked;

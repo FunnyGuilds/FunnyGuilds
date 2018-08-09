@@ -28,8 +28,7 @@ public class ExcRankReset implements Executor {
                 continue;
             }
 
-            String msg = ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem);
-            player.sendMessage(msg);
+            player.spigot().sendMessage(ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem));
             return;
         }
 

@@ -297,7 +297,7 @@ public class MessagesConfig {
     @CfgComment("Dostepne zmienne: {POINTS}, {POINTS-FORMAT}, {REQUIRED}, {REQUIRED-FORMAT}")
     public String createRank = "&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED} &cpunktow.";
     @CfgComment("Dostepne zmienne: {ITEM}, {ITEMS}")
-    public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
+    public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}&c. Najedz na przedmiot, aby dowiedziec sie wiecej";
     @CfgComment("Dostepne zmienne: {EXP}")
     public String createExperience = "&cNie posiadasz wymaganego doswiadczenia do zalozenia gildii: &7{EXP}";
     @CfgComment("Dostepne zmienne: {MONEY}")

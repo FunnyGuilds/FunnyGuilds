@@ -32,7 +32,9 @@ public class FunnyGuilds extends JavaPlugin {
     private static String mainVersion;
 
     private ConcurrencyManager concurrencyManager;
+    
     private boolean disabling;
+    private boolean forceDisabling;
 
     public FunnyGuilds() {
         funnyguilds = this;
@@ -40,6 +42,19 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        try {
+           Class.forName("net.md_5.bungee.api.ChatColor"); 
+        } catch (Exception spigotNeeded) {
+            FunnyGuildsLogger.info("FunnyGuilds requires spigot to work, your server seems to be using something else");
+            FunnyGuildsLogger.info("If you think that is not true - contact plugin developers");
+            FunnyGuildsLogger.info("https://github.com/FunnyGuilds/FunnyGuilds");
+            
+            getServer().getPluginManager().disablePlugin(this);
+            this.forceDisabling = true;
+            
+            return;
+        }
+        
         if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
@@ -111,6 +126,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (this.forceDisabling) {
+            return;
+        }
+        
         disabling = true;
 
         EntityUtil.despawn();

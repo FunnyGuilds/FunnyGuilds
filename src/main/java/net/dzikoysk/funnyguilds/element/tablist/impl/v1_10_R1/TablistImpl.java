@@ -22,6 +22,9 @@ public class TablistImpl extends AbstractTablist {
     private static final Class<?> ENUM_GAMEMODE_CLASS;
     private static final Class<?> BASE_COMPONENT_CLASS;
 
+    private static final Constructor<?> PLAYER_INFO_CONSTRUCTOR;
+    private static final Constructor<?> PLAYER_LIST_HEADER_FOOTER_CONSTRUCTOR;
+    
     private static final Field ACTION_ENUM_FIELD;
     private static final Field LIST_FIELD;
     private static final Field HEADER_FIELD;
@@ -31,6 +34,7 @@ public class TablistImpl extends AbstractTablist {
     private static final Enum<?> UPDATE_PLAYER;
     private static final String UUID_PATTERN = "00000000-0000-%s-0000-000000000000";
     private static final String TOKEN = "!@#$^*";
+    
     private static Constructor<?> playerInfoDataConstructor;
     private static Constructor<?> gameProfileConstructor;
 
@@ -42,6 +46,9 @@ public class TablistImpl extends AbstractTablist {
         ENUM_GAMEMODE_CLASS = Reflections.getNMSClass("EnumGamemode");
         BASE_COMPONENT_CLASS = Reflections.getNMSClass("IChatBaseComponent");
 
+        PLAYER_INFO_CONSTRUCTOR = Reflections.getConstructor(PLAYER_INFO_CLASS);
+        PLAYER_LIST_HEADER_FOOTER_CONSTRUCTOR = Reflections.getConstructor(PLAYER_LIST_HEADER_FOOTER_CLASS);
+        
         ACTION_ENUM_FIELD = Reflections.getField(PLAYER_INFO_CLASS, "a");
         LIST_FIELD = Reflections.getField(PLAYER_INFO_CLASS, "b");
         HEADER_FIELD = Reflections.getField(PLAYER_LIST_HEADER_FOOTER_CLASS, "a");
@@ -82,8 +89,8 @@ public class TablistImpl extends AbstractTablist {
         final List<Object> updatePlayerList = Lists.newArrayList();
 
         try {
-            final Object addPlayerPacket = PLAYER_INFO_CLASS.newInstance();
-            final Object updatePlayerPacket = PLAYER_INFO_CLASS.newInstance();
+            final Object addPlayerPacket = PLAYER_INFO_CONSTRUCTOR.newInstance();
+            final Object updatePlayerPacket = PLAYER_INFO_CONSTRUCTOR.newInstance();
 
             for (int i = 0; i < cells; i++) {
                 if (profileCache[i] == null) {
@@ -131,7 +138,7 @@ public class TablistImpl extends AbstractTablist {
             Object footer = this.createBaseComponent(this.putVars(super.footer), true);
 
             if (this.shouldUseHeaderAndFooter()) {
-                final Object headerFooterPacket = PLAYER_LIST_HEADER_FOOTER_CLASS.newInstance();
+                final Object headerFooterPacket = PLAYER_LIST_HEADER_FOOTER_CONSTRUCTOR.newInstance();
                 HEADER_FIELD.set(headerFooterPacket, header);
                 FOOTER_FIELD.set(headerFooterPacket, footer);
                 packets.add(headerFooterPacket);

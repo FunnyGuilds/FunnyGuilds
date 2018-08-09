@@ -17,7 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExcBase implements Executor {
@@ -51,15 +51,13 @@ public class ExcBase implements Executor {
             return;
         }
 
-        Collection<ItemStack> requiredItems = config.baseItems;
-
+        List<ItemStack> requiredItems = config.baseItems;
         for (ItemStack requiredItem : requiredItems) {
             if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                 continue;
             }
 
-            String msg = ItemUtils.translatePlaceholder(messages.baseItems, requiredItems, requiredItem);
-            player.sendMessage(msg);
+            player.spigot().sendMessage(ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem));
             return;
         }
 

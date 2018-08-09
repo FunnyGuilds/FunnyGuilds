@@ -26,7 +26,7 @@ public class UserCache {
     private BukkitTask teleportation;
     private long notificationTime;
     private boolean enter;
-    private boolean bypass;
+    //private boolean bypass;
     private boolean spy;
 
     public UserCache(User user) {

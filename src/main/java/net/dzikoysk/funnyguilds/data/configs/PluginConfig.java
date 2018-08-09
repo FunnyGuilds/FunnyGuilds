@@ -111,11 +111,12 @@ public class PluginConfig {
 
     @CfgComment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
     @CfgName("guild-min-members")
-    public int minMembersToInclude = 3;
+    public int minMembersToInclude = 1;
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii")
     @CfgComment("Tylko wartosci ujete w <> sa wymagane, reszta (ujeta w []) jest opcjonalna")
     @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant:eggtype:skullowner:armorcolor]")
+    @CfgComment("Przyklad: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
     @CfgComment("")
     @CfgComment("Zamiast spacji wstawiaj podkreslnik: _")
     @CfgComment("Aby zrobic nowa linie lore wstaw hash: #")
@@ -130,7 +131,7 @@ public class PluginConfig {
     @CfgComment("UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
     @CfgName("items")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> items_ = Arrays.asList("5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!", "5 dirt", "5 tnt");
+    public List<String> items_ = Arrays.asList("5 stone", "5 dirt", "5 tnt");
 
     @CfgExclude
     public List<ItemStack> createItems;
@@ -147,7 +148,7 @@ public class PluginConfig {
     @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @CfgName("items-vip")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> itemsVip_ = Collections.singletonList("1 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!");
+    public List<String> itemsVip_ = Arrays.asList("1 gold_ingot");
 
     @CfgExclude
     public List<ItemStack> createItemsVip;

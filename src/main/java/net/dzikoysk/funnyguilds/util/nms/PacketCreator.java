@@ -4,7 +4,9 @@ import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,11 +16,13 @@ public final class PacketCreator {
     private static final Map<String, ThreadLocal<PacketCreator>> PACKET_CREATOR_CACHE = new HashMap<>();
 
     private final Class<?> packetClass;
+    private final Constructor<?> packetConstructor;
     private final Map<String, Field> packetFields;
     private Object packetInstance;
 
     private PacketCreator(Class<?> packetClass) {
         this.packetClass = packetClass;
+        this.packetConstructor = Reflections.getConstructor(packetClass);        
         this.packetFields = new HashMap<>(this.packetClass.getDeclaredFields().length);
 
         for (Field field : this.packetClass.getDeclaredFields()) {
@@ -52,8 +56,8 @@ public final class PacketCreator {
 
     public PacketCreator create() {
         try {
-            this.packetInstance = this.packetClass.newInstance();
-        } catch (final InstantiationException | IllegalAccessException e) {
+            this.packetInstance = this.packetConstructor.newInstance();
+        } catch (final InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
 

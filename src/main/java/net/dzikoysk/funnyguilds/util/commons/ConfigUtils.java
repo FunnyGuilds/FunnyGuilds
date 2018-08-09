@@ -1,15 +1,20 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang.Validate;
 import org.diorite.cfg.system.Template;
 import org.diorite.cfg.system.TemplateCreator;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 public final class ConfigUtils {
 
+    @SuppressWarnings("unchecked")
     public static <T> T loadConfig(final File file, final Class<T> implementationFile) {
+        final Constructor<T> implementationFileConstructor = (Constructor<T>) Reflections.getConstructor(implementationFile);
         final Template<T> template = TemplateCreator.getTemplate(implementationFile);
 
         T config;
@@ -17,8 +22,8 @@ public final class ConfigUtils {
         if (!file.exists()) {
             try {
                 try {
-                    config = template.fillDefaults(implementationFile.newInstance());
-                } catch (final InstantiationException | IllegalAccessException e) {
+                    config = template.fillDefaults(implementationFileConstructor.newInstance());
+                } catch (final InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
                     throw new RuntimeException("Couldn't get access to " + implementationFile.getName() + "  constructor", e);
                 }
 
@@ -32,9 +37,9 @@ public final class ConfigUtils {
                 try {
                     config = template.load(file);
                     if (config == null) {
-                        config = template.fillDefaults(implementationFile.newInstance());
+                        config = template.fillDefaults(implementationFileConstructor.newInstance());
                     }
-                } catch (final IOException e) {
+                } catch (final IOException | IllegalArgumentException | InvocationTargetException e) {
                     throw new RuntimeException("IO exception when loading config file: " + file.getAbsolutePath(), e);
                 }
             } catch (final InstantiationException | IllegalAccessException e) {
