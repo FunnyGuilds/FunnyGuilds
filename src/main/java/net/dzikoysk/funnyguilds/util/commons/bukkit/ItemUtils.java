@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.util.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.HoverEvent.Action;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -72,10 +71,8 @@ public final class ItemUtils {
                 }
                 
                 messagePart = "";
-
-                for (BaseComponent extra : getItemComponent(item, messageColor)) {
-                    translatedMessage.addExtra(extra);
-                }
+                
+                translatedMessage.addExtra(getItemComponent(item, messageColor));
                 
                 i += 5;
                 continue;
@@ -90,9 +87,7 @@ public final class ItemUtils {
                 messagePart = "";
                 
                 for (int itemNum = 0; itemNum < items.size(); itemNum++) {
-                    for (BaseComponent extra : getItemComponent(items.get(itemNum), messageColor)) {
-                        translatedMessage.addExtra(extra);
-                    }
+                    translatedMessage.addExtra(getItemComponent(items.get(itemNum), messageColor));
                     
                     if (itemNum != items.size() - 1) {
                         for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + ", ")) {
@@ -115,18 +110,21 @@ public final class ItemUtils {
         return translatedMessage;
     }
 
-    public static BaseComponent[] getItemComponent(ItemStack item, String messageColor) {
-        ComponentBuilder extraBuilder = new ComponentBuilder("");
-        extraBuilder.append(TextComponent.fromLegacyText(messageColor + item.getAmount() + " " + item.getType().toString().toLowerCase()));
+    public static TextComponent getItemComponent(ItemStack item, String messageColor) {
+        TextComponent itemComponent = new TextComponent();
+        
+        for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + item.getAmount() + " " + item.getType().toString().toLowerCase())) {
+            itemComponent.addExtra(extra);
+        }
         
         try {
             String jsonItem = SAVE.invoke(AS_NMS_COPY.invoke(null, item), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
-            extraBuilder.event(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[]{new TextComponent(jsonItem)}));
+            itemComponent.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[]{new TextComponent(jsonItem)}));
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
         }
         
-        return extraBuilder.create();
+        return itemComponent;
     }
     
     public static ItemStack parseItem(String string) {
