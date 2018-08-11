@@ -128,6 +128,12 @@ public class PluginConfig {
     @CfgName("guild-min-members")
     public int minMembersToInclude = 1;
 
+    @CfgComment("Czy wiadomosci o braku potrzebnych przedmiotow maja zawierac elementy, na ktore mozna najechac")
+    @CfgComment("Takie elementy pokazuja informacje o przedmiocie, np. jego typ, nazwe czy opis")
+    @CfgComment("Funkcja jest obecnie troche niedopracowana i moze powodowac problemy na niektorych wersjach MC, np. 1.8.8")
+    @CfgName("enable-item-component")
+    public boolean enableItemComponent = false;
+    
     @CfgComment("Przedmioty wymagane do zalozenia gildii")
     @CfgComment("Tylko wartosci ujete w <> sa wymagane, reszta (ujeta w []) jest opcjonalna")
     @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant:eggtype:skullowner:armorcolor]")

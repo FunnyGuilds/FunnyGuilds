@@ -3,12 +3,6 @@ package net.dzikoysk.funnyguilds.util.commons.bukkit;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.nms.EggTypeChanger;
-import net.dzikoysk.funnyguilds.util.nms.Reflections;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.HoverEvent.Action;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -19,9 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -29,102 +20,34 @@ import java.util.List;
 
 public final class ItemUtils {
 
-    private static final Constructor<?> NBT_TAG_COMPOUND_CONSTRUCTOR;
+    public static String translateTextPlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
+        StringBuilder contentBuilder = new StringBuilder();
 
-    private static final Method AS_NMS_COPY;
-    private static final Method SAVE;
+        if (message.contains("{ITEM}")) {
+            contentBuilder.append(item.getAmount());
+            contentBuilder.append(" ");
+            contentBuilder.append(item.getType().toString().toLowerCase());
 
-    static {
-        final Class<?> craftItemStack = Reflections.getCraftBukkitClass("inventory.CraftItemStack");
-        AS_NMS_COPY = Reflections.getMethod(craftItemStack, "asNMSCopy", ItemStack.class);
+            message = StringUtils.replace(message, "{ITEM}", contentBuilder.toString());
+        }
 
-        final Class<?> nmsItemStack = Reflections.getNMSClass("ItemStack");
-        final Class<?> nbtTagCompound = Reflections.getNMSClass("NBTTagCompound");
+        if (message.contains("{ITEMS}")) {
+            Collection<String> translatedItems = new ArrayList<>();
 
-        NBT_TAG_COMPOUND_CONSTRUCTOR = Reflections.getConstructor(nbtTagCompound);
-        SAVE = Reflections.getMethod(nmsItemStack, "save", nbtTagCompound);
-    }
+            for (ItemStack itemStack : items) {
+                contentBuilder.setLength(0);
 
-    public static TextComponent translatePlaceholder(String message, List<ItemStack> items, ItemStack item) {
-        TextComponent translatedMessage = new TextComponent();
-        String messagePart = "";
-        String messageColor = "";
-        
-        char[] messageChars = message.toCharArray();
-        for (int i = 0; i < messageChars.length; i++) {
-            char c = messageChars[i];
-            if (c != '{') {
-                messagePart += c;
-                
-                if (c == ChatColor.COLOR_CHAR) {
-                    messageColor += c;
-                    messageColor += messageChars[i + 1];
-                }
-                
-                continue;
-            }
-            
-            String subItem = message.substring(i, Math.min(message.length(), i + 6));
-            if (subItem.equals("{ITEM}")) {
-                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
-                    translatedMessage.addExtra(extra);
-                }
-                
-                messagePart = "";
-                
-                translatedMessage.addExtra(getItemComponent(item, messageColor));
-                
-                i += 5;
-                continue;
+                contentBuilder.append(itemStack.getAmount());
+                contentBuilder.append(" ");
+                contentBuilder.append(itemStack.getType().toString().toLowerCase());
+
+                translatedItems.add(contentBuilder.toString());
             }
 
-            String subItems = message.substring(i, Math.min(message.length(), i + 7));
-            if (subItems.equals("{ITEMS}")) {
-                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
-                    translatedMessage.addExtra(extra);
-                }
+            message = StringUtils.replace(message, "{ITEMS}", ChatUtils.toString(translatedItems, true));
+        }
 
-                messagePart = "";
-                
-                for (int itemNum = 0; itemNum < items.size(); itemNum++) {
-                    translatedMessage.addExtra(getItemComponent(items.get(itemNum), messageColor));
-                    
-                    if (itemNum != items.size() - 1) {
-                        for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + ", ")) {
-                            translatedMessage.addExtra(extra);
-                        }
-                    }
-                }
-                
-                i += 6;
-                continue;
-            }
-
-            messagePart += c;
-        }
-        
-        for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
-            translatedMessage.addExtra(extra);
-        }
-        
-        return translatedMessage;
-    }
-
-    public static TextComponent getItemComponent(ItemStack item, String messageColor) {
-        TextComponent itemComponent = new TextComponent();
-        
-        for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + item.getAmount() + " " + item.getType().toString().toLowerCase())) {
-            itemComponent.addExtra(extra);
-        }
-        
-        try {
-            String jsonItem = SAVE.invoke(AS_NMS_COPY.invoke(null, item), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
-            itemComponent.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[]{new TextComponent(jsonItem)}));
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
-            e.printStackTrace();
-        }
-        
-        return itemComponent;
+        return message;
     }
     
     public static ItemStack parseItem(String string) {
@@ -153,9 +76,7 @@ public final class ItemUtils {
 
             if (str.contains("name")) {
                 String[] splitName = str.split(":");
-                item.setName(StringUtils.replace(
-                                ChatUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_",
-                                " "), true);
+                item.setName(StringUtils.replace(ChatUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_", " "), true);
             } else if (str.contains("lore")) {
                 String[] splitLore = str.split(":");
                 String loreArgs = String.join(":", Arrays.copyOfRange(splitLore, 1, splitLore.length));
@@ -217,8 +138,7 @@ public final class ItemUtils {
                         item.refreshMeta();
                     }
                 } else {
-                    FunnyGuildsLogger.info(
-                                    "This MC version supports metadata for spawn egg type, no need to use eggtype in item creation!");
+                    FunnyGuildsLogger.info("This MC version supports metadata for spawn egg type, no need to use eggtype in item creation!");
                 }
             }
         }

@@ -195,6 +195,7 @@ public class Guild extends AbstractBasic {
         }
 
         this.region = region;
+        this.region.setGuild(this);
 
         if (this.home == null) {
             this.home = region.getCenter();

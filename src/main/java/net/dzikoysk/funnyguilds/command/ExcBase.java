@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.util.commons.spigot.ItemComponentUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -57,7 +58,12 @@ public class ExcBase implements Executor {
                 continue;
             }
 
-            player.spigot().sendMessage(ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem));
+            if (config.enableItemComponent) {
+                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
+            } else {
+                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
+            }
+            
             return;
         }
 

@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlaye
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -18,6 +19,7 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberAcceptInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.util.commons.spigot.ItemComponentUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,6 +31,7 @@ public class ExcJoin implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        PluginConfig config = Settings.getConfig();
         MessagesConfig messages = Messages.getInstance();
         Player player = (Player) sender;
         User user = User.get(player);
@@ -67,13 +70,18 @@ public class ExcJoin implements Executor {
             return;
         }
 
-        List<ItemStack> requiredItems = Settings.getConfig().joinItems;
+        List<ItemStack> requiredItems = config.joinItems;
         for (ItemStack requiredItem : requiredItems) {
             if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
                 continue;
             }
 
-            player.spigot().sendMessage(ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem));
+            if (config.enableItemComponent) {
+                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
+            } else {
+                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
+            }
+            
             return;
         }
         

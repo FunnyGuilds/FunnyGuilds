@@ -25,6 +25,7 @@ import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
+import net.dzikoysk.funnyguilds.util.commons.spigot.ItemComponentUtils;
 import net.dzikoysk.funnyguilds.util.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -197,7 +198,12 @@ public class ExcCreate implements Executor {
                 continue;
             }
 
-            player.spigot().sendMessage(ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem));
+            if (config.enableItemComponent) {
+                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
+            } else {
+                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
+            }
+            
             return;
         }
 

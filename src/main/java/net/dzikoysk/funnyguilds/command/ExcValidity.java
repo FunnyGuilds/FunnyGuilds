@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.util.commons.spigot.ItemComponentUtils;
 import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -56,7 +57,12 @@ public class ExcValidity implements Executor {
                 continue;
             }
 
-            player.spigot().sendMessage(ItemUtils.translatePlaceholder(messages.createItems, requiredItems, requiredItem));
+            if (config.enableItemComponent) {
+                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
+            } else {
+                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
+            }
+            
             return;
         }
         
