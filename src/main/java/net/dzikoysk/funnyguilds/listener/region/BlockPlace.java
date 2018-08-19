@@ -18,12 +18,12 @@ public class BlockPlace implements Listener {
     public void onPlace(BlockPlaceEvent e) {
         if (ProtectionSystem.build(e.getPlayer(), e.getBlock().getLocation(), true)) {
             if (config.buggedBlocks && !config.buggedBlocksExclude.contains(e.getBlock().getType())) {
+                ItemStack returnItem = e.getPlayer().getItemInHand().clone();
+                returnItem.setAmount(1);
                 Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> {
                     e.getBlockReplacedState().update(true);
 
                     if (config.buggedBlockReturn) {
-                        ItemStack returnItem = e.getPlayer().getItemInHand().clone();
-                        returnItem.setAmount(1);
                         e.getPlayer().getInventory().addItem(returnItem);
                     }
                 }, config.buggedBlocksTimer);
