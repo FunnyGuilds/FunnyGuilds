@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -109,6 +110,10 @@ public final class DefaultTablistVariables {
     }
     
     private static List<String> getWorldGuardRegionNames(User user) {
+        if (user == null || user.getPlayer() == null) {
+            return Collections.emptyList();
+        }
+
         Location location = user.getPlayer().getLocation();
 
         if (location != null) {
