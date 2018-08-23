@@ -57,7 +57,7 @@ public abstract class FunnyEvent extends Event implements Cancellable {
         return handlers;
     }
 
-    public static HandlerList getHandlersList() {
+    public static HandlerList getHandlerList() {
         return handlers;
     }
     
