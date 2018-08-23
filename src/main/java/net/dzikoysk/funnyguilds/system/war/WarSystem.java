@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -48,7 +49,10 @@ public class WarSystem {
         }
         
         guild.setAttacked(System.currentTimeMillis());
-        guild.removeLive();
+        
+        if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
+            guild.removeLive();
+        }
         
         if (guild.getLives() < 1) {
             conquer(attacker, guild, user);
