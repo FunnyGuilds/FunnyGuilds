@@ -1081,6 +1081,8 @@ public class PluginConfig {
 
     @CfgComment("Dane wymagane do polaczenia z baza")
     @CfgComment("UWAGA: connectionTimeout jest w milisekundach!")
+    @CfgComment("Sekcja poolSize odpowiada za liczbe zarezerwowanych polaczen, domyslna wartosc 5 powinna wystarczyc")
+    @CfgComment("Aby umozliwic FG automatyczne zarzadzanie liczba polaczen - ustaw poolSize na -1")
     @CfgComment("Sekcje usersTableName, guildsTableName i regionsTableName to nazwy tabel z danymi FG w bazie danych")
     @CfgComment("Najlepiej zmieniac te nazwy tylko wtedy, gdy jest naprawde taka potrzeba (np. wystepuje konflikt z innym pluginem)")
     @CfgComment("Aby zmienic nazwy tabel, gdy masz juz w bazie jakies dane z FG:")
@@ -1088,7 +1090,7 @@ public class PluginConfig {
     @CfgComment("2. Zmien dane w configu FG")
     @CfgComment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
     @CfgName("mysql")
-    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 30000, true, "users", "guilds", "regions");
+    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 5, 30000, true, "users", "guilds", "regions");
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
@@ -1492,6 +1494,7 @@ public class PluginConfig {
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String password;
         
+        public int poolSize;
         public int connectionTimeout;
         public boolean useSSL;
         
@@ -1506,12 +1509,13 @@ public class PluginConfig {
 
         public MySQL() {}
 
-        public MySQL(String hostname, int port, String database, String user, String password, int connectionTimeout, boolean useSSL, String usersTableName, String guildsTableName, String regionsTableName) {
+        public MySQL(String hostname, int port, String database, String user, String password, int poolSize, int connectionTimeout, boolean useSSL, String usersTableName, String guildsTableName, String regionsTableName) {
             this.hostname = hostname;
             this.port = port;
             this.database = database;
             this.user = user;
             this.password = password;
+            this.poolSize = poolSize;
             this.connectionTimeout = connectionTimeout;
             this.useSSL = useSSL;
             this.usersTableName = usersTableName;

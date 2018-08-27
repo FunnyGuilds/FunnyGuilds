@@ -22,9 +22,12 @@ public class Database {
         this.dataSource = new HikariDataSource();
         PluginConfig.MySQL c = Settings.getConfig().mysql;
 
-        int cores = Runtime.getRuntime().availableProcessors();
-        this.dataSource.setMaximumPoolSize((cores * 2) + 1); // (core_count * 2) + spindle [pattern from PostgreSQL wiki]
+        int poolSize = c.poolSize;
+        if (poolSize <= 0) {
+            poolSize = Runtime.getRuntime().availableProcessors() * 2 + 1; // (core_count * 2) + spindle [pattern from PostgreSQL wiki]
+        }
 
+        this.dataSource.setMaximumPoolSize(poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
 
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
