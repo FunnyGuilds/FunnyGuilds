@@ -60,12 +60,12 @@ public final class DefaultTablistVariables {
         if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
             parser.add(new SimpleTablistVariable("WG-REGION", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
-                return regionNames != null ? regionNames.get(0) : "-";
+                return regionNames != null && !regionNames.isEmpty() ? regionNames.get(0) : "-";
             }));
 
             parser.add(new SimpleTablistVariable("WG-REGIONS", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
-                return regionNames != null ? StringUtils.join(regionNames, ", ") : "-";
+                return regionNames != null && !regionNames.isEmpty() ? StringUtils.join(regionNames, ", ") : "-";
             }));
         }
     }
