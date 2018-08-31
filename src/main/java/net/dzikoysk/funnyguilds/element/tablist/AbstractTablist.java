@@ -97,6 +97,7 @@ public abstract class AbstractTablist {
             case "v1_11_R1":
             case "v1_12_R1":
             case "v1_13_R1":
+            case "v1_13_R2":
                 tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, user);
                 TABLIST_CACHE.put(user.getUUID(), tablist);
                 return tablist;
