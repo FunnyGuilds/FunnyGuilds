@@ -8,10 +8,11 @@ import org.bukkit.Location;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class RegionUtils {
 
-    public static final Set<Region> REGION_LIST = new HashSet<>();
+    public static final Set<Region> REGION_LIST = ConcurrentHashMap.newKeySet();
 
     public static Set<Region> getRegions() {
         return new HashSet<>(REGION_LIST);

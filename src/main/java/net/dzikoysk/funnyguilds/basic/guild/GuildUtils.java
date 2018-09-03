@@ -17,11 +17,18 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class GuildUtils {
 
-    private static final Set<Guild> guilds = new HashSet<>();
+    private static final Set<Guild> guilds = ConcurrentHashMap.newKeySet();
 
     public static Set<Guild> getGuilds() {
         return new HashSet<>(guilds);
@@ -133,61 +140,28 @@ public class GuildUtils {
         return false;
     }
 
-    public static List<String> getNames(Collection<Guild> lsg) {
-        List<String> list = new ArrayList<>();
-
-        if (lsg == null) {
-            return list;
-        }
-
-        for (Guild g : lsg) {
-            if (g == null) {
-                continue;
-            }
-
-            if (g.getName() != null) {
-                list.add(g.getName());
-            }
-        }
-
-        return list;
+    public static List<String> getNames(Collection<Guild> guilds) {
+        return guilds.stream()
+                .filter(Objects::nonNull)
+                .map(Guild::getName)
+                .collect(Collectors.toList());
     }
 
-    public static List<String> getTags(Collection<Guild> lsg) {
-        if (lsg == null) {
-            return null;
-        }
-
-        List<String> list = new ArrayList<>();
-
-        for (Guild g : lsg) {
-            if (g.getName() != null) {
-                list.add(g.getTag());
-            }
-        }
-
-        return list;
+    public static List<String> getTags(Collection<Guild> guilds) {
+        return guilds.stream()
+                .filter(Objects::nonNull)
+                .map(Guild::getTag)
+                .collect(Collectors.toList());
     }
 
     public static Set<Guild> getGuilds(Collection<String> names) {
-        if (names == null) {
-            return null;
-        }
-
-        Set<Guild> list = new HashSet<>();
-
-        for (String name : names) {
-            Guild guild = GuildUtils.getByName(name);
-
-            if (guild != null) {
-                list.add(guild);
-            }
-        }
-
-        return list;
+        return names.stream()
+                .map(GuildUtils::getByName)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
     }
 
-    public static void addGuild(Guild guild) {
+    public static synchronized void addGuild(Guild guild) {
         if (guild == null || guild.getName() == null) {
             return;
         }
@@ -197,7 +171,7 @@ public class GuildUtils {
         }
     }
 
-    public static void removeGuild(Guild guild) {
+    public static synchronized void removeGuild(Guild guild) {
         guilds.remove(guild);
     }
 

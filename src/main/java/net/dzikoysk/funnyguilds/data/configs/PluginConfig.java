@@ -1178,6 +1178,7 @@ public class PluginConfig {
         this.createItemsVip = loadItemStackList(this.itemsVip_);
         
         this.guiItems = loadGUI(this.guiItems_);
+
         if (!useCommonGUI) {
             this.guiItemsVip = loadGUI(this.guiItemsVip_);
         }
@@ -1209,11 +1210,13 @@ public class PluginConfig {
         }
         
         this.blockedInteract = new HashSet<>();
+
         for (String s : this._blockedInteract) {
             this.blockedInteract.add(MaterialUtils.parseMaterial(s, false));
         }
         
         this.buggedBlocksExclude = new HashSet<>();
+
         for (String s : this.buggedBlocksExclude_) {
             this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(s, false));
         }
@@ -1227,6 +1230,7 @@ public class PluginConfig {
 
         if (this.rankSystem == RankSystem.ELO) {
             Map<IntegerRange, Integer> parsedData = new HashMap<>();
+
             for(Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
                 try {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
@@ -1239,13 +1243,16 @@ public class PluginConfig {
         }
 
         HashMap<Material, Double> map = new HashMap<>();
+
         for (Map.Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
             Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
+
             if (material == null || material == Material.AIR) {
                 continue;
             }
             
             double chance = entry.getValue();
+
             if (chance == 0) {
                 continue;
             }
@@ -1260,10 +1267,11 @@ public class PluginConfig {
         this.guildTNTProtectionOrMode = this.guildTNTProtectionStartTime.isAfter(this.guildTNTProtectionEndTime);
 
         this.explodeMaterials = map;
-
         this.translatedMaterials = new HashMap<>();
+
         for (String materialName : translatedMaterials_.keySet()) {
             Material material = Material.matchMaterial(materialName.toUpperCase());
+
             if (material == null) {
                 continue;
             }
