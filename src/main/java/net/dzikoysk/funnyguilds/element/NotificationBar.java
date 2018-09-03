@@ -248,6 +248,7 @@ public class NotificationBar {
 
         public Set<Entry<Player, V>> entrySet() {
             Set<Entry<Player, V>> toReturn = new HashSet<>();
+
             for (String name : contents.keySet()) {
                 toReturn.add(new PlayerEntry(Bukkit.getPlayer(name), contents.get(name)));
             }
@@ -257,6 +258,7 @@ public class NotificationBar {
 
         public V get(Object key) {
             V result = null;
+
             if (key instanceof Player) {
                 result = contents.get(((Player) key).getName());
             }
@@ -270,6 +272,7 @@ public class NotificationBar {
 
         public Set<Player> keySet() {
             Set<Player> toReturn = new HashSet<>();
+
             for (String name : contents.keySet()) {
                 toReturn.add(Bukkit.getPlayer(name));
             }

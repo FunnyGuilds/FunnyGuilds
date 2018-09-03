@@ -10,10 +10,11 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class Guild extends AbstractBasic {
@@ -25,10 +26,10 @@ public class Guild extends AbstractBasic {
     private Rank rank;
     private Region region;
     private Location home;
-    private Set<User> members = new HashSet<>();
-    private Set<User> deputies = new HashSet<>();
-    private Set<Guild> allies = new HashSet<>();
-    private Set<Guild> enemies = new HashSet<>();
+    private Set<User> members;
+    private Set<User> deputies;
+    private Set<Guild> allies;
+    private Set<Guild> enemies;
     private Location enderCrystal;
     private boolean pvp;
     private long born;
@@ -41,8 +42,12 @@ public class Guild extends AbstractBasic {
     private long additionalProtection;
 
     private Guild(UUID uuid) {
-        this.born = System.currentTimeMillis();
         this.uuid = uuid;
+        this.born = System.currentTimeMillis();
+        this.members = ConcurrentHashMap.newKeySet();
+        this.deputies = ConcurrentHashMap.newKeySet();
+        this.allies = ConcurrentHashMap.newKeySet();
+        this.enemies = ConcurrentHashMap.newKeySet();
         GuildUtils.addGuild(this);
     }
 
@@ -210,7 +215,7 @@ public class Guild extends AbstractBasic {
     }
 
     public void setMembers(Set<User> members) {
-        this.members = members;
+        this.members = Collections.synchronizedSet(members);
         this.updateRank();
         this.changes();
     }

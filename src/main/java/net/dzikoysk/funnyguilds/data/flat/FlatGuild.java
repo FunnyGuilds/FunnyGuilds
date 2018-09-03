@@ -18,6 +18,7 @@ import org.bukkit.Location;
 
 import java.io.File;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class FlatGuild {
 
@@ -80,7 +81,7 @@ public class FlatGuild {
         }
 
         User owner = User.get(ownerName);
-        Set<User> deputies = new HashSet<>(1);
+        Set<User> deputies = ConcurrentHashMap.newKeySet(1);
 
         if (deputyName != null && !deputyName.isEmpty()) {
             deputies = UserUtils.getUsers(ChatUtils.fromString(deputyName));

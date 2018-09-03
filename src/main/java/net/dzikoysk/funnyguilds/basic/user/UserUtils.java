@@ -5,13 +5,14 @@ import com.google.common.cache.CacheBuilder;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class UserUtils {
 
-    private final static Map<UUID, User> uuidUserMap = new HashMap<>();
-    private final static Map<String, User> nameUserMap = new HashMap<>();
+    private final static Map<UUID, User> uuidUserMap = new ConcurrentHashMap<>();
+    private final static Map<String, User> nameUserMap = new ConcurrentHashMap<>();
 
     private final static Cache<UUID, User> uuidUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
     private final static Cache<String, User> nameUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
