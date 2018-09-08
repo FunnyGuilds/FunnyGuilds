@@ -10,9 +10,8 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.util.commons.spigot.ItemComponentUtils;
 import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -52,17 +51,8 @@ public class ExcValidity implements Executor {
         }
 
         List<ItemStack> requiredItems = config.validityItems;
-        for (ItemStack requiredItem : requiredItems) {
-            if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
-                continue;
-            }
 
-            if (config.enableItemComponent) {
-                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
-            } else {
-                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
-            }
-            
+        if (! this.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
         

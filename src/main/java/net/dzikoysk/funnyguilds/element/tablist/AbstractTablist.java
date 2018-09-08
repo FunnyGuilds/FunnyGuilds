@@ -77,6 +77,7 @@ public abstract class AbstractTablist {
     
     public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, User user) {
         AbstractTablist tablist = TABLIST_CACHE.get(user.getUUID());
+
         if (tablist != null) {
             return tablist;
         }
@@ -84,26 +85,27 @@ public abstract class AbstractTablist {
         switch (Reflections.SERVER_VERSION) {
             case "v1_8_R1":
                 tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R1.TablistImpl(pattern, header, footer, ping, user);
-                TABLIST_CACHE.put(user.getUUID(), tablist);
-                return tablist;
+                break;
             case "v1_8_R2":
             case "v1_8_R3":
             case "v1_9_R1":
             case "v1_9_R2":
                 tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R3.TablistImpl(pattern, header, footer, ping, user);
-                TABLIST_CACHE.put(user.getUUID(), tablist);
-                return tablist;
+                break;
             case "v1_10_R1":
             case "v1_11_R1":
             case "v1_12_R1":
             case "v1_13_R1":
             case "v1_13_R2":
                 tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_10_R1.TablistImpl(pattern, header, footer, ping, user);
-                TABLIST_CACHE.put(user.getUUID(), tablist);
-                return tablist;
+                break;
             default:
                 throw new RuntimeException("Could not find tablist for given version.");
         }
+
+        TABLIST_CACHE.put(user.getUUID(), tablist);
+
+        return tablist;
     }
 
     public static AbstractTablist getTablist(Player player) {

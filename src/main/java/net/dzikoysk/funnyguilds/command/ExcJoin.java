@@ -2,8 +2,8 @@ package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
@@ -12,18 +12,17 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberAcceptInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.util.commons.spigot.ItemComponentUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 
 import java.util.List;
 
@@ -71,17 +70,8 @@ public class ExcJoin implements Executor {
         }
 
         List<ItemStack> requiredItems = config.joinItems;
-        for (ItemStack requiredItem : requiredItems) {
-            if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
-                continue;
-            }
 
-            if (config.enableItemComponent) {
-                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
-            } else {
-                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
-            }
-            
+        if (! this.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
         

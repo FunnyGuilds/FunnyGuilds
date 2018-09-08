@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.util.commons.spigot.ItemComponentUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -24,17 +23,7 @@ public class ExcRankReset implements Executor {
         Player player = (Player) sender;
         List<ItemStack> requiredItems = config.rankResetItems;
 
-        for (ItemStack requiredItem : requiredItems) {
-            if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
-                continue;
-            }
-
-            if (config.enableItemComponent) {
-                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
-            } else {
-                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
-            }
-            
+        if (! this.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
 
