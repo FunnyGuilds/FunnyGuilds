@@ -28,6 +28,7 @@ public class FlatGuild {
         this.guild = guild;
     }
 
+    @SuppressWarnings ("unchecked")
     public static Guild deserialize(File file) {
         PluginConfig configuration = Settings.getConfig();
         YamlWrapper data = new YamlWrapper(file);
@@ -39,10 +40,10 @@ public class FlatGuild {
         String deputyName = data.getString("deputy");
         String hs = data.getString("home");
         String regionName = data.getString("region");
-        List<String> memberNames = data.getStringList("members");
+        Set<String> memberNames = (HashSet<String>) data.get("members");
         // List<String> regionNames = data.getStringList("regions");
-        List<String> allyNames = data.getStringList("allies");
-        List<String> enemyNames = data.getStringList("enemies");
+        Set<String> allyNames = (HashSet<String>) data.get("allies");
+        Set<String> enemyNames = (HashSet<String>) data.get("enemies");
         boolean pvp = data.getBoolean("pvp");
         long born = data.getLong("born");
         long validity = data.getLong("validity");
@@ -98,7 +99,7 @@ public class FlatGuild {
         }
 
         if (memberNames == null || memberNames.isEmpty()) {
-            memberNames = new ArrayList<>();
+            memberNames = new HashSet<>();
             memberNames.add(ownerName);
         }
         

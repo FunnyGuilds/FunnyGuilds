@@ -140,11 +140,11 @@ public class GuildUtils {
         return false;
     }
 
-    public static List<String> getNames(Collection<Guild> guilds) {
+    public static Set<String> getNames(Collection<Guild> guilds) {
         return guilds.stream()
                 .filter(Objects::nonNull)
                 .map(Guild::getName)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     public static List<String> getTags(Collection<Guild> guilds) {

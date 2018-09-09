@@ -33,14 +33,14 @@ public final class ItemComponentUtils {
     
     public static TextComponent translateComponentPlaceholder(String message, List<ItemStack> items, ItemStack item) {
         TextComponent translatedMessage = new TextComponent();
-        String messagePart = "";
+        StringBuilder messagePart = new StringBuilder();
         String messageColor = "";
         
         char[] messageChars = message.toCharArray();
         for (int i = 0; i < messageChars.length; i++) {
             char c = messageChars[i];
             if (c != '{') {
-                messagePart += c;
+                messagePart.append(c);
                 
                 if (c == ChatColor.COLOR_CHAR) {
                     messageColor += c;
@@ -52,11 +52,11 @@ public final class ItemComponentUtils {
             
             String subItem = message.substring(i, Math.min(message.length(), i + 6));
             if (subItem.equals("{ITEM}")) {
-                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
+                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
                     translatedMessage.addExtra(extra);
                 }
                 
-                messagePart = "";
+                messagePart = new StringBuilder();
                 
                 translatedMessage.addExtra(getItemComponent(item, messageColor));
                 
@@ -66,11 +66,11 @@ public final class ItemComponentUtils {
 
             String subItems = message.substring(i, Math.min(message.length(), i + 7));
             if (subItems.equals("{ITEMS}")) {
-                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
+                for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
                     translatedMessage.addExtra(extra);
                 }
 
-                messagePart = "";
+                messagePart = new StringBuilder();
                 
                 for (int itemNum = 0; itemNum < items.size(); itemNum++) {
                     translatedMessage.addExtra(getItemComponent(items.get(itemNum), messageColor));
@@ -86,10 +86,10 @@ public final class ItemComponentUtils {
                 continue;
             }
 
-            messagePart += c;
+            messagePart.append(c);
         }
         
-        for (BaseComponent extra : TextComponent.fromLegacyText(messagePart)) {
+        for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
             translatedMessage.addExtra(extra);
         }
         

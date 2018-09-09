@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Settings;
 
 import java.util.List;
+import java.util.Set;
 
 public class BasicUtils {
 
@@ -16,7 +17,7 @@ public class BasicUtils {
             return;
         }
         
-        List<String> guilds = GuildUtils.getNames(GuildUtils.getGuilds());
+        Set<String> guilds = GuildUtils.getNames(GuildUtils.getGuilds());
         List<String> regions = RegionUtils.getNames(RegionUtils.getRegions());
         
         int repaired = 0;
