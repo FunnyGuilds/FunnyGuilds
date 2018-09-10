@@ -40,10 +40,6 @@ public class FlatGuild {
         String deputyName = data.getString("deputy");
         String hs = data.getString("home");
         String regionName = data.getString("region");
-        Set<String> memberNames = new HashSet<>(data.getStringList("members"));
-        // List<String> regionNames = data.getStringList("regions");
-        Set<String> allyNames = new HashSet<>(data.getStringList("allies"));
-        Set<String> enemyNames = new HashSet<>(data.getStringList("enemies"));
         boolean pvp = data.getBoolean("pvp");
         long born = data.getLong("born");
         long validity = data.getLong("validity");
@@ -67,7 +63,12 @@ public class FlatGuild {
             FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
             return null;
         }
-        
+
+        Set<String> memberNames = loadSet(data, "members");
+        Set<String> allyNames = loadSet(data, "allies");
+        Set<String> enemyNames = loadSet(data, "enemies");
+
+        // List<String> regionNames = data.getStringList("regions");
         Region region = RegionUtils.get(regionName);
 
         if (region == null && configuration.regionsEnabled) {
@@ -98,7 +99,7 @@ public class FlatGuild {
             }
         }
 
-        if (memberNames.isEmpty()) {
+        if (memberNames == null || memberNames.isEmpty()) {
             memberNames = new HashSet<>();
             memberNames.add(ownerName);
         }
@@ -181,6 +182,20 @@ public class FlatGuild {
         
         pc.save();
         return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Set<String> loadSet(YamlWrapper data, String key) {
+        Object collection = data.get(key);
+
+        if (collection instanceof List) {
+            return new HashSet<String>((List<String>) collection);
+        }
+        else if (collection instanceof Set) {
+            return (Set<String>) collection;
+        }
+
+        return null;
     }
 
     private static Set<Guild> loadGuilds(Collection<String> guilds) {
