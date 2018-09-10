@@ -40,10 +40,10 @@ public class FlatGuild {
         String deputyName = data.getString("deputy");
         String hs = data.getString("home");
         String regionName = data.getString("region");
-        Set<String> memberNames = (HashSet<String>) data.get("members");
+        Set<String> memberNames = new HashSet<>(data.getStringList("members"));
         // List<String> regionNames = data.getStringList("regions");
-        Set<String> allyNames = (HashSet<String>) data.get("allies");
-        Set<String> enemyNames = (HashSet<String>) data.get("enemies");
+        Set<String> allyNames = new HashSet<>(data.getStringList("allies"));
+        Set<String> enemyNames = new HashSet<>(data.getStringList("enemies"));
         boolean pvp = data.getBoolean("pvp");
         long born = data.getLong("born");
         long validity = data.getLong("validity");
@@ -98,7 +98,7 @@ public class FlatGuild {
             }
         }
 
-        if (memberNames == null || memberNames.isEmpty()) {
+        if (memberNames.isEmpty()) {
             memberNames = new HashSet<>();
             memberNames.add(ownerName);
         }
