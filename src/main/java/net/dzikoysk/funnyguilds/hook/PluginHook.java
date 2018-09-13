@@ -19,12 +19,18 @@ public final class PluginHook {
 
     public static void init() {
         tryInit(PLUGIN_FUNNYTAB, FunnyTabHook::initFunnyDisabler, false);
+        
         tryInit(PLUGIN_WORLDGUARD, () -> {
             try {
                 Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
                 Class.forName("com.sk89q.worldguard.protection.flags.Flag");
-                WorldGuardHook.initWorldGuard();
-            } catch (ClassNotFoundException wgToOld) {
+                
+                if (Bukkit.getPluginManager().getPlugin("WorldGuard").getDescription().getVersion().startsWith("7")) {
+                    FunnyGuildsLogger.warning("Support for WorldGuard v7.0.0 or newer is currently unavailable");
+                } else {
+                    WorldGuardHook.initWorldGuard();
+                }
+            } catch (ClassNotFoundException wgTooOld) {
                 FunnyGuildsLogger.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
             }
         });
