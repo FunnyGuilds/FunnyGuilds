@@ -3,24 +3,55 @@ package net.dzikoysk.funnyguilds.hook;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import com.sk89q.worldguard.protection.ApplicableRegionSet;
 import com.sk89q.worldguard.protection.flags.StateFlag;
+import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
+import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.Location;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public final class WorldGuardHook {
     
+    private static final Method GET_INSTANCE;
+    private static final Method GET_FLAG_REGISTRY;
+    
     private static WorldGuardPlugin worldGuard;
     private static StateFlag noPointsFlag;
 
+    static {
+        if (Reflections.USE_PRE_13_METHODS) {
+            final Class<?> worldGuardPluginClass = Reflections.getClass("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
+            
+            GET_INSTANCE = Reflections.getMethod(worldGuardPluginClass, "inst");
+            GET_FLAG_REGISTRY = Reflections.getMethod(worldGuardPluginClass, "getFlagRegistry");
+        } else {
+            final Class<?> worldGuardClass = Reflections.getClass("com.sk89q.worldguard.WorldGuard");
+            
+            GET_INSTANCE = Reflections.getMethod(worldGuardClass, "getInstance");
+            GET_FLAG_REGISTRY = Reflections.getMethod(worldGuardClass, "getFlagRegistry");
+        }
+    }
+    
     public static void initWorldGuard() {
         WorldGuardHook.worldGuard = WorldGuardPlugin.inst();
         noPointsFlag = new StateFlag("fg-no-points", false);
-        worldGuard.getFlagRegistry().register(noPointsFlag);
+        
+        try {
+            ((FlagRegistry) GET_FLAG_REGISTRY.invoke(GET_INSTANCE.invoke(null))).register(noPointsFlag);
+        } catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+            FunnyGuildsLogger.error("An error occurred while registering an \"fg-no-points\" worldguard flag");
+            if (FunnyGuildsLogger.exception(e.getCause())) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static boolean isInNonPointsRegion(Location location) {
