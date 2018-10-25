@@ -10,7 +10,7 @@ Project website: <a href="https://funnyguilds.net/">FunnyGuilds</a>
 
 #### Download
 Get the latest stable version: [FunnyGuilds Tribute 4.3.0 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
-Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Nightly](https://ci.kacperduras.pl/job/FunnyGuilds/)
+Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Nightly](https://diorite.org/jenkins/job/FunnyGuilds/)
 
 #### Hooks
 FunnyGuilds hooks into those plugins:
