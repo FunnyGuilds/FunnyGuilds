@@ -3,12 +3,9 @@ package net.dzikoysk.funnyguilds.event;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 public abstract class FunnyEvent extends Event implements Cancellable {
 
-    private static final HandlerList handlers = new HandlerList();
-    
     private final EventCause eventCause;
     private final User doer;
     
@@ -50,15 +47,6 @@ public abstract class FunnyEvent extends Event implements Cancellable {
     @Override
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
-    }
-    
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
     }
     
     public void notifyDoer() {
