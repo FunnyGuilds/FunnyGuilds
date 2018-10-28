@@ -11,7 +11,7 @@ import org.bukkit.Location;
 import java.util.Set;
 import java.util.UUID;
 
-public class DeserializationUtils {
+public final class DeserializationUtils {
 
     @SuppressWarnings("unchecked")
     public static Guild deserializeGuild(Object[] values) {
@@ -20,22 +20,22 @@ public class DeserializationUtils {
             return null;
         }
         
-        Guild guild = Guild.getOrCreate((String) values[1]);
+        final Guild guild = Guild.getOrCreate((UUID) values[0]);
         
-        guild.setUUID((UUID) values[0]);
+        guild.setName((String) values[1]);
         guild.setTag(Settings.getConfig().guildTagKeepCase ? (String) values[2] : (Settings.getConfig().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase()));
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
         guild.setRegion((Region) values[5]);
         guild.setMembers((Set<User>) values[6]);
-        guild.setAllies((Set<Guild>) values[8]);
-        guild.setEnemies((Set<Guild>) values[9]);
-        guild.setBorn((long) values[10]);
-        guild.setValidity((long) values[11]);
-        guild.setAttacked((long) values[12]);
-        guild.setLives((int) values[13]);
-        guild.setBan((long) values[14]);
-        guild.setDeputies((Set<User>) values[15]);
+        guild.setAllies((Set<Guild>) values[7]);
+        guild.setEnemies((Set<Guild>) values[8]);
+        guild.setBorn((long) values[9]);
+        guild.setValidity((long) values[10]);
+        guild.setAttacked((long) values[11]);
+        guild.setLives((int) values[12]);
+        guild.setBan((long) values[13]);
+        guild.setDeputies((Set<User>) values[14]);
         guild.deserializationUpdate();
         
         return guild;
@@ -73,4 +73,6 @@ public class DeserializationUtils {
         return user;
     }
 
+    private DeserializationUtils() {}
+    
 }

@@ -53,20 +53,18 @@ public class DatabaseGuild {
             }
 
             UUID uuid = UUID.randomUUID();
-
-            if (id != null) {
+            if (id != null && !id.isEmpty()) {
                 uuid = UUID.fromString(id);
             }
-
-            User owner = User.get(os);
+            
+            final User owner = User.get(os);
+            
             Set<User> deputies = new HashSet<>();
-
             if (dp != null && !dp.isEmpty()) {
                 deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
             }
 
             Set<User> members = new HashSet<>();
-
             if (m != null && !m.equals("")) {
                 members = UserUtils.getUsers(ChatUtils.fromString(m));
             }
@@ -83,7 +81,7 @@ public class DatabaseGuild {
                 lives = Settings.getConfig().warLives;
             }
 
-            Object[] values = new Object[17];
+            final Object[] values = new Object[17];
             
             values[0] = uuid;
             values[1] = name;
@@ -92,16 +90,15 @@ public class DatabaseGuild {
             values[4] = LocationUtils.parseLocation(home);
             values[5] = RegionUtils.get(regionName);
             values[6] = members;
-            // values[7] = regions;
+            values[7] = Sets.newHashSet();
             values[8] = Sets.newHashSet();
-            values[9] = Sets.newHashSet();
-            values[10] = born;
-            values[11] = validity;
-            values[12] = attacked;
-            values[13] = lives;
-            values[14] = ban;
-            values[15] = deputies;
-            values[16] = pvp;
+            values[9] = born;
+            values[10] = validity;
+            values[11] = attacked;
+            values[12] = lives;
+            values[13] = ban;
+            values[14] = deputies;
+            values[15] = pvp;
 
             return DeserializationUtils.deserializeGuild(values);
         } catch (Exception e) {

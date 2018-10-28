@@ -19,7 +19,8 @@ import java.util.stream.Collectors;
 
 public class Guild extends AbstractBasic {
 
-    private UUID uuid;
+    private final UUID uuid;
+    
     private String name;
     private String tag;
     private User owner;
@@ -43,18 +44,17 @@ public class Guild extends AbstractBasic {
 
     private Guild(UUID uuid) {
         this.uuid = uuid;
+        
         this.born = System.currentTimeMillis();
         this.members = ConcurrentHashMap.newKeySet();
         this.deputies = ConcurrentHashMap.newKeySet();
         this.allies = ConcurrentHashMap.newKeySet();
         this.enemies = ConcurrentHashMap.newKeySet();
-        GuildUtils.addGuild(this);
     }
 
     public Guild(String name) {
         this(UUID.randomUUID());
         this.name = name;
-        GuildUtils.addGuild(this);
     }
 
     public void broadcast(String message) {
@@ -166,11 +166,6 @@ public class Guild extends AbstractBasic {
 
     public void setAdditionalProtection(long timestamp) {
         this.additionalProtection = timestamp;
-    }
-
-    public void setUUID(UUID uuid) {
-        this.uuid = uuid;
-        this.changes();
     }
 
     public void setName(String name) {
@@ -424,30 +419,23 @@ public class Guild extends AbstractBasic {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((uuid == null) ? 0 : uuid.hashCode());
+        
+        result = prime * result + (uuid == null ? 0 : uuid.hashCode());
+        
         return result;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o == null) {
-            return false;
-        }
-
-        if (o == this) {
+    public boolean equals(final Object obj) {
+        if (obj == this) {
             return true;
         }
-
-        if (o.getClass() != this.getClass()) {
+        
+        if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
 
-        Guild guild = (Guild) o;
-        if (guild.getName() != null && this.name != null) {
-            return guild.getName().equalsIgnoreCase(this.name);
-        }
-
-        return false;
+        return ((Guild) obj).getUUID().equals(this.uuid);
     }
 
     @Override
@@ -462,7 +450,10 @@ public class Guild extends AbstractBasic {
             }
         }
 
-        return new Guild(uuid);
+        final Guild newGuild = new Guild(uuid);
+        GuildUtils.addGuild(newGuild);
+        
+        return newGuild;
     }
 
     public static Guild getOrCreate(String name) {
@@ -471,8 +462,11 @@ public class Guild extends AbstractBasic {
                 return guild;
             }
         }
+        
+        final Guild newGuild = new Guild(name);
+        GuildUtils.addGuild(newGuild);
 
-        return new Guild(name);
+        return newGuild;
     }
 
 }

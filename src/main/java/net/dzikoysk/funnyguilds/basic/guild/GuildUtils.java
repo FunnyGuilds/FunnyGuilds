@@ -162,7 +162,7 @@ public class GuildUtils {
     }
 
     public static synchronized void addGuild(Guild guild) {
-        if (guild == null || guild.getName() == null) {
+        if (guild == null) {
             return;
         }
 

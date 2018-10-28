@@ -28,7 +28,6 @@ public class FlatGuild {
         this.guild = guild;
     }
 
-    @SuppressWarnings ("unchecked")
     public static Guild deserialize(File file) {
         PluginConfig configuration = Settings.getConfig();
         YamlWrapper data = new YamlWrapper(file);
@@ -50,16 +49,13 @@ public class FlatGuild {
         if (name == null) {
             FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
             return null;
-        }
-        else if (tag == null) {
+        } else if (tag == null) {
             FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
             return null;
-        }
-        else if (ownerName == null) {
+        } else if (ownerName == null) {
             FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
             return null;
-        }
-        else if (regionName == null && configuration.regionsEnabled) {
+        } else if (regionName == null && configuration.regionsEnabled) {
             FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
             return null;
         }
@@ -68,30 +64,27 @@ public class FlatGuild {
         Set<String> allyNames = loadSet(data, "allies");
         Set<String> enemyNames = loadSet(data, "enemies");
 
-        // List<String> regionNames = data.getStringList("regions");
-        Region region = RegionUtils.get(regionName);
-
+        final Region region = RegionUtils.get(regionName);
         if (region == null && configuration.regionsEnabled) {
             FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
             return null;
         }
 
         UUID uuid = UUID.randomUUID();
-
-        if (id != null) {
+        if (id != null && !id.isEmpty()) {
             uuid = UUID.fromString(id);
         }
-
-        User owner = User.get(ownerName);
+        
+        final User owner = User.get(ownerName);
+        
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
-
         if (deputyName != null && !deputyName.isEmpty()) {
             deputies = UserUtils.getUsers(ChatUtils.fromString(deputyName));
         }
 
         Location home = null;
 
-        if (region !=null) {
+        if (region != null) {
             home = region.getCenter();
 
             if (hs != null) {
@@ -120,7 +113,8 @@ public class FlatGuild {
             lives = configuration.warLives;
         }
 
-        Object[] values = new Object[17];
+        final Object[] values = new Object[17];
+        
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
@@ -128,16 +122,15 @@ public class FlatGuild {
         values[4] = home;
         values[5] = region;
         values[6] = members;
-        // values[7] = regions;
-        values[8] = allies;
-        values[9] = enemies;
-        values[10] = born;
-        values[11] = validity;
-        values[12] = attacked;
-        values[13] = lives;
-        values[14] = ban;
-        values[15] = deputies;
-        values[16] = pvp;
+        values[7] = allies;
+        values[8] = enemies;
+        values[9] = born;
+        values[10] = validity;
+        values[11] = attacked;
+        values[12] = lives;
+        values[13] = ban;
+        values[14] = deputies;
+        values[15] = pvp;
         
         return DeserializationUtils.deserializeGuild(values);
     }
@@ -155,8 +148,6 @@ public class FlatGuild {
         } else if (guild.getRegion() == null && Settings.getConfig().regionsEnabled) {
             FunnyGuildsLogger.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
             return false;
-        } else if (guild.getUUID() == null) {
-            guild.setUUID(UUID.randomUUID());
         }
 
         File file = Flat.loadCustomFile(BasicType.GUILD, guild.getName());
