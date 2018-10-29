@@ -14,17 +14,14 @@ import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVaria
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class DefaultTablistVariables {
@@ -49,9 +46,25 @@ public final class DefaultTablistVariables {
         parser.add(new TimeFormattedVariable("SECOND", user -> Calendar.getInstance().get(Calendar.SECOND)));
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
-        parser.add(new SimpleTablistVariable("WORLD", user -> user.getPlayer() == null ? "" : user.getPlayer().getWorld().getName()));
-        parser.add(new SimpleTablistVariable("ONLINE", user -> user.getPlayer() == null ? "" : String.valueOf(Bukkit.getOnlinePlayers().stream().filter(p -> p != null && user.getPlayer().canSee(p)).count())));
         parser.add(new SimpleTablistVariable("TPS", user -> MinecraftServerUtils.getRecentTPS(0)));
+        
+        parser.add(new SimpleTablistVariable("WORLD", user -> {
+            final Player userPlayer = user.getPlayer();
+            if (userPlayer == null) {
+                return "";
+            }
+            
+            return userPlayer.getWorld().getName();
+        }));
+        
+        parser.add(new SimpleTablistVariable("ONLINE", user -> {
+            final Player userPlayer = user.getPlayer();
+            if (userPlayer == null) {
+                return "";
+            }
+            
+            return Long.toString(Bukkit.getOnlinePlayers().stream().filter(p -> p != null && userPlayer.canSee(p)).count());
+        }));
 
         for (TablistVariable variable : getFunnyVariables().values()) {
             parser.add(variable);
