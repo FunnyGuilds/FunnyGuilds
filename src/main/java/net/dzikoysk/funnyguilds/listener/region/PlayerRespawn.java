@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,10 +11,6 @@ public class PlayerRespawn implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(final PlayerRespawnEvent event) {
-        if (!Settings.getConfig().respawnInBase) {
-            return;
-        }
-        
         final User user = User.get(event.getPlayer());
         if (!user.hasGuild()) {
             return;
