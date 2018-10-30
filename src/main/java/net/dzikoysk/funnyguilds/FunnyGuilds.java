@@ -15,8 +15,8 @@ import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
-import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
+import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
 import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
 import org.bukkit.Bukkit;
@@ -106,6 +106,10 @@ public class FunnyGuilds extends JavaPlugin {
             pluginManager.registerEvents(new HangingPlace(), this);
             pluginManager.registerEvents(new PlayerCommand(), this);
             pluginManager.registerEvents(new PlayerInteract(), this);
+            
+            if (config.respawnInBase) {
+                pluginManager.registerEvents(new PlayerRespawn(), this);
+            }
 
             if (config.eventMove) {
                 pluginManager.registerEvents(new PlayerMove(), this);

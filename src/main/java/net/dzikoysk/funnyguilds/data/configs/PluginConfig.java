@@ -82,6 +82,11 @@ public class PluginConfig {
     @CfgName("regions-enabled")
     public boolean regionsEnabled = true;
     
+    @CfgComment("Czy gracz po smierci ma sie pojawiac w bazie swojej gildii")
+    @CfgComment("Dziala tylko jesli regiony sa wlaczone")
+    @CfgName("respawn-in-base")
+    public boolean respawnInBase = true;
+    
     @CfgComment("Maksymalna dlugosc nazwy gildii")
     @CfgName("name-length")
     public int createNameLength = 22;
