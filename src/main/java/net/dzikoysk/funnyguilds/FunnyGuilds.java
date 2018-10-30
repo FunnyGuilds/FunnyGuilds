@@ -106,11 +106,8 @@ public class FunnyGuilds extends JavaPlugin {
             pluginManager.registerEvents(new HangingPlace(), this);
             pluginManager.registerEvents(new PlayerCommand(), this);
             pluginManager.registerEvents(new PlayerInteract(), this);
+            pluginManager.registerEvents(new PlayerRespawn(), this);
             
-            if (config.respawnInBase) {
-                pluginManager.registerEvents(new PlayerRespawn(), this);
-            }
-
             if (config.eventMove) {
                 pluginManager.registerEvents(new PlayerMove(), this);
             }
