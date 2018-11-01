@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.listener.*;
+import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -32,6 +33,7 @@ public class FunnyGuilds extends JavaPlugin {
     private static String mainVersion;
 
     private ConcurrencyManager concurrencyManager;
+    private DynamicListenerManager dynamicListenerManager;
     
     private boolean disabling;
     private boolean forceDisabling;
@@ -73,6 +75,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         Commands commands = new Commands();
         commands.register();
+
+        this.dynamicListenerManager = new DynamicListenerManager(this);
     }
 
     @Override
@@ -85,8 +89,7 @@ public class FunnyGuilds extends JavaPlugin {
         repeater.start();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
-        PluginConfig config = Settings.getConfig();
-        
+
         pluginManager.registerEvents(new GuiActionHandler(), this);
         pluginManager.registerEvents(new EntityDamage(), this);
         pluginManager.registerEvents(new EntityInteract(), this);
@@ -96,27 +99,23 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerLogin(), this);
         pluginManager.registerEvents(new PlayerQuit(), this);
 
-        if (config.regionsEnabled) {
-            pluginManager.registerEvents(new BlockBreak(), this);
-            pluginManager.registerEvents(new BlockIgnite(), this);
-            pluginManager.registerEvents(new BlockPlace(), this);
-            pluginManager.registerEvents(new BucketAction(), this);
-            pluginManager.registerEvents(new EntityExplode(), this);
-            pluginManager.registerEvents(new HangingBreak(), this);
-            pluginManager.registerEvents(new HangingPlace(), this);
-            pluginManager.registerEvents(new PlayerCommand(), this);
-            pluginManager.registerEvents(new PlayerInteract(), this);
-            pluginManager.registerEvents(new PlayerRespawn(), this);
-            
-            if (config.eventMove) {
-                pluginManager.registerEvents(new PlayerMove(), this);
-            }
-            
-            if (config.eventPhysics) {
-                pluginManager.registerEvents(new BlockPhysics(), this);
-            }
-        }
+        this.dynamicListenerManager.registerDynamic(
+            () -> Settings.getConfig().regionsEnabled,
+            new BlockBreak(),
+            new BlockIgnite(),
+            new BlockPlace(),
+            new BucketAction(),
+            new EntityExplode(),
+            new HangingBreak(),
+            new HangingPlace(),
+            new PlayerCommand(),
+            new PlayerInteract()
+        );
 
+        this.dynamicListenerManager.registerDynamic(() -> Settings.getConfig().regionsEnabled && Settings.getConfig().eventMove, new PlayerMove());
+        this.dynamicListenerManager.registerDynamic(() -> Settings.getConfig().regionsEnabled && Settings.getConfig().eventPhysics, new BlockPhysics());
+        this.dynamicListenerManager.registerDynamic(() -> Settings.getConfig().regionsEnabled  && Settings.getConfig().respawnInBase, new PlayerRespawn());
+        this.dynamicListenerManager.reloadAll();
         this.patch();
 
         FunnyGuildsVersion.isNewAvailable(getServer().getConsoleSender(), true);
@@ -133,6 +132,7 @@ public class FunnyGuilds extends JavaPlugin {
         
         disabling = true;
 
+        this.dynamicListenerManager.unregisterAll();
         EntityUtil.despawn();
         AsynchronouslyRepeater.getInstance().stop();
 
@@ -173,6 +173,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public ConcurrencyManager getConcurrencyManager() {
         return concurrencyManager;
+    }
+
+    public DynamicListenerManager getDynamicListenerManager() {
+        return dynamicListenerManager;
     }
 
     public static String getFullVersion() {

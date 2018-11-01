@@ -54,6 +54,7 @@ public class ExcFunnyGuilds implements Executor {
             dm.save();
             new Messages();
             new Settings();
+            FunnyGuilds.getInstance().getDynamicListenerManager().reloadAll();
             dm.start();
 
             if (Settings.getConfig().playerlistEnable) {
