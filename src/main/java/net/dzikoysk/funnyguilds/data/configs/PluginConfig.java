@@ -1477,6 +1477,9 @@ public class PluginConfig {
             
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String protection = "ga ochrona";
+            
+            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+            public String base = "ga baza";
         }
     }
 

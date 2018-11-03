@@ -1,24 +1,6 @@
 package net.dzikoysk.funnyguilds.command;
 
-import net.dzikoysk.funnyguilds.command.admin.AxcAdd;
-import net.dzikoysk.funnyguilds.command.admin.AxcBan;
-import net.dzikoysk.funnyguilds.command.admin.AxcDeaths;
-import net.dzikoysk.funnyguilds.command.admin.AxcDelete;
-import net.dzikoysk.funnyguilds.command.admin.AxcDeputy;
-import net.dzikoysk.funnyguilds.command.admin.AxcEnabled;
-import net.dzikoysk.funnyguilds.command.admin.AxcKick;
-import net.dzikoysk.funnyguilds.command.admin.AxcKills;
-import net.dzikoysk.funnyguilds.command.admin.AxcLeader;
-import net.dzikoysk.funnyguilds.command.admin.AxcLives;
-import net.dzikoysk.funnyguilds.command.admin.AxcMain;
-import net.dzikoysk.funnyguilds.command.admin.AxcMove;
-import net.dzikoysk.funnyguilds.command.admin.AxcName;
-import net.dzikoysk.funnyguilds.command.admin.AxcPoints;
-import net.dzikoysk.funnyguilds.command.admin.AxcProtection;
-import net.dzikoysk.funnyguilds.command.admin.AxcSpy;
-import net.dzikoysk.funnyguilds.command.admin.AxcTeleport;
-import net.dzikoysk.funnyguilds.command.admin.AxcUnban;
-import net.dzikoysk.funnyguilds.command.admin.AxcValidity;
+import net.dzikoysk.funnyguilds.command.admin.*;
 import net.dzikoysk.funnyguilds.command.manager.MxcBase;
 import net.dzikoysk.funnyguilds.command.manager.MxcPvP;
 import net.dzikoysk.funnyguilds.command.util.ExecutorCaller;
@@ -90,5 +72,6 @@ public class Commands {
         new ExecutorCaller(new AxcLeader(), commands.admin.leader, null, true, false);
         new ExecutorCaller(new AxcDeputy(), commands.admin.deputy, null, true, false);
         new ExecutorCaller(new AxcProtection(), commands.admin.protection, null, true, false);
+        new ExecutorCaller(new AxcBase(), commands.admin.base, null, true, false);
     }
 }

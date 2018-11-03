@@ -166,7 +166,8 @@ public class MessagesConfig {
             "&a/ga spy &8- &7Szpieguje czat gildii",
             "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii",
             "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
-            "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii");
+            "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii",
+            "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii");
     
     @CfgComment("<------- Player Info Messages -------> #")
     public String playerInfoExists = "&cTaki gracz nigdy nie byl na serwerze!";
@@ -253,6 +254,7 @@ public class MessagesConfig {
     public String generalUserHasGuild = "&cTen gracz ma juz gildie!";
     public String generalNoGuildFound = "&cTaka gildia nie istnieje!";
     public String generalNotPlayedBefore = "&cTen gracz nigdy nie byl na serwerze!";
+    public String generalNotOnline = "&cTen gracz nie jest obecnie na serwerze!";
 
     @CfgComment("Dostepne zmienne: {TAG}")
     public String generalGuildNotExists = "&7Gildia o tagu &c{TAG} &7nie istnieje!";
@@ -522,4 +524,10 @@ public class MessagesConfig {
     public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
     public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data!";
     public String adminAdditionalProtectionSetSuccessfully = "&aPomyslnie nadano dodatkowa ochrone dla gildii &7{TAG} &ado &7{DATE}";
+    
+    public String adminGuildHasNoHome = "&cGildia gracza nie ma ustawionej bazy!";
+    @CfgComment("Dostepne zmienne: {ADMIN}")
+    public String adminTeleportedToBase = "&aAdmin &7{ADMIN} &ateleportowal cie do bazy gildii!";
+    @CfgComment("Dostepne zmienne: {PLAYER}")
+    public String adminTargetTeleportedToBase = "&aGracz &7{PLAYER} &azostal teleportowany do bazy gildii!";
 }
