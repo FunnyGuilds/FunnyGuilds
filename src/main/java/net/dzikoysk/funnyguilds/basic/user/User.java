@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
+import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.PingUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -150,7 +151,11 @@ public class User extends AbstractBasic {
     }
 
     public int getPing() {
-        return PingUtils.getPing(getPlayer());
+        try {
+            return PingUtils.getPing(getPlayer());
+        } catch (IntegerRange.MissingFormatException ex) {
+            return 0;
+        }
     }
 
     public UserCache getCache() {
