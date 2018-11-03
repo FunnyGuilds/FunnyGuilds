@@ -46,7 +46,13 @@ public final class DefaultTablistVariables {
         parser.add(new TimeFormattedVariable("SECOND", user -> Calendar.getInstance().get(Calendar.SECOND)));
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
-        parser.add(new SimpleTablistVariable("TPS", user -> MinecraftServerUtils.getRecentTPS(0)));
+        parser.add(new SimpleTablistVariable("TPS", user -> {
+            try {
+                return MinecraftServerUtils.getRecentTPS(0);
+            } catch (IntegerRange.MissingFormatException ex) {
+                return "0";
+            }
+        }));
         
         parser.add(new SimpleTablistVariable("WORLD", user -> {
             final Player userPlayer = user.getPlayer();

@@ -78,7 +78,7 @@ public final class IntegerRange {
         return parsed;
     }
     
-    private static class MissingFormatException extends RuntimeException {
+    public static class MissingFormatException extends RuntimeException {
 
         private static final long serialVersionUID = -3225307636114359250L;
 
