@@ -15,7 +15,7 @@ Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Night
 #### Hooks
 FunnyGuilds hooks into those plugins:
 - [WorldEdit](https://dev.bukkit.org/projects/worldedit)
-- [WorldGuard](https://dev.bukkit.org/projects/worldedit)
+- [WorldGuard](https://dev.bukkit.org/projects/worldguard)
 - [Vault](https://dev.bukkit.org/projects/vault)
 - [PlaceholderAPI](https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds)
 - [MVdWPlaceholderAPI](https://www.spigotmc.org/resources/mvdwplaceholderapi.11182/)
