@@ -9,12 +9,12 @@ import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
-import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.PingUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -23,17 +23,19 @@ public class User extends AbstractBasic {
 
     private static final Set<UUID> ONLINE_USERS_CACHE = new HashSet<>();
 
-    private final UUID uuid;
-    private final String name;
-    private final UserCache cache;
-    private Guild guild;
-    private Rank rank;
-    private UserBan ban;
+    private final UUID                  uuid;
+    private final String                name;
+    private final UserCache             cache;
+    private       WeakReference<Player> playerRef;
+    private       Guild                 guild;
+    private       Rank                  rank;
+    private       UserBan               ban;
 
     private User(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
         this.cache = new UserCache(this);
+        this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
         this.updateCache();
         this.changes();
     }
@@ -147,19 +149,28 @@ public class User extends AbstractBasic {
             return null;
         }
 
-        return Bukkit.getPlayer(this.uuid);
+        Player player = this.playerRef.get();
+
+        if (player != null) {
+            return player;
+        }
+
+        player = Bukkit.getPlayer( this.uuid);
+
+        if (player != null) {
+            this.playerRef = new WeakReference<>(player);
+            return player;
+        }
+
+        return null;
     }
 
     public int getPing() {
-        try {
-            return PingUtils.getPing(getPlayer());
-        } catch (IntegerRange.MissingFormatException ex) {
-            return 0;
-        }
+        return PingUtils.getPing(getPlayer());
     }
 
     public UserCache getCache() {
-        return cache;
+        return this.cache;
     }
 
     @Override

@@ -18,7 +18,7 @@ import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
-import java.util.Calendar;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -174,10 +174,10 @@ public abstract class AbstractTablist {
     protected String putHeaderFooterVars(String text) {
         String formatted = text;
 
-        Calendar time = Calendar.getInstance();
-        int hour = time.get(Calendar.HOUR_OF_DAY);
-        int minute = time.get(Calendar.MINUTE);
-        int second = time.get(Calendar.SECOND);
+        LocalDateTime time = LocalDateTime.now();
+        int hour = time.getHour();
+        int minute = time.getMinute();
+        int second = time.getSecond();
 
         formatted = StringUtils.replace(formatted, "{HOUR}", ChatUtils.appendDigit(hour));
         formatted = StringUtils.replace(formatted, "{MINUTE}", ChatUtils.appendDigit(minute));

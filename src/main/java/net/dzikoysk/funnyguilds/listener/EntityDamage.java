@@ -21,7 +21,7 @@ public class EntityDamage implements Listener {
         Entity entity = event.getEntity();
         Entity damager = event.getDamager();
 
-        if (!(entity instanceof Player)) {
+        if (! (entity instanceof Player)) {
             return;
         }
 

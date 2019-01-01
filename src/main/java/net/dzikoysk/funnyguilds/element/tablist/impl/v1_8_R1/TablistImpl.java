@@ -32,6 +32,7 @@ public class TablistImpl extends AbstractTablist {
 
     private static final Enum<?> ADD_PLAYER;
     private static final Enum<?> UPDATE_PLAYER;
+    private static final Enum<?> GAMEMODE_ENUM;
     private static final String UUID_PATTERN = "00000000-0000-%s-0000-000000000000";
     private static final String TOKEN = "!@#$^*";
     private static Constructor<?> playerInfoDataConstructor;
@@ -55,6 +56,7 @@ public class TablistImpl extends AbstractTablist {
 
         ADD_PLAYER = (Enum<?>) Reflections.getNMSClass("EnumPlayerInfoAction").getEnumConstants()[0];
         UPDATE_PLAYER = (Enum<?>) Reflections.getNMSClass("EnumPlayerInfoAction").getEnumConstants()[3];
+        GAMEMODE_ENUM = (Enum<?>) ENUM_GAMEMODE_CLASS.getEnumConstants()[1];
 
         try {
             playerInfoDataConstructor = PLAYER_INFO_DATA_CLASS.getConstructor(
@@ -98,14 +100,13 @@ public class TablistImpl extends AbstractTablist {
 
                 String text = this.putVars(tablistPattern.getOrDefault(i + 1, ""));
                 Object gameProfile = profileCache[i];
-                Object gameMode = ENUM_GAMEMODE_CLASS.getEnumConstants()[1];
                 Object component = this.createBaseComponent(text, false);
 
                 Object playerInfoData = playerInfoDataConstructor.newInstance(
                         null,
                         gameProfile,
                         ping,
-                        gameMode,
+                        GAMEMODE_ENUM,
                         component
                 );
 
