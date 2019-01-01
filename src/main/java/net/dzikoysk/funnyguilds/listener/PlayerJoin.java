@@ -31,6 +31,7 @@ public class PlayerJoin implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         User user = User.get(player);
+        user.updateReference(player);
         PluginConfig config = Settings.getConfig();
 
         if (config.playerlistEnable && !AbstractTablist.hasTablist(player)) {

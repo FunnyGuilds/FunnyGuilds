@@ -6,26 +6,26 @@ import java.util.logging.Logger;
 
 public final class FunnyGuildsLogger {
 
-    private static final Logger bukkitLogger = Bukkit.getLogger();
+    private static final Logger BUKKIT_LOGGER = Bukkit.getLogger();
     
     public static void update(String content) {
-        bukkitLogger.info("[FunnyGuilds][Updater] > " + content);
+        BUKKIT_LOGGER.info("[FunnyGuilds][Updater] > " + content);
     }
 
     public static void parser(String content) {
-        bukkitLogger.severe("[FunnyGuilds][Parser] #> " + content);
+        BUKKIT_LOGGER.severe("[FunnyGuilds][Parser] #> " + content);
     }
 
     public static void info(String content) {
-        bukkitLogger.info("[FunnyGuilds] " + content);
+        BUKKIT_LOGGER.info("[FunnyGuilds] " + content);
     }
 
     public static void warning(String content) {
-        bukkitLogger.warning("[FunnyGuilds] " + content);
+        BUKKIT_LOGGER.warning("[FunnyGuilds] " + content);
     }
 
     public static void error(String content) {
-        bukkitLogger.severe("[Server thread/ERROR] #!# " + content);
+        BUKKIT_LOGGER.severe("[Server thread/ERROR] #!# " + content);
     }
 
     public static boolean exception(Throwable cause) {

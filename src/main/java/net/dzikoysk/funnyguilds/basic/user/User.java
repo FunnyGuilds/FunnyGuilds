@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.PingUtils;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -155,7 +156,7 @@ public class User extends AbstractBasic {
             return player;
         }
 
-        player = Bukkit.getPlayer( this.uuid);
+        player = Bukkit.getPlayer(this.uuid);
 
         if (player != null) {
             this.playerRef = new WeakReference<>(player);
@@ -181,6 +182,12 @@ public class User extends AbstractBasic {
     @Override
     public BasicType getType() {
         return BasicType.USER;
+    }
+
+    public void updateReference(Player player) {
+        Validate.notNull(player, "you can't update reference with null player!");
+
+        this.playerRef = new WeakReference<>(player);
     }
 
     @Override
