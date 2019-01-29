@@ -246,6 +246,7 @@ public class ExcCreate implements Executor {
         guild.setAttacked(System.currentTimeMillis() - config.warWait + config.warProtection);
         guild.setPvP(config.damageGuild);
         user.setGuild(guild);
+        GuildUtils.addGuild(guild);
         
         if (config.regionsEnabled) {
             Region region = new Region(guild, guildLocation, config.regionSize);
