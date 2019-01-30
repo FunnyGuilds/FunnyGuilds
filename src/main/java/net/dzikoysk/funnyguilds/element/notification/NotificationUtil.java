@@ -21,6 +21,11 @@ public final class NotificationUtil {
 
     private static final Method CREATE_BASE_COMPONENT_NMS;
     private static final Method CREATE_BASE_COMPONENT_CRAFTBUKKIT;
+    private static final Method GET_TITLE_ACTION_ENUM;
+
+    private static final Enum<?> TITLE_ENUM;
+    private static final Enum<?> SUBTITLE_ENUM;
+    private static final Enum<?> TIMES_ENUM;
 
     private static final String BASE_COMPONENT_JSON_PATTERN = "{\"text\": \"{TEXT}\"}";
 
@@ -37,6 +42,16 @@ public final class NotificationUtil {
         
         CREATE_BASE_COMPONENT_NMS = Reflections.getMethod(Reflections.getNMSClass("IChatBaseComponent$ChatSerializer"), "a", String.class);
         CREATE_BASE_COMPONENT_CRAFTBUKKIT = Reflections.getMethod(Reflections.getCraftBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
+        GET_TITLE_ACTION_ENUM = Reflections.getMethod(TITLE_ACTION_CLASS, "a", String.class);
+
+        try {
+            TITLE_ENUM = (Enum<?>) GET_TITLE_ACTION_ENUM.invoke(null, "TITLE");
+            SUBTITLE_ENUM = (Enum<?>) GET_TITLE_ACTION_ENUM.invoke(null, "SUBTITLE");
+            TIMES_ENUM = (Enum<?>) GET_TITLE_ACTION_ENUM.invoke(null, "TIMES");
+        }
+        catch (IllegalAccessException | InvocationTargetException ex) {
+            throw new RuntimeException("Could not retrieve title packet enums", ex);
+        }
     }
 
     public static List<Object> createTitleNotification(String text, String subText, int fadeIn, int stay, int fadeOut) {
@@ -44,23 +59,25 @@ public final class NotificationUtil {
 
         Object titlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS)
                         .create()
-                        .withField("a", TITLE_ACTION_CLASS.getEnumConstants()[0])
+                        .withField("a", TITLE_ENUM)
                         .withField("b", createBaseComponent(text, false))
-                        .withField("c", fadeIn)
-                        .withField("d", stay)
-                        .withField("e", fadeOut)
                         .getPacket();
         
         Object subtitlePacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS)
                         .create()
-                        .withField("a", TITLE_ACTION_CLASS.getEnumConstants()[1])
+                        .withField("a", SUBTITLE_ENUM)
                         .withField("b", createBaseComponent(subText, false))
-                        .withField("c", fadeIn)
-                        .withField("d", stay)
-                        .withField("e", fadeOut)
                         .getPacket();
 
-        packets.addAll(Arrays.asList(titlePacket, subtitlePacket));
+        Object timesPacket = PacketCreator.of(PACKET_PLAY_OUT_TITLE_CLASS)
+                .create()
+                .withField("a", TIMES_ENUM)
+                .withField("c", fadeIn)
+                .withField("d", stay)
+                .withField("e", fadeOut)
+                .getPacket();
+
+        packets.addAll(Arrays.asList(titlePacket, subtitlePacket, timesPacket));
         return packets;
     }
 
