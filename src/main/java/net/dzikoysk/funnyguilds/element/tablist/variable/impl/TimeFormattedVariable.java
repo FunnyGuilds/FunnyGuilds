@@ -4,17 +4,19 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
-import java.util.function.Function;
+import java.time.LocalDateTime;
+import java.util.function.BiFunction;
 
 public class TimeFormattedVariable implements TablistVariable {
     private final String[] names;
-    private final Function<User, Integer> function;
+    private final BiFunction<User, LocalDateTime, String> function;
+    private LocalDateTime currentTime;
 
-    public TimeFormattedVariable(String name, Function<User, Integer> function) {
+    public TimeFormattedVariable(String name, BiFunction<User, LocalDateTime, String> function) {
         this(new String[]{ name }, function);
     }
 
-    public TimeFormattedVariable(String[] names, Function<User, Integer> function) {
+    public TimeFormattedVariable(String[] names, BiFunction<User, LocalDateTime, String> function) {
         this.names = names;
         this.function = function;
     }
@@ -24,9 +26,13 @@ public class TimeFormattedVariable implements TablistVariable {
         return this.names;
     }
 
+    public void provideCurrentTime(LocalDateTime currentTime) {
+        this.currentTime = currentTime;
+    }
+
     @Override
     public String get(User user) {
-        return ChatUtils.appendDigit(this.function.apply(user));
+        return ChatUtils.appendDigit(this.function.apply(user, this.currentTime != null ? this.currentTime : LocalDateTime.now()));
     }
     
 }

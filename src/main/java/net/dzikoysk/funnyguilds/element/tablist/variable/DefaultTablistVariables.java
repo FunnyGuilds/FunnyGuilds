@@ -21,12 +21,17 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.time.format.TextStyle;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class DefaultTablistVariables {
 
     private static final Map<String, TablistVariable> FUNNY_VARIABLES = new ConcurrentHashMap<>();
+    private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
     
     public static Map<String, TablistVariable> getFunnyVariables() {
         if (FUNNY_VARIABLES.isEmpty()) {
@@ -41,9 +46,14 @@ public final class DefaultTablistVariables {
     }
     
     public static void install(TablistVariablesParser parser) {
-        parser.add(new TimeFormattedVariable("HOUR", user -> Calendar.getInstance().get(Calendar.HOUR_OF_DAY)));
-        parser.add(new TimeFormattedVariable("MINUTE", user -> Calendar.getInstance().get(Calendar.MINUTE)));
-        parser.add(new TimeFormattedVariable("SECOND", user -> Calendar.getInstance().get(Calendar.SECOND)));
+        parser.add(new TimeFormattedVariable("HOUR", (user, time) -> String.valueOf(time.getHour())));
+        parser.add(new TimeFormattedVariable("MINUTE", (user, time) -> String.valueOf(time.getMinute())));
+        parser.add(new TimeFormattedVariable("SECOND", (user, time) -> String.valueOf(time.getSecond())));
+        parser.add(new TimeFormattedVariable("DAY_OF_WEEK", (user, time) -> time.getDayOfWeek().getDisplayName(TextStyle.FULL, POLISH_LOCALE)));
+        parser.add(new TimeFormattedVariable("DAY_OF_MONTH", (user, time) -> String.valueOf(time.getDayOfMonth())));
+        parser.add(new TimeFormattedVariable("MONTH", (user, time) -> time.getMonth().getDisplayName(TextStyle.FULL, POLISH_LOCALE)));
+        parser.add(new TimeFormattedVariable("MONTH_NUMBER", (user, time) -> String.valueOf(time.getMonthValue())));
+        parser.add(new TimeFormattedVariable("YEAR", (user, time) -> String.valueOf(time.getYear())));
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
         parser.add(new SimpleTablistVariable("TPS", user -> {

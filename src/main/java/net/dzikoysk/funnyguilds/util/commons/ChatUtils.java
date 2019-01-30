@@ -60,6 +60,10 @@ public final class ChatUtils {
         return number > 9 ? "" + number : "0" + number;
     }
 
+    public static String appendDigit(String number) {
+        return number.length() > 1 ? "" + number : "0" + number;
+    }
+
     public static String getPercent(double dividend, double divisor) {
         return getPercent(dividend / divisor);
     }
