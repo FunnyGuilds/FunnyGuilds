@@ -31,7 +31,7 @@ public class ExcDelete implements Executor {
             return;
         }
 
-        if (config.regionDeleteIfNear && user.getGuild().isSomeoneInRegion()) {
+        if (config.guildDeleteCancelIfSomeoneIsOnRegion && user.getGuild().isSomeoneInRegion()) {
             player.sendMessage(messages.deleteSomeoneIsNear);
             return;
         }

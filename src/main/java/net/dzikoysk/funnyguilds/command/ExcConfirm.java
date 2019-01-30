@@ -34,7 +34,7 @@ public class ExcConfirm implements Executor {
             return;
         }
 
-        if (!Settings.getConfig().regionDeleteIfNear && user.getGuild().isSomeoneInRegion()) {
+        if (!Settings.getConfig().guildDeleteCancelIfSomeoneIsOnRegion && user.getGuild().isSomeoneInRegion()) {
             player.sendMessage(messages.deleteSomeoneIsNear);
             return;
         }

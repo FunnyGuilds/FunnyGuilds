@@ -451,9 +451,9 @@ public class PluginConfig {
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> regionCommands = Collections.singletonList("sethome");
 
-    @CfgComment("Czy mozna usunac gildie jezeli ktos spoza gildii jest na jej terenie")
-    @CfgName("region-delete-if-near")
-    public boolean regionDeleteIfNear = false;
+    @CfgComment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
+    @CfgName("guild-delete-cancel-if-someone-is-on-region")
+    public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
     
     @CfgComment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
     @CfgName("guild-tnt-protection-enabled")
