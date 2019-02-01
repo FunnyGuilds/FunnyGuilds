@@ -145,8 +145,8 @@
 
     <distributionManagement>
         <repository>
-            <id>panda-repository</id>
-            <url>https://repo.panda-lang.org/releases</url>
+            <id>insertt-repo</id>
+            <url>https://repo.insertt.pl/releases</url>
         </repository>
     </distributionManagement>
 
