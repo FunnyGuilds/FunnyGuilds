@@ -24,8 +24,8 @@ FunnyGuilds hooks into those plugins:
 #### Maven
 ```xml
 <repository>
-    <id>panda-repository</id>
-    <url>https://repo.panda-lang.org/</url>
+    <id>insertt-repo</id>
+    <url>https://repo.insertt.pl/releases</url>
 </repository>
 ```
 ```xml
