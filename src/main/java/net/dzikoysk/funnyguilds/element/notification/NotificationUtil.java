@@ -42,7 +42,7 @@ public final class NotificationUtil {
         
         CREATE_BASE_COMPONENT_NMS = Reflections.getMethod(Reflections.getNMSClass("IChatBaseComponent$ChatSerializer"), "a", String.class);
         CREATE_BASE_COMPONENT_CRAFTBUKKIT = Reflections.getMethod(Reflections.getCraftBukkitClass("util.CraftChatMessage"), "fromString", String.class, boolean.class);
-        GET_TITLE_ACTION_ENUM = Reflections.getMethod(TITLE_ACTION_CLASS, "a", String.class);
+        GET_TITLE_ACTION_ENUM = Reflections.getMethod(TITLE_ACTION_CLASS, "valueOf", String.class);
 
         try {
             TITLE_ENUM = (Enum<?>) GET_TITLE_ACTION_ENUM.invoke(null, "TITLE");
