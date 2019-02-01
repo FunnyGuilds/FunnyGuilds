@@ -5,6 +5,7 @@ Cieszymy się z Twojej obecności - propozycję oraz uwagi są naszym motorem na
 Żeby współpraca nam dobrze przebiegała, proszę - przeczytaj poniższe zalecenia:
 * upewnij się, czy aby **na pewno** korzystasz z **oficjalnej** wersji pluginu;
 * upewnij się, czy Twój serwer spełnia minimalne wymagania (które znajdują się przy każdym [release](https://github.com/FunnyGuilds/FunnyGuilds/releases));
+* sprawdź czy istnieje podobne zgłoszenie - jeśli tak, skorzystaj z niego;
 * podaj nam jak najwięcej informacji o serwerze - build silnika, listę pluginów i inne, techniczne aspekty;
 * jeżeli jest to błąd, byłoby nam miło, gdybyś przekazał **logi** z Twojego serwera - pomogą nam zlokalizować i naprawić niedociągnięcia;
 * jeżeli jest to bug - opisz nam dokładny sposób jego reprodukcji (mile widziane są nagrania z ukazaniem buga, jednak opis słowny też starczy; najczytelniej będzie w podpunktach);
