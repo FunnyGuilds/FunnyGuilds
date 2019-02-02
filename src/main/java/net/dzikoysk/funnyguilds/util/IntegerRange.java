@@ -72,6 +72,10 @@ public final class IntegerRange {
             }
 
             String valueString = StringUtils.join(split, " ", 1, split.length);
+            if (s.endsWith(" ")) {
+                valueString += " ";
+            }
+            
             parsed.put(new IntegerRange(minRange, maxRange), color ? ChatUtils.colored(valueString) : valueString);
         }
 
