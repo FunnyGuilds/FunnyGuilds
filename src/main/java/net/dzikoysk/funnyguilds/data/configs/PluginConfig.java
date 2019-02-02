@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.rank.RankSystem;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
+import net.dzikoysk.funnyguilds.element.notification.bossbar.provider.BossBarOptions;
 import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
@@ -16,6 +17,7 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialAliaser;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -1037,6 +1039,24 @@ public class PluginConfig {
     @CfgName("notification-title-fade-out")
     public int notificationTitleFadeOut = 10;
 
+    @CfgComment("Jakiego koloru powinien byc boss bar podczas wyswietlania notyfikacji")
+    @CfgComment("Dostepne kolory: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE")
+    @CfgName("notification-boss-bar-color")
+    public String bossBarColor = "RED";
+
+    @CfgComment("Jakiego stylu powinien byc boss bar podczas wyswietlania notyfikacji")
+    @CfgComment("Dostepne style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20")
+    @CfgName("notification-boss-bar-style")
+    public String bossBarStyle = "SOLID";
+
+    @CfgComment("Jakie flagi powinny byc nalozone na byc boss bar podczas wyswietlania notyfikacji")
+    @CfgComment("Dostepne flagi: DARKEN_SKY, PLAY_BOSS_MUSIC, CREATE_FOG")
+    @CfgName("notification-boss-bar-flags")
+    public List<String> bossBarFlags = Collections.singletonList("CREATE_FOG");
+
+    @CfgExclude
+    public BossBarOptions bossBarOptions_;
+
     @CfgComment("Czy osoba, ktora zalozyla pierwsza gildie na serwerze powinna dostac nagrode")
     @CfgName("should-give-rewards-for-first-guild")
     public boolean giveRewardsForFirstGuild = false;
@@ -1306,6 +1326,14 @@ public class PluginConfig {
         if (this.notificationTitleFadeOut <= 0) {
             FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-out\" can not be less than or equal to zero!"));
             this.notificationTitleFadeOut = 10;
+        }
+
+        if (! "v1_8_R1".equals(Reflections.SERVER_VERSION) && ! "v1_8_R3".equals(Reflections.SERVER_VERSION)) {
+            this.bossBarOptions_ = BossBarOptions.builder()
+                    .color(this.bossBarColor)
+                    .style(this.bossBarStyle)
+                    .flags(this.bossBarFlags)
+                    .build();
         }
 
         this.rankResetItems = loadItemStackList(this.rankResetItems_);

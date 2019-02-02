@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
-import net.dzikoysk.funnyguilds.element.NotificationBar;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,7 +32,7 @@ public class PlayerQuit implements Listener {
         cache.clearDamage();
 
         AbstractTablist.removeTablist(player);
-        NotificationBar.remove(player);
+        user.getBossBar().removeNotification();
     }
 
 }

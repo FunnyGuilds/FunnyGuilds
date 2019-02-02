@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
+import net.dzikoysk.funnyguilds.element.notification.bossbar.provider.BossBarProvider;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.PingUtils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -31,12 +32,14 @@ public class User extends AbstractBasic {
     private       Guild                 guild;
     private       Rank                  rank;
     private       UserBan               ban;
+    private final BossBarProvider       bossBarProvider;
 
     private User(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
         this.cache = new UserCache(this);
         this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
+        this.bossBarProvider = BossBarProvider.getBossBar(this);
         this.updateCache();
         this.changes();
     }
@@ -84,7 +87,7 @@ public class User extends AbstractBasic {
     }
 
     public boolean isOwner() {
-        if (!hasGuild()) {
+        if (! hasGuild()) {
             return false;
         }
 
@@ -92,7 +95,7 @@ public class User extends AbstractBasic {
     }
 
     public boolean isDeputy() {
-        if (!hasGuild()) {
+        if (! hasGuild()) {
             return false;
         }
 
@@ -104,7 +107,7 @@ public class User extends AbstractBasic {
             return false;
         }
 
-        if (!ONLINE_USERS_CACHE.contains(this.uuid)) {
+        if (! ONLINE_USERS_CACHE.contains(this.uuid)) {
             final Player player = Bukkit.getPlayer(this.uuid);
             if (player != null) {
                 ONLINE_USERS_CACHE.add(this.uuid);
@@ -146,7 +149,7 @@ public class User extends AbstractBasic {
     }
 
     public Player getPlayer() {
-        if (!isOnline()) {
+        if (! isOnline()) {
             return null;
         }
 
@@ -190,6 +193,10 @@ public class User extends AbstractBasic {
         this.playerRef = new WeakReference<>(player);
     }
 
+    public BossBarProvider getBossBar() {
+        return this.bossBarProvider;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -211,7 +218,7 @@ public class User extends AbstractBasic {
 
         User user = (User) obj;
 
-        if (!user.getUUID().equals(this.uuid)) {
+        if (! user.getUUID().equals(this.uuid)) {
             return false;
         }
 

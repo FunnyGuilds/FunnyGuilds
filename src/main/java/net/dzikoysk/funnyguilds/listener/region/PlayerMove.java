@@ -3,15 +3,13 @@ package net.dzikoysk.funnyguilds.listener.region;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
-import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
-import net.dzikoysk.funnyguilds.element.NotificationBar;
 import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
@@ -23,6 +21,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 
 public class PlayerMove implements Listener {
 
@@ -75,8 +74,11 @@ public class PlayerMove implements Listener {
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                        NotificationBar.set(player, formatter.format(messages.notificationBossbarLeaveGuildRegion), 1,
-                                        config.regionNotificationTime);
+                        user.getBossBar().sendNotification(
+                                formatter.format(messages.notificationActionbarLeaveGuildRegion),
+                                config.bossBarOptions_,
+                                config.regionNotificationTime
+                        );
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
@@ -117,8 +119,11 @@ public class PlayerMove implements Listener {
                 }
 
                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                    NotificationBar.set(player, formatter.format(messages.notificationBossbarEnterGuildRegion), 1,
-                                    config.regionNotificationTime);
+                    user.getBossBar().sendNotification(
+                            formatter.format(messages.notificationBossbarEnterGuildRegion),
+                            config.bossBarOptions_,
+                            config.regionNotificationTime
+                    );
                 }
 
                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
@@ -145,12 +150,12 @@ public class PlayerMove implements Listener {
                     return;
                 }
 
-                for (User u : guild.getOnlineMembers()) {
-                    if (u == null) {
+                for (User memberUser : guild.getOnlineMembers()) {
+                    if (memberUser == null) {
                         continue;
                     }
 
-                    Player member = u.getPlayer();
+                    Player member = memberUser.getPlayer();
 
                     if (member == null || !member.isOnline()) {
                         continue;
@@ -162,8 +167,11 @@ public class PlayerMove implements Listener {
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                        NotificationBar.set(member, formatter.format(messages.notificationBossbarIntruderEnterGuildRegion), 1,
-                                        config.regionNotificationTime);
+                        memberUser.getBossBar().sendNotification(
+                                formatter.format(messages.notificationBossbarIntruderEnterGuildRegion),
+                                config.bossBarOptions_,
+                                config.regionNotificationTime
+                        );
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
