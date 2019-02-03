@@ -498,6 +498,10 @@ public class PluginConfig {
     @CfgExclude
     public Map<Material, Double> explodeMaterials;
 
+    @CfgComment("Czy powstale wybuchy powinny niszczyc bloki wylacznie na terenach gildii")
+    @CfgName("explode-should-affect-only-guild")
+    public boolean explodeShouldAffectOnlyGuild = false;
+
     @CfgComment("Ile zyc ma gildia")
     @CfgName("war-lives")
     public int warLives = 3;

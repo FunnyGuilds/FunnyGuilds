@@ -34,12 +34,27 @@ public class EntityExplode implements Listener {
         Location explodeLocation = event.getLocation();
         PluginConfig pluginConfiguration = Settings.getConfig();
 
-        List<Location> sphere = SpaceUtils.sphere(explodeLocation, pluginConfiguration.explodeRadius, pluginConfiguration.explodeRadius, false, true, 0);
+        List<Location> sphere = SpaceUtils.sphere(
+                explodeLocation,
+                pluginConfiguration.explodeRadius,
+                pluginConfiguration.explodeRadius,
+                false,
+                true,
+                0
+        );
         Map<Material, Double> materials = pluginConfiguration.explodeMaterials;
 
-        destroyedBlocks.removeIf(blocks -> {
-            Region region = RegionUtils.getAt(blocks.getLocation());
-            return region != null && region.getGuild() != null && !region.getGuild().canBeAttacked();
+        if (pluginConfiguration.explodeShouldAffectOnlyGuild) {
+            destroyedBlocks.removeIf(block -> {
+                Region region = RegionUtils.getAt(block.getLocation());
+
+                return region == null || region.getGuild() == null;
+            });
+        }
+
+        destroyedBlocks.removeIf(block -> {
+            Region region = RegionUtils.getAt(block.getLocation());
+            return region != null && region.getGuild() != null && ! region.getGuild().canBeAttacked();
         });
 
         Region region = RegionUtils.getAt(explodeLocation);
@@ -49,7 +64,7 @@ public class EntityExplode implements Listener {
 
             if (pluginConfiguration.guildTNTProtectionEnabled) {
                 LocalTime now = LocalDateTime.now().toLocalTime();
-                
+
                 boolean afterStart = now.isAfter(pluginConfiguration.guildTNTProtectionStartTime);
                 boolean beforeEnd = now.isBefore(pluginConfiguration.guildTNTProtectionEndTime);
 
@@ -59,7 +74,7 @@ public class EntityExplode implements Listener {
                 }
             }
 
-            if (pluginConfiguration.warTntProtection & !guild.canBeAttacked()) {
+            if (pluginConfiguration.warTntProtection & ! guild.canBeAttacked()) {
                 event.setCancelled(true);
                 return;
             }
@@ -68,6 +83,7 @@ public class EntityExplode implements Listener {
             destroyedBlocks.removeIf(block -> block.getLocation().equals(protect));
 
             guild.setBuild(System.currentTimeMillis() + Settings.getConfig().regionExplode * 1000L);
+
             for (User user : guild.getMembers()) {
                 Player player = user.getPlayer();
                 if (player != null) {
@@ -80,15 +96,16 @@ public class EntityExplode implements Listener {
 
         for (Location l : sphere) {
             Material material = l.getBlock().getType();
-            if (!materials.containsKey(material)) {
+            if (! materials.containsKey(material)) {
                 continue;
             }
-            
+
             if (material == Material.WATER || material == Material.LAVA) {
                 if (SpaceUtils.chance(materials.get(material))) {
                     l.getBlock().setType(Material.AIR);
                 }
-            } else {
+            }
+            else {
                 if (SpaceUtils.chance(materials.get(material))) {
                     l.getBlock().breakNaturally();
                 }
