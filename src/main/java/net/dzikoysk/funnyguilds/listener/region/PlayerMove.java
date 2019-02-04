@@ -10,6 +10,10 @@ import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildRegionEnterEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.PacketSender;
 import org.bukkit.Bukkit;
@@ -56,6 +60,11 @@ public class PlayerMove implements Listener {
                 if (region != null) {
                     Guild guild = region.getGuild();
 
+                    if (! SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
+                        event.setCancelled(true);
+                        return;
+                    }
+
                     FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
                         if (config.createEntityType != null) {
                             GuildEntityHelper.despawnGuildHeart(guild, player);
@@ -95,6 +104,11 @@ public class PlayerMove implements Listener {
                 Guild guild = region.getGuild();
 
                 if (guild == null || guild.getName() == null) {
+                    return;
+                }
+
+                if (! SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {
+                    event.setCancelled(true);
                     return;
                 }
 
