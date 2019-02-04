@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.system.war;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.command.ExcInfo;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
-import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.entity.Player;
 
@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class WarListener {
 
-    private final static ExcInfo infoExecutor = new ExcInfo();
+    private static final ExcInfo INFO_EXECUTOR = new ExcInfo();
     
     private static final Class<?> USE_ENTITY_CLASS;
     private static final Field PACKET_ID_FIELD;
@@ -62,7 +62,7 @@ public final class WarListener {
     }
 
     private static void call(Player player, int id, String action, String hand) {
-        for (final Map.Entry<Guild, Integer> entry : EntityUtil.getEntitesMap().entrySet()) {
+        for (final Map.Entry<Guild, Integer> entry : GuildEntityHelper.getGuildEntities().entrySet()) {
             if (!entry.getValue().equals(id)) {
                 continue;
             }
@@ -78,7 +78,7 @@ public final class WarListener {
             }
             
             else if ("INTERACT_AT".equalsIgnoreCase(action)) {
-                PluginConfig config = Settings.getConfig();
+                PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
                 
                 if(config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                     return;
@@ -88,7 +88,7 @@ public final class WarListener {
                     return;
                 }
 
-                infoExecutor.execute(player, new String[]{entry.getKey().getTag()});
+                INFO_EXECUTOR.execute(player, new String[]{ entry.getKey().getTag() });
             }
         }
     }

@@ -2,66 +2,64 @@ package net.dzikoysk.funnyguilds;
 
 import org.bukkit.Bukkit;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public final class FunnyGuildsLogger {
 
-    private static final Logger BUKKIT_LOGGER = Bukkit.getLogger();
-    
-    public static void update(String content) {
-        BUKKIT_LOGGER.info("[FunnyGuilds][Updater] > " + content);
+    private final FunnyGuilds funnyGuilds;
+    private final Logger      rootLogger;
+
+    FunnyGuildsLogger(FunnyGuilds funnyGuilds) {
+        this.funnyGuilds = funnyGuilds;
+        this.rootLogger = funnyGuilds.getLogger();
     }
 
-    public static void parser(String content) {
-        BUKKIT_LOGGER.severe("[FunnyGuilds][Parser] #> " + content);
+    public void update(String content) {
+        this.rootLogger.info("[Updater] > " + content);
     }
 
-    public static void info(String content) {
-        BUKKIT_LOGGER.info("[FunnyGuilds] " + content);
+    public void parser(String content) {
+        this.rootLogger.warning("[Parser] > " + content);
     }
 
-    public static void warning(String content) {
-        BUKKIT_LOGGER.warning("[FunnyGuilds] " + content);
+    public void info(String content) {
+        this.rootLogger.info(content);
     }
 
-    public static void error(String content) {
-        BUKKIT_LOGGER.severe("[Server thread/ERROR] #!# " + content);
+    public void warning(String content) {
+        this.rootLogger.warning(content);
     }
 
-    public static boolean exception(Throwable cause) {
-        return cause == null || exception(cause.getMessage(), cause.getStackTrace());
+    public void error(String content) {
+        this.rootLogger.severe(content);
     }
 
-    public static boolean exception(String cause, StackTraceElement[] ste) {
+    public void error(String content, Throwable cause) {
+        String loadedPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
+                .filter(plugin -> ! plugin.getName().contains("FunnyGuilds"))
+                .map(plugin -> plugin.getName() + " " + plugin.getDescription().getVersion())
+                .collect(Collectors.joining(", "));
+
+        if (loadedPlugins.length() == 0) {
+            loadedPlugins = "none";
+        }
+
         error("");
-        error("[FunnyGuilds] Severe error:");
+        error(content);
+        error("");
+        error(cause.toString());
+        for (StackTraceElement element : cause.getStackTrace()) {
+            error("       at " + element.toString());
+        }
         error("");
         error("Server Information:");
-        error("  FunnyGuilds: " + FunnyGuilds.getFullVersion());
+        error("  FunnyGuilds: " + this.funnyGuilds.getFullVersion());
         error("  Bukkit: " + Bukkit.getBukkitVersion());
         error("  Java: " + System.getProperty("java.version"));
         error("  Thread: " + Thread.currentThread());
-        error("  Running CraftBukkit: " + Bukkit.getServer().getClass().getName().equals("org.bukkit.craftbukkit.CraftServer"));
+        error("  Loaded plugins: " + loadedPlugins);
         error("");
-        
-        if (cause == null || ste == null || ste.length < 1) {
-            error("Stack trace: no/empty exception given, dumping current stack trace instead!");
-            return true;
-        } else {
-            error("Stack trace: ");
-        }
-        
-        error("Caused by: " + cause);
-        for (StackTraceElement st : ste) {
-            error("    at " + st.toString());
-        }
-        
-        error("");
-        error("End of Error.");
-        error("");
-        return false;
     }
-
-    private FunnyGuildsLogger() {}
-
 }

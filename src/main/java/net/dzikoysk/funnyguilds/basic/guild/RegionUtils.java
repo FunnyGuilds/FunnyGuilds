@@ -1,13 +1,19 @@
 package net.dzikoysk.funnyguilds.basic.guild;
 
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
-import net.dzikoysk.funnyguilds.data.flat.Flat;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import org.bukkit.Location;
 
 import javax.annotation.Nullable;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class RegionUtils {
@@ -56,8 +62,8 @@ public final class RegionUtils {
         if (center == null) {
             return false;
         }
-        
-        PluginConfig s = Settings.getConfig();
+
+        PluginConfiguration s = FunnyGuilds.getInstance().getPluginConfiguration();
         int i = s.regionSize;
         if (s.enlargeItems != null) {
             i += (s.enlargeItems.size() * s.enlargeSize);
@@ -90,11 +96,12 @@ public final class RegionUtils {
             return;
         }
 
-        if (Settings.getConfig().dataType.flat) {
-            Flat.getRegionFile(region).delete();
+        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
+            FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+            dataModel.getRegionFile(region).delete();
         }
-        
-        if (Settings.getConfig().dataType.mysql) {
+
+        if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
             new DatabaseRegion(region).delete();
         }
         

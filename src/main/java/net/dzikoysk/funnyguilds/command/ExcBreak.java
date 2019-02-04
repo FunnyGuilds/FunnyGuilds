@@ -9,8 +9,7 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
@@ -24,7 +23,7 @@ public class ExcBreak implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;
         User user = User.get(player);
 

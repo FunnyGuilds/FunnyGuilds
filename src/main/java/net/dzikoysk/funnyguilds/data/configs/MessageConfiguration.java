@@ -1,12 +1,15 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.diorite.cfg.annotations.CfgCollectionStyle;
 import org.diorite.cfg.annotations.CfgComment;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-public class MessagesConfig {
+public class MessageConfiguration {
     
     @CfgComment("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
     @CfgComment("https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds")
@@ -530,4 +533,25 @@ public class MessagesConfig {
     public String adminTeleportedToBase = "&aAdmin &7{ADMIN} &ateleportowal cie do bazy gildii!";
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String adminTargetTeleportedToBase = "&aGracz &7{PLAYER} &azostal teleportowany do bazy gildii!";
+
+    public void load() {
+        try {
+            for (Field field : this.getClass().getDeclaredFields()) {
+                if (field.getType().equals(String.class)) {
+                    field.set(this, ChatUtils.colored((String) field.get(this)));
+                }
+
+                if (field.getType().equals(List.class)) {
+                    List<String> list = (List<String>) field.get(this);
+
+                    for (int i = 0; i < list.size(); i++) {
+                        list.set(i, ChatUtils.colored(list.get(i)));
+                    }
+                }
+            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not load message configuration", ex);
+        }
+    }
 }

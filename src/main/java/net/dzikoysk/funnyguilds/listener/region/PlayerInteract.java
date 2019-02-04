@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.ExcInfo;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.system.war.WarSystem;
 import org.bukkit.Material;
@@ -27,7 +27,7 @@ public class PlayerInteract implements Listener {
     
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         Action eventAction = event.getAction();
         Player player = event.getPlayer();
         

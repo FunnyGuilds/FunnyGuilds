@@ -1,18 +1,17 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Manager;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
-import net.dzikoysk.funnyguilds.data.flat.Flat;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
@@ -23,8 +22,8 @@ public class AxcName implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
-        PluginConfig config = Settings.getConfig();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (args.length < 1) {
             sender.sendMessage(messages.generalNoTagGiven);
@@ -50,35 +49,34 @@ public class AxcName implements Executor {
         if (!SimpleEventHandler.handle(new GuildRenameEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, args[1]))) {
             return;
         }
-        
-        Manager.getInstance().stop();
-        PluginConfig.DataType dataType = Settings.getConfig().dataType;
 
         if (config.regionsEnabled) {
             Region region = guild.getRegion();
 
-            if (dataType.flat) {
-                Flat.getRegionFile(region).delete();
+            if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
+                FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+                dataModel.getRegionFile(region).delete();
             }
-            
-            if (dataType.mysql) {
+
+            if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
                 new DatabaseRegion(region).delete();
             }
             
             region.setName(args[1]);
         }
-        
-        if (dataType.flat) {
-            Flat.getGuildFile(guild).delete();
+
+        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
+            FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+            dataModel.getGuildFile(guild).delete();
         }
-        
-        if (dataType.mysql) {
+
+        if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
             new DatabaseGuild(guild).delete();
         }
         
         guild.setName(args[1]);
-        
-        Manager.getInstance().start();
+
+        FunnyGuilds.getInstance().getDataModel().save(false);
         sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
     }
 

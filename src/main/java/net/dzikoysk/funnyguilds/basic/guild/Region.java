@@ -35,7 +35,7 @@ public class Region extends AbstractBasic {
     }
 
     public synchronized void update() {
-        super.changes();
+        super.markChanged();
 
         if (this.center == null) {
             return;
@@ -104,19 +104,19 @@ public class Region extends AbstractBasic {
 
     public void setName(String s) {
         this.name = s;
-        super.changes();
+        super.markChanged();
     }
 
     public void setGuild(Guild guild) {
         this.guild = guild;
-        super.changes();
+        super.markChanged();
     }
 
     public void setCenter(Location loc) {
         this.center = loc;
         this.world = loc.getWorld();
         this.update();
-        super.changes();
+        super.markChanged();
     }
 
     public void setSize(int i) {
@@ -127,7 +127,7 @@ public class Region extends AbstractBasic {
 
     public void setEnlarge(int i) {
         this.enlarge = i;
-        super.changes();
+        super.markChanged();
     }
 
     public Guild getGuild() {

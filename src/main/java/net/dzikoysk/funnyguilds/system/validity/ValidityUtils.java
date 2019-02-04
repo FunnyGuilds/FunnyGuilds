@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.system.validity;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.data.Messages;
 import org.bukkit.Bukkit;
 
 public class ValidityUtils {
@@ -12,7 +12,7 @@ public class ValidityUtils {
             return;
         }
 
-        String message = Messages.getInstance().broadcastValidity
+        String message = FunnyGuilds.getInstance().getMessageConfiguration().broadcastValidity
                 .replace("{GUILD}", guild.getName())
                 .replace("{TAG}", guild.getTag())
                 .replace("{GUILD}", guild.getName());

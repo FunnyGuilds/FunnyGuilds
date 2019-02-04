@@ -5,37 +5,74 @@ import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.Commands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.data.Manager;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.element.ScoreboardStack;
+import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
+import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.element.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
-import net.dzikoysk.funnyguilds.listener.*;
+import net.dzikoysk.funnyguilds.listener.EntityDamage;
+import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.PlayerChat;
+import net.dzikoysk.funnyguilds.listener.PlayerDeath;
+import net.dzikoysk.funnyguilds.listener.PlayerJoin;
+import net.dzikoysk.funnyguilds.listener.PlayerLogin;
+import net.dzikoysk.funnyguilds.listener.PlayerQuit;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
-import net.dzikoysk.funnyguilds.listener.region.*;
-import net.dzikoysk.funnyguilds.system.AsynchronouslyRepeater;
+import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
+import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
+import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
+import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
+import net.dzikoysk.funnyguilds.listener.region.BucketAction;
+import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
+import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
+import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
+import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
+import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
+import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
+import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
+import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
-import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
+
+import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
     private static FunnyGuilds funnyguilds;
-    
-    private static String fullVersion;
-    private static String mainVersion;
 
-    private ConcurrencyManager concurrencyManager;
+    private String fullVersion;
+    private String mainVersion;
+
+    private final File pluginConfigurationFile  = new File(this.getDataFolder(), "config.yml");
+    private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
+    private final File pluginDataFolderFile     = new File(this.getDataFolder(), "data");
+
+    private FunnyGuildsLogger      logger;
+    private PluginConfiguration    pluginConfiguration;
+    private MessageConfiguration   messageConfiguration;
+    private ConcurrencyManager     concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
-    
-    private boolean disabling;
+
+    private volatile BukkitTask guildValidationTask;
+    private volatile BukkitTask tablistBroadcastTask;
+
+    private DataModel                    dataModel;
+    private DataPersistenceHandler       dataPersistenceHandler;
+    private InvitationPersistenceHandler invitationPersistenceHandler;
+
+    private boolean isDisabling;
     private boolean forceDisabling;
 
     public FunnyGuilds() {
@@ -44,30 +81,39 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        this.logger = new FunnyGuildsLogger(this);
+
         try {
-           Class.forName("net.md_5.bungee.api.ChatColor"); 
-        } catch (Exception spigotNeeded) {
-            FunnyGuildsLogger.info("FunnyGuilds requires spigot to work, your server seems to be using something else");
-            FunnyGuildsLogger.info("If you think that is not true - contact plugin developers");
-            FunnyGuildsLogger.info("https://github.com/FunnyGuilds/FunnyGuilds");
-            
+            Class.forName("net.md_5.bungee.api.ChatColor");
+        }
+        catch (Exception spigotNeeded) {
+            FunnyGuilds.getInstance().getPluginLogger().info("FunnyGuilds requires spigot to work, your server seems to be using something else");
+            FunnyGuilds.getInstance().getPluginLogger().info("If you think that is not true - contact plugin developers");
+            FunnyGuilds.getInstance().getPluginLogger().info("https://github.com/FunnyGuilds/FunnyGuilds");
+
             getServer().getPluginManager().disablePlugin(this);
             this.forceDisabling = true;
-            
+
             return;
         }
-        
-        if (!this.getDataFolder().exists()) {
+
+        if (! this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
 
+        this.pluginConfiguration = ConfigHelper.loadConfig(this.pluginConfigurationFile, PluginConfiguration.class);
+        this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
+
+        this.pluginConfiguration.load();
+        this.messageConfiguration.load();
+
         DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
         String[] versions = descriptionChanger.extractVersion();
-        
-        fullVersion = versions[0];
-        mainVersion = versions[1];
 
-        PluginConfig settings = Settings.getConfig();
+        this.fullVersion = versions[0];
+        this.mainVersion = versions[1];
+
+        PluginConfiguration settings = FunnyGuilds.getInstance().getPluginConfiguration();
         descriptionChanger.rename(settings.pluginName);
 
         this.concurrencyManager = new ConcurrencyManager(settings.concurrencyThreads);
@@ -81,12 +127,21 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        new ScoreboardStack(this).start();
-        new Manager().start();
-        new MetricsCollector(this).start();
+        this.dataModel = DataModel.create(this, this.pluginConfiguration.dataType);
+        this.dataModel.load();
 
-        AsynchronouslyRepeater repeater = AsynchronouslyRepeater.getInstance();
-        repeater.start();
+        this.dataPersistenceHandler = new DataPersistenceHandler(this);
+        this.dataPersistenceHandler.startHandler();
+
+        this.invitationPersistenceHandler = new InvitationPersistenceHandler(this);
+        this.invitationPersistenceHandler.loadInvitations();
+        this.invitationPersistenceHandler.startHandler();
+
+        MetricsCollector collector = new MetricsCollector(this);
+        collector.start();
+
+        this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
+        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(), 20L, 20L);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -100,28 +155,31 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerQuit(), this);
 
         this.dynamicListenerManager.registerDynamic(
-            () -> Settings.getConfig().regionsEnabled,
-            new BlockBreak(),
-            new BlockIgnite(),
-            new BlockPlace(),
-            new BucketAction(),
-            new EntityExplode(),
-            new HangingBreak(),
-            new HangingPlace(),
-            new PlayerCommand(),
-            new PlayerInteract()
+                () -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled,
+                new BlockBreak(),
+                new BlockIgnite(),
+                new BlockPlace(),
+                new BucketAction(),
+                new EntityExplode(),
+                new HangingBreak(),
+                new HangingPlace(),
+                new PlayerCommand(),
+                new PlayerInteract()
         );
 
-        this.dynamicListenerManager.registerDynamic(() -> Settings.getConfig().regionsEnabled && Settings.getConfig().eventMove, new PlayerMove());
-        this.dynamicListenerManager.registerDynamic(() -> Settings.getConfig().regionsEnabled && Settings.getConfig().eventPhysics, new BlockPhysics());
-        this.dynamicListenerManager.registerDynamic(() -> Settings.getConfig().regionsEnabled  && Settings.getConfig().respawnInBase, new PlayerRespawn());
+        this.dynamicListenerManager.registerDynamic(
+                () -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && FunnyGuilds.getInstance().getPluginConfiguration().eventMove, new PlayerMove());
+        this.dynamicListenerManager.registerDynamic(
+                () -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && FunnyGuilds.getInstance().getPluginConfiguration().eventPhysics, new BlockPhysics());
+        this.dynamicListenerManager.registerDynamic(
+                () -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && FunnyGuilds.getInstance().getPluginConfiguration().respawnInBase, new PlayerRespawn());
         this.dynamicListenerManager.reloadAll();
         this.patch();
 
-        FunnyGuildsVersion.isNewAvailable(getServer().getConsoleSender(), true);
+        FunnyGuildsVersion.isNewAvailable(this.getServer().getConsoleSender(), true);
         PluginHook.init();
-        
-        FunnyGuildsLogger.info("~ Created by FunnyGuilds Team ~");
+
+        FunnyGuilds.getInstance().getPluginLogger().info("~ Created by FunnyGuilds Team ~");
     }
 
     @Override
@@ -129,23 +187,27 @@ public class FunnyGuilds extends JavaPlugin {
         if (this.forceDisabling) {
             return;
         }
-        
-        disabling = true;
+
+        this.isDisabling = true;
 
         this.dynamicListenerManager.unregisterAll();
-        EntityUtil.despawn();
-        AsynchronouslyRepeater.getInstance().stop();
+        GuildEntityHelper.despawnGuildHearts();
+        this.guildValidationTask.cancel();
+        this.tablistBroadcastTask.cancel();
 
-        Manager.getInstance().stop();
-        Manager.getInstance().save();
+        this.dataModel.save(false);
+        this.dataPersistenceHandler.stopHandler();
+
+        this.invitationPersistenceHandler.saveInvitations();
+        this.invitationPersistenceHandler.stopHandler();
 
         funnyguilds = null;
     }
 
     private void patch() {
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        for (final Player player : this.getServer().getOnlinePlayers()) {
+        for (Player player : this.getServer().getOnlinePlayers()) {
             this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
 
             User user = User.get(player);
@@ -160,7 +222,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         for (Guild guild : GuildUtils.getGuilds()) {
             if (config.createEntityType != null) {
-                EntityUtil.spawn(guild);
+                GuildEntityHelper.spawnGuildHeart(guild);
             }
 
             guild.updateRank();
@@ -168,23 +230,61 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public boolean isDisabling() {
-        return disabling;
+        return this.isDisabling;
+    }
+
+    public FunnyGuildsLogger getPluginLogger() {
+        return this.logger;
+    }
+
+    public File getPluginDataFolder() {
+        return this.pluginDataFolderFile;
+    }
+
+    public DataModel getDataModel() {
+        return this.dataModel;
+    }
+
+    public DataPersistenceHandler getDataPersistenceHandler() {
+        return this.dataPersistenceHandler;
+    }
+
+    public InvitationPersistenceHandler getInvitationPersistenceHandler() {
+        return this.invitationPersistenceHandler;
+    }
+
+    public PluginConfiguration getPluginConfiguration() {
+        return this.pluginConfiguration;
+    }
+
+    public MessageConfiguration getMessageConfiguration() {
+        return this.messageConfiguration;
     }
 
     public ConcurrencyManager getConcurrencyManager() {
-        return concurrencyManager;
+        return this.concurrencyManager;
     }
 
     public DynamicListenerManager getDynamicListenerManager() {
-        return dynamicListenerManager;
+        return this.dynamicListenerManager;
     }
 
-    public static String getFullVersion() {
-        return fullVersion;
+    public void reloadPluginConfiguration() {
+        this.pluginConfiguration = ConfigHelper.loadConfig(this.pluginConfigurationFile, PluginConfiguration.class);
+        this.pluginConfiguration.load();
     }
-    
-    public static String getMainVersion() {
-        return mainVersion;
+
+    public void reloadMessageConfiguration() {
+        this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
+        this.messageConfiguration.load();
+    }
+
+    public String getFullVersion() {
+        return this.fullVersion;
+    }
+
+    public String getMainVersion() {
+        return this.mainVersion;
     }
 
     public static FunnyGuilds getInstance() {

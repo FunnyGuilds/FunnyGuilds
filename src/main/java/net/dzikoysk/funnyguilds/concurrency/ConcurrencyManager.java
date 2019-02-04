@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,9 +25,9 @@ public class ConcurrencyManager {
     }
 
     public void printStatus() {
-        FunnyGuildsLogger.info("Available Processors: " + Runtime.getRuntime().availableProcessors());
-        FunnyGuildsLogger.info("Active Threads: " + Thread.activeCount());
-        FunnyGuildsLogger.info("Pool size: " + threads);
+        FunnyGuilds.getInstance().getPluginLogger().info("Available Processors: " + Runtime.getRuntime().availableProcessors());
+        FunnyGuilds.getInstance().getPluginLogger().info("Active Threads: " + Thread.activeCount());
+        FunnyGuilds.getInstance().getPluginLogger().info("Pool size: " + threads);
     }
 
 }

@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,7 +12,7 @@ public final class MaterialUtils {
 
     public static Material parseMaterial(String string, boolean allowNullReturn) {
         if (string == null) {
-            FunnyGuildsLogger.parser("Unknown material: null");
+            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material: null");
             return allowNullReturn ? null : Material.AIR;
         }
 
@@ -26,7 +26,7 @@ public final class MaterialUtils {
         material = Material.getMaterial(materialName);
 
         if (material == null) {
-            FunnyGuildsLogger.parser("Unknown material: " + string);
+            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material: " + string);
             return allowNullReturn ? null : Material.AIR;
         }
 
@@ -35,7 +35,7 @@ public final class MaterialUtils {
 
     public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
         if (string == null) {
-            FunnyGuildsLogger.parser("Unknown materialdata: null");
+            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown materialdata: null");
             return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
 
@@ -43,7 +43,7 @@ public final class MaterialUtils {
         Material material = parseMaterial(data[0], allowNullReturn);
 
         if (material == null) {
-            FunnyGuildsLogger.parser("Unknown material in materialdata: " + string);
+            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material in materialdata: " + string);
             return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
 
@@ -66,10 +66,10 @@ public final class MaterialUtils {
 
 
     public static String getMaterialName(Material material) {
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (config.translatedMaterialsEnable && config.translatedMaterials.containsKey(material)) {
-            return ChatUtils.colored(Settings.getConfig().translatedMaterials.get(material));
+            return ChatUtils.colored(FunnyGuilds.getInstance().getPluginConfiguration().translatedMaterials.get(material));
         }
         else {
             return StringUtils.replace(material.toString().toLowerCase(), "_", " ");

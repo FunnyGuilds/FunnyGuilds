@@ -2,9 +2,9 @@ package net.dzikoysk.funnyguilds.basic;
 
 public interface Basic {
 
-    void changes();
+    void markChanged();
 
-    boolean changed();
+    boolean wasChanged();
 
     BasicType getType();
 

@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import org.bukkit.Location;
@@ -32,7 +31,7 @@ public class EntityExplode implements Listener {
     public void onExplode(EntityExplodeEvent event) {
         List<Block> destroyedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
-        PluginConfig pluginConfiguration = Settings.getConfig();
+        PluginConfiguration pluginConfiguration = FunnyGuilds.getInstance().getPluginConfiguration();
 
         List<Location> sphere = SpaceUtils.sphere(
                 explodeLocation,
@@ -82,13 +81,13 @@ public class EntityExplode implements Listener {
             Location protect = region.getHeart();
             destroyedBlocks.removeIf(block -> block.getLocation().equals(protect));
 
-            guild.setBuild(System.currentTimeMillis() + Settings.getConfig().regionExplode * 1000L);
+            guild.setBuild(System.currentTimeMillis() + FunnyGuilds.getInstance().getPluginConfiguration().regionExplode * 1000L);
 
             for (User user : guild.getMembers()) {
                 Player player = user.getPlayer();
                 if (player != null) {
                     if (informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, pluginConfiguration.infoPlayerCooldown)) {
-                        player.sendMessage(Messages.getInstance().regionExplode.replace("{TIME}", Integer.toString(Settings.getConfig().regionExplode)));
+                        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplode.replace("{TIME}", Integer.toString(FunnyGuilds.getInstance().getPluginConfiguration().regionExplode)));
                     }
                 }
             }

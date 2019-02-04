@@ -1,13 +1,12 @@
 package net.dzikoysk.funnyguilds.command.manager;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildBaseChangeEvent;
@@ -21,11 +20,11 @@ public class MxcBase implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;
         User user = User.get(player);
 
-        if (!Settings.getConfig().regionsEnabled) {
+        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             player.sendMessage(messages.regionsDisabled);
             return;
         }

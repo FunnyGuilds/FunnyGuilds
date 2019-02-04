@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.util.metrics;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 
 import java.util.HashMap;
 
@@ -18,19 +17,17 @@ public class MetricsCollector implements Runnable {
         this.plugin = plugin;
         try {
             mcstats = new MCStats(plugin);
-        } catch (Exception e) {
+        }
+        catch (Exception ex) {
             this.mcstats = null;
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize mcstats", ex);
         }
         try {
             this.bstats = new BStats(plugin);
-        } catch (Exception e) {
+        }
+        catch (Exception ex) {
             this.bstats = null;
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize bstats", ex);
         }
     }
 

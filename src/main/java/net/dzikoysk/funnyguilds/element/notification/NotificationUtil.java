@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.element.notification;
 
 import com.google.common.collect.Lists;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.nms.PacketCreator;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.StringUtils;
@@ -87,7 +87,7 @@ public final class NotificationUtil {
         try {
             return keepNewLines ? Array.get(CREATE_BASE_COMPONENT_CRAFTBUKKIT.invoke(null, text0, true), 0) : CREATE_BASE_COMPONENT_NMS.invoke(null, StringUtils.replace(BASE_COMPONENT_JSON_PATTERN, "{TEXT}", text0));
         } catch (IllegalAccessException | InvocationTargetException ex) {
-            FunnyGuildsLogger.exception(ex.getMessage(), ex.getStackTrace());
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not create base component", ex);
             return null;
         }
     }

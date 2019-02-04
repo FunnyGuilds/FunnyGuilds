@@ -1,15 +1,14 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
@@ -25,8 +24,8 @@ public class ExcInfo implements Executor {
     
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
-        PluginConfig config = Settings.getConfig();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         String tag = null;
 
         if (args.length > 0) {

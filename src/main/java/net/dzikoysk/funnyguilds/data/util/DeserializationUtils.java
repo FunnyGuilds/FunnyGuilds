@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.data.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserBan;
-import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Location;
 
 import java.util.Set;
@@ -16,14 +15,14 @@ public final class DeserializationUtils {
     @SuppressWarnings("unchecked")
     public static Guild deserializeGuild(Object[] values) {
         if (values == null) {
-            FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild! Caused by: null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: null");
             return null;
         }
         
         final Guild guild = Guild.getOrCreate((UUID) values[0]);
         
         guild.setName((String) values[1]);
-        guild.setTag(Settings.getConfig().guildTagKeepCase ? (String) values[2] : (Settings.getConfig().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase()));
+        guild.setTag(FunnyGuilds.getInstance().getPluginConfiguration().guildTagKeepCase ? (String) values[2] : (FunnyGuilds.getInstance().getPluginConfiguration().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase()));
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
         guild.setRegion((Region) values[5]);
@@ -43,7 +42,7 @@ public final class DeserializationUtils {
 
     public static Region deserializeRegion(Object[] values) {
         if (values == null) {
-            FunnyGuildsLogger.error("Cannot deserialize region! Caused by: null");
+            FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: null");
             return null;
         }
         

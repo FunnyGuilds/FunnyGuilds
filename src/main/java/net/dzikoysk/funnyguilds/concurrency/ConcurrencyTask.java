@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -22,7 +22,7 @@ public class ConcurrencyTask implements Runnable {
             boolean result = execute(request);
 
             if (!result) {
-                FunnyGuildsLogger.warning("Task #" + id + " has been interrupted");
+                FunnyGuilds.getInstance().getPluginLogger().warning("Task #" + id + " has been interrupted");
                 return;
             }
         }

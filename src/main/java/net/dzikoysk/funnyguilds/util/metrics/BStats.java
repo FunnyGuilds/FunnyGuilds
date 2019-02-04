@@ -27,7 +27,7 @@ import java.util.zip.GZIPOutputStream;
 public class BStats {
 
     /*static {
-        // Maven's Relocate is clever and changes strings, too. So we have to use this little "trick" ... :D
+        // Maven's Relocate is clever and markChanged strings, too. So we have to use this little "trick" ... :D
         final String defaultPackage = new String(new byte[] { 'o', 'r', 'g', '.', 'b', 's', 't', 'a', 't', 's' });
         final String examplePackage = new String(new byte[] { 'y', 'o', 'u', 'r', '.', 'p', 'a', 'c', 'k', 'a', 'g', 'e' });
         // We want to make sure nobody just copy & pastes the example and use the wrong package names
@@ -124,7 +124,7 @@ public class BStats {
      */
     private static void sendData(JSONObject data) throws Exception {
         if (data == null) {
-            throw new IllegalArgumentException("Data cannot be null!");
+            throw new IllegalArgumentException("InvitationPersistenceHandler cannot be null!");
         }
         if (Bukkit.isPrimaryThread()) {
             throw new IllegalAccessException("This method must not be called from the main thread!");

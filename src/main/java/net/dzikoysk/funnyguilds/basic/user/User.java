@@ -41,7 +41,7 @@ public class User extends AbstractBasic {
         this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
         this.bossBarProvider = BossBarProvider.getBossBar(this);
         this.updateCache();
-        this.changes();
+        this.markChanged();
     }
 
     private User(String name) {
@@ -54,7 +54,7 @@ public class User extends AbstractBasic {
 
     public void removeGuild() {
         this.guild = null;
-        this.changes();
+        this.markChanged();
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new RankUpdateUserRequest(this));
@@ -74,12 +74,12 @@ public class User extends AbstractBasic {
 
     public void setGuild(Guild guild) {
         this.guild = guild;
-        this.changes();
+        this.markChanged();
     }
 
     public void setRank(Rank r) {
         this.rank = r;
-        this.changes();
+        this.markChanged();
     }
 
     public void setBan(UserBan ban) {
@@ -139,7 +139,7 @@ public class User extends AbstractBasic {
 
         this.rank = new Rank(this);
         RankManager.getInstance().update(this);
-        this.changes();
+        this.markChanged();
 
         return this.rank;
     }

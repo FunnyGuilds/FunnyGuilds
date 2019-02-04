@@ -5,12 +5,11 @@ import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
-import net.dzikoysk.funnyguilds.data.Manager;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
-import net.dzikoysk.funnyguilds.data.flat.Flat;
-import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
+import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,27 +27,25 @@ import java.util.stream.Collectors;
 
 public class GuildUtils {
 
-    private static final Set<Guild> guilds = ConcurrentHashMap.newKeySet();
+    private static final Set<Guild> GUILDS = ConcurrentHashMap.newKeySet();
 
     public static Set<Guild> getGuilds() {
-        return new HashSet<>(guilds);
+        return new HashSet<>(GUILDS);
     }
 
     public static void deleteGuild(final Guild guild) {
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (guild == null) {
             return;
         }
-
-        Manager.getInstance().stop();
 
         if (config.regionsEnabled) {
             Region region = guild.getRegion();
 
             if (region != null) {
                 if (config.createEntityType != null) {
-                    EntityUtil.despawn(guild);
+                    GuildEntityHelper.despawnGuildHeart(guild);
                 } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                     Location centerLocation = region.getCenter().clone();
 
@@ -78,20 +75,19 @@ public class GuildUtils {
             enemy.removeEnemy(guild);
         }
 
-        if (Settings.getConfig().dataType.flat) {
-            Flat.getGuildFile(guild).delete();
+        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
+            FlatDataModel dataModel = ((FlatDataModel) FunnyGuilds.getInstance().getDataModel());
+            dataModel.getGuildFile(guild).delete();
         }
-
-        if (Settings.getConfig().dataType.mysql) {
+        else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
             new DatabaseGuild(guild).delete();
         }
 
         guild.delete();
-        Manager.getInstance().start();
     }
 
     public static Guild getByName(String name) {
-        for (Guild guild : guilds) {
+        for (Guild guild : GUILDS) {
             if (guild.getName() != null && guild.getName().equalsIgnoreCase(name)) {
                 return guild;
             }
@@ -101,7 +97,7 @@ public class GuildUtils {
     }
 
     public static Guild getByUUID(UUID uuid) {
-        for (Guild guild : guilds) {
+        for (Guild guild : GUILDS) {
             if (guild.getUUID().equals(uuid)) {
                 return guild;
             }
@@ -111,7 +107,7 @@ public class GuildUtils {
     }
 
     public static Guild getByTag(String tag) {
-        for (Guild guild : guilds) {
+        for (Guild guild : GUILDS) {
             if (guild.getTag() != null && guild.getTag().equalsIgnoreCase(tag.toLowerCase())) {
                 return guild;
             }
@@ -121,7 +117,7 @@ public class GuildUtils {
     }
 
     public static boolean nameExists(String name) {
-        for (Guild guild : guilds) {
+        for (Guild guild : GUILDS) {
             if (guild.getName() != null && guild.getName().equalsIgnoreCase(name)) {
                 return true;
             }
@@ -131,7 +127,7 @@ public class GuildUtils {
     }
 
     public static boolean tagExists(String tag) {
-        for (Guild guild : guilds) {
+        for (Guild guild : GUILDS) {
             if (guild.getTag() != null && guild.getTag().equalsIgnoreCase(tag)) {
                 return true;
             }
@@ -167,20 +163,20 @@ public class GuildUtils {
         }
 
         if (getByName(guild.getName()) == null) {
-            guilds.add(guild);
+            GUILDS.add(guild);
         }
     }
 
     public static synchronized void removeGuild(Guild guild) {
-        guilds.remove(guild);
+        GUILDS.remove(guild);
     }
 
     public static boolean isNameValid(String guildName) {
-        return Settings.getConfig().restrictedGuildNames.stream().noneMatch(name -> name.equalsIgnoreCase(guildName));
+        return FunnyGuilds.getInstance().getPluginConfiguration().restrictedGuildNames.stream().noneMatch(name -> name.equalsIgnoreCase(guildName));
     }
 
     public static boolean isTagValid(String guildTag) {
-        return Settings.getConfig().restrictedGuildTags.stream().noneMatch(tag -> tag.equalsIgnoreCase(guildTag));
+        return FunnyGuilds.getInstance().getPluginConfiguration().restrictedGuildTags.stream().noneMatch(tag -> tag.equalsIgnoreCase(guildTag));
     }
 
     private GuildUtils() {}

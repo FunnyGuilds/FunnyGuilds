@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.basic.rank;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Basic;
 import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.Settings;
 
 public class Rank implements Comparable<Rank> {
 
@@ -26,7 +26,7 @@ public class Rank implements Comparable<Rank> {
             this.guild = (Guild) basic;
         } else if (this.type == BasicType.USER) {
             this.user = (User) basic;
-            this.points = Settings.getConfig().rankStart;
+            this.points = FunnyGuilds.getInstance().getPluginConfiguration().rankStart;
         }
     }
 
@@ -35,22 +35,22 @@ public class Rank implements Comparable<Rank> {
         if (this.points < 1) {
             this.points = 0;
         }
-        this.basic.changes();
+        this.basic.markChanged();
     }
 
     public void addPoints(int i) {
         this.points += i;
-        this.basic.changes();
+        this.basic.markChanged();
     }
 
     public void addKill() {
         this.kills += 1;
-        this.basic.changes();
+        this.basic.markChanged();
     }
 
     public void addDeath() {
         this.deaths += 1;
-        this.basic.changes();
+        this.basic.markChanged();
     }
 
     @Override
@@ -87,7 +87,7 @@ public class Rank implements Comparable<Rank> {
 
             if (calc != this.points) {
                 this.points = (int) calc;
-                this.basic.changes();
+                this.basic.markChanged();
             }
 
             return this.points;
@@ -96,7 +96,7 @@ public class Rank implements Comparable<Rank> {
 
     public void setPoints(int i) {
         this.points = i;
-        this.basic.changes();
+        this.basic.markChanged();
     }
 
     public int getPosition() {
@@ -122,7 +122,7 @@ public class Rank implements Comparable<Rank> {
 
     public void setKills(int i) {
         this.kills = i;
-        this.basic.changes();
+        this.basic.markChanged();
     }
 
     public int getDeaths() {
@@ -140,7 +140,7 @@ public class Rank implements Comparable<Rank> {
 
     public void setDeaths(int i) {
         this.deaths = i;
-        this.basic.changes();
+        this.basic.markChanged();
     }
 
     public float getKDR() {

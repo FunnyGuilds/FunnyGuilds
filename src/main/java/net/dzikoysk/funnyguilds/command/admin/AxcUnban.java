@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildUnbanEvent;
@@ -14,12 +13,13 @@ import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
 
 public class AxcUnban implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
         if (args.length < 1) {
             sender.sendMessage(messages.generalNoTagGiven);

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.hook;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -9,11 +9,11 @@ import java.util.function.Supplier;
 
 public final class PluginHook {
 
-    public static final String PLUGIN_FUNNYTAB = "FunnyTab";
-    public static final String PLUGIN_WORLDGUARD = "WorldGuard";
-    public static final String PLUGIN_VAULT = "Vault";
-    public static final String PLUGIN_PLACEHOLDERAPI = "PlaceholderAPI";
-    public static final String PLUGIN_BUNGEETABLISTPLUS = "BungeeTabListPlus";
+    public static final String PLUGIN_FUNNYTAB           = "FunnyTab";
+    public static final String PLUGIN_WORLDGUARD         = "WorldGuard";
+    public static final String PLUGIN_VAULT              = "Vault";
+    public static final String PLUGIN_PLACEHOLDERAPI     = "PlaceholderAPI";
+    public static final String PLUGIN_BUNGEETABLISTPLUS  = "BungeeTabListPlus";
     public static final String PLUGIN_MVDWPLACEHOLDERAPI = "MVdWPlaceholderAPI";
 
     private static final List<String> HOOK_LIST = new ArrayList<>();
@@ -30,14 +30,16 @@ public final class PluginHook {
                 Class.forName("com.sk89q.worldguard.protection.flags.Flag");
 
                 if (Bukkit.getPluginManager().getPlugin("WorldGuard").getDescription().getVersion().startsWith("7")) {
-                    FunnyGuildsLogger.warning("Support for WorldGuard v7.0.0 or newer is currently unavailable");
+                    FunnyGuilds.getInstance().getPluginLogger().warning("Support for WorldGuard v7.0.0 or newer is currently unavailable");
                     return false;
-                } else {
+                }
+                else {
                     WorldGuardHook.initWorldGuard();
                     return true;
                 }
-            } catch (final ClassNotFoundException exception) {
-                FunnyGuildsLogger.warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
+            }
+            catch (final ClassNotFoundException exception) {
+                FunnyGuilds.getInstance().getPluginLogger().warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
                 return false;
             }
         });
@@ -48,7 +50,8 @@ public final class PluginHook {
                 BungeeTabListPlusHook.initVariableHook();
 
                 return true;
-            } catch (final ClassNotFoundException exception) {
+            }
+            catch (final ClassNotFoundException exception) {
                 return false;
             }
         });
@@ -59,7 +62,8 @@ public final class PluginHook {
                 MVdWPlaceholderAPIHook.initPlaceholderHook();
 
                 return true;
-            } catch (final ClassNotFoundException exception) {
+            }
+            catch (final ClassNotFoundException exception) {
                 return false;
             }
         });
@@ -77,13 +81,14 @@ public final class PluginHook {
 
     public static void tryInit(final String plugin, final Supplier<Boolean> init, final boolean notifyIfMissing) {
         if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
-            if (!init.get()) {
+            if (! init.get()) {
                 return;
             }
 
             HOOK_LIST.add(plugin);
-        } else if (notifyIfMissing) {
-            FunnyGuildsLogger.info(plugin + " plugin could not be found, some features may not be available");
+        }
+        else if (notifyIfMissing) {
+            FunnyGuilds.getInstance().getPluginLogger().info(plugin + " plugin could not be found, some features may not be available");
         }
     }
 
@@ -95,6 +100,7 @@ public final class PluginHook {
         return HOOK_LIST.contains(plugin);
     }
 
-    private PluginHook() {}
+    private PluginHook() {
+    }
 
 }

@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import com.zaxxer.hikari.HikariDataSource;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +19,7 @@ public class Database {
         instance = this;
 
         this.dataSource = new HikariDataSource();
-        PluginConfig.MySQL c = Settings.getConfig().mysql;
+        PluginConfiguration.MySQL c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
 
         int poolSize = c.poolSize;
         if (poolSize <= 0) {
@@ -32,7 +31,7 @@ public class Database {
 
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
         this.dataSource.setUsername(c.user);
-        if (c.password != null && !c.password.isEmpty()) {
+        if (c.password != null && ! c.password.isEmpty()) {
             this.dataSource.setPassword(c.password);
         }
 
@@ -46,38 +45,36 @@ public class Database {
         if (instance == null) {
             return new Database();
         }
-        
+
         return instance;
     }
 
     public void executeQuery(String query, Consumer<ResultSet> action) {
         try (Connection connection = this.dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet result = statement.executeQuery()) {
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet result = statement.executeQuery()) {
 
             action.accept(result);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute query", ex);
         }
     }
 
     public int executeUpdate(String query) {
         try (Connection connection = this.dataSource.getConnection();
-            PreparedStatement statement = connection.prepareStatement(query)) {
+             PreparedStatement statement = connection.prepareStatement(query)) {
 
             if (statement == null) {
                 return 0;
             }
 
             return statement.executeUpdate();
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute update", ex);
         }
         return 0;
     }
-    
+
 }

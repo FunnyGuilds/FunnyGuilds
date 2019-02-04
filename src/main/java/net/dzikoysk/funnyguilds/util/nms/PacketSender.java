@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.nms;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -23,10 +23,9 @@ public final class PacketSender {
             sendPacket = Reflections.getMethod(Reflections.getNMSClass("PlayerConnection"), "sendPacket");
             playerConnection = Reflections.getField(Reflections.getNMSClass("EntityPlayer"), "playerConnection");
 
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize PacketSender class", ex);
         }
     }
 

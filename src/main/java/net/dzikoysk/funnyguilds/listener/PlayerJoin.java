@@ -9,10 +9,9 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
-import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +31,7 @@ public class PlayerJoin implements Listener {
         Player player = e.getPlayer();
         User user = User.get(player);
         user.updateReference(player);
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (config.playerlistEnable && !AbstractTablist.hasTablist(player)) {
             AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
@@ -57,7 +56,7 @@ public class PlayerJoin implements Listener {
             }
             
             if (config.createEntityType != null) {
-                EntityUtil.spawn(region.getGuild(), player);
+                GuildEntityHelper.spawnGuildHeart(region.getGuild(), player);
             }
         }, 30L);
     }

@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 
 import java.io.File;
 
 public class FlatPatcher {
 
-    public void patch() {
+    public void patch(FlatDataModel flatDataModel) {
         File guilds = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "guilds");
         File regions = new File(FunnyGuilds.getInstance().getDataFolder() + File.separator + "regions");
 
@@ -16,9 +15,9 @@ public class FlatPatcher {
         boolean r = regions.exists();
 
         if (g || r) {
-            FunnyGuildsLogger.update("Updating flat files ...");
+            FunnyGuilds.getInstance().getPluginLogger().update("Updating flat files ...");
 
-            FunnyGuildsLogger.update("Scanning files ...");
+            FunnyGuilds.getInstance().getPluginLogger().update("Scanning files ...");
             int todo = 0;
             int tg = 0;
             int tr = 0;
@@ -34,14 +33,14 @@ public class FlatPatcher {
             }
 
             todo = tg + tr;
-            FunnyGuildsLogger.update(todo + " files found ...");
+            FunnyGuilds.getInstance().getPluginLogger().update(todo + " files found ...");
 
-            FunnyGuildsLogger.update("Updating files ...");
+            FunnyGuilds.getInstance().getPluginLogger().update("Updating files ...");
             if (g) {
-                guilds.renameTo(Flat.GUILDS);
+                guilds.renameTo(flatDataModel.getGuildsFolder());
             }
             if (r) {
-                regions.renameTo(Flat.REGIONS);
+                regions.renameTo(flatDataModel.getRegionsFolder());
             }
 
             guildsList = guilds.listFiles();
@@ -54,8 +53,8 @@ public class FlatPatcher {
                 IOUtils.delete(regions);
             }
 
-            FunnyGuildsLogger.update("Done!");
-            FunnyGuildsLogger.update("Updated files: " + todo);
+            FunnyGuilds.getInstance().getPluginLogger().update("Done!");
+            FunnyGuilds.getInstance().getPluginLogger().update("Updated files: " + todo);
         }
     }
 

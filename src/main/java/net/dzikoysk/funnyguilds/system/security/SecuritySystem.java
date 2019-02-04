@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.system.security;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -39,7 +39,7 @@ public final class SecuritySystem {
     }
 
     public boolean checkPlayer(Player player, SecurityType type, Object... values) {
-        if (!Settings.getConfig().regionsEnabled) {
+        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return false;
         }
         

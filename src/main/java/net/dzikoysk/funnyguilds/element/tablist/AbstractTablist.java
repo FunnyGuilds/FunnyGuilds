@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.element.tablist;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariablesParser;
@@ -47,7 +47,7 @@ public abstract class AbstractTablist {
         this.ping = ping;
         this.user = user;
 
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (!config.playerlistFillCells) {
             Entry<Integer, String> entry = MapUtil.findTheMaximumEntryByKey(config.playerList);

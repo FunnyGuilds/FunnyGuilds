@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import org.bukkit.entity.Entity;
@@ -42,7 +42,7 @@ public class EntityDamage implements Listener {
             return;
         }
 
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         User victimUser = User.get((Player) event.getEntity());
         User attackerUser = User.get(attacker);
 

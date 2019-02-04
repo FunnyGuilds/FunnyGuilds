@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.element;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -19,7 +19,7 @@ public class Dummy {
     }
 
     public void updateScore(User user) {
-        if (!Settings.getConfig().dummyEnable) {
+        if (! FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
             return;
         }
         
@@ -32,7 +32,7 @@ public class Dummy {
     }
 
     private void initialize() {
-        if (!Settings.getConfig().dummyEnable) {
+        if (! FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
             return;
         }
         
@@ -42,7 +42,7 @@ public class Dummy {
         if (objective == null || !objective.getName().equals(name)) {
             objective = scoreboard.registerNewObjective(name, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            objective.setDisplayName(Settings.getConfig().dummySuffix);
+            objective.setDisplayName(FunnyGuilds.getInstance().getPluginConfiguration().dummySuffix);
         }
         
         for (Player player : Bukkit.getOnlinePlayers()) {

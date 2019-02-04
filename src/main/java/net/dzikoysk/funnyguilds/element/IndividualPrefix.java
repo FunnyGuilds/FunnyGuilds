@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.element;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -45,7 +45,7 @@ public class IndividualPrefix {
         
         if (this.getUser().hasGuild()) {
             if (this.getUser().equals(user) || this.getUser().getGuild().getMembers().contains(user)) {
-                team.setPrefix(replace(Settings.getConfig().prefixOur, "{TAG}", user.getGuild().getTag()));
+                team.setPrefix(replace(FunnyGuilds.getInstance().getPluginConfiguration().prefixOur, "{TAG}", user.getGuild().getTag()));
             }
         }
         
@@ -77,15 +77,15 @@ public class IndividualPrefix {
                     team.addEntry(u.getName());
                 }
             }
-            
-            String prefix = Settings.getConfig().prefixOther;
+
+            String prefix = FunnyGuilds.getInstance().getPluginConfiguration().prefixOther;
 
             if (guild.getAllies().contains(to)) {
-                prefix = Settings.getConfig().prefixAllies;
+                prefix = FunnyGuilds.getInstance().getPluginConfiguration().prefixAllies;
             }
             
             if (guild.getEnemies().contains(to)) {
-                prefix = Settings.getConfig().prefixEnemies;
+                prefix = FunnyGuilds.getInstance().getPluginConfiguration().prefixEnemies;
             }
             
             team.setPrefix(replace(prefix, "{TAG}", to.getTag()));
@@ -102,8 +102,8 @@ public class IndividualPrefix {
                     team.addEntry(u.getName());
                 }
             }
-            
-            team.setPrefix(replace(Settings.getConfig().prefixOther, "{TAG}", to.getTag()));
+
+            team.setPrefix(replace(FunnyGuilds.getInstance().getPluginConfiguration().prefixOther, "{TAG}", to.getTag()));
         }
     }
 
@@ -116,7 +116,7 @@ public class IndividualPrefix {
         if (team != null) {
             team.removeEntry(player);
             if (team.getName() != null) {
-                team.setPrefix(replace(Settings.getConfig().prefixOther, "{TAG}", team.getName()));
+                team.setPrefix(replace(FunnyGuilds.getInstance().getPluginConfiguration().prefixOther, "{TAG}", team.getName()));
             }
         }
     }
@@ -144,8 +144,8 @@ public class IndividualPrefix {
         
         if (guild != null) {
             guilds.remove(guild);
-            
-            PluginConfig config = Settings.getConfig();
+
+            PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             String our = config.prefixOur;
             String ally = config.prefixAllies;
             String enemy = config.prefixEnemies;
@@ -201,7 +201,7 @@ public class IndividualPrefix {
             }
         }
         else {
-            String other = Settings.getConfig().prefixOther;
+            String other = FunnyGuilds.getInstance().getPluginConfiguration().prefixOther;
 
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {

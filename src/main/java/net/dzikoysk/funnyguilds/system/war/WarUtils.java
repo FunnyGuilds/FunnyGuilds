@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.system.war;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 public final class WarUtils {
 
     public static void message(Player player, int i, Object... values) {
-        MessagesConfig m = Messages.getInstance();
+        MessageConfiguration m = FunnyGuilds.getInstance().getMessageConfiguration();
         String message = null;
         
         switch (i) {
@@ -38,19 +38,19 @@ public final class WarUtils {
     }
 
     public static String getWinMessage(Guild conqueror, Guild loser) {
-        return Messages.getInstance().warWin
+        return FunnyGuilds.getInstance().getMessageConfiguration().warWin
                 .replace("{WINNER}", conqueror.getTag())
                 .replace("{LOSER}", loser.getTag());
     }
 
     public static String getLoseMessage(Guild conqueror, Guild loser) {
-        return Messages.getInstance().warLose
+        return FunnyGuilds.getInstance().getMessageConfiguration().warLose
                 .replace("{WINNER}", conqueror.getTag())
                 .replace("{LOSER}", loser.getTag());
     }
 
     public static String getBroadcastMessage(Guild conqueror, Guild loser) {
-        return Messages.getInstance().broadcastWar
+        return FunnyGuilds.getInstance().getMessageConfiguration().broadcastWar
                 .replace("{WINNER}", conqueror.getTag())
                 .replace("{LOSER}", loser.getTag());
     }

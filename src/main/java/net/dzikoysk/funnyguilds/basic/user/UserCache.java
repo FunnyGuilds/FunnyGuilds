@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.basic.user;
 
 import net.dzikoysk.funnyguilds.element.Dummy;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
-import net.dzikoysk.funnyguilds.element.ScoreboardStack;
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 
@@ -115,7 +115,7 @@ public class UserCache {
 
     public synchronized Scoreboard getScoreboard() {
         if (this.scoreboard == null) {
-            this.scoreboard = ScoreboardStack.pull();
+            this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         }
 
         return this.scoreboard;

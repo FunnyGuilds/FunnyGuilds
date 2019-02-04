@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 
 import java.lang.reflect.Field;
@@ -12,16 +12,18 @@ public final class MinecraftServerUtils {
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
 
     private static Object serverInstance;
-    private static Field tpsField;
+    private static Field  tpsField;
 
     static {
         try {
             Class<?> minecraftServerClass = Reflections.getNMSClass("MinecraftServer");
             serverInstance = Reflections.getMethod(Reflections.getNMSClass("MinecraftServer"), "getServer").invoke(null);
             tpsField = minecraftServerClass.getDeclaredField("recentTps");
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            FunnyGuildsLogger.exception(ex.getMessage(), ex.getStackTrace());
-        } catch (NoSuchFieldException ex) {
+        }
+        catch (IllegalAccessException | InvocationTargetException ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize MinecraftServerUtils", ex);
+        }
+        catch (NoSuchFieldException ex) {
             tpsField = null;
         }
     }
@@ -30,12 +32,14 @@ public final class MinecraftServerUtils {
     public static String getRecentTPS(int last) {
         try {
             return tpsField != null ? FORMAT.format(Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last])) : "N/A";
-        } catch (IllegalAccessException ex) {
-            FunnyGuildsLogger.exception(ex.getMessage(), ex.getStackTrace());
+        }
+        catch (IllegalAccessException ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve recent TPS", ex);
             return null;
         }
     }
 
-    private MinecraftServerUtils() {}
-    
+    private MinecraftServerUtils() {
+    }
+
 }

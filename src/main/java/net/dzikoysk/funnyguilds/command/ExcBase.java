@@ -5,10 +5,8 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
@@ -24,8 +22,8 @@ public class ExcBase implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PluginConfig config = Settings.getConfig();
-        MessagesConfig messages = Messages.getInstance();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;
         User user = User.get(player);
 

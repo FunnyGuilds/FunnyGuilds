@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public final class ConfigUtils {
+public final class ConfigHelper {
 
     @SuppressWarnings("unchecked")
     public static <T> T loadConfig(final File file, final Class<T> implementationFile) {
@@ -56,5 +56,6 @@ public final class ConfigUtils {
         return config;
     }
 
-    private ConfigUtils() {}
+    private ConfigHelper() {
+    }
 }

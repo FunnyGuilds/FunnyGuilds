@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
@@ -30,10 +29,10 @@ public class DatabaseRegion {
             Location location = LocationUtils.parseLocation(center);
 
             if (name == null) {
-                FunnyGuildsLogger.error("Cannot deserialize region! Caused by: name == null");
+                FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: name == null");
                 return null;
             } else if (location == null) {
-                FunnyGuildsLogger.error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
+                FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
                 return null;
             }
 
@@ -45,10 +44,9 @@ public class DatabaseRegion {
             values[3] = enlarge;
             
             return DeserializationUtils.deserializeRegion(values);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not deserialize region", ex);
         }
         
         return null;
@@ -66,7 +64,7 @@ public class DatabaseRegion {
         StringBuilder update = new StringBuilder();
         
         update.append("DELETE FROM `");
-        update.append(Settings.getConfig().mysql.regionsTableName);
+        update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
         update.append("` WHERE `name`='");
         update.append(region.getName());
         update.append("';");
@@ -78,7 +76,7 @@ public class DatabaseRegion {
         StringBuilder sb = new StringBuilder();
         
         sb.append("INSERT INTO `");
-        sb.append(Settings.getConfig().mysql.regionsTableName);
+        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
         sb.append("` (`name`, `center`, `size`, `enlarge`) VALUES (");
         sb.append("'" + region.getName() + "',");
         sb.append("'" + LocationUtils.toString(region.getCenter()) + "',");

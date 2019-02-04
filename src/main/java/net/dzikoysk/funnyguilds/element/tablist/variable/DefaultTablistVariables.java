@@ -1,13 +1,12 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVariable;
@@ -100,8 +99,8 @@ public final class DefaultTablistVariables {
     }
 
     private static void createFunnyVariables() {
-        PluginConfig config = Settings.getConfig();
-        MessagesConfig messages = Messages.getInstance();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         
         FUNNY_VARIABLES.put("guilds", new SimpleTablistVariable("GUILDS", user -> String.valueOf(GuildUtils.getGuilds().size())));
         FUNNY_VARIABLES.put("users", new SimpleTablistVariable("USERS", user -> String.valueOf(UserUtils.getUsers().size())));
@@ -133,9 +132,9 @@ public final class DefaultTablistVariables {
         FUNNY_VARIABLES.put("g-members-online", new GuildDependentTablistVariable("G-MEMBERS-ONLINE", user -> String.valueOf(user.getGuild().getOnlineMembers().size()), user -> "0"));
         FUNNY_VARIABLES.put("g-members-all", new GuildDependentTablistVariable("G-MEMBERS-ALL", user -> String.valueOf(user.getGuild().getMembers().size()), user -> "0"));
 
-        FUNNY_VARIABLES.put("g-position", new GuildDependentTablistVariable("G-POSITION", user -> user.getGuild().getMembers().size() >= Settings.getConfig().minMembersToInclude ? String.valueOf(user.getGuild().getRank().getPosition()) : messages.minMembersToIncludeNoValue, user -> messages.minMembersToIncludeNoValue));
-        FUNNY_VARIABLES.put("g-validity", new GuildDependentTablistVariable("G-VALIDITY", user -> Settings.getConfig().dateFormat.format(user.getGuild().getValidityDate()), user -> messages.gValidityNoValue));
-        FUNNY_VARIABLES.put("g-region-size", new GuildDependentTablistVariable("G-REGION-SIZE", user -> Settings.getConfig().regionsEnabled ? String.valueOf(user.getGuild().getRegion().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
+        FUNNY_VARIABLES.put("g-position", new GuildDependentTablistVariable("G-POSITION", user -> user.getGuild().getMembers().size() >= FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude ? String.valueOf(user.getGuild().getRank().getPosition()) : messages.minMembersToIncludeNoValue, user -> messages.minMembersToIncludeNoValue));
+        FUNNY_VARIABLES.put("g-validity", new GuildDependentTablistVariable("G-VALIDITY", user -> FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(user.getGuild().getValidityDate()), user -> messages.gValidityNoValue));
+        FUNNY_VARIABLES.put("g-region-size", new GuildDependentTablistVariable("G-REGION-SIZE", user -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled ? String.valueOf(user.getGuild().getRegion().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
     }
     
     private static List<String> getWorldGuardRegionNames(User user) {

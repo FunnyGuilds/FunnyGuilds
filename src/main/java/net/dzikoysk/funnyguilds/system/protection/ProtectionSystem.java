@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.system.protection;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,11 +39,11 @@ public final class ProtectionSystem {
 
         if (guild.getMembers().contains(user)) {
             if (build && !guild.canBuild()) {
-                player.sendMessage(Messages.getInstance().regionExplodeInteract.replace("{TIME}",
+                player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract.replace("{TIME}",
                         Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))));
                 return true;
             } else if (location.equals(region.getHeart())) {
-                Pair<Material,Byte> md = Settings.getConfig().createMaterial;
+                Pair<Material, Byte> md = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
 
                 if (md != null && md.getLeft() != Material.AIR) {
                     return true;
@@ -53,8 +52,8 @@ public final class ProtectionSystem {
             
             return false;
         }
-        
-        player.sendMessage(Messages.getInstance().regionOther);
+
+        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         return true;
     }
 

@@ -1,25 +1,31 @@
-package net.dzikoysk.funnyguilds.basic;
+package net.dzikoysk.funnyguilds.data;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.DataType;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 
 import java.util.List;
 import java.util.Set;
 
-public class BasicUtils {
+public interface DataModel {
 
-    public static void checkObjects() {
-        if (!Settings.getConfig().regionsEnabled) {
+    void load();
+
+    void save(boolean ignoreNotChanged);
+
+    default void validateLoadedData() {
+        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return;
         }
-        
+
         Set<String> guilds = GuildUtils.getNames(GuildUtils.getGuilds());
         List<String> regions = RegionUtils.getNames(RegionUtils.getRegions());
-        
+
         int repaired = 0;
 
         for (Guild guild : GuildUtils.getGuilds()) {
@@ -27,7 +33,7 @@ public class BasicUtils {
                 guilds.remove(guild.getName());
                 continue;
             }
-            
+
             GuildUtils.deleteGuild(guild);
             repaired++;
         }
@@ -40,14 +46,22 @@ public class BasicUtils {
                 regions.remove(region.getName());
                 continue;
             }
-            
+
             RegionUtils.delete(region);
             repaired++;
         }
-        
+
         if (repaired > 0) {
-            FunnyGuildsLogger.warning("Repaired conflicts: " + repaired);
+            FunnyGuilds.getInstance().getPluginLogger().warning("Repaired conflicts: " + repaired);
         }
     }
 
+    static DataModel create(FunnyGuilds funnyGuilds, DataType dataType) {
+        switch (dataType) {
+            case MYSQL:
+                return new SQLDataModel();
+            default:
+                return new FlatDataModel(funnyGuilds);
+        }
+    }
 }

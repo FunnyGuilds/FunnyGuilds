@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.nms;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.block.Block;
 
@@ -24,8 +24,9 @@ public class BlockDataChanger {
         
         try {
             setDataMethod.invoke(targetBlock, newData);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            FunnyGuildsLogger.exception("Failed to change block data for a block at: " + LocationUtils.toString(targetBlock.getLocation()), e.getStackTrace());
+        }
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Failed to change block data for a block at: " + LocationUtils.toString(targetBlock.getLocation()), ex);
         }
     }
 

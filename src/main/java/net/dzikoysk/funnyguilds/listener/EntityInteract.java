@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.ExcPlayer;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.Cooldown;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -22,8 +21,8 @@ public class EntityInteract implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
-        MessagesConfig messages = Messages.getInstance();
-        PluginConfig config = Settings.getConfig();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         Player eventCaller = event.getPlayer();
         Entity clickedEntity = event.getRightClicked();
 

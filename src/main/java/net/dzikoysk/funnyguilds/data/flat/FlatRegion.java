@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
@@ -27,19 +26,19 @@ public class FlatRegion {
         int enlarge = pc.getInt("enlarge");
 
         if (name == null || cs == null) {
-            FunnyGuildsLogger.error("Cannot deserialize region! Caused by: name/center is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: name/center is null");
             return null;
         }
 
         Location center = LocationUtils.parseLocation(cs);
 
         if (center == null) {
-            FunnyGuildsLogger.error("Cannot deserialize region! Caused by: center is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: center is null");
             return null;
         }
 
         if (size < 1) {
-            size = Settings.getConfig().regionSize;
+            size = FunnyGuilds.getInstance().getPluginConfiguration().regionSize;
         }
 
         Object[] values = new Object[4];
@@ -51,8 +50,8 @@ public class FlatRegion {
         return DeserializationUtils.deserializeRegion(values);
     }
 
-    public boolean serialize() {
-        File file = Flat.loadCustomFile(BasicType.REGION, region.getName());
+    public boolean serialize(FlatDataModel flatDataModel) {
+        File file = flatDataModel.loadCustomFile(BasicType.REGION, region.getName());
         YamlWrapper pc = new YamlWrapper(file);
 
         pc.set("name", region.getName());

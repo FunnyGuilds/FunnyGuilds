@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.nms.EggTypeChanger;
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +64,7 @@ public final class ItemUtils {
             stack = Integer.parseInt(split[0]);
             data = Integer.parseInt(subtype);
         } catch (NumberFormatException e) {
-            FunnyGuildsLogger.parser("Unknown size: " + split[0]);
+            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown size: " + split[0]);
             stack = 1;
             data = 0;
         }
@@ -96,13 +96,13 @@ public final class ItemUtils {
                 try {
                     level = Integer.parseInt(parse[2]);
                 } catch (NumberFormatException e) {
-                    FunnyGuildsLogger.parser("Unknown enchant level: " + split[2]);
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant level: " + split[2]);
                     level = 1;
                 }
 
                 Enchantment enchant = Enchantment.getByName(enchantName.toUpperCase());
                 if (enchant == null) {
-                    FunnyGuildsLogger.parser("Unknown enchant: " + parse[1]);
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant: " + parse[1]);
                 }
 
                 item.addEnchant(enchant, level);
@@ -120,7 +120,7 @@ public final class ItemUtils {
                                         Integer.parseInt(color[1]), Integer.parseInt(color[2])));
                         item.refreshMeta();
                     } catch (NumberFormatException e) {
-                        FunnyGuildsLogger.parser("Unknown armor color: " + str.split(":")[1]);
+                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown armor color: " + str.split(":")[1]);
                     }
                 }
             } else if (str.contains("eggtype")) {
@@ -130,7 +130,7 @@ public final class ItemUtils {
                     try {
                         type = EntityType.valueOf(str.split(":")[1].toUpperCase());
                     } catch (Exception e) {
-                        FunnyGuildsLogger.parser("Unknown entity type: " + str.split(":")[1].toUpperCase());
+                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown entity type: " + str.split(":")[1].toUpperCase());
                     }
 
                     if (type != null) {
@@ -138,7 +138,7 @@ public final class ItemUtils {
                         item.refreshMeta();
                     }
                 } else {
-                    FunnyGuildsLogger.info("This MC version supports metadata for spawn egg type, no need to use eggtype in item creation!");
+                    FunnyGuilds.getInstance().getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
                 }
             }
         }

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,13 +44,13 @@ public final class IntegerRange {
         for (String s : data) {
             String[] split = s.split(" ");
             if (split.length < 2) {
-                FunnyGuildsLogger.parser("\"" + s + "\" is not a valid range String!");
+                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + s + "\" is not a valid range String!");
                 continue;
             }
 
             String[] range = split[0].split("-");
             if (range.length < 2) {
-                FunnyGuildsLogger.parser("\"" + s + "\" is not a valid integer range String!");
+                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + s + "\" is not a valid integer range String!");
                 continue;
             }
 
@@ -60,14 +60,14 @@ public final class IntegerRange {
             try {
                 minRange = Integer.parseInt(range[0]);
             } catch (NumberFormatException e) {
-                FunnyGuildsLogger.parser("\"" + range[0] + "\" of integer range String \"" + s + "\" is not a valid integer!");
+                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + range[0] + "\" of integer range String \"" + s + "\" is not a valid integer!");
                 continue;
             }
 
             try {
                 maxRange = range[1].equals("*") ? Integer.MAX_VALUE : Integer.parseInt(range[1]);
             } catch (NumberFormatException e) {
-                FunnyGuildsLogger.parser("\"" + range[1] + "\" of integer range String \"" + s + "\" is not a valid integer!");
+                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + range[1] + "\" of integer range String \"" + s + "\" is not a valid integer!");
                 continue;
             }
 

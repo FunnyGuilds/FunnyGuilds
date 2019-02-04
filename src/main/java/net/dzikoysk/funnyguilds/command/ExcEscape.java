@@ -7,10 +7,8 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,8 +21,8 @@ public class ExcEscape implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PluginConfig config = Settings.getConfig();
-        MessagesConfig messages = Messages.getInstance();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;
 
         if (!config.regionsEnabled) {
@@ -64,7 +62,7 @@ public class ExcEscape implements Executor {
             return;
         }
 
-        int time = Settings.getConfig().escapeDelay;
+        int time = FunnyGuilds.getInstance().getPluginConfiguration().escapeDelay;
 
         if (time < 1) {
             player.teleport(guild.getHome());

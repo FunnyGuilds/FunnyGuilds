@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
@@ -45,7 +45,7 @@ public final class TimeUtils {
                                 break;
                         }
                     } catch (NumberFormatException e) {
-                        FunnyGuildsLogger.parser("Unknown number: " + value.toString());
+                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown number: " + value.toString());
                         return time;
                     }
 

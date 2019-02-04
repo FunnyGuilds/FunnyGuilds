@@ -45,8 +45,8 @@ public class FlatUser {
         return DeserializationUtils.deserializeUser(values);
     }
 
-    public boolean serialize() {
-        File file = Flat.getUserFile(user);
+    public boolean serialize(FlatDataModel flatDataModel) {
+        File file = flatDataModel.getUserFile(user);
         if (file.isDirectory()) {
             return false;
         }

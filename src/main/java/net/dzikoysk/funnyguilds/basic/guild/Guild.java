@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.basic.guild;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.AbstractBasic;
 import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -20,31 +20,31 @@ import java.util.stream.Collectors;
 public class Guild extends AbstractBasic {
 
     private final UUID uuid;
-    
-    private String name;
-    private String tag;
-    private User owner;
-    private Rank rank;
-    private Region region;
-    private Location home;
-    private Set<User> members;
-    private Set<User> deputies;
+
+    private String     name;
+    private String     tag;
+    private User       owner;
+    private Rank       rank;
+    private Region     region;
+    private Location   home;
+    private Set<User>  members;
+    private Set<User>  deputies;
     private Set<Guild> allies;
     private Set<Guild> enemies;
-    private Location enderCrystal;
-    private boolean pvp;
-    private long born;
-    private long validity;
-    private Date validityDate;
-    private long attacked;
-    private long ban;
-    private int lives;
-    private long build;
-    private long additionalProtection;
+    private Location   enderCrystal;
+    private boolean    pvp;
+    private long       born;
+    private long       validity;
+    private Date       validityDate;
+    private long       attacked;
+    private long       ban;
+    private int        lives;
+    private long       build;
+    private long       additionalProtection;
 
     private Guild(UUID uuid) {
         this.uuid = uuid;
-        
+
         this.born = System.currentTimeMillis();
         this.members = ConcurrentHashMap.newKeySet();
         this.deputies = ConcurrentHashMap.newKeySet();
@@ -69,7 +69,7 @@ public class Guild extends AbstractBasic {
 
     public void addLive() {
         this.lives++;
-        this.changes();
+        this.markChanged();
     }
 
     public void addMember(User user) {
@@ -79,11 +79,11 @@ public class Guild extends AbstractBasic {
 
         this.members.add(user);
         this.updateRank();
-        this.changes();
+        this.markChanged();
     }
 
     public void addAlly(Guild guild) {
-        this.changes();
+        this.markChanged();
         if (this.allies.contains(guild)) {
             return;
         }
@@ -92,7 +92,7 @@ public class Guild extends AbstractBasic {
     }
 
     public void addEnemy(Guild guild) {
-        this.changes();
+        this.markChanged();
         if (this.enemies.contains(guild)) {
             return;
         }
@@ -107,24 +107,24 @@ public class Guild extends AbstractBasic {
 
     public void removeLive() {
         this.lives--;
-        this.changes();
+        this.markChanged();
     }
 
     public void removeMember(User user) {
         this.deputies.remove(user);
         this.members.remove(user);
         this.updateRank();
-        this.changes();
+        this.markChanged();
     }
 
     public void removeAlly(Guild guild) {
         this.allies.remove(guild);
-        this.changes();
+        this.markChanged();
     }
 
     public void removeEnemy(Guild guild) {
         this.enemies.remove(guild);
-        this.changes();
+        this.markChanged();
     }
 
     public void delete() {
@@ -137,7 +137,7 @@ public class Guild extends AbstractBasic {
         }
 
         this.build = 0;
-        this.changes();
+        this.markChanged();
         return true;
     }
 
@@ -156,12 +156,12 @@ public class Guild extends AbstractBasic {
         }
 
         this.deputies.add(user);
-        this.changes();
+        this.markChanged();
     }
 
     public void removeDeputy(User user) {
         this.deputies.remove(user);
-        this.changes();
+        this.markChanged();
     }
 
     public void setAdditionalProtection(long timestamp) {
@@ -170,27 +170,27 @@ public class Guild extends AbstractBasic {
 
     public void setName(String name) {
         this.name = name;
-        this.changes();
+        this.markChanged();
     }
 
     public void setTag(String tag) {
         this.tag = tag;
-        this.changes();
+        this.markChanged();
     }
 
     public void setOwner(User user) {
         this.owner = user;
         this.addMember(user);
-        this.changes();
+        this.markChanged();
     }
 
     public void setDeputies(Set<User> users) {
         this.deputies = users;
-        this.changes();
+        this.markChanged();
     }
 
     public void setRegion(Region region) {
-        if (!Settings.getConfig().regionsEnabled) {
+        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return;
         }
 
@@ -201,60 +201,60 @@ public class Guild extends AbstractBasic {
             this.home = region.getCenter();
         }
 
-        this.changes();
+        this.markChanged();
     }
 
     public void setHome(Location home) {
         this.home = home;
-        this.changes();
+        this.markChanged();
     }
 
     public void setMembers(Set<User> members) {
         this.members = Collections.synchronizedSet(members);
         this.updateRank();
-        this.changes();
+        this.markChanged();
     }
 
     public void setAllies(Set<Guild> guilds) {
         this.allies = guilds;
-        this.changes();
+        this.markChanged();
     }
 
     public void setEnemies(Set<Guild> guilds) {
         this.enemies = guilds;
-        this.changes();
+        this.markChanged();
     }
 
     public void setPvP(boolean b) {
         this.pvp = b;
-        this.changes();
+        this.markChanged();
     }
 
     public void setBorn(long l) {
         this.born = l;
-        this.changes();
+        this.markChanged();
     }
 
     public void setValidity(long l) {
         if (l == this.born) {
-            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
+            this.validity = System.currentTimeMillis() + FunnyGuilds.getInstance().getPluginConfiguration().validityStart;
         }
         else {
             this.validity = l;
         }
 
         this.validityDate = new Date(this.validity);
-        this.changes();
+        this.markChanged();
     }
 
     public void setAttacked(long l) {
         this.attacked = l;
-        this.changes();
+        this.markChanged();
     }
 
     public void setLives(int i) {
         this.lives = i;
-        this.changes();
+        this.markChanged();
     }
 
     public void setBan(long l) {
@@ -265,17 +265,17 @@ public class Guild extends AbstractBasic {
             this.ban = 0;
         }
 
-        this.changes();
+        this.markChanged();
     }
 
     public void setBuild(long time) {
         this.build = time;
-        this.changes();
+        this.markChanged();
     }
 
     public void setRank(Rank rank) {
         this.rank = rank;
-        this.changes();
+        this.markChanged();
     }
 
     public void setEnderCrystal(Location loc) {
@@ -283,7 +283,7 @@ public class Guild extends AbstractBasic {
     }
 
     public long getProtectionEndTime() {
-        return this.attacked == this.born ? this.attacked + Settings.getConfig().warProtection : this.attacked + Settings.getConfig().warWait;
+        return this.attacked == this.born ? this.attacked + FunnyGuilds.getInstance().getPluginConfiguration().warProtection : this.attacked + FunnyGuilds.getInstance().getPluginConfiguration().warWait;
     }
 
     public long getAdditionalProtectionEndTime() {
@@ -291,7 +291,7 @@ public class Guild extends AbstractBasic {
     }
 
     public boolean isSomeoneInRegion() {
-        return Settings.getConfig().regionsEnabled && Bukkit.getOnlinePlayers().stream()
+        return FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && Bukkit.getOnlinePlayers().stream()
                 .filter(player -> User.get(player).getGuild() != this)
                 .map(player -> RegionUtils.getAt(player.getLocation()))
                 .anyMatch(region -> region != null && region.getGuild() == this);
@@ -299,21 +299,15 @@ public class Guild extends AbstractBasic {
 
     public boolean isValid() {
         if (this.validity == this.born || this.validity == 0) {
-            this.validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
-            this.changes();
+            this.validity = System.currentTimeMillis() + FunnyGuilds.getInstance().getPluginConfiguration().validityStart;
+            this.markChanged();
         }
 
         return this.validity >= System.currentTimeMillis();
     }
 
     public boolean isBanned() {
-        if (this.ban > System.currentTimeMillis()) {
-            return true;
-        }
-
-        this.ban = 0;
-        this.changes();
-        return false;
+        return this.ban > System.currentTimeMillis();
     }
 
     public UUID getUUID() {
@@ -419,9 +413,9 @@ public class Guild extends AbstractBasic {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        
+
         result = prime * result + (uuid == null ? 0 : uuid.hashCode());
-        
+
         return result;
     }
 
@@ -430,7 +424,7 @@ public class Guild extends AbstractBasic {
         if (obj == this) {
             return true;
         }
-        
+
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
@@ -452,7 +446,7 @@ public class Guild extends AbstractBasic {
 
         final Guild newGuild = new Guild(uuid);
         GuildUtils.addGuild(newGuild);
-        
+
         return newGuild;
     }
 
@@ -462,7 +456,7 @@ public class Guild extends AbstractBasic {
                 return guild;
             }
         }
-        
+
         final Guild newGuild = new Guild(name);
         GuildUtils.addGuild(newGuild);
 

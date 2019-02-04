@@ -10,10 +10,9 @@ import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuil
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUserPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.DataType;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
@@ -68,8 +67,8 @@ public class PlayerDeath implements Listener {
             }
         }
 
-        PluginConfig config = Settings.getConfig();
-        MessagesConfig messages = Messages.getInstance();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         
         if (config.rankFarmingProtect) {
             if (attackerCache.getLastVictim() != null && attackerCache.getLastVictim().equals(victim)) {
@@ -198,7 +197,7 @@ public class PlayerDeath implements Listener {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
-        if (config.dataType.mysql) {
+        if (config.dataType == DataType.MYSQL) {
             if (victim.hasGuild()) {
                 taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild()));
             }
@@ -260,7 +259,7 @@ public class PlayerDeath implements Listener {
     }
 	
     private int[] getEloValues(int vP, int aP) {
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         int[] rankChanges = new int[2];
         
         int aC = IntegerRange.inRange(aP, config.eloConstants, "ELO_CONSTANTS");

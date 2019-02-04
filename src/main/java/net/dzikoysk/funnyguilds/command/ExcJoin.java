@@ -7,10 +7,8 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -30,8 +28,8 @@ public class ExcJoin implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        PluginConfig config = Settings.getConfig();
-        MessagesConfig messages = Messages.getInstance();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;
         User user = User.get(player);
 

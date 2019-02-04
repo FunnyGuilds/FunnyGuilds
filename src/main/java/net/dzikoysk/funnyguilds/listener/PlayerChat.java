@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -21,7 +21,7 @@ public class PlayerChat implements Listener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
         User user = User.get(player);
-        PluginConfig c = Settings.getConfig();
+        PluginConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration();
         
         if (user.hasGuild()) {
             Guild guild = user.getGuild();
@@ -50,7 +50,7 @@ public class PlayerChat implements Listener {
         event.setFormat(format);
     }
 
-    private boolean chat(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
+    private boolean chat(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
         if (global(event, message, c, player, guild)) {
             return true;
         }
@@ -72,7 +72,7 @@ public class PlayerChat implements Listener {
         }
     }
 
-    private boolean priv(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
+    private boolean priv(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
         String priv = c.chatPriv;
         int length = priv.length();
         
@@ -97,7 +97,7 @@ public class PlayerChat implements Listener {
         return false;
     }
 
-    private boolean ally(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
+    private boolean ally(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
         String ally = c.chatAlly;
         int length = ally.length();
         
@@ -131,7 +131,7 @@ public class PlayerChat implements Listener {
         return false;
     }
 
-    private boolean global(AsyncPlayerChatEvent event, String message, PluginConfig c, Player player, Guild guild) {
+    private boolean global(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
         String global = c.chatGlobal;
         int length = global.length();
         
@@ -176,8 +176,8 @@ public class PlayerChat implements Listener {
             }
         }
     }
-    
-    private String getPositionString(User u, PluginConfig c) {
+
+    private String getPositionString(User u, PluginConfiguration c) {
         if (u.isOwner()) {
             return c.chatPositionLeader;
         }

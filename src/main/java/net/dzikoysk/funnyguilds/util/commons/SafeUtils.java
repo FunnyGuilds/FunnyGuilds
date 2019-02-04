@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class SafeUtils {
 
-    private static void reportUnsafe(Throwable t) {
-        FunnyGuildsLogger.exception(t);
+    private static void reportUnsafe(Throwable th) {
+        FunnyGuilds.getInstance().getPluginLogger().error("Something went wront while handling unsafe", th);
     }
 
     public static <T> T safeInit(SafeInitializer<T> initializer) {

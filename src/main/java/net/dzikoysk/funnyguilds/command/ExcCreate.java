@@ -11,11 +11,8 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateGuildRequest;
-import net.dzikoysk.funnyguilds.data.Manager;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.schematic.SchematicHelper;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -25,7 +22,7 @@ import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.nms.BlockDataChanger;
-import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,8 +41,8 @@ public class ExcCreate implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
-        PluginConfig config = Settings.getConfig();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         Player player = (Player) sender;
         User user = User.get(player);
@@ -235,8 +232,6 @@ public class ExcCreate implements Executor {
             VaultHook.withdrawFromPlayerBank(player, requiredMoney);
         }
 
-        Manager.getInstance().stop();
-
         Guild guild = new Guild(name);
         guild.setTag(tag);
         guild.setOwner(user);
@@ -280,13 +275,13 @@ public class ExcCreate implements Executor {
                 heart.setType(config.createMaterial.getLeft());
                 BlockDataChanger.applyChanges(heart, config.createMaterial.getRight());
             } else if (config.createEntityType != null) {
-                EntityUtil.spawn(guild);
+                GuildEntityHelper.spawnGuildHeart(guild);
             }
 
             player.teleport(guildLocation);
         }
-        
-        Manager.getInstance().start();
+
+        FunnyGuilds.getInstance().getDataModel().save(false);
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(

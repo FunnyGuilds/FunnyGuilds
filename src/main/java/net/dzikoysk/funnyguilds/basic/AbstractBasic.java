@@ -2,19 +2,19 @@ package net.dzikoysk.funnyguilds.basic;
 
 public abstract class AbstractBasic implements Basic {
 
-    private boolean changed = true;
+    private boolean wasChanged = true;
 
     @Override
-    public void changes() {
-        this.changed = true;
+    public void markChanged() {
+        this.wasChanged = true;
     }
 
     @Override
-    public boolean changed() {
-        boolean changedState = this.changed;
+    public boolean wasChanged() {
+        boolean changedState = this.wasChanged;
 
         if (changedState) {
-            this.changed = false;
+            this.wasChanged = false;
         }
 
         return changedState;

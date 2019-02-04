@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.nms;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.commons.SafeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -43,10 +43,9 @@ public final class Reflections {
         try {
             c = Class.forName(className);
             CLASS_CACHE.put(className, c);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve class", ex);
             
             CLASS_CACHE.put(className, INVALID_CLASS);
         }
@@ -68,10 +67,9 @@ public final class Reflections {
     public static Object getHandle(Entity entity) {
         try {
             return getMethod(entity.getClass(), "getHandle").invoke(entity);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not get entity handle", ex);
             
             return null;
         }
@@ -80,10 +78,9 @@ public final class Reflections {
     public static Object getHandle(World world) {
         try {
             return getMethod(world.getClass(), "getHandle").invoke(world);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not get world handle", ex);
             
             return null;
         }
@@ -105,10 +102,9 @@ public final class Reflections {
         try {
             field = cl.getDeclaredField(fieldName);
             FIELD_CACHE.put(cacheKey, field);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve field", ex);
             
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }
@@ -193,10 +189,9 @@ public final class Reflections {
             c = cl.getDeclaredField(fieldName);
             c.setAccessible(true);
             FIELD_CACHE.put(cacheKey, c);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve field", ex);
             
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }

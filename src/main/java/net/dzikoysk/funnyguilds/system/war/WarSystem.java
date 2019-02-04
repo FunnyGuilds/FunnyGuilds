@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.system.war;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
@@ -44,7 +44,7 @@ public class WarSystem {
         }
         
         if (!guild.canBeAttacked()) {
-            WarUtils.message(player, 2, (guild.getAttacked() + Settings.getConfig().warWait) - System.currentTimeMillis());
+            WarUtils.message(player, 2, (guild.getAttacked() + FunnyGuilds.getInstance().getPluginConfiguration().warWait) - System.currentTimeMillis());
             return;
         }
         

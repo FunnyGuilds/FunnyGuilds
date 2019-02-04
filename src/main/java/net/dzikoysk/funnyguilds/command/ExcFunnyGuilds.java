@@ -1,16 +1,10 @@
 package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Data;
-import net.dzikoysk.funnyguilds.data.Manager;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
-import net.dzikoysk.funnyguilds.data.database.DatabaseBasic;
-import net.dzikoysk.funnyguilds.data.flat.Flat;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
+import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,7 +30,7 @@ public class ExcFunnyGuilds implements Executor {
                 saveAll(sender);
                 break;
             default:
-                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + FunnyGuilds.getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
+                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + FunnyGuilds.getInstance().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
                 break;
         }
 
@@ -44,21 +38,21 @@ public class ExcFunnyGuilds implements Executor {
 
     private void reload(CommandSender sender) {
         if (!sender.hasPermission("funnyguilds.reload")) {
-            sender.sendMessage(Messages.getInstance().permission);
+            sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
             return;
         }
 
-        Thread thread = new Thread(() -> {
-            Manager dm = Manager.getInstance();
-            dm.stop();
-            dm.save();
-            new Messages();
-            new Settings();
-            FunnyGuilds.getInstance().getDynamicListenerManager().reloadAll();
-            dm.start();
+        long startTime = System.currentTimeMillis();
 
-            if (Settings.getConfig().playerlistEnable) {
-                PluginConfig config = Settings.getConfig();
+        Thread thread = new Thread(() -> {
+            FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
+            funnyGuilds.reloadPluginConfiguration();
+            funnyGuilds.reloadMessageConfiguration();
+            funnyGuilds.getDataPersistenceHandler().reloadHandler();
+            funnyGuilds.getDynamicListenerManager().reloadAll();
+
+            if (FunnyGuilds.getInstance().getPluginConfiguration().playerlistEnable) {
+                PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
                 AbstractTablist.wipeCache();
 
                 for (Player player : Bukkit.getOnlinePlayers()) {
@@ -66,7 +60,10 @@ public class ExcFunnyGuilds implements Executor {
                 }
             }
 
-            sender.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano!");
+            long endTime = System.currentTimeMillis();
+            float diff = endTime - startTime / 1000.0F;
+
+            sender.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano! (" + ChatColor.AQUA + diff + "s" + ChatColor.GRAY + ")");
         });
 
         sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
@@ -75,36 +72,24 @@ public class ExcFunnyGuilds implements Executor {
 
     private void saveAll(CommandSender sender) {
         if (!sender.hasPermission("funnyguilds.admin")) {
-            sender.sendMessage(Messages.getInstance().permission);
+            sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
             return;
         }
 
         sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
         long l = System.currentTimeMillis();
 
-        if (Settings.getConfig().dataType.flat) {
-            try {
-                Flat.getInstance().save(true);
-            } catch (Exception e) {
-                FunnyGuildsLogger.error("An error occurred while saving data to flat file! Caused by: Exception");
-                if (FunnyGuildsLogger.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
-            }
+        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
+
+        try {
+            dataModel.save(false);
+            FunnyGuilds.getInstance().getInvitationPersistenceHandler().saveInvitations();
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("An error occurred while saving plugin data!", ex);
+            return;
         }
 
-        if (Settings.getConfig().dataType.mysql) {
-            try {
-                DatabaseBasic.getInstance().save(true);
-            } catch (Exception e) {
-                FunnyGuildsLogger.error("An error occurred while saving data to database! Caused by: Exception");
-                if (FunnyGuildsLogger.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        Data.getInstance().save();
         sender.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - l) / 1000.0F + "s" + ChatColor.GRAY + ")!");
     }
 

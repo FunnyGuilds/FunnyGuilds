@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.command.util;
 
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig.Commands.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.Commands.FunnyCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -108,7 +107,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             
             if (sender instanceof Player) {
                 if (ec.permission != null && !sender.hasPermission(ec.permission)) {
-                    sender.sendMessage(Messages.getInstance().permission);
+                    sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
                     return true;
                 }
             }
@@ -119,7 +118,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         
         if (sender instanceof Player) {
             if (main.permission != null && !sender.hasPermission(main.permission)) {
-                sender.sendMessage(Messages.getInstance().permission);
+                sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
                 return true;
             }
         }
@@ -134,24 +133,23 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             if (this.aliases != null) {
                 p.setAliases(this.aliases);
             }
-            
-            p.setPermissionMessage(Messages.getInstance().permission);
+
+            p.setPermissionMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
             Field f = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             f.setAccessible(true);
             
             CommandMap cmap = (CommandMap) f.get(Bukkit.getServer());
             cmap.register("", p);
             p.setExecutor(this);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not register command", ex);
         }
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         
         if (!this.enabled) {
             sender.sendMessage(messages.generalCommandDisabled);

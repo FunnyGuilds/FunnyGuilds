@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.util.nms;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class EntityUtil {
+public final class GuildEntityHelper {
 
     private static final Constructor<?> SPAWN_ENTITY_CONSTRUCTOR;
     private static final Constructor<?> SPAWN_ENTITY_LIVING_CONSTRUCTOR;
@@ -30,7 +30,7 @@ public final class EntityUtil {
     private static final ObjectType OBJECT_TYPE;
 
     static {
-        EntityType entityType = Settings.getConfig().createEntityType;
+        EntityType entityType = FunnyGuilds.getInstance().getPluginConfiguration().createEntityType;
         String entityTypeName = entityType == null ? "EnderCrystal" : entityType.getEntityClass().getSimpleName();
         
         final Class<?> generalEntityClass = Reflections.getNMSClass("Entity");
@@ -52,11 +52,11 @@ public final class EntityUtil {
         OBJECT_TYPE = entityLivingClass.isAssignableFrom(entityClass) ? null : ObjectType.get(entityType);
     }
 
-    public static Map<Guild, Integer> getEntitesMap() {
+    public static Map<Guild, Integer> getGuildEntities() {
         return ENTITY_MAP;
     }
 
-    private static int spawnPacket(Location loc) throws Exception {
+    private static int createSpawnGuildHeartPacket(Location loc) throws Exception {
         Object world = Reflections.getHandle(loc.getWorld());
         Object entity = ENTITY_CONSTRUCTOR.newInstance(world);
         
@@ -75,15 +75,15 @@ public final class EntityUtil {
         return id;
     }
 
-    private static Object despawnPacket(int id) throws Exception {
+    private static Object createDespawnGuildHeartPacket(int id) throws Exception {
         return DESPAWN_ENTITY_CONSTRUCTOR.newInstance(new int[]{id});
     }
 
-    public static void spawn(Guild guild) {
-        spawn(guild, Bukkit.getOnlinePlayers().toArray(new Player[0]));
+    public static void spawnGuildHeart(Guild guild) {
+        spawnGuildHeart(guild, Bukkit.getOnlinePlayers().toArray(new Player[0]));
     }
 
-    public static void spawn(Guild guild, Player... players) {
+    public static void spawnGuildHeart(Guild guild, Player... players) {
         try {
             Object value;
 
@@ -99,8 +99,8 @@ public final class EntityUtil {
                 if (center == null) {
                     return;
                 }
-                
-                int id = spawnPacket(center.clone().add(0.5D, -1.0D, 0.5D));
+
+                int id = createSpawnGuildHeartPacket(center.clone().add(0.5D, - 1.0D, 0.5D));
                 
                 value = ID_MAP.get(id);
                 ENTITY_MAP.put(guild, id);
@@ -115,7 +115,7 @@ public final class EntityUtil {
 
     }
 
-    public static void despawn(Guild guild) {
+    public static void despawnGuildHeart(Guild guild) {
         try {
             if (!ENTITY_MAP.containsKey(guild)) {
                 return;
@@ -125,22 +125,22 @@ public final class EntityUtil {
             
             ID_MAP.remove(id);
             ENTITY_MAP.remove(guild);
-            
-            Object o = despawnPacket(id);
+
+            Object o = createDespawnGuildHeartPacket(id);
             PacketSender.sendPacket(Bukkit.getOnlinePlayers(), o);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public static void despawn(Guild guild, Player... players) {
+    public static void despawnGuildHeart(Guild guild, Player... players) {
         try {
             if (!ENTITY_MAP.containsKey(guild)) {
                 return;
             }
             
             int id = ENTITY_MAP.get(guild);
-            Object o = despawnPacket(id);
+            Object o = createDespawnGuildHeartPacket(id);
             
             PacketSender.sendPacket(players, o);
         } catch (Exception e) {
@@ -148,16 +148,17 @@ public final class EntityUtil {
         }
     }
 
-    public static void despawn() {
+    public static void despawnGuildHearts() {
         for (Guild guild : GuildUtils.getGuilds()) {
             try {
-                despawn(guild);
+                despawnGuildHeart(guild);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private EntityUtil() {}
+    private GuildEntityHelper() {
+    }
 
 }

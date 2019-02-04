@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.entity.Player;
 
@@ -31,10 +31,8 @@ public class PingUtils {
             Object handle = getHandleMethod.invoke(cp);
             ping = (int) pingField.get(handle);
         }
-        catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve player's ping", ex);
         }
 
         return ping;

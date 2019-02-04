@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.gui.GuiItem;
 import net.dzikoysk.funnyguilds.element.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
@@ -21,7 +21,7 @@ public class ExcItems implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         Player player = (Player) sender;
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         List<ItemStack> guiItems = config.guiItems;
         String title = config.guiItemsTitle;

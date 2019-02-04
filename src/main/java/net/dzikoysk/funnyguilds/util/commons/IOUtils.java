@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -22,10 +22,9 @@ public final class IOUtils {
                 } else {
                     file.mkdir();
                 }
-            } catch (IOException e) {
-                if (FunnyGuildsLogger.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
+            }
+            catch (IOException ex) {
+                FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize file: " + file.getAbsolutePath(), ex);
             }
         }
         
@@ -47,8 +46,9 @@ public final class IOUtils {
             
             body = IOUtils.toString(in, encoding);
             in.close();
-        } catch (Exception e) {
-            FunnyGuildsLogger.update("Connection to the update server (" + s + ") failed!");
+        }
+        catch (Exception e) {
+            FunnyGuilds.getInstance().getPluginLogger().update("Connection to the update server (" + s + ") failed!");
         } finally {
             close(in);
         }

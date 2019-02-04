@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.nms;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.apache.commons.lang.Validate;
 import org.bukkit.entity.Player;
 
@@ -15,14 +15,14 @@ public final class PacketCreator {
 
     private static final Map<String, ThreadLocal<PacketCreator>> PACKET_CREATOR_CACHE = new HashMap<>();
 
-    private final Class<?> packetClass;
-    private final Constructor<?> packetConstructor;
+    private final Class<?>           packetClass;
+    private final Constructor<?>     packetConstructor;
     private final Map<String, Field> packetFields;
-    private Object packetInstance;
+    private       Object             packetInstance;
 
     private PacketCreator(Class<?> packetClass) {
         this.packetClass = packetClass;
-        this.packetConstructor = Reflections.getConstructor(packetClass);        
+        this.packetConstructor = Reflections.getConstructor(packetClass);
         this.packetFields = new HashMap<>(this.packetClass.getDeclaredFields().length);
 
         for (Field field : this.packetClass.getDeclaredFields()) {
@@ -57,7 +57,8 @@ public final class PacketCreator {
     public PacketCreator create() {
         try {
             this.packetInstance = this.packetConstructor.newInstance();
-        } catch (final InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+        }
+        catch (final InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
 
@@ -69,12 +70,13 @@ public final class PacketCreator {
         if (this.packetInstance == null) {
             throw new RuntimeException("Tried to set field on non-existing packet instance!");
         }
-        
+
         try {
             Field field = this.packetFields.get(fieldName);
             field.set(this.packetInstance, value);
-        } catch (final IllegalAccessException ex) {
-            FunnyGuildsLogger.exception(ex.getMessage(), ex.getStackTrace());
+        }
+        catch (final IllegalAccessException ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve field from given packet class", ex);
         }
 
         return this;
@@ -85,17 +87,18 @@ public final class PacketCreator {
         if (this.packetInstance == null) {
             throw new RuntimeException("Tried to set field on non-existing packet instance!");
         }
-        
+
         try {
             Field field = this.packetFields.get(fieldName);
 
-            if (!fieldType.isAssignableFrom(field.getType())) {
-                FunnyGuildsLogger.error("Given fieldType is not assignable from found field's type");
+            if (! fieldType.isAssignableFrom(field.getType())) {
+                FunnyGuilds.getInstance().getPluginLogger().error("Given fieldType is not assignable from found field's type");
             }
 
             field.set(this.packetInstance, value);
-        } catch (final IllegalAccessException ex) {
-            FunnyGuildsLogger.exception(ex.getMessage(), ex.getStackTrace());
+        }
+        catch (final IllegalAccessException ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve field from given packet class", ex);
         }
 
         return this;
@@ -108,5 +111,5 @@ public final class PacketCreator {
     public Object getPacket() {
         return packetInstance;
     }
-    
+
 }

@@ -2,11 +2,9 @@ package net.dzikoysk.funnyguilds.data.configs;
 
 import com.google.common.collect.ImmutableMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.rank.RankSystem;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
-import net.dzikoysk.funnyguilds.data.Messages;
 import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.element.notification.bossbar.provider.BossBarOptions;
 import net.dzikoysk.funnyguilds.util.Cooldown;
@@ -47,7 +45,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-@CfgClass(name = "PluginConfig")
+@CfgClass(name = "PluginConfiguration")
 @CfgDelegateDefault("{new}")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
@@ -55,19 +53,19 @@ import java.util.Set;
 @CfgComment("         4.4.1 Tribute          #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
-public class PluginConfig {
+public class PluginConfiguration {
 
     @CfgExclude
     public final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
-    
+
     @CfgExclude
     public SimpleDateFormat dateFormat;
-    
+
     @CfgComment("Wyswietlana nazwa pluginu")
     @CfgName("plugin-name")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String pluginName = "FunnyGuilds";
-    
+
     @CfgComment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
     @CfgName("update-info")
     public boolean updateInfo = true;
@@ -78,17 +76,18 @@ public class PluginConfig {
 
     @CfgComment("Czy tworzenie regionow gildii (i inne zwiazane z nimi rzeczy) maja byc wlaczone")
     @CfgComment("UWAGA - dobrze przemysl decyzje o wylaczeniu regionow!")
-    @CfgComment("Gildie nie beda mialy w sobie zadnych informacji o regionach, a jesli regiony sa wlaczone - te informacje musza byc obecne")
+    @CfgComment(
+            "Gildie nie beda mialy w sobie zadnych informacji o regionach, a jesli regiony sa wlaczone - te informacje musza byc obecne")
     @CfgComment("Jesli regiony mialyby byc znowu wlaczone - bedzie trzeba wykasowac WSZYSTKIE dane pluginu")
     @CfgComment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
     @CfgName("regions-enabled")
     public boolean regionsEnabled = true;
-    
+
     @CfgComment("Czy gracz po smierci ma sie pojawiac w bazie swojej gildii")
     @CfgComment("Dziala tylko jesli regiony sa wlaczone")
     @CfgName("respawn-in-base")
     public boolean respawnInBase = true;
-    
+
     @CfgComment("Maksymalna dlugosc nazwy gildii")
     @CfgName("name-length")
     public int createNameLength = 22;
@@ -104,7 +103,7 @@ public class PluginConfig {
     @CfgComment("Minimalna dlugosc tagu gildii")
     @CfgName("tag-min-length")
     public int createTagMinLength = 2;
-    
+
     @CfgComment("Zasada sprawdzania nazwy gildii przy jej tworzeniu")
     @CfgComment("Dostepne zasady:")
     @CfgComment("LOWERCASE - umozliwia uzycie tylko malych liter")
@@ -118,16 +117,16 @@ public class PluginConfig {
     @CfgName("name-regex")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String nameRegex_ = "LETTERS";
-    
+
     @CfgExclude
     public GuildRegex nameRegex;
-    
+
     @CfgComment("Zasada sprawdzania tagu gildii przy jej tworzeniu")
     @CfgComment("Mozliwe zasady sa takie same jak w przypadku name-regex")
     @CfgName("tag-regex")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String tagRegex_ = "LETTERS";
-    
+
     @CfgExclude
     public GuildRegex tagRegex;
 
@@ -140,7 +139,7 @@ public class PluginConfig {
     @CfgComment("Funkcja jest obecnie troche niedopracowana i moze powodowac problemy na niektorych wersjach MC, np. 1.8.8")
     @CfgName("enable-item-component")
     public boolean enableItemComponent = false;
-    
+
     @CfgComment("Przedmioty wymagane do zalozenia gildii")
     @CfgComment("Tylko wartosci ujete w <> sa wymagane, reszta (ujeta w []) jest opcjonalna")
     @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant:eggtype:skullowner:armorcolor]")
@@ -155,8 +154,10 @@ public class PluginConfig {
     @CfgComment("armorcolor to kolor, w ktorym bedzie przedmiot, uzywane tylko gdy przedmiot jest czescia zbroi skorzanej")
     @CfgComment("Kolor musi byc podany w postaci: \"R_G_B\"")
     @CfgComment("")
-    @CfgComment("UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
-    @CfgComment("UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
+    @CfgComment(
+            "UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
+    @CfgComment(
+            "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
     @CfgName("items")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
@@ -205,35 +206,38 @@ public class PluginConfig {
     public int rankCreateVip = 800;
 
     @CfgComment("Czy GUI z przedmiotami na gildie ma byc wspolne dla wszystkich?")
-    @CfgComment("Jesli wlaczone - wszyscy gracze beda widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip bedzie ignorowane")
+    @CfgComment(
+            "Jesli wlaczone - wszyscy gracze beda widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip bedzie ignorowane")
     @CfgName("use-common-gui")
     public boolean useCommonGUI = false;
-    
+
     @CfgComment("GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
     @CfgComment("Jesli wlaczone jest use-common-gui - ponizsze GUI jest uzywane takze dla osob z uprawnieniem funnyguilds.vip.items")
-    @CfgComment("Kazda linijka listy oznacza jeden slot, liczba slotow powinna byc wielokrotnoscia liczby 9 i nie powinna byc wieksza niz 54")
-    @CfgComment("Aby uzyc przedmiotu stworzonego w jednym slocie w innym mozna uzyc {GUI-nr}, np. {GUI-1} wstawi ten sam przedmiot, ktory jest w pierwszym slocie")
+    @CfgComment(
+            "Kazda linijka listy oznacza jeden slot, liczba slotow powinna byc wielokrotnoscia liczby 9 i nie powinna byc wieksza niz 54")
+    @CfgComment(
+            "Aby uzyc przedmiotu stworzonego w jednym slocie w innym mozna uzyc {GUI-nr}, np. {GUI-1} wstawi ten sam przedmiot, ktory jest w pierwszym slocie")
     @CfgComment("Aby wstawic przedmiot na gildie nalezy uzyc {ITEM-nr}, np. {ITEM-1} wstawi pierwszy przedmiot na gildie")
     @CfgComment("Aby wstawic przedmiot na gildie z listy vip nalezy uzyc {VIPITEM-nr}")
     @CfgName("gui-items")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> guiItems_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
-                    "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
-                    "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
-    
+            "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
+            "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
+
     @CfgExclude
     public List<ItemStack> guiItems;
-    
+
     @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
     @CfgComment("Nazwa moze zawierac max. 32 znaki (wliczajac w to kody kolorow)")
     @CfgName("gui-items-title")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guiItemsTitle_ = "&5&lPrzedmioty na gildie";
-    
+
     @CfgExclude
     public String guiItemsTitle;
-    
+
     @CfgComment("GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
     @CfgComment("Ponizsze GUI bedzie ignorowane jesli wlaczone jest use-common-gui")
@@ -241,26 +245,26 @@ public class PluginConfig {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> guiItemsVip_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
-                    "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
-                    "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
+            "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
+            "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
 
     @CfgExclude
     public List<ItemStack> guiItemsVip;
-    
+
     @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @CfgComment("Nazwa moze zawierac max. 32 znaki (wliczajac w to kody kolorow)")
     @CfgName("gui-items-vip-title")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guiItemsVipTitle_ = "&5&lPrzedmioty na gildie (VIP)";
-    
+
     @CfgExclude
     public String guiItemsVipTitle;
-    
+
     @CfgComment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
     @CfgComment("Linie te mozna ustawic ponizej")
     @CfgName("add-lore-lines")
     public boolean addLoreLines = true;
-    
+
     @CfgComment("Dodatkowe linie opisu, dodawane do kazdego przedmiotu, ktory jest jednoczesnie przedmiotem na gildie")
     @CfgComment("Dodawane linie nie zaleza od otwieranego GUI - sa wspolne dla zwyklego i VIP")
     @CfgComment("Mozliwe do uzycia zmienne:")
@@ -274,11 +278,11 @@ public class PluginConfig {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> guiItemsLore_ = Arrays.asList("", "&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
-                    "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
-    
+            "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
+
     @CfgExclude
     public List<String> guiItemsLore;
-    
+
     @CfgComment("Minimalna odleglosc od spawnu")
     @CfgName("create-distance")
     public int createDistance = 100;
@@ -286,16 +290,18 @@ public class PluginConfig {
     @CfgComment("Minimalna odleglosc od granicy mapy, na ktorej znajduje sie gracz")
     @CfgComment("Wartosc -1 oznacza brak minimalnej odlegosci od granicy")
     @CfgName("create-guild-min-distance")
-    public double createMinDistanceFromBorder = -1.0;
+    public double createMinDistanceFromBorder = - 1.0;
 
     @CfgComment("Blok lub entity, ktore jest sercem gildii")
     @CfgComment("Zmiana entity wymaga pelnego restartu serwera")
     @CfgComment("Bloki musza byc podawane w formacie - material:metadata")
     @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
-    @CfgComment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
+    @CfgComment(
+            "Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
     @CfgComment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
     @CfgComment(" ")
-    @CfgComment("UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
+    @CfgComment(
+            "UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
     @CfgComment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie odczytywal go poprawnie!")
     @CfgName("create-type")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
@@ -303,7 +309,7 @@ public class PluginConfig {
 
     @CfgExclude
     public Pair<Material, Byte> createMaterial;
-    
+
     @CfgExclude
     public EntityType createEntityType;
 
@@ -341,10 +347,10 @@ public class PluginConfig {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> _blockedInteract = Arrays.asList("CHEST", "TRAPPED_CHEST");
-    
+
     @CfgExclude
     public Set<Material> blockedInteract;
-    
+
     @CfgComment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
     @CfgName("bugged-blocks")
     public boolean buggedBlocks = false;
@@ -353,17 +359,17 @@ public class PluginConfig {
     @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
     @CfgName("bugged-blocks-timer")
     public long buggedBlocksTimer = 20L;
-    
+
     @CfgComment("Bloki, ktorych nie mozna 'bugowac'")
     @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
     @CfgName("bugged-blocks-exclude")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> buggedBlocksExclude_ = Arrays.asList("TNT", "STATIONARY_LAVA", "STATIONARY_WATER");
-    
+
     @CfgExclude
     public Set<Material> buggedBlocksExclude;
-    
+
     @CfgComment("Czy klocki po 'zbugowaniu' maja zostac oddane")
     @CfgName("bugged-blocks-return")
     public boolean buggedBlockReturn = false;
@@ -382,11 +388,11 @@ public class PluginConfig {
     @CfgComment("Funkcja niedostepna jesli mozliwosc teleportacji do gildii jest wylaczona")
     @CfgName("escape-enable")
     public boolean escapeEnable = true;
-    
+
     @CfgComment("Czas, w sekundach, jaki musi uplynac od wlaczenia ucieczki do teleportacji")
     @CfgName("escape-delay")
     public int escapeDelay = 120;
-    
+
     @CfgComment("Mozliwosc teleportacji do gildii")
     @CfgName("base-enable")
     public boolean baseEnable = true;
@@ -456,29 +462,29 @@ public class PluginConfig {
     @CfgComment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
     @CfgName("guild-delete-cancel-if-someone-is-on-region")
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
-    
+
     @CfgComment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
     @CfgName("guild-tnt-protection-enabled")
     public boolean guildTNTProtectionEnabled = false;
-    
+
     @CfgComment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
     @CfgComment("Godzina w formacie HH:mm")
     @CfgName("guild-tnt-protection-start-time")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guildTNTProtectionStartTime_ = "22:00";
-    
+
     @CfgExclude
     public LocalTime guildTNTProtectionStartTime;
-    
+
     @CfgComment("Do której godziny ma dzialac ochrona przed TNT w gildii")
     @CfgComment("Godzina w formacie HH:mm")
     @CfgName("guild-tnt-protection-end-time")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guildTNTProtectionEndTime_ = "06:00";
-    
+
     @CfgExclude
     public LocalTime guildTNTProtectionEndTime;
-    
+
     @CfgExclude
     public boolean guildTNTProtectionOrMode;
 
@@ -563,7 +569,7 @@ public class PluginConfig {
     @CfgComment("Jesli wylaczone - bedzie pokazywana tylko graczom, ktorzy brali udzial w walce")
     @CfgName("broadcast-death-message")
     public boolean broadcastDeathMessage = true;
-    
+
     @CfgComment("Ranking od ktorego rozpoczyna gracz")
     @CfgName("rank-start")
     public int rankStart = 1000;
@@ -575,7 +581,7 @@ public class PluginConfig {
     @CfgComment("Czas (w sekundach) blokady nabijania rankingu po walce dwoch osob")
     @CfgName("rank-farming-cooldown")
     public int rankFarmingCooldown = 7200;
-    
+
     @CfgComment("Czy ma byc zablokowana zmiana rankingu, jesli obie osoby z walki maja taki sam adres IP")
     @CfgName("rank-ip-protect")
     public boolean rankIPProtect = false;
@@ -586,8 +592,8 @@ public class PluginConfig {
 
     @CfgComment("Limit asyst (liczba ujemna = wylaczony)")
     @CfgName("assists-limit")
-    public int assistsLimit = -1;
-    
+    public int assistsLimit = - 1;
+
     @CfgComment("Jaka czesc rankingu za zabicie idzie na konto zabojcy")
     @CfgComment("1 to caly ranking, 0 to nic")
     @CfgComment("Reszta rankingu rozdzielana jest miedzy osoby asystujace w zaleznosci od zadanych obrazen")
@@ -599,8 +605,8 @@ public class PluginConfig {
     @CfgName("assists-regions-ignored")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> assistsRegionsIgnored = Collections.singletonList("spawn");
-    
+    public List<String> assistsRegionsIgnored = Collections.singletonList("spawnGuildHeart");
+
     @CfgComment("System rankingowy uzywany przez plugin, do wyboru:")
     @CfgComment("ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")
     @CfgComment("PERCENT - system, ktory obu graczom zabiera procent rankingu osoby zabitej")
@@ -613,7 +619,8 @@ public class PluginConfig {
     public RankSystem rankSystem;
 
     @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
-    @CfgComment("Lista stalych obliczen rankingowych ELO, uzywanych przy zmianach rankingu - im mniejsza stala, tym mniejsze zmiany rankingu")
+    @CfgComment(
+            "Lista stalych obliczen rankingowych ELO, uzywanych przy zmianach rankingu - im mniejsza stala, tym mniejsze zmiany rankingu")
     @CfgComment("Stale okreslaja tez o ile maksymalnie moze zmienic sie ranking pochodzacy z danego przedzialu")
     @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
     @CfgComment("Elementy listy powinny byc postaci: \"minRank-maxRank stala\", np.: \"0-1999 32\"")
@@ -622,7 +629,7 @@ public class PluginConfig {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
-    
+
     @CfgExclude
     public Map<IntegerRange, Integer> eloConstants;
 
@@ -656,7 +663,7 @@ public class PluginConfig {
     @CfgComment("Czy pokazywac informacje przy kliknieciu PPM na gracza")
     @CfgName("info-player-enabled")
     public boolean infoPlayerEnabled = true;
-    
+
     @CfgComment("Czy pokazac informacje z komendy /gracz przy kliknieciu PPM")
     @CfgComment("Jesli wylaczone - pokazywane beda informacje z sekcji \"playerRightClickInfo\" z messages.yml")
     @CfgName("info-player-command")
@@ -683,25 +690,25 @@ public class PluginConfig {
     @CfgName("chat-position")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPosition_ = "&b{POS} ";
-    
+
     @CfgExclude
     public String chatPosition;
-    
+
     @CfgComment("Znacznik dla lidera gildii")
     @CfgName("chat-position-leader")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPositionLeader = "**";
-    
+
     @CfgComment("Znacznik dla zastepcy gildii")
     @CfgName("chat-position-deputy")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPositionDeputy = "*";
-    
+
     @CfgComment("Znacznik dla czlonka gildii")
     @CfgName("chat-position-member")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPositionMember = "";
-    
+
     @CfgComment("Wyglad znaczika {TAG} wstawionego w format chatu")
     @CfgName("chat-guild")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
@@ -717,7 +724,7 @@ public class PluginConfig {
 
     @CfgExclude
     public String chatRank;
-    
+
     @CfgComment("Wyglad znaczika {POINTS} wstawionego w format chatu")
     @CfgComment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
     @CfgName("chat-points")
@@ -737,27 +744,27 @@ public class PluginConfig {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> pointsFormat_ = Arrays.asList("0-749 &4{POINTS}", "750-999 &c{POINTS}", "1000-1499 &a{POINTS}", "1500-* &6&l{POINTS}");
-    
+
     @CfgExclude
     public Map<IntegerRange, String> pointsFormat;
-    
+
     @CfgComment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
     @CfgComment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
     @CfgComment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
     @CfgName("ptop-points")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String ptopPoints_ = " &7[{POINTS}&7]";
-    
+
     @CfgExclude
     public String ptopPoints;
-    
+
     @CfgComment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
     @CfgComment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
     @CfgComment("Jesli nie chcesz wyswietlac punktow, tylko sam tag - nie podawaj tu nic")
     @CfgName("gtop-points")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String gtopPoints_ = " &7[&b{POINTS-FORMAT}&7]";
-    
+
     @CfgExclude
     public String gtopPoints;
 
@@ -769,10 +776,10 @@ public class PluginConfig {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> pingFormat_ = Arrays.asList("0-75 &a{PING}", "76-150 &e{PING}", "151-300 &c{PING}", "301-* &c{PING}");
-    
+
     @CfgExclude
     public Map<IntegerRange, String> pingFormat;
-    
+
     @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do gildii gildii")
     @CfgName("chat-priv")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
@@ -841,27 +848,28 @@ public class PluginConfig {
 
     @CfgExclude
     public String prefixOther;
-    
+
     @CfgComment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
     @CfgComment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
     @CfgName("ptop-online")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String ptopOnline_ = "&a";
-    
+
     @CfgExclude
     public String ptopOnline;
-    
+
     @CfgComment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
     @CfgComment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-online) pusta")
     @CfgName("ptop-offline")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String ptopOffline_ = "&c";
-    
+
     @CfgExclude
     public String ptopOffline;
 
     @CfgComment("Czy wlaczyc dummy z punktami")
-    @CfgComment("UWAGA - zalecane jest wylaczenie tej opcji w przypadku konfliktow z BungeeCord'em, wiecej szczegolow tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
+    @CfgComment(
+            "UWAGA - zalecane jest wylaczenie tej opcji w przypadku konfliktow z BungeeCord'em, wiecej szczegolow tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
     @CfgName("dummy-enable")
     public boolean dummyEnable = true;
 
@@ -1021,10 +1029,10 @@ public class PluginConfig {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> regionEnterNotificationStyle_ = Arrays.asList("ACTIONBAR", "BOSSBAR");
-    
+
     @CfgExclude
     public List<NotificationStyle> regionEnterNotificationStyle = new ArrayList<>();
-    
+
     @CfgComment("Jak dlugo title/subtitle powinien sie pojawiac")
     @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
     @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
@@ -1095,7 +1103,7 @@ public class PluginConfig {
     @CfgComment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)")
     @CfgName("event-move")
     public boolean eventMove = true;
-    
+
     @CfgExclude
     public boolean eventPhysics;
 
@@ -1108,10 +1116,10 @@ public class PluginConfig {
     public int dataInterval = 1;
 
     @CfgComment("Typ zapisu danych")
-    @CfgComment("Flat - Lokalne pliki")
-    @CfgComment("MySQL - baza danych")
+    @CfgComment("FLAT - Lokalne pliki")
+    @CfgComment("MYSQL - baza danych")
     @CfgName("data-type")
-    public DataType dataType = new DataType(true, false);
+    public DataType dataType = DataType.FLAT;
 
     @CfgComment("Dane wymagane do polaczenia z baza")
     @CfgComment("UWAGA: connectionTimeout jest w milisekundach!")
@@ -1132,7 +1140,7 @@ public class PluginConfig {
             if (item == null || "".equals(item)) {
                 continue;
             }
-            
+
             ItemStack itemstack = ItemUtils.parseItem(item);
             if (itemstack != null) {
                 items.add(itemstack);
@@ -1162,8 +1170,9 @@ public class PluginConfig {
                     if (index > 0 && index <= createItemsVip.size()) {
                         item = createItemsVip.get(index - 1);
                     }
-                } catch (IndexOutOfBoundsException e) {
-                    FunnyGuildsLogger.parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
+                }
+                catch (IndexOutOfBoundsException e) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
             }
             else if (var.contains("ITEM-")) {
@@ -1173,8 +1182,9 @@ public class PluginConfig {
                     if (index > 0 && index <= createItems.size()) {
                         item = createItems.get(index - 1);
                     }
-                } catch (IndexOutOfBoundsException e) {
-                    FunnyGuildsLogger.parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
+                }
+                catch (IndexOutOfBoundsException e) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
             }
             else {
@@ -1187,43 +1197,46 @@ public class PluginConfig {
 
             items.add(item);
         }
-        
+
         return items;
     }
-    
-    public void reload() {
-        this.dateFormat = new SimpleDateFormat(Messages.getInstance().dateFormat);
-        
+
+    public void load() {
+        this.dateFormat = new SimpleDateFormat(FunnyGuilds.getInstance().getMessageConfiguration().dateFormat);
+
         try {
             this.nameRegex = GuildRegex.valueOf(this.nameRegex_.toUpperCase());
-        } catch (Exception e) {
-            this.nameRegex = GuildRegex.LETTERS;
-            FunnyGuildsLogger.exception(new IllegalArgumentException("\"" + this.nameRegex_ + "\" is not a valid regex option!"));
         }
-        
+        catch (Exception e) {
+            this.nameRegex = GuildRegex.LETTERS;
+            FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.nameRegex_ + "\" is not a valid regex option!");
+        }
+
         try {
             this.tagRegex = GuildRegex.valueOf(this.tagRegex_.toUpperCase());
-        } catch (Exception e) {
-            this.tagRegex = GuildRegex.LETTERS;
-            FunnyGuildsLogger.exception(new IllegalArgumentException("\"" + this.tagRegex_ + "\" is not a valid regex option!"));
         }
-        
+        catch (Exception e) {
+            this.tagRegex = GuildRegex.LETTERS;
+            FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.tagRegex_ + "\" is not a valid regex option!");
+        }
+
         this.createItems = loadItemStackList(this.items_);
         this.createItemsVip = loadItemStackList(this.itemsVip_);
-        
+
         this.guiItems = loadGUI(this.guiItems_);
 
-        if (!useCommonGUI) {
+        if (! useCommonGUI) {
             this.guiItemsVip = loadGUI(this.guiItemsVip_);
         }
-        
+
         this.guiItemsTitle = ChatUtils.colored(this.guiItemsTitle_);
         this.guiItemsVipTitle = ChatUtils.colored(this.guiItemsVipTitle_);
         this.guiItemsLore = ChatUtils.colored(this.guiItemsLore_);
-        
+
         try {
             this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
-        } catch (Exception materialThen) {
+        }
+        catch (Exception materialThen) {
             this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);
         }
 
@@ -1233,22 +1246,23 @@ public class PluginConfig {
 
         if (this.enlargeEnable) {
             this.enlargeItems = this.loadItemStackList(this.enlargeItems_);
-        } else {
+        }
+        else {
             this.enlargeSize = 0;
             this.enlargeItems = null;
         }
 
         if (this.buggedBlocksTimer < 0L) {
-            FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"bugged-blocks-timer\" can not be less than zero!"));
+            FunnyGuilds.getInstance().getPluginLogger().error("The field named \"bugged-blocks-timer\" can not be less than zero!");
             this.buggedBlocksTimer = 20L; // default value
         }
-        
+
         this.blockedInteract = new HashSet<>();
 
         for (String s : this._blockedInteract) {
             this.blockedInteract.add(MaterialUtils.parseMaterial(s, false));
         }
-        
+
         this.buggedBlocksExclude = new HashSet<>();
 
         for (String s : this.buggedBlocksExclude_) {
@@ -1257,26 +1271,28 @@ public class PluginConfig {
 
         try {
             this.rankSystem = RankSystem.valueOf(this.rankSystem_.toUpperCase());
-        } catch (Exception e) {
+        }
+        catch (Exception ex) {
             this.rankSystem = RankSystem.ELO;
-            FunnyGuildsLogger.exception(new IllegalArgumentException("\"" + this.rankSystem_ + "\" is not a valid rank system!"));
+            FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.rankSystem_ + "\" is not a valid rank system!");
         }
 
         if (this.rankSystem == RankSystem.ELO) {
             Map<IntegerRange, Integer> parsedData = new HashMap<>();
 
-            for(Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
+            for (Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
                 try {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
-                } catch (NumberFormatException e) {
-                    FunnyGuildsLogger.parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
+                }
+                catch (NumberFormatException e) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
                 }
             }
-            
+
             this.eloConstants = parsedData;
         }
 
-        HashMap<Material, Double> map = new HashMap<>();
+        Map<Material, Double> map = new HashMap<>();
 
         for (Map.Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
             Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
@@ -1284,18 +1300,18 @@ public class PluginConfig {
             if (material == null || material == Material.AIR) {
                 continue;
             }
-            
+
             double chance = entry.getValue();
 
             if (chance == 0) {
                 continue;
             }
-            
+
             map.put(material, chance);
         }
-        
+
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        
+
         this.guildTNTProtectionStartTime = LocalTime.parse(guildTNTProtectionStartTime_, timeFormatter);
         this.guildTNTProtectionEndTime = LocalTime.parse(guildTNTProtectionEndTime_, timeFormatter);
         this.guildTNTProtectionOrMode = this.guildTNTProtectionStartTime.isAfter(this.guildTNTProtectionEndTime);
@@ -1309,7 +1325,7 @@ public class PluginConfig {
             if (material == null) {
                 continue;
             }
-            
+
             translatedMaterials.put(material, translatedMaterials_.get(materialName));
         }
 
@@ -1318,17 +1334,17 @@ public class PluginConfig {
         }
 
         if (this.notificationTitleFadeIn <= 0) {
-            FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-in\" can not be less than or equal to zero!"));
+            FunnyGuilds.getInstance().getPluginLogger().error("The field named \"notification-title-fade-in\" can not be less than or equal to zero!");
             this.notificationTitleFadeIn = 10;
         }
 
         if (this.notificationTitleStay <= 0) {
-            FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"notification-title-stay\" can not be less than or equal to zero!"));
+            FunnyGuilds.getInstance().getPluginLogger().error("The field named \"notification-title-stay\" can not be less than or equal to zero!");
             this.notificationTitleStay = 10;
         }
 
         if (this.notificationTitleFadeOut <= 0) {
-            FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"notification-title-fade-out\" can not be less than or equal to zero!"));
+            FunnyGuilds.getInstance().getPluginLogger().error("The field named \"notification-title-fade-out\" can not be less than or equal to zero!");
             this.notificationTitleFadeOut = 10;
         }
 
@@ -1359,7 +1375,7 @@ public class PluginConfig {
         this.prefixOur = ChatUtils.colored(this.prefixOur_);
         this.prefixAllies = ChatUtils.colored(this.prefixAllies_);
         this.prefixOther = ChatUtils.colored(this.prefixOther_);
-        
+
         this.ptopOnline = ChatUtils.colored(this.ptopOnline_);
         this.ptopOffline = ChatUtils.colored(this.ptopOffline_);
 
@@ -1372,7 +1388,7 @@ public class PluginConfig {
 
         this.pointsFormat = IntegerRange.parseIntegerRange(this.pointsFormat_, true);
         this.pingFormat = IntegerRange.parseIntegerRange(this.pingFormat_, true);
-        
+
         this.ptopPoints = ChatUtils.colored(this.ptopPoints_);
         this.gtopPoints = ChatUtils.colored(this.gtopPoints_);
 
@@ -1382,13 +1398,14 @@ public class PluginConfig {
 
         if (this.pasteSchematicOnCreation) {
             if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
-                FunnyGuildsLogger.exception(new IllegalArgumentException("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!"));
+                FunnyGuilds.getInstance().getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!");
                 this.pasteSchematicOnCreation = false;
-            } else {
+            }
+            else {
                 this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName);
 
-                if (!this.guildSchematicFile.exists()) {
-                    FunnyGuildsLogger.exception(new IllegalArgumentException("File with given name in field \"guild-schematic-file-name\" does not exist!"));
+                if (! this.guildSchematicFile.exists()) {
+                    FunnyGuilds.getInstance().getPluginLogger().error("File with given name in field \"guild-schematic-file-name\" does not exist!");
                     this.pasteSchematicOnCreation = false;
                 }
             }
@@ -1399,48 +1416,49 @@ public class PluginConfig {
     public static class Commands {
         public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
-        public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
-        public FunnyCommand create = new FunnyCommand("zaloz");
-        public FunnyCommand delete = new FunnyCommand("usun");
-        public FunnyCommand confirm = new FunnyCommand("potwierdz");
-        public FunnyCommand invite = new FunnyCommand("zapros");
-        public FunnyCommand join = new FunnyCommand("dolacz");
-        public FunnyCommand leave = new FunnyCommand("opusc");
-        public FunnyCommand kick = new FunnyCommand("wyrzuc");
-        public FunnyCommand base = new FunnyCommand("baza");
-        public FunnyCommand enlarge = new FunnyCommand("powieksz");
-        public FunnyCommand ally = new FunnyCommand("sojusz");
-        public FunnyCommand items = new FunnyCommand("przedmioty");
-        public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
+        public FunnyCommand guild     = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
+        public FunnyCommand create    = new FunnyCommand("zaloz");
+        public FunnyCommand delete    = new FunnyCommand("usun");
+        public FunnyCommand confirm   = new FunnyCommand("potwierdz");
+        public FunnyCommand invite    = new FunnyCommand("zapros");
+        public FunnyCommand join      = new FunnyCommand("dolacz");
+        public FunnyCommand leave     = new FunnyCommand("opusc");
+        public FunnyCommand kick      = new FunnyCommand("wyrzuc");
+        public FunnyCommand base      = new FunnyCommand("baza");
+        public FunnyCommand enlarge   = new FunnyCommand("powieksz");
+        public FunnyCommand ally      = new FunnyCommand("sojusz");
+        public FunnyCommand items     = new FunnyCommand("przedmioty");
+        public FunnyCommand escape    = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
         public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
-        
+
         @CfgName("break")
         public FunnyCommand break_ = new FunnyCommand("rozwiaz");
-        
-        public FunnyCommand info = new FunnyCommand("info");
-        public FunnyCommand player = new FunnyCommand("gracz");
-        public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
+
+        public FunnyCommand info     = new FunnyCommand("info");
+        public FunnyCommand player   = new FunnyCommand("gracz");
+        public FunnyCommand top      = new FunnyCommand("top", Collections.singletonList("top10"));
         public FunnyCommand validity = new FunnyCommand("przedluz");
-        public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
-        public FunnyCommand deputy = new FunnyCommand("zastepca");
-        public FunnyCommand ranking = new FunnyCommand("ranking");
-        public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
-        public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
-        
+        public FunnyCommand leader   = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
+        public FunnyCommand deputy   = new FunnyCommand("zastepca");
+        public FunnyCommand ranking  = new FunnyCommand("ranking");
+        public FunnyCommand setbase  = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
+        public FunnyCommand pvp      = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
+
         @CfgComment("Komendy administratora")
         public AdminCommands admin = new AdminCommands();
 
         public static class FunnyCommand {
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String name;
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
             public List<String> aliases;
-            
+
             public boolean enabled;
 
-            public FunnyCommand() {}
+            public FunnyCommand() {
+            }
 
             public FunnyCommand(String name) {
                 this(name, Collections.emptyList(), true);
@@ -1449,7 +1467,7 @@ public class PluginConfig {
             public FunnyCommand(String name, List<String> aliases) {
                 this(name, aliases, true);
             }
-            
+
             public FunnyCommand(String name, List<String> aliases, boolean enabled) {
                 this.name = name;
                 this.aliases = aliases;
@@ -1460,107 +1478,101 @@ public class PluginConfig {
         public static class AdminCommands {
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String main = "ga";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String add = "ga dodaj";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String delete = "ga usun";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String kick = "ga wyrzuc";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String teleport = "ga tp";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String points = "ga points";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String kills = "ga kills";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String deaths = "ga deaths";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String ban = "ga ban";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String lives = "ga zycia";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String move = "ga przenies";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String unban = "ga unban";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String validity = "ga przedluz";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String name = "ga nazwa";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String spy = "ga spy";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String enabled = "ga enabled";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String leader = "ga lider";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String deputy = "ga zastepca";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String protection = "ga ochrona";
-            
+
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String base = "ga baza";
         }
     }
 
-    public static class DataType {
-        public boolean flat;
-        public boolean mysql;
-
-        public DataType() {}
-
-        public DataType(boolean flat, boolean mysql) {
-            this.flat = flat;
-            this.mysql = mysql;
-        }
+    public enum DataType {
+        FLAT,
+        MYSQL
     }
 
     public static class MySQL {
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String hostname;
-        
+
         public int port;
-        
+
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String database;
-        
+
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String user;
-        
+
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String password;
-        
-        public int poolSize;
-        public int connectionTimeout;
+
+        public int     poolSize;
+        public int     connectionTimeout;
         public boolean useSSL;
-        
+
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String usersTableName;
-        
+
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String guildsTableName;
-        
+
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String regionsTableName;
 
-        public MySQL() {}
+        public MySQL() {
+        }
 
         public MySQL(String hostname, int port, String database, String user, String password, int poolSize, int connectionTimeout, boolean useSSL, String usersTableName, String guildsTableName, String regionsTableName) {
             this.hostname = hostname;
@@ -1576,5 +1588,5 @@ public class PluginConfig {
             this.regionsTableName = regionsTableName;
         }
     }
-	
+
 }

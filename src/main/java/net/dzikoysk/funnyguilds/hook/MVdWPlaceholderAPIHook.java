@@ -68,8 +68,8 @@ public final class MVdWPlaceholderAPIHook {
 
             });
         }
-        
-        FunnyGuildsLogger.info("MVdWPlaceholderAPI hook has been enabled!");
+
+        FunnyGuilds.getInstance().getPluginLogger().info("MVdWPlaceholderAPI hook has been enabled!");
     }
     
     public static String replacePlaceholders(Player user, String base) {

@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -12,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class BlockPlace implements Listener {
 
-    private final PluginConfig config = Settings.getConfig();
+    private final PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {

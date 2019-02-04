@@ -1,11 +1,9 @@
 package net.dzikoysk.funnyguilds.basic.rank;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import org.apache.commons.lang3.StringUtils;
 
@@ -22,11 +20,11 @@ public class RankUtils {
         int i = getIndex(var);
 
         if(i <= 0) {
-            FunnyGuildsLogger.error("Index in TOP- must be greater or equal to 1!");
+            FunnyGuilds.getInstance().getPluginLogger().error("Index in TOP- must be greater or equal to 1!");
             return null;
         }
 
-        PluginConfig c = Settings.getConfig();
+        PluginConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration();
         List<Guild> rankedGuilds = new ArrayList<>();
 
         for (int in = 1; in <= RankManager.getInstance().guilds(); in++) {
@@ -39,7 +37,7 @@ public class RankUtils {
 
         if (var.contains("GTOP")) {
             if (rankedGuilds.isEmpty() || i - 1 >= rankedGuilds.size()) {
-                return StringUtils.replace(var, "{GTOP-" + i + '}', Messages.getInstance().gtopNoValue);
+                return StringUtils.replace(var, "{GTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().gtopNoValue);
             }
             else {
                 Guild guild = rankedGuilds.get(i - 1);
@@ -69,7 +67,7 @@ public class RankUtils {
                 return StringUtils.replace(var, "{PTOP-" + i + '}', (user.isOnline() ? c.ptopOnline : c.ptopOffline) + user.getName() + pointsFormat);
             }
             else {
-                return StringUtils.replace(var, "{PTOP-" + i + '}', Messages.getInstance().ptopNoValue);
+                return StringUtils.replace(var, "{PTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().ptopNoValue);
             }
         }
 
@@ -109,7 +107,7 @@ public class RankUtils {
         try {
             result = Integer.parseInt(sb.toString());
         } catch(NumberFormatException e) {
-            FunnyGuildsLogger.parser(var + " contains an invalid number: " + sb.toString());
+            FunnyGuilds.getInstance().getPluginLogger().parser(var + " contains an invalid number: " + sb.toString());
         }
 
         return result;

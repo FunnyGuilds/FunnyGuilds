@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.hook;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.apache.commons.lang3.Validate;
@@ -16,7 +16,7 @@ public final class VaultHook {
         RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
 
         if (rsp == null) {
-            FunnyGuildsLogger.warning("No economy provider found, some features may not be available");
+            FunnyGuilds.getInstance().getPluginLogger().warning("No economy provider found, some features may not be available");
             return;
         }
 
@@ -36,7 +36,8 @@ public final class VaultHook {
         Validate.notNull(player, "Player can not be null!");
         return economyHook.withdrawPlayer(player, money);
     }
-    
-    private VaultHook() {}
-    
+
+    private VaultHook() {
+    }
+
 }

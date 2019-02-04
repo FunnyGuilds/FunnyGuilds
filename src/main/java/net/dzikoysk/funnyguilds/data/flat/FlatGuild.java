@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -8,8 +8,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
@@ -17,7 +16,11 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
 
 import java.io.File;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class FlatGuild {
@@ -29,7 +32,7 @@ public class FlatGuild {
     }
 
     public static Guild deserialize(File file) {
-        PluginConfig configuration = Settings.getConfig();
+        PluginConfiguration configuration = FunnyGuilds.getInstance().getPluginConfiguration();
         YamlWrapper data = new YamlWrapper(file);
         
         String id = data.getString("uuid");
@@ -47,16 +50,16 @@ public class FlatGuild {
         int lives = data.getInt("lives");
 
         if (name == null) {
-            FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
             return null;
         } else if (tag == null) {
-            FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
             return null;
         } else if (ownerName == null) {
-            FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
             return null;
         } else if (regionName == null && configuration.regionsEnabled) {
-            FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
             return null;
         }
 
@@ -66,7 +69,7 @@ public class FlatGuild {
 
         final Region region = RegionUtils.get(regionName);
         if (region == null && configuration.regionsEnabled) {
-            FunnyGuildsLogger.error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
             return null;
         }
 
@@ -135,22 +138,23 @@ public class FlatGuild {
         return DeserializationUtils.deserializeGuild(values);
     }
 
-    public boolean serialize() {
+    public boolean serialize(FlatDataModel flatDataModel) {
         if (guild.getName() == null) {
-            FunnyGuildsLogger.error("[Serialize] Cannot serialize guild! Caused by: name is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild! Caused by: name is null");
             return false;
         } else if (guild.getTag() == null) {
-            FunnyGuildsLogger.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
             return false;
         } else if (guild.getOwner() == null) {
-            FunnyGuildsLogger.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
+            FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
             return false;
-        } else if (guild.getRegion() == null && Settings.getConfig().regionsEnabled) {
-            FunnyGuildsLogger.error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
+        }
+        else if (guild.getRegion() == null && FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+            FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
             return false;
         }
 
-        File file = Flat.loadCustomFile(BasicType.GUILD, guild.getName());
+        File file = flatDataModel.loadCustomFile(BasicType.GUILD, guild.getName());
         YamlWrapper pc = new YamlWrapper(file);
 
         pc.set("uuid", guild.getUUID().toString());

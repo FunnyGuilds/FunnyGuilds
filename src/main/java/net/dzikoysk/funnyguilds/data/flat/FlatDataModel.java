@@ -1,57 +1,62 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.BasicType;
-import net.dzikoysk.funnyguilds.basic.BasicUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
-import net.dzikoysk.funnyguilds.data.Data;
-import net.dzikoysk.funnyguilds.data.Settings;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 
 import java.io.File;
 
-public class Flat {
+public class FlatDataModel implements DataModel {
 
-    public static final File GUILDS = new File(Data.getDataFolder() + File.separator + "guilds");
-    public static final File REGIONS = new File(Data.getDataFolder() + File.separator + "regions");
-    public static final File USERS = new File(Data.getDataFolder() + File.separator + "users");
-    private static Flat instance;
+    private final File guildsFolderFile;
+    private final File regionsFolderFile;
+    private final File usersFolderFile;
 
-    public Flat() {
-        instance = this;
-        new FlatPatcher().patch();
+    public FlatDataModel(FunnyGuilds funnyGuilds) {
+        this.guildsFolderFile = new File(funnyGuilds.getPluginDataFolder(), "guilds");
+        this.regionsFolderFile = new File(funnyGuilds.getPluginDataFolder(), "regions");
+        this.usersFolderFile = new File(funnyGuilds.getPluginDataFolder(), "users");
+
+        FlatPatcher flatPatcher = new FlatPatcher();
+        flatPatcher.patch(this);
     }
 
-    public static Flat getInstance() {
-        if (instance == null) {
-            new Flat();
-        }
-        return instance;
+    public File getGuildsFolder() {
+        return this.guildsFolderFile;
     }
 
-    public static File loadCustomFile(BasicType type, String name) {
+    public File getRegionsFolder() {
+        return this.regionsFolderFile;
+    }
+
+    public File getUsersFolder() {
+        return this.usersFolderFile;
+    }
+
+    File loadCustomFile(BasicType type, String name) {
         switch (type) {
             case GUILD: {
-                File file = new File(GUILDS + File.separator + name + ".yml");
+                File file = new File(this.guildsFolderFile, name + ".yml");
                 IOUtils.initialize(file, true);
                 return file;
             }
             case REGION: {
-                File file = new File(REGIONS + File.separator + name + ".yml");
+                File file = new File(this.regionsFolderFile, name + ".yml");
                 IOUtils.initialize(file, true);
                 return file;
             }
             case USER: {
-                File file = new File(USERS + File.separator + name + ".yml");
+                File file = new File(this.usersFolderFile, name + ".yml");
                 IOUtils.initialize(file, true);
                 return file;
             }
@@ -60,61 +65,64 @@ public class Flat {
         }
     }
 
-    public static File getUserFile(User user) {
+    public File getUserFile(User user) {
         StringBuilder sb = new StringBuilder();
         sb.append(user.getName());
         sb.append(".yml");
-        return new File(USERS + File.separator + sb.toString());
+        return new File(this.usersFolderFile, sb.toString());
     }
 
-    public static File getRegionFile(Region region) {
+    public File getRegionFile(Region region) {
         StringBuilder sb = new StringBuilder();
         sb.append(region.getName());
         sb.append(".yml");
-        return new File(REGIONS, sb.toString());
+        return new File(this.regionsFolderFile, sb.toString());
     }
 
-    public static File getGuildFile(Guild guild) {
+    public File getGuildFile(Guild guild) {
         StringBuilder sb = new StringBuilder();
         sb.append(guild.getName());
         sb.append(".yml");
-        return new File(GUILDS, sb.toString());
+        return new File(this.guildsFolderFile, sb.toString());
     }
 
+    @Override
     public void load() {
-        loadUsers();
-        loadRegions();
-        loadGuilds();
-        BasicUtils.checkObjects();
+        this.loadUsers();
+        this.loadRegions();
+        this.loadGuilds();
+
+        this.validateLoadedData();
     }
 
-    public void save(boolean b) {
-        saveUsers(b);
-        saveRegions(b);
-        saveGuilds(b);
+    @Override
+    public void save(boolean ignoreNotChanged) {
+        this.saveUsers(ignoreNotChanged);
+        this.saveRegions(ignoreNotChanged);
+        this.saveGuilds(ignoreNotChanged);
     }
 
-    private void saveUsers(boolean b) {
+    private void saveUsers(boolean ignoreNotChanged) {
         if (UserUtils.getUsers().isEmpty()) {
             return;
         }
 
         for (User user : UserUtils.getUsers()) {
             if (user.getUUID() != null && user.getName() != null) {
-                if (!b) {
-                    if (!user.changed()) {
+                if (! ignoreNotChanged) {
+                    if (! user.wasChanged()) {
                         continue;
                     }
                 }
 
-                new FlatUser(user).serialize();
+                new FlatUser(user).serialize(this);
             }
         }
     }
 
     private void loadUsers() {
         int i = 0;
-        File[] path = USERS.listFiles();
+        File[] path = usersFolderFile.listFiles();
 
         if (path != null) {
             for (File file : path) {
@@ -129,85 +137,87 @@ public class Flat {
                 if (user == null) {
                     file.delete();
                     i++;
-                } else {
-                    user.changed();
+                }
+                else {
+                    user.wasChanged();
                 }
             }
         }
 
         if (i > 0) {
-            FunnyGuildsLogger.warning("Repaired conflicts: " + i);
+            FunnyGuilds.getInstance().getPluginLogger().warning("Repaired conflicts: " + i);
         }
 
-        FunnyGuildsLogger.info("Loaded users: " + UserUtils.getUsers().size());
+        FunnyGuilds.getInstance().getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
     }
 
-    private void saveRegions(boolean b) {
-        if (!Settings.getConfig().regionsEnabled) {
+    private void saveRegions(boolean ignoreNotChanged) {
+        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return;
         }
-        
+
         int i = 0;
         for (Region region : RegionUtils.getRegions()) {
-            if (!b) {
-                if (!region.changed()) {
+            if (ignoreNotChanged) {
+                if (! region.wasChanged()) {
                     continue;
                 }
             }
-            if (!new FlatRegion(region).serialize()) {
+            if (! new FlatRegion(region).serialize(this)) {
                 RegionUtils.delete(region);
                 i++;
             }
         }
         if (i > 0) {
-            FunnyGuildsLogger.warning("Deleted defective regions: " + i);
+            FunnyGuilds.getInstance().getPluginLogger().warning("Deleted defective regions: " + i);
         }
     }
 
     private void loadRegions() {
-        if (!Settings.getConfig().regionsEnabled) {
-            FunnyGuildsLogger.info("Regions are disabled and thus - not loaded");
+        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+            FunnyGuilds.getInstance().getPluginLogger().info("Regions are disabled and thus - not loaded");
             return;
         }
-        
-        File[] path = REGIONS.listFiles();
+
+        File[] path = regionsFolderFile.listFiles();
 
         if (path != null) {
             for (File file : path) {
                 Region region = FlatRegion.deserialize(file);
                 if (region == null) {
                     file.delete();
-                } else {
-                    region.changed();
+                }
+                else {
+                    region.wasChanged();
                 }
             }
         }
-        
-        FunnyGuildsLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
+
+        FunnyGuilds.getInstance().getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
     }
 
-    private void saveGuilds(boolean forceSave) {
+    private void saveGuilds(boolean ignoreNotChanged) {
         int deleted = 0;
 
         for (Guild guild : GuildUtils.getGuilds()) {
-            if (!forceSave && !guild.changed()) {
+            if (ignoreNotChanged && ! guild.wasChanged()) {
                 continue;
             }
-            
-            if (!new FlatGuild(guild).serialize()) {
+
+            if (! new FlatGuild(guild).serialize(this)) {
                 GuildUtils.deleteGuild(guild);
                 deleted++;
             }
         }
-        
+
         if (deleted > 0) {
-            FunnyGuildsLogger.warning("Deleted defective guild: " + deleted);
+            FunnyGuilds.getInstance().getPluginLogger().warning("Deleted defective guild: " + deleted);
         }
     }
 
     private void loadGuilds() {
         GuildUtils.getGuilds().clear();
-        File[] path = GUILDS.listFiles();
+        File[] path = guildsFolderFile.listFiles();
 
         if (path != null) {
             for (File file : path) {
@@ -215,8 +225,9 @@ public class Flat {
 
                 if (guild == null) {
                     file.delete();
-                } else {
-                    guild.changed();
+                }
+                else {
+                    guild.wasChanged();
                 }
             }
         }
@@ -233,7 +244,7 @@ public class Flat {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest());
 
-        FunnyGuildsLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
+        FunnyGuilds.getInstance().getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
 
 }

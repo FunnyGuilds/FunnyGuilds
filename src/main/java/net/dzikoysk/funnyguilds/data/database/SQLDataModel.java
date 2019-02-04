@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
@@ -10,33 +9,32 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DatabaseBasic {
+public class SQLDataModel implements DataModel {
 
-    private static DatabaseBasic instance;
+    private static SQLDataModel instance;
 
-    public DatabaseBasic() {
+    public SQLDataModel() {
         instance = this;
     }
 
-    public static DatabaseBasic getInstance() {
+    public static SQLDataModel getInstance() {
         if (instance != null) {
             return instance;
         }
-        
-        return new DatabaseBasic();
+
+        return new SQLDataModel();
     }
 
     public void load() {
         Database db = Database.getInstance();
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         usersTable(db);
         regionsTable(db);
@@ -47,39 +45,37 @@ public class DatabaseBasic {
                 while (usersResult.next()) {
                     User user = DatabaseUser.deserialize(usersResult);
                     if (user != null) {
-                        user.changed();
+                        user.wasChanged();
                     }
                 }
 
-                FunnyGuildsLogger.info("Loaded users: " + UserUtils.getUsers().size());
-            } catch (Exception e) {
-                if (FunnyGuildsLogger.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
+                FunnyGuilds.getInstance().getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+            }
+            catch (Exception ex) {
+                FunnyGuilds.getInstance().getPluginLogger().error("Could not load users from database", ex);
             }
         });
 
 
-        if (Settings.getConfig().regionsEnabled) {
+        if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.regionsTableName + "`", regionsResult -> {
                 try {
                     while (regionsResult.next()) {
                         Region region = DatabaseRegion.deserialize(regionsResult);
                         if (region != null) {
-                            region.changed();
+                            region.wasChanged();
                         }
                     }
 
-                    FunnyGuildsLogger.info("Loaded regions: " + RegionUtils.getRegions().size());
-                } catch (Exception e) {
-                    if (FunnyGuildsLogger.exception(e.getCause())) {
-                        e.printStackTrace();
-                    }
+                    FunnyGuilds.getInstance().getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
+                }
+                catch (Exception ex) {
+                    FunnyGuilds.getInstance().getPluginLogger().error("Could not load regions from database", ex);
                 }
             });
 
         } else {
-            FunnyGuildsLogger.info("Regions are disabled and thus - not loaded");
+            FunnyGuilds.getInstance().getPluginLogger().info("Regions are disabled and thus - not loaded");
         }
 
         Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.guildsTableName + "`", guildsResult -> {
@@ -87,15 +83,14 @@ public class DatabaseBasic {
                 while (guildsResult.next()) {
                     Guild guild = DatabaseGuild.deserialize(guildsResult);
                     if (guild != null) {
-                        guild.changed();
+                        guild.wasChanged();
                     }
                 }
 
-                FunnyGuildsLogger.info("Loaded guilds: " + GuildUtils.getGuilds().size());
-            } catch (Exception e) {
-                if (FunnyGuildsLogger.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
+                FunnyGuilds.getInstance().getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
+            }
+            catch (Exception ex) {
+                FunnyGuilds.getInstance().getPluginLogger().error("Could not load guilds from database", ex);
             }
         });
 
@@ -128,9 +123,7 @@ public class DatabaseBasic {
                 }
             }
             catch (Exception ex) {
-                if (FunnyGuildsLogger.exception(ex.getCause())) {
-                    ex.printStackTrace();
-                }
+                FunnyGuilds.getInstance().getPluginLogger().error("Could not load allies and enemies from database", ex);
             }
         });
 
@@ -147,55 +140,53 @@ public class DatabaseBasic {
         concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
     }
 
-    public void save(boolean b) throws ClassNotFoundException, SQLException {
+    @Override
+    public void save(boolean ignoreNotChanged) {
         Database db = Database.getInstance();
         for (User user : UserUtils.getUsers()) {
-            if (!b) {
-                if (!user.changed()) {
+            if (ignoreNotChanged) {
+                if (! user.wasChanged()) {
                     continue;
                 }
             }
             
             try {
                 new DatabaseUser(user).save(db);
-            } catch (Exception e) {
-                if (FunnyGuildsLogger.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
+            }
+            catch (Exception ex) {
+                FunnyGuilds.getInstance().getPluginLogger().error("Could not save user to database", ex);
             }
         }
-        
-        if (Settings.getConfig().regionsEnabled) {
+
+        if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             for (Region region : RegionUtils.getRegions()) {
-                if (!b) {
-                    if (!region.changed()) {
+                if (ignoreNotChanged) {
+                    if (! region.wasChanged()) {
                         continue;
                     }
                 }
                 
                 try {
                     new DatabaseRegion(region).save(db);
-                } catch (Exception e) {
-                    if (FunnyGuildsLogger.exception(e.getCause())) {
-                        e.printStackTrace();
-                    }
+                }
+                catch (Exception ex) {
+                    FunnyGuilds.getInstance().getPluginLogger().error("Could not save region to database", ex);
                 }
             }
         }
         
         for (Guild guild : GuildUtils.getGuilds()) {
-            if (!b) {
-                if (!guild.changed()) {
+            if (ignoreNotChanged) {
+                if (! guild.wasChanged()) {
                     continue;
                 }
             }
             
             try {
                 new DatabaseGuild(guild).save(db);
-            } catch (Exception e) {
-                if (FunnyGuildsLogger.exception(e.getCause())) {
-                    e.printStackTrace();
-                }
+            }
+            catch (Exception ex) {
+                FunnyGuilds.getInstance().getPluginLogger().error("Could not save guild to database", ex);
             }
         }
     }
@@ -204,7 +195,7 @@ public class DatabaseBasic {
         StringBuilder sb = new StringBuilder();
         
         sb.append("create table if not exists `");
-        sb.append(Settings.getConfig().mysql.guildsTableName);
+        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
         sb.append("`(`uuid` varchar(100) not null,");
         sb.append("`name` text not null,");
         sb.append("`tag` text not null,");
@@ -233,7 +224,7 @@ public class DatabaseBasic {
         StringBuilder sb = new StringBuilder();
         
         sb.append("create table if not exists `");
-        sb.append(Settings.getConfig().mysql.regionsTableName);
+        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
         sb.append("`(`name` varchar(100) not null,");
         sb.append("`center` text not null,");
         sb.append("`size` int not null,");
@@ -247,7 +238,7 @@ public class DatabaseBasic {
         StringBuilder sb = new StringBuilder();
         
         sb.append("create table if not exists `");
-        sb.append(Settings.getConfig().mysql.usersTableName);
+        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
         sb.append("`(`uuid` varchar(36) not null,");
         sb.append("`name` text not null,");
         sb.append("`points` int not null,");

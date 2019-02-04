@@ -1,13 +1,12 @@
 package net.dzikoysk.funnyguilds.command;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
@@ -20,8 +19,8 @@ public class ExcPlayer implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        MessagesConfig messages = Messages.getInstance();
-        PluginConfig config = Settings.getConfig();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         
         if (args.length == 0 && !(sender instanceof Player)) {
             sender.sendMessage(messages.playerOnly);
@@ -46,8 +45,8 @@ public class ExcPlayer implements Executor {
     }
     
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
-        MessagesConfig messages = Messages.getInstance();
-        PluginConfig config = Settings.getConfig();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         
         Rank rank = infoUser.getRank();
 

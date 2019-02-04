@@ -7,9 +7,8 @@ import com.sk89q.worldguard.protection.flags.registry.FlagConflictException;
 import com.sk89q.worldguard.protection.flags.registry.FlagRegistry;
 import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.Location;
 
@@ -46,11 +45,9 @@ public final class WorldGuardHook {
         
         try {
             ((FlagRegistry) GET_FLAG_REGISTRY.invoke(GET_INSTANCE.invoke(null))).register(noPointsFlag);
-        } catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            FunnyGuildsLogger.error("An error occurred while registering an \"fg-no-points\" worldguard flag");
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
         }
     }
 
@@ -73,7 +70,7 @@ public final class WorldGuardHook {
             return false;
         }
 
-        PluginConfig config = Settings.getConfig();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         return getRegionSet(location).getRegions()
             .stream()

@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.nms;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.lang.reflect.Field;
@@ -26,8 +26,9 @@ public final class DescriptionChanger {
             }
 
             field.set(descriptionFile, pluginName);
-        } catch (Exception e) {
-            FunnyGuildsLogger.exception(e.getCause());
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not change description file", ex);
         }
     }
 

@@ -1,13 +1,12 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import com.google.common.collect.Sets;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
@@ -48,7 +47,7 @@ public class DatabaseGuild {
             int lives = rs.getInt("lives");
 
             if (name == null || tag == null || os == null) {
-                FunnyGuildsLogger.error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
+                FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
                 return null;
             }
 
@@ -74,11 +73,11 @@ public class DatabaseGuild {
             }
             
             if (validity == 0) {
-                validity = System.currentTimeMillis() + Settings.getConfig().validityStart;
+                validity = System.currentTimeMillis() + FunnyGuilds.getInstance().getPluginConfiguration().validityStart;
             }
             
             if (lives == 0) {
-                lives = Settings.getConfig().warLives;
+                lives = FunnyGuilds.getInstance().getPluginConfiguration().warLives;
             }
 
             final Object[] values = new Object[17];
@@ -101,10 +100,9 @@ public class DatabaseGuild {
             values[15] = pvp;
 
             return DeserializationUtils.deserializeGuild(values);
-        } catch (Exception e) {
-            if (FunnyGuildsLogger.exception(e.getCause())) {
-                e.printStackTrace();
-            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not deserialize guild", ex);
         }
         
         return null;
@@ -129,7 +127,7 @@ public class DatabaseGuild {
             StringBuilder update = new StringBuilder();
             
             update.append("DELETE FROM `");
-            update.append(Settings.getConfig().mysql.guildsTableName);
+            update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
             update.append("` WHERE `uuid`='");
             update.append(guild.getUUID().toString());
             update.append("'");
@@ -140,7 +138,7 @@ public class DatabaseGuild {
             StringBuilder update = new StringBuilder();
             
             update.append("DELETE FROM `");
-            update.append(Settings.getConfig().mysql.guildsTableName);
+            update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
             update.append("` WHERE `name`='");
             update.append(guild.getName());
             update.append("'");
@@ -154,7 +152,7 @@ public class DatabaseGuild {
         StringBuilder update = new StringBuilder();
         
         update.append("UPDATE `");
-        update.append(Settings.getConfig().mysql.guildsTableName);
+        update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
         update.append("` SET `points`=");
         update.append(guild.getRank().getPoints());
         update.append(" WHERE `uuid`='");
@@ -172,7 +170,7 @@ public class DatabaseGuild {
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
 
         sb.append("INSERT INTO `");
-        sb.append(Settings.getConfig().mysql.guildsTableName);
+        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
         sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `regions`, `allies`, ");
         sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
         sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");

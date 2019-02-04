@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.system.ban;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserBan;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
@@ -52,7 +51,7 @@ public final class BanUtils {
     }
 
     public static String getBanMessage(User user) {
-        String message = Messages.getInstance().banMessage;
+        String message = FunnyGuilds.getInstance().getMessageConfiguration().banMessage;
 
         if (!user.isBanned()) {
             return StringUtils.EMPTY;
@@ -60,7 +59,7 @@ public final class BanUtils {
 
         UserBan userBan = user.getBan();
         message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
-        message = StringUtils.replace(message, "{DATE}", Settings.getConfig().dateFormat.format(new Date(userBan.getBanTime())));
+        message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
         message = StringUtils.replace(message, "{REASON}", userBan.getReason());
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
         return ChatUtils.colored(message);

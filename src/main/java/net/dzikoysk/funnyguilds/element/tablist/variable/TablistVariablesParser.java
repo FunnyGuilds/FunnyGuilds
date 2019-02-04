@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.element.tablist.variable;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVariable;
 
 import java.time.LocalDateTime;
@@ -29,7 +29,7 @@ public class TablistVariablesParser {
             String value = tablistVariable.get(user);
             for (String name : tablistVariable.names()) {
                 if (values.containsKey(name)) {
-                    FunnyGuildsLogger.warning("Conflicting variable name: " + name);
+                    FunnyGuilds.getInstance().getPluginLogger().warning("Conflicting variable name: " + name);
                 }
 
                 values.put(name, value);

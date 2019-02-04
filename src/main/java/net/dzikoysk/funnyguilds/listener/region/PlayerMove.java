@@ -6,13 +6,11 @@ import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
-import net.dzikoysk.funnyguilds.data.Messages;
-import net.dzikoysk.funnyguilds.data.Settings;
-import net.dzikoysk.funnyguilds.data.configs.MessagesConfig;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfig;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
-import net.dzikoysk.funnyguilds.util.nms.EntityUtil;
+import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.PacketSender;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -35,8 +33,8 @@ public class PlayerMove implements Listener {
         final Location from = event.getFrom();
         final Location to = event.getTo();
         final Player player = event.getPlayer();
-        PluginConfig config = Settings.getConfig();
-        MessagesConfig messages = Messages.getInstance();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
         Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
             if (from == null || to == null) {
@@ -60,7 +58,7 @@ public class PlayerMove implements Listener {
 
                     FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
                         if (config.createEntityType != null) {
-                            EntityUtil.despawn(guild, player);
+                            GuildEntityHelper.despawnGuildHeart(guild, player);
                         }
                     }, 40L);
 
@@ -104,7 +102,7 @@ public class PlayerMove implements Listener {
 
                 FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
                     if (config.createEntityType != null) {
-                        EntityUtil.spawn(guild, player);
+                        GuildEntityHelper.spawnGuildHeart(guild, player);
                     }
                 }, 40L);
 

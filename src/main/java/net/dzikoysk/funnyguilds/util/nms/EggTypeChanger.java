@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.util.nms;
 
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -38,8 +38,9 @@ public final class EggTypeChanger {
         
         try {
             setSpawnedTypeMethod.invoke(meta, type);
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            FunnyGuildsLogger.exception("Failed to set entity type for SpawnEggMeta object", e.getStackTrace());
+        }
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Failed to set entity type for SpawnEggMeta object", ex);
         }
     }
 

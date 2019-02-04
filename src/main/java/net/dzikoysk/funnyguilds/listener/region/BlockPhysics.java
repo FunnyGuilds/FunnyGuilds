@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.data.Settings;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,7 +14,7 @@ public class BlockPhysics implements Listener {
 
     @EventHandler
     public void onPhysics(BlockPhysicsEvent event) {
-        Pair<Material, Byte> md = Settings.getConfig().createMaterial;
+        Pair<Material, Byte> md = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
         if (md == null || event.getBlock().getType() != md.getLeft()) {
             return;
         }
