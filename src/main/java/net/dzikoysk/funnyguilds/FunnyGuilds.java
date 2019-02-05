@@ -101,11 +101,19 @@ public class FunnyGuilds extends JavaPlugin {
             this.getDataFolder().mkdir();
         }
 
-        this.pluginConfiguration = ConfigHelper.loadConfig(this.pluginConfigurationFile, PluginConfiguration.class);
-        this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
+        try {
+            this.pluginConfiguration = ConfigHelper.loadConfig(this.pluginConfigurationFile, PluginConfiguration.class);
+            this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
 
-        this.pluginConfiguration.load();
-        this.messageConfiguration.load();
+            this.pluginConfiguration.load();
+            this.messageConfiguration.load();
+        }
+        catch (Exception ex) {
+            this.getPluginLogger().error("Could not load plugin configuration", ex);
+            this.getServer().getPluginManager().disablePlugin(this);
+            this.forceDisabling = true;
+            return;
+        }
 
         DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
         String[] versions = descriptionChanger.extractVersion();
