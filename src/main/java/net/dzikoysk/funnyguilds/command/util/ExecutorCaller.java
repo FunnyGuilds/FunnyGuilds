@@ -139,7 +139,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
             f.setAccessible(true);
             
             CommandMap cmap = (CommandMap) f.get(Bukkit.getServer());
-            cmap.register("", p);
+            cmap.register(FunnyGuilds.getInstance().getPluginConfiguration().pluginName, p);
             p.setExecutor(this);
         }
         catch (Exception ex) {
