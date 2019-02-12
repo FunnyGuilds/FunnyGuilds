@@ -118,7 +118,7 @@ public class UserCache {
 
     public IndividualPrefix getIndividualPrefix() {
         if (this.prefix == null) {
-            new IndividualPrefix(user);
+            this.prefix = new IndividualPrefix(user);
         }
 
         return this.prefix;

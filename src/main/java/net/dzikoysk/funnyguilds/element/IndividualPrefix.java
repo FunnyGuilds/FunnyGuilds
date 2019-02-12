@@ -17,7 +17,6 @@ public class IndividualPrefix {
     public IndividualPrefix(User user) {
         this.user = user;
         this.initialize();
-        user.getCache().setPrefix(this);
     }
 
     protected void addPlayer(String player) {
