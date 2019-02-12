@@ -219,7 +219,9 @@ public class FunnyGuilds extends JavaPlugin {
             this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
 
             User user = User.get(player);
-            user.getCache().getScoreboard();
+            if (user.getCache().getScoreboard() == null) {
+                user.getCache().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            }
             user.getCache().getDummy();
             user.getRank();
 
