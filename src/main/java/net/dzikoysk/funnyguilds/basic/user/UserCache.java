@@ -1,22 +1,33 @@
 package net.dzikoysk.funnyguilds.basic.user;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import net.dzikoysk.funnyguilds.element.Dummy;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 public class UserCache {
 
     private final User user;
 
     private final Map<User, Double> damage = new HashMap<>();
-    private User lastAttacker;
-    private User lastVictim;
-    private long lastAttackerTime;
-    private long lastVictimTime;
+
+    private Cache<UUID, Long> attackerCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(30, TimeUnit.MINUTES)
+            .build();
+
+    private Cache<UUID, Long> victimCache = CacheBuilder
+            .newBuilder()
+            .expireAfterWrite(30, TimeUnit.MINUTES)
+            .build();
 
     private Scoreboard scoreboard;
     private IndividualPrefix prefix;
@@ -73,14 +84,22 @@ public class UserCache {
         this.scoreboard = sb;
     }
 
-    public void setLastVictim(User user) {
-        this.lastVictim = user;
-        this.lastVictimTime = System.currentTimeMillis();
+    public void registerVictim(User user) {
+        this.victimCache.put(user.getUUID(), System.currentTimeMillis());
     }
 
-    public void setLastAttacker(User user) {
-        this.lastAttacker = user;
-        this.lastAttackerTime = System.currentTimeMillis();
+    public void registerAttacker(User user) {
+        this.attackerCache.put(user.getUUID(), System.currentTimeMillis());
+    }
+
+    @Nullable
+    public Long wasVictimOf(User attacker) {
+        return this.attackerCache.getIfPresent(attacker.getUUID());
+    }
+
+    @Nullable
+    public Long wasAttackerOf(User victim) {
+        return this.victimCache.getIfPresent(victim.getUUID());
     }
 
     public void setNotificationTime(long notification) {
@@ -139,21 +158,4 @@ public class UserCache {
     public boolean getEnter() {
         return this.enter;
     }
-
-    public User getLastVictim() {
-        return this.lastVictim;
-    }
-
-    public User getLastAttacker() {
-        return this.lastAttacker;
-    }
-
-    public long getLastVictimTime() {
-        return this.lastVictimTime;
-    }
-
-    public long getLastAttackerTime() {
-        return this.lastAttackerTime;
-    }
-
 }

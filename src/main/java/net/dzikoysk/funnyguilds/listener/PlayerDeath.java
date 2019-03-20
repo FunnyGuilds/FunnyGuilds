@@ -71,8 +71,11 @@ public class PlayerDeath implements Listener {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         
         if (config.rankFarmingProtect) {
-            if (attackerCache.getLastVictim() != null && attackerCache.getLastVictim().equals(victim)) {
-                if (attackerCache.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
+            Long attackTimestamp = attackerCache.wasAttackerOf(victim);
+            Long victimTimestamp = attackerCache.wasVictimOf(attacker);
+
+            if (attackTimestamp != null) {
+                if (attackTimestamp + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     v.sendMessage(messages.rankLastVictimV);
                     a.sendMessage(messages.rankLastVictimA);
                     
@@ -81,8 +84,9 @@ public class PlayerDeath implements Listener {
                     
                     return;
                 }
-            } else if (victimCache.getLastAttacker() != null && victimCache.getLastAttacker().equals(attacker)) {
-                if (victimCache.getLastVictimTime() + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
+            }
+            else if (victimTimestamp != null) {
+                if (victimTimestamp + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     v.sendMessage(messages.rankLastAttackerV);
                     a.sendMessage(messages.rankLastAttackerA);
                     
@@ -182,10 +186,10 @@ public class PlayerDeath implements Listener {
             
             attacker.getRank().addKill();
             attacker.getRank().addPoints(attackerEvent.getChange());
-            attackerCache.setLastVictim(victim);
+            attackerCache.registerVictim(victim);
 
             victim.getRank().removePoints(victimEvent.getChange());
-            victimCache.setLastAttacker(attacker);
+            victimCache.registerAttacker(attacker);
             victimCache.clearDamage();
             
             if (!config.broadcastDeathMessage) {
