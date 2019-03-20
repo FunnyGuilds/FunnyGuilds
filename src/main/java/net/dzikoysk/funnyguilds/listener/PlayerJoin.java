@@ -34,7 +34,7 @@ public class PlayerJoin implements Listener {
         user.updateReference(player);
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        if (config.playerlistEnable && !AbstractTablist.hasTablist(player)) {
+        if (config.playerListEnable && ! AbstractTablist.hasTablist(player)) {
             AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
         }
 

@@ -11,7 +11,7 @@ public class TablistBroadcastHandler implements Runnable {
     public void run() {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        if (! config.playerlistEnable) {
+        if (! config.playerListEnable) {
             return;
         }
 

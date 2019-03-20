@@ -51,7 +51,7 @@ public class ExcFunnyGuilds implements Executor {
             funnyGuilds.getDataPersistenceHandler().reloadHandler();
             funnyGuilds.getDynamicListenerManager().reloadAll();
 
-            if (FunnyGuilds.getInstance().getPluginConfiguration().playerlistEnable) {
+            if (FunnyGuilds.getInstance().getPluginConfiguration().playerListEnable) {
                 PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
                 AbstractTablist.wipeCache();
 

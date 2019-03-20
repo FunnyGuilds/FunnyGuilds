@@ -971,11 +971,18 @@ public class PluginConfiguration {
 
     @CfgComment("Czy wszystkie mozliwe komorki maja zostac zapelnione, nie zwazywszy na liczbe graczy online")
     @CfgName("player-list-fill-cells")
-    public boolean playerlistFillCells = true;
+    public boolean playerListFillCells = true;
 
     @CfgComment("Czy tablista ma byc wlaczona")
     @CfgName("player-list-enable")
-    public boolean playerlistEnable = true;
+    public boolean playerListEnable = true;
+
+    @CfgComment("Co ile tickow lista graczy powinna zostac odswiezona")
+    @CfgName("player-list-update-interval")
+    public int playerListUpdateInterval = 20;
+
+    @CfgExclude
+    public long playerListUpdateInterval_;
 
     @CfgComment("Czy tag gildii podany przy tworzeniu gildii powinien zachowac forme taka, w jakiej zostal wpisany")
     @CfgComment("UWAGA: Gdy ta opcja jest wlaczona, opcja \"guild-tag-uppercase\" nie bedzie miala wplywu na tag gildii")
@@ -1411,6 +1418,7 @@ public class PluginConfiguration {
             }
         }
 
+        this.playerListUpdateInterval_ = Math.max(1, this.playerListUpdateInterval);
     }
 
     public static class Commands {

@@ -149,7 +149,7 @@ public class FunnyGuilds extends JavaPlugin {
         collector.start();
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
-        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(), 20L, 20L);
+        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(), 20L, this.pluginConfiguration.playerListUpdateInterval_);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
 
@@ -225,7 +225,7 @@ public class FunnyGuilds extends JavaPlugin {
             user.getCache().getDummy();
             user.getRank();
 
-            if (config.playerlistEnable) {
+            if (config.playerListEnable) {
                 AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
             }
         }

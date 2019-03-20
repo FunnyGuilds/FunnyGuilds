@@ -49,7 +49,7 @@ public abstract class AbstractTablist {
 
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        if (!config.playerlistFillCells) {
+        if (! config.playerListFillCells) {
             Entry<Integer, String> entry = MapUtil.findTheMaximumEntryByKey(config.playerList);
 
             if (entry != null) {
