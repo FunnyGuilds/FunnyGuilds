@@ -99,7 +99,7 @@ public class UserCache {
         Optional<UUID> lastAttackerUniqueId = this.attackerCache.asMap().entrySet()
                 .stream()
                 .sorted(Map.Entry.<UUID, Long>comparingByValue().reversed())
-                .map(Entry::getKey).limit(1).findFirst();
+                .map(Entry::getKey).findFirst();
 
         return lastAttackerUniqueId.map(UserUtils::get).orElse(null);
     }
