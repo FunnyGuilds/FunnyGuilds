@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -90,6 +92,16 @@ public class UserCache {
 
     public void registerAttacker(User user) {
         this.attackerCache.put(user.getUUID(), System.currentTimeMillis());
+    }
+
+    @Nullable
+    public User getLastAttacker() {
+        Optional<UUID> lastAttackerUniqueId = this.attackerCache.asMap().entrySet()
+                .stream()
+                .sorted(Map.Entry.<UUID, Long>comparingByValue().reversed())
+                .map(Entry::getKey).limit(1).findFirst();
+
+        return lastAttackerUniqueId.map(UserUtils::get).orElse(null);
     }
 
     @Nullable

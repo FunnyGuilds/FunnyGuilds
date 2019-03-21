@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @CfgClass(name = "PluginConfiguration")
 @CfgDelegateDefault("{new}")
@@ -577,6 +578,17 @@ public class PluginConfiguration {
     @CfgComment("Czy blokada nabijania rankingu na tych samych osobach powinna byc wlaczona")
     @CfgName("rank-farming-protect")
     public boolean rankFarmingProtect = true;
+
+    @CfgComment("Czy ostatni gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @CfgName("rank-farming-last-attacker-as-killer")
+    public boolean considerLastAttackerAsKiller = false;
+
+    @CfgComment("Przez ile sekund gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @CfgName("rank-farming-consideration-timeout")
+    public int lastAttackerAsKillerConsiderationTimeout = 30;
+
+    @CfgExclude
+    public long lastAttackerAsKillerConsiderationTimeout_;
 
     @CfgComment("Czas (w sekundach) blokady nabijania rankingu po walce dwoch osob")
     @CfgName("rank-farming-cooldown")
@@ -1419,6 +1431,7 @@ public class PluginConfiguration {
         }
 
         this.playerListUpdateInterval_ = Math.max(1, this.playerListUpdateInterval);
+        this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }
 
     public static class Commands {

@@ -39,20 +39,39 @@ public class PlayerDeath implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        Player v = event.getEntity();
-        Player a = event.getEntity().getKiller();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        Player playerVictim = event.getEntity();
+        Player playerAttacker = event.getEntity().getKiller();
 
-        User victim = User.get(v);
+        User victim = User.get(playerVictim);
         UserCache victimCache = victim.getCache();
 
         victim.getRank().addDeath();
 
-        if (a == null) {
-            victimCache.clearDamage();
-            return;
+        if (playerAttacker == null) {
+            if (! config.considerLastAttackerAsKiller) {
+                victimCache.clearDamage();
+                return;
+            }
+
+            User lastAttacker = victim.getCache().getLastAttacker();
+
+            if (lastAttacker == null || ! lastAttacker.isOnline()) {
+                victimCache.clearDamage();
+                return;
+            }
+
+            Long attackTime = victim.getCache().wasVictimOf(lastAttacker);
+
+            if (attackTime == null || attackTime + config.lastAttackerAsKillerConsiderationTimeout_ > System.currentTimeMillis()) {
+                victimCache.clearDamage();
+                return;
+            }
+
+            playerAttacker = lastAttacker.getPlayer();
         }
 
-        User attacker = User.get(a);
+        User attacker = User.get(playerAttacker);
         UserCache attackerCache = attacker.getCache();
 
         if (victim.equals(attacker)) {
@@ -61,13 +80,12 @@ public class PlayerDeath implements Listener {
         }
 
         if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
-            if (WorldGuardHook.isInNonPointsRegion(v.getLocation()) || WorldGuardHook.isInNonPointsRegion(a.getLocation())) {
+            if (WorldGuardHook.isInNonPointsRegion(playerVictim.getLocation()) || WorldGuardHook.isInNonPointsRegion(playerAttacker.getLocation())) {
                 victimCache.clearDamage();
                 return;
             }
         }
 
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         
         if (config.rankFarmingProtect) {
@@ -76,8 +94,8 @@ public class PlayerDeath implements Listener {
 
             if (attackTimestamp != null) {
                 if (attackTimestamp + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
-                    v.sendMessage(messages.rankLastVictimV);
-                    a.sendMessage(messages.rankLastVictimA);
+                    playerVictim.sendMessage(messages.rankLastVictimV);
+                    playerAttacker.sendMessage(messages.rankLastVictimA);
                     
                     victimCache.clearDamage();
                     event.setDeathMessage(null);
@@ -87,8 +105,8 @@ public class PlayerDeath implements Listener {
             }
             else if (victimTimestamp != null) {
                 if (victimTimestamp + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
-                    v.sendMessage(messages.rankLastAttackerV);
-                    a.sendMessage(messages.rankLastAttackerA);
+                    playerVictim.sendMessage(messages.rankLastAttackerV);
+                    playerAttacker.sendMessage(messages.rankLastAttackerA);
                     
                     victimCache.clearDamage();
                     event.setDeathMessage(null);
@@ -99,11 +117,11 @@ public class PlayerDeath implements Listener {
         }
         
         if (config.rankIPProtect) {
-            String attackerIP = a.getAddress().getHostString();
-            
-            if (attackerIP != null && attackerIP.equalsIgnoreCase(v.getAddress().getHostString())) {
-                v.sendMessage(messages.rankIPVictim);
-                a.sendMessage(messages.rankIPAttacker);
+            String attackerIP = playerAttacker.getAddress().getHostString();
+
+            if (attackerIP != null && attackerIP.equalsIgnoreCase(playerVictim.getAddress().getHostString())) {
+                playerVictim.sendMessage(messages.rankIPVictim);
+                playerAttacker.sendMessage(messages.rankIPAttacker);
 
                 victimCache.clearDamage();
                 event.setDeathMessage(null);
@@ -229,9 +247,9 @@ public class PlayerDeath implements Listener {
         deathMessage = StringUtils.replace(deathMessage, "{-}", Integer.toString(victimEvent.getChange()));
         deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", IntegerRange.inRange(vP, config.pointsFormat, "POINTS"));
         deathMessage = StringUtils.replace(deathMessage, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
-        deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtils.getMaterialName(a.getItemInHand().getType()));
-        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", a.getHealth()));
-        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEARTS}", Integer.toString((int) (a.getHealth() / 2)));
+        deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()));
+        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()));
+        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)));
 
         if (victim.hasGuild()) {
             deathMessage = StringUtils.replace(deathMessage, "{VTAG}", StringUtils.replace(config.chatGuild, "{TAG}", victim.getGuild().getTag()));
