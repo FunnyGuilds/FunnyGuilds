@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("         4.4.1 Tribute          #")
+@CfgComment("         4.4.2 Tribute          #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfiguration {
