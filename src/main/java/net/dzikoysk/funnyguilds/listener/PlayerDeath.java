@@ -12,7 +12,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUser
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.DataType;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.DataModel;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
@@ -219,7 +219,7 @@ public class PlayerDeath implements Listener {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
-        if (config.dataType == DataType.MYSQL) {
+        if (config.dataModel == DataModel.MYSQL) {
             if (victim.hasGuild()) {
                 taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild()));
             }

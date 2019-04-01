@@ -1137,8 +1137,8 @@ public class PluginConfiguration {
     @CfgComment("Typ zapisu danych")
     @CfgComment("FLAT - Lokalne pliki")
     @CfgComment("MYSQL - baza danych")
-    @CfgName("data-type")
-    public DataType dataType = DataType.FLAT;
+    @CfgName("data-model")
+    public DataModel dataModel = DataModel.FLAT;
 
     @CfgComment("Dane wymagane do polaczenia z baza")
     @CfgComment("UWAGA: connectionTimeout jest w milisekundach!")
@@ -1559,7 +1559,7 @@ public class PluginConfiguration {
         }
     }
 
-    public enum DataType {
+    public enum DataModel {
         FLAT,
         MYSQL
     }

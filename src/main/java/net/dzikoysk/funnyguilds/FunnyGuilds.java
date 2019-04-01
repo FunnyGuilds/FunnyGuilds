@@ -135,7 +135,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.dataModel = DataModel.create(this, this.pluginConfiguration.dataType);
+        this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
         this.dataModel.load();
 
         this.dataPersistenceHandler = new DataPersistenceHandler(this);

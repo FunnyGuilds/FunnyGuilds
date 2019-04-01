@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.DataType;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 
@@ -56,8 +56,8 @@ public interface DataModel {
         }
     }
 
-    static DataModel create(FunnyGuilds funnyGuilds, DataType dataType) {
-        switch (dataType) {
+    static DataModel create(FunnyGuilds funnyGuilds, PluginConfiguration.DataModel dataModel) {
+        switch (dataModel) {
             case MYSQL:
                 return new SQLDataModel();
             default:
