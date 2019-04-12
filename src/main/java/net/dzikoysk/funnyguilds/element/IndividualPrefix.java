@@ -83,10 +83,6 @@ public class IndividualPrefix {
                 prefix = FunnyGuilds.getInstance().getPluginConfiguration().prefixAllies;
             }
             
-            if (guild.getEnemies().contains(to)) {
-                prefix = FunnyGuilds.getInstance().getPluginConfiguration().prefixEnemies;
-            }
-            
             team.setPrefix(replace(prefix, "{TAG}", to.getTag()));
         }
         else {
@@ -147,7 +143,6 @@ public class IndividualPrefix {
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             String our = config.prefixOur;
             String ally = config.prefixAllies;
-            String enemy = config.prefixEnemies;
             String other = config.prefixOther;
             Team team = scoreboard.getTeam(guild.getTag());
             
@@ -190,9 +185,6 @@ public class IndividualPrefix {
                 
                 if (guild.getAllies().contains(one)) {
                     team.setPrefix(replace(ally, "{TAG}", one.getTag()));
-                }
-                else if (guild.getEnemies().contains(one)) {
-                    team.setPrefix(replace(enemy, "{TAG}", one.getTag()));
                 }
                 else {
                     team.setPrefix(replace(other, "{TAG}", one.getTag()));

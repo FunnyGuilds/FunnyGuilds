@@ -90,7 +90,6 @@ public class DatabaseGuild {
             values[5] = RegionUtils.get(regionName);
             values[6] = members;
             values[7] = Sets.newHashSet();
-            values[8] = Sets.newHashSet();
             values[9] = born;
             values[10] = validity;
             values[11] = attacked;
@@ -167,18 +166,16 @@ public class DatabaseGuild {
         String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
-        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-
         sb.append("INSERT INTO `");
         sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-        sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `regions`, `allies`, ");
-        sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
+        sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `allies`, ");
+        sb.append("`points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
         sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");
-        sb.append("'%members%','%regions%','%allies%','%enemies%',%points%,%born%,");
+        sb.append("'%members%','%allies%',%points%,%born%,");
         sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%,'%deputy%') ON DUPLICATE KEY UPDATE ");
         sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
-        sb.append("`region`='%region%',`members`='%members%',`regions`='%regions%',`allies`='%allies%',");
-        sb.append("`enemies`='%enemies%',`points`=%points%,`born`=%born%,`validity`=%validity%,");
+        sb.append("`region`='%region%',`members`='%members%',`allies`='%allies%',");
+        sb.append("`points`=%points%,`born`=%born%,`validity`=%validity%,");
         sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%,`deputy`='%deputy%'");
         
         String is = sb.toString();
@@ -190,9 +187,7 @@ public class DatabaseGuild {
         is = StringUtils.replace(is, "%home%", LocationUtils.toString(guild.getHome()));
         is = StringUtils.replace(is, "%region%", RegionUtils.toString(guild.getRegion()));
         is = StringUtils.replace(is, "%members%", members);
-        is = StringUtils.replace(is, "%regions%", "#abandoned");
         is = StringUtils.replace(is, "%allies%", allies);
-        is = StringUtils.replace(is, "%enemies%", enemies);
         is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));
         is = StringUtils.replace(is, "%born%", Long.toString(guild.getBorn()));
         is = StringUtils.replace(is, "%validity%", Long.toString(guild.getValidity()));

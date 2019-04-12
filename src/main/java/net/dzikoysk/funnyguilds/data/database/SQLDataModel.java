@@ -94,7 +94,7 @@ public class SQLDataModel implements DataModel {
             }
         });
 
-        Database.getInstance().executeQuery("SELECT `tag`, `allies`, `enemies` FROM `" + config.mysql.guildsTableName + "`", result -> {
+        Database.getInstance().executeQuery("SELECT `tag`, `allies` FROM `" + config.mysql.guildsTableName + "`", result -> {
             try {
                 while (result.next()) {
                     Guild guild = GuildUtils.getByTag(result.getString("tag"));
@@ -104,7 +104,6 @@ public class SQLDataModel implements DataModel {
                     }
 
                     String alliesList = result.getString("allies");
-                    String enemiesList = result.getString("enemies");
 
                     Set<Guild> allies = new HashSet<>();
 
@@ -112,18 +111,11 @@ public class SQLDataModel implements DataModel {
                         allies = GuildUtils.getGuilds(ChatUtils.fromString(alliesList));
                     }
 
-                    Set<Guild> enemies = new HashSet<>();
-
-                    if (enemiesList != null && !enemiesList.equals("")) {
-                        enemies = GuildUtils.getGuilds(ChatUtils.fromString(enemiesList));
-                    }
-
                     guild.setAllies(allies);
-                    guild.setEnemies(enemies);
                 }
             }
             catch (Exception ex) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Could not load allies and enemies from database", ex);
+                FunnyGuilds.getInstance().getPluginLogger().error("Could not load allies from database", ex);
             }
         });
 
@@ -203,7 +195,6 @@ public class SQLDataModel implements DataModel {
         sb.append("`home` text not null,");
         sb.append("`region` text not null,");
         sb.append("`members` text not null,");
-        sb.append("`regions` text not null,");
         sb.append("`points` int not null,");
         sb.append("`lives` int not null,");
         sb.append("`ban` bigint not null,");
@@ -212,7 +203,6 @@ public class SQLDataModel implements DataModel {
         sb.append("`pvp` boolean not null,");
         sb.append("`attacked` bigint,");
         sb.append("`allies` text,");
-        sb.append("`enemies` text,");
         sb.append("`info` text,");
         sb.append("`deputy` text,");
         sb.append("primary key (uuid));");

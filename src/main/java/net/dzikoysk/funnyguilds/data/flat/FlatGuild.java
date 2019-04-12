@@ -65,7 +65,6 @@ public class FlatGuild {
 
         Set<String> memberNames = loadSet(data, "members");
         Set<String> allyNames = loadSet(data, "allies");
-        Set<String> enemyNames = loadSet(data, "enemies");
 
         final Region region = RegionUtils.get(regionName);
         if (region == null && configuration.regionsEnabled) {
@@ -102,7 +101,6 @@ public class FlatGuild {
         
         Set<User> members = UserUtils.getUsers(memberNames);
         Set<Guild> allies = loadGuilds(allyNames);
-        Set<Guild> enemies = loadGuilds(enemyNames);
 
         if (born == 0) {
             born = System.currentTimeMillis();
@@ -126,7 +124,6 @@ public class FlatGuild {
         values[5] = region;
         values[6] = members;
         values[7] = allies;
-        values[8] = enemies;
         values[9] = born;
         values[10] = validity;
         values[11] = attacked;
@@ -164,9 +161,7 @@ public class FlatGuild {
         pc.set("home", LocationUtils.toString(guild.getHome()));
         pc.set("members", UserUtils.getNames(guild.getMembers()));
         pc.set("region", RegionUtils.toString(guild.getRegion()));
-        pc.set("regions", null);
         pc.set("allies", GuildUtils.getNames(guild.getAllies()));
-        pc.set("enemies", GuildUtils.getNames(guild.getEnemies()));
         pc.set("born", guild.getBorn());
         pc.set("validity", guild.getValidity());
         pc.set("attacked", guild.getAttacked());

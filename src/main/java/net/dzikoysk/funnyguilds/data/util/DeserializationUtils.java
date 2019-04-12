@@ -28,7 +28,6 @@ public final class DeserializationUtils {
         guild.setRegion((Region) values[5]);
         guild.setMembers((Set<User>) values[6]);
         guild.setAllies((Set<Guild>) values[7]);
-        guild.setEnemies((Set<Guild>) values[8]);
         guild.setBorn((long) values[9]);
         guild.setValidity((long) values[10]);
         guild.setAttacked((long) values[11]);

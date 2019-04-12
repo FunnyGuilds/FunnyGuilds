@@ -850,9 +850,6 @@ public class PluginConfiguration {
     @CfgExclude
     public String prefixAllies;
 
-    @CfgExclude
-    public String prefixEnemies;
-
     @CfgComment("Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)")
     @CfgName("prefix-other")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)

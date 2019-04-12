@@ -67,12 +67,8 @@ public class GuildUtils {
         UserUtils.removeGuild(guild.getMembers());
         RankManager.getInstance().remove(guild);
 
-        for (Guild allay : guild.getAllies()) {
-            allay.removeAlly(guild);
-        }
-
-        for (Guild enemy : guild.getEnemies()) {
-            enemy.removeEnemy(guild);
+        for (Guild ally : guild.getAllies()) {
+            ally.removeAlly(guild);
         }
 
         if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
