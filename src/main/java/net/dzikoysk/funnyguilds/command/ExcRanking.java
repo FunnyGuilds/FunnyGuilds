@@ -10,7 +10,7 @@ public class ExcRanking implements Executor {
     @Override
     public void execute(CommandSender sender, String[] args) {
         for (String messageLine : FunnyGuilds.getInstance().getMessageConfiguration().rankingList) {
-            String parsedRank = RankUtils.parseRank(messageLine);
+            String parsedRank = RankUtils.parseRank(null, messageLine);
             sender.sendMessage(parsedRank == null ? messageLine : parsedRank);
         }
     }

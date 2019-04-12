@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.hook;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
@@ -44,8 +43,8 @@ public final class PlaceholderAPIHook {
             if (variable != null) {
                 return variable.get(user);
             }
-            
-            return RankUtils.parseRank("{" + identifier.toUpperCase() + "}");
+
+            return RankUtils.parseRank(user, "{" + identifier.toUpperCase() + "}");
         }
 
         @Override

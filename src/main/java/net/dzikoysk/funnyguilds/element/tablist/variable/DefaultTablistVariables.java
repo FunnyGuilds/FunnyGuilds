@@ -144,12 +144,10 @@ public final class DefaultTablistVariables {
 
         Location location = user.getPlayer().getLocation();
 
-        if (location != null) {
-            List<String> regionNames = WorldGuardHook.getRegionNames(location);
+        List<String> regionNames = WorldGuardHook.getRegionNames(location);
 
-            if (regionNames != null && !regionNames.isEmpty()) {
-                return regionNames;
-            }
+        if (regionNames != null && ! regionNames.isEmpty()) {
+            return regionNames;
         }
 
         return null;

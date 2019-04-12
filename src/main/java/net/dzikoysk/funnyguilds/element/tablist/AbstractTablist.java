@@ -146,25 +146,25 @@ public abstract class AbstractTablist {
     protected String putVars(String cell) {
         String formatted = cell;
 
-        if (user == null) {
+        if (this.user == null) {
             throw new IllegalStateException("Given player is null!");
         }
 
-        VariableParsingResult result = this.variables.createResultFor(user);
+        VariableParsingResult result = this.variables.createResultFor(this.user);
         formatted = result.replaceInString(formatted);
         formatted = ChatUtils.colored(formatted);
 
-        String temp = RankUtils.parseRank(formatted);
+        String temp = RankUtils.parseRank(this.user, formatted);
         if (temp != null) {
             formatted = temp;
         }
 
         if (PluginHook.isPresent(PluginHook.PLUGIN_PLACEHOLDERAPI)) {
-            formatted = PlaceholderAPIHook.replacePlaceholders(user.getPlayer(), formatted);
+            formatted = PlaceholderAPIHook.replacePlaceholders(this.user.getPlayer(), formatted);
         }
         
         if (PluginHook.isPresent(PluginHook.PLUGIN_MVDWPLACEHOLDERAPI)) {
-            formatted = MVdWPlaceholderAPIHook.replacePlaceholders(user.getPlayer(), formatted);
+            formatted = MVdWPlaceholderAPIHook.replacePlaceholders(this.user.getPlayer(), formatted);
         }
         
         return formatted;

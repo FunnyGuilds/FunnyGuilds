@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.hook;
 import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
 import codecrafter47.bungeetablistplus.api.bukkit.Variable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
@@ -39,7 +38,8 @@ public final class BungeeTabListPlusHook {
 
                 @Override
                 public String getReplacement(Player player) {
-                    return RankUtils.parseRank("{GTOP-" + index + "}");
+                    User user = User.get(player);
+                    return RankUtils.parseRank(user, "{GTOP-" + index + "}");
                 }
             });
         }
@@ -51,7 +51,7 @@ public final class BungeeTabListPlusHook {
 
                 @Override
                 public String getReplacement(Player player) {
-                    return RankUtils.parseRank("{PTOP-" + index + "}");
+                    return RankUtils.parseRank(null, "{PTOP-" + index + "}");
                 }
             });
         }
