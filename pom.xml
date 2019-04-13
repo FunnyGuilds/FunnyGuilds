@@ -107,6 +107,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>me.robin</groupId>
+            <artifactId>leaderheads-api</artifactId>
+            <version>1.0.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -118,6 +124,11 @@
             <id>panda-repository</id>
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/</url>
+        </repository>
+        <repository>
+            <id>insertt-repo</id>
+            <name>insertt repository</name>
+            <url>https://repo.insertt.pl/releases</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>

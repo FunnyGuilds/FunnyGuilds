@@ -15,6 +15,7 @@ public final class PluginHook {
     public static final String PLUGIN_PLACEHOLDERAPI     = "PlaceholderAPI";
     public static final String PLUGIN_BUNGEETABLISTPLUS  = "BungeeTabListPlus";
     public static final String PLUGIN_MVDWPLACEHOLDERAPI = "MVdWPlaceholderAPI";
+    public static final String PLUGIN_LEADERHEADS        = "LeaderHeads";
 
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
@@ -75,6 +76,11 @@ public final class PluginHook {
 
         tryInit(PLUGIN_PLACEHOLDERAPI, () -> {
             PlaceholderAPIHook.initPlaceholderHook();
+            return true;
+        });
+
+        tryInit(PLUGIN_LEADERHEADS, () -> {
+            LeaderHeadsHook.initLeaderHeadsHook();
             return true;
         });
     }
