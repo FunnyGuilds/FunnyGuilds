@@ -170,7 +170,7 @@ public class DatabaseGuild {
         sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
         sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `regions`, `members`, `allies`, ");
         sb.append("`points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
-        sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%','%regions'");
+        sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%','%regions',");
         sb.append("'%members%','%allies%',%points%,%born%,");
         sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%,'%deputy%') ON DUPLICATE KEY UPDATE ");
         sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
