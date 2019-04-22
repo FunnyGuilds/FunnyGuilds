@@ -194,6 +194,7 @@ public class SQLDataModel implements DataModel {
         sb.append("`owner` text not null,");
         sb.append("`home` text not null,");
         sb.append("`region` text not null,");
+        sb.append("`regions` text not null,");
         sb.append("`members` text not null,");
         sb.append("`points` int not null,");
         sb.append("`lives` int not null,");

@@ -168,13 +168,13 @@ public class DatabaseGuild {
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         sb.append("INSERT INTO `");
         sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-        sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `members`, `allies`, ");
+        sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `regions`, `members`, `allies`, ");
         sb.append("`points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
-        sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%',");
+        sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%','%regions'");
         sb.append("'%members%','%allies%',%points%,%born%,");
         sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%,'%deputy%') ON DUPLICATE KEY UPDATE ");
         sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
-        sb.append("`region`='%region%',`members`='%members%',`allies`='%allies%',");
+        sb.append("`region`='%region%', `regions`='%regions%', `members`='%members%',`allies`='%allies%',");
         sb.append("`points`=%points%,`born`=%born%,`validity`=%validity%,");
         sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%,`deputy`='%deputy%'");
         
@@ -186,6 +186,7 @@ public class DatabaseGuild {
         is = StringUtils.replace(is, "%owner%", guild.getOwner().getName());
         is = StringUtils.replace(is, "%home%", LocationUtils.toString(guild.getHome()));
         is = StringUtils.replace(is, "%region%", RegionUtils.toString(guild.getRegion()));
+        is = StringUtils.replace(is, "%regions%", "#abandoned");
         is = StringUtils.replace(is, "%members%", members);
         is = StringUtils.replace(is, "%allies%", allies);
         is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));
