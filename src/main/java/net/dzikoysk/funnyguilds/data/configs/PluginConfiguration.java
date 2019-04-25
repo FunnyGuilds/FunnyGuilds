@@ -993,6 +993,10 @@ public class PluginConfiguration {
     @CfgExclude
     public long playerListUpdateInterval_;
 
+    @CfgComment("Czy zmienne typu {PTOP-%} oraz {GTOP-%} powinny byc pokolorowane w zaleznosci od relacji gildyjnych")
+    @CfgName("player-list-use-relationship-colors")
+    public boolean playerListUseRelationshipColors = false;
+
     @CfgComment("Czy tag gildii podany przy tworzeniu gildii powinien zachowac forme taka, w jakiej zostal wpisany")
     @CfgComment("UWAGA: Gdy ta opcja jest wlaczona, opcja \"guild-tag-uppercase\" nie bedzie miala wplywu na tag gildii")
     @CfgName("guild-tag-keep-case")

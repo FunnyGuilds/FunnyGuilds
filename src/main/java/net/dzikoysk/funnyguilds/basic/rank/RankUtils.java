@@ -49,16 +49,20 @@ public class RankUtils {
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
-                String guildTag = StringUtils.replace(config.prefixOther, "{TAG}", guild.getTag());
+                String guildTag = guild.getTag();
 
-                if (source != null && source.hasGuild()) {
-                    Guild sourceGuild = source.getGuild();
+                if (config.playerListUseRelationshipColors) {
+                    guildTag = StringUtils.replace(config.prefixOther, "{TAG}", guild.getTag());
 
-                    if (sourceGuild.getAllies().contains(guild)) {
-                        guildTag = StringUtils.replace(config.prefixAllies, "{TAG}", guild.getTag());
-                    }
-                    else if (sourceGuild.getUUID().equals(guild.getUUID())) {
-                        guildTag = StringUtils.replace(config.prefixOur, "{TAG}", guild.getTag());
+                    if (source != null && source.hasGuild()) {
+                        Guild sourceGuild = source.getGuild();
+
+                        if (sourceGuild.getAllies().contains(guild)) {
+                            guildTag = StringUtils.replace(config.prefixAllies, "{TAG}", guild.getTag());
+                        }
+                        else if (sourceGuild.getUUID().equals(guild.getUUID())) {
+                            guildTag = StringUtils.replace(config.prefixOur, "{TAG}", guild.getTag());
+                        }
                     }
                 }
 
