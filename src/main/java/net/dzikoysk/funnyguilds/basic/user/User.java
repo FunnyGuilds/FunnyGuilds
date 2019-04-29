@@ -17,13 +17,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.ref.WeakReference;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 public class User extends AbstractBasic {
-
-    private static final Set<UUID> ONLINE_USERS_CACHE = new HashSet<>();
 
     private final UUID                  uuid;
     private final String                name;
@@ -68,10 +64,6 @@ public class User extends AbstractBasic {
         UserUtils.addUser(this);
     }
 
-    public void removeFromCache() {
-        ONLINE_USERS_CACHE.remove(this.uuid);
-    }
-
     public void setGuild(Guild guild) {
         this.guild = guild;
         this.markChanged();
@@ -107,17 +99,7 @@ public class User extends AbstractBasic {
             return false;
         }
 
-        if (! ONLINE_USERS_CACHE.contains(this.uuid)) {
-            final Player player = Bukkit.getPlayer(this.uuid);
-            if (player != null) {
-                ONLINE_USERS_CACHE.add(this.uuid);
-                return true;
-            }
-
-            return false;
-        }
-
-        return true;
+        return Bukkit.getPlayer(this.uuid) != null;
     }
 
     public boolean isBanned() {

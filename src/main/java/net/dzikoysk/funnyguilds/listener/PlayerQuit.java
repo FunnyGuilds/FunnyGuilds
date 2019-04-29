@@ -23,7 +23,6 @@ public class PlayerQuit implements Listener {
 
     private void quit(Player player) {
         User user = User.get(player);
-        user.removeFromCache();
 
         UserCache cache = user.getCache();
         cache.setPrefix(null);
