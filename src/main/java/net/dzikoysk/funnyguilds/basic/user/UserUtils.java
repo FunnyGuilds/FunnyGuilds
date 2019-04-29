@@ -18,9 +18,7 @@ public class UserUtils {
     private final static Cache<String, User> nameUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
     public static Set<User> getUsers() {
-        synchronized (uuidUserMap) {
-            return new HashSet<>(uuidUserMap.values());
-        }
+        return new HashSet<>(uuidUserMap.values());
     }
 
     public static User get(String nickname) {
