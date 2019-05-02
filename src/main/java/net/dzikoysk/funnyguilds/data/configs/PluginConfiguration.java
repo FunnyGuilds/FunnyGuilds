@@ -156,9 +156,9 @@ public class PluginConfiguration {
     @CfgComment("Kolor musi byc podany w postaci: \"R_G_B\"")
     @CfgComment("")
     @CfgComment(
-            "UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
+            "UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
     @CfgComment(
-            "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
+            "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
     @CfgName("items")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
@@ -296,9 +296,9 @@ public class PluginConfiguration {
     @CfgComment("Blok lub entity, ktore jest sercem gildii")
     @CfgComment("Zmiana entity wymaga pelnego restartu serwera")
     @CfgComment("Bloki musza byc podawane w formacie - material:metadata")
-    @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
+    @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
     @CfgComment(
-            "Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html")
+            "Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
     @CfgComment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
     @CfgComment(" ")
     @CfgComment(
@@ -362,7 +362,7 @@ public class PluginConfiguration {
     public long buggedBlocksTimer = 20L;
 
     @CfgComment("Bloki, ktorych nie mozna 'bugowac'")
-    @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html")
+    @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
     @CfgName("bugged-blocks-exclude")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
