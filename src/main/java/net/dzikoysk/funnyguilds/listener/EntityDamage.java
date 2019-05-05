@@ -16,7 +16,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public class EntityDamage implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
         Entity entity = event.getEntity();
         Entity damager = event.getDamager();
