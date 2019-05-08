@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <name>FunnyGuilds</name>
@@ -38,20 +38,20 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <version>1.14-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
-           <groupId>org.apache.commons</groupId>
-           <artifactId>commons-lang3</artifactId>
-           <version>3.9</version>
-           <scope>provided</scope>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
-           <groupId>io.netty</groupId>
-           <artifactId>netty-all</artifactId>
-           <version>4.1.36.Final</version>
-           <scope>provided</scope>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.36.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
@@ -89,11 +89,11 @@
             <version>2.10.1</version>
             <scope>provided</scope>
         </dependency>
-        <dependency> 
-            <groupId>codecrafter47.bungeetablistplus</groupId> 
-            <artifactId>bungeetablistplus-api-bukkit</artifactId>  
-            <version>2.8.10</version>  
-            <scope>provided</scope>  
+        <dependency>
+            <groupId>codecrafter47.bungeetablistplus</groupId>
+            <artifactId>bungeetablistplus-api-bukkit</artifactId>
+            <version>2.8.10</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>be.maximvdw</groupId>
@@ -143,9 +143,9 @@
             <id>placeholderapi</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
-        <repository> 
-            <id>codecrafter47-repo</id>  
-            <url>http://nexus.codecrafter47.de/content/repositories/public/</url>  
+        <repository>
+            <id>codecrafter47-repo</id>
+            <url>http://nexus.codecrafter47.de/content/repositories/public/</url>
         </repository>
         <repository>
             <id>mvdw-software</id>

@@ -16,27 +16,28 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class GuiWindow {
-    
+
     private static final Map<String, GuiWindow> windows = new HashMap<>();
 
-    private final Inventory inv;
-    private final Map<Integer, GuiItem> items;
-    private Consumer<InventoryOpenEvent> openHandler = null;
-    private Consumer<InventoryCloseEvent> closeHandler = null;
+    private final Inventory                     inv;
+    private final String                        name;
+    private final Map<Integer, GuiItem>         items;
+    private       Consumer<InventoryOpenEvent>  openHandler  = null;
+    private       Consumer<InventoryCloseEvent> closeHandler = null;
 
     public GuiWindow(String name, int rows) {
-        name = getValidName(name);
+        this.name = getValidName(name);
 
-        this.inv = Bukkit.createInventory(null, rows > 6 ? 6 * 9 : rows * 9, name);
+        this.inv = Bukkit.createInventory(null, rows > 6 ? 6 * 9 : rows * 9, this.name);
         this.items = new HashMap<>(rows > 6 ? 6 * 9 : rows * 9);
 
         windows.put(name, this);
     }
 
     public GuiWindow(String name, List<ItemStack> items) {
-        name = this.getValidName(name);
+        this.name = this.getValidName(name);
 
-        this.inv = Bukkit.createInventory(null, this.roundUp(items.size()), name);
+        this.inv = Bukkit.createInventory(null, this.roundUp(items.size()), this.name);
         this.items = new HashMap<>(this.roundUp(items.size()));
 
         windows.put(name, this);
@@ -108,20 +109,21 @@ public class GuiWindow {
     }
 
     public void open(HumanEntity entity) {
-        Inventory inv = Bukkit.createInventory(entity, this.wrap().getSize(), this.wrap().getTitle());
+        Inventory inv = Bukkit.createInventory(entity, this.wrap().getSize(), this.name);
         inv.setContents(this.wrap().getContents());
         entity.openInventory(inv);
     }
 
     public void unregister() {
-        windows.remove(this.wrap().getTitle());
+        windows.remove(this.name);
         this.items.clear();
     }
 
     private String getValidName(String name) {
         if (windows.containsKey(name)) {
             return getValidName(name + ChatColor.RESET);
-        } else {
+        }
+        else {
             return name;
         }
     }
@@ -139,7 +141,7 @@ public class GuiWindow {
         Validate.notNull(material, "Material cannot be NULL!");
         for (int i = 0; i < inv.getSize(); i++) {
             if (inv.getItem(i) == null) {
-                inv.setItem(i, new ItemStack(material, 1, (short) 15));
+                inv.setItem(i, new ItemStack(material, 1));
             }
         }
     }

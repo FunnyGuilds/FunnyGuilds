@@ -1340,7 +1340,7 @@ public class PluginConfiguration {
         this.translatedMaterials = new HashMap<>();
 
         for (String materialName : translatedMaterials_.keySet()) {
-            Material material = Material.matchMaterial(materialName.toUpperCase());
+            Material material = MaterialUtils.matchMaterial(materialName.toUpperCase());
 
             if (material == null) {
                 continue;
