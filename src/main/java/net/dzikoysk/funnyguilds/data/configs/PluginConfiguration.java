@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialAliaser;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.tuple.Pair;
@@ -1212,7 +1211,7 @@ public class PluginConfiguration {
             }
 
             if (item == null) {
-                item = new ItemBuilder(MaterialAliaser.getByAlias("GUI_ERROR"), 1, 14).setName("&c&lERROR IN GUI CREATION: " + var, true).getItem();
+                item = new ItemBuilder(MaterialUtils.matchMaterial("stained_glass_pane"), 1, 14).setName("&c&lERROR IN GUI CREATION: " + var, true).getItem();
             }
 
             items.add(item);
