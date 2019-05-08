@@ -13,8 +13,8 @@ public class GuiActionHandler implements Listener {
     
     @EventHandler
     public void onClick(final InventoryClickEvent e) {
-        if (e.getInventory() != null && e.getInventory().getType().equals(InventoryType.CHEST)) {
-            GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+        if (e.getInventory().getType().equals(InventoryType.CHEST)) {
+            GuiWindow window = GuiWindow.getWindow(e.getView().getTitle());
             if (window != null) {
                 GuiItem item = window.getItem(e.getSlot());
                 if (item != null) {
@@ -29,7 +29,7 @@ public class GuiActionHandler implements Listener {
 
     @EventHandler
     public void onOpen(final InventoryOpenEvent e) {
-        GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+        GuiWindow window = GuiWindow.getWindow(e.getView().getTitle());
         if (window != null) {
             window.handleOpen(e);
         }
@@ -37,7 +37,7 @@ public class GuiActionHandler implements Listener {
 
     @EventHandler
     public void onClose(final InventoryCloseEvent e) {
-        GuiWindow window = GuiWindow.getWindow(e.getInventory().getTitle());
+        GuiWindow window = GuiWindow.getWindow(e.getView().getTitle());
         if (window != null) {
             window.handleClose(e);
         }
@@ -45,7 +45,7 @@ public class GuiActionHandler implements Listener {
 
     @EventHandler
     public void onInteract(final InventoryInteractEvent e) {
-        if (GuiWindow.getWindow(e.getInventory().getTitle()) != null) {
+        if (GuiWindow.getWindow(e.getView().getTitle()) != null) {
             if (e.getInventory().getType().equals(InventoryType.CHEST)) {
                 e.setResult(Event.Result.DENY);
                 e.setCancelled(true);
