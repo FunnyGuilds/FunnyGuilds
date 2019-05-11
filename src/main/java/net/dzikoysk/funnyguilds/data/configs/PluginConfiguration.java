@@ -50,7 +50,7 @@ import java.util.concurrent.TimeUnit;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("         4.4.2 Tribute          #")
+@CfgComment("         4.4.3 Tribute          #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 public class PluginConfiguration {
@@ -966,7 +966,7 @@ public class PluginConfiguration {
     @CfgComment("Wyglad naglowka w liscie graczy.")
     @CfgName("player-list-header")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String playerListHeader = "&7FunnyGuilds &b4.4.2 Tribute";
+    public String playerListHeader = "&7FunnyGuilds &b4.4.3 Tribute";
 
     @CfgComment("Wyglad stopki w liscie graczy.")
     @CfgName("player-list-footer")
