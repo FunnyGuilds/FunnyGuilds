@@ -7,7 +7,7 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.4.2</version>
+    <version>4.4.3</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -198,7 +198,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>${project.name} ${project.version} (MC 1.8-1.13)</finalName>
+                    <finalName>${project.name} ${project.version} (MC 1.8-1.14)</finalName>
                     <relocations>
                         <relocation>
                             <pattern>com.google.common.</pattern>
