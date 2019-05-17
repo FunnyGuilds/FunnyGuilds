@@ -17,6 +17,8 @@ public class MessageConfiguration {
     @CfgComment("FunnyGuilds wspiera takze placeholdery w BungeeTabListPlus i MVdWPlaceholderAPI")
     @CfgComment("Placeholdery sa dokladnie takie same jak w przypadku PlaceholderAPI (bez znaku % oczywiscie)")
     @CfgComment(" ")
+    @CfgComment("Jezeli chcesz, aby dana wiadomosc byla pusta, zamiast wiadomosci umiesc: \'\'")
+    @CfgComment(" ")
     @CfgComment(" ")
     @CfgComment("<------- Global Date Format -------> #")
     public String dateFormat = "dd.MM.yyyy HH:mm:ss";
