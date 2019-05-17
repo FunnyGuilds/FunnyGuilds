@@ -61,7 +61,7 @@ public class ExcFunnyGuilds implements Executor {
             }
 
             long endTime = System.currentTimeMillis();
-            float diff = endTime - startTime / 1000.0F;
+            String diff = String.format("%.2f", ((endTime - startTime) / 1000.0));
 
             sender.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano! (" + ChatColor.AQUA + diff + "s" + ChatColor.GRAY + ")");
         });
