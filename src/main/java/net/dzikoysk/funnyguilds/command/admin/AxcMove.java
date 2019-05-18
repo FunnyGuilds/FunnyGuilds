@@ -2,10 +2,10 @@ package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
-import net.dzikoysk.funnyguilds.util.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -44,24 +43,26 @@ public class AxcMove implements Executor {
         }
 
         Guild guild = GuildUtils.getByTag(args[0]);
+
         if (guild == null) {
             player.sendMessage(messages.generalNoGuildFound);
             return;
         }
 
         Location location = player.getLocation();
+
         if (config.createCenterY != 0) {
             location.setY(config.createCenterY);
         }
 
-        int d = config.regionSize + config.createDistance;
+        int distance = config.regionSize + config.createDistance;
 
         if (config.enlargeItems != null) {
-            d = config.enlargeItems.size() * config.enlargeSize + d;
+            distance = config.enlargeItems.size() * config.enlargeSize + distance;
         }
 
-        if (d > player.getWorld().getSpawnLocation().distance(location)) {
-            player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
+        if (distance > player.getWorld().getSpawnLocation().distance(location)) {
+            player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
             return;
         }
 
@@ -97,22 +98,15 @@ public class AxcMove implements Executor {
         
         if (config.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);
-            for (Location l : sphere) {
-                if (l.getBlock().getType() != Material.BEDROCK) {
-                    l.getBlock().setType(Material.AIR);
+
+            for (Location locationInSphere : sphere) {
+                if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
+                    locationInSphere.getBlock().setType(Material.AIR);
                 }
             }
         }
-        
-        if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
-            Block heart = location.getBlock().getRelative(BlockFace.DOWN);
-            
-            heart.setType(config.createMaterial.getLeft());
-            BlockDataChanger.applyChanges(heart, config.createMaterial.getRight());
-        } else if (config.createEntityType != null) {
-            GuildEntityHelper.spawnGuildHeart(guild);
-        }
 
+        GuildUtils.spawnHeart(guild);
         player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
 

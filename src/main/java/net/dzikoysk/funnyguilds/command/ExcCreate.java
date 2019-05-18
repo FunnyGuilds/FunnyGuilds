@@ -21,15 +21,11 @@ import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
-import net.dzikoysk.funnyguilds.util.nms.BlockDataChanger;
-import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WorldBorder;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -52,8 +48,7 @@ public class ExcCreate implements Executor {
             return;
         }
 
-        boolean isBlockedWorld = this.checkWorld(player);
-        if (isBlockedWorld) {
+        if (this.checkWorld(player)) {
             player.sendMessage(messages.blockedWorld);
             return;
         }
@@ -137,6 +132,7 @@ public class ExcCreate implements Executor {
         }
 
         Location guildLocation = player.getLocation().getBlock().getLocation();
+
         if (config.regionsEnabled) {
             if (config.createCenterY != 0) {
                 guildLocation.setY(config.createCenterY);
@@ -269,15 +265,7 @@ public class ExcCreate implements Executor {
                 }
             }
             
-            if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
-                Block heart = guildLocation.getBlock().getRelative(BlockFace.DOWN);
-                
-                heart.setType(config.createMaterial.getLeft());
-                BlockDataChanger.applyChanges(heart, config.createMaterial.getRight());
-            } else if (config.createEntityType != null) {
-                GuildEntityHelper.spawnGuildHeart(guild);
-            }
-
+            GuildUtils.spawnHeart(guild);
             player.teleport(guildLocation);
         }
 
@@ -298,15 +286,17 @@ public class ExcCreate implements Executor {
         player.sendMessage(formatter.format(messages.createGuild));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastCreate));
 
-        if (config.giveRewardsForFirstGuild) {
-            for (ItemStack item : config.firstGuildRewards) {
-                if (player.getInventory().firstEmpty() == -1) {
-                    player.getWorld().dropItemNaturally(player.getLocation(), item);
-                    continue;
-                }
+        if (!config.giveRewardsForFirstGuild) {
+            return;
+        }
 
-                player.getInventory().addItem(item);
+        for (ItemStack item : config.firstGuildRewards) {
+            if (player.getInventory().firstEmpty() == -1) {
+                player.getWorld().dropItemNaturally(player.getLocation(), item);
+                continue;
             }
+
+            player.getInventory().addItem(item);
         }
     }
 
