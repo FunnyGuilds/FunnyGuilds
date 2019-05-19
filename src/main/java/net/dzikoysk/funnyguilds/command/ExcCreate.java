@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateGuildRequest;
@@ -269,13 +270,12 @@ public class ExcCreate implements Executor {
             player.teleport(guildLocation);
         }
 
-        FunnyGuilds.getInstance().getDataModel().save(false);
-
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(
                 new RankUpdateGuildRequest(guild),
                 new PrefixGlobalAddGuildRequest(guild),
-                new PrefixGlobalAddPlayerRequest(user.getName())
+                new PrefixGlobalAddPlayerRequest(user.getName()),
+                new DatabaseUpdateGuildRequest(guild)
         );
 
         MessageFormatter formatter = new MessageFormatter()
