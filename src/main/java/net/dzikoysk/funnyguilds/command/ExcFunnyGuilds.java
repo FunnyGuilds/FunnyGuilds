@@ -1,11 +1,16 @@
 package net.dzikoysk.funnyguilds.command;
 
+import java.io.IOException;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
+import net.dzikoysk.funnyguilds.util.telemetry.FunnyTelemetry;
+import net.dzikoysk.funnyguilds.util.telemetry.FunnybinResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -28,6 +33,9 @@ public class ExcFunnyGuilds implements Executor {
                 break;
             case "save-all":
                 saveAll(sender);
+                break;
+            case "funnybin":
+                postConfig(sender);
                 break;
             default:
                 sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + FunnyGuilds.getInstance().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
@@ -93,4 +101,24 @@ public class ExcFunnyGuilds implements Executor {
         sender.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - l) / 1000.0F + "s" + ChatColor.GRAY + ")!");
     }
 
+    private void postConfig(CommandSender sender) {
+        PluginConfiguration config = ConfigHelper.loadConfig(FunnyGuilds.getInstance().getPluginConfigurationFile(), PluginConfiguration.class);
+        config.mysql.hostname = "<CUT>";
+        config.mysql.database = "<CUT>";
+        config.mysql.user = "<CUT>";
+        config.mysql.password = "<CUT>";
+
+        sender.sendMessage(ChatColor.GRAY + "Config jest wysylany...");
+
+        sender.getServer().getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
+            try {
+                FunnybinResponse funnybinResponse = FunnyTelemetry.postToFunnybin(ConfigHelper.configToString(config));
+                sender.sendMessage(ChatColor.GREEN + "Config wyslany. Link: " + ChatColor.AQUA + funnybinResponse.getShortUrl());
+            }
+            catch (IOException e) {
+                FunnyGuilds.getInstance().getPluginLogger().error("Failed to send config", e);
+                sender.sendMessage(ChatColor.DARK_RED + "Wystąpił błąd podczas wysyłania configu. ");
+            }
+        });
+    }
 }

@@ -267,6 +267,10 @@ public class FunnyGuilds extends JavaPlugin {
         return this.pluginConfiguration;
     }
 
+    public File getPluginConfigurationFile() {
+        return this.pluginConfigurationFile;
+    }
+
     public MessageConfiguration getMessageConfiguration() {
         return this.messageConfiguration;
     }
