@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.util.telemetry;
 import java.util.Objects;
 
 public class FunnybinResponse {
+
     private String fullUrl;
     private String shortUrl;
 

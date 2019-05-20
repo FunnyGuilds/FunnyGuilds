@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 
 public class FunnyTelemetry {
+
     private static final Gson   gson          = new Gson();
     public static final  String URL           = "http://funnytelemetry.mrgregorix.net";
     public static final  String FUNNYBIN_POST = URL + "/funnybin/api/post";

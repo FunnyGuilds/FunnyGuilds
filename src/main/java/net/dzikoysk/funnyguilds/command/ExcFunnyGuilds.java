@@ -101,8 +101,8 @@ public class ExcFunnyGuilds implements Executor {
         sender.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - l) / 1000.0F + "s" + ChatColor.GRAY + ")!");
     }
 
-    private void postConfig(final CommandSender sender) {
-        final PluginConfiguration config = ConfigHelper.loadConfig(FunnyGuilds.getInstance().getPluginConfigurationFile(), PluginConfiguration.class);
+    private void postConfig(CommandSender sender) {
+        PluginConfiguration config = ConfigHelper.loadConfig(FunnyGuilds.getInstance().getPluginConfigurationFile(), PluginConfiguration.class);
         config.mysql.hostname = "<CUT>";
         config.mysql.database = "<CUT>";
         config.mysql.user = "<CUT>";
@@ -115,7 +115,7 @@ public class ExcFunnyGuilds implements Executor {
                 FunnybinResponse funnybinResponse = FunnyTelemetry.postToFunnybin(ConfigHelper.configToString(config));
                 sender.sendMessage(ChatColor.GREEN + "Config wyslany. Link: " + ChatColor.AQUA + funnybinResponse.getShortUrl());
             }
-            catch (final IOException e) {
+            catch (IOException e) {
                 FunnyGuilds.getInstance().getPluginLogger().error("Failed to send config", e);
                 sender.sendMessage(ChatColor.DARK_RED + "Wystąpił błąd podczas wysyłania configu. ");
             }
