@@ -56,6 +56,12 @@ public final class ConfigHelper {
         return config;
     }
 
+    public static String configToString(final Object config) {
+        @SuppressWarnings("unchecked")
+        Template<Object> template = TemplateCreator.getTemplate((Class<Object>) config.getClass());
+        return template.dumpAsString(config);
+    }
+
     private ConfigHelper() {
     }
 }
