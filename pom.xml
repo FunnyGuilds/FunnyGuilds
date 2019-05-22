@@ -20,8 +20,22 @@
         <dependency>
             <groupId>org.panda-lang</groupId>
             <artifactId>panda</artifactId>
-            <version>indev-19.2.16</version>
+            <version>indev-19.5.22</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.tinylog</groupId>
+                    <artifactId>tinylog-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.tinylog</groupId>
+                    <artifactId>tinylog-impl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.tinylog</groupId>
+                    <artifactId>slf4j-tinylog</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -78,6 +92,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.11.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>net.milkbowl.vault</groupId>
             <artifactId>VaultAPI</artifactId>
             <version>1.7</version>
@@ -89,11 +109,11 @@
             <version>2.10.2</version>
             <scope>provided</scope>
         </dependency>
-        <dependency> 
-            <groupId>codecrafter47.bungeetablistplus</groupId> 
-            <artifactId>bungeetablistplus-api-bukkit</artifactId>  
-            <version>2.8.10</version>  
-            <scope>provided</scope>  
+        <dependency>
+            <groupId>codecrafter47.bungeetablistplus</groupId>
+            <artifactId>bungeetablistplus-api-bukkit</artifactId>
+            <version>2.8.10</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>be.maximvdw</groupId>
@@ -143,9 +163,9 @@
             <id>placeholderapi</id>
             <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
-        <repository> 
-            <id>codecrafter47-repo</id>  
-            <url>http://nexus.codecrafter47.de/content/repositories/public/</url>  
+        <repository>
+            <id>codecrafter47-repo</id>
+            <url>http://nexus.codecrafter47.de/content/repositories/public/</url>
         </repository>
         <repository>
             <id>mvdw-software</id>
@@ -203,10 +223,6 @@
                         <relocation>
                             <pattern>com.google.common.</pattern>
                             <shadedPattern>net.dzikoysk.funnyguilds.libs.com.google.common.</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.apache.logging.log4j.</pattern>
-                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging.log4j.</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
