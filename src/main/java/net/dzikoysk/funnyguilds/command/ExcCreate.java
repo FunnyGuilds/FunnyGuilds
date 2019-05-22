@@ -30,7 +30,7 @@ import org.bukkit.WorldBorder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import net.dzikoysk.funnyguilds.util.commons.MessageFormatter;
 
 import java.util.List;
 

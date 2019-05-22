@@ -17,24 +17,7 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.panda-lang</groupId>
-            <artifactId>panda</artifactId>
-            <version>indev-0.9.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.zaxxer</groupId>
-            <artifactId>HikariCP</artifactId>
-            <version>3.3.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>27.1-jre</version>
-            <scope>compile</scope>
-        </dependency>
+        <!-- Spigot & its provided libraries -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -42,17 +25,46 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-           <groupId>org.apache.commons</groupId>
-           <artifactId>commons-lang3</artifactId>
-           <version>3.9</version>
-           <scope>provided</scope>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-           <groupId>io.netty</groupId>
-           <artifactId>netty-all</artifactId>
-           <version>4.1.36.Final</version>
-           <scope>provided</scope>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.36.Final</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!-- FG compiled dependencies -->
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>16.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>3.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.1-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.11.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.diorite</groupId>
+            <artifactId>diorite-config-minimal</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- Other spigot plugins dependencies -->
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>
             <artifactId>worldguard-legacy</artifactId>
@@ -66,16 +78,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.diorite</groupId>
-            <artifactId>diorite-config-minimal</artifactId>
-            <version>1.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-slf4j-impl</artifactId>
+            <artifactId>log4j-core</artifactId>
             <version>2.11.2</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
@@ -203,10 +209,6 @@
                         <relocation>
                             <pattern>com.google.common.</pattern>
                             <shadedPattern>net.dzikoysk.funnyguilds.libs.com.google.common.</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>org.apache.logging.log4j.</pattern>
-                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging.log4j.</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

@@ -135,10 +135,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (this.forceDisabling) {
-            return;
-        }
-        
         this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
         this.dataModel.load();
 

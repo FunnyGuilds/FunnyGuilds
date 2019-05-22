@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import net.dzikoysk.funnyguilds.util.commons.MessageFormatter;
 
 public class ExcConfirm implements Executor {
 

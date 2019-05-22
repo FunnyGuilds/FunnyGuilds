@@ -23,7 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import net.dzikoysk.funnyguilds.util.commons.MessageFormatter;
 
 public class PlayerMove implements Listener {
 

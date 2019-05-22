@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.basic.user;
 
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import org.panda_lang.panda.utilities.commons.objects.StringUtils;
 
 public class UserBan {
 
@@ -22,7 +21,7 @@ public class UserBan {
             return ChatUtils.colored(this.reason);
         }
 
-        return StringUtils.EMPTY;
+        return "";
     }
 
     public long getBanTime() {
