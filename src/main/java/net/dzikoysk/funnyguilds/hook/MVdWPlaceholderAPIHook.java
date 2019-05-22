@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.panda_lang.panda.utilities.commons.objects.StringUtils;
+import org.panda_lang.panda.utilities.commons.StringUtils;
 
 import java.util.Map.Entry;
 
@@ -22,7 +22,7 @@ public final class MVdWPlaceholderAPIHook {
                 OfflinePlayer target = event.getOfflinePlayer();
 
                 if (target == null) {
-                    return "";
+                    return StringUtils.EMPTY;
                 }
 
                 User user = User.get(target.getUniqueId(), target.getName());
