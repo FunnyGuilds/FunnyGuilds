@@ -267,8 +267,16 @@ public class PlayerDeath implements Listener {
         }
         
         if (config.broadcastDeathMessage) {
-            event.setDeathMessage(deathMessage);
-        } else {
+            if (config.ignoreDisabledDeathMessages) {
+                for (Player player : event.getEntity().getWorld().getPlayers()) {
+                    player.sendMessage(deathMessage);
+                }
+            }
+            else {
+                event.setDeathMessage(deathMessage);
+            }
+        }
+        else {
             event.setDeathMessage(null);
             
             for (User fighter : messageReceivers) {
@@ -279,16 +287,16 @@ public class PlayerDeath implements Listener {
         }
         
     }
-	
-    private int[] getEloValues(int vP, int aP) {
+
+    private int[] getEloValues(int victimPoints, int attackerPoints) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         int[] rankChanges = new int[2];
-        
-        int aC = IntegerRange.inRange(aP, config.eloConstants, "ELO_CONSTANTS");
-        int vC = IntegerRange.inRange(vP, config.eloConstants, "ELO_CONSTANTS");
-        
-        rankChanges[0] = (int) Math.round(aC * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (vP - aP) / config.eloDivider)))));
-        rankChanges[1] = (int) Math.round(vC * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (aP - vP) / config.eloDivider)))) * -1);
+
+        int aC = IntegerRange.inRange(attackerPoints, config.eloConstants, "ELO_CONSTANTS");
+        int vC = IntegerRange.inRange(victimPoints, config.eloConstants, "ELO_CONSTANTS");
+
+        rankChanges[0] = (int) Math.round(aC * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider)))));
+        rankChanges[1] = (int) Math.round(vC * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * - 1);
         
         return rankChanges;
     }

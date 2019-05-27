@@ -575,6 +575,10 @@ public class PluginConfiguration {
     @CfgName("broadcast-death-message")
     public boolean broadcastDeathMessage = true;
 
+    @CfgComment("Czy wiadomosc o zabiciu gracza powinna byc wyswietlana bez wzgledu na wylaczone wiadomosci o smierci")
+    @CfgName("ignore-death-messages-disabled")
+    public boolean ignoreDisabledDeathMessages = false;
+
     @CfgComment("Ranking od ktorego rozpoczyna gracz")
     @CfgName("rank-start")
     public int rankStart = 1000;
