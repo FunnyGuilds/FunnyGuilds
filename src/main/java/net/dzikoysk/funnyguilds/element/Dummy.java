@@ -37,6 +37,14 @@ public class Dummy {
         }
         
         Scoreboard scoreboard = this.user.getCache().getScoreboard();
+
+        if (scoreboard == null) {
+            FunnyGuilds.getInstance().getPluginLogger().debug(
+                    "We're trying to initialize Dummy, but we haven't initialized scoreboard yet " +
+                            "(maybe player left the game while initializing?)");
+            return;
+        }
+
         Objective objective = scoreboard.getObjective(name);
         
         if (objective == null || !objective.getName().equals(name)) {

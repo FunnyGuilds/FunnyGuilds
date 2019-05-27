@@ -32,6 +32,12 @@ public final class FunnyGuildsLogger {
         this.rootLogger.warning(content);
     }
 
+    public void debug(String content) {
+        if (this.funnyGuilds.getPluginConfiguration().debugMode) {
+            this.rootLogger.info("[Debug] > " + content);
+        }
+    }
+
     public void error(String content) {
         this.rootLogger.severe(content);
     }

@@ -67,6 +67,10 @@ public class PluginConfiguration {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String pluginName = "FunnyGuilds";
 
+    @CfgComment("Czy plugin ma dzialac w trybie debug (wysylanie dodatkowych wiadomosci w celu zdiagnozowania bledow itp.)")
+    @CfgName("debug-mode")
+    public boolean debugMode = false;
+
     @CfgComment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
     @CfgName("update-info")
     public boolean updateInfo = true;
