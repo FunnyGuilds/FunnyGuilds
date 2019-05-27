@@ -269,6 +269,7 @@ public class PlayerDeath implements Listener {
         if (config.broadcastDeathMessage) {
             if (config.ignoreDisabledDeathMessages) {
                 for (Player player : event.getEntity().getWorld().getPlayers()) {
+                    event.setDeathMessage(null);
                     player.sendMessage(deathMessage);
                 }
             }
