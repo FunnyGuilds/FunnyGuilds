@@ -1047,6 +1047,10 @@ public class PluginConfiguration {
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
+    @CfgComment("Czy powiadomienie o zabojstwie gracza powinno sie wyswietlac na title dla zabojcy")
+    @CfgName("display-title-notification-for-killer")
+    public boolean displayTitleNotificationForKiller = false;
+
     @CfgComment("Czy powiadomienia o wejsciu na teren gildii czlonka gildii powinny byc wyswietlane")
     @CfgName("notification-guild-member-display")
     public boolean regionEnterNotificationGuildMember = false;

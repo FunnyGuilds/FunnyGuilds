@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.DataModel;
+import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
@@ -23,11 +24,13 @@ import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.MapUtil;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.util.nms.PacketSender;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -240,31 +243,37 @@ public class PlayerDeath implements Listener {
                 .build();
         concurrencyManager.postTask(task);
 
-        String deathMessage = messages.rankDeathMessage;
-        deathMessage = StringUtils.replace(deathMessage, "{ATTACKER}", attacker.getName());
-        deathMessage = StringUtils.replace(deathMessage, "{VICTIM}", victim.getName());
-        deathMessage = StringUtils.replace(deathMessage, "{+}", Integer.toString(attackerEvent.getChange()));
-        deathMessage = StringUtils.replace(deathMessage, "{-}", Integer.toString(victimEvent.getChange()));
-        deathMessage = StringUtils.replace(deathMessage, "{POINTS-FORMAT}", IntegerRange.inRange(vP, config.pointsFormat, "POINTS"));
-        deathMessage = StringUtils.replace(deathMessage, "{POINTS}", Integer.toString(victim.getRank().getPoints()));
-        deathMessage = StringUtils.replace(deathMessage, "{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()));
-        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()));
-        deathMessage = StringUtils.replace(deathMessage, "{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)));
+        MessageFormatter killMessageFormatter = new MessageFormatter()
+                .register("{ATTACKER}", attacker.getName())
+                .register("{VICTIM}", victim.getName())
+                .register("{+}", Integer.toString(attackerEvent.getChange()))
+                .register("{-}", Integer.toString(victimEvent.getChange()))
+                .register("{POINTS-FORMAT}",
+                        IntegerRange.inRange(vP, config.pointsFormat, "POINTS"))
+                .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
+                .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
+                .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
+                .register("{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)))
+                .register("{VTAG}", victim.hasGuild() ?
+                        StringUtils.replace(config.chatGuild, "{TAG}", victim.getGuild().getTag()) : "")
+                .register("{ATAG}", attacker.hasGuild() ?
+                        StringUtils.replace(config.chatGuild, "{TAG}", attacker.getGuild().getTag()) : "")
+                .register("{ASSISTS}", config.assistEnable && ! assistEntries.isEmpty() ?
+                        String.join(messages.rankAssistDelimiter, assistEntries) : "");
 
-        if (victim.hasGuild()) {
-            deathMessage = StringUtils.replace(deathMessage, "{VTAG}", StringUtils.replace(config.chatGuild, "{TAG}", victim.getGuild().getTag()));
+        if (config.displayTitleNotificationForKiller) {
+            List<Object> titlePackets = NotificationUtil.createTitleNotification(
+                    killMessageFormatter.format(messages.rankKillTitle),
+                    killMessageFormatter.format(messages.rankKillSubtitle),
+                    config.notificationTitleFadeIn,
+                    config.notificationTitleStay,
+                    config.notificationTitleFadeOut
+            );
+
+            PacketSender.sendPacket(attacker, titlePackets);
         }
 
-        if (attacker.hasGuild()) {
-            deathMessage = StringUtils.replace(deathMessage, "{ATAG}", StringUtils.replace(config.chatGuild, "{TAG}", attacker.getGuild().getTag()));
-        }
-
-        deathMessage = StringUtils.replace(deathMessage, "{VTAG}", "");
-        deathMessage = StringUtils.replace(deathMessage, "{ATAG}", "");
-        
-        if (config.assistEnable && !assistEntries.isEmpty()) {
-            deathMessage += "\n" + StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries));    
-        }
+        String deathMessage = killMessageFormatter.format(messages.rankDeathMessage);
         
         if (config.broadcastDeathMessage) {
             if (config.ignoreDisabledDeathMessages) {

@@ -50,6 +50,8 @@ public class MessageConfiguration {
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
     @CfgComment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {REMAINING-HEALTH}, {REMAINING-HEARTS}")
     public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON}";
+    public String rankKillTitle = "&cZabiles gracza {VICTIM}";
+    public String rankKillSubtitle = "&7+{+}";
     @CfgComment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
     public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
     @CfgComment("Dostepne zmienne: {PLAYER}, {+}, {SHARE}")
