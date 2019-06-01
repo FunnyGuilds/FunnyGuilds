@@ -41,7 +41,7 @@ public class PlayerMove implements Listener {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
         Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
-            if (from == null || to == null) {
+            if (to == null) {
                 return;
             }
 

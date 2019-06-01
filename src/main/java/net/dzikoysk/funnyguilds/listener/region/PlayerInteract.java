@@ -24,48 +24,48 @@ import java.util.concurrent.TimeUnit;
 public class PlayerInteract implements Listener {
 
     private final ExcInfo infoExecutor = new ExcInfo();
-    
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         Action eventAction = event.getAction();
         Player player = event.getPlayer();
-        
+
         if (eventAction == Action.RIGHT_CLICK_BLOCK || eventAction == Action.LEFT_CLICK_BLOCK) {
             Block clicked = event.getClickedBlock();
             Region region = RegionUtils.getAt(clicked.getLocation());
-            
+
             if (region != null) {
                 Block heart = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-                
+
                 if (clicked.equals(heart)) {
                     if (heart.getType() == Material.DRAGON_EGG) {
                         event.setCancelled(true);
                     }
-                    
+
                     Guild guild = region.getGuild();
                     if (SecuritySystem.getSecurity().checkPlayer(player, guild)) {
                         return;
                     }
 
                     event.setCancelled(true);
-                    
+
                     if (eventAction == Action.LEFT_CLICK_BLOCK) {
                         WarSystem.getInstance().attack(player, guild);
-                        return;
-                    } else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
+                    }
+                    else {
                         if(!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                             infoExecutor.execute(player, new String[]{guild.getTag()});
                         }
-                        
-                        return;
+
                     }
-                } else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
+                }
+                else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
                     Guild guild = region.getGuild();
                     if (guild == null || guild.getName() == null) {
                         return;
                     }
-                    
+
                     User user = User.get(player);
                     if (!guild.getMembers().contains(user)) {
                         event.setCancelled(config.blockedInteract.contains(clicked.getType()) && !player.hasPermission("funnyguilds.admin.interact"));

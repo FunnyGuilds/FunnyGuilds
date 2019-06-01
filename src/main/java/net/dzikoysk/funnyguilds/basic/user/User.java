@@ -61,6 +61,10 @@ public class User extends AbstractBasic {
     }
 
     private void updateCache() {
+        if (this.getUUID().version() == 2) {
+            return;
+        }
+
         UserUtils.addUser(this);
     }
 
