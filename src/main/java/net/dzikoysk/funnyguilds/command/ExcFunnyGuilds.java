@@ -120,6 +120,11 @@ public class ExcFunnyGuilds implements Executor {
     }
 
     private void post(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("funnyguilds.admin")) {
+            sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
+            return;
+        }
+
         if (args.length == 1) {
             this.doPost(sender, Arrays.asList("config", "log"));
             return;
