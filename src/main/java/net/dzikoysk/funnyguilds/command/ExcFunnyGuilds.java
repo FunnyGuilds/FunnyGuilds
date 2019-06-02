@@ -4,18 +4,16 @@ import com.google.common.io.Files;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
 import net.dzikoysk.funnyguilds.command.util.Executor;
+import net.dzikoysk.funnyguilds.concurrency.requests.ReloadRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
 import net.dzikoysk.funnyguilds.util.commons.LoggingUtils;
 import net.dzikoysk.funnyguilds.util.telemetry.FunnyTelemetry;
 import net.dzikoysk.funnyguilds.util.telemetry.FunnybinResponse;
 import net.dzikoysk.funnyguilds.util.telemetry.PasteType;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -68,32 +66,8 @@ public class ExcFunnyGuilds implements Executor {
             return;
         }
 
-        long startTime = System.currentTimeMillis();
-
-        Thread thread = new Thread(() -> {
-            FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
-            funnyGuilds.reloadPluginConfiguration();
-            funnyGuilds.reloadMessageConfiguration();
-            funnyGuilds.getDataPersistenceHandler().reloadHandler();
-            funnyGuilds.getDynamicListenerManager().reloadAll();
-
-            if (FunnyGuilds.getInstance().getPluginConfiguration().playerListEnable) {
-                PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-                AbstractTablist.wipeCache();
-
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
-                }
-            }
-
-            long endTime = System.currentTimeMillis();
-            String diff = String.format("%.2f", ((endTime - startTime) / 1000.0));
-
-            sender.sendMessage(ChatColor.AQUA + "FunnyGuilds " + ChatColor.GRAY + "przeladowano! (" + ChatColor.AQUA + diff + "s" + ChatColor.GRAY + ")");
-        });
-
         sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
-        thread.start();
+        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(new ReloadRequest(sender));
     }
 
     private void saveAll(CommandSender sender) {
