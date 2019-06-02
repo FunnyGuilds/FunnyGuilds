@@ -1,15 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.google.common.io.Files;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
@@ -26,6 +16,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ExcFunnyGuilds implements Executor {
 
@@ -47,6 +47,13 @@ public class ExcFunnyGuilds implements Executor {
                 break;
             case "funnybin":
                 post(sender, args);
+                break;
+            case "help":
+                sender.sendMessage(ChatColor.AQUA + "FunnyGuilds Help:");
+                sender.sendMessage(ChatColor.GRAY + "/funnyguilds (reload|rl) - przeladuj plugin");
+                sender.sendMessage(ChatColor.GRAY + "/funnyguilds (update|check) - sprawdz dostepnosc aktualizacji");
+                sender.sendMessage(ChatColor.GRAY + "/funnyguilds save-all - zapisz wszystko");
+                sender.sendMessage(ChatColor.GRAY + "/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)");
                 break;
             default:
                 sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + FunnyGuilds.getInstance().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
