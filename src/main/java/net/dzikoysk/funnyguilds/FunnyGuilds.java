@@ -207,7 +207,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildValidationTask.cancel();
         this.tablistBroadcastTask.cancel();
 
-        this.dataModel.save(false);
+        this.dataModel.save(true);
         this.dataPersistenceHandler.stopHandler();
 
         this.invitationPersistenceHandler.saveInvitations();
