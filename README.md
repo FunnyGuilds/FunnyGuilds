@@ -10,7 +10,7 @@ Project website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
 
 #### Download
 Get the latest stable version: [FunnyGuilds Tribute 4.4.2 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
-Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Nightly](https://ci.insertt.pl/job/FunnyGuilds)
+Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Nightly](https://ci.insertt.dev/job/FunnyGuilds)
 
 #### Hooks
 FunnyGuilds hooks into those plugins:
@@ -25,7 +25,7 @@ FunnyGuilds hooks into those plugins:
 ```xml
 <repository>
     <id>insertt-repo</id>
-    <url>https://repo.insertt.pl/releases</url>
+    <url>https://repo.insertt.dev/releases</url>
 </repository>
 ```
 ```xml
