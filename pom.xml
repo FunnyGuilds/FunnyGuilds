@@ -128,7 +128,7 @@
         <repository>
             <id>insertt-repo</id>
             <name>insertt repository</name>
-            <url>https://repo.insertt.pl/releases</url>
+            <url>https://repo.insertt.dev/releases</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>
@@ -157,7 +157,7 @@
     <distributionManagement>
         <repository>
             <id>insertt-repo</id>
-            <url>https://repo.insertt.pl/releases</url>
+            <url>https://repo.insertt.dev/releases</url>
         </repository>
     </distributionManagement>
 
