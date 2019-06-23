@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;

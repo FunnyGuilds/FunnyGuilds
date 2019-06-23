@@ -7,7 +7,7 @@ import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

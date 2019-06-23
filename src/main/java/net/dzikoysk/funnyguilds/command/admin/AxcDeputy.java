@@ -12,7 +12,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
 
 public class AxcDeputy implements Executor {
 

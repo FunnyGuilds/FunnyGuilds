@@ -135,6 +135,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (this.forceDisabling) {
+            return;
+        }
+        
         this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
         this.dataModel.load();
 
@@ -203,7 +207,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildValidationTask.cancel();
         this.tablistBroadcastTask.cancel();
 
-        this.dataModel.save(false);
+        this.dataModel.save(true);
         this.dataPersistenceHandler.stopHandler();
 
         this.invitationPersistenceHandler.saveInvitations();
@@ -265,6 +269,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public PluginConfiguration getPluginConfiguration() {
         return this.pluginConfiguration;
+    }
+
+    public File getPluginConfigurationFile() {
+        return this.pluginConfigurationFile;
     }
 
     public MessageConfiguration getMessageConfiguration() {

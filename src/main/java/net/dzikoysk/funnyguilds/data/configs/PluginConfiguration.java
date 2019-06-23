@@ -66,6 +66,10 @@ public class PluginConfiguration {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String pluginName = "FunnyGuilds";
 
+    @CfgComment("Czy plugin ma dzialac w trybie debug (wysylanie dodatkowych wiadomosci w celu zdiagnozowania bledow itp.)")
+    @CfgName("debug-mode")
+    public boolean debugMode = false;
+
     @CfgComment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
     @CfgName("update-info")
     public boolean updateInfo = true;
@@ -570,6 +574,10 @@ public class PluginConfiguration {
     @CfgName("broadcast-death-message")
     public boolean broadcastDeathMessage = true;
 
+    @CfgComment("Czy wiadomosc o zabiciu gracza powinna byc wyswietlana bez wzgledu na wylaczone wiadomosci o smierci")
+    @CfgName("ignore-death-messages-disabled")
+    public boolean ignoreDisabledDeathMessages = false;
+
     @CfgComment("Ranking od ktorego rozpoczyna gracz")
     @CfgName("rank-start")
     public int rankStart = 1000;
@@ -1037,6 +1045,10 @@ public class PluginConfiguration {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
+
+    @CfgComment("Czy powiadomienie o zabojstwie gracza powinno sie wyswietlac na title dla zabojcy")
+    @CfgName("display-title-notification-for-killer")
+    public boolean displayTitleNotificationForKiller = false;
 
     @CfgComment("Czy powiadomienia o wejsciu na teren gildii czlonka gildii powinny byc wyswietlane")
     @CfgName("notification-guild-member-display")

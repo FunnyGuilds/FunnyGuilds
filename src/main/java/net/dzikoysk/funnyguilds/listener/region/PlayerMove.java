@@ -23,7 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
 
 public class PlayerMove implements Listener {
 
@@ -41,7 +41,7 @@ public class PlayerMove implements Listener {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
         Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
-            if (from == null || to == null) {
+            if (to == null) {
                 return;
             }
 

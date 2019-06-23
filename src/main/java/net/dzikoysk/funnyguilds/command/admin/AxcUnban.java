@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.system.ban.BanUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.panda_lang.panda.utilities.commons.redact.MessageFormatter;
+import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
 
 public class AxcUnban implements Executor {
 

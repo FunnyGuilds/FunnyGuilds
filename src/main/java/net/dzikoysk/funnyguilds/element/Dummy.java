@@ -10,8 +10,8 @@ import org.bukkit.scoreboard.Scoreboard;
 
 public class Dummy {
 
-    private static final String name = "FG-Points";
-    private final User user;
+    private static final String OBJECTIVE_NAME = "FG-Points";
+    private final        User   user;
 
     public Dummy(User user) {
         this.user = user;
@@ -22,10 +22,20 @@ public class Dummy {
         if (! FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
             return;
         }
-        
-        Objective objective = this.user.getCache().getScoreboard().getObjective(name);
-        if (objective == null || !objective.getName().equals(name)) {
-            initialize();
+
+        Scoreboard scoreboard = this.user.getCache().getScoreboard();
+
+        if (scoreboard == null) {
+            FunnyGuilds.getInstance().getPluginLogger().debug(
+                    "We're trying to update Dummy score but scoreboard hasn't been initialized yet" +
+                            "(maybe player left the game while updating?)");
+            return;
+        }
+
+        Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
+
+        if (objective == null || ! objective.getName().equals(OBJECTIVE_NAME)) {
+            this.initialize();
         } else {
             objective.getScore(user.getName()).setScore(user.getRank().getPoints());
         }
@@ -37,10 +47,18 @@ public class Dummy {
         }
         
         Scoreboard scoreboard = this.user.getCache().getScoreboard();
-        Objective objective = scoreboard.getObjective(name);
-        
-        if (objective == null || !objective.getName().equals(name)) {
-            objective = scoreboard.registerNewObjective(name, "dummy");
+
+        if (scoreboard == null) {
+            FunnyGuilds.getInstance().getPluginLogger().debug(
+                    "We're trying to initialize Dummy, but we haven't initialized scoreboard yet " +
+                            "(maybe player left the game while initializing?)");
+            return;
+        }
+
+        Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
+
+        if (objective == null || ! objective.getName().equals(OBJECTIVE_NAME)) {
+            objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
             objective.setDisplayName(FunnyGuilds.getInstance().getPluginConfiguration().dummySuffix);
         }
