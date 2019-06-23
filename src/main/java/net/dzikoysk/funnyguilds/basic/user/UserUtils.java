@@ -14,8 +14,10 @@ public class UserUtils {
     private final static Map<UUID, User> uuidUserMap = new ConcurrentHashMap<>();
     private final static Map<String, User> nameUserMap = new ConcurrentHashMap<>();
 
-    private final static Cache<UUID, User> uuidUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
-    private final static Cache<String, User> nameUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
+    private final static Cache<UUID, User>   uuidUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES)
+            .build();
+    private final static Cache<String, User> nameUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES)
+            .build();
 
     public static Set<User> getUsers() {
         return new HashSet<>(uuidUserMap.values());

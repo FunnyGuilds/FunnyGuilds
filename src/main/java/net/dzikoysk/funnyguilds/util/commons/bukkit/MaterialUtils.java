@@ -3,11 +3,19 @@ package net.dzikoysk.funnyguilds.util.commons.bukkit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
+import org.jetbrains.annotations.Nullable;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 public final class MaterialUtils {
+
+    private static final Method MATCH_MATERIAL_METHOD =
+            Reflections.getMethod(Material.class, "matchMaterial", String.class, boolean.class);
 
     public static Material parseMaterial(String string, boolean allowNullReturn) {
         if (string == null) {
@@ -16,13 +24,7 @@ public final class MaterialUtils {
         }
 
         String materialName = string.toUpperCase().replaceAll(" ", "_");
-        Material material = MaterialAliaser.getByAlias(materialName);
-
-        if (material !=null) {
-            return material;
-        }
-
-        material = Material.getMaterial(materialName);
+        Material material = matchMaterial(materialName);
 
         if (material == null) {
             FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material: " + string);
@@ -34,7 +36,7 @@ public final class MaterialUtils {
 
     public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
         if (string == null) {
-            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown materialdata: null");
+            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material data: null");
             return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
 
@@ -42,7 +44,7 @@ public final class MaterialUtils {
         Material material = parseMaterial(data[0], allowNullReturn);
 
         if (material == null) {
-            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material in materialdata: " + string);
+            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material in material data: " + string);
             return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
 
@@ -74,6 +76,31 @@ public final class MaterialUtils {
             return StringUtils.replace(material.toString().toLowerCase(), "_", " ");
         }
     }
+
+    @Nullable
+    public static Material matchMaterial(String materialName) {
+        try {
+            if (Reflections.USE_PRE_13_METHODS) {
+                return Material.matchMaterial(materialName);
+            }
+
+            if (MATCH_MATERIAL_METHOD == null) {
+                return null;
+            }
+
+            Material material = (Material) MATCH_MATERIAL_METHOD.invoke(null, materialName, false);
+
+            if (material == null) {
+                material = (Material) MATCH_MATERIAL_METHOD.invoke(null, materialName, true);
+            }
+
+            return material;
+        }
+        catch (IllegalAccessException | InvocationTargetException ex) {
+            return null;
+        }
+    }
+
 
     private MaterialUtils() {}
 
