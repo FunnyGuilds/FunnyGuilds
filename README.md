@@ -10,7 +10,9 @@ Project website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
 
 #### Download
 Get the latest stable version: [FunnyGuilds Tribute 4.4.2 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
-Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Nightly](https://ci.insertt.dev/job/FunnyGuilds)
+Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
+Checkout also the 1.14 preview versions: [FunnyGuilds Nightly (1.14.x)](https://ci.insertt.dev/job/FunnyGuilds/job/1.14/)
+
 
 #### Hooks
 FunnyGuilds hooks into those plugins:
