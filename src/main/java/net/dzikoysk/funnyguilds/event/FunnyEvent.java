@@ -16,6 +16,12 @@ public abstract class FunnyEvent extends Event implements Cancellable {
         this.eventCause = eventCause;
         this.doer = doer;
     }
+
+    public FunnyEvent(EventCause eventCause, User doer, boolean isAsync) {
+        super(isAsync);
+        this.eventCause = eventCause;
+        this.doer = doer;
+    }
     
     public EventCause getEventCause() {
         return this.eventCause;
