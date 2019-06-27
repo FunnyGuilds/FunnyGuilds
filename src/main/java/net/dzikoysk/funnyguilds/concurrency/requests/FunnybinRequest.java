@@ -85,7 +85,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 sentPastes.add(FunnyTelemetry.postToFunnybin(content, type, fileName));
             }
             catch (IOException e) {
-                sender.sendMessage(ChatColor.RED + "Podany plik: " + fileName + " nie mogl byc wyslany (szczegoly w konsolii)");
+                sender.sendMessage(ChatColor.RED + "Podany plik: " + fileName + " nie mogl byc wyslany (szczegoly w konsoli)");
                 FunnyGuilds.getInstance().getPluginLogger().error("Failed to submit a paste: " + fileName, e);
             }
         }
