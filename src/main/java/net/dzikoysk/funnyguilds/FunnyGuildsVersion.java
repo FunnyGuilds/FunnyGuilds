@@ -9,10 +9,10 @@ public final class FunnyGuildsVersion {
     private static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
 
     public static void isNewAvailable(CommandSender sender, boolean force) {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().updateInfo && ! force) {
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().updateInfo && !force) {
             return;
         }
-        
+
         if (!sender.hasPermission("funnyguilds.admin")) {
             return;
         }
@@ -20,7 +20,7 @@ public final class FunnyGuildsVersion {
         FunnyGuilds.getInstance().getServer().getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
             String latest = IOUtils.getContent(VERSION_FILE_URL);
 
-            if (latest != null && ! latest.equalsIgnoreCase(FunnyGuilds.getInstance().getMainVersion())) {
+            if (latest != null && !latest.equalsIgnoreCase(FunnyGuilds.getInstance().getMainVersion())) {
                 sender.sendMessage("");
                 sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
                 sender.sendMessage(ChatColor.GRAY + "Dostepna jest nowa wersja " + ChatColor.AQUA + "FunnyGuilds" + ChatColor.GRAY + '!');

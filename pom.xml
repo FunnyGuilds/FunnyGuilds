@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.4.3</version>
+    <version>4.5.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -50,8 +48,8 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.9</version>
-         </dependency>
-         <dependency>
+        </dependency>
+        <dependency>
             <groupId>org.diorite</groupId>
             <artifactId>diorite-config-minimal</artifactId>
             <version>1.2</version>
@@ -61,7 +59,7 @@
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.11.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
@@ -69,10 +67,10 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-           <groupId>io.netty</groupId>
-           <artifactId>netty-all</artifactId>
-           <version>4.1.36.Final</version>
-           <scope>provided</scope>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.36.Final</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sk89q.worldguard</groupId>

@@ -9,9 +9,8 @@ Project website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
 <br>
 
 #### Download
-Get the latest stable version: [FunnyGuilds Tribute 4.4.2 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
-Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
-Checkout also the 1.14 preview versions: [FunnyGuilds Nightly (1.14.x)](https://ci.insertt.dev/job/FunnyGuilds/job/1.14/)
+Get the latest stable version: [FunnyGuilds Tribute 4.5.0 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
+Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.5.0+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
 
 
 #### Hooks
@@ -20,8 +19,8 @@ FunnyGuilds hooks into those plugins:
 - [WorldGuard](https://dev.bukkit.org/projects/worldguard)
 - [Vault](https://dev.bukkit.org/projects/vault)
 - [PlaceholderAPI](https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds)
-- [MVdWPlaceholderAPI](https://www.spigotmc.org/resources/mvdwplaceholderapi.11182/)
 - [BungeeTabListPlus](https://www.spigotmc.org/resources/bungeetablistplus.313/)
+- [MVdWPlaceholderAPI](https://www.spigotmc.org/resources/mvdwplaceholderapi.11182/)
 
 #### Maven
 ```xml
@@ -34,7 +33,7 @@ FunnyGuilds hooks into those plugins:
 <dependency>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.4.2</version>
+    <version>4.5.0</version>
 </dependency>
 ```
 
