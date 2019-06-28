@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public final class FunnyGuildsLogger {
 
     private final FunnyGuilds funnyGuilds;
-    private final Logger      rootLogger;
+    private final Logger rootLogger;
 
     FunnyGuildsLogger(FunnyGuilds funnyGuilds) {
         this.funnyGuilds = funnyGuilds;
@@ -44,7 +44,7 @@ public final class FunnyGuildsLogger {
 
     public void error(String content, Throwable cause) {
         String loadedPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
-                .filter(plugin -> ! plugin.getName().contains("FunnyGuilds"))
+                .filter(plugin -> !plugin.getName().contains("FunnyGuilds"))
                 .map(plugin -> plugin.getName() + " " + plugin.getDescription().getVersion())
                 .collect(Collectors.joining(", "));
 

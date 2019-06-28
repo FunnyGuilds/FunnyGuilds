@@ -138,7 +138,7 @@ public class FunnyGuilds extends JavaPlugin {
         if (this.forceDisabling) {
             return;
         }
-        
+
         this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
         this.dataModel.load();
 
@@ -156,7 +156,6 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(), 20L, this.pluginConfiguration.playerListUpdateInterval_);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
-
         pluginManager.registerEvents(new GuiActionHandler(), this);
         pluginManager.registerEvents(new EntityDamage(), this);
         pluginManager.registerEvents(new EntityInteract(), this);
@@ -166,8 +165,7 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerLogin(), this);
         pluginManager.registerEvents(new PlayerQuit(), this);
 
-        this.dynamicListenerManager.registerDynamic(
-                () -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled,
+        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
                 new BlockBreak(),
                 new BlockIgnite(),
                 new BlockPlace(),
@@ -179,12 +177,9 @@ public class FunnyGuilds extends JavaPlugin {
                 new PlayerInteract()
         );
 
-        this.dynamicListenerManager.registerDynamic(
-                () -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && FunnyGuilds.getInstance().getPluginConfiguration().eventMove, new PlayerMove());
-        this.dynamicListenerManager.registerDynamic(
-                () -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && FunnyGuilds.getInstance().getPluginConfiguration().eventPhysics, new BlockPhysics());
-        this.dynamicListenerManager.registerDynamic(
-                () -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && FunnyGuilds.getInstance().getPluginConfiguration().respawnInBase, new PlayerRespawn());
+        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, new PlayerMove());
+        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, new BlockPhysics());
+        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, new PlayerRespawn());
         this.dynamicListenerManager.reloadAll();
         this.patch();
 
@@ -217,8 +212,6 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     private void patch() {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
         for (Player player : this.getServer().getOnlinePlayers()) {
             this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
 
@@ -229,13 +222,15 @@ public class FunnyGuilds extends JavaPlugin {
             user.getCache().getDummy();
             user.getRank();
 
-            if (config.playerListEnable) {
-                AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
+            if (!pluginConfiguration.playerListEnable) {
+                continue;
             }
+
+            AbstractTablist.createTablist(pluginConfiguration.playerList, pluginConfiguration.playerListHeader, pluginConfiguration.playerListFooter, pluginConfiguration.playerListPing, player);
         }
 
         for (Guild guild : GuildUtils.getGuilds()) {
-            if (config.createEntityType != null) {
+            if (pluginConfiguration.createEntityType != null) {
                 GuildEntityHelper.spawnGuildHeart(guild);
             }
 
