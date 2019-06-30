@@ -82,7 +82,7 @@ public class PlayerMove implements Listener {
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
                         user.getBossBar().sendNotification(
-                                formatter.format(messages.notificationActionbarLeaveGuildRegion),
+                                formatter.format(messages.notificationBossbarLeaveGuildRegion),
                                 config.bossBarOptions_,
                                 config.regionNotificationTime
                         );
