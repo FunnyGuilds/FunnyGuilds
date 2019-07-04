@@ -139,11 +139,6 @@
             <url>https://repo.panda-lang.org/</url>
         </repository>
         <repository>
-            <id>insertt-repo</id>
-            <name>insertt repository</name>
-            <url>https://repo.insertt.dev/releases</url>
-        </repository>
-        <repository>
             <id>sk89q-repo</id>
             <name>sk89q Repository</name>
             <url>http://maven.sk89q.com/repo/</url>
@@ -169,8 +164,9 @@
 
     <distributionManagement>
         <repository>
-            <id>insertt-repo</id>
-            <url>https://repo.insertt.dev/releases</url>
+            <id>panda-repository</id>
+            <name>Panda Repository</name>
+            <url>https://repo.panda-lang.org/releases</url>
         </repository>
     </distributionManagement>
 
