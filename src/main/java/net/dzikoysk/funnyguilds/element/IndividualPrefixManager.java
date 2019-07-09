@@ -34,6 +34,10 @@ public class IndividualPrefixManager {
                 player.setScoreboard(scoreboard);
                 cache.setScoreboard(scoreboard);
 
+                IndividualPrefix prefix = new IndividualPrefix(user);
+                prefix.initialize();
+
+                cache.setIndividualPrefix(prefix);
                 cache.getDummy().updateScore(user);
             });
 

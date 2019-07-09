@@ -74,7 +74,7 @@ public class UserCache {
         this.dummy = dummy;
     }
 
-    public void setPrefix(IndividualPrefix prefix) {
+    public void setIndividualPrefix(IndividualPrefix prefix) {
         this.prefix = prefix;
     }
 
@@ -148,10 +148,6 @@ public class UserCache {
     }
 
     public IndividualPrefix getIndividualPrefix() {
-        if (this.prefix == null) {
-            this.prefix = new IndividualPrefix(user);
-        }
-
         return this.prefix;
     }
 

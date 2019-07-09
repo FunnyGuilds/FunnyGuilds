@@ -25,7 +25,7 @@ public class PlayerQuit implements Listener {
         User user = User.get(player);
 
         UserCache cache = user.getCache();
-        cache.setPrefix(null);
+        cache.setIndividualPrefix(null);
         cache.setScoreboard(null);
         cache.setDummy(null);
         cache.clearDamage();

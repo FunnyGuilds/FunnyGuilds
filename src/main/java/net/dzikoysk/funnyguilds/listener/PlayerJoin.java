@@ -5,11 +5,13 @@ import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
@@ -38,8 +40,17 @@ public class PlayerJoin implements Listener {
             AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
         }
 
-        if (user.getCache().getScoreboard() == null) {
-            user.getCache().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        UserCache cache = user.getCache();
+
+        if (cache.getScoreboard() == null) {
+            cache.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+        }
+
+        if (cache.getIndividualPrefix() == null) {
+            IndividualPrefix prefix = new IndividualPrefix(user);
+            prefix.initialize();
+
+            cache.setIndividualPrefix(prefix);
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();

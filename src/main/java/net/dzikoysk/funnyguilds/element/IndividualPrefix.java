@@ -16,7 +16,6 @@ public class IndividualPrefix {
 
     public IndividualPrefix(User user) {
         this.user = user;
-        this.initialize();
     }
 
     protected void addPlayer(String player) {
@@ -128,7 +127,7 @@ public class IndividualPrefix {
         }
     }
 
-    private void initialize() {
+    public void initialize() {
         if (getUser() == null) {
             return;
         }
