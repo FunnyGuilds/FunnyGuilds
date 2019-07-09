@@ -42,10 +42,6 @@ public final class PacketSender {
         }
     }
 
-    public static void sendPacket(final Object... packets) {
-        sendPacket(Arrays.asList(packets));
-    }
-
     public static void sendPacket(final Player target, final Object... packets) {
         sendPacket(target, Arrays.asList(packets));
     }
