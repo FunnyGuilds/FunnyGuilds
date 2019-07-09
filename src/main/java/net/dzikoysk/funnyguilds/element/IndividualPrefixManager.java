@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class IndividualPrefixManager {
 
@@ -19,16 +20,31 @@ public class IndividualPrefixManager {
         if (!player.isOnline()) {
             return;
         }
-        
-        UserCache cache = User.get(player).getCache();
+
+        User user = User.get(player);
+        UserCache cache = user.getCache();
+        Scoreboard cachedScoreboard = cache.getScoreboard();
+
+        if (cachedScoreboard == null) {
+            FunnyGuilds.getInstance().getPluginLogger().debug(
+                    "We're trying to update player scoreboard, but cached scoreboard is null (server has been reloaded?)");
+
+            Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
+                Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+                player.setScoreboard(scoreboard);
+                cache.setScoreboard(scoreboard);
+
+                cache.getDummy().updateScore(user);
+            });
+
+            return;
+        }
 
         try {
-            player.setScoreboard(cache.getIndividualPrefix().getScoreboard());
+            player.setScoreboard(cachedScoreboard);
         } catch (IllegalStateException e) {
             FunnyGuilds.getInstance().getPluginLogger().warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
         }
-        
-        cache.setScoreboard(cache.getIndividualPrefix().getScoreboard());
     }
 
     public static void addGuild(Guild to) {
