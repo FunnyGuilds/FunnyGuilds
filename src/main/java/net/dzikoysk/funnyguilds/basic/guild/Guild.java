@@ -40,6 +40,7 @@ public class Guild extends AbstractBasic {
     private int        lives;
     private long       build;
     private long       additionalProtection;
+    private Set<UUID>  alliedFFGuilds;
 
     private Guild(UUID uuid) {
         this.uuid = uuid;
@@ -48,6 +49,7 @@ public class Guild extends AbstractBasic {
         this.members = ConcurrentHashMap.newKeySet();
         this.deputies = ConcurrentHashMap.newKeySet();
         this.allies = ConcurrentHashMap.newKeySet();
+        this.alliedFFGuilds = ConcurrentHashMap.newKeySet();
     }
 
     public Guild(String name) {
@@ -207,6 +209,19 @@ public class Guild extends AbstractBasic {
     public void setPvP(boolean b) {
         this.pvp = b;
         this.markChanged();
+    }
+
+    public void setPvP(Guild alliedGuild, boolean enablePvp) {
+        if (enablePvp) {
+            this.alliedFFGuilds.add(alliedGuild.getUUID());
+        }
+        else {
+            this.alliedFFGuilds.remove(alliedGuild.getUUID());
+        }
+    }
+
+    public boolean getPvP(Guild alliedGuild) {
+        return this.allies.contains(alliedGuild) && this.alliedFFGuilds.contains(alliedGuild.getUUID());
     }
 
     public void setBorn(long l) {

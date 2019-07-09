@@ -268,6 +268,7 @@ public class MessageConfiguration {
     public String generalIsNotMember = "&cTen gracz nie jest czlonkiem twojej gildii!";
     public String generalPlayerHasNoGuild = "&cTen gracz nie ma gildii!";
     public String generalCommandDisabled = "&cTa komenda jest wylaczona!";
+    public String generalAllyPvpDisabled = "&cPVP pomiedzy sojuszami jest wylaczone w konfiguracji!";
     
     @CfgComment("<------- Escape Messages -------> #")
     public String escapeDisabled = "&cPrzykro mi, ucieczki sa wylaczone!";
@@ -395,6 +396,7 @@ public class MessageConfiguration {
             "&7Aby zaakceptowac uzyj &a/sojusz [tag]");
     @CfgComment("Dostepne zmienne: {TAG}")
     public String allyAlly = "&cMasz juz sojusz z ta gildia!";
+    public String allyDoesntExist = "&cNie posiadasz sojuszu z ta gildia!";
     public String allySame = "&cNie mozesz nawiazac sojuszu z wlasna gildia!";
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String allyDone = "&7Nawiazano sojusz z gildia &a{GUILD}&7!";
@@ -469,8 +471,11 @@ public class MessageConfiguration {
     public String setbaseDone = "&7Przeniesiono &adom &7gildii!";
 
     @CfgComment("<------- PvP Messages -------> #")
-    public String pvpOn = "&cWlaczono &7pvp w gildii!";
-    public String pvpOff = "&aWylaczono &7pvp w gildii!";
+    public String pvpOn = "&cWlaczono pvp w gildii!";
+    public String pvpOff = "&aWylaczono pvp w gildii!";
+    @CfgComment("Dostepne zmienne: {TAG}")
+    public String pvpAllyOn = "&cWlaczono pvp z sojuszem &7{TAG}!";
+    public String pvpAllyOff = "&cWylaczono pvp z sojuszem &7{TAG}!";
     
     @CfgComment("<------- Admin Messages -------> #")
     @CfgComment("Dostepne zmienne: {ADMIN}")
