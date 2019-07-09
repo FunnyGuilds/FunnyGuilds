@@ -270,7 +270,7 @@ public class PlayerDeath implements Listener {
                     config.notificationTitleFadeOut
             );
 
-            PacketSender.sendPacket(attacker, titlePackets);
+            PacketSender.sendPacket(playerAttacker, titlePackets);
         }
 
         String deathMessage = killMessageFormatter.format(messages.rankDeathMessage);
