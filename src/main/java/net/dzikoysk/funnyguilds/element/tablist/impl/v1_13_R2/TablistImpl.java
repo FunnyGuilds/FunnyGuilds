@@ -33,7 +33,6 @@ public class TablistImpl extends AbstractTablist {
     private static final Enum<?> ADD_PLAYER;
     private static final Enum<?> UPDATE_PLAYER;
     private static final String UUID_PATTERN = "00000000-0000-%s-0000-000000000000";
-    private static final String TOKEN = "!@#$^*";
     
     private static Constructor<?> playerInfoDataConstructor;
     private static Constructor<?> gameProfileConstructor;
@@ -94,7 +93,7 @@ public class TablistImpl extends AbstractTablist {
 
             for (int i = 0; i < cells; i++) {
                 if (profileCache[i] == null) {
-                    profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, ChatUtils.appendDigit(i))), TOKEN + ChatUtils.appendDigit(i));
+                    profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, ChatUtils.appendDigit(i))), " ");
                 }
 
                 String text = this.putVars(tablistPattern.getOrDefault(i + 1, ""));
