@@ -46,7 +46,7 @@ public class PlayerJoin implements Listener {
             cache.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
         }
 
-        if (cache.getIndividualPrefix() == null) {
+        if (cache.getIndividualPrefix() == null && config.guildTagEnabled) {
             IndividualPrefix prefix = new IndividualPrefix(user);
             prefix.initialize();
 

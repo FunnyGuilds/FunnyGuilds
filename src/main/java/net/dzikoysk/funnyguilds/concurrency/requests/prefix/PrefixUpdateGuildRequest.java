@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests.prefix;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
+import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 
 public class PrefixUpdateGuildRequest extends DefaultConcurrencyRequest {
 
@@ -16,7 +17,13 @@ public class PrefixUpdateGuildRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() {
-        user.getCache().getIndividualPrefix().addGuild(guild);
+        IndividualPrefix prefix = user.getCache().getIndividualPrefix();
+
+        if (prefix == null) {
+            return;
+        }
+
+        prefix.addGuild(guild);
     }
 
 }

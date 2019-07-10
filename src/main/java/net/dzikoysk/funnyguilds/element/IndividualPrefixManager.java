@@ -52,8 +52,14 @@ public class IndividualPrefixManager {
     }
 
     public static void addGuild(Guild to) {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            User.get(p).getCache().getIndividualPrefix().addGuild(to);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            IndividualPrefix prefix = User.get(player).getCache().getIndividualPrefix();
+
+            if (prefix == null) {
+                continue;
+            }
+
+            prefix.addGuild(to);
         }
         
         updatePlayers();
@@ -61,7 +67,13 @@ public class IndividualPrefixManager {
 
     public static void addPlayer(String player) {
         for (Player p : Bukkit.getOnlinePlayers()) {
-            User.get(p).getCache().getIndividualPrefix().addPlayer(player);
+            IndividualPrefix prefix = User.get(p).getCache().getIndividualPrefix();
+
+            if (prefix == null) {
+                continue;
+            }
+
+            prefix.addPlayer(player);
         }
         
         updatePlayers();
@@ -69,7 +81,13 @@ public class IndividualPrefixManager {
 
     public static void removeGuild(Guild guild) {
         for (Player player : Bukkit.getOnlinePlayers()) {
-            User.get(player).getCache().getIndividualPrefix().removeGuild(guild);
+            IndividualPrefix prefix = User.get(player).getCache().getIndividualPrefix();
+
+            if (prefix == null) {
+                continue;
+            }
+
+            prefix.removeGuild(guild);
         }
         
         updatePlayers();
@@ -77,7 +95,13 @@ public class IndividualPrefixManager {
 
     public static void removePlayer(String player) {
         for (Player ps : Bukkit.getOnlinePlayers()) {
-            User.get(ps).getCache().getIndividualPrefix().removePlayer(player);
+            IndividualPrefix prefix = User.get(ps).getCache().getIndividualPrefix();
+
+            if (prefix == null) {
+                continue;
+            }
+
+            prefix.removePlayer(player);
         }
         
         updatePlayers();

@@ -143,10 +143,12 @@ public class UserCache {
         return !this.damage.isEmpty();
     }
 
+    @Nullable
     public synchronized Scoreboard getScoreboard() {
         return this.scoreboard;
     }
 
+    @Nullable
     public IndividualPrefix getIndividualPrefix() {
         return this.prefix;
     }

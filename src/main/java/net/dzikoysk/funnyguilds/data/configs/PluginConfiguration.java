@@ -1004,6 +1004,10 @@ public class PluginConfiguration {
     @CfgName("player-list-use-relationship-colors")
     public boolean playerListUseRelationshipColors = false;
 
+    @CfgComment("Czy tagi gildyjne obok nicku gracza maja byc wlaczone")
+    @CfgName("guild-tag-enabled")
+    public boolean guildTagEnabled = true;
+
     @CfgComment("Czy tag gildii podany przy tworzeniu gildii powinien zachowac forme taka, w jakiej zostal wpisany")
     @CfgComment("UWAGA: Gdy ta opcja jest wlaczona, opcja \"guild-tag-uppercase\" nie bedzie miala wplywu na tag gildii")
     @CfgName("guild-tag-keep-case")
