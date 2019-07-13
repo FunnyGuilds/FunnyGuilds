@@ -331,8 +331,9 @@ public class PluginConfiguration {
     @CfgName("paste-schematic-on-creation")
     public boolean pasteSchematicOnCreation = false;
 
-    @CfgComment("Nazwa pliku z schematem poczatkowym gildii")
+    @CfgComment("Nazwa pliku ze schematem poczatkowym gildii")
     @CfgComment("Wklejenie schematu wymaga pluginu WorldEdit")
+    @CfgComment("Schemat musi znajdować się w folderze FunnyGuilds")
     @CfgName("guild-schematic-file-name")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guildSchematicFileName = "funnyguilds.schematic";
