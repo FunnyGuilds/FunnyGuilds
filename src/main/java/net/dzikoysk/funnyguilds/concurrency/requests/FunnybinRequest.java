@@ -48,7 +48,6 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
             if ("log".equals(fileName)) {
                 file = new File("logs/latest.log");
                 type = PasteType.LOGS;
-                LoggingUtils.flushRootLogger();
             }
             else if ("config".equals(fileName)) {
                 file = null;
