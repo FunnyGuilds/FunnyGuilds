@@ -42,6 +42,9 @@ public class FunnyTelemetry {
     }
 
     private static <T> T sendPost(String url, String body, Class<T> response) throws IOException {
+        System.setProperty("jdk.tls.client.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+        System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
+
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
         connection.setRequestMethod("POST");
         connection.setDoInput(true);
