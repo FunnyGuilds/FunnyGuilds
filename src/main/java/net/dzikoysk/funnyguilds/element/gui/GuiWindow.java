@@ -1,6 +1,10 @@
 package net.dzikoysk.funnyguilds.element.gui;
 
-import org.apache.commons.lang3.Validate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -10,10 +14,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
+import org.apache.commons.lang3.Validate;
 
 public class GuiWindow {
 
@@ -31,7 +32,7 @@ public class GuiWindow {
         this.inv = Bukkit.createInventory(null, rows > 6 ? 6 * 9 : rows * 9, this.name);
         this.items = new HashMap<>(rows > 6 ? 6 * 9 : rows * 9);
 
-        windows.put(name, this);
+        windows.put(this.name, this);
     }
 
     public GuiWindow(String name, List<ItemStack> items) {
