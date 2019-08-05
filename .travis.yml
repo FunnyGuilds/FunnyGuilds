@@ -9,15 +9,7 @@ matrix:
   fast_finish: false
   include:
     - jdk: openjdk8
-    - jdk: openjdk9
-    - jdk: openjdk10
-    - jdk: openjdk11
-    - jdk: openjdk-ea
-  allow_failures:
-    - jdk: openjdk9
-    - jdk: openjdk10
-    - jdk: openjdk11
-    - jdk: openjdk-ea
+    - jdk: openjdk12
 
 notifications:
   email: false
