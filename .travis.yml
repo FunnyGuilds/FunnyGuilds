@@ -9,7 +9,6 @@ matrix:
   fast_finish: false
   include:
     - jdk: openjdk8
-    - jdk: openjdk12
 
 notifications:
   email: false
