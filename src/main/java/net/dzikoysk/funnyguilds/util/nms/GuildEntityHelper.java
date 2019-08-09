@@ -44,7 +44,14 @@ public final class GuildEntityHelper {
         SPAWN_ENTITY_CONSTRUCTOR = Reflections.getConstructor(spawnEntityClass, generalEntityClass, int.class);
         SPAWN_ENTITY_LIVING_CONSTRUCTOR = Reflections.getConstructor(spawnEntityLivingClass, entityLivingClass);
         DESPAWN_ENTITY_CONSTRUCTOR = Reflections.getConstructor(despawnEntityClass, int[].class);
-        ENTITY_CONSTRUCTOR = Reflections.getConstructor(entityClass, craftWorldClass);
+
+        if ("v1_14_R1".equalsIgnoreCase(Reflections.SERVER_VERSION)) {
+            ENTITY_CONSTRUCTOR = Reflections.getConstructor(entityClass, craftWorldClass, double.class, double.class, double.class);
+        }
+        else {
+            ENTITY_CONSTRUCTOR = Reflections.getConstructor(entityClass, craftWorldClass);
+        }
+
 
         SET_LOCATION = Reflections.getMethod(entityClass, "setLocation", double.class, double.class, double.class, float.class, float.class);
         GET_ID = Reflections.getMethod(entityClass, "getId");
@@ -58,10 +65,16 @@ public final class GuildEntityHelper {
 
     private static int createSpawnGuildHeartPacket(Location loc) throws Exception {
         Object world = Reflections.getHandle(loc.getWorld());
-        Object entity = ENTITY_CONSTRUCTOR.newInstance(world);
-        
-        SET_LOCATION.invoke(entity, loc.getX(), loc.getY(), loc.getZ(), 0, 0);
-        
+
+        Object entity;
+        if ("v1_14_R1".equalsIgnoreCase(Reflections.SERVER_VERSION)) {
+            entity = ENTITY_CONSTRUCTOR.newInstance(world, loc.getX(), loc.getY(), loc.getZ());
+        }
+        else {
+            entity = ENTITY_CONSTRUCTOR.newInstance(world);
+            SET_LOCATION.invoke(entity, loc.getX(), loc.getY(), loc.getZ(), 0, 0);
+        }
+
         Object packet = null;
         if (OBJECT_TYPE == null) {
             packet = SPAWN_ENTITY_LIVING_CONSTRUCTOR.newInstance(entity);
