@@ -1,18 +1,28 @@
 package net.dzikoysk.funnyguilds.util.metrics;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
@@ -23,7 +33,7 @@ public class MCStats {
     private static final String REPORT_URL = "/plugin/%s";
     private static final int PING_INTERVAL = 10;
     private final Plugin plugin;
-    private final Set<Graph> graphs = Collections.synchronizedSet(new HashSet<Graph>());
+    private final Set<Graph> graphs = Collections.synchronizedSet(new HashSet<>());
     private final YamlConfiguration configuration;
     private final File configurationFile;
     private final String guid;
@@ -259,10 +269,9 @@ public class MCStats {
 
     private void postPlugin(final boolean isPing) throws IOException {
         // Server software specific section
-        PluginDescriptionFile description = plugin.getDescription();
-        String pluginName = description.getName();
+        String pluginName = "FunnyGuilds";
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
-        String pluginVersion = description.getVersion();
+        String pluginVersion = FunnyGuilds.getInstance().getMainVersion();
         String serverVersion = Bukkit.getVersion();
         int playersOnline = Bukkit.getServer().getOnlinePlayers().size();
 
