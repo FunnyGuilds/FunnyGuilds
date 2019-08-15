@@ -5,7 +5,7 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.5.0</version>
+    <version>4.5.1</version>
     <packaging>jar</packaging>
 
     <properties>

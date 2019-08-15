@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util.metrics;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.ServicePriority;
@@ -256,12 +257,13 @@ public class BStats {
      *
      * @return The plugin specific data.
      */
+    @SuppressWarnings("unused") // called by reflections
     public JSONObject getPluginData() {
         JSONObject data = new JSONObject();
-        String pluginVersion = plugin.getDescription().getVersion();
 
         data.put("pluginName", "FunnyGuilds"); // Append the name of the plugin
-        data.put("pluginVersion", pluginVersion); // Append the version of the plugin
+        data.put("pluginVersion", FunnyGuilds.getInstance().getMainVersion()); // Append the version of the plugin
+
         JSONArray customCharts = new JSONArray();
         for (CustomChart customChart : charts) {
             // Add the data of the custom charts
