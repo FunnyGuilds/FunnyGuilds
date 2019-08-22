@@ -25,17 +25,18 @@ public class RankUtils {
         }
 
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        List<Guild> rankedGuilds = new ArrayList<>();
-
-        for (int in = 1; in <= RankManager.getInstance().guilds(); in++) {
-            Guild guild = RankManager.getInstance().getGuild(in);
-
-            if (guild != null && guild.getMembers().size() >= config.minMembersToInclude) {
-                rankedGuilds.add(guild);
-            }
-        }
 
         if (var.contains("GTOP")) {
+            List<Guild> rankedGuilds = new ArrayList<>();
+
+            for (int in = 1; in <= RankManager.getInstance().guilds(); in++) {
+                Guild guild = RankManager.getInstance().getGuild(in);
+
+                if (guild != null && guild.getMembers().size() >= config.minMembersToInclude) {
+                    rankedGuilds.add(guild);
+                }
+            }
+
             if (rankedGuilds.isEmpty() || i - 1 >= rankedGuilds.size()) {
                 return StringUtils.replace(var, "{GTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().gtopNoValue);
             }
