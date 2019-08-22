@@ -77,4 +77,7 @@ public class Database {
         return 0;
     }
 
+    public void shutdown() {
+        this.dataSource.close();
+    }
 }
