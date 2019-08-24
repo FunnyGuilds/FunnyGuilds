@@ -505,7 +505,12 @@ public class PluginConfiguration {
     @CfgComment("Jakie materialy i z jaka szansa maja byc niszczone po wybuchu")
     @CfgComment("<material>: <szansa (w %)")
     @CfgName("explode-materials")
-    public Map<String, Double> explodeMaterials_ = ImmutableMap.of("obsidian", 20.0, "water", 33.0, "lava", 33.0);
+    public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
+            "ender_chest", 20.0,
+            "enchantment_table", 20.0,
+            "obsidian", 20.0,
+            "water", 33.0,
+            "lava", 33.0);
 
     @CfgExclude
     public Map<Material, Double> explodeMaterials;
