@@ -21,7 +21,7 @@ public class ExcLeader implements Executor {
         User owner = User.get(player);
 
         if (!owner.hasGuild()) {
-            player.sendMessage(messages.generalHasGuild);
+            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 
