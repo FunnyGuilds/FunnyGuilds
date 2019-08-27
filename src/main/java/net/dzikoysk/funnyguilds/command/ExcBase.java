@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -49,7 +50,9 @@ public class ExcBase implements Executor {
             return;
         }
 
-        List<ItemStack> requiredItems = config.baseItems;
+        List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.base")
+                ? Collections.emptyList()
+                : config.baseItems;
 
         if (! this.playerHasEnoughItems(player, requiredItems)) {
             return;
