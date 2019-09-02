@@ -16,7 +16,7 @@ public class GuiActionHandler implements Listener {
         if (e.getInventory().getType().equals(InventoryType.CHEST)) {
             GuiWindow window = GuiWindow.getWindow(e.getView().getTitle());
             if (window != null) {
-                GuiItem item = window.getItem(e.getSlot());
+                GuiItem item = window.getItem(e.getRawSlot());
                 if (item != null) {
                     item.handleClick(e);
                 }
