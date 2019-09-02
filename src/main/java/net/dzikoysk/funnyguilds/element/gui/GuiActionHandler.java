@@ -22,7 +22,6 @@ public class GuiActionHandler implements Listener {
                 }
                 
                 e.setResult(Event.Result.DENY);
-                e.setCancelled(true);
             }
         }
     }
@@ -48,7 +47,6 @@ public class GuiActionHandler implements Listener {
         if (GuiWindow.getWindow(e.getView().getTitle()) != null) {
             if (e.getInventory().getType().equals(InventoryType.CHEST)) {
                 e.setResult(Event.Result.DENY);
-                e.setCancelled(true);
             }
         }
     }
