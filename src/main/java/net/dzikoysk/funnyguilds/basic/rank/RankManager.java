@@ -22,32 +22,36 @@ public class RankManager {
     }
 
     public void update(User user) {
-        if (! this.users.contains(user.getRank())) {
-            this.users.add(user.getRank());
-        }
+        synchronized (this.users) {
+            if (! this.users.contains(user.getRank())) {
+                this.users.add(user.getRank());
+            }
 
-        Collections.sort(users);
+            Collections.sort(users);
 
-        if (user.hasGuild()) {
-            update(user.getGuild());
-        }
+            if (user.hasGuild()) {
+                update(user.getGuild());
+            }
 
-        for (int i = 0; i < users.size(); i++) {
-            Rank rank = users.get(i);
-            rank.setPosition(i + 1);
+            for (int i = 0; i < users.size(); i++) {
+                Rank rank = users.get(i);
+                rank.setPosition(i + 1);
+            }
         }
     }
 
     public void update(Guild guild) {
-        if (! this.guilds.contains(guild.getRank())) {
-            this.guilds.add(guild.getRank());
-        }
+        synchronized (this.guilds) {
+            if (! this.guilds.contains(guild.getRank())) {
+                this.guilds.add(guild.getRank());
+            }
 
-        Collections.sort(guilds);
+            Collections.sort(guilds);
 
-        for (int i = 0; i < guilds.size(); i++) {
-            Rank rank = guilds.get(i);
-            rank.setPosition(i + 1);
+            for (int i = 0; i < guilds.size(); i++) {
+                Rank rank = guilds.get(i);
+                rank.setPosition(i + 1);
+            }
         }
     }
 
@@ -74,14 +78,16 @@ public class RankManager {
     }
 
     public void remove(User user) {
-        this.users.remove(user.getRank());
-
-        Collections.sort(this.users);
+        synchronized (this.users) {
+            this.users.remove(user.getRank());
+            Collections.sort(this.users);
+        }
     }
 
     public void remove(Guild guild) {
-        this.guilds.remove(guild.getRank());
-
-        Collections.sort(this.guilds);
+        synchronized (this.guilds) {
+            this.guilds.remove(guild.getRank());
+            Collections.sort(this.guilds);
+        }
     }
 }
