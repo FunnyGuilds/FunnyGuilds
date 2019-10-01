@@ -18,7 +18,7 @@ public class GuildDeleteEvent extends GuildEvent {
     }
     
     public GuildDeleteEvent(EventCause eventCause, User doer, Guild guild) {
-        super(eventCause, doer, guild, true);
+        super(eventCause, doer, guild);
     }
 
     @Override
