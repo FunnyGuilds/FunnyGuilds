@@ -504,6 +504,7 @@ public class PluginConfiguration {
 
     @CfgComment("Jakie materialy i z jaka szansa maja byc niszczone po wybuchu")
     @CfgComment("<material>: <szansa (w %)")
+    @CfgComment("Jeżeli wszystkie materialy maja miec okreslony % na wybuch, uzyj specjalnego znaku '*'")
     @CfgName("explode-materials")
     public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
             "ender_chest", 20.0,
@@ -1337,15 +1338,21 @@ public class PluginConfiguration {
         Map<Material, Double> map = new HashMap<>();
 
         for (Map.Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
-            Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
+            double chance = entry.getValue();
 
-            if (material == null || material == Material.AIR) {
+            if (chance <= 0) {
                 continue;
             }
 
-            double chance = entry.getValue();
+            if (entry.getKey().equalsIgnoreCase("*")) {
+                map = new HashMap<>();
+                map.put(Material.AIR, chance);
+                break;
+            }
 
-            if (chance == 0) {
+            Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
+
+            if (material == null || material == Material.AIR) {
                 continue;
             }
 

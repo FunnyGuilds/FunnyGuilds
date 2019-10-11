@@ -33,7 +33,7 @@ public class EntityExplode implements Listener {
         Location explodeLocation = event.getLocation();
         PluginConfiguration pluginConfiguration = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        List<Location> sphere = SpaceUtils.sphere(
+        List<Location> blockSphereLocations = SpaceUtils.sphere(
                 explodeLocation,
                 pluginConfiguration.explodeRadius,
                 pluginConfiguration.explodeRadius,
@@ -41,7 +41,9 @@ public class EntityExplode implements Listener {
                 true,
                 0
         );
-        Map<Material, Double> materials = pluginConfiguration.explodeMaterials;
+
+        Map<Material, Double> explosiveMaterials = pluginConfiguration.explodeMaterials;
+        boolean allMaterialsAreExplosive = explosiveMaterials.size() == 1 && explosiveMaterials.containsKey(Material.AIR);
 
         if (pluginConfiguration.explodeShouldAffectOnlyGuild) {
             destroyedBlocks.removeIf(block -> {
@@ -93,20 +95,25 @@ public class EntityExplode implements Listener {
             }
         }
 
-        for (Location l : sphere) {
-            Material material = l.getBlock().getType();
-            if (! materials.containsKey(material)) {
-                continue;
+        for (Location blockLocation : blockSphereLocations) {
+            Material material = blockLocation.getBlock().getType();
+
+            if (! allMaterialsAreExplosive) {
+                if (! explosiveMaterials.containsKey(material)) {
+                    continue;
+                }
             }
 
+            double explodeChance = allMaterialsAreExplosive ? explosiveMaterials.get(Material.AIR) : explosiveMaterials.get(material);
+
             if (material == Material.WATER || material == Material.LAVA) {
-                if (SpaceUtils.chance(materials.get(material))) {
-                    l.getBlock().setType(Material.AIR);
+                if (SpaceUtils.chance(explodeChance)) {
+                    blockLocation.getBlock().setType(Material.AIR);
                 }
             }
             else {
-                if (SpaceUtils.chance(materials.get(material))) {
-                    l.getBlock().breakNaturally();
+                if (SpaceUtils.chance(explodeChance)) {
+                    blockLocation.getBlock().breakNaturally();
                 }
             }
         }
