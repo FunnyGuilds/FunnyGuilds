@@ -613,6 +613,10 @@ public class PluginConfiguration {
     @CfgName("rank-ip-protect")
     public boolean rankIPProtect = false;
 
+    @CfgComment("Czy gracze z uprawnieniem 'funnyguilds.ranking.exempt' powinni byc uwzglednieni przy wyznaczaniu pozycji gracza w rankingu")
+    @CfgName("skip-privileged-players-in-rank-positions")
+    public boolean skipPrivilegedPlayersInRankPositions = false;
+
     @CfgComment("Czy system asyst ma byc wlaczony")
     @CfgName("rank-assist-enable")
     public boolean assistEnable = true;

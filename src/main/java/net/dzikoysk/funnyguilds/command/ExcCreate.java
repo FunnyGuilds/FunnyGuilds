@@ -179,7 +179,7 @@ public class ExcCreate implements Executor {
             return;
         }
 
-        if (VaultHook.isHooked() && !VaultHook.canAfford(player, requiredMoney)) {
+        if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
             String notEnoughMoneyMessage = messages.createMoney;
             notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
             player.sendMessage(notEnoughMoneyMessage);
@@ -225,7 +225,7 @@ public class ExcCreate implements Executor {
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
         player.setTotalExperience(player.getTotalExperience() - requiredExperience);
 
-        if (VaultHook.isHooked()) {
+        if (VaultHook.isEconomyHooked()) {
             VaultHook.withdrawFromPlayerBank(player, requiredMoney);
         }
 

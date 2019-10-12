@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import org.apache.commons.lang3.StringUtils;
 
@@ -65,11 +66,16 @@ public class RankUtils {
 
         }
         else if (var.contains("PTOP")) {
-            User user = RankManager.getInstance().getUser(i);
+            User user;
 
-            if (user == null) {
-                return StringUtils.replace(var, "{PTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().ptopNoValue);
+            do {
+                user = RankManager.getInstance().getUser(i);
+
+                if (user == null) {
+                    return StringUtils.replace(var, "{PTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().ptopNoValue);
+                }
             }
+            while (config.skipPrivilegedPlayersInRankPositions && isPrivileged(user));
 
             int points = user.getRank().getPoints();
             String pointsFormat = config.ptopPoints;
@@ -122,6 +128,11 @@ public class RankUtils {
         }
 
         return result;
+    }
+
+    private static boolean isPrivileged(User user) {
+        return user.getOfflinePlayer().isOp() ||
+                VaultHook.isPermissionHooked() && VaultHook.hasPermission(user.getOfflinePlayer(), "funnyguilds.ranking.exempt");
     }
 
     private RankUtils() { }
