@@ -70,7 +70,7 @@ public final class PluginHook {
         });
 
         tryInit(PLUGIN_VAULT, () -> {
-            VaultHook.initEconomyHook();
+            VaultHook.initHooks();
             return true;
         });
 

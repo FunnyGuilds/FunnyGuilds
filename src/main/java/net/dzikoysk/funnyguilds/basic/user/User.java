@@ -155,6 +155,10 @@ public class User extends AbstractBasic {
         return null;
     }
 
+    public OfflinePlayer getOfflinePlayer() {
+        return Bukkit.getOfflinePlayer(this.uuid);
+    }
+
     public int getPing() {
         return PingUtils.getPing(getPlayer());
     }
