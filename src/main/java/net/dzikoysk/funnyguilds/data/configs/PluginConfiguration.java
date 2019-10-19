@@ -53,6 +53,14 @@ import java.util.concurrent.TimeUnit;
 @CfgComment("         4.5.1 Tribute          #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
+@CfgComment("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
+@CfgComment("https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds")
+@CfgComment(" ")
+@CfgComment("FunnyGuilds wspiera takze placeholdery w BungeeTabListPlus i MVdWPlaceholderAPI")
+@CfgComment("Placeholdery sa dokladnie takie same jak w przypadku PlaceholderAPI (bez znaku % oczywiscie)")
+@CfgComment(" ")
+@CfgComment("Jezeli chcesz, aby dana wiadomosc byla pusta, zamiast wiadomosci umiesc: ''")
+@CfgComment(" ")
 public class PluginConfiguration {
 
     @CfgExclude
