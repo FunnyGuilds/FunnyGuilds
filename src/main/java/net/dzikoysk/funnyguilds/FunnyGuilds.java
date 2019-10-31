@@ -76,12 +76,9 @@ public class FunnyGuilds extends JavaPlugin {
     private boolean isDisabling;
     private boolean forceDisabling;
 
-    public FunnyGuilds() {
-        funnyguilds = this;
-    }
-
     @Override
     public void onLoad() {
+        funnyguilds = this;
         this.logger = new FunnyGuildsLogger(this);
 
         try {
@@ -136,6 +133,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        funnyguilds = this;
         if (this.forceDisabling) {
             return;
         }
@@ -209,8 +207,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.saveInvitations();
         this.invitationPersistenceHandler.stopHandler();
 
-        funnyguilds = null;
         Database.getInstance().shutdown();
+        funnyguilds = null;
     }
 
     private void patch() {
@@ -303,10 +301,6 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static FunnyGuilds getInstance() {
-        if (funnyguilds == null) {
-            return new FunnyGuilds();
-        }
-
         return funnyguilds;
     }
 
