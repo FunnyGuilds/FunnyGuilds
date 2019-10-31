@@ -51,6 +51,12 @@ public class EntityExplode implements Listener {
 
                 return region == null || region.getGuild() == null;
             });
+
+            blockSphereLocations.removeIf(location -> {
+                Region region = RegionUtils.getAt(location);
+
+                return region == null || region.getGuild() == null;
+            });
         }
 
         destroyedBlocks.removeIf(block -> {
