@@ -207,7 +207,9 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.saveInvitations();
         this.invitationPersistenceHandler.stopHandler();
 
+        this.getServer().getScheduler().cancelTasks(this);
         Database.getInstance().shutdown();
+
         funnyguilds = null;
     }
 
