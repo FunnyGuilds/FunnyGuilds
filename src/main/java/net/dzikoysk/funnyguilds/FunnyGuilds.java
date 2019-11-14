@@ -85,9 +85,9 @@ public class FunnyGuilds extends JavaPlugin {
             Class.forName("net.md_5.bungee.api.ChatColor");
         }
         catch (Exception spigotNeeded) {
-            FunnyGuilds.getInstance().getPluginLogger().info("FunnyGuilds requires spigot to work, your server seems to be using something else");
-            FunnyGuilds.getInstance().getPluginLogger().info("If you think that is not true - contact plugin developers");
-            FunnyGuilds.getInstance().getPluginLogger().info("https://github.com/FunnyGuilds/FunnyGuilds");
+            FunnyGuilds.getInstance().getPluginLogger().error("FunnyGuilds requires spigot to work, your server seems to be using something else");
+            FunnyGuilds.getInstance().getPluginLogger().error("If you think that is not true - contact plugin developers");
+            FunnyGuilds.getInstance().getPluginLogger().error("https://github.com/FunnyGuilds/FunnyGuilds");
 
             getServer().getPluginManager().disablePlugin(this);
             this.forceDisabling = true;
