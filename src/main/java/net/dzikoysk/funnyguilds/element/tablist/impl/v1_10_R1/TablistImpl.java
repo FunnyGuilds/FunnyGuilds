@@ -76,7 +76,7 @@ public class TablistImpl extends AbstractTablist {
 
     }
 
-    private final Object[] profileCache = new Object[80];
+    private final Object[] profileCache = new Object[DEFAULT_CELLS_AMOUNT];
 
     public TablistImpl(Map<Integer, String> tablistPattern, String header, String footer, int ping, User user) {
         super(tablistPattern, header, footer, ping, user);
@@ -91,13 +91,14 @@ public class TablistImpl extends AbstractTablist {
         try {
             final Object addPlayerPacket = PLAYER_INFO_CONSTRUCTOR.newInstance();
             final Object updatePlayerPacket = PLAYER_INFO_CONSTRUCTOR.newInstance();
+            final String[] preparedCells = this.putVarsPrepareCells(cells, tablistPattern);
 
             for (int i = 0; i < cells; i++) {
                 if (profileCache[i] == null) {
                     profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, ChatUtils.appendDigit(i))), TOKEN + ChatUtils.appendDigit(i));
                 }
 
-                String text = this.putVars(tablistPattern.getOrDefault(i + 1, ""));
+                String text = this.putVars(preparedCells[i]);
                 Object gameProfile = profileCache[i];
                 Object gameMode = ENUM_GAMEMODE_CLASS.getEnumConstants()[1];
                 Object component = this.createBaseComponent(text, false);

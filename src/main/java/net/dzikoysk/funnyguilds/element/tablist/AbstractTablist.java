@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public abstract class AbstractTablist {
 
@@ -142,6 +143,15 @@ public abstract class AbstractTablist {
 
     protected Object createBaseComponent(String text, boolean keepNewLines) {
         return NotificationUtil.createBaseComponent(text, keepNewLines);
+    }
+
+    protected String[] putVarsPrepareCells(int cells, Map<Integer, String> tablistPattern) {
+        String[] allCells = new String[DEFAULT_CELLS_AMOUNT];
+        for (int i = 0; i < cells; i++) {
+            allCells[i] = tablistPattern.getOrDefault(i + 1, "");
+        }
+        String mergedCells = StringUtils.join(allCells, '\n');
+        return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\n');
     }
 
     protected String putVars(String cell) {
