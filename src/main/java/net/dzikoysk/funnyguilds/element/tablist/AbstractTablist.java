@@ -144,6 +144,15 @@ public abstract class AbstractTablist {
         return NotificationUtil.createBaseComponent(text, keepNewLines);
     }
 
+    protected String[] putVarsPrepareCells(int cells, Map<Integer, String> tablistPattern) {
+        String[] allCells = new String[DEFAULT_CELLS_AMOUNT];
+        for (int i = 0; i < cells; i++) {
+            allCells[i] = tablistPattern.getOrDefault(i + 1, "");
+        }
+        String mergedCells = StringUtils.join(allCells, '\0');
+        return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\0');
+    }
+
     protected String putVars(String cell) {
         String formatted = cell;
 
