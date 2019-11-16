@@ -149,8 +149,8 @@ public abstract class AbstractTablist {
         for (int i = 0; i < cells; i++) {
             allCells[i] = tablistPattern.getOrDefault(i + 1, "");
         }
-        String mergedCells = StringUtils.join(allCells, '\n');
-        return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\n');
+        String mergedCells = StringUtils.join(allCells, '\0');
+        return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\0');
     }
 
     protected String putVars(String cell) {
