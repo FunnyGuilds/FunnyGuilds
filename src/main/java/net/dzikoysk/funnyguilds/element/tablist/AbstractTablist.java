@@ -144,13 +144,23 @@ public abstract class AbstractTablist {
         return NotificationUtil.createBaseComponent(text, keepNewLines);
     }
 
-    protected String[] putVarsPrepareCells(int cells, Map<Integer, String> tablistPattern) {
-        String[] allCells = new String[DEFAULT_CELLS_AMOUNT];
+    protected String[] putVarsPrepareCells(int cells, Map<Integer, String> tablistPattern, String header, String footer) {
+        String[] allCells = new String[DEFAULT_CELLS_AMOUNT + 2]; // Additional two for header/footer
         for (int i = 0; i < cells; i++) {
-            allCells[i] = tablistPattern.getOrDefault(i + 1, "");
+            allCells[i] = this.putRank(tablistPattern.getOrDefault(i + 1, ""));
         }
+        allCells[DEFAULT_CELLS_AMOUNT] = header;
+        allCells[DEFAULT_CELLS_AMOUNT + 1] = footer;
         String mergedCells = StringUtils.join(allCells, '\0');
         return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\0');
+    }
+
+    protected String putRank(String cell) {
+        String temp = RankUtils.parseRank(this.user, cell);
+        if (temp != null) {
+            return temp;
+        }
+        return cell;
     }
 
     protected String putVars(String cell) {
@@ -163,11 +173,6 @@ public abstract class AbstractTablist {
         VariableParsingResult result = this.variables.createResultFor(this.user);
         formatted = result.replaceInString(formatted);
         formatted = ChatUtils.colored(formatted);
-
-        String temp = RankUtils.parseRank(this.user, formatted);
-        if (temp != null) {
-            formatted = temp;
-        }
 
         if (PluginHook.isPresent(PluginHook.PLUGIN_PLACEHOLDERAPI)) {
             formatted = PlaceholderAPIHook.replacePlaceholders(this.user.getPlayer(), formatted);
