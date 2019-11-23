@@ -90,14 +90,14 @@ public class TablistImpl extends AbstractTablist {
         try {
             final Object addPlayerPacket = PLAYER_INFO_CONSTRUCTOR.newInstance();
             final Object updatePlayerPacket = PLAYER_INFO_CONSTRUCTOR.newInstance();
-            final String[] preparedCells = this.putVarsPrepareCells(cells, tablistPattern);
+            final String[] preparedCells = this.putVarsPrepareCells(cells, tablistPattern, super.header, super.footer);
 
             for (int i = 0; i < cells; i++) {
                 if (profileCache[i] == null) {
                     profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, ChatUtils.appendDigit(i))), "");
                 }
 
-                String text = this.putVars(preparedCells[i]);
+                String text = preparedCells[i];
                 Object gameProfile = profileCache[i];
                 Object gameMode = ENUM_GAMEMODE_CLASS.getEnumConstants()[1];
                 Object component = this.createBaseComponent(text, false);
@@ -134,8 +134,8 @@ public class TablistImpl extends AbstractTablist {
             ACTION_ENUM_FIELD.set(updatePlayerPacket, UPDATE_PLAYER);
             LIST_FIELD.set(updatePlayerPacket, updatePlayerList);
 
-            Object header = this.createBaseComponent(this.putVars(super.header), true);
-            Object footer = this.createBaseComponent(this.putVars(super.footer), true);
+            Object header = this.createBaseComponent(preparedCells[DEFAULT_CELLS_AMOUNT], true);
+            Object footer = this.createBaseComponent(preparedCells[DEFAULT_CELLS_AMOUNT + 1], true);
 
             if (this.shouldUseHeaderAndFooter()) {
                 final Object headerFooterPacket = PLAYER_LIST_HEADER_FOOTER_CONSTRUCTOR.newInstance();
