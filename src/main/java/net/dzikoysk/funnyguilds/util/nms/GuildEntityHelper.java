@@ -45,13 +45,15 @@ public final class GuildEntityHelper {
         SPAWN_ENTITY_LIVING_CONSTRUCTOR = Reflections.getConstructor(spawnEntityLivingClass, entityLivingClass);
         DESPAWN_ENTITY_CONSTRUCTOR = Reflections.getConstructor(despawnEntityClass, int[].class);
 
-        if ("v1_14_R1".equalsIgnoreCase(Reflections.SERVER_VERSION)) {
-            ENTITY_CONSTRUCTOR = Reflections.getConstructor(entityClass, craftWorldClass, double.class, double.class, double.class);
+        switch (Reflections.SERVER_VERSION) {
+            case "v1_14_R1":
+            case "v1_15_R1":
+                ENTITY_CONSTRUCTOR = Reflections.getConstructor(entityClass, craftWorldClass, double.class, double.class, double.class);
+                break;
+            default:
+                ENTITY_CONSTRUCTOR = Reflections.getConstructor(entityClass, craftWorldClass);
+                break;
         }
-        else {
-            ENTITY_CONSTRUCTOR = Reflections.getConstructor(entityClass, craftWorldClass);
-        }
-
 
         SET_LOCATION = Reflections.getMethod(entityClass, "setLocation", double.class, double.class, double.class, float.class, float.class);
         GET_ID = Reflections.getMethod(entityClass, "getId");
@@ -67,12 +69,16 @@ public final class GuildEntityHelper {
         Object world = Reflections.getHandle(loc.getWorld());
 
         Object entity;
-        if ("v1_14_R1".equalsIgnoreCase(Reflections.SERVER_VERSION)) {
-            entity = ENTITY_CONSTRUCTOR.newInstance(world, loc.getX(), loc.getY(), loc.getZ());
-        }
-        else {
-            entity = ENTITY_CONSTRUCTOR.newInstance(world);
-            SET_LOCATION.invoke(entity, loc.getX(), loc.getY(), loc.getZ(), 0, 0);
+
+        switch (Reflections.SERVER_VERSION) {
+            case "v1_14_R1":
+            case "v1_15_R1":
+                entity = ENTITY_CONSTRUCTOR.newInstance(world, loc.getX(), loc.getY(), loc.getZ());
+                break;
+            default:
+                entity = ENTITY_CONSTRUCTOR.newInstance(world);
+                SET_LOCATION.invoke(entity, loc.getX(), loc.getY(), loc.getZ(), 0, 0);
+                break;
         }
 
         Object packet = null;

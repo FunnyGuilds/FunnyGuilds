@@ -63,7 +63,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14-R0.1-SNAPSHOT</version>
+            <version>1.15-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -207,7 +207,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>${project.name} ${project.version} (MC 1.8-1.14)</finalName>
+                    <finalName>${project.name} ${project.version} (MC 1.8-1.15)</finalName>
                     <relocations>
                         <relocation>
                             <pattern>com.google.common.</pattern>
