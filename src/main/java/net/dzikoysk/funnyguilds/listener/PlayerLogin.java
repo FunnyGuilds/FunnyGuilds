@@ -31,12 +31,13 @@ public class PlayerLogin implements Listener {
         if (!name.matches(GuildRegex.LETTERS_DIGITS_UNDERSCORE.getPattern())) {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
-        
-        if (!UserUtils.playedBefore(event.getPlayer().getName())) {
+
+        User user = User.get(event.getPlayer());
+
+        if (user == null) {
             return;
         }
 
-        User user = User.get(event.getPlayer());
         BanUtils.checkIfBanShouldExpire(user);
 
         if (!user.isBanned()) {

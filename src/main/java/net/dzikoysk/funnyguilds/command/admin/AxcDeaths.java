@@ -22,11 +22,6 @@ public class AxcDeaths implements Executor {
             sender.sendMessage(messages.generalNoNickGiven);
             return;
         }
-
-        if (!UserUtils.playedBefore(args[0])) {
-            sender.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
         
         if (args.length < 2) {
             sender.sendMessage(messages.adminNoDeathsGiven);
@@ -42,6 +37,12 @@ public class AxcDeaths implements Executor {
         }
 
         User user = User.get(args[0]);
+
+        if (user == null) {
+            sender.sendMessage(messages.generalNotPlayedBefore);
+            return;
+        }
+
         Rank userRank = user.getRank();
         
         int change = deaths - userRank.getDeaths();

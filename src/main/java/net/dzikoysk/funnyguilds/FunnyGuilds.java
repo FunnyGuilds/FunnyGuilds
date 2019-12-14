@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.command.Commands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -201,6 +202,10 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildValidationTask.cancel();
         this.tablistBroadcastTask.cancel();
 
+        for (User user : UserUtils.getUsers()) {
+            user.getBossBar().removeNotification();
+        }
+
         this.dataModel.save(true);
         this.dataPersistenceHandler.stopHandler();
 
@@ -218,11 +223,12 @@ public class FunnyGuilds extends JavaPlugin {
             this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
 
             User user = User.get(player);
+
             if (user.getCache().getScoreboard() == null) {
                 user.getCache().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
             }
+
             user.getCache().getDummy();
-            user.getRank();
 
             if (!pluginConfiguration.playerListEnable) {
                 continue;

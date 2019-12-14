@@ -35,12 +35,13 @@ public class ExcLeader implements Executor {
             return;
         }
 
-        if (!UserUtils.playedBefore(args[0])) {
+        User leaderUser = User.get(args[0]);
+
+        if (leaderUser == null) {
             player.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
 
-        User leaderUser = User.get(args[0]);
         if (owner.equals(leaderUser)) {
             player.sendMessage(messages.leaderMustBeDifferent);
             return;

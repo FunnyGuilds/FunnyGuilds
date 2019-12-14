@@ -18,15 +18,18 @@ import org.bukkit.entity.Player;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 public class User extends AbstractBasic {
+
+    private static final Pattern VALID_USERNAME_PATTERN = Pattern.compile("^\\w{3,16}$");
 
     private final UUID                  uuid;
     private final String                name;
     private final UserCache             cache;
+    private final Rank                  rank;
     private       WeakReference<Player> playerRef;
     private       Guild                 guild;
-    private       Rank                  rank;
     private       UserBan               ban;
     private final BossBarProvider       bossBarProvider;
 
@@ -34,9 +37,9 @@ public class User extends AbstractBasic {
         this.uuid = uuid;
         this.name = name;
         this.cache = new UserCache(this);
+        this.rank = new Rank(this);
         this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
         this.bossBarProvider = BossBarProvider.getBossBar(this);
-        this.updateCache();
         this.markChanged();
     }
 
@@ -60,21 +63,8 @@ public class User extends AbstractBasic {
         return this.guild != null;
     }
 
-    private void updateCache() {
-        if (this.getUUID().version() == 2) {
-            return;
-        }
-
-        UserUtils.addUser(this);
-    }
-
     public void setGuild(Guild guild) {
         this.guild = guild;
-        this.markChanged();
-    }
-
-    public void setRank(Rank r) {
-        this.rank = r;
         this.markChanged();
     }
 
@@ -119,14 +109,6 @@ public class User extends AbstractBasic {
     }
 
     public Rank getRank() {
-        if (this.rank != null) {
-            return this.rank;
-        }
-
-        this.rank = new Rank(this);
-        RankManager.getInstance().update(this);
-        this.markChanged();
-
         return this.rank;
     }
 
@@ -220,24 +202,42 @@ public class User extends AbstractBasic {
         return this.name;
     }
 
-    public static User get(UUID uuid, String name) {
-        User user = UserUtils.get(uuid);
-        return user != null ? user : new User(uuid, name);
+    public static User create(UUID uuid, String name) {
+        Validate.notNull(uuid, "uuid can't be null!");
+        Validate.notNull(name, "name can't be null!");
+        Validate.notBlank(name, "name can't be blank!");
+        Validate.isTrue(VALID_USERNAME_PATTERN.matcher(name).matches(), "name is not valid!");
+
+        User user = new User(uuid, name);
+        UserUtils.addUser(user);
+        RankManager.getInstance().update(user);
+
+        return user;
+    }
+
+    public static User create(Player player) {
+        Validate.notNull(player, "player can't be null!");
+
+        User user = new User(player);
+        UserUtils.addUser(user);
+        RankManager.getInstance().update(user);
+
+        return user;
+    }
+
+    public static User get(UUID uuid) {
+        return UserUtils.get(uuid);
     }
 
     public static User get(Player player) {
-        User user = UserUtils.get(player.getUniqueId());
-        return user != null ? user : new User(player);
+        return UserUtils.get(player.getUniqueId());
     }
 
     public static User get(OfflinePlayer offline) {
-        User user = UserUtils.get(offline.getName());
-        return user != null ? user : new User(offline.getName());
+        return UserUtils.get(offline.getName());
     }
 
     public static User get(String name) {
-        User user = UserUtils.get(name);
-        return user != null ? user : new User(name);
+        return UserUtils.get(name);
     }
-
 }

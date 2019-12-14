@@ -44,12 +44,13 @@ public class ExcInvite implements Executor {
             return;
         }
 
-        if (!UserUtils.playedBefore(args[0])) {
+        User invitedUser = User.get(args[0]);
+
+        if (invitedUser == null) {
             player.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
 
-        User invitedUser = User.get(args[0]);
         Player invitedPlayer = invitedUser.getPlayer();
 
         if (InvitationList.hasInvitationFrom(invitedUser, guild)) {

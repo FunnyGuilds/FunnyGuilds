@@ -109,7 +109,6 @@ public final class NotificationUtil {
                     .withField("b", (byte) 2)
                     .getPacket();
         }
-
         
         return actionbarPacket;
     }

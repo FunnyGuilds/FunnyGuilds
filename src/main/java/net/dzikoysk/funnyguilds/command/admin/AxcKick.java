@@ -27,13 +27,13 @@ public class AxcKick implements Executor {
             sender.sendMessage(messages.generalNoNickGiven);
             return;
         }
-        
-        if (!UserUtils.playedBefore(args[0])) {
+
+        User user = User.get(args[0]);
+
+        if (user == null) {
             sender.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
-
-        User user = User.get(args[0]);
 
         if (!user.hasGuild()) {
             sender.sendMessage(messages.generalPlayerHasNoGuild);

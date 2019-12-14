@@ -56,7 +56,10 @@ public final class DeserializationUtils {
     }
 
     public static User deserializeUser(Object[] values) {
-        User user = User.get(UUID.fromString((String) values[0]), (String) values[1]);
+        UUID playerUniqueId = UUID.fromString((String) values[0]);
+        String playerName = (String) values[1];
+
+        User user = User.create(playerUniqueId, playerName);
         
         user.getRank().setPoints((int) values[2]);
         user.getRank().setKills((int) values[3]);

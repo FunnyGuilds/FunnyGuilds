@@ -37,13 +37,13 @@ public class AxcAdd implements Executor {
             sender.sendMessage(messages.generalNoNickGiven);
             return;
         }
+        
+        User user = User.get(args[1]);
 
-        if (!UserUtils.playedBefore(args[1])) {
+        if (user == null) {
             sender.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
-        
-        User user = User.get(args[1]);
 
         if (user.hasGuild()) {
             sender.sendMessage(messages.generalUserHasGuild);

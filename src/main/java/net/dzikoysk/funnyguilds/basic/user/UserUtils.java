@@ -29,7 +29,6 @@ public class UserUtils {
 
     public static User get(String nickname, boolean ignoreCase) {
         if (ignoreCase) {
-
             for (Map.Entry<String, User> cacheEntry : nameUserCache.asMap().entrySet()) {
                 if (cacheEntry.getKey().equalsIgnoreCase(nickname)) {
                     return cacheEntry.getValue();
@@ -151,5 +150,4 @@ public class UserUtils {
     public static int usersSize() {
         return uuidUserMap.size();
     }
-
 }

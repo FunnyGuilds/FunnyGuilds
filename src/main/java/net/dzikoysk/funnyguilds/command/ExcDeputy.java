@@ -36,13 +36,12 @@ public class ExcDeputy implements Executor {
         }
 
         String name = args[0];
-        
-        if (!UserUtils.playedBefore(name)) {
+        User deputyUser = User.get(name);
+
+        if (deputyUser == null) {
             player.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
-
-        User deputyUser = User.get(name);
         
         if (owner.equals(deputyUser)) {
             player.sendMessage(messages.deputyMustBeDifferent);

@@ -41,6 +41,11 @@ public class ExcKick implements Executor {
 
         User formerUser = User.get(args[0]);
 
+        if (formerUser == null) {
+            player.sendMessage(messages.generalNotPlayedBefore);
+            return;
+        }
+
         if (!formerUser.hasGuild()) {
             player.sendMessage(messages.generalPlayerHasNoGuild);
             return;

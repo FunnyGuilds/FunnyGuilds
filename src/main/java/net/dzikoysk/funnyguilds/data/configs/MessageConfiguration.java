@@ -167,9 +167,6 @@ public class MessageConfiguration {
             "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii",
             "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii");
     
-    @CfgComment("<------- Player Info Messages -------> #")
-    public String playerInfoExists = "&cTaki gracz nigdy nie byl na serwerze!";
-    
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> playerInfoList = Arrays.asList(

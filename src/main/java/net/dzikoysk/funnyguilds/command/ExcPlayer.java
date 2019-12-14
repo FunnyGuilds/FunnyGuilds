@@ -29,15 +29,10 @@ public class ExcPlayer implements Executor {
         
         String name = args.length == 0 ? sender.getName() : args[0];
 
-        if (!UserUtils.playedBefore(name, config.playerLookupIgnorecase)) {
-            sender.sendMessage(messages.playerInfoExists);
-            return;
-        }
-
         User user = UserUtils.get(name, config.playerLookupIgnorecase);
 
         if (user == null) {
-            sender.sendMessage(messages.playerInfoExists);
+            sender.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
 

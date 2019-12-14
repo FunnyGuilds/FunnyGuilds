@@ -33,6 +33,11 @@ public class PlayerJoin implements Listener {
     public void onJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
         User user = User.get(player);
+
+        if (user == null) {
+            user = User.create(player);
+        }
+
         user.updateReference(player);
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 

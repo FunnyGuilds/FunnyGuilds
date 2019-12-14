@@ -25,11 +25,7 @@ public final class MVdWPlaceholderAPIHook {
                     return StringUtils.EMPTY;
                 }
 
-                User user = User.get(target.getUniqueId(), target.getName());
-
-                if (user == null) {
-                    return StringUtils.EMPTY;
-                }
+                User user = User.get(target.getUniqueId());
 
                 return variable.getValue().get(user);
             });

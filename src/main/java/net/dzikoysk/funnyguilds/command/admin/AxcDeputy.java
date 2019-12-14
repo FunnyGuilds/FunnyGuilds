@@ -37,12 +37,13 @@ public class AxcDeputy implements Executor {
             return;
         }
         
-        if (!UserUtils.playedBefore(args[1])) {
+        User user = User.get(args[1]);
+
+        if (user == null) {
             sender.sendMessage(messages.generalNotPlayedBefore);
             return;
         }
-        
-        User user = User.get(args[1]);
+
         Player player = user.getPlayer();
 
         if (!guild.getMembers().contains(user)) {
