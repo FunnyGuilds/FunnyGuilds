@@ -9,7 +9,7 @@ Project website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
 <br>
 
 #### Download
-Get the latest stable version: [FunnyGuilds Tribute 4.6.0-SNAPSHOT (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
+Get the latest stable version: [FunnyGuilds Tribute 4.5.2 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
 Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.6.0-SNAPSHOT+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
 
 
