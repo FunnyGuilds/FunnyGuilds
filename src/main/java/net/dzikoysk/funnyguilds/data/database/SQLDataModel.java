@@ -43,8 +43,8 @@ public class SQLDataModel implements DataModel {
         Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.usersTableName + "`", usersResult -> {
             try {
                 while (usersResult.next()) {
-
                     String userName = usersResult.getString("name");
+
                     if (!UserUtils.validateUsername(userName)) {
                         FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
                         continue;
