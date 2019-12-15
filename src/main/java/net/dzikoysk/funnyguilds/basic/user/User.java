@@ -226,7 +226,7 @@ public class User extends AbstractBasic {
         return UserUtils.get(uuid);
     }
 
-    public static User rankget(Player player) {
+    public static User get(Player player) {
         return UserUtils.get(player.getUniqueId());
     }
 
