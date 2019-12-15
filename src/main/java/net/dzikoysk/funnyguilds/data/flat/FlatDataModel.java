@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesR
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 
@@ -129,6 +130,11 @@ public class FlatDataModel implements DataModel {
                 if (file.isDirectory() || file.length() == 0) {
                     file.delete();
                     i++;
+                    continue;
+                }
+
+                if (!UserUtils.validateUsername(StringUtils.removeEnd(file.getName(), ".yml"))) {
+                    FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
                     continue;
                 }
 

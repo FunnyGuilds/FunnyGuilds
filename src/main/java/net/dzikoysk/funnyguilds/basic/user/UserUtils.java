@@ -7,10 +7,12 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class UserUtils {
 
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
     private final static Map<UUID, User> uuidUserMap = new ConcurrentHashMap<>();
     private final static Map<String, User> nameUserMap = new ConcurrentHashMap<>();
 
@@ -149,5 +151,9 @@ public class UserUtils {
 
     public static int usersSize() {
         return uuidUserMap.size();
+    }
+
+    public static boolean validateUsername(String name) {
+        return USERNAME_PATTERN.matcher(name).matches();
     }
 }
