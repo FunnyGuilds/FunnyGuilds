@@ -18,11 +18,8 @@ import org.bukkit.entity.Player;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 public class User extends AbstractBasic {
-
-    private static final Pattern VALID_USERNAME_PATTERN = Pattern.compile("^\\w{3,16}$");
 
     private final UUID                  uuid;
     private final String                name;
@@ -206,7 +203,7 @@ public class User extends AbstractBasic {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
-        Validate.isTrue(VALID_USERNAME_PATTERN.matcher(name).matches(), "name is not valid!");
+        Validate.isTrue(FunnyGuilds.USERNAME_PATTERN.matcher(name).matches(), "name is not valid!");
 
         User user = new User(uuid, name);
         UserUtils.addUser(user);
@@ -229,7 +226,7 @@ public class User extends AbstractBasic {
         return UserUtils.get(uuid);
     }
 
-    public static User get(Player player) {
+    public static User rankget(Player player) {
         return UserUtils.get(player.getUniqueId());
     }
 

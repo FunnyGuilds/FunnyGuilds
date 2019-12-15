@@ -43,6 +43,13 @@ public class SQLDataModel implements DataModel {
         Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.usersTableName + "`", usersResult -> {
             try {
                 while (usersResult.next()) {
+
+                    String userName = usersResult.getString("name");
+                    if (!FunnyGuilds.USERNAME_PATTERN.matcher(userName).matches()) {
+                        FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
+                        continue;
+                    }
+
                     User user = DatabaseUser.deserialize(usersResult);
                     if (user != null) {
                         user.wasChanged();

@@ -49,9 +49,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 public class FunnyGuilds extends JavaPlugin {
 
+    public static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
     private static FunnyGuilds funnyguilds;
 
     private String fullVersion;
