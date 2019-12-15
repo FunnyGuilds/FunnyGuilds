@@ -203,7 +203,7 @@ public class User extends AbstractBasic {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
-        Validate.isTrue(FunnyGuilds.USERNAME_PATTERN.matcher(name).matches(), "name is not valid!");
+        Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
 
         User user = new User(uuid, name);
         UserUtils.addUser(user);

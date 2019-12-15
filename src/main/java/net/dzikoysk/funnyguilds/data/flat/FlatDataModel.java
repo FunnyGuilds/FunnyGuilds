@@ -133,7 +133,7 @@ public class FlatDataModel implements DataModel {
                     continue;
                 }
 
-                if (!FunnyGuilds.USERNAME_PATTERN.matcher(StringUtils.removeEnd(file.getName(), ".yml")).matches()) {
+                if (!UserUtils.validateUsername(StringUtils.removeEnd(file.getName(), ".yml"))) {
                     FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
                     continue;
                 }

@@ -45,7 +45,7 @@ public class SQLDataModel implements DataModel {
                 while (usersResult.next()) {
 
                     String userName = usersResult.getString("name");
-                    if (!FunnyGuilds.USERNAME_PATTERN.matcher(userName).matches()) {
+                    if (!UserUtils.validateUsername(userName)) {
                         FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
                         continue;
                     }
