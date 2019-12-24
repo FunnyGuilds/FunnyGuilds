@@ -50,6 +50,11 @@ public class PlayerMove implements Listener {
             }
 
             User user = User.get(player);
+
+            if (user == null) {
+                return;
+            }
+
             UserCache cache = user.getCache();
             Region region = RegionUtils.getAt(to);
             
