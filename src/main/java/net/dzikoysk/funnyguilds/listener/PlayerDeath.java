@@ -90,7 +90,7 @@ public class PlayerDeath implements Listener {
         }
 
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        
+
         if (config.rankFarmingProtect) {
             Long attackTimestamp = attackerCache.wasAttackerOf(victim);
             Long victimTimestamp = attackerCache.wasVictimOf(attacker);
@@ -99,10 +99,10 @@ public class PlayerDeath implements Listener {
                 if (attackTimestamp + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     playerVictim.sendMessage(messages.rankLastVictimV);
                     playerAttacker.sendMessage(messages.rankLastVictimA);
-                    
+
                     victimCache.clearDamage();
                     event.setDeathMessage(null);
-                    
+
                     return;
                 }
             }
@@ -110,15 +110,15 @@ public class PlayerDeath implements Listener {
                 if (victimTimestamp + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
                     playerVictim.sendMessage(messages.rankLastAttackerV);
                     playerAttacker.sendMessage(messages.rankLastAttackerA);
-                    
+
                     victimCache.clearDamage();
                     event.setDeathMessage(null);
-                    
+
                     return;
                 }
             }
         }
-        
+
         if (config.rankIPProtect) {
             String attackerIP = playerAttacker.getAddress().getHostString();
 
@@ -128,7 +128,7 @@ public class PlayerDeath implements Listener {
 
                 victimCache.clearDamage();
                 event.setDeathMessage(null);
-                
+
                 return;
             }
         }
@@ -155,13 +155,13 @@ public class PlayerDeath implements Listener {
 
         RankChangeEvent attackerEvent = new PointsChangeEvent(EventCause.USER, attacker.getRank(), attacker, rankChanges[0]);
         RankChangeEvent victimEvent = new PointsChangeEvent(EventCause.USER, victim.getRank(), attacker, rankChanges[1]);
-        
+
         List<String> assistEntries = new ArrayList<>();
         List<User> messageReceivers = new ArrayList<>();
-        
+
         if (SimpleEventHandler.handle(attackerEvent) && SimpleEventHandler.handle(victimEvent)) {
             double attackerDamage = victimCache.killedBy(attacker);
-            
+
             if (config.assistEnable && victimCache.isAssisted()) {
                 double toShare = attackerEvent.getChange() * (1 - config.assistKillerShare);
                 double totalDamage = victimCache.getTotalDamage() + attackerDamage;
@@ -183,28 +183,28 @@ public class PlayerDeath implements Listener {
                         if (assists >= config.assistsLimit) {
                             continue;
                         }
-                        
+
                         assists++;
                     }
 
                     if (!config.broadcastDeathMessage) {
                         messageReceivers.add(assist.getKey());
                     }
-                    
+
                     givenPoints += addedPoints;
-                    
+
                     String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assist.getKey().getName());
                     assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", ChatUtils.getPercent(assistFraction));
                     assistEntries.add(assistEntry);
-                    
+
                     assist.getKey().getRank().addPoints(addedPoints);
                 }
-                
+
                 double attackerPoints = attackerEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
                 attackerEvent.setChange((int) Math.round(attackerPoints));
             }
-            
+
             attacker.getRank().addKill();
             attacker.getRank().addPoints(attackerEvent.getChange());
             attackerCache.registerVictim(victim);
@@ -212,7 +212,7 @@ public class PlayerDeath implements Listener {
             victim.getRank().removePoints(victimEvent.getChange());
             victimCache.registerAttacker(attacker);
             victimCache.clearDamage();
-            
+
             if (!config.broadcastDeathMessage) {
                 messageReceivers.add(attacker);
                 messageReceivers.add(victim);
@@ -259,7 +259,8 @@ public class PlayerDeath implements Listener {
                 .register("{ATAG}", attacker.hasGuild() ?
                         StringUtils.replace(config.chatGuild, "{TAG}", attacker.getGuild().getTag()) : "")
                 .register("{ASSISTS}", config.assistEnable && ! assistEntries.isEmpty() ?
-                        String.join(messages.rankAssistDelimiter, assistEntries) : "");
+                        StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))
+                        : "");
 
         if (config.displayTitleNotificationForKiller) {
             List<Object> titlePackets = NotificationUtil.createTitleNotification(
@@ -274,7 +275,7 @@ public class PlayerDeath implements Listener {
         }
 
         String deathMessage = killMessageFormatter.format(messages.rankDeathMessage);
-        
+
         if (config.broadcastDeathMessage) {
             if (config.ignoreDisabledDeathMessages) {
                 for (Player player : event.getEntity().getWorld().getPlayers()) {
@@ -288,14 +289,14 @@ public class PlayerDeath implements Listener {
         }
         else {
             event.setDeathMessage(null);
-            
+
             for (User fighter : messageReceivers) {
                 if (fighter.isOnline()) {
                     fighter.getPlayer().sendMessage(deathMessage);
                 }
             }
         }
-        
+
     }
 
     private int[] getEloValues(int victimPoints, int attackerPoints) {
@@ -307,8 +308,8 @@ public class PlayerDeath implements Listener {
 
         rankChanges[0] = (int) Math.round(aC * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider)))));
         rankChanges[1] = (int) Math.round(vC * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * - 1);
-        
+
         return rankChanges;
     }
-	
+
 }
