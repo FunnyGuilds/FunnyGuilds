@@ -1,28 +1,22 @@
 package net.dzikoysk.funnyguilds.basic.user;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import org.apache.commons.lang3.Validate;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class UserUtils {
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
-    private final static Map<UUID, User> uuidUserMap = new ConcurrentHashMap<>();
-    private final static Map<String, User> nameUserMap = new ConcurrentHashMap<>();
 
-    private final static Cache<UUID, User>   uuidUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES)
-            .build();
-    private final static Cache<String, User> nameUserCache = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES)
-            .build();
+    private final static Map<UUID, User> BY_UUID_USER_COLLECTION = new ConcurrentHashMap<>();
+    private final static Map<String, User> BY_NAME_USER_COLLECTION = new ConcurrentHashMap<>();
 
     public static Set<User> getUsers() {
-        return new HashSet<>(uuidUserMap.values());
+        return new HashSet<>(BY_UUID_USER_COLLECTION.values());
     }
 
     public static User get(String nickname) {
@@ -31,13 +25,7 @@ public class UserUtils {
 
     public static User get(String nickname, boolean ignoreCase) {
         if (ignoreCase) {
-            for (Map.Entry<String, User> cacheEntry : nameUserCache.asMap().entrySet()) {
-                if (cacheEntry.getKey().equalsIgnoreCase(nickname)) {
-                    return cacheEntry.getValue();
-                }
-            }
-
-            for (Map.Entry<String, User> entry : nameUserMap.entrySet()) {
+            for (Map.Entry<String, User> entry : BY_NAME_USER_COLLECTION.entrySet()) {
                 if (entry.getKey().equalsIgnoreCase(nickname)) {
                     return entry.getValue();
                 }
@@ -46,56 +34,26 @@ public class UserUtils {
             return null;
         }
         else {
-            User user = nameUserCache.getIfPresent(nickname);
-
-            if (user == null) {
-                user = nameUserMap.get(nickname);
-
-                if (user != null) {
-                    nameUserCache.put(nickname, user);
-                    return user;
-                }
-
-                return null;
-            }
-
-            return user;
+            return BY_NAME_USER_COLLECTION.get(nickname);
         }
     }
 
     public static User get(UUID uuid) {
-        User user = uuidUserCache.getIfPresent(uuid);
-
-        if (user == null) {
-            user = uuidUserMap.get(uuid);
-
-            if (user != null) {
-                uuidUserCache.put(uuid, user);
-                return user;
-            }
-
-            return null;
-        }
-
-        return user;
+        return BY_UUID_USER_COLLECTION.get(uuid);
     }
 
     public static void addUser(User user) {
-        uuidUserMap.put(user.getUUID(), user);
-        uuidUserCache.put(user.getUUID(), user);
+        Validate.notNull(user, "user can't be null!");
 
-        if (user.getName() != null) {
-            nameUserMap.put(user.getName(), user);
-            nameUserCache.put(user.getName(), user);
-        }
+        BY_UUID_USER_COLLECTION.put(user.getUUID(), user);
+        BY_NAME_USER_COLLECTION.put(user.getName(), user);
     }
 
     public static void removeUser(User user) {
-        uuidUserCache.invalidate(user.getUUID());
-        nameUserCache.invalidate(user.getName());
+        Validate.notNull(user, "user can't be null!");
 
-        uuidUserMap.remove(user.getUUID());
-        nameUserMap.remove(user.getName());
+        BY_UUID_USER_COLLECTION.remove(user.getUUID());
+        BY_NAME_USER_COLLECTION.remove(user.getName());
     }
 
     public static boolean playedBefore(String nickname) {
@@ -105,7 +63,7 @@ public class UserUtils {
     public static boolean playedBefore(String nickname, boolean ignoreCase) {
         if (ignoreCase) {
             if (nickname != null) {
-                for (String userNickname : nameUserMap.keySet()) {
+                for (String userNickname : BY_NAME_USER_COLLECTION.keySet()) {
                     if (userNickname.equalsIgnoreCase(nickname)) {
                         return true;
                     }
@@ -115,7 +73,7 @@ public class UserUtils {
             return false;
         }
         else {
-            return nickname != null && nameUserMap.containsKey(nickname);
+            return nickname != null && BY_NAME_USER_COLLECTION.containsKey(nickname);
         }
     }
 
@@ -150,7 +108,7 @@ public class UserUtils {
     }
 
     public static int usersSize() {
-        return uuidUserMap.size();
+        return BY_UUID_USER_COLLECTION.size();
     }
 
     public static boolean validateUsername(String name) {
