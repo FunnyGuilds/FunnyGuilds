@@ -22,6 +22,10 @@ public class RankManager {
     }
 
     public void update(User user) {
+        if (user.getUUID().version() == 2) {
+            return;
+        }
+
         synchronized (this.users) {
             if (! this.users.contains(user.getRank())) {
                 this.users.add(user.getRank());

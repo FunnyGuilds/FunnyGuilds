@@ -227,6 +227,10 @@ public class User extends AbstractBasic {
     }
 
     public static User get(Player player) {
+        if (player.getUniqueId().version() == 2) {
+            return new User(player);
+        }
+
         return UserUtils.get(player.getUniqueId());
     }
 
