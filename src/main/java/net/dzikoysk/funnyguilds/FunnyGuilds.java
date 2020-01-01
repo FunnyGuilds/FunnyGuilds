@@ -42,6 +42,7 @@ import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -115,10 +116,10 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
-        String[] versions = descriptionChanger.extractVersion();
+        Pair<String, String> versions = descriptionChanger.extractVersion();
 
-        this.fullVersion = versions[0];
-        this.mainVersion = versions[1];
+        this.fullVersion = versions.getLeft();
+        this.mainVersion = versions.getValue();
 
         PluginConfiguration settings = FunnyGuilds.getInstance().getPluginConfiguration();
         descriptionChanger.rename(settings.pluginName);
