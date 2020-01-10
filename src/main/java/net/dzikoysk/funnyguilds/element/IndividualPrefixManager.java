@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -24,6 +25,7 @@ public class IndividualPrefixManager {
         User user = User.get(player);
         UserCache cache = user.getCache();
         Scoreboard cachedScoreboard = cache.getScoreboard();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (cachedScoreboard == null) {
             FunnyGuilds.getInstance().getPluginLogger().debug(
@@ -34,10 +36,13 @@ public class IndividualPrefixManager {
                 player.setScoreboard(scoreboard);
                 cache.setScoreboard(scoreboard);
 
-                IndividualPrefix prefix = new IndividualPrefix(user);
-                prefix.initialize();
+                if (config.guildTagEnabled) {
+                    IndividualPrefix prefix = new IndividualPrefix(user);
+                    prefix.initialize();
 
-                cache.setIndividualPrefix(prefix);
+                    cache.setIndividualPrefix(prefix);
+                }
+
                 cache.getDummy().updateScore(user);
             });
 
