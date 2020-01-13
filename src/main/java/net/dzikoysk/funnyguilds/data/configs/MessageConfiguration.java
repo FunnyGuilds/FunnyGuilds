@@ -522,7 +522,7 @@ public class MessageConfiguration {
     public String adminAlreadyDeputy = "&cTen gracz jest juz zastepca gildii!";
 
     public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
-    public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data!";
+    public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
     public String adminAdditionalProtectionSetSuccessfully = "&aPomyslnie nadano dodatkowa ochrone dla gildii &7{TAG} &ado &7{DATE}";
     
     public String adminGuildHasNoHome = "&cGildia gracza nie ma ustawionej bazy!";

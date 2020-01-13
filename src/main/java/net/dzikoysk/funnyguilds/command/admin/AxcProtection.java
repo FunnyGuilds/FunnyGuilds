@@ -38,7 +38,7 @@ public class AxcProtection implements Executor {
             return;
         }
 
-        String protectionDateAsString = StringUtils.join(args, ' ', 1, 2);
+        String protectionDateAsString = StringUtils.join(args, ' ', 1, 3);
         Date protectionDate;
 
         try {
