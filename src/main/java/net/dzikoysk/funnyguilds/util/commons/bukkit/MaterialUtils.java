@@ -69,12 +69,15 @@ public final class MaterialUtils {
     public static String getMaterialName(Material material) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        if (config.translatedMaterialsEnable && config.translatedMaterials.containsKey(material)) {
+        if (!config.translatedMaterialsEnable) {
+            return material.toString();
+        }
+
+        if (config.translatedMaterials.containsKey(material)) {
             return ChatUtils.colored(FunnyGuilds.getInstance().getPluginConfiguration().translatedMaterials.get(material));
         }
-        else {
-            return StringUtils.replace(material.toString().toLowerCase(), "_", " ");
-        }
+
+        return StringUtils.replaceChars(material.toString().toLowerCase(), '_', ' ');
     }
 
     @Nullable
