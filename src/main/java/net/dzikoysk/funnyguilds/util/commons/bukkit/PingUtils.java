@@ -35,7 +35,7 @@ public class PingUtils {
             FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve player's ping", ex);
         }
 
-        return ping;
+        return Math.max(0, ping);
     }
 
 }
