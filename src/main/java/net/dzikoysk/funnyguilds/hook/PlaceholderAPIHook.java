@@ -67,6 +67,10 @@ public final class PlaceholderAPIHook {
             return FunnyGuilds.getInstance().getDescription().getVersion();
         }
 
+        @Override
+        public boolean persist() {
+            return true;
+        }
     }
     
 }
