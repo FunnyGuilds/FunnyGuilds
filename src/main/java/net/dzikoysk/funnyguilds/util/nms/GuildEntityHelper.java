@@ -13,6 +13,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class GuildEntityHelper {
 
@@ -24,7 +25,7 @@ public final class GuildEntityHelper {
     private static final Method SET_LOCATION;
     private static final Method GET_ID;
 
-    private static final Map<Guild, Integer> ENTITY_MAP = new HashMap<>();
+    private static final Map<Guild, Integer> ENTITY_MAP = new ConcurrentHashMap<>();
     private static final Map<Integer, Object> ID_MAP = new HashMap<>();
     
     private static final ObjectType OBJECT_TYPE;
