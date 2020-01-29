@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds;
 
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.command.Commands;
@@ -70,6 +71,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
+    private volatile BukkitTask rankRecalculationTask;
 
     private DataModel                    dataModel;
     private DataPersistenceHandler       dataPersistenceHandler;
@@ -155,6 +157,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(), 20L, this.pluginConfiguration.playerListUpdateInterval_);
+        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(), 20L, this.pluginConfiguration.rankingUpdateInterval_);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new GuiActionHandler(), this);
@@ -200,8 +203,10 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.dynamicListenerManager.unregisterAll();
         GuildEntityHelper.despawnGuildHearts();
+
         this.guildValidationTask.cancel();
         this.tablistBroadcastTask.cancel();
+        this.rankRecalculationTask.cancel();
 
         for (User user : UserUtils.getUsers()) {
             user.getBossBar().removeNotification();

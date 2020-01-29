@@ -1,18 +1,21 @@
 package net.dzikoysk.funnyguilds.basic.rank;
 
+import com.google.common.collect.Iterables;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.PermissionUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 
 public class RankManager {
 
     private static final RankManager INSTANCE = new RankManager();
 
-    private final List<Rank> users = Collections.synchronizedList(new ArrayList<>());
-    private final List<Rank> guilds = Collections.synchronizedList(new ArrayList<>());
+    protected NavigableSet<Rank> usersRank = new TreeSet<>(Collections.reverseOrder());
+    protected NavigableSet<Rank> guildsRank = new TreeSet<>(Collections.reverseOrder());
 
     private RankManager() {
     }
@@ -26,72 +29,43 @@ public class RankManager {
             return;
         }
 
-        synchronized (this.users) {
-            if (! this.users.contains(user.getRank())) {
-                this.users.add(user.getRank());
-            }
-
-            Collections.sort(users);
-
-            if (user.hasGuild()) {
-                update(user.getGuild());
-            }
-
-            for (int i = 0; i < users.size(); i++) {
-                Rank rank = users.get(i);
-                rank.setPosition(i + 1);
-            }
+        if (FunnyGuilds.getInstance().getPluginConfiguration().skipPrivilegedPlayersInRankPositions &&
+                PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt")) {
+            return;
         }
+
+        this.usersRank.add(user.getRank());
     }
 
     public void update(Guild guild) {
-        synchronized (this.guilds) {
-            if (! this.guilds.contains(guild.getRank())) {
-                this.guilds.add(guild.getRank());
-            }
-
-            Collections.sort(guilds);
-
-            for (int i = 0; i < guilds.size(); i++) {
-                Rank rank = guilds.get(i);
-                rank.setPosition(i + 1);
-            }
+        if (guild.getMembers().size() < FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude) {
+            return;
         }
+
+        this.guildsRank.add(guild.getRank());
     }
 
     public User getUser(int i) {
-        if (i - 1 < this.users.size()) {
-            return (this.users.get(i - 1)).getUser();
+        if (i - 1 < this.usersRank.size()) {
+            return Iterables.get(this.usersRank, i - 1).getUser();
         }
+
         return null;
     }
 
     public Guild getGuild(int i) {
-        if (i - 1 < this.guilds.size()) {
-            return (this.guilds.get(i - 1)).getGuild();
+        if (i - 1 < this.guildsRank.size()) {
+            return Iterables.get(this.guildsRank, i - 1).getGuild();
         }
+
         return null;
     }
 
     public int users() {
-        return this.users.size();
+        return this.usersRank.size();
     }
 
     public int guilds() {
-        return this.guilds.size();
-    }
-
-    public void remove(User user) {
-        synchronized (this.users) {
-            this.users.remove(user.getRank());
-            Collections.sort(this.users);
-        }
-    }
-
-    public void remove(Guild guild) {
-        synchronized (this.guilds) {
-            this.guilds.remove(guild.getRank());
-            Collections.sort(this.guilds);
-        }
+        return this.guildsRank.size();
     }
 }

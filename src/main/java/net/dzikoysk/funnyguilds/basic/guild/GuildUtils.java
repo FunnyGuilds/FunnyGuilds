@@ -67,7 +67,6 @@ public class GuildUtils {
         concurrencyManager.postRequests(new PrefixGlobalRemoveGuildRequest(guild));
 
         UserUtils.removeGuild(guild.getMembers());
-        RankManager.getInstance().remove(guild);
 
         for (Guild ally : guild.getAllies()) {
             ally.removeAlly(guild);
