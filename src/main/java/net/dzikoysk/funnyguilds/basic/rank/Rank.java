@@ -55,7 +55,7 @@ public class Rank implements Comparable<Rank> {
 
     @Override
     public int compareTo(Rank rank) {
-        int i = Integer.compare(rank.getPoints(), getPoints());
+        int i = Integer.compare(this.getPoints(), rank.getPoints());
         if (i == 0) {
             if (identityName == null) {
                 return -1;

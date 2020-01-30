@@ -625,6 +625,13 @@ public class PluginConfiguration {
     @CfgName("skip-privileged-players-in-rank-positions")
     public boolean skipPrivilegedPlayersInRankPositions = false;
 
+    @CfgComment("Co ile ticków ranking graczy oraz gildii powinien zostać odświeżony")
+    @CfgName("ranking-update-interval")
+    public int rankingUpdateInterval = 40;
+
+    @CfgExclude
+    public long rankingUpdateInterval_;
+
     @CfgComment("Czy system asyst ma byc wlaczony")
     @CfgName("rank-assist-enable")
     public boolean assistEnable = true;
@@ -1474,6 +1481,8 @@ public class PluginConfiguration {
 
         this.playerListUpdateInterval_ = Math.max(1, this.playerListUpdateInterval);
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
+
+        this.rankingUpdateInterval_ = Math.max(1, this.rankingUpdateInterval);
     }
 
     public static class Commands {
