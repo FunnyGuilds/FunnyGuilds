@@ -213,6 +213,7 @@
                 </executions>
                 <configuration>
                     <finalName>${project.name} ${project.version} (MC 1.8-1.15)</finalName>
+                    <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
                             <pattern>com.google.common.</pattern>
