@@ -76,7 +76,7 @@ public final class FunnyGuildsVersion {
         String remainder = StringUtils.replace(FunnyGuilds.getInstance().getFullVersion(), latest, "").trim();
 
         // hyphen + short commit hash
-        if (remainder.length() != 7) {
+        if (remainder.length() != 8 || ! remainder.startsWith("-")) {
             return "";
         }
 
