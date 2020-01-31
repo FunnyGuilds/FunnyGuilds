@@ -82,6 +82,11 @@ public class PluginConfiguration {
     @CfgName("update-info")
     public boolean updateInfo = true;
 
+    @CfgComment("Czy informacje o aktualizacji wersji nightly maja byc widoczne podczas wejscia na serwer")
+    @CfgComment("Ta opcja działa tylko wtedy, gdy także jest włączona opcja 'update-info'")
+    @CfgName("update-nightly-info")
+    public boolean updateNightlyInfo = true;
+
     @CfgComment("Mozliwosc zakladania gildii (mozna zmienic takze za pomoca komendy /ga enabled)")
     @CfgName("guilds-enabled")
     public boolean guildsEnabled = true;
