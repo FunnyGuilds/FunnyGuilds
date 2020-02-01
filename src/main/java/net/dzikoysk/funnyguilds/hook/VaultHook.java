@@ -19,18 +19,19 @@ public final class VaultHook {
         RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
 
-        if (economyProvider == null) {
+        if (economyProvider != null) {
+            economyHook = economyProvider.getProvider();
+        }
+        else {
             FunnyGuilds.getInstance().getPluginLogger().warning("No economy provider found, some features may not be available");
-            return;
         }
 
-        if (permissionProvider == null) {
+        if (permissionProvider != null) {
+            permissionHook = permissionProvider.getProvider();
+        }
+        else {
             FunnyGuilds.getInstance().getPluginLogger().warning("No permission provider found, some features may not be available");
-            return;
         }
-
-        economyHook = economyProvider.getProvider();
-        permissionHook = permissionProvider.getProvider();
     }
 
     public static boolean isEconomyHooked() {
