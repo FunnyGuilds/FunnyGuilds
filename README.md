@@ -10,7 +10,7 @@ Project website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
 
 #### Download
 Get the latest stable version: [FunnyGuilds Tribute 4.5.2 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
-Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.6.0-SNAPSHOT+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
+Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.6.0+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
 
 
 #### Hooks
@@ -34,7 +34,7 @@ FunnyGuilds hooks into those plugins:
 <dependency>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.6.0-SNAPSHOT</version>
+    <version>4.6.0</version>
 </dependency>
 ```
 
