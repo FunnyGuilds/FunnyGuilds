@@ -79,14 +79,10 @@ public final class ItemUtils {
             String[] attributeValue = Arrays.copyOfRange(itemAttribute, 1, itemAttribute.length);
 
             if (attributeName.equalsIgnoreCase("name")) {
-                item.setName(StringUtils.replace(ChatUtils.colored(String.join(":", Arrays.copyOfRange(attributeValue, 1, attributeValue.length))), "_", " "), true);
-            } else if (attributeName.equalsIgnoreCase("lore")) {
-                if (attributeValue.length != 1) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item lore attribute: " + split[i]);
-                    continue;
-                }
-
-                String[] lores = itemAttribute[1].split("#");
+                item.setName(StringUtils.replace(ChatUtils.colored(String.join(":", attributeValue)), "_", " "), true);
+            }
+            else if (attributeName.equalsIgnoreCase("lore")) {
+                String[] lores = String.join(":", attributeValue).split("#");
                 List<String> lore = new ArrayList<>();
 
                 for (String s : lores) {
@@ -94,13 +90,8 @@ public final class ItemUtils {
                 }
 
                 item.setLore(lore);
-            } else if (attributeName.equalsIgnoreCase("enchant")) {
-                if (attributeValue.length != 2) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item enchant attribute: " + split[i]);
-                    continue;
-                }
-
-                String enchantName = attributeValue[0];
+            }
+            else if (attributeName.equalsIgnoreCase("enchant")) {
                 int level;
 
                 try {
@@ -110,28 +101,20 @@ public final class ItemUtils {
                     level = 1;
                 }
 
-                Enchantment enchant = Enchantment.getByName(enchantName.toUpperCase());
+                Enchantment enchant = Enchantment.getByName(attributeValue[0].toUpperCase());
                 if (enchant == null) {
                     FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant: " + itemAttribute[0]);
                 }
 
                 item.addEnchant(enchant, level);
-            } else if (attributeName.equalsIgnoreCase("skullowner")) {
-                if (attributeValue.length != 2) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item skull owner attribute: " + split[i]);
-                    continue;
-                }
-
+            }
+            else if (attributeName.equalsIgnoreCase("skullowner")) {
                 if (item.getMeta() instanceof SkullMeta) {
                     ((SkullMeta) item.getMeta()).setOwner(attributeValue[0]);
                     item.refreshMeta();
                 }
-            } else if (attributeName.equalsIgnoreCase("flags")) {
-                if (attributeValue.length != 1) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item flags attribute: " + split[i]);
-                    continue;
-                }
-
+            }
+            else if (attributeName.equalsIgnoreCase("flags")) {
                 String[] flags = attributeValue[0].split(",");
 
                 for (String flag : flags) {
@@ -146,12 +129,8 @@ public final class ItemUtils {
                     item.setFlag(matchedFlag);
                 }
 
-            } else if (attributeName.equalsIgnoreCase("armorcolor")) {
-                if (attributeValue.length != 1) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item armor color attribute: " + split[i]);
-                    continue;
-                }
-
+            }
+            else if (attributeName.equalsIgnoreCase("armorcolor")) {
                 if (! (item.getMeta() instanceof LeatherArmorMeta)) {
                     FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[i]);
                     continue;
@@ -164,9 +143,10 @@ public final class ItemUtils {
                                     Integer.parseInt(color[1]), Integer.parseInt(color[2])));
                     item.refreshMeta();
                 } catch (NumberFormatException e) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid armor color: " + attributeValue[0]);
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid armor color: " + attributeValue);
                 }
-            } else if (attributeName.equalsIgnoreCase("eggtype")) {
+            }
+            else if (attributeName.equalsIgnoreCase("eggtype")) {
                 if (EggTypeChanger.needsSpawnEggMeta()) {
                     EntityType type = null;
                     String entityTypeName = attributeValue[0].toUpperCase();
@@ -181,7 +161,8 @@ public final class ItemUtils {
                         EggTypeChanger.applyChanges(item.getMeta(), type);
                         item.refreshMeta();
                     }
-                } else {
+                }
+                else {
                     FunnyGuilds.getInstance().getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
                 }
             }
