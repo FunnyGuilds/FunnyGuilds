@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -72,15 +73,20 @@ public final class ItemUtils {
         ItemBuilder item = new ItemBuilder(mat, stack, data);
 
         for (int i = 2; i < split.length; i++) {
-            String str = split[i];
+            String[] itemAttribute = split[i].split(":");
 
-            if (str.contains("name")) {
-                String[] splitName = str.split(":");
-                item.setName(StringUtils.replace(ChatUtils.colored(String.join(":", Arrays.copyOfRange(splitName, 1, splitName.length))), "_", " "), true);
-            } else if (str.contains("lore")) {
-                String[] splitLore = str.split(":");
-                String loreArgs = String.join(":", Arrays.copyOfRange(splitLore, 1, splitLore.length));
-                String[] lores = loreArgs.split("#");
+            String attributeName = itemAttribute[0];
+            String[] attributeValue = Arrays.copyOfRange(itemAttribute, 1, itemAttribute.length);
+
+            if (attributeName.equalsIgnoreCase("name")) {
+                item.setName(StringUtils.replace(ChatUtils.colored(String.join(":", Arrays.copyOfRange(attributeValue, 1, attributeValue.length))), "_", " "), true);
+            } else if (attributeName.equalsIgnoreCase("lore")) {
+                if (attributeValue.length != 1) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item lore attribute: " + split[i]);
+                    continue;
+                }
+
+                String[] lores = itemAttribute[1].split("#");
                 List<String> lore = new ArrayList<>();
 
                 for (String s : lores) {
@@ -88,49 +94,87 @@ public final class ItemUtils {
                 }
 
                 item.setLore(lore);
-            } else if (str.contains("enchant")) {
-                String[] parse = str.split(":");
-                String enchantName = parse[1];
+            } else if (attributeName.equalsIgnoreCase("enchant")) {
+                if (attributeValue.length != 2) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item enchant attribute: " + split[i]);
+                    continue;
+                }
+
+                String enchantName = attributeValue[0];
                 int level;
 
                 try {
-                    level = Integer.parseInt(parse[2]);
+                    level = Integer.parseInt(attributeValue[1]);
                 } catch (NumberFormatException e) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant level: " + split[2]);
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant level: " + itemAttribute[1]);
                     level = 1;
                 }
 
                 Enchantment enchant = Enchantment.getByName(enchantName.toUpperCase());
                 if (enchant == null) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant: " + parse[1]);
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant: " + itemAttribute[0]);
                 }
 
                 item.addEnchant(enchant, level);
-            } else if (str.contains("skullowner")) {
+            } else if (attributeName.equalsIgnoreCase("skullowner")) {
+                if (attributeValue.length != 2) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item skull owner attribute: " + split[i]);
+                    continue;
+                }
+
                 if (item.getMeta() instanceof SkullMeta) {
-                    ((SkullMeta) item.getMeta()).setOwner(str.split(":")[1]);
+                    ((SkullMeta) item.getMeta()).setOwner(attributeValue[0]);
                     item.refreshMeta();
                 }
-            } else if (str.contains("armorcolor")) {
-                if (item.getMeta() instanceof LeatherArmorMeta) {
-                    String[] color = str.split(":")[1].split("_");
-
-                    try {
-                        ((LeatherArmorMeta) item.getMeta()).setColor(Color.fromRGB(Integer.parseInt(color[0]),
-                                        Integer.parseInt(color[1]), Integer.parseInt(color[2])));
-                        item.refreshMeta();
-                    } catch (NumberFormatException e) {
-                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown armor color: " + str.split(":")[1]);
-                    }
+            } else if (attributeName.equalsIgnoreCase("flags")) {
+                if (attributeValue.length != 1) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item flags attribute: " + split[i]);
+                    continue;
                 }
-            } else if (str.contains("eggtype")) {
+
+                String[] flags = attributeValue[0].split(",");
+
+                for (String flag : flags) {
+                    flag = flag.trim();
+                    ItemFlag matchedFlag = matchItemFlag(flag);
+
+                    if (matchedFlag == null) {
+                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown item flag: " + flag);
+                        continue;
+                    }
+
+                    item.setFlag(matchedFlag);
+                }
+
+            } else if (attributeName.equalsIgnoreCase("armorcolor")) {
+                if (attributeValue.length != 1) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item armor color attribute: " + split[i]);
+                    continue;
+                }
+
+                if (! (item.getMeta() instanceof LeatherArmorMeta)) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[i]);
+                    continue;
+                }
+
+                String[] color = attributeValue[0].split("_");
+
+                try {
+                    ((LeatherArmorMeta) item.getMeta()).setColor(Color.fromRGB(Integer.parseInt(color[0]),
+                                    Integer.parseInt(color[1]), Integer.parseInt(color[2])));
+                    item.refreshMeta();
+                } catch (NumberFormatException e) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid armor color: " + attributeValue[0]);
+                }
+            } else if (attributeName.equalsIgnoreCase("eggtype")) {
                 if (EggTypeChanger.needsSpawnEggMeta()) {
                     EntityType type = null;
+                    String entityTypeName = attributeValue[0].toUpperCase();
 
                     try {
-                        type = EntityType.valueOf(str.split(":")[1].toUpperCase());
+                        type = EntityType.valueOf(entityTypeName);
                     } catch (Exception e) {
-                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown entity type: " + str.split(":")[1].toUpperCase());
+                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown entity type: " + entityTypeName);
                     }
 
                     if (type != null) {
@@ -144,6 +188,16 @@ public final class ItemUtils {
         }
 
         return item.getItem();
+    }
+
+    private static ItemFlag matchItemFlag(String flagName) {
+        for (ItemFlag flag : ItemFlag.values()) {
+            if (flag.name().equalsIgnoreCase(flagName)) {
+                return flag;
+            }
+        }
+
+        return null;
     }
 
     public static int getItemAmount(ItemStack item, Inventory inv) {
