@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.util.commons.bukkit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.nms.EggTypeChanger;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -14,12 +15,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 public final class ItemUtils {
+
+    private static Method BY_IN_GAME_NAME_ENCHANT;
+    private static Method CREATE_NAMESPACED_KEY;
+
+    static {
+        Class<?> namespacedKeyClass = Reflections.getBukkitClass("NamespacedKey");
+
+        if (namespacedKeyClass != null) {
+            BY_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getByKey");
+            CREATE_NAMESPACED_KEY = Reflections.getMethod(namespacedKeyClass, "minecraft", String.class);
+        }
+    }
 
     public static String translateTextPlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
         StringBuilder contentBuilder = new StringBuilder();
@@ -50,7 +65,7 @@ public final class ItemUtils {
 
         return message;
     }
-    
+
     public static ItemStack parseItem(String string) {
         String[] split = string.split(" ");
         String[] typeSplit = split[1].split(":");
@@ -64,7 +79,8 @@ public final class ItemUtils {
         try {
             stack = Integer.parseInt(split[0]);
             data = Integer.parseInt(subtype);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             FunnyGuilds.getInstance().getPluginLogger().parser("Unknown size: " + split[0]);
             stack = 1;
             data = 0;
@@ -96,14 +112,17 @@ public final class ItemUtils {
 
                 try {
                     level = Integer.parseInt(attributeValue[1]);
-                } catch (NumberFormatException e) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant level: " + itemAttribute[1]);
+                }
+                catch (NumberFormatException e) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant level: " + attributeValue[1]);
                     level = 1;
                 }
 
-                Enchantment enchant = Enchantment.getByName(attributeValue[0].toUpperCase());
+                Enchantment enchant = matchEnchant(attributeValue[0]);
+
                 if (enchant == null) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant: " + itemAttribute[0]);
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant: " + attributeValue[0]);
+                    continue;
                 }
 
                 item.addEnchant(enchant, level);
@@ -140,9 +159,10 @@ public final class ItemUtils {
 
                 try {
                     ((LeatherArmorMeta) item.getMeta()).setColor(Color.fromRGB(Integer.parseInt(color[0]),
-                                    Integer.parseInt(color[1]), Integer.parseInt(color[2])));
+                            Integer.parseInt(color[1]), Integer.parseInt(color[2])));
                     item.refreshMeta();
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e) {
                     FunnyGuilds.getInstance().getPluginLogger().parser("Invalid armor color: " + attributeValue);
                 }
             }
@@ -153,7 +173,8 @@ public final class ItemUtils {
 
                     try {
                         type = EntityType.valueOf(entityTypeName);
-                    } catch (Exception e) {
+                    }
+                    catch (Exception e) {
                         FunnyGuilds.getInstance().getPluginLogger().parser("Unknown entity type: " + entityTypeName);
                     }
 
@@ -169,6 +190,23 @@ public final class ItemUtils {
         }
 
         return item.getItem();
+    }
+
+    private static Enchantment matchEnchant(String enchantName) {
+        if (BY_IN_GAME_NAME_ENCHANT != null && CREATE_NAMESPACED_KEY != null) {
+            try {
+                Object namespacedKey = CREATE_NAMESPACED_KEY.invoke(null, enchantName.toLowerCase());
+                Object enchantment = BY_IN_GAME_NAME_ENCHANT.invoke(null, namespacedKey);
+
+                if (enchantment != null) {
+                    return (Enchantment) enchantment;
+                }
+            }
+            catch (IllegalAccessException | InvocationTargetException ignored) {
+            }
+        }
+
+        return Enchantment.getByName(enchantName.toUpperCase());
     }
 
     private static ItemFlag matchItemFlag(String flagName) {
