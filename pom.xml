@@ -149,8 +149,9 @@
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
         <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
+            <id>okaeri</id>
+            <name>Okaeri Repository</name>
+            <url>https://repo.okaeri.eu/</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
