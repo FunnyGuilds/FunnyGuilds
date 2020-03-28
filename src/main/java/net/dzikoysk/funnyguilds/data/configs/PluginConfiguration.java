@@ -385,7 +385,23 @@ public class PluginConfiguration {
     @CfgName("bugged-blocks-exclude")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> buggedBlocksExclude_ = Arrays.asList("TNT", "STATIONARY_LAVA", "STATIONARY_WATER");
+    public List<String> buggedBlocksExclude_ = Arrays.asList(
+            // Ban basic
+            "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
+            // Ban TNT Minecart placement
+            "RAILS", "DETECTOR_RAIL", "ACTIVATOR_RAIL", "POWERED_RAIL",
+            // Ban gravity blocks that won't be removed when fallen
+            "ANVIL", "GRAVEL", "SAND", "DRAGON_EGG",
+            // Ban pistons and other components that may produce redstone output or interact with it
+            "PISTON_BASE", "PISTON_STICKY_BASE",
+            "REDSTONE_BLOCK", "REDSTONE_TORCH_ON", "REDSTONE_TORCH_OFF", "DIODE", "REDSTONE_COMPARATOR", "DAYLIGHT_DETECTOR",
+            "DISPENSER", "HOPPER", "DROPPER", "OBSERVER",
+            "STONE_PLATE", "WOOD_PLATE", "GOLD_PLATE", "IRON_PLATE", "LEVER", "TRIPWIRE_HOOK", "TRAP_DOOR", "IRON_TRAPDOOR", "WOOD_BUTTON", "STONE_BUTTON",
+            "WOOD_DOOR", "IRON_DOOR", "SPRUCE_DOOR_ITEM", "BIRCH_DOOR_ITEM", "JUNGLE_DOOR_ITEM", "ACACIA_DOOR_ITEM", "DARK_OAK_DOOR_ITEM",
+            "FENCE_GATE", "SPRUCE_FENCE_GATE", "JUNGLE_FENCE_GATE", "DARK_OAK_FENCE_GATE", "BIRCH_FENCE_GATE",
+            "REDSTOE_LAMP_ON", "REDSTOE_LAMP_OFF",
+            "TRAPPED_CHEST", "CHEST"
+            );
 
     @CfgExclude
     public Set<Material> buggedBlocksExclude;
