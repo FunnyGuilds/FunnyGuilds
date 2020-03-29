@@ -18,6 +18,8 @@ import org.bukkit.util.Vector;
 
 public class BlockPlace implements Listener {
 
+    private static final Vector ANTI_GLITCH_VELOCITY = new Vector(0, 0.4, 0);
+
     private final PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -60,11 +62,11 @@ public class BlockPlace implements Listener {
         double distanceUp = (playerLocation.getY() - blockLocation.getBlockY());
         boolean upToTwoBlocks = (distanceUp > 0) && (distanceUp <= 2);
         if (sameColumn && upToTwoBlocks) {
-            player.setVelocity(new Vector(0, 0.4, 0));
+            player.setVelocity(ANTI_GLITCH_VELOCITY);
         }
 
         // delay, because we cannot do {@link Block#setType(Material)} immediately
-        Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> {
+        Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
 
             // fake place for bugged block
             block.setType(type);
@@ -83,7 +85,7 @@ public class BlockPlace implements Listener {
                 }
             }, this.config.buggedBlocksTimer);
 
-        }, 0);
+        });
     }
 
 }
