@@ -28,9 +28,9 @@ public final class ItemUtils {
     private static Method CREATE_NAMESPACED_KEY;
 
     static {
-        Class<?> namespacedKeyClass = Reflections.getBukkitClass("NamespacedKey");
+        if (! Reflections.USE_PRE_12_METHODS) {
+            Class<?> namespacedKeyClass = Reflections.getBukkitClass("NamespacedKey");
 
-        if (namespacedKeyClass != null) {
             BY_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getByKey");
             CREATE_NAMESPACED_KEY = Reflections.getMethod(namespacedKeyClass, "minecraft", String.class);
         }
