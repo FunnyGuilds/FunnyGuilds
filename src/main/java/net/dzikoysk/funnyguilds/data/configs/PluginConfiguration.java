@@ -947,7 +947,7 @@ public class PluginConfiguration {
     public String dummySuffix;
 
     @CfgComment("Wyglad listy graczy, przedzial slotow - od 1 do 80")
-    @CfgComment("Schemat wygladu listy: https://github.com/FunnyGuilds/FunnyGuilds/blob/master/tab-scheme.png")
+    @CfgComment("Schemat wygladu listy: https://github.com/FunnyGuilds/FunnyGuilds/blob/master/assets/tab-scheme.png")
     @CfgComment("> Spis zmiennych gracza:")
     @CfgComment("{PLAYER} - nazwa gracza")
     @CfgComment("{WORLD} - swiat, w ktorym znajduje sie gracz")
