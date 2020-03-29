@@ -68,11 +68,11 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{MEMBERS-ONLINE}", String.valueOf(guild.getOnlineMembers().size()));
             messageLine = StringUtils.replace(messageLine, "{MEMBERS-ALL}", String.valueOf(guild.getMembers().size()));
             messageLine = StringUtils.replace(messageLine, "{MEMBERS}", ChatUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
-            messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
+            messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", guild.getDeputies().isEmpty() ? "Brak" : ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
             messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", config.regionsEnabled ? String.valueOf(guild.getRegion().getSize()) : messages.gRegionSizeNoValue);
             messageLine = StringUtils.replace(messageLine, "{GUILD-PROTECTION}", protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now));
             messageLine = StringUtils.replace(messageLine, "{GUILD-ADDITIONAL-PROTECTION}", additionalProtectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(additionalProtectionEndTime - now));
-            
+
             Rank rank = guild.getRank();
             messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat, "POINTS"));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
