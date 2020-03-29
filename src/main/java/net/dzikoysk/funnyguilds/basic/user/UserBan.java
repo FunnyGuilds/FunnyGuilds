@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.basic.user;
 
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import org.panda_lang.panda.utilities.commons.StringUtils;
+import org.panda_lang.utilities.commons.StringUtils;
 
 public class UserBan {
 

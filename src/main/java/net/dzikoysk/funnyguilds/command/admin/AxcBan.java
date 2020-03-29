@@ -15,7 +15,7 @@ import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
+import org.panda_lang.utilities.commons.text.MessageFormatter;
 
 public class AxcBan implements Executor {
 

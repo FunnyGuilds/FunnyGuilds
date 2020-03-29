@@ -30,7 +30,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
+import org.panda_lang.utilities.commons.text.MessageFormatter;
 
 import java.util.ArrayList;
 import java.util.List;

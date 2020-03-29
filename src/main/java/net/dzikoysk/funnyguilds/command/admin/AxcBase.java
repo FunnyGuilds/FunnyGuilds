@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
+import org.panda_lang.utilities.commons.text.MessageFormatter;
 
 public class AxcBase implements Executor {
 

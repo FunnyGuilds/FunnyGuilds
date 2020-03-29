@@ -12,7 +12,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.panda_lang.panda.utilities.commons.text.MessageFormatter;
+import org.panda_lang.utilities.commons.text.MessageFormatter;
 
 public class AxcDelete implements Executor {
 
