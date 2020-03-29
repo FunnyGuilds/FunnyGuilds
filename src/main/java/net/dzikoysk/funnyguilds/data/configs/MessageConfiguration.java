@@ -25,6 +25,7 @@ public class MessageConfiguration {
     public String alliesNoValue = "Brak (ALLIES)";
     public String gtopNoValue = "Brak (GTOP-x)";
     public String ptopNoValue = "Brak (PTOP-x)";
+    public String wgRegionNoValue = "Brak (WG-REGION)";
     public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
     
     @CfgComment("<------- Permission Messages -------> #")

@@ -64,7 +64,8 @@ public final class DefaultTablistVariables {
         }));
         
         parser.add(new SimpleTablistVariable("WORLD", user -> {
-            final Player userPlayer = user.getPlayer();
+            Player userPlayer = user.getPlayer();
+
             if (userPlayer == null) {
                 return "";
             }
@@ -73,7 +74,8 @@ public final class DefaultTablistVariables {
         }));
         
         parser.add(new SimpleTablistVariable("ONLINE", user -> {
-            final Player userPlayer = user.getPlayer();
+            Player userPlayer = user.getPlayer();
+
             if (userPlayer == null) {
                 return "";
             }
@@ -86,14 +88,16 @@ public final class DefaultTablistVariables {
         }
         
         if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
+            String wgRegionNoValue = FunnyGuilds.getInstance().getMessageConfiguration().wgRegionNoValue;
+
             parser.add(new SimpleTablistVariable("WG-REGION", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
-                return regionNames != null && !regionNames.isEmpty() ? regionNames.get(0) : "-";
+                return regionNames != null && !regionNames.isEmpty() ? regionNames.get(0) : wgRegionNoValue;
             }));
 
             parser.add(new SimpleTablistVariable("WG-REGIONS", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
-                return regionNames != null && !regionNames.isEmpty() ? StringUtils.join(regionNames, ", ") : "-";
+                return regionNames != null && !regionNames.isEmpty() ? StringUtils.join(regionNames, ", ") : wgRegionNoValue;
             }));
         }
     }
