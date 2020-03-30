@@ -34,7 +34,7 @@ public class AxcPoints implements Executor {
 
         int points;
         try {
-            points = Integer.valueOf(args[1]);
+            points = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
             sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
@@ -49,7 +49,7 @@ public class AxcPoints implements Executor {
 
         Rank userRank = user.getRank();
         
-        int change = points - userRank.getDeaths();
+        int change = points - userRank.getPoints();
         User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
         if (!SimpleEventHandler.handle(new PointsChangeEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, userRank, admin, change))) {
             return;
