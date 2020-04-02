@@ -129,7 +129,7 @@
         <dependency>
             <groupId>org.kohsuke</groupId>
             <artifactId>github-api</artifactId>
-            <version>1.108</version>
+            <version>1.109</version>
         </dependency>
     </dependencies>
 
