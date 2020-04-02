@@ -91,6 +91,12 @@ public class FunnyGuilds extends JavaPlugin {
         funnyguilds = this;
         this.logger = new FunnyGuildsLogger(this);
 
+        DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
+        Pair<String, String> versions = descriptionChanger.extractVersion();
+
+        this.fullVersion = versions.getLeft();
+        this.mainVersion = versions.getValue();
+
         try {
             Class.forName("net.md_5.bungee.api.ChatColor");
         }
@@ -122,12 +128,6 @@ public class FunnyGuilds extends JavaPlugin {
             this.forceDisabling = true;
             return;
         }
-
-        DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
-        Pair<String, String> versions = descriptionChanger.extractVersion();
-
-        this.fullVersion = versions.getLeft();
-        this.mainVersion = versions.getValue();
 
         PluginConfiguration settings = FunnyGuilds.getInstance().getPluginConfiguration();
         descriptionChanger.rename(settings.pluginName);
