@@ -9,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public final class SpaceUtils {
 
     public static boolean chance(double chance) {
-        return chance >= 100 || chance >= ThreadLocalRandom.current().nextDouble() * 100;
+        return chance >= 100 || chance > ThreadLocalRandom.current().nextDouble(0, 100);
     }
     
     public static List<Location> sphere(Location loc, int radius, int height, boolean hollow, boolean sphere, int plusY) {

@@ -31,21 +31,20 @@ public class EntityExplode implements Listener {
     public void onExplode(EntityExplodeEvent event) {
         List<Block> destroyedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
-        PluginConfiguration pluginConfiguration = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         List<Location> blockSphereLocations = SpaceUtils.sphere(
                 explodeLocation,
-                pluginConfiguration.explodeRadius,
-                pluginConfiguration.explodeRadius,
+                config.explodeRadius,
+                config.explodeRadius,
                 false,
                 true,
                 0
         );
 
-        Map<Material, Double> explosiveMaterials = pluginConfiguration.explodeMaterials;
-        boolean allMaterialsAreExplosive = explosiveMaterials.size() == 1 && explosiveMaterials.containsKey(Material.AIR);
+        Map<Material, Double> explosiveMaterials = config.explodeMaterials;
 
-        if (pluginConfiguration.explodeShouldAffectOnlyGuild) {
+        if (config.explodeShouldAffectOnlyGuild) {
             destroyedBlocks.removeIf(block -> {
                 Region region = RegionUtils.getAt(block.getLocation());
 
@@ -69,19 +68,19 @@ public class EntityExplode implements Listener {
         if (region != null) {
             Guild guild = region.getGuild();
 
-            if (pluginConfiguration.guildTNTProtectionEnabled) {
+            if (config.guildTNTProtectionEnabled) {
                 LocalTime now = LocalDateTime.now().toLocalTime();
 
-                boolean afterStart = now.isAfter(pluginConfiguration.guildTNTProtectionStartTime);
-                boolean beforeEnd = now.isBefore(pluginConfiguration.guildTNTProtectionEndTime);
+                boolean afterStart = now.isAfter(config.guildTNTProtectionStartTime);
+                boolean beforeEnd = now.isBefore(config.guildTNTProtectionEndTime);
 
-                if (pluginConfiguration.guildTNTProtectionOrMode ? afterStart || beforeEnd : afterStart && beforeEnd) {
+                if (config.guildTNTProtectionOrMode ? afterStart || beforeEnd : afterStart && beforeEnd) {
                     event.setCancelled(true);
                     return;
                 }
             }
 
-            if (pluginConfiguration.warTntProtection && ! guild.canBeAttacked()) {
+            if (config.warTntProtection && ! guild.canBeAttacked()) {
                 event.setCancelled(true);
                 return;
             }
@@ -94,7 +93,7 @@ public class EntityExplode implements Listener {
             for (User user : guild.getMembers()) {
                 Player player = user.getPlayer();
                 if (player != null) {
-                    if (informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, pluginConfiguration.infoPlayerCooldown)) {
+                    if (informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                         player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplode.replace("{TIME}", Integer.toString(FunnyGuilds.getInstance().getPluginConfiguration().regionExplode)));
                     }
                 }
@@ -104,13 +103,16 @@ public class EntityExplode implements Listener {
         for (Location blockLocation : blockSphereLocations) {
             Material material = blockLocation.getBlock().getType();
 
-            if (! allMaterialsAreExplosive) {
-                if (! explosiveMaterials.containsKey(material)) {
+            Double explodeChance = explosiveMaterials.get(material);
+
+            if (explodeChance == null) {
+                if (config.allMaterialsAreExplosive) {
+                    explodeChance = config.defaultExplodeChance;
+                }
+                else {
                     continue;
                 }
             }
-
-            double explodeChance = allMaterialsAreExplosive ? explosiveMaterials.get(Material.AIR) : explosiveMaterials.get(material);
 
             if (material == Material.WATER || material == Material.LAVA) {
                 if (SpaceUtils.chance(explodeChance)) {

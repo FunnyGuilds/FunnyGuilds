@@ -37,6 +37,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -545,6 +546,12 @@ public class PluginConfiguration {
 
     @CfgExclude
     public Map<Material, Double> explodeMaterials;
+
+    @CfgExclude
+    public boolean allMaterialsAreExplosive;
+
+    @CfgExclude
+    public double defaultExplodeChance = -1.0;
 
     @CfgComment("Czy powstale wybuchy powinny niszczyc bloki wylacznie na terenach gildii")
     @CfgName("explode-should-affect-only-guild")
@@ -1376,19 +1383,19 @@ public class PluginConfiguration {
             this.eloConstants = parsedData;
         }
 
-        Map<Material, Double> map = new HashMap<>();
+        Map<Material, Double> map = new EnumMap<>(Material.class);
 
         for (Map.Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
             double chance = entry.getValue();
 
-            if (chance <= 0) {
+            if (chance < 0) {
                 continue;
             }
 
             if (entry.getKey().equalsIgnoreCase("*")) {
-                map = new HashMap<>();
-                map.put(Material.AIR, chance);
-                break;
+                this.allMaterialsAreExplosive = true;
+                this.defaultExplodeChance = chance;
+                continue;
             }
 
             Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
@@ -1400,13 +1407,13 @@ public class PluginConfiguration {
             map.put(material, chance);
         }
 
+        this.explodeMaterials = map;
+
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         this.guildTNTProtectionStartTime = LocalTime.parse(guildTNTProtectionStartTime_, timeFormatter);
         this.guildTNTProtectionEndTime = LocalTime.parse(guildTNTProtectionEndTime_, timeFormatter);
         this.guildTNTProtectionOrMode = this.guildTNTProtectionStartTime.isAfter(this.guildTNTProtectionEndTime);
-
-        this.explodeMaterials = map;
         this.translatedMaterials = new HashMap<>();
 
         for (String materialName : translatedMaterials_.keySet()) {
