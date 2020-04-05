@@ -16,6 +16,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>net.dzikoysk</groupId>
+            <artifactId>funnycommands</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.panda-lang</groupId>
             <artifactId>panda</artifactId>
             <version>indev-20.4.5</version>
@@ -34,11 +39,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
-        <dependency>
-            <groupId>net.dzikoysk</groupId>
-            <artifactId>funnycommands</artifactId>
-            <version>0.1.0</version>
-        </dependency>
+
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -147,11 +148,6 @@
             <id>panda-repository</id>
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/</url>
-        </repository>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>
