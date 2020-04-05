@@ -18,7 +18,7 @@
         <dependency>
             <groupId>org.panda-lang</groupId>
             <artifactId>panda</artifactId>
-            <version>indev-20.3.14</version>
+            <version>indev-20.4.5</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.tinylog</groupId>
@@ -33,6 +33,11 @@
                     <artifactId>slf4j-tinylog</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.dzikoysk</groupId>
+            <artifactId>funnycommands</artifactId>
+            <version>0.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
