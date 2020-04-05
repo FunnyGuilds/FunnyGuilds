@@ -179,6 +179,11 @@
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/releases</url>
         </repository>
+        <repository>
+           <id>github</id>
+           <name>GitHub FunnyGuilds Apache Maven Packages</name>
+           <url>https://maven.pkg.github.com/FunnyGuilds/FunnyCommands</url>
+       </repository
     </distributionManagement>
 
     <build>
