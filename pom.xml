@@ -149,6 +149,11 @@
             <url>https://repo.panda-lang.org/</url>
         </repository>
         <repository>
+            <id>github</id>
+            <name>GitHub FunnyGuilds Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/FunnyGuilds/FunnyCommands</url>
+        </repository
+        <repository>
             <id>sk89q-repo</id>
             <name>sk89q Repository</name>
             <url>http://maven.sk89q.com/repo/</url>
@@ -179,11 +184,6 @@
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/releases</url>
         </repository>
-        <repository>
-           <id>github</id>
-           <name>GitHub FunnyGuilds Apache Maven Packages</name>
-           <url>https://maven.pkg.github.com/FunnyGuilds/FunnyCommands</url>
-       </repository
     </distributionManagement>
 
     <build>
