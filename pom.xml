@@ -150,8 +150,8 @@
         </repository>
         <repository>
             <id>github</id>
-            <name>GitHub FunnyGuilds Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/FunnyGuilds/FunnyCommands</url>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/</url>
         </repository>
         <repository>
             <id>sk89q-repo</id>
