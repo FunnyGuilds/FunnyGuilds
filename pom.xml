@@ -152,7 +152,7 @@
             <id>github</id>
             <name>GitHub FunnyGuilds Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/FunnyGuilds/FunnyCommands</url>
-        </repository
+        </repository>
         <repository>
             <id>sk89q-repo</id>
             <name>sk89q Repository</name>
