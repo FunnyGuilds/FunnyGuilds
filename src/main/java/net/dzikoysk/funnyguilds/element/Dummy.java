@@ -8,6 +8,8 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.text.MessageFormat;
+
 public class Dummy {
 
     private static final String OBJECTIVE_NAME = "FG-Points";
@@ -65,6 +67,14 @@ public class Dummy {
         
         for (Player player : Bukkit.getOnlinePlayers()) {
             User user = User.get(player);
+
+            if (user == null) {
+                FunnyGuilds.getInstance().getPluginLogger().debug(MessageFormat.format(
+                        "Online player named: {0} does not have corresponding user instance while initializing Dummy for user: {1}",
+                        player.getName(), this.user.getName()));
+                continue;
+            }
+
             objective.getScore(user.getName()).setScore(user.getRank().getPoints());
         }
     }
