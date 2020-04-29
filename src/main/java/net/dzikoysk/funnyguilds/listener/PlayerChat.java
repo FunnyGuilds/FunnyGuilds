@@ -26,7 +26,7 @@ public class PlayerChat implements Listener {
         if (user.hasGuild()) {
             Guild guild = user.getGuild();
             String message = event.getMessage();
-            if (chat(event, message, c, player, guild)) {
+            if (sendGuildMessage(event, message, c, player, guild)) {
                 return;
             }
         }
@@ -50,16 +50,16 @@ public class PlayerChat implements Listener {
         event.setFormat(format);
     }
 
-    private boolean chat(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
-        if (global(event, message, c, player, guild)) {
+    private boolean sendGuildMessage(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
+        if (sendMessageToAllGuilds(event, message, c, player, guild)) {
             return true;
         }
         
-        if (ally(event, message, c, player, guild)) {
+        if (sendMessageToGuildAllies(event, message, c, player, guild)) {
             return true;
         }
         
-        return priv(event, message, c, player, guild);
+        return sendMessageToGuildMembers(event, message, c, player, guild);
     }
 
     private void spy(Player player, String message) {
@@ -72,23 +72,23 @@ public class PlayerChat implements Listener {
         }
     }
 
-    private boolean priv(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
-        String priv = c.chatPriv;
-        int length = priv.length();
+    private boolean sendMessageToGuildMembers(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
+        String guildPrefix = c.chatPriv;
+        int prefixLength = guildPrefix.length();
         
-        if (message.length() > length && message.substring(0, length).equals(priv)) {
-            String format = c.chatPrivDesign;
+        if (message.length() > prefixLength && message.substring(0, prefixLength).equals(guildPrefix)) {
+            String resultMessage = c.chatPrivDesign;
             
-            format = StringUtils.replace(format, "{PLAYER}", player.getName());
-            format = StringUtils.replace(format, "{TAG}", guild.getTag());
-            format = StringUtils.replace(format, "{POS}", StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
+            resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
+            resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
+            resultMessage = StringUtils.replace(resultMessage, "{POS}",
+                    StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
             
-            String subMessage = event.getMessage().substring(length);
-            this.spy(player, subMessage);
-            
-            format = StringUtils.replace(format, "{MESSAGE}", subMessage);
-            this.sendMessageToGuild(guild, player, format);
-            this.spy(player, message);
+            String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
+            resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
+
+            this.spy(player, messageWithoutPrefix);
+            this.sendMessageToGuild(guild, player, resultMessage);
             
             event.setCancelled(true);
             return true;
@@ -97,31 +97,26 @@ public class PlayerChat implements Listener {
         return false;
     }
 
-    private boolean ally(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
-        String ally = c.chatAlly;
-        int length = ally.length();
+    private boolean sendMessageToGuildAllies(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
+        String allyPrefix = c.chatAlly;
+        int prefixLength = allyPrefix.length();
         
-        if (message.length() > length && message.substring(0, length).equals(ally)) {
-            String format = c.chatAllyDesign;
+        if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allyPrefix)) {
+            String resultMessage = c.chatAllyDesign;
             
-            format = StringUtils.replace(format, "{PLAYER}", player.getName());
-            format = StringUtils.replace(format, "{TAG}", guild.getTag());
-            format = StringUtils.replace(format, "{POS}", StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
-            
+            resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
+            resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
+            resultMessage = StringUtils.replace(resultMessage, "{POS}",
+                    StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
 
-            String subMessage = event.getMessage().substring(length);
+            String subMessage = event.getMessage().substring(prefixLength).trim();
+            resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
+
             this.spy(player, subMessage);
-            
-            format = StringUtils.replace(format, "{MESSAGE}", subMessage);
-            for (User u : guild.getMembers()) {
-                Player p = u.getPlayer();
-                if (p != null) {
-                    p.sendMessage(format);
-                }
-            }
-            
+            this.sendMessageToGuild(guild, player, resultMessage);
+
             for (Guild g : guild.getAllies()) {
-                this.sendMessageToGuild(g, player, format);
+                this.sendMessageToGuild(g, player, resultMessage);
             }
             
             event.setCancelled(true);
@@ -131,26 +126,26 @@ public class PlayerChat implements Listener {
         return false;
     }
 
-    private boolean global(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
-        String global = c.chatGlobal;
-        int length = global.length();
+    private boolean sendMessageToAllGuilds(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
+        String allGuildsPrefix = c.chatGlobal;
+        int prefixLength = allGuildsPrefix.length();
         
-        if (message.length() > length && message.substring(0, length).equals(global)) {
-            String format = c.chatGlobalDesign;
+        if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allGuildsPrefix)) {
+            String resultMessage = c.chatGlobalDesign;
             
-            format = StringUtils.replace(format, "{PLAYER}", player.getName());
-            format = StringUtils.replace(format, "{TAG}", guild.getTag());
-            format = StringUtils.replace(format, "{POS}", StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
-            
-            String subMessage = event.getMessage().substring(length);
+            resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
+            resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
+            resultMessage = StringUtils.replace(resultMessage, "{POS}",
+                    StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
+
+            String subMessage = event.getMessage().substring(prefixLength).trim();
+            resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
+
             this.spy(player, subMessage);
-            
-            format = StringUtils.replace(format, "{MESSAGE}", subMessage);
+
             for (Guild g : GuildUtils.getGuilds()) {
-                this.sendMessageToGuild(g, player, format);
+                this.sendMessageToGuild(g, player, resultMessage);
             }
-            
-            this.spy(player, message);
             
             event.setCancelled(true);
             return true;

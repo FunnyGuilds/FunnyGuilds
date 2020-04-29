@@ -70,7 +70,7 @@ public class AxcBan implements Executor {
         BanUtils.ban(guild, time, reason);
 
         MessageFormatter formatter = new MessageFormatter()
-                .register("{GUILD", guild.getName())
+                .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{TIME}", args[1])
                 .register("{REASON}", ChatUtils.colored(reason));
