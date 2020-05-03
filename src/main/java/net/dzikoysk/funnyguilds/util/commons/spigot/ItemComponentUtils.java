@@ -21,24 +21,27 @@ public final class ItemComponentUtils {
     private static final Method SAVE;
 
     static {
-        final Class<?> craftItemStack = Reflections.getCraftBukkitClass("inventory.CraftItemStack");
+        Class<?> craftItemStack = Reflections.getCraftBukkitClass("inventory.CraftItemStack");
         AS_NMS_COPY = Reflections.getMethod(craftItemStack, "asNMSCopy", ItemStack.class);
 
-        final Class<?> nmsItemStack = Reflections.getNMSClass("ItemStack");
-        final Class<?> nbtTagCompound = Reflections.getNMSClass("NBTTagCompound");
+        Class<?> nmsItemStack = Reflections.getNMSClass("ItemStack");
+        Class<?> nbtTagCompound = Reflections.getNMSClass("NBTTagCompound");
 
         NBT_TAG_COMPOUND_CONSTRUCTOR = Reflections.getConstructor(nbtTagCompound);
         SAVE = Reflections.getMethod(nmsItemStack, "save", nbtTagCompound);
     }
-    
+
+    private ItemComponentUtils() {}
+
     public static TextComponent translateComponentPlaceholder(String message, List<ItemStack> items, ItemStack item) {
         TextComponent translatedMessage = new TextComponent();
         StringBuilder messagePart = new StringBuilder();
         String messageColor = "";
-        
         char[] messageChars = message.toCharArray();
+
         for (int i = 0; i < messageChars.length; i++) {
             char c = messageChars[i];
+
             if (c != '{') {
                 messagePart.append(c);
                 
@@ -51,20 +54,20 @@ public final class ItemComponentUtils {
             }
             
             String subItem = message.substring(i, Math.min(message.length(), i + 6));
+
             if (subItem.equals("{ITEM}")) {
                 for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
                     translatedMessage.addExtra(extra);
                 }
                 
                 messagePart = new StringBuilder();
-                
                 translatedMessage.addExtra(getItemComponent(item, messageColor));
-                
                 i += 5;
                 continue;
             }
 
             String subItems = message.substring(i, Math.min(message.length(), i + 7));
+
             if (subItems.equals("{ITEMS}")) {
                 for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
                     translatedMessage.addExtra(extra);
@@ -112,7 +115,5 @@ public final class ItemComponentUtils {
         
         return itemComponent;
     }
-    
-    private ItemComponentUtils() {}
-    
+
 }

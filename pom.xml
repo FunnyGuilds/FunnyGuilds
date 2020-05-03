@@ -5,7 +5,7 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.6.0</version>
+    <version>4.7.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>net.dzikoysk</groupId>
             <artifactId>funnycommands</artifactId>
-            <version>0.1.0</version>
+            <version>0.1.8</version>
         </dependency>
         <dependency>
             <groupId>org.panda-lang</groupId>

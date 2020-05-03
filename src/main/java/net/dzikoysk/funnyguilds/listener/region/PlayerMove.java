@@ -34,9 +34,10 @@ public class PlayerMove implements Listener {
     
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        final Location from = event.getFrom();
-        final Location to = event.getTo();
-        final Player player = event.getPlayer();
+        Location from = event.getFrom();
+        Location to = event.getTo();
+        Player player = event.getPlayer();
+
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
@@ -105,7 +106,8 @@ public class PlayerMove implements Listener {
                                         config.notificationTitleFadeOut));
                     }
                 }
-            } else if (!cache.getEnter() && region != null) {
+            }
+            else if (!cache.getEnter() && region != null) {
                 Guild guild = region.getGuild();
 
                 if (guild == null || guild.getName() == null) {
