@@ -162,6 +162,7 @@ public class MessageConfiguration {
             "&a/ga przenies [tag] &8- &7Przenosi teren gildii",
             "&a/ga przedluz [tag] [czas] &8- &7Przedluza waznosc gildii o podany czas",
             "&a/ga nazwa [tag] [nazwa] &8- &7Zmienia nazwe gildii",
+            "&a/ga tag [tag] [nowy tag] &8- &7Zmienia tag gildii",
             "&a/ga spy &8- &7Szpieguje czat gildii",
             "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii",
             "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
@@ -509,9 +510,10 @@ public class MessageConfiguration {
     public String adminNewValidity = "&aPrzedluzono waznosc gildii &a{GUILD} &7do &a{VALIDITY}&7!";
     
     public String adminNoNewNameGiven = "&cPodaj nowa nazwe!";
-    @CfgComment("Dostepne zmienne: {GUILD}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String adminNameChanged = "&aZmieniono nazwe gildii na &7{GUILD}&a!";
-    
+    public String adminTagChanged = "&aZmieniono tag gildii na &7{TAG}&a!";
+
     public String adminStopSpy = "&cJuz nie szpiegujesz graczy!";
     public String adminStartSpy = "&aOd teraz szpiegujesz graczy!";
 

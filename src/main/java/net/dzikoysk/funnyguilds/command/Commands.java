@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.command.admin.AxcName;
 import net.dzikoysk.funnyguilds.command.admin.AxcPoints;
 import net.dzikoysk.funnyguilds.command.admin.AxcProtection;
 import net.dzikoysk.funnyguilds.command.admin.AxcSpy;
+import net.dzikoysk.funnyguilds.command.admin.AxcTag;
 import net.dzikoysk.funnyguilds.command.admin.AxcTeleport;
 import net.dzikoysk.funnyguilds.command.admin.AxcUnban;
 import net.dzikoysk.funnyguilds.command.admin.AxcValidity;
@@ -86,6 +87,7 @@ public class Commands {
         new ExecutorCaller(new AxcMove(), commands.admin.move, null, true, true);
         new ExecutorCaller(new AxcValidity(), commands.admin.validity, null, true, false);
         new ExecutorCaller(new AxcName(), commands.admin.name, null, true, false);
+        new ExecutorCaller(new AxcTag(), commands.admin.tag, null, true, false);
         new ExecutorCaller(new AxcSpy(), commands.admin.spy, null, true, true);
         new ExecutorCaller(new AxcEnabled(), commands.admin.enabled, null, true, false);
         new ExecutorCaller(new AxcLeader(), commands.admin.leader, null, true, false);

@@ -1620,6 +1620,9 @@ public class PluginConfiguration {
             public String name = "ga nazwa";
 
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+            public String tag = "ga tag";
+
+            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String spy = "ga spy";
 
             @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
