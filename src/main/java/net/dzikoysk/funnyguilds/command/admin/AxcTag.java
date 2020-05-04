@@ -27,7 +27,7 @@ public class AxcTag implements Executor {
 
         String tag = args[1];
 
-        if (GuildUtils.nameExists(tag)) {
+        if (GuildUtils.tagExists(tag)) {
             sender.sendMessage(messages.createTagExists);
             return;
         }
