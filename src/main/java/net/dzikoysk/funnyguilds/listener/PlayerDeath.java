@@ -57,16 +57,16 @@ public class PlayerDeath implements Listener {
                 return;
             }
 
-            User lastAttacker = victim.getCache().getLastAttacker();
+            User lastAttacker = victimCache.getLastAttacker();
 
             if (lastAttacker == null || ! lastAttacker.isOnline()) {
                 victimCache.clearDamage();
                 return;
             }
 
-            Long attackTime = victim.getCache().wasVictimOf(lastAttacker);
+            Long attackTime = victimCache.wasVictimOf(lastAttacker);
 
-            if (attackTime == null || attackTime + config.lastAttackerAsKillerConsiderationTimeout_ > System.currentTimeMillis()) {
+            if (attackTime == null || attackTime + config.lastAttackerAsKillerConsiderationTimeout_ < System.currentTimeMillis()) {
                 victimCache.clearDamage();
                 return;
             }
