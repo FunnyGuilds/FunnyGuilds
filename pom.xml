@@ -18,12 +18,12 @@
         <dependency>
             <groupId>net.dzikoysk</groupId>
             <artifactId>funnycommands</artifactId>
-            <version>0.1.8</version>
+            <version>0.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.panda-lang</groupId>
             <artifactId>panda</artifactId>
-            <version>indev-20.4.5</version>
+            <version>indev-20.5.7</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.tinylog</groupId>
