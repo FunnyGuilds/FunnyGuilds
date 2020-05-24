@@ -33,7 +33,7 @@ public class ExcConfirm implements Executor {
             return;
         }
 
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().guildDeleteCancelIfSomeoneIsOnRegion && user.getGuild().isSomeoneInRegion()) {
+        if (FunnyGuilds.getInstance().getPluginConfiguration().guildDeleteCancelIfSomeoneIsOnRegion && user.getGuild().isSomeoneInRegion()) {
             player.sendMessage(messages.deleteSomeoneIsNear);
             return;
         }
