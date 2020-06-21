@@ -40,6 +40,15 @@ public class SQLDataModel implements DataModel {
         regionsTable(db);
         guildsTable(db);
 
+        loadUsers(config);
+        loadRegions(config);
+        loadGuilds(config);
+
+        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
+    }
+
+    public void loadUsers(PluginConfiguration config) {
         Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.usersTableName + "`", usersResult -> {
             try {
                 while (usersResult.next()) {
@@ -62,8 +71,9 @@ public class SQLDataModel implements DataModel {
                 FunnyGuilds.getInstance().getPluginLogger().error("Could not load users from database", ex);
             }
         });
+    }
 
-
+    public void loadRegions(PluginConfiguration config) {
         if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.regionsTableName + "`", regionsResult -> {
                 try {
@@ -75,8 +85,7 @@ public class SQLDataModel implements DataModel {
                     }
 
                     FunnyGuilds.getInstance().getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     FunnyGuilds.getInstance().getPluginLogger().error("Could not load regions from database", ex);
                 }
             });
@@ -84,7 +93,9 @@ public class SQLDataModel implements DataModel {
         } else {
             FunnyGuilds.getInstance().getPluginLogger().info("Regions are disabled and thus - not loaded");
         }
+    }
 
+    public void loadGuilds(PluginConfiguration config) {
         Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.guildsTableName + "`", guildsResult -> {
             try {
                 while (guildsResult.next()) {
@@ -134,9 +145,6 @@ public class SQLDataModel implements DataModel {
 
             GuildUtils.deleteGuild(guild);
         }
-
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
     }
 
     @Override
