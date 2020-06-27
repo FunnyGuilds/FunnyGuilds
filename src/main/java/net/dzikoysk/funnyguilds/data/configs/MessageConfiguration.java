@@ -318,7 +318,10 @@ public class MessageConfiguration {
     @CfgComment("<------- Invite Messages -------> #")
     public String invitePlayerExists = "&cNie ma takiego gracza na serwerze!";
     @CfgComment("Dostepne zmienne: {AMOUNT}")
-    public String inviteAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe czlonkow w gildii! (&c{AMOUNT})";
+    public String inviteAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe czlonkow w gildii! (&c{AMOUNT}&7)";
+    public String inviteAllyAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe sojuszy miedzygildyjnych! (&c{AMOUNT}&7)";
+    @CfgComment("Dostepne zmienne: {AMOUNT}, {GUILD}, {TAG}")
+    public String inviteAllyTargetAmount = "&7Gildia {TAG} posiada juz maksymalna liczbe sojuszy! (&c{AMOUNT}&7)";
     public String inviteCancelled = "&cCofnieto zaproszenie!";
     @CfgComment("Dostepne zmienne: {OWNER}, {GUILD}, {TAG}")
     public String inviteCancelledToInvited = "&7Zaproszenie do gildii &c{GUILD} &7zostalo wycofane!";

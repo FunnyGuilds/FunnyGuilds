@@ -3,9 +3,9 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.command.util.Executor;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -18,6 +18,7 @@ public class ExcInvite implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;
         User user = User.get(player);
@@ -39,8 +40,8 @@ public class ExcInvite implements Executor {
 
         Guild guild = user.getGuild();
 
-        if (guild.getMembers().size() >= FunnyGuilds.getInstance().getPluginConfiguration().inviteMembers) {
-            player.sendMessage(messages.inviteAmount.replace("{AMOUNT}", Integer.toString(FunnyGuilds.getInstance().getPluginConfiguration().inviteMembers)));
+        if (guild.getMembers().size() >= config.maxMembersInGuild) {
+            player.sendMessage(messages.inviteAmount.replace("{AMOUNT}", Integer.toString(config.maxMembersInGuild)));
             return;
         }
 

@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -20,6 +21,7 @@ import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.panda_lang.utilities.commons.text.MessageFormatter;
 
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class ExcAlly implements Executor {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;
         User user = User.get(player);
@@ -61,13 +64,12 @@ public class ExcAlly implements Executor {
         }
 
         String tag = args[0];
+        Guild invitedGuild = GuildUtils.getByTag(tag);
 
-        if (!GuildUtils.tagExists(tag)) {
+        if (invitedGuild == null) {
             player.sendMessage(StringUtils.replace(messages.generalGuildNotExists, "{TAG}", tag));
             return;
         }
-
-        Guild invitedGuild = GuildUtils.getByTag(tag);
 
         if (guild.equals(invitedGuild)) {
             player.sendMessage(messages.allySame);
@@ -76,6 +78,21 @@ public class ExcAlly implements Executor {
 
         if (guild.getAllies().contains(invitedGuild)) {
             player.sendMessage(messages.allyAlly);
+            return;
+        }
+
+        if (guild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
+            player.sendMessage(messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
+            return;
+        }
+
+        if (invitedGuild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
+            MessageFormatter formatter = new MessageFormatter()
+                    .register("{GUILD}", invitedGuild.getName())
+                    .register("{TAG}", invitedGuild.getTag())
+                    .register("{AMOUNT}", config.maxAlliesBetweenGuilds);
+
+            player.sendMessage(formatter.format(messages.inviteAllyTargetAmount));
             return;
         }
 

@@ -413,7 +413,11 @@ public class PluginConfiguration {
 
     @CfgComment("Maksymalna liczba czlonkow w gildii")
     @CfgName("max-members")
-    public int inviteMembers = 15;
+    public int maxMembersInGuild = 15;
+
+    @CfgComment("Maksymalna liczba sojuszy miedzy gildiami")
+    @CfgName("max-allies")
+    public int maxAlliesBetweenGuilds = 15;
 
     @CfgComment("Lista nazw swiatow, na ktorych mozliwosc utworzenia gildii powinna byc zablokowana")
     @CfgName("blocked-worlds")
