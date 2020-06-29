@@ -90,8 +90,10 @@ public class ExcInfo implements Executor {
             
             if (!guild.getAllies().isEmpty()) {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
+                messageLine = StringUtils.replace(messageLine, "{ALLIES-TAGS}", ChatUtils.toString(GuildUtils.getTags(guild.getAllies()), true));
             } else {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", messages.alliesNoValue);
+                messageLine = StringUtils.replace(messageLine, "{ALLIES-TAGS}", messages.alliesNoValue);
             }
             
             if (messageLine.contains("<online>")) {
