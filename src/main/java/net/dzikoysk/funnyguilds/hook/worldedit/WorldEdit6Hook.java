@@ -23,10 +23,10 @@ import java.lang.reflect.Method;
 import java.util.zip.GZIPInputStream;
 
 public class WorldEdit6Hook implements WorldEditHook {
+
     private Constructor<?> schematicReaderConstructor;
     private Constructor<?> clipboardHolderConstructor;
     private Constructor<?> pasteConstructor;
-
     private Constructor<?> vectorConstructor;
 
     private Method getWorldData;

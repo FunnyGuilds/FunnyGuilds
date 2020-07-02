@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class WorldGuard6Hook implements WorldGuardHook {
+
     private static final MethodHandle GET_REGION_MANAGER;
     private static final MethodHandle GET_APPLICABLE_REGIONS;
 
@@ -41,7 +42,6 @@ public class WorldGuard6Hook implements WorldGuardHook {
 
     private Method getInstance;
     private Method getFlagRegistry;
-
 
     private WorldGuardPlugin worldGuard;
     private StateFlag noPointsFlag;
@@ -66,11 +66,13 @@ public class WorldGuard6Hook implements WorldGuardHook {
 
     @Override
     public boolean isInNonPointsRegion(Location location) {
-        if (! isInRegion(location)) {
+        ApplicableRegionSet regionSet = getRegionSet(location);
+
+        if (regionSet == null) {
             return false;
         }
 
-        for (ProtectedRegion region : getRegionSet(location)) {
+        for (ProtectedRegion region : regionSet) {
             if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
                 return true;
             }
@@ -81,13 +83,14 @@ public class WorldGuard6Hook implements WorldGuardHook {
 
     @Override
     public boolean isInIgnoredRegion(Location location) {
-        if (! isInRegion(location)) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        ApplicableRegionSet regionSet = getRegionSet(location);
+
+        if (regionSet == null) {
             return false;
         }
 
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        return getRegionSet(location).getRegions()
+        return regionSet.getRegions()
                 .stream()
                 .anyMatch(region -> config.assistsRegionsIgnored.contains(region.getId()));
     }
@@ -95,6 +98,7 @@ public class WorldGuard6Hook implements WorldGuardHook {
     @Override
     public boolean isInRegion(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
+
         if (regionSet == null) {
             return false;
         }
@@ -113,13 +117,14 @@ public class WorldGuard6Hook implements WorldGuardHook {
             return (ApplicableRegionSet) GET_APPLICABLE_REGIONS.invokeExact(regionManager, location);
         }
         catch (Throwable ex) {
-            throw new RuntimeException("Could not retrieve region set from given location", ex);
+            return null;
         }
     }
 
     @Override
     public List<String> getRegionNames(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
+
         return regionSet == null ? null : regionSet.getRegions().stream()
                 .map(ProtectedRegion::getId)
                 .collect(Collectors.toList());

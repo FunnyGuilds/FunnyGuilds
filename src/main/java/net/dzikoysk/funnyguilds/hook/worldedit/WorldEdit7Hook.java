@@ -19,6 +19,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public class WorldEdit7Hook implements WorldEditHook {
+
     @Override
     public boolean pasteSchematic(File schematicFile, Location location, boolean withAir) {
         try {

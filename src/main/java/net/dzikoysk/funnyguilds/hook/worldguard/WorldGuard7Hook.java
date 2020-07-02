@@ -29,11 +29,13 @@ public class WorldGuard7Hook implements WorldGuardHook {
 
     @Override
     public boolean isInNonPointsRegion(Location location) {
-        if (! isInRegion(location)) {
+        ApplicableRegionSet regionSet = getRegionSet(location);
+
+        if (regionSet == null) {
             return false;
         }
 
-        for (ProtectedRegion region : getRegionSet(location)) {
+        for (ProtectedRegion region : regionSet) {
             if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
                 return true;
             }
@@ -44,13 +46,14 @@ public class WorldGuard7Hook implements WorldGuardHook {
 
     @Override
     public boolean isInIgnoredRegion(Location location) {
-        if (! isInRegion(location)) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        ApplicableRegionSet regionSet = getRegionSet(location);
+
+        if (regionSet == null) {
             return false;
         }
 
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        return getRegionSet(location).getRegions()
+        return regionSet.getRegions()
                 .stream()
                 .anyMatch(region -> config.assistsRegionsIgnored.contains(region.getId()));
     }
@@ -58,6 +61,7 @@ public class WorldGuard7Hook implements WorldGuardHook {
     @Override
     public boolean isInRegion(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
+
         if (regionSet == null) {
             return false;
         }
@@ -72,6 +76,7 @@ public class WorldGuard7Hook implements WorldGuardHook {
         }
 
         RegionManager regionManager = worldGuard.getPlatform().getRegionContainer().get(BukkitAdapter.adapt(location.getWorld()));
+
         if (regionManager == null) {
             return null;
         }
@@ -82,6 +87,7 @@ public class WorldGuard7Hook implements WorldGuardHook {
     @Override
     public List<String> getRegionNames(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
+
         return regionSet == null ? null : regionSet.getRegions().stream()
                 .map(ProtectedRegion::getId)
                 .collect(Collectors.toList());
