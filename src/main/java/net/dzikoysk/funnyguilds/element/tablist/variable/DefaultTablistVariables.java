@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.element.tablist.variable.impl.GuildDependentTabl
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVariable;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
-import net.dzikoysk.funnyguilds.hook.WorldGuardHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
@@ -148,7 +147,7 @@ public final class DefaultTablistVariables {
 
         Location location = user.getPlayer().getLocation();
 
-        List<String> regionNames = WorldGuardHook.getRegionNames(location);
+        List<String> regionNames = PluginHook.WORLD_GUARD.getRegionNames(location);
 
         if (regionNames != null && ! regionNames.isEmpty()) {
             return regionNames;
