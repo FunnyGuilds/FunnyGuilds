@@ -1210,6 +1210,14 @@ public class PluginConfiguration {
     @CfgName("data-interval")
     public int dataInterval = 1;
 
+    @CfgComment("Jak dlugo plugin powinien czekac na zatrzymanie wszystkich biezacych zadan przy wylaczaniu pluginu")
+    @CfgComment("Czas podawany w sekundach")
+    @CfgName("plugin-task-termination-timeout")
+    public long pluginTaskTerminationTimeout_ = 30;
+
+    @CfgExclude
+    public long pluginTaskTerminationTimeout;
+
     @CfgComment("Typ zapisu danych")
     @CfgComment("FLAT - Lokalne pliki")
     @CfgComment("MYSQL - baza danych")
@@ -1516,6 +1524,7 @@ public class PluginConfiguration {
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
 
         this.rankingUpdateInterval_ = Math.max(1, this.rankingUpdateInterval);
+        this.pluginTaskTerminationTimeout = Math.max(1, this.pluginTaskTerminationTimeout_);
     }
 
     public static class Commands {

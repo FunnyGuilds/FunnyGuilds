@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class ConcurrencyManager {
 
@@ -22,6 +23,17 @@ public class ConcurrencyManager {
 
     public void postTask(ConcurrencyTask task) {
         this.executor.submit(task);
+    }
+
+    public void awaitTermination(long timeout) {
+        this.executor.shutdown();
+
+        try {
+            this.executor.awaitTermination(timeout, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("ConcurrencyManager termination failed", ex);
+        }
     }
 
     public void printStatus() {
