@@ -158,6 +158,8 @@ public class PlayerDeath implements Listener {
         List<String> assistEntries = new ArrayList<>();
         List<User> messageReceivers = new ArrayList<>();
 
+        int victimPointsBeforeChange = victim.getRank().getPoints();
+
         if (SimpleEventHandler.handle(attackerEvent) && SimpleEventHandler.handle(victimEvent)) {
             double attackerDamage = victimCache.killedBy(attacker);
 
@@ -208,6 +210,8 @@ public class PlayerDeath implements Listener {
             attacker.getRank().addPoints(attackerEvent.getChange());
             attackerCache.registerVictim(victim);
 
+            victimPointsBeforeChange = victim.getRank().getPoints();
+
             victim.getRank().removePoints(victimEvent.getChange());
             victimCache.registerAttacker(attacker);
             victimCache.clearDamage();
@@ -246,7 +250,7 @@ public class PlayerDeath implements Listener {
                 .register("{ATTACKER}", attacker.getName())
                 .register("{VICTIM}", victim.getName())
                 .register("{+}", Integer.toString(attackerEvent.getChange()))
-                .register("{-}", Integer.toString(victimEvent.getChange()))
+                .register("{-}", Math.min(victimPointsBeforeChange, victimEvent.getChange()))
                 .register("{POINTS-FORMAT}",
                         IntegerRange.inRange(vP, config.pointsFormat, "POINTS"))
                 .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
