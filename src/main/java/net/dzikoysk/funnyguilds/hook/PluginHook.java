@@ -29,12 +29,7 @@ public final class PluginHook {
 
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
-    public static void init() {
-        tryInit(PLUGIN_FUNNYTAB, () -> {
-            FunnyTabHook.initFunnyDisabler();
-            return true;
-        }, false);
-
+    public static void earlyInit() {
         tryInit(PLUGIN_WORLDGUARD, () -> {
             try {
                 Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
@@ -51,6 +46,13 @@ public final class PluginHook {
                 return false;
             }
         });
+    }
+
+    public static void init() {
+        tryInit(PLUGIN_FUNNYTAB, () -> {
+            FunnyTabHook.initFunnyDisabler();
+            return true;
+        }, false);
 
         tryInit(PLUGIN_WORLDEDIT, () -> {
             String worldEditVersion = Bukkit.getPluginManager().getPlugin("WorldEdit").getDescription().getVersion();

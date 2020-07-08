@@ -140,6 +140,7 @@ public class FunnyGuilds extends JavaPlugin {
         commands.register();
 
         this.dynamicListenerManager = new DynamicListenerManager(this);
+        PluginHook.earlyInit();
     }
 
     @Override
