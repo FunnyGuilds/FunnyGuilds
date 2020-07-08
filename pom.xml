@@ -231,6 +231,14 @@
                             <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging.log4j.</shadedPattern>
                         </relocation>
                     </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>com.fasterxml.jackson.core:jackson-core</artifact>
+                            <includes>
+                                <include>com/fasterxml/jackson/core/**</include>
+                            </includes>
+                        </filter>
+                    </filters>
                 </configuration>
             </plugin>
             <plugin>
