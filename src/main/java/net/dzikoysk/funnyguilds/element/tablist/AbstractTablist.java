@@ -101,6 +101,7 @@ public abstract class AbstractTablist {
             case "v1_13_R2":
             case "v1_14_R1":
             case "v1_15_R1":
+            case "v1_16_R1":
                 tablist = new net.dzikoysk.funnyguilds.element.tablist.impl.v1_13_R2.TablistImpl(pattern, header, footer, ping, user);
                 break;
             default:

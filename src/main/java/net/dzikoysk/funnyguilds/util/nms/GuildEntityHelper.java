@@ -49,6 +49,7 @@ public final class GuildEntityHelper {
         switch (Reflections.SERVER_VERSION) {
             case "v1_14_R1":
             case "v1_15_R1":
+            case "v1_16_R1":
                 ENTITY_CONSTRUCTOR = Reflections.getConstructor(entityClass, craftWorldClass, double.class, double.class, double.class);
                 break;
             default:
@@ -74,6 +75,7 @@ public final class GuildEntityHelper {
         switch (Reflections.SERVER_VERSION) {
             case "v1_14_R1":
             case "v1_15_R1":
+            case "v1_16_R1":
                 entity = ENTITY_CONSTRUCTOR.newInstance(world, loc.getX(), loc.getY(), loc.getZ());
                 break;
             default:

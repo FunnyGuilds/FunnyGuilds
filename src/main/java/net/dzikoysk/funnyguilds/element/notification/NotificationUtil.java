@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public final class NotificationUtil {
 
@@ -28,6 +29,8 @@ public final class NotificationUtil {
     private static final Enum<?> TIMES_ENUM;
 
     private static final String BASE_COMPONENT_JSON_PATTERN = "{\"text\": \"{TEXT}\"}";
+
+    private static final UUID SENDER_ALWAYS_DISPLAY = new UUID(0L, 0L);
 
     static {
         PACKET_PLAY_OUT_TITLE_CLASS = Reflections.getNMSClass("PacketPlayOutTitle");
@@ -96,11 +99,17 @@ public final class NotificationUtil {
         Object actionbarPacket;
 
         if (CHAT_MESSAGE_TYPE_CLASS != null) {
-            actionbarPacket = PacketCreator.of(PACKET_PLAY_OUT_CHAT_CLASS)
+            PacketCreator packetCreator = PacketCreator.of(PACKET_PLAY_OUT_CHAT_CLASS)
                     .create()
                     .withField("a", createBaseComponent(text, false))
-                    .withField("b", CHAT_MESSAGE_TYPE_CLASS.getEnumConstants()[2])
-                    .getPacket();
+                    .withField("b", CHAT_MESSAGE_TYPE_CLASS.getEnumConstants()[2]);
+
+            if ("v1_16_R1".equalsIgnoreCase(Reflections.SERVER_VERSION)) {
+                // We always want to display our action bar notification (and it only applies to 1.16+)
+                packetCreator.withField("c", SENDER_ALWAYS_DISPLAY);
+            }
+
+            actionbarPacket = packetCreator.getPacket();
         }
         else {
             actionbarPacket = PacketCreator.of(PACKET_PLAY_OUT_CHAT_CLASS)
