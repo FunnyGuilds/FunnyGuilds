@@ -55,8 +55,14 @@ public final class PluginHook {
         }, false);
 
         tryInit(PLUGIN_WORLDEDIT, () -> {
-            String worldEditVersion = Bukkit.getPluginManager().getPlugin("WorldEdit").getDescription().getVersion();
-            WORLD_EDIT = worldEditVersion.startsWith("7") ? new WorldEdit7Hook() : new WorldEdit6Hook();
+            try {
+                Class.forName("com.sk89q.worldedit.Vector");
+                WORLD_EDIT = new WorldEdit6Hook();
+            }
+            catch (ClassNotFoundException ignored) {
+                WORLD_EDIT = new WorldEdit7Hook();
+            }
+
             WORLD_EDIT.init();
             return true;
         });
