@@ -51,7 +51,11 @@ public class Dummy {
         if (! FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
             return;
         }
-        
+
+        if(user.getPlayer().hasPermission("funnyguilds.admin.disabledummy")){
+            return;
+        }
+
         Scoreboard scoreboard = this.user.getCache().getScoreboard();
 
         if (scoreboard == null) {
