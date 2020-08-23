@@ -13,7 +13,7 @@ import java.text.MessageFormat;
 public class Dummy {
 
     private static final String OBJECTIVE_NAME = "FG-Points";
-    private final        User   user;
+    private final User user;
 
     public Dummy(User user) {
         this.user = user;
@@ -22,6 +22,10 @@ public class Dummy {
 
     public void updateScore(User user) {
         if (! FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
+            return;
+        }
+
+        if (user.getPlayer().hasPermission("funnyguilds.admin.disabledummy")) {
             return;
         }
 
@@ -47,7 +51,11 @@ public class Dummy {
         if (! FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
             return;
         }
-        
+
+        if (user.getPlayer().hasPermission("funnyguilds.admin.disabledummy")) {
+            return;
+        }
+
         Scoreboard scoreboard = this.user.getCache().getScoreboard();
 
         if (scoreboard == null) {
