@@ -22,6 +22,7 @@ permissions:
       funnyguilds.admin.build: true
       funnyguilds.admin.interact: true
       funnyguilds.admin.notification: true
+      funnyguilds.admin.disabledummy: false
 
   funnyguilds.vip:
     default: op

@@ -25,6 +25,10 @@ public class Dummy {
             return;
         }
 
+        if(user.getPlayer().hasPermission("funnyguilds.admin.disabledummy")){
+            return;
+        }
+
         Scoreboard scoreboard = this.user.getCache().getScoreboard();
 
         if (scoreboard == null) {
