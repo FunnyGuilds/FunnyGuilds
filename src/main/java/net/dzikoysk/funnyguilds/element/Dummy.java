@@ -13,7 +13,7 @@ import java.text.MessageFormat;
 public class Dummy {
 
     private static final String OBJECTIVE_NAME = "FG-Points";
-    private final        User   user;
+    private final User user;
 
     public Dummy(User user) {
         this.user = user;
@@ -25,7 +25,7 @@ public class Dummy {
             return;
         }
 
-        if(user.getPlayer().hasPermission("funnyguilds.admin.disabledummy")){
+        if (user.getPlayer().hasPermission("funnyguilds.admin.disabledummy")) {
             return;
         }
 
@@ -52,7 +52,7 @@ public class Dummy {
             return;
         }
 
-        if(user.getPlayer().hasPermission("funnyguilds.admin.disabledummy")){
+        if (user.getPlayer().hasPermission("funnyguilds.admin.disabledummy")) {
             return;
         }
 
