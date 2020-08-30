@@ -36,6 +36,10 @@ public class PlayerJoin implements Listener {
 
         if (user == null) {
             user = User.create(player);
+        } else {
+            if (! user.getName().equals(player.getName())) {
+                user.setName(player.getName());
+            }
         }
 
         user.updateReference(player);
