@@ -67,7 +67,7 @@ public class ExcBase implements Executor {
             return;
         }
 
-        int time = config.baseDelay;
+        int time = player.hasPermission("funnyguilds.vip.baseTeleportTime") ? config.baseDelayVip : config.baseDelay;
         Location before = player.getLocation();
         AtomicInteger timeCounter = new AtomicInteger(1);
         UserCache cache = user.getCache();
