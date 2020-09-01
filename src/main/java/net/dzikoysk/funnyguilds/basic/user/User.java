@@ -22,7 +22,7 @@ import java.util.UUID;
 public class User extends AbstractBasic {
 
     private final UUID                  uuid;
-    private final String                name;
+    private       String                name;
     private final UserCache             cache;
     private final Rank                  rank;
     private       WeakReference<Player> playerRef;
@@ -149,6 +149,10 @@ public class User extends AbstractBasic {
     @Override
     public String getName() {
         return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
