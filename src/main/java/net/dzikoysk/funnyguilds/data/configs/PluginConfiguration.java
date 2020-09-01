@@ -442,6 +442,10 @@ public class PluginConfiguration {
     @CfgName("base-delay")
     public int baseDelay = 5;
 
+    @CfgComment("Czas oczekiwania na teleportacje (w sekundach) dla graczy posiadajacych uprawnienie (funnyguilds.vip.baseTeleportTime)")
+    @CfgName("base-delay-vip")
+    public int baseDelayVip = 3;
+
     @CfgComment("Koszt teleportacji do gildii (jezeli brak, wystarczy zrobic: base-items: [])")
     @CfgName("base-items")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)

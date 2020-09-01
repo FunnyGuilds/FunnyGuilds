@@ -30,6 +30,7 @@ permissions:
       funnyguilds.vip.items: true
       funnyguilds.vip.rank: true
       funnyguilds.vip.base: true
+      funnyguilds.vip.baseTeleportTime: true
 
   funnyguilds.player:
     default: true
