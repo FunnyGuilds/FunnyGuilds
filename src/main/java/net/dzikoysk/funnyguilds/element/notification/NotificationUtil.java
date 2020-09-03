@@ -104,9 +104,14 @@ public final class NotificationUtil {
                     .withField("a", createBaseComponent(text, false))
                     .withField("b", CHAT_MESSAGE_TYPE_CLASS.getEnumConstants()[2]);
 
-            if ("v1_16_R1".equalsIgnoreCase(Reflections.SERVER_VERSION)) {
-                // We always want to display our action bar notification (and it only applies to 1.16+)
-                packetCreator.withField("c", SENDER_ALWAYS_DISPLAY);
+            switch (Reflections.SERVER_VERSION) {
+                case "v1_16_R1":
+                case "v1_16_R2":
+                    // We always want to display our action bar notification (and it only applies to 1.16+)
+                    packetCreator.withField("c", SENDER_ALWAYS_DISPLAY);
+                    break;
+                default:
+                    break;
             }
 
             actionbarPacket = packetCreator.getPacket();
