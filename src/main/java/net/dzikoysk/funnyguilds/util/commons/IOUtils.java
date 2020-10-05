@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
+import com.google.common.base.Throwables;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import java.io.ByteArrayOutputStream;
@@ -47,8 +48,9 @@ public final class IOUtils {
             body = IOUtils.toString(in, encoding);
             in.close();
         }
-        catch (Exception e) {
+        catch (Exception ex) {
             FunnyGuilds.getInstance().getPluginLogger().update("Connection to the update server (" + s + ") failed!");
+            FunnyGuilds.getInstance().getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(ex));
         } finally {
             close(in);
         }
@@ -104,7 +106,7 @@ public final class IOUtils {
             baos.write(buf, 0, len);
         }
         
-        return new String(baos.toByteArray(), encoding);
+        return baos.toString(encoding);
     }
 
     public static void close(Closeable closeable) {

@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds;
 
-import com.google.common.base.Throwables;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.RankRecalculationTask;
@@ -51,11 +50,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
-import org.kohsuke.github.GitHub;
-import org.kohsuke.github.GitHubBuilder;
 
 import java.io.File;
-import java.io.IOException;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -81,8 +77,6 @@ public class FunnyGuilds extends JavaPlugin {
     private DataModel                    dataModel;
     private DataPersistenceHandler       dataPersistenceHandler;
     private InvitationPersistenceHandler invitationPersistenceHandler;
-
-    private GitHub githubAPI;
 
     private boolean isDisabling;
     private boolean forceDisabling;
@@ -195,14 +189,6 @@ public class FunnyGuilds extends JavaPlugin {
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, new PlayerRespawn());
         this.dynamicListenerManager.reloadAll();
         this.patch();
-
-        try {
-            this.githubAPI = new GitHubBuilder().build();
-        }
-        catch (IOException ex) {
-            this.getPluginLogger().debug("Could not initialize GitHub API!");
-            this.getPluginLogger().debug(Throwables.getStackTraceAsString(ex));
-        }
 
         FunnyGuildsVersion.isNewAvailable(this.getServer().getConsoleSender(), true);
         PluginHook.init();
@@ -331,10 +317,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public String getMainVersion() {
         return this.mainVersion;
-    }
-
-    protected GitHub getGithubAPI() {
-        return this.githubAPI;
     }
 
     public static FunnyGuilds getInstance() {

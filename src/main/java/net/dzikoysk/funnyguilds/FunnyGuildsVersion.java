@@ -1,18 +1,19 @@
 package net.dzikoysk.funnyguilds;
 
 import com.google.common.base.Throwables;
-import com.google.common.collect.Iterables;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.kohsuke.github.GHCommit;
-import org.kohsuke.github.GitHub;
-
-import java.io.IOException;
 
 public final class FunnyGuildsVersion {
 
+    private static final Gson GSON = new Gson();
+
+    private static final String GH_COMMITS_URL = "https://api.github.com/repos/FunnyGuilds/FunnyGuilds/commits";
     private static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
 
     public static void isNewAvailable(CommandSender sender, boolean force) {
@@ -33,24 +34,23 @@ public final class FunnyGuildsVersion {
                 if (StringUtils.isNotBlank(currentNightlyHash)) {
                     if (FunnyGuilds.getInstance().getPluginConfiguration().updateNightlyInfo) {
                         try {
-                            GitHub github = FunnyGuilds.getInstance().getGithubAPI();
+                            String ghResponse = IOUtils.getContent(GH_COMMITS_URL);
+                            JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
 
-                            if (github == null) {
+                            if (ghCommits.size() == 0) {
                                 return;
                             }
 
-                            GHCommit latestCommit = Iterables.get(
-                                    github.getOrganization("FunnyGuilds").getRepository("FunnyGuilds").listCommits(), 0);
-
-                            String commitHash = latestCommit.getSHA1().substring(0, 7);
+                            JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
+                            String commitHash = latestCommit.get("sha").getAsString().substring(0, 7);
 
                             if (! commitHash.equals(currentNightlyHash)) {
                                 printNewVersionAvailable(sender, latest + "-" + commitHash, true);
                             }
                         }
-                        catch (IOException ex) {
-                            FunnyGuilds.getInstance().getPluginLogger().debug("Could not retrieve latest nightly version!");
-                            FunnyGuilds.getInstance().getPluginLogger().debug(Throwables.getStackTraceAsString(ex));
+                        catch (Throwable th) {
+                            FunnyGuilds.getInstance().getPluginLogger().update("Could not retrieve latest nightly version!");
+                            FunnyGuilds.getInstance().getPluginLogger().update(Throwables.getStackTraceAsString(th));
                         }
                     }
                 }
