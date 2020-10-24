@@ -32,8 +32,15 @@ public class IndividualPrefixManager {
                     "We're trying to update player scoreboard, but cached scoreboard is null (server has been reloaded?)");
 
             Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
-                Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-                player.setScoreboard(scoreboard);
+                Scoreboard scoreboard;
+                if (config.useSharedScoreboard) {
+                    scoreboard = player.getScoreboard();
+                }
+                else {
+                    scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+                    player.setScoreboard(scoreboard);
+                }
+
                 cache.setScoreboard(scoreboard);
 
                 if (config.guildTagEnabled) {

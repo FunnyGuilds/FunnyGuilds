@@ -52,7 +52,12 @@ public class PlayerJoin implements Listener {
         UserCache cache = user.getCache();
 
         if (cache.getScoreboard() == null) {
-            cache.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            if (config.useSharedScoreboard) {
+                cache.setScoreboard(player.getScoreboard());
+            }
+            else {
+                cache.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+            }
         }
 
         if (cache.getIndividualPrefix() == null && config.guildTagEnabled) {

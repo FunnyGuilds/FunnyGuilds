@@ -947,6 +947,12 @@ public class PluginConfiguration {
     @CfgExclude
     public String ptopOffline;
 
+    @CfgName("use-shared-scoreboard")
+    @CfgComment("Czy FunnyGuilds powinno korzystac z wspoldzielonego scoreboarda")
+    @CfgComment("Ta opcja pozwala na dzialanie pluginu FunnyGuilds oraz innych pluginow modyfikujacych scoreboard ze soba")
+    @CfgComment("UWAGA: Opcja eksperymentalna i moze powodowac bledy przy wyswietlaniu rzeczy zaleznych od scoreboardow!")
+    public boolean useSharedScoreboard = false;
+
     @CfgComment("Czy wlaczyc dummy z punktami")
     @CfgComment(
             "UWAGA - zalecane jest wylaczenie tej opcji w przypadku konfliktow z BungeeCord'em, wiecej szczegolow tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")

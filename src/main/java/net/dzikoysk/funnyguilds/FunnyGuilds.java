@@ -236,7 +236,12 @@ public class FunnyGuilds extends JavaPlugin {
             User user = User.get(player);
 
             if (user.getCache().getScoreboard() == null) {
-                user.getCache().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                if (pluginConfiguration.useSharedScoreboard) {
+                    user.getCache().setScoreboard(player.getScoreboard());
+                }
+                else {
+                    user.getCache().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                }
             }
 
             user.getCache().getDummy();
