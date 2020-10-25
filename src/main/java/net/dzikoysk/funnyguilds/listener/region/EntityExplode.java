@@ -107,11 +107,6 @@ public class EntityExplode implements Listener {
 
         List<Block> affectedBlocks = new ArrayList<>();
 
-        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
-            event.setCancelled(true);
-            return;
-        }
-
         for (Location blockLocation : blockSphereLocations) {
             Material material = blockLocation.getBlock().getType();
 
@@ -126,16 +121,22 @@ public class EntityExplode implements Listener {
                 }
             }
 
-            affectedBlocks.add(blockLocation.getBlock());
+            if(SpaceUtils.chance(explodeChance))
+               affectedBlocks.add(blockLocation.getBlock());
+        }
+
+        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
+            event.setCancelled(true);
+            return;
+        }
+
+        for(Block affectedBlock: affectedBlocks) {
+            Material material = affectedBlock.getType();
             if (material == Material.WATER || material == Material.LAVA) {
-                if (SpaceUtils.chance(explodeChance)) {
-                    blockLocation.getBlock().setType(Material.AIR);
-                }
+                affectedBlock.setType(Material.AIR);
             }
             else {
-                if (SpaceUtils.chance(explodeChance)) {
-                    blockLocation.getBlock().breakNaturally();
-                }
+                affectedBlock.breakNaturally();
             }
         }
     }
