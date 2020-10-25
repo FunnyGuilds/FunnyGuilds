@@ -1,0 +1,34 @@
+package net.dzikoysk.funnyguilds.event.guild;
+
+import net.dzikoysk.funnyguilds.event.FunnyEvent;
+import org.bukkit.block.Block;
+import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
+
+//pls wezcie zrobcie jakis refractor tutaj
+public class GuildEntityExplodeEvent extends FunnyEvent {
+    private static final HandlerList HANDLER_LIST = new HandlerList();
+
+    private final List<Block> affectedBlocks;
+
+    public GuildEntityExplodeEvent(List<Block> affectedBlocks) {
+        super(EventCause.UNKNOWN, null);
+        this.affectedBlocks = affectedBlocks;
+    }
+
+    public List<Block> getAffectedBlocks() {
+        return affectedBlocks;
+    }
+
+    @Override
+    public String getDefaultCancelMessage() {
+        return "[FunnyGuilds] Region entity explode has been cancelled by the server!";
+    }
+
+    @Override
+    public @NotNull HandlerList getHandlers() {
+        return HANDLER_LIST;
+    }
+}
