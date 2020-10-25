@@ -107,6 +107,11 @@ public class EntityExplode implements Listener {
 
         List<Block> affectedBlocks = new ArrayList<>();
 
+        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
+            event.setCancelled(true);
+            return;
+        }
+
         for (Location blockLocation : blockSphereLocations) {
             Material material = blockLocation.getBlock().getType();
 
@@ -132,10 +137,6 @@ public class EntityExplode implements Listener {
                     blockLocation.getBlock().breakNaturally();
                 }
             }
-        }
-
-        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(affectedBlocks))) {
-            event.setCancelled(true);
         }
     }
 

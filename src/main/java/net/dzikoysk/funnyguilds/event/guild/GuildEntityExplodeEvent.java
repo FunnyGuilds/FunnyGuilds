@@ -7,14 +7,13 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-//pls wezcie zrobcie jakis refractor tutaj
 public class GuildEntityExplodeEvent extends FunnyEvent {
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     private final List<Block> affectedBlocks;
 
-    public GuildEntityExplodeEvent(List<Block> affectedBlocks) {
-        super(EventCause.UNKNOWN, null);
+    public GuildEntityExplodeEvent(EventCause cause, List<Block> affectedBlocks) {
+        super(cause, null);
         this.affectedBlocks = affectedBlocks;
     }
 
