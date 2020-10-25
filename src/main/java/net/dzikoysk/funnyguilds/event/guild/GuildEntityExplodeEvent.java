@@ -26,6 +26,8 @@ public class GuildEntityExplodeEvent extends FunnyEvent {
         return "[FunnyGuilds] Region entity explode has been cancelled by the server!";
     }
 
+    public static HandlerList getHandlerList() { return HANDLER_LIST; }
+
     @Override
     public @NotNull HandlerList getHandlers() {
         return HANDLER_LIST;
