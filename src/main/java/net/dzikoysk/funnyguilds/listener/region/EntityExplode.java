@@ -121,16 +121,15 @@ public class EntityExplode implements Listener {
                 }
             }
 
+            affectedBlocks.add(blockLocation.getBlock());
             if (material == Material.WATER || material == Material.LAVA) {
                 if (SpaceUtils.chance(explodeChance)) {
                     blockLocation.getBlock().setType(Material.AIR);
-                    affectedBlocks.add(blockLocation.getBlock());
                 }
             }
             else {
                 if (SpaceUtils.chance(explodeChance)) {
                     blockLocation.getBlock().breakNaturally();
-                    affectedBlocks.add(blockLocation.getBlock());
                 }
             }
         }
