@@ -6,6 +6,10 @@ import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.event.FunnyEvent;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
 import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import org.bukkit.Location;
@@ -19,6 +23,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -100,6 +105,8 @@ public class EntityExplode implements Listener {
             }
         }
 
+        List<Block> affectedBlocks = new ArrayList<>();
+
         for (Location blockLocation : blockSphereLocations) {
             Material material = blockLocation.getBlock().getType();
 
@@ -114,15 +121,22 @@ public class EntityExplode implements Listener {
                 }
             }
 
+            if(SpaceUtils.chance(explodeChance))
+               affectedBlocks.add(blockLocation.getBlock());
+        }
+
+        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
+            event.setCancelled(true);
+            return;
+        }
+
+        for(Block affectedBlock: affectedBlocks) {
+            Material material = affectedBlock.getType();
             if (material == Material.WATER || material == Material.LAVA) {
-                if (SpaceUtils.chance(explodeChance)) {
-                    blockLocation.getBlock().setType(Material.AIR);
-                }
+                affectedBlock.setType(Material.AIR);
             }
             else {
-                if (SpaceUtils.chance(explodeChance)) {
-                    blockLocation.getBlock().breakNaturally();
-                }
+                affectedBlock.breakNaturally();
             }
         }
     }
