@@ -107,6 +107,7 @@ public final class NotificationUtil {
             switch (Reflections.SERVER_VERSION) {
                 case "v1_16_R1":
                 case "v1_16_R2":
+                case "v1_16_R3":
                     // We always want to display our action bar notification (and it only applies to 1.16+)
                     packetCreator.withField("c", SENDER_ALWAYS_DISPLAY);
                     break;
