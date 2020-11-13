@@ -214,7 +214,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <finalName>${project.name} ${project.version} (MC 1.8-1.15)</finalName>
+                    <finalName>${project.name} ${project.version} (MC 1.8-1.16.4)</finalName>
                     <minimizeJar>true</minimizeJar>
                     <relocations>
                         <relocation>
