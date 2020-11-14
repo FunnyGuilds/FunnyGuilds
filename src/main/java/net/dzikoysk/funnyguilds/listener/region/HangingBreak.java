@@ -16,7 +16,7 @@ public class HangingBreak implements Listener {
         
         Player p = (Player) e.getRemover();
         
-        if (ProtectionSystem.build(p, e.getEntity().getLocation())) {
+        if (ProtectionSystem.isProtected(p, e.getEntity().getLocation())) {
             e.setCancelled(true);
         }
     }

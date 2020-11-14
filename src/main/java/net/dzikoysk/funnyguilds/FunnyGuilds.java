@@ -31,6 +31,7 @@ import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
 import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
 import net.dzikoysk.funnyguilds.listener.region.BucketAction;
 import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.EntityPlace;
 import net.dzikoysk.funnyguilds.listener.region.GuildHeartProtectionHandler;
 import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
 import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
@@ -171,6 +172,7 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerLogin(), this);
         pluginManager.registerEvents(new PlayerQuit(), this);
         pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
+        pluginManager.registerEvents(new EntityPlace(), this);
 
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
                 new BlockBreak(),

@@ -9,7 +9,7 @@ public class BlockIgnite implements Listener {
 
     @EventHandler
     public void onIgnite(BlockIgniteEvent e) {
-        if (ProtectionSystem.build(e.getPlayer(), e.getBlock().getLocation())) {
+        if (ProtectionSystem.isProtected(e.getPlayer(), e.getBlock().getLocation())) {
             e.setCancelled(true);
         }
     }

@@ -9,7 +9,7 @@ public class HangingPlace implements Listener {
 
     @EventHandler
     public void onPlace(HangingPlaceEvent e) {
-        if (ProtectionSystem.build(e.getPlayer(), e.getEntity().getLocation())) {
+        if (ProtectionSystem.isProtected(e.getPlayer(), e.getEntity().getLocation())) {
             e.setCancelled(true);
         }
     }

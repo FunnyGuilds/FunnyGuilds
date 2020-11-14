@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class ProtectionSystem {
 
-    public static boolean build(Player player, Location location, boolean build) {
+    public static boolean isProtected(Player player, Location location, boolean build) {
         if (player == null || location == null) {
             return false;
         }
@@ -57,8 +57,8 @@ public final class ProtectionSystem {
         return true;
     }
 
-    public static boolean build(Player player, Location loc) {
-        return build(player, loc, false);
+    public static boolean isProtected(Player player, Location loc) {
+        return isProtected(player, loc, false);
     }
 
 }

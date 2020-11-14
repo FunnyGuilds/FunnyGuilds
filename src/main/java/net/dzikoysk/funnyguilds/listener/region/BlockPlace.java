@@ -29,7 +29,7 @@ public class BlockPlace implements Listener {
         Material type = block.getType();
 
         Location blockLocation = block.getLocation();
-        if (!ProtectionSystem.build(player, blockLocation, true)) {
+        if (!ProtectionSystem.isProtected(player, blockLocation, true)) {
             return;
         }
 
