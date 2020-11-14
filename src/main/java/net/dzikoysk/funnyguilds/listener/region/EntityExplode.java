@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
-import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
 import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import org.bukkit.Location;
@@ -74,12 +73,15 @@ public class EntityExplode implements Listener {
             Guild guild = region.getGuild();
 
             if (config.guildTNTProtectionEnabled) {
-                LocalTime now = LocalDateTime.now().toLocalTime();
+                LocalTime now = LocalTime.now();
+                LocalTime start = config.guildTNTProtectionStartTime;
+                LocalTime end = config.guildTNTProtectionEndTime;
 
-                boolean afterStart = now.isAfter(config.guildTNTProtectionStartTime);
-                boolean beforeEnd = now.isBefore(config.guildTNTProtectionEndTime);
+                boolean isWithinTimeframe = config.guildTNTProtectionPassingMidnight ?
+                        now.isAfter(start) || now.isBefore(end) :
+                        now.isAfter(start) && now.isBefore(end);
 
-                if (config.guildTNTProtectionOrMode ? afterStart || beforeEnd : afterStart && beforeEnd) {
+                if (isWithinTimeframe) {
                     event.setCancelled(true);
                     return;
                 }
@@ -121,16 +123,17 @@ public class EntityExplode implements Listener {
                 }
             }
 
-            if(SpaceUtils.chance(explodeChance))
-               affectedBlocks.add(blockLocation.getBlock());
+            if (SpaceUtils.chance(explodeChance)) {
+                affectedBlocks.add(blockLocation.getBlock());
+            }
         }
 
-        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
+        if (! SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
             event.setCancelled(true);
             return;
         }
 
-        for(Block affectedBlock: affectedBlocks) {
+        for (Block affectedBlock : affectedBlocks) {
             Material material = affectedBlock.getType();
             if (material == Material.WATER || material == Material.LAVA) {
                 affectedBlock.setType(Material.AIR);

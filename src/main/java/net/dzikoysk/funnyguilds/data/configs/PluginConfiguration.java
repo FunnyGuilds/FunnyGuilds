@@ -531,7 +531,7 @@ public class PluginConfiguration {
     public LocalTime guildTNTProtectionEndTime;
 
     @CfgExclude
-    public boolean guildTNTProtectionOrMode;
+    public boolean guildTNTProtectionPassingMidnight;
 
     @CfgComment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     @CfgName("region-explode")
@@ -1435,7 +1435,7 @@ public class PluginConfiguration {
 
         this.guildTNTProtectionStartTime = LocalTime.parse(guildTNTProtectionStartTime_, timeFormatter);
         this.guildTNTProtectionEndTime = LocalTime.parse(guildTNTProtectionEndTime_, timeFormatter);
-        this.guildTNTProtectionOrMode = this.guildTNTProtectionStartTime.isAfter(this.guildTNTProtectionEndTime);
+        this.guildTNTProtectionPassingMidnight = this.guildTNTProtectionStartTime.isAfter(this.guildTNTProtectionEndTime);
         this.translatedMaterials = new HashMap<>();
 
         for (String materialName : translatedMaterials_.keySet()) {
