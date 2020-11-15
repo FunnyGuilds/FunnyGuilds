@@ -198,7 +198,7 @@ public class PluginConfiguration {
     @CfgName("items-vip")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> itemsVip_ = Arrays.asList("1 gold_ingot");
+    public List<String> itemsVip_ = Collections.singletonList("1 gold_ingot");
 
     @CfgExclude
     public List<ItemStack> createItemsVip;
@@ -767,7 +767,6 @@ public class PluginConfiguration {
     @CfgName("chat-position")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPosition_ = "&b{POS} ";
-
     @CfgExclude
     public String chatPosition;
 
@@ -790,7 +789,6 @@ public class PluginConfiguration {
     @CfgName("chat-guild")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatGuild_ = "&b{TAG} ";
-
     @CfgExclude
     public String chatGuild;
 
@@ -798,7 +796,6 @@ public class PluginConfiguration {
     @CfgName("chat-rank")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatRank_ = "&b{RANK} ";
-
     @CfgExclude
     public String chatRank;
 
@@ -807,7 +804,6 @@ public class PluginConfiguration {
     @CfgName("chat-points")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPoints_ = "&b{POINTS} ";
-
     @CfgExclude
     public String chatPoints;
 
@@ -841,7 +837,6 @@ public class PluginConfiguration {
     @CfgName("gtop-points")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String gtopPoints_ = " &7[&b{POINTS-FORMAT}&7]";
-
     @CfgExclude
     public String gtopPoints;
 
@@ -853,7 +848,6 @@ public class PluginConfiguration {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> pingFormat_ = Arrays.asList("0-75 &a{PING}", "76-150 &e{PING}", "151-300 &c{PING}", "301-* &c{PING}");
-
     @CfgExclude
     public Map<IntegerRange, String> pingFormat;
 
@@ -877,7 +871,6 @@ public class PluginConfiguration {
     @CfgName("chat-priv-design")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPrivDesign_ = "&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}";
-
     @CfgExclude
     public String chatPrivDesign;
 
@@ -886,7 +879,6 @@ public class PluginConfiguration {
     @CfgName("chat-ally-design")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatAllyDesign_ = "&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
-
     @CfgExclude
     public String chatAllyDesign;
 
@@ -895,15 +887,17 @@ public class PluginConfiguration {
     @CfgName("chat-global-design")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatGlobalDesign_ = "&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
-
     @CfgExclude
     public String chatGlobalDesign;
+
+    @CfgComment("Czy wiadomosci z chatow gildyjnych powinny byc wyswietlane w logach serwera")
+    @CfgName("log-guild-chat")
+    public boolean logGuildChat = false;
 
     @CfgComment("Wyglad tagu osob w gildii")
     @CfgName("prefix-our")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String prefixOur_ = "&a{TAG}&f ";
-
     @CfgExclude
     public String prefixOur;
 

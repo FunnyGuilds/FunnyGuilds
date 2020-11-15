@@ -19,14 +19,19 @@ public class PlayerChat implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         Player player = event.getPlayer();
         User user = User.get(player);
-        PluginConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration();
-        
+
         if (user.hasGuild()) {
             Guild guild = user.getGuild();
             String message = event.getMessage();
-            if (sendGuildMessage(event, message, c, player, guild)) {
+
+            if (sendGuildMessage(event, message, config, player, guild)) {
+                if (config.logGuildChat) {
+                    FunnyGuilds.getInstance().getLogger().info("[Guild Chat] " + message);
+                }
+
                 return;
             }
         }
@@ -34,14 +39,14 @@ public class PlayerChat implements Listener {
         int points = user.getRank().getPoints();
         String format = event.getFormat();
         
-        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(c.chatRank, "{RANK}", String.valueOf(user.getRank().getPosition())));
-        format = StringUtils.replace(format, "{POINTS}", c.chatPoints);
-        format = StringUtils.replace(format, "{POINTS-FORMAT}", IntegerRange.inRange(points, c.pointsFormat, "POINTS"));
+        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(config.chatRank, "{RANK}", String.valueOf(user.getRank().getPosition())));
+        format = StringUtils.replace(format, "{POINTS}", config.chatPoints);
+        format = StringUtils.replace(format, "{POINTS-FORMAT}", IntegerRange.inRange(points, config.pointsFormat, "POINTS"));
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
         
         if (user.hasGuild()) {
-            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(c.chatGuild, "{TAG}", user.getGuild().getTag()));
-            format = StringUtils.replace(format, "{POS}", StringUtils.replace(c.chatPosition, "{POS}", getPositionString(user, c)));
+            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild, "{TAG}", user.getGuild().getTag()));
+            format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition, "{POS}", getPositionString(user, config)));
         } else {
             format = StringUtils.replace(format, "{TAG}", "");
             format = StringUtils.replace(format, "{POS}", "");
@@ -50,16 +55,16 @@ public class PlayerChat implements Listener {
         event.setFormat(format);
     }
 
-    private boolean sendGuildMessage(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
-        if (sendMessageToAllGuilds(event, message, c, player, guild)) {
+    private boolean sendGuildMessage(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
+        if (sendMessageToAllGuilds(event, message, config, player, guild)) {
             return true;
         }
         
-        if (sendMessageToGuildAllies(event, message, c, player, guild)) {
+        if (sendMessageToGuildAllies(event, message, config, player, guild)) {
             return true;
         }
         
-        return sendMessageToGuildMembers(event, message, c, player, guild);
+        return sendMessageToGuildMembers(event, message, config, player, guild);
     }
 
     private void spy(Player player, String message) {
@@ -72,17 +77,17 @@ public class PlayerChat implements Listener {
         }
     }
 
-    private boolean sendMessageToGuildMembers(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
-        String guildPrefix = c.chatPriv;
+    private boolean sendMessageToGuildMembers(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
+        String guildPrefix = config.chatPriv;
         int prefixLength = guildPrefix.length();
         
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(guildPrefix)) {
-            String resultMessage = c.chatPrivDesign;
+            String resultMessage = config.chatPrivDesign;
             
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
             
             String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
@@ -97,17 +102,17 @@ public class PlayerChat implements Listener {
         return false;
     }
 
-    private boolean sendMessageToGuildAllies(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
-        String allyPrefix = c.chatAlly;
+    private boolean sendMessageToGuildAllies(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
+        String allyPrefix = config.chatAlly;
         int prefixLength = allyPrefix.length();
         
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allyPrefix)) {
-            String resultMessage = c.chatAllyDesign;
+            String resultMessage = config.chatAllyDesign;
             
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
@@ -115,8 +120,8 @@ public class PlayerChat implements Listener {
             this.spy(player, subMessage);
             this.sendMessageToGuild(guild, player, resultMessage);
 
-            for (Guild g : guild.getAllies()) {
-                this.sendMessageToGuild(g, player, resultMessage);
+            for (Guild ally : guild.getAllies()) {
+                this.sendMessageToGuild(ally, player, resultMessage);
             }
             
             event.setCancelled(true);
@@ -126,25 +131,25 @@ public class PlayerChat implements Listener {
         return false;
     }
 
-    private boolean sendMessageToAllGuilds(AsyncPlayerChatEvent event, String message, PluginConfiguration c, Player player, Guild guild) {
-        String allGuildsPrefix = c.chatGlobal;
+    private boolean sendMessageToAllGuilds(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
+        String allGuildsPrefix = config.chatGlobal;
         int prefixLength = allGuildsPrefix.length();
         
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allGuildsPrefix)) {
-            String resultMessage = c.chatGlobalDesign;
+            String resultMessage = config.chatGlobalDesign;
             
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(c.chatPosition, "{POS}", getPositionString(User.get(player), c)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
 
             this.spy(player, subMessage);
 
-            for (Guild g : GuildUtils.getGuilds()) {
-                this.sendMessageToGuild(g, player, resultMessage);
+            for (Guild globalGuild : GuildUtils.getGuilds()) {
+                this.sendMessageToGuild(globalGuild, player, resultMessage);
             }
             
             event.setCancelled(true);
@@ -159,29 +164,29 @@ public class PlayerChat implements Listener {
             return;
         }
 
-        for (User user : guild.getOnlineMembers()) {
-            Player p = user.getPlayer();
+        for (User onlineMember : guild.getOnlineMembers()) {
+            Player member = onlineMember.getPlayer();
             
-            if (p == null) {
+            if (member == null) {
                 continue;
             }
             
-            if (!p.equals(player) || !user.getCache().isSpy()) {
-                p.sendMessage(message);
+            if (!member.equals(player) || !onlineMember.getCache().isSpy()) {
+                member.sendMessage(message);
             }
         }
     }
 
-    private String getPositionString(User u, PluginConfiguration c) {
-        if (u.isOwner()) {
-            return c.chatPositionLeader;
+    private String getPositionString(User user, PluginConfiguration config) {
+        if (user.isOwner()) {
+            return config.chatPositionLeader;
         }
         
-        if (u.isDeputy()) {
-            return c.chatPositionDeputy;
+        if (user.isDeputy()) {
+            return config.chatPositionDeputy;
         }
         
-        return c.chatPositionMember;
+        return config.chatPositionMember;
     }
 
 }
