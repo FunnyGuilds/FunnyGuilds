@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import org.bukkit.Location;
+import org.panda_lang.utilities.commons.function.Option;
 
 import javax.annotation.Nullable;
 
@@ -38,9 +39,9 @@ public final class RegionUtils {
         return null;
     }
 
-    public static boolean isIn(Location loc) {
+    public static boolean isIn(Location location) {
         for (Region region : REGION_LIST) {
-            if (region.isIn(loc)) {
+            if (region.isIn(location)) {
                 return true;
             }
         }
@@ -48,14 +49,18 @@ public final class RegionUtils {
         return false;
     }
 
-    public static Region getAt(Location loc) {
+    public static Region getAt(Location location) {
         for (Region region : REGION_LIST) {
-            if (region.isIn(loc)) {
+            if (region.isIn(location)) {
                 return region;
             }
         }
         
         return null;
+    }
+
+    public static Option<Region> getAtOpt(Location location) {
+        return Option.of(getAt(location));
     }
 
     public static boolean isNear(Location center) {

@@ -368,7 +368,6 @@ public class PluginConfiguration {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> _blockedInteract = Arrays.asList("CHEST", "TRAPPED_CHEST");
-
     @CfgExclude
     public Set<Material> blockedInteract;
 
@@ -517,7 +516,6 @@ public class PluginConfiguration {
     @CfgName("guild-tnt-protection-start-time")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guildTNTProtectionStartTime_ = "22:00";
-
     @CfgExclude
     public LocalTime guildTNTProtectionStartTime;
 
@@ -526,10 +524,8 @@ public class PluginConfiguration {
     @CfgName("guild-tnt-protection-end-time")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guildTNTProtectionEndTime_ = "06:00";
-
     @CfgExclude
     public LocalTime guildTNTProtectionEndTime;
-
     @CfgExclude
     public boolean guildTNTProtectionPassingMidnight;
 
@@ -550,14 +546,12 @@ public class PluginConfiguration {
             "enchantment_table", 20.0,
             "obsidian", 20.0,
             "water", 33.0,
-            "lava", 33.0);
-
+            "lava", 33.0
+    );
     @CfgExclude
     public Map<Material, Double> explodeMaterials;
-
     @CfgExclude
     public boolean allMaterialsAreExplosive;
-
     @CfgExclude
     public double defaultExplodeChance = -1.0;
 
@@ -573,7 +567,6 @@ public class PluginConfiguration {
     @CfgName("war-protection")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String warProtection_ = "24h";
-
     @CfgExclude
     public long warProtection;
 
@@ -581,13 +574,16 @@ public class PluginConfiguration {
     @CfgName("war-wait")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String warWait_ = "24h";
-
     @CfgExclude
     public long warWait;
 
     @CfgComment("Czy gildia podczas okresu ochronnego ma posiadac ochrone przeciw TNT")
     @CfgName("war-tnt-protection")
     public boolean warTntProtection = true;
+
+    @CfgComment("Czy zwierzeta na terenie gildii maja byc chronione przed osobami spoza gildii")
+    @CfgName("animals-protection")
+    public boolean animalsProtection = false;
 
     @CfgComment("Jaka waznosc ma gildia po jej zalozeniu")
     @CfgName("validity-start")
@@ -609,7 +605,6 @@ public class PluginConfiguration {
     @CfgName("validity-when")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String validityWhen_ = "14d";
-
     @CfgExclude
     public long validityWhen;
 
@@ -618,7 +613,6 @@ public class PluginConfiguration {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> validityItems_ = Collections.singletonList("10 diamond");
-
     @CfgExclude
     public List<ItemStack> validityItems;
 

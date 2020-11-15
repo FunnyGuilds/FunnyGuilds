@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.event.Listener;
 
 public class DynamicListenerManager {
+
     private final Set<DynamicListenerRegistration> registrations = new HashSet<>();
     private final FunnyGuilds funnyGuilds;
 
@@ -18,16 +19,18 @@ public class DynamicListenerManager {
     }
 
     public boolean registerDynamic(Supplier<Boolean> predicate, Listener... listeners) {
-        return this.registrations.add(new DynamicListenerRegistration(this.funnyGuilds, Arrays.asList(listeners), predicate));
+        DynamicListenerRegistration registration = new DynamicListenerRegistration(this.funnyGuilds, Arrays.asList(listeners), predicate);
+        registration.reload();
+
+        return registrations.add(registration);
     }
 
     public boolean unregister(Listener listener) {
-        Iterator<DynamicListenerRegistration> iter = this.registrations.iterator();
-
+        Iterator<DynamicListenerRegistration> registrationIterator = this.registrations.iterator();
         boolean result = false;
 
-        while (iter.hasNext()) {
-            DynamicListenerRegistration next = iter.next();
+        while (registrationIterator.hasNext()) {
+            DynamicListenerRegistration next = registrationIterator.next();
 
             if (!next.getListeners().remove(listener)) {
                 continue;
@@ -36,7 +39,7 @@ public class DynamicListenerManager {
             result = true;
 
             if (next.getListeners().isEmpty()) {
-                iter.remove();
+                registrationIterator.remove();
             }
         }
 
@@ -51,4 +54,5 @@ public class DynamicListenerManager {
         this.registrations.forEach(DynamicListenerRegistration::forceUnregister);
         this.registrations.clear();
     }
+
 }

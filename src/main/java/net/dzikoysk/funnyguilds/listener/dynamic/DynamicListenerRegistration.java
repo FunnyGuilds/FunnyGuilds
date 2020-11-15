@@ -12,20 +12,15 @@ import org.bukkit.plugin.PluginManager;
 
 class DynamicListenerRegistration {
 
-    private FunnyGuilds funnyGuilds;
-    private Collection<Listener> listeners;
-    private Supplier<Boolean>  predicate;
+    private final FunnyGuilds funnyGuilds;
+    private final Collection<Listener> listeners;
+    private final Supplier<Boolean>  predicate;
     private boolean currentState;
 
     public DynamicListenerRegistration(FunnyGuilds funnyGuilds, Collection<Listener> listeners, Supplier<Boolean> predicate) {
-        Validate.notNull(listeners, "listener");
-        Validate.notNull(predicate, "predicate");
-
         this.funnyGuilds = funnyGuilds;
-        this.listeners = listeners;
-        this.predicate = predicate;
-
-        this.reload();
+        this.listeners = Validate.notNull(listeners, "listener");
+        this.predicate = Validate.notNull(predicate, "predicate");
     }
 
     public void reload() {
@@ -43,8 +38,7 @@ class DynamicListenerRegistration {
     }
 
     public void forceRegister() {
-        final PluginManager pluginManager = this.funnyGuilds.getServer().getPluginManager();
-        this.listeners.forEach(listener -> pluginManager.registerEvents(listener, this.funnyGuilds));
+        this.listeners.forEach(listener -> funnyGuilds.getServer().getPluginManager().registerEvents(listener, this.funnyGuilds));
         this.currentState = true;
     }
 
@@ -56,4 +50,5 @@ class DynamicListenerRegistration {
     public Collection<Listener> getListeners() {
         return this.listeners;
     }
+
 }

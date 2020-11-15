@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.panda-lang</groupId>
             <artifactId>panda</artifactId>
-            <version>indev-20.6.6</version>
+            <version>0.1.3-alpha</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.tinylog</groupId>
