@@ -37,21 +37,28 @@ public class ExcEscape implements Executor {
         
         User user = User.get(player);
 
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.escapeNoUserGuild);
-            return;
-        }
-
         if (user.getCache().getTeleportation() != null) {
             player.sendMessage(messages.escapeInProgress);
             return;
         }
-        
+
         Location playerLocation = player.getLocation();
         Region region = RegionUtils.getAt(playerLocation);
 
         if (region == null) {
             player.sendMessage(messages.escapeNoNeedToRun);
+            return;
+        }
+
+        int time = FunnyGuilds.getInstance().getPluginConfiguration().escapeDelay;
+
+        if (!user.hasGuild()) {
+            if (config.escapeSpawn) {
+                scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {});
+                return;
+            }
+
+            player.sendMessage(messages.escapeNoUserGuild);
             return;
         }
         
@@ -62,29 +69,26 @@ public class ExcEscape implements Executor {
             return;
         }
 
-        int time = FunnyGuilds.getInstance().getPluginConfiguration().escapeDelay;
+        if (time >= 1) {
+            player.sendMessage(messages.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
 
-        if (time < 1) {
-            player.teleport(guild.getHome());
-            player.sendMessage(messages.escapeSuccessfulUser);
-            
+            String msg = messages.escapeStartedOpponents.replace("{TIME}", Integer.toString(time)).replace("{PLAYER}", player.getName())
+                    .replace("{X}", Integer.toString(playerLocation.getBlockX())).replace("{Y}", Integer.toString(playerLocation.getBlockY()))
+                    .replace("{Z}", Integer.toString(playerLocation.getBlockZ()));
+
+            for (User member : region.getGuild().getOnlineMembers()) {
+                member.getPlayer().sendMessage(msg);
+            }
+        }
+        
+        scheduleTeleportation(player, user, guild.getHome(), time, () -> {
             for (User member : region.getGuild().getOnlineMembers()) {
                 member.getPlayer().sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName()));
             }
-            
-            return;
-        }
+        });
+    }
 
-        player.sendMessage(messages.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
-
-        String msg = messages.escapeStartedOpponents.replace("{TIME}", Integer.toString(time)).replace("{PLAYER}", player.getName())
-                        .replace("{X}", Integer.toString(playerLocation.getBlockX())).replace("{Y}", Integer.toString(playerLocation.getBlockY()))
-                        .replace("{Z}", Integer.toString(playerLocation.getBlockZ()));
-        
-        for (User member : region.getGuild().getOnlineMembers()) {
-            member.getPlayer().sendMessage(msg);
-        }
-        
+    private void scheduleTeleportation(Player player, User user, Location destination, int time, Runnable onSuccess) {
         Location before = player.getLocation();
         AtomicInteger timeCounter = new AtomicInteger(0);
         UserCache cache = user.getCache();
@@ -95,7 +99,9 @@ public class ExcEscape implements Executor {
                 cache.setTeleportation(null);
                 return;
             }
-            
+
+            MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
                 player.sendMessage(messages.escapeCancelled);
@@ -103,18 +109,15 @@ public class ExcEscape implements Executor {
                 return;
             }
 
+
             if (timeCounter.getAndIncrement() > time) {
                 cache.getTeleportation().cancel();
-                player.teleport(guild.getHome());
+                player.teleport(destination);
                 player.sendMessage(messages.escapeSuccessfulUser);
-                
-                for (User member : region.getGuild().getOnlineMembers()) {
-                    member.getPlayer().sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName()));
-                }
-                
+                onSuccess.run();
                 cache.setTeleportation(null);
             }
-        }, 0L, 20L));
+        }, 0L, (time < 1) ? 0L : 20L));
     }
 
 }

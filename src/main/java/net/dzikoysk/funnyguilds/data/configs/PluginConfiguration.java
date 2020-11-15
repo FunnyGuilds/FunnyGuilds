@@ -433,6 +433,10 @@ public class PluginConfiguration {
     @CfgName("escape-delay")
     public int escapeDelay = 120;
 
+    @CfgComment("Mozliwosc ucieczki na spawn dla graczy bez gildii")
+    @CfgName("escape-spawn")
+    public boolean escapeSpawn = false;
+
     @CfgComment("Mozliwosc teleportacji do gildii")
     @CfgName("base-enable")
     public boolean baseEnable = true;
