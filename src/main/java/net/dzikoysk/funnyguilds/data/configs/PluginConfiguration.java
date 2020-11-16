@@ -435,7 +435,7 @@ public class PluginConfiguration {
 
     @CfgComment("Mozliwosc ucieczki na spawn dla graczy bez gildii")
     @CfgName("escape-spawn")
-    public boolean escapeSpawn = false;
+    public boolean escapeSpawn = true;
 
     @CfgComment("Mozliwosc teleportacji do gildii")
     @CfgName("base-enable")
