@@ -20,7 +20,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,15 +93,13 @@ public class EntityExplode implements Listener {
 
             Location protect = region.getHeart();
             destroyedBlocks.removeIf(block -> block.getLocation().equals(protect));
-
-            guild.setBuild(System.currentTimeMillis() + FunnyGuilds.getInstance().getPluginConfiguration().regionExplode * 1000L);
+            guild.setBuild(System.currentTimeMillis() + config.regionExplode * 1000L);
 
             for (User user : guild.getMembers()) {
                 Player player = user.getPlayer();
-                if (player != null) {
-                    if (informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplode.replace("{TIME}", Integer.toString(FunnyGuilds.getInstance().getPluginConfiguration().regionExplode)));
-                    }
+
+                if (player != null && !informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                    player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
                 }
             }
         }
@@ -111,16 +108,14 @@ public class EntityExplode implements Listener {
 
         for (Location blockLocation : blockSphereLocations) {
             Material material = blockLocation.getBlock().getType();
-
             Double explodeChance = explosiveMaterials.get(material);
 
             if (explodeChance == null) {
-                if (config.allMaterialsAreExplosive) {
-                    explodeChance = config.defaultExplodeChance;
-                }
-                else {
+                if (!config.allMaterialsAreExplosive) {
                     continue;
                 }
+
+                explodeChance = config.defaultExplodeChance;
             }
 
             if (SpaceUtils.chance(explodeChance)) {
@@ -128,13 +123,14 @@ public class EntityExplode implements Listener {
             }
         }
 
-        if (! SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
+        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
             event.setCancelled(true);
             return;
         }
 
         for (Block affectedBlock : affectedBlocks) {
             Material material = affectedBlock.getType();
+
             if (material == Material.WATER || material == Material.LAVA) {
                 affectedBlock.setType(Material.AIR);
             }

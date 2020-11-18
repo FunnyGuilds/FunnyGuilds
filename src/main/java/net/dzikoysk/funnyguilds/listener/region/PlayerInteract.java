@@ -44,6 +44,7 @@ public class PlayerInteract implements Listener {
                     }
 
                     Guild guild = region.getGuild();
+
                     if (SecuritySystem.getSecurity().checkPlayer(player, guild)) {
                         return;
                     }
@@ -53,20 +54,19 @@ public class PlayerInteract implements Listener {
                     if (eventAction == Action.LEFT_CLICK_BLOCK) {
                         WarSystem.getInstance().attack(player, guild);
                     }
-                    else {
-                        if(!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                            infoExecutor.execute(player, new String[]{guild.getTag()});
-                        }
-
+                    else if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                        infoExecutor.execute(player, new String[]{ guild.getTag() });
                     }
                 }
                 else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
                     Guild guild = region.getGuild();
+
                     if (guild == null || guild.getName() == null) {
                         return;
                     }
 
                     User user = User.get(player);
+
                     if (!guild.getMembers().contains(user)) {
                         event.setCancelled(config.blockedInteract.contains(clicked.getType()) && !player.hasPermission("funnyguilds.admin.interact"));
                     }

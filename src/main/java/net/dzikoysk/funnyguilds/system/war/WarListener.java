@@ -80,7 +80,7 @@ public final class WarListener {
             else if ("INTERACT_AT".equalsIgnoreCase(action)) {
                 PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
                 
-                if(config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                     return;
                 }
 

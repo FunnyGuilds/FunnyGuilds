@@ -28,14 +28,18 @@ public class EntityInteract implements Listener {
 
         if (clickedEntity instanceof Player) {
             Player clickedPlayer = (Player) clickedEntity;
-            if (!config.infoPlayerEnabled || (config.infoPlayerSneaking && !eventCaller.isSneaking())
-                            || informationMessageCooldowns.cooldown(eventCaller, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+
+            if (!config.infoPlayerEnabled
+                    || (config.infoPlayerSneaking && !eventCaller.isSneaking())
+                    || informationMessageCooldowns.cooldown(eventCaller, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+
                 return;
             }
 
             if (config.infoPlayerCommand) {
                 playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
-            } else {
+            }
+            else {
                 playerExecutor.sendInfoMessage(messages.playerRightClickInfo, User.get(clickedPlayer), eventCaller);
             }
         }
