@@ -14,31 +14,32 @@ import java.util.regex.Pattern;
 public final class PlaceholderAPIHook {
 
     private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[%]([^%]+)[%]");
-    
+    private static final String FUNNYGUILDS_VERSION = FunnyGuilds.getInstance().getDescription().getVersion();
+
     public static void initPlaceholderHook() {
         new FunnyGuildsPlaceholder().register();
         FunnyGuilds.getInstance().getPluginLogger().info("PlaceholderAPI hook has been enabled!");
     }
-    
+
     public static String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.setPlaceholders(user, base, PLACEHOLDER_PATTERN);
     }
-    
+
     private PlaceholderAPIHook() {}
-    
+
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion {
 
         @Override
-        public String onPlaceholderRequest(Player player, String identifier) {         
+        public String onPlaceholderRequest(Player player, String identifier) {
             if (player == null) {
                 return "";
             }
-            
+
             User user = User.get(player);
             if (user == null) {
                 return "";
             }
-            
+
             TablistVariable variable = DefaultTablistVariables.getFunnyVariables().get(identifier.toLowerCase());
             if (variable != null) {
                 return variable.get(user);
@@ -64,7 +65,7 @@ public final class PlaceholderAPIHook {
 
         @Override
         public String getVersion() {
-            return FunnyGuilds.getInstance().getDescription().getVersion();
+            return FUNNYGUILDS_VERSION;
         }
 
         @Override
@@ -72,5 +73,5 @@ public final class PlaceholderAPIHook {
             return true;
         }
     }
-    
+
 }
