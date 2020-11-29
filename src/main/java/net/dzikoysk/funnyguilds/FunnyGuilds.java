@@ -51,6 +51,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.panda_lang.utilities.commons.ClassUtils;
 
 import java.io.File;
 
@@ -172,7 +173,13 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerLogin(), this);
         pluginManager.registerEvents(new PlayerQuit(), this);
         pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
-        pluginManager.registerEvents(new EntityPlace(), this);
+
+        if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
+            pluginManager.registerEvents(new EntityPlace(), this);
+        }
+        else {
+            getLogger().warning("Cannot register EntityPlaceEvent listener on this version of server");
+        }
 
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
                 new BlockBreak(),
