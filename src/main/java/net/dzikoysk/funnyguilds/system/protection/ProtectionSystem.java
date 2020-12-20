@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class ProtectionSystem {
 
-    public static boolean isProtected(Player player, Location location, boolean build) {
+    public static boolean isProtected(Player player, Location location, boolean includeBuildLock) {
         if (player == null || location == null) {
             return false;
         }
@@ -38,16 +38,15 @@ public final class ProtectionSystem {
         User user = User.get(player);
 
         if (guild.getMembers().contains(user)) {
-            if (build && !guild.canBuild()) {
+            if (includeBuildLock && !guild.canBuild()) {
                 player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract.replace("{TIME}",
                         Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))));
                 return true;
-            } else if (location.equals(region.getHeart())) {
-                Pair<Material, Byte> md = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
+            }
 
-                if (md != null && md.getLeft() != Material.AIR) {
-                    return true;
-                }
+            if (location.equals(region.getHeart())) {
+                Pair<Material, Byte> heartMaterial = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
+                return heartMaterial != null && heartMaterial.getLeft() != Material.AIR;
             }
             
             return false;

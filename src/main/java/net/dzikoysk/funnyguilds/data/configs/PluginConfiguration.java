@@ -316,20 +316,16 @@ public class PluginConfiguration {
     @CfgComment("Zmiana entity wymaga pelnego restartu serwera")
     @CfgComment("Bloki musza byc podawane w formacie - material:metadata")
     @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
-    @CfgComment(
-            "Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
+    @CfgComment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
     @CfgComment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
     @CfgComment(" ")
-    @CfgComment(
-            "UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
+    @CfgComment("UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
     @CfgComment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie odczytywal go poprawnie!")
     @CfgName("create-type")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String createType = "ender_crystal";
-
     @CfgExclude
     public Pair<Material, Byte> createMaterial;
-
     @CfgExclude
     public EntityType createEntityType;
 
@@ -536,6 +532,14 @@ public class PluginConfiguration {
     @CfgComment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     @CfgName("region-explode")
     public int regionExplode = 120;
+
+    @CfgComment("Czy blokada po wybuchu ma obejmowac rowniez budowanie")
+    @CfgName("region-explode-block-breaking")
+    public boolean regionExplodeBlockBreaking = false;
+
+    @CfgComment("Czy blokada po wybuchu ma obejmowac rowniez interakcje z blocked-interact")
+    @CfgName("region-explode-block-interactions")
+    public boolean regionExplodeBlockInteractions = false;
 
     @CfgComment("Jaki ma byc zasieg pobieranych przedmiotow po wybuchu (jezeli chcesz wylaczyc, wpisz 0)")
     @CfgName("explode-radius")

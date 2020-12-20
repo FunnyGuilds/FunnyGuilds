@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.ExcInfo;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.system.war.WarSystem;
 import org.bukkit.Material;
@@ -66,9 +67,12 @@ public class PlayerInteract implements Listener {
                     }
 
                     User user = User.get(player);
+                    boolean blocked = config.blockedInteract.contains(clicked.getType());
 
-                    if (!guild.getMembers().contains(user)) {
-                        event.setCancelled(config.blockedInteract.contains(clicked.getType()) && !player.hasPermission("funnyguilds.admin.interact"));
+                    if (guild.getMembers().contains(user)) {
+                        event.setCancelled(blocked && config.regionExplodeBlockInteractions && !guild.canBuild());
+                    } else {
+                        event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));
                     }
                 }
             }

@@ -27,8 +27,8 @@ public class BlockPlace implements Listener {
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Material type = block.getType();
-
         Location blockLocation = block.getLocation();
+
         if (!ProtectionSystem.isProtected(player, blockLocation, true)) {
             return;
         }
