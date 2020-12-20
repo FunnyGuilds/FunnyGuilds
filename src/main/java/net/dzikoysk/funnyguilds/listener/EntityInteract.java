@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.inventory.InventoryHolder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,6 +42,14 @@ public class EntityInteract implements Listener {
             }
             else {
                 playerExecutor.sendInfoMessage(messages.playerRightClickInfo, User.get(clickedPlayer), eventCaller);
+            }
+        }
+
+        if (config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
+            User user = User.get(eventCaller);
+
+            if (user.hasGuild() && !user.getGuild().canBuild()) {
+                event.setCancelled(true);
             }
         }
     }
