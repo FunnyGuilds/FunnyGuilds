@@ -36,6 +36,8 @@ import java.util.List;
 
 public class ExcCreate implements Executor {
 
+    private static final int SKY_LIMIT = 256;
+
     @Override
     public void execute(CommandSender sender, String[] args) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
@@ -138,15 +140,19 @@ public class ExcCreate implements Executor {
             if (config.createCenterY != 0) {
                 guildLocation.setY(config.createCenterY);
             }
-    
-            int d = config.regionSize + config.createDistance;
-    
-            if (config.enlargeItems != null) {
-                d += config.enlargeItems.size() * config.enlargeSize;
+
+            if (config.createEntityType != null && guildLocation.getBlockY() < (SKY_LIMIT - 2)) {
+                guildLocation.setY(guildLocation.getBlockY() + 2);
             }
     
-            if (d > player.getWorld().getSpawnLocation().distance(guildLocation)) {
-                player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(d)));
+            int distance = config.regionSize + config.createDistance;
+    
+            if (config.enlargeItems != null) {
+                distance += config.enlargeItems.size() * config.enlargeSize;
+            }
+    
+            if (distance > player.getWorld().getSpawnLocation().distance(guildLocation)) {
+                player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
                 return;
             }
         }
