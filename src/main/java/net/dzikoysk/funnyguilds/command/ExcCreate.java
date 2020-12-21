@@ -21,6 +21,7 @@ import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -151,7 +152,7 @@ public class ExcCreate implements Executor {
                 distance += config.enlargeItems.size() * config.enlargeSize;
             }
     
-            if (distance > player.getWorld().getSpawnLocation().distance(guildLocation)) {
+            if (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation)) {
                 player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
                 return;
             }

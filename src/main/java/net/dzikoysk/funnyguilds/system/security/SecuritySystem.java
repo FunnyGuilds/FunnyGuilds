@@ -67,16 +67,16 @@ public final class SecuritySystem {
                     return false;
                 }
 
-                int dis = (int) region.getCenter().distance(player.getLocation());
+                int distance = (int) region.getCenter().distance(player.getLocation());
 
-                if (dis < 6) {
+                if (distance < 6) {
                     return false;
                 }
                 
-                for (Player w : Bukkit.getOnlinePlayers()) {
-                    if (w.isOp()) {
-                        w.sendMessage(SecurityUtils.getBustedMessage(player.getName(), "FreeCam"));
-                        w.sendMessage(SecurityUtils.getNoteMessage("Zaatakowal krysztal z odleglosci &c" + dis + " kratek"));
+                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+                    if (onlinePlayer.isOp()) {
+                        onlinePlayer.sendMessage(SecurityUtils.getBustedMessage(player.getName(), "FreeCam"));
+                        onlinePlayer.sendMessage(SecurityUtils.getNoteMessage("Zaatakowal krysztal z odleglosci &c" + distance + " kratek"));
                     }
                 }
                 
@@ -94,4 +94,5 @@ public final class SecuritySystem {
     public boolean isBanned(User user) {
         return blocked.contains(user);
     }
+
 }

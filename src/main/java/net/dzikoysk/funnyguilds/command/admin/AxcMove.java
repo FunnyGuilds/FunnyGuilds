@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import org.bukkit.Bukkit;
@@ -61,7 +62,7 @@ public class AxcMove implements Executor {
             distance = config.enlargeItems.size() * config.enlargeSize + distance;
         }
 
-        if (distance > player.getWorld().getSpawnLocation().distance(location)) {
+        if (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location)) {
             player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
             return;
         }

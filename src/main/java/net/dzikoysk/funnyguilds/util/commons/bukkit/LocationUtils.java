@@ -6,6 +6,10 @@ import org.bukkit.World;
 
 public final class LocationUtils {
 
+    public static double flatDistance(Location a, Location b) {
+        return Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getZ() - a.getZ(), 2));
+    }
+
     public static Location parseLocation(String string) {
         if (string == null) {
             return null;
@@ -23,32 +27,29 @@ public final class LocationUtils {
             world = Bukkit.getWorlds().get(0);
         }
 
-        return new Location(world, Integer.valueOf(shs[1]), Integer.valueOf(shs[2]), Integer.valueOf(shs[3]));
+        return new Location(world, Integer.parseInt(shs[1]), Integer.parseInt(shs[2]), Integer.parseInt(shs[3]));
     }
 
-    public static boolean equals(Location f, Location s) {
-        return (f.getBlockX() == s.getBlockX() && f.getBlockY() == s.getBlockY() && f.getBlockZ() == s.getBlockZ());
+    public static boolean equals(Location location, Location to) {
+        return (location.getBlockX() == to.getBlockX() && location.getBlockY() == to.getBlockY() && location.getBlockZ() == to.getBlockZ());
     }
 
-    public static boolean equalsFlat(Location f, Location s) {
-        return (f.getBlockX() == s.getBlockX() && f.getBlockZ() == s.getBlockZ());
+    public static boolean equalsFlat(Location location, Location to) {
+        return (location.getBlockX() == to.getBlockX() && location.getBlockZ() == to.getBlockZ());
     }
 
-    public static String toString(Location loc) {
-        if (loc == null) {
+    public static String toString(Location location) {
+        if (location == null) {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(loc.getWorld().getName());
-        sb.append(",");
-        sb.append(loc.getBlockX());
-        sb.append(",");
-        sb.append(loc.getBlockY());
-        sb.append(",");
-        sb.append(loc.getBlockZ());
-
-        return sb.toString();
+        return location.getWorld().getName() +
+                "," +
+                location.getBlockX() +
+                "," +
+                location.getBlockY() +
+                "," +
+                location.getBlockZ();
     }
     
     private LocationUtils() {}

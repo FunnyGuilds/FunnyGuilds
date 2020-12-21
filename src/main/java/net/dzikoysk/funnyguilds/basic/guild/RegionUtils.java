@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
 import org.panda_lang.utilities.commons.function.Option;
 
@@ -68,13 +69,15 @@ public final class RegionUtils {
             return false;
         }
 
-        PluginConfiguration s = FunnyGuilds.getInstance().getPluginConfiguration();
-        int i = s.regionSize;
-        if (s.enlargeItems != null) {
-            i += (s.enlargeItems.size() * s.enlargeSize);
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        int size = config.regionSize;
+
+        if (config.enlargeItems != null) {
+            size += (config.enlargeItems.size() * config.enlargeSize);
         }
         
-        int requiredDistance = (2 * i) + s.regionMinDistance;
+        int requiredDistance = (2 * size) + config.regionMinDistance;
+
         for (Region region : REGION_LIST) {
             if (region.getCenter() == null) {
                 continue;
@@ -88,7 +91,7 @@ public final class RegionUtils {
                 continue;
             }
             
-            if (center.distance(region.getCenter()) < requiredDistance) {
+            if (LocationUtils.flatDistance(center, region.getCenter()) < requiredDistance) {
                 return true;
             }
         }
