@@ -63,6 +63,19 @@ public final class ItemUtils {
             message = StringUtils.replace(message, "{ITEMS}", ChatUtils.toString(translatedItems, true));
         }
 
+        if (message.contains("{ITEM-FRIENDLY}")) {
+            contentBuilder.setLength(0);
+
+            contentBuilder.append(item.getType().toString().replace("_", " ").toLowerCase());
+
+            int i = 0;
+            do {
+                contentBuilder.replace(i, i + 1, contentBuilder.substring(i, i + 1).toUpperCase());
+                i = contentBuilder.indexOf(" ", i) + 1;
+            } while (i > 0 && i < contentBuilder.length());
+            message = StringUtils.replace(message, "{ITEM-FRIENDLY}", contentBuilder.toString());
+        }
+
         return message;
     }
 

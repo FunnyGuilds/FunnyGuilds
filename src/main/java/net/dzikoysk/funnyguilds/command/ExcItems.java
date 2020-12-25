@@ -57,6 +57,10 @@ public class ExcItems implements Executor {
                     lore.add(line);
                 }
 
+                if(config.guiItemsName != "") {
+                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName, null, item));
+                }
+
                 meta.setLore(lore);
                 item.setItemMeta(meta);
             }
