@@ -65,14 +65,8 @@ public final class ItemUtils {
 
         if (message.contains("{ITEM-FRIENDLY}")) {
             contentBuilder.setLength(0);
+            contentBuilder.append(StringUtils.capitalize(item.getType().toString().replace("_", " ").toLowerCase()));
 
-            contentBuilder.append(item.getType().toString().replace("_", " ").toLowerCase());
-
-            int i = 0;
-            do {
-                contentBuilder.replace(i, i + 1, contentBuilder.substring(i, i + 1).toUpperCase());
-                i = contentBuilder.indexOf(" ", i) + 1;
-            } while (i > 0 && i < contentBuilder.length());
             message = StringUtils.replace(message, "{ITEM-FRIENDLY}", contentBuilder.toString());
         }
 
