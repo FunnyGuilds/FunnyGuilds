@@ -281,11 +281,11 @@ public class PluginConfiguration {
 
     @CfgComment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
     @CfgComment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
-    @CfgComment("{ITEM} - nazwa przedmiotu")
-    @CfgComment("{ITEM-FRIENDLY} - bardziej przyjazna nazwa przedmiotu")
+    @CfgComment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
+    @CfgComment("{ITEM-CAPITALIZED} - nazwa przedmiotu pisana wielka litera. (np. Golden apple)")
     @CfgName("gui-items-name")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String guiItemsName_ = "&7>> &a{ITEM-FRIENDLY} &7<<";
+    public String guiItemsName_ = "&7>> &a{ITEM-CAPITALIZED} &7<<";
 
     @CfgExclude
     public String guiItemsName;

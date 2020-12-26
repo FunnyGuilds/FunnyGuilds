@@ -57,7 +57,7 @@ public class ExcItems implements Executor {
                     lore.add(line);
                 }
 
-                if(config.guiItemsName != "") {
+                if (config.guiItemsName != "") {
                     meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName, null, item));
                 }
 

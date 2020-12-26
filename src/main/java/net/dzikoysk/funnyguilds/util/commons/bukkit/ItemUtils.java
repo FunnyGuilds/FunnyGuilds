@@ -63,11 +63,11 @@ public final class ItemUtils {
             message = StringUtils.replace(message, "{ITEMS}", ChatUtils.toString(translatedItems, true));
         }
 
-        if (message.contains("{ITEM-FRIENDLY}")) {
+        if (message.contains("{ITEM-CAPITALIZED}")) {
             contentBuilder.setLength(0);
             contentBuilder.append(StringUtils.capitalize(item.getType().toString().replace("_", " ").toLowerCase()));
 
-            message = StringUtils.replace(message, "{ITEM-FRIENDLY}", contentBuilder.toString());
+            message = StringUtils.replace(message, "{ITEM-CAPITALIZED}", contentBuilder.toString());
         }
 
         return message;
