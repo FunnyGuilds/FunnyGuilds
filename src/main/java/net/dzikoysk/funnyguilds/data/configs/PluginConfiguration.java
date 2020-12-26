@@ -279,6 +279,17 @@ public class PluginConfiguration {
     @CfgExclude
     public String guiItemsVipTitle;
 
+    @CfgComment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
+    @CfgComment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
+    @CfgComment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
+    @CfgComment("{ITEM-CAPITALIZED} - nazwa przedmiotu pisana wielka litera. (np. Golden apple)")
+    @CfgName("gui-items-name")
+    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    public String guiItemsName_ = "&7>> &a{ITEM-CAPITALIZED} &7<<";
+
+    @CfgExclude
+    public String guiItemsName;
+
     @CfgComment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
     @CfgComment("Linie te mozna ustawic ponizej")
     @CfgName("add-lore-lines")
@@ -397,7 +408,7 @@ public class PluginConfiguration {
             "FENCE_GATE", "SPRUCE_FENCE_GATE", "JUNGLE_FENCE_GATE", "DARK_OAK_FENCE_GATE", "BIRCH_FENCE_GATE",
             "REDSTONE_LAMP_ON", "REDSTONE_LAMP_OFF",
             "TRAPPED_CHEST", "CHEST"
-            );
+    );
 
     @CfgExclude
     public Set<Material> buggedBlocksExclude;
@@ -1340,6 +1351,7 @@ public class PluginConfiguration {
 
         this.guiItemsTitle = ChatUtils.colored(this.guiItemsTitle_);
         this.guiItemsVipTitle = ChatUtils.colored(this.guiItemsVipTitle_);
+        this.guiItemsName = ChatUtils.colored(this.guiItemsName_);
         this.guiItemsLore = ChatUtils.colored(this.guiItemsLore_);
 
         try {
