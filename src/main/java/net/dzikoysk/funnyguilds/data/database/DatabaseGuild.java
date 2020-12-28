@@ -29,10 +29,13 @@ public class DatabaseGuild {
         if (rs == null) {
             return null;
         }
-        
+
+        String id = null;
+        String name = null;
+
         try {
-            String id = rs.getString("uuid");
-            String name = rs.getString("name");
+            id = rs.getString("uuid");
+            name = rs.getString("name");
             String tag = rs.getString("tag");
             String os = rs.getString("owner");
             String dp = rs.getString("deputy");
@@ -101,7 +104,7 @@ public class DatabaseGuild {
             return DeserializationUtils.deserializeGuild(values);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not deserialize guild", ex);
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", ex);
         }
         
         return null;

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.basic.user;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import org.apache.commons.lang3.Validate;
 
@@ -82,7 +83,19 @@ public class UserUtils {
     }
 
     public static Set<User> getUsers(Collection<String> names) {
-        return names.stream().map(User::get).collect(Collectors.toSet());
+        Set<User> users = new HashSet<>();
+
+        for (String name : names) {
+            User user = User.get(name);
+
+            if (user == null) {
+                FunnyGuilds.getInstance().getLogger().warning("Corrupted user: " + name);
+                continue;
+            }
+
+            users.add(user);
+        }
+        return users;
     }
 
     public static Set<String> getOnlineNames(Collection<User> users) {
