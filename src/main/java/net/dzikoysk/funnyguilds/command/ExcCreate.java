@@ -16,7 +16,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
-import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
@@ -224,8 +224,18 @@ public class ExcCreate implements Executor {
                 }
             }
         }
-        
-        if (!SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, name, tag, guildLocation))) {
+
+        Guild guild = new Guild(name);
+        guild.setTag(tag);
+        guild.setOwner(user);
+        guild.setLives(config.warLives);
+        guild.setBorn(System.currentTimeMillis());
+        guild.setValidity(System.currentTimeMillis() + config.validityStart);
+        guild.setAttacked(System.currentTimeMillis() - config.warWait + config.warProtection);
+        guild.setPvP(config.damageGuild);
+        guild.setHome(guildLocation);
+
+        if (!SimpleEventHandler.handle(new GuildPreCreateEvent(EventCause.USER, user, guild))) {
             return;
         }
 
@@ -236,14 +246,6 @@ public class ExcCreate implements Executor {
             VaultHook.withdrawFromPlayerBank(player, requiredMoney);
         }
 
-        Guild guild = new Guild(name);
-        guild.setTag(tag);
-        guild.setOwner(user);
-        guild.setLives(config.warLives);
-        guild.setBorn(System.currentTimeMillis());
-        guild.setValidity(System.currentTimeMillis() + config.validityStart);
-        guild.setAttacked(System.currentTimeMillis() - config.warWait + config.warProtection);
-        guild.setPvP(config.damageGuild);
         user.setGuild(guild);
         GuildUtils.addGuild(guild);
         
@@ -255,16 +257,17 @@ public class ExcCreate implements Executor {
                 if (! PluginHook.WORLD_EDIT.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir)) {
                     player.sendMessage(messages.createGuildCouldNotPasteSchematic);
                 }
-            } else if (config.createCenterSphere) {
-                for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
-                    if (l.getBlock().getType() != Material.BEDROCK) {
-                        l.getBlock().setType(Material.AIR);
+            }
+            else if (config.createCenterSphere) {
+                for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
+                    if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
+                        locationInSphere.getBlock().setType(Material.AIR);
                     }
                 }
 
-                for (Location l : SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0)) {
-                    if (l.getBlock().getType() != Material.BEDROCK) {
-                        l.getBlock().setType(Material.OBSIDIAN);
+                for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, true, true, 0)) {
+                    if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
+                        locationInSphere.getBlock().setType(Material.OBSIDIAN);
                     }
                 }
                 
@@ -277,8 +280,7 @@ public class ExcCreate implements Executor {
             player.teleport(guildLocation);
         }
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(
+        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(
                 new RankUpdateGuildRequest(guild),
                 new PrefixGlobalAddGuildRequest(guild),
                 new PrefixGlobalAddPlayerRequest(user.getName()),
