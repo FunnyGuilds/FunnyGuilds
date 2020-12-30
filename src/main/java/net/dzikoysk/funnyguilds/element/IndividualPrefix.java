@@ -226,15 +226,15 @@ public class IndividualPrefix {
         }
     }
 
-    private void registerSoloTeam(User u) {
-        Team team = getScoreboard().getTeam(u.getName() + "_solo");
+    private void registerSoloTeam(User member) {
+        Team team = getScoreboard().getTeam(member.getName() + "_solo");
 
         if (team == null) {
-            team = getScoreboard().registerNewTeam(u.getName() + "_solo");
+            team = getScoreboard().registerNewTeam(member.getName() + "_solo");
         }
 
-        if (!team.hasEntry(u.getName())) {
-            team.addEntry(u.getName());
+        if (!team.hasEntry(member.getName())) {
+            team.addEntry(member.getName());
         }
 
         team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
