@@ -113,6 +113,8 @@ public class IndividualPrefix {
                 team.setPrefix(replace(FunnyGuilds.getInstance().getPluginConfiguration().prefixOther, "{TAG}", team.getName()));
             }
         }
+
+        registerOneTeam(User.get(player));
     }
 
     protected void removeGuild(Guild guild) {
@@ -124,6 +126,10 @@ public class IndividualPrefix {
 
         if (team != null) {
             team.unregister();
+        }
+
+        for (User u : guild.getMembers()) {
+            registerOneTeam(u);
         }
     }
 
@@ -192,6 +198,7 @@ public class IndividualPrefix {
         }
         else {
             String other = FunnyGuilds.getInstance().getPluginConfiguration().prefixOther;
+            registerOneTeam(this.getUser());
 
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {
@@ -217,6 +224,20 @@ public class IndividualPrefix {
                 team.setPrefix(replace(other, "{TAG}", one.getTag()));
             }
         }
+    }
+
+    private void registerOneTeam(User u) {
+        Team team = getScoreboard().getTeam(u.getName() + "_one");
+
+        if (team == null) {
+            team = getScoreboard().registerNewTeam(u.getName() + "_one");
+        }
+
+        if (!team.hasEntry(u.getName())) {
+            team.addEntry(u.getName());
+        }
+
+        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
     }
 
     private String replace(String f, String r, String t) {
