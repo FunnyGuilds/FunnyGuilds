@@ -114,7 +114,7 @@ public class IndividualPrefix {
             }
         }
 
-        registerOneTeam(User.get(player));
+        registerSoloTeam(User.get(player));
     }
 
     protected void removeGuild(Guild guild) {
@@ -129,7 +129,7 @@ public class IndividualPrefix {
         }
 
         for (User u : guild.getMembers()) {
-            registerOneTeam(u);
+            registerSoloTeam(u);
         }
     }
 
@@ -198,7 +198,7 @@ public class IndividualPrefix {
         }
         else {
             String other = FunnyGuilds.getInstance().getPluginConfiguration().prefixOther;
-            registerOneTeam(this.getUser());
+            registerSoloTeam(this.getUser());
 
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {
@@ -226,11 +226,11 @@ public class IndividualPrefix {
         }
     }
 
-    private void registerOneTeam(User u) {
-        Team team = getScoreboard().getTeam(u.getName() + "_one");
+    private void registerSoloTeam(User u) {
+        Team team = getScoreboard().getTeam(u.getName() + "_solo");
 
         if (team == null) {
-            team = getScoreboard().registerNewTeam(u.getName() + "_one");
+            team = getScoreboard().registerNewTeam(u.getName() + "_solo");
         }
 
         if (!team.hasEntry(u.getName())) {
