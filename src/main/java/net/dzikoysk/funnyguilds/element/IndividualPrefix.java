@@ -128,8 +128,8 @@ public class IndividualPrefix {
             team.unregister();
         }
 
-        for (User u : guild.getMembers()) {
-            registerSoloTeam(u);
+        for (User member : guild.getMembers()) {
+            registerSoloTeam(member);
         }
     }
 
@@ -226,15 +226,15 @@ public class IndividualPrefix {
         }
     }
 
-    private void registerSoloTeam(User member) {
-        Team team = getScoreboard().getTeam(member.getName() + "_solo");
+    private void registerSoloTeam(User soloUser) {
+        Team team = getScoreboard().getTeam(soloUser.getName() + "_solo");
 
         if (team == null) {
-            team = getScoreboard().registerNewTeam(member.getName() + "_solo");
+            team = getScoreboard().registerNewTeam(soloUser.getName() + "_solo");
         }
 
-        if (!team.hasEntry(member.getName())) {
-            team.addEntry(member.getName());
+        if (!team.hasEntry(soloUser.getName())) {
+            team.addEntry(soloUser.getName());
         }
 
         team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
