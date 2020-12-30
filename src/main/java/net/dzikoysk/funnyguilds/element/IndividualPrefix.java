@@ -227,10 +227,23 @@ public class IndividualPrefix {
     }
 
     private void registerSoloTeam(User soloUser) {
-        Team team = getScoreboard().getTeam(soloUser.getName() + "_solo");
+        String teamName = soloUser.getName() + "_solo";
+        Set<Guild> guilds = GuildUtils.getGuilds();
+
+        if (teamName.length() > 16) {
+            teamName = soloUser.getName();
+        }
+
+        for (Guild guild : guilds) {
+            if (guild.getTag().equalsIgnoreCase(teamName)) {
+                return;
+            }
+        }
+
+        Team team = getScoreboard().getTeam(teamName);
 
         if (team == null) {
-            team = getScoreboard().registerNewTeam(soloUser.getName() + "_solo");
+            team = getScoreboard().registerNewTeam(teamName);
         }
 
         if (!team.hasEntry(soloUser.getName())) {
