@@ -249,8 +249,6 @@ public class IndividualPrefix {
         if (!team.hasEntry(soloUser.getName())) {
             team.addEntry(soloUser.getName());
         }
-
-        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.NEVER);
     }
 
     private String replace(String f, String r, String t) {
