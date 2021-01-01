@@ -113,6 +113,8 @@ public class IndividualPrefix {
                 team.setPrefix(replace(FunnyGuilds.getInstance().getPluginConfiguration().prefixOther, "{TAG}", team.getName()));
             }
         }
+
+        registerSoloTeam(User.get(player));
     }
 
     protected void removeGuild(Guild guild) {
@@ -124,6 +126,10 @@ public class IndividualPrefix {
 
         if (team != null) {
             team.unregister();
+        }
+
+        for (User member : guild.getMembers()) {
+            registerSoloTeam(member);
         }
     }
 
@@ -192,6 +198,7 @@ public class IndividualPrefix {
         }
         else {
             String other = FunnyGuilds.getInstance().getPluginConfiguration().prefixOther;
+            registerSoloTeam(this.getUser());
 
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {
@@ -216,6 +223,31 @@ public class IndividualPrefix {
                 
                 team.setPrefix(replace(other, "{TAG}", one.getTag()));
             }
+        }
+    }
+
+    private void registerSoloTeam(User soloUser) {
+        String teamName = soloUser.getName() + "_solo";
+        Set<Guild> guilds = GuildUtils.getGuilds();
+
+        if (teamName.length() > 16) {
+            teamName = soloUser.getName();
+        }
+
+        for (Guild guild : guilds) {
+            if (guild.getTag().equalsIgnoreCase(teamName)) {
+                return;
+            }
+        }
+
+        Team team = getScoreboard().getTeam(teamName);
+
+        if (team == null) {
+            team = getScoreboard().registerNewTeam(teamName);
+        }
+
+        if (!team.hasEntry(soloUser.getName())) {
+            team.addEntry(soloUser.getName());
         }
     }
 
