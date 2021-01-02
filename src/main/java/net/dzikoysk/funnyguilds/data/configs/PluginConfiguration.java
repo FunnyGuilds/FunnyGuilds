@@ -101,6 +101,11 @@ public class PluginConfiguration {
     @CfgName("regions-enabled")
     public boolean regionsEnabled = true;
 
+    @CfgComment("Rozlewanie się wody tylko na terenie gildii")
+    @CfgComment("Dziala tylko jesli regiony sa wlaczone")
+    @CfgName("water-and-lava-flow-only-for-regions")
+    public boolean blockFlow = true;
+
     @CfgComment("Czy gracz po smierci ma sie pojawiac w bazie swojej gildii")
     @CfgComment("Dziala tylko jesli regiony sa wlaczone")
     @CfgName("respawn-in-base")
