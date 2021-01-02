@@ -20,13 +20,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.diorite.cfg.annotations.CfgClass;
-import org.diorite.cfg.annotations.CfgCollectionStyle;
+import org.diorite.cfg.annotations.*;
 import org.diorite.cfg.annotations.CfgCollectionStyle.CollectionStyle;
-import org.diorite.cfg.annotations.CfgComment;
-import org.diorite.cfg.annotations.CfgExclude;
-import org.diorite.cfg.annotations.CfgName;
-import org.diorite.cfg.annotations.CfgStringStyle;
 import org.diorite.cfg.annotations.CfgStringStyle.StringStyle;
 import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
 
@@ -34,16 +29,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @CfgClass(name = "PluginConfiguration")
@@ -100,6 +87,11 @@ public class PluginConfiguration {
     @CfgComment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
     @CfgName("regions-enabled")
     public boolean regionsEnabled = true;
+
+    @CfgComment("Rozlewanie się wody i lawy tylko na terenie gildii")
+    @CfgComment("Dziala tylko jesli regiony sa wlaczone")
+    @CfgName("water-and-lava-flow-only-for-regions")
+    public boolean blockFlow = false;
 
     @CfgComment("Czy gracz po smierci ma sie pojawiac w bazie swojej gildii")
     @CfgComment("Dziala tylko jesli regiony sa wlaczone")
@@ -321,7 +313,7 @@ public class PluginConfiguration {
     @CfgComment("Minimalna odleglosc od granicy mapy, na ktorej znajduje sie gracz")
     @CfgComment("Wartosc -1 oznacza brak minimalnej odlegosci od granicy")
     @CfgName("create-guild-min-distance")
-    public double createMinDistanceFromBorder = - 1.0;
+    public double createMinDistanceFromBorder = -1.0;
 
     @CfgComment("Blok lub entity, ktore jest sercem gildii")
     @CfgComment("Zmiana entity wymaga pelnego restartu serwera")
@@ -688,7 +680,7 @@ public class PluginConfiguration {
 
     @CfgComment("Limit asyst (liczba ujemna = wylaczony)")
     @CfgName("assists-limit")
-    public int assistsLimit = - 1;
+    public int assistsLimit = -1;
 
     @CfgComment("Jaka czesc rankingu za zabicie idzie na konto zabojcy")
     @CfgComment("1 to caly ranking, 0 to nic")
@@ -1282,32 +1274,27 @@ public class PluginConfiguration {
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
                 }
-            }
-            else if (var.contains("VIPITEM-")) {
+            } else if (var.contains("VIPITEM-")) {
                 try {
                     int index = RankUtils.getIndex(var);
 
                     if (index > 0 && index <= createItemsVip.size()) {
                         item = createItemsVip.get(index - 1);
                     }
-                }
-                catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getInstance().getPluginLogger().parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
-            }
-            else if (var.contains("ITEM-")) {
+            } else if (var.contains("ITEM-")) {
                 try {
                     int index = RankUtils.getIndex(var);
 
                     if (index > 0 && index <= createItems.size()) {
                         item = createItems.get(index - 1);
                     }
-                }
-                catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getInstance().getPluginLogger().parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
-            }
-            else {
+            } else {
                 item = ItemUtils.parseItem(var);
             }
 
@@ -1326,16 +1313,14 @@ public class PluginConfiguration {
 
         try {
             this.nameRegex = GuildRegex.valueOf(this.nameRegex_.toUpperCase());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             this.nameRegex = GuildRegex.LETTERS;
             FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.nameRegex_ + "\" is not a valid regex option!");
         }
 
         try {
             this.tagRegex = GuildRegex.valueOf(this.tagRegex_.toUpperCase());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             this.tagRegex = GuildRegex.LETTERS;
             FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.tagRegex_ + "\" is not a valid regex option!");
         }
@@ -1345,7 +1330,7 @@ public class PluginConfiguration {
 
         this.guiItems = loadGUI(this.guiItems_);
 
-        if (! useCommonGUI) {
+        if (!useCommonGUI) {
             this.guiItemsVip = loadGUI(this.guiItemsVip_);
         }
 
@@ -1356,8 +1341,7 @@ public class PluginConfiguration {
 
         try {
             this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
-        }
-        catch (Exception materialThen) {
+        } catch (Exception materialThen) {
             this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);
         }
 
@@ -1367,8 +1351,7 @@ public class PluginConfiguration {
 
         if (this.enlargeEnable) {
             this.enlargeItems = this.loadItemStackList(this.enlargeItems_);
-        }
-        else {
+        } else {
             this.enlargeSize = 0;
             this.enlargeItems = null;
         }
@@ -1392,8 +1375,7 @@ public class PluginConfiguration {
 
         try {
             this.rankSystem = RankSystem.valueOf(this.rankSystem_.toUpperCase());
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.rankSystem = RankSystem.ELO;
             FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.rankSystem_ + "\" is not a valid rank system!");
         }
@@ -1404,8 +1386,7 @@ public class PluginConfiguration {
             for (Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
                 try {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     FunnyGuilds.getInstance().getPluginLogger().parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
                 }
             }
@@ -1475,7 +1456,7 @@ public class PluginConfiguration {
             this.notificationTitleFadeOut = 10;
         }
 
-        if (! "v1_8_R1".equals(Reflections.SERVER_VERSION) && ! "v1_8_R3".equals(Reflections.SERVER_VERSION)) {
+        if (!"v1_8_R1".equals(Reflections.SERVER_VERSION) && !"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
             this.bossBarOptions_ = BossBarOptions.builder()
                     .color(this.bossBarColor)
                     .style(this.bossBarStyle)
@@ -1527,11 +1508,10 @@ public class PluginConfiguration {
             if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
                 FunnyGuilds.getInstance().getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!");
                 this.pasteSchematicOnCreation = false;
-            }
-            else {
+            } else {
                 this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName);
 
-                if (! this.guildSchematicFile.exists()) {
+                if (!this.guildSchematicFile.exists()) {
                     FunnyGuilds.getInstance().getPluginLogger().error("File with given name in field \"guild-schematic-file-name\" does not exist!");
                     this.pasteSchematicOnCreation = false;
                 }
@@ -1545,36 +1525,41 @@ public class PluginConfiguration {
         this.pluginTaskTerminationTimeout = Math.max(1, this.pluginTaskTerminationTimeout_);
     }
 
+    public enum DataModel {
+        FLAT,
+        MYSQL
+    }
+
     public static class Commands {
         public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
-        public FunnyCommand guild     = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
-        public FunnyCommand create    = new FunnyCommand("zaloz");
-        public FunnyCommand delete    = new FunnyCommand("usun");
-        public FunnyCommand confirm   = new FunnyCommand("potwierdz");
-        public FunnyCommand invite    = new FunnyCommand("zapros");
-        public FunnyCommand join      = new FunnyCommand("dolacz");
-        public FunnyCommand leave     = new FunnyCommand("opusc");
-        public FunnyCommand kick      = new FunnyCommand("wyrzuc");
-        public FunnyCommand base      = new FunnyCommand("baza");
-        public FunnyCommand enlarge   = new FunnyCommand("powieksz");
-        public FunnyCommand ally      = new FunnyCommand("sojusz");
-        public FunnyCommand items     = new FunnyCommand("przedmioty");
-        public FunnyCommand escape    = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
+        public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
+        public FunnyCommand create = new FunnyCommand("zaloz");
+        public FunnyCommand delete = new FunnyCommand("usun");
+        public FunnyCommand confirm = new FunnyCommand("potwierdz");
+        public FunnyCommand invite = new FunnyCommand("zapros");
+        public FunnyCommand join = new FunnyCommand("dolacz");
+        public FunnyCommand leave = new FunnyCommand("opusc");
+        public FunnyCommand kick = new FunnyCommand("wyrzuc");
+        public FunnyCommand base = new FunnyCommand("baza");
+        public FunnyCommand enlarge = new FunnyCommand("powieksz");
+        public FunnyCommand ally = new FunnyCommand("sojusz");
+        public FunnyCommand items = new FunnyCommand("przedmioty");
+        public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
         public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
 
         @CfgName("break")
         public FunnyCommand break_ = new FunnyCommand("rozwiaz");
 
-        public FunnyCommand info     = new FunnyCommand("info");
-        public FunnyCommand player   = new FunnyCommand("gracz");
-        public FunnyCommand top      = new FunnyCommand("top", Collections.singletonList("top10"));
+        public FunnyCommand info = new FunnyCommand("info");
+        public FunnyCommand player = new FunnyCommand("gracz");
+        public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
         public FunnyCommand validity = new FunnyCommand("przedluz");
-        public FunnyCommand leader   = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
-        public FunnyCommand deputy   = new FunnyCommand("zastepca");
-        public FunnyCommand ranking  = new FunnyCommand("ranking");
-        public FunnyCommand setbase  = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
-        public FunnyCommand pvp      = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
+        public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
+        public FunnyCommand deputy = new FunnyCommand("zastepca");
+        public FunnyCommand ranking = new FunnyCommand("ranking");
+        public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
+        public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
 
         @CfgComment("Komendy administratora")
         public AdminCommands admin = new AdminCommands();
@@ -1673,11 +1658,6 @@ public class PluginConfiguration {
         }
     }
 
-    public enum DataModel {
-        FLAT,
-        MYSQL
-    }
-
     public static class MySQL {
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String hostname;
@@ -1693,8 +1673,8 @@ public class PluginConfiguration {
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
         public String password;
 
-        public int     poolSize;
-        public int     connectionTimeout;
+        public int poolSize;
+        public int connectionTimeout;
         public boolean useSSL;
 
         @CfgStringStyle(StringStyle.ALWAYS_QUOTED)

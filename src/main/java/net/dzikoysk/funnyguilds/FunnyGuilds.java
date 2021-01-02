@@ -17,28 +17,9 @@ import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.element.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
-import net.dzikoysk.funnyguilds.listener.EntityDamage;
-import net.dzikoysk.funnyguilds.listener.EntityInteract;
-import net.dzikoysk.funnyguilds.listener.PlayerChat;
-import net.dzikoysk.funnyguilds.listener.PlayerDeath;
-import net.dzikoysk.funnyguilds.listener.PlayerJoin;
-import net.dzikoysk.funnyguilds.listener.PlayerLogin;
-import net.dzikoysk.funnyguilds.listener.PlayerQuit;
+import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
-import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
-import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
-import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
-import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
-import net.dzikoysk.funnyguilds.listener.region.BucketAction;
-import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
-import net.dzikoysk.funnyguilds.listener.region.EntityPlace;
-import net.dzikoysk.funnyguilds.listener.region.GuildHeartProtectionHandler;
-import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
-import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
-import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
-import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
-import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
-import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
+import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -58,30 +39,31 @@ import java.io.File;
 public class FunnyGuilds extends JavaPlugin {
 
     private static FunnyGuilds funnyguilds;
-
+    private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
+    private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
+    private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
     private String fullVersion;
     private String mainVersion;
-
-    private final File pluginConfigurationFile  = new File(this.getDataFolder(), "config.yml");
-    private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
-    private final File pluginDataFolderFile     = new File(this.getDataFolder(), "data");
-
-    private FunnyGuildsLogger      logger;
-    private PluginConfiguration    pluginConfiguration;
-    private MessageConfiguration   messageConfiguration;
-    private ConcurrencyManager     concurrencyManager;
+    private FunnyGuildsLogger logger;
+    private PluginConfiguration pluginConfiguration;
+    private MessageConfiguration messageConfiguration;
+    private ConcurrencyManager concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
     private volatile BukkitTask rankRecalculationTask;
 
-    private DataModel                    dataModel;
-    private DataPersistenceHandler       dataPersistenceHandler;
+    private DataModel dataModel;
+    private DataPersistenceHandler dataPersistenceHandler;
     private InvitationPersistenceHandler invitationPersistenceHandler;
 
     private boolean isDisabling;
     private boolean forceDisabling;
+
+    public static FunnyGuilds getInstance() {
+        return funnyguilds;
+    }
 
     @Override
     public void onLoad() {
@@ -96,8 +78,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             Class.forName("net.md_5.bungee.api.ChatColor");
-        }
-        catch (Exception spigotNeeded) {
+        } catch (Exception spigotNeeded) {
             FunnyGuilds.getInstance().getPluginLogger().error("FunnyGuilds requires spigot to work, your server seems to be using something else");
             FunnyGuilds.getInstance().getPluginLogger().error("If you think that is not true - contact plugin developers");
             FunnyGuilds.getInstance().getPluginLogger().error("https://github.com/FunnyGuilds/FunnyGuilds");
@@ -108,7 +89,7 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        if (! this.getDataFolder().exists()) {
+        if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
 
@@ -118,8 +99,7 @@ public class FunnyGuilds extends JavaPlugin {
 
             this.pluginConfiguration.load();
             this.messageConfiguration.load();
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.getPluginLogger().error("Could not load plugin configuration", ex);
             this.getServer().getPluginManager().disablePlugin(this);
             this.forceDisabling = true;
@@ -174,10 +154,14 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerQuit(), this);
         pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
 
+        if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
+            pluginManager.registerEvents(new BlockFlow(), this);
+        }
+
+
         if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
             pluginManager.registerEvents(new EntityPlace(), this);
-        }
-        else {
+        } else {
             getLogger().warning("Cannot register EntityPlaceEvent listener on this version of server");
         }
 
@@ -247,8 +231,7 @@ public class FunnyGuilds extends JavaPlugin {
             if (user.getCache().getScoreboard() == null) {
                 if (pluginConfiguration.useSharedScoreboard) {
                     user.getCache().setScoreboard(player.getScoreboard());
-                }
-                else {
+                } else {
                     user.getCache().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
                 }
             }
@@ -331,10 +314,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public String getMainVersion() {
         return this.mainVersion;
-    }
-
-    public static FunnyGuilds getInstance() {
-        return funnyguilds;
     }
 
 }
