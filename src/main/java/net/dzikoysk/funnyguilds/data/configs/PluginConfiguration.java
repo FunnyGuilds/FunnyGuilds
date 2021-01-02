@@ -101,7 +101,7 @@ public class PluginConfiguration {
     @CfgName("regions-enabled")
     public boolean regionsEnabled = true;
 
-    @CfgComment("Rozlewanie się wody i lawy tylko na terenie gildii")
+    @CfgComment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
     @CfgComment("Dziala tylko jesli regiony sa wlaczone")
     @CfgName("water-and-lava-flow-only-for-regions")
     public boolean blockFlow = false;
