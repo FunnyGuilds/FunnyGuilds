@@ -24,6 +24,7 @@ import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
+import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
 import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
@@ -173,6 +174,10 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerLogin(), this);
         pluginManager.registerEvents(new PlayerQuit(), this);
         pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
+
+        if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
+            pluginManager.registerEvents(new BlockFlow(), this);
+        }
 
         if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
             pluginManager.registerEvents(new EntityPlace(), this);
