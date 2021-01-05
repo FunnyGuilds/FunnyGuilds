@@ -16,6 +16,8 @@ public final class FunnyGuildsVersion {
     private static final String GH_COMMITS_URL = "https://api.github.com/repos/FunnyGuilds/FunnyGuilds/commits";
     private static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
 
+    private FunnyGuildsVersion() {}
+
     public static void isNewAvailable(CommandSender sender, boolean force) {
         if (!FunnyGuilds.getInstance().getPluginConfiguration().updateInfo && !force) {
             return;
@@ -82,7 +84,5 @@ public final class FunnyGuildsVersion {
 
         return StringUtils.replace(remainder, "-", "");
     }
-
-    private FunnyGuildsVersion() {}
 
 }

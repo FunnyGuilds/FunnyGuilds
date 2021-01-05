@@ -50,4 +50,5 @@ public class GuildValidationHandler implements Runnable {
 
         this.banGuildsCounter = 0;
     }
+
 }

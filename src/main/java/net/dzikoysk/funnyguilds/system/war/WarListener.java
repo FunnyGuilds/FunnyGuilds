@@ -29,6 +29,8 @@ public final class WarListener {
         ENUM_HAND_FIELD = Reflections.SERVER_VERSION.startsWith("v1_8") ? null : Reflections.getPrivateField(USE_ENTITY_CLASS, "d");
     }
 
+    private WarListener() {}
+
     public static void use(Player player, Object packet) {
         try {
             if (packet == null) {
@@ -56,13 +58,13 @@ public final class WarListener {
             }
 
             call(player, id, actionEnum.toString(), enumHand == null ? "" : enumHand.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
     }
 
     private static void call(Player player, int id, String action, String hand) {
-        for (final Map.Entry<Guild, Integer> entry : GuildEntityHelper.getGuildEntities().entrySet()) {
+        for (Map.Entry<Guild, Integer> entry : GuildEntityHelper.getGuildEntities().entrySet()) {
             if (!entry.getValue().equals(id)) {
                 continue;
             }
@@ -76,7 +78,6 @@ public final class WarListener {
             if ("ATTACK".equalsIgnoreCase(action)) {
                 WarSystem.getInstance().attack(player, entry.getKey());
             }
-            
             else if ("INTERACT_AT".equalsIgnoreCase(action)) {
                 PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
                 
@@ -93,5 +94,4 @@ public final class WarListener {
         }
     }
 
-    private WarListener() {}
 }

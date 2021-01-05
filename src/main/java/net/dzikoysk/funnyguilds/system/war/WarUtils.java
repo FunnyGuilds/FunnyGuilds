@@ -9,27 +9,29 @@ import org.bukkit.entity.Player;
 
 public final class WarUtils {
 
+    private WarUtils() {}
+
     public static void message(Player player, int i, Object... values) {
-        MessageConfiguration m = FunnyGuilds.getInstance().getMessageConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         String message = null;
         
         switch (i) {
             case 0:
-                message = m.warHasNotGuild;
+                message = messages.warHasNotGuild;
                 break;
             case 1:
-                message = m.warAlly;
+                message = messages.warAlly;
                 break;
             case 2:
-                message = m.warWait;
+                message = messages.warWait;
                 message = StringUtils.replace(message, "{TIME}", TimeUtils.getDurationBreakdown((long) values[0]));
                 break;
             case 3:
-                message = m.warAttacker;
+                message = messages.warAttacker;
                 message = StringUtils.replace(message, "{ATTACKED}", ((Guild) values[0]).getTag());
                 break;
             case 4: 
-                message = m.warAttacked;
+                message = messages.warAttacked;
                 message = StringUtils.replace(message, "{ATTACKER}", ((Guild) values[0]).getTag());
                 break;
         }
@@ -55,5 +57,4 @@ public final class WarUtils {
                 .replace("{LOSER}", loser.getTag());
     }
 
-    private WarUtils() {}
 }

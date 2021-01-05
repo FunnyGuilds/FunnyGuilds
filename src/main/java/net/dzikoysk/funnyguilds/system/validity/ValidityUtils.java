@@ -24,7 +24,8 @@ public class ValidityUtils {
                     .replace("{X}", Integer.toString(region.getCenter().getBlockX()))
                     .replace("{Y}", Integer.toString(region.getCenter().getBlockY()))
                     .replace("{Z}", Integer.toString(region.getCenter().getBlockZ()));
-        } else {
+        }
+        else {
             message = message
                     .replace("{X}", "Brak informacji")
                     .replace("{Y}", "Brak informacji")

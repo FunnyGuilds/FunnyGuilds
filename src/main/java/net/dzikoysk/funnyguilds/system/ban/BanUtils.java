@@ -13,14 +13,17 @@ import java.util.Date;
 
 public final class BanUtils {
 
+    private BanUtils() {}
+
     public static void ban(Guild guild, long time, String reason) {
         guild.setBan(time + System.currentTimeMillis());
+
         for (User user : guild.getMembers()) {
+            Player player = user.getPlayer();
             ban(user, time, reason);
-            
-            Player p = user.getPlayer();
-            if (p != null && p.isOnline()) {
-                p.kickPlayer(getBanMessage(user));
+
+            if (player != null && player.isOnline()) {
+                player.kickPlayer(getBanMessage(user));
             }
         }
     }
@@ -62,8 +65,8 @@ public final class BanUtils {
         message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
         message = StringUtils.replace(message, "{REASON}", userBan.getReason());
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
+
         return ChatUtils.colored(message);
     }
-    
-    private BanUtils() {}
+
 }

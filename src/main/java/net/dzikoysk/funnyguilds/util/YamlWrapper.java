@@ -19,8 +19,8 @@ public final class YamlWrapper extends YamlConfiguration {
             }
 
             super.load(file);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
 
         this.file = file;
@@ -35,8 +35,8 @@ public final class YamlWrapper extends YamlConfiguration {
             }
 
             super.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 
@@ -48,8 +48,8 @@ public final class YamlWrapper extends YamlConfiguration {
             }
 
             super.save(this.file);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 

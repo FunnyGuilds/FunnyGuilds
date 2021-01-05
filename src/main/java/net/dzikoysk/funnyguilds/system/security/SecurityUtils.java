@@ -6,6 +6,8 @@ public final class SecurityUtils {
 
     private static final String SECURITY_TAG = "&c!!!&4[FunnyGuilds]&c!!! ";
 
+    private SecurityUtils() { }
+
     public static String getSecurityTag() {
         return SECURITY_TAG;
     }
@@ -26,7 +28,4 @@ public final class SecurityUtils {
         );
     }
 
-    private SecurityUtils() {
-
-    }
 }

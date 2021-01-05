@@ -56,9 +56,11 @@ public final class FunnyGuildsLogger {
         error(content);
         error("");
         error(cause.toString());
+
         for (StackTraceElement element : cause.getStackTrace()) {
             error("       at " + element.toString());
         }
+
         error("");
         error("Server Information:");
         error("  FunnyGuilds: " + this.funnyGuilds.getFullVersion());
@@ -68,4 +70,5 @@ public final class FunnyGuildsLogger {
         error("  Loaded plugins: " + loadedPlugins);
         error("");
     }
+
 }
