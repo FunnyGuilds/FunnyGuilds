@@ -15,7 +15,7 @@ public class DataPersistenceHandler {
     }
 
     public void startHandler() {
-        long interval = this.funnyGuilds.getPluginConfiguration().dataInterval * 60 * 20;
+        long interval = this.funnyGuilds.getPluginConfiguration().dataInterval * 60L * 20L;
 
         if (this.dataPersistenceHandlerTask != null) {
             this.dataPersistenceHandlerTask.cancel();
@@ -38,4 +38,5 @@ public class DataPersistenceHandler {
         this.stopHandler();
         this.startHandler();
     }
+
 }

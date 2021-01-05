@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 public class Rank implements Comparable<Rank> {
 
     private final BasicType type;
-    private Basic basic;
+    private final Basic basic;
     private final String identityName;
     private Guild guild;
     private User user;
@@ -22,80 +22,88 @@ public class Rank implements Comparable<Rank> {
         this.basic = basic;
         this.type = basic.getType();
         this.identityName = basic.getName();
+
         if (this.type == BasicType.GUILD) {
             this.guild = (Guild) basic;
-        } else if (this.type == BasicType.USER) {
+        }
+        else if (this.type == BasicType.USER) {
             this.user = (User) basic;
             this.points = FunnyGuilds.getInstance().getPluginConfiguration().rankStart;
         }
     }
 
-    public void removePoints(int i) {
-        this.points -= i;
+    public void removePoints(int value) {
+        this.points -= value;
+
         if (this.points < 1) {
             this.points = 0;
         }
+
         this.basic.markChanged();
     }
 
-    public void addPoints(int i) {
-        this.points += i;
+    public void addPoints(int value) {
+        this.points += value;
         this.basic.markChanged();
     }
 
     public void addKill() {
-        this.kills += 1;
+        this.kills++;
         this.basic.markChanged();
     }
 
     public void addDeath() {
-        this.deaths += 1;
+        this.deaths++;
         this.basic.markChanged();
     }
 
     @Override
     public int compareTo(Rank rank) {
-        int i = Integer.compare(this.getPoints(), rank.getPoints());
-        if (i == 0) {
+        int result = Integer.compare(this.getPoints(), rank.getPoints());
+
+        if (result == 0) {
             if (identityName == null) {
                 return -1;
             }
+
             if (rank.getIdentityName() == null) {
                 return 1;
             }
-            i = identityName.compareTo(rank.getIdentityName());
+
+            result = identityName.compareTo(rank.getIdentityName());
         }
-        return i;
+
+        return result;
     }
 
     public int getPoints() {
         if (this.type == BasicType.USER) {
             return this.points;
-        } else {
-            double points = 0;
-            int size = guild.getMembers().size();
-
-            if (size == 0) {
-                return 0;
-            }
-
-            for (User user : guild.getMembers()) {
-                points += user.getRank().getPoints();
-            }
-
-            double calc = points / size;
-
-            if (calc != this.points) {
-                this.points = (int) calc;
-                this.basic.markChanged();
-            }
-
-            return this.points;
         }
+
+        double points = 0;
+        int size = guild.getMembers().size();
+
+        if (size == 0) {
+            return 0;
+        }
+
+        for (User user : guild.getMembers()) {
+            points += user.getRank().getPoints();
+        }
+
+        double calc = points / size;
+
+        if (calc != this.points) {
+            this.points = (int) calc;
+            this.basic.markChanged();
+        }
+
+        return this.points;
     }
 
-    public void setPoints(int i) {
-        this.points = i;
+    public void setPoints(int points) {
+        this.points = points;
         this.basic.markChanged();
     }
 
@@ -113,6 +121,7 @@ public class Rank implements Comparable<Rank> {
         }
         
         int kills = 0;
+
         for (User user : this.guild.getMembers()) {
             kills += user.getRank().getKills();
         }
@@ -120,8 +129,8 @@ public class Rank implements Comparable<Rank> {
         return kills;
     }
 
-    public void setKills(int i) {
-        this.kills = i;
+    public void setKills(int kills) {
+        this.kills = kills;
         this.basic.markChanged();
     }
 
@@ -138,8 +147,8 @@ public class Rank implements Comparable<Rank> {
         return deaths;
     }
 
-    public void setDeaths(int i) {
-        this.deaths = i;
+    public void setDeaths(int deaths) {
+        this.deaths = deaths;
         this.basic.markChanged();
     }
 
@@ -188,6 +197,13 @@ public class Rank implements Comparable<Rank> {
         }
 
         return rank.getIdentityName().equals(this.identityName);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = type.hashCode();
+        result = 31 * result + identityName.hashCode();
+        return result;
     }
 
     @Override

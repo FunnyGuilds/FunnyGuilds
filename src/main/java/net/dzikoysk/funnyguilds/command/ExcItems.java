@@ -15,6 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ExcItems implements Executor {
 
@@ -39,25 +40,35 @@ public class ExcItems implements Executor {
 
             if (config.addLoreLines && (config.createItems.contains(item) || config.createItemsVip.contains(item))) {
                 ItemMeta meta = item.getItemMeta();
-                List<String> lore = meta.hasLore() ? meta.getLore() : new ArrayList<>();
 
-                int reqAmount = item.getAmount();
-                int pinvAmount = ItemUtils.getItemAmount(item, player.getInventory());
-                int ecAmount = ItemUtils.getItemAmount(item, player.getEnderChest());
+                if (meta == null) {
+                    FunnyGuilds.getInstance().getLogger().warning("");
+                    continue;
+                }
+
+                int requiredAmount = item.getAmount();
+                int inventoryAmount = ItemUtils.getItemAmount(item, player.getInventory());
+                int enderChestAmount = ItemUtils.getItemAmount(item, player.getEnderChest());
+
+                List<String> lore = meta.getLore();
+
+                if (lore == null) {
+                    lore = new ArrayList<>(config.guiItemsLore.size());
+                }
 
                 for (String line : config.guiItemsLore) {
-                    line = StringUtils.replace(line, "{REQ-AMOUNT}", Integer.toString(reqAmount));
-                    line = StringUtils.replace(line, "{PINV-AMOUNT}", Integer.toString(pinvAmount));
-                    line = StringUtils.replace(line, "{PINV-PERCENT}", ChatUtils.getPercent(pinvAmount, reqAmount));
-                    line = StringUtils.replace(line, "{EC-AMOUNT}", Integer.toString(ecAmount));
-                    line = StringUtils.replace(line, "{EC-PERCENT}", ChatUtils.getPercent(ecAmount, reqAmount));
-                    line = StringUtils.replace(line, "{ALL-AMOUNT}", Integer.toString(pinvAmount + ecAmount));
-                    line = StringUtils.replace(line, "{ALL-PERCENT}", ChatUtils.getPercent(pinvAmount + ecAmount, reqAmount));
+                    line = StringUtils.replace(line, "{REQ-AMOUNT}", Integer.toString(requiredAmount));
+                    line = StringUtils.replace(line, "{PINV-AMOUNT}", Integer.toString(inventoryAmount));
+                    line = StringUtils.replace(line, "{PINV-PERCENT}", ChatUtils.getPercent(inventoryAmount, requiredAmount));
+                    line = StringUtils.replace(line, "{EC-AMOUNT}", Integer.toString(enderChestAmount));
+                    line = StringUtils.replace(line, "{EC-PERCENT}", ChatUtils.getPercent(enderChestAmount, requiredAmount));
+                    line = StringUtils.replace(line, "{ALL-AMOUNT}", Integer.toString(inventoryAmount + enderChestAmount));
+                    line = StringUtils.replace(line, "{ALL-PERCENT}", ChatUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
 
                     lore.add(line);
                 }
 
-                if (config.guiItemsName != "") {
+                if (!Objects.equals(config.guiItemsName, "")) {
                     meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName, null, item));
                 }
 

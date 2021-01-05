@@ -25,14 +25,13 @@ public class InvitationPersistenceHandler {
     }
 
     public void startHandler() {
-        long interval = this.funnyGuilds.getPluginConfiguration().dataInterval * 60 * 20;
+        long interval = this.funnyGuilds.getPluginConfiguration().dataInterval * 60L * 20L;
 
         if (this.invitationPersistenceHandlerTask != null) {
             this.invitationPersistenceHandlerTask.cancel();
         }
 
-        this.invitationPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(
-                funnyGuilds, this::saveInvitations, interval, interval);
+        this.invitationPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(funnyGuilds, this::saveInvitations, interval, interval);
     }
 
     public void stopHandler() {
@@ -46,8 +45,7 @@ public class InvitationPersistenceHandler {
 
     public void saveInvitations() {
         this.invitationsFile.delete();
-
-        YamlWrapper pc = new YamlWrapper(this.invitationsFile);
+        YamlWrapper wrapper = new YamlWrapper(this.invitationsFile);
 
         for (Guild guild : GuildUtils.getGuilds()) {
             List<InvitationList.Invitation> invitationList = InvitationList.getInvitationsFrom(guild);
@@ -63,12 +61,12 @@ public class InvitationPersistenceHandler {
                     allyInvitations.add(invitation.getFor().toString());
                 }
 
-                pc.set(invitation.getFrom().toString() + ".guilds", allyInvitations);
-                pc.set(invitation.getFrom().toString() + ".players", playerInvitations);
+                wrapper.set(invitation.getFrom().toString() + ".guilds", allyInvitations);
+                wrapper.set(invitation.getFrom().toString() + ".players", playerInvitations);
             }
         }
 
-        pc.save();
+        wrapper.save();
     }
 
     public void loadInvitations() {
@@ -77,6 +75,7 @@ public class InvitationPersistenceHandler {
         }
 
         YamlWrapper pc = new YamlWrapper(this.invitationsFile);
+
         for (String key : pc.getKeys(false)) {
             Guild guild = GuildUtils.getByUUID(UUID.fromString(key));
 
@@ -98,4 +97,5 @@ public class InvitationPersistenceHandler {
             }
         }
     }
+
 }

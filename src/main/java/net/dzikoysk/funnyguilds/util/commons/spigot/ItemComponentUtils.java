@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.util.commons.spigot;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -39,21 +40,27 @@ public final class ItemComponentUtils {
         String messageColor = "";
         char[] messageChars = message.toCharArray();
 
-        for (int i = 0; i < messageChars.length; i++) {
-            char c = messageChars[i];
+        for (int index = 0; index < messageChars.length; index++) {
+            char symbol = messageChars[index];
 
-            if (c != '{') {
-                messagePart.append(c);
-                
-                if (c == ChatColor.COLOR_CHAR) {
-                    messageColor += c;
-                    messageColor += messageChars[i + 1];
+            if (symbol != '{') {
+                messagePart.append(symbol);
+
+                if (symbol == ChatColor.COLOR_CHAR) {
+                    messageColor += symbol;
+
+                    if (messageChars.length + 1 >= message.length()) {
+                        FunnyGuilds.getInstance().getLogger().warning("Invalid placeholder: " + message + " (exceeds array limit at + " + index + ")");
+                        continue;
+                    }
+
+                    messageColor += messageChars[index + 1];
                 }
                 
                 continue;
             }
             
-            String subItem = message.substring(i, Math.min(message.length(), i + 6));
+            String subItem = message.substring(index, Math.min(message.length(), index + 6));
 
             if (subItem.equals("{ITEM}")) {
                 for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
@@ -62,11 +69,11 @@ public final class ItemComponentUtils {
                 
                 messagePart = new StringBuilder();
                 translatedMessage.addExtra(getItemComponent(item, messageColor));
-                i += 5;
+                index += 5;
                 continue;
             }
 
-            String subItems = message.substring(i, Math.min(message.length(), i + 7));
+            String subItems = message.substring(index, Math.min(message.length(), index + 7));
 
             if (subItems.equals("{ITEMS}")) {
                 for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
@@ -85,11 +92,11 @@ public final class ItemComponentUtils {
                     }
                 }
                 
-                i += 6;
+                index += 6;
                 continue;
             }
 
-            messagePart.append(c);
+            messagePart.append(symbol);
         }
         
         for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {

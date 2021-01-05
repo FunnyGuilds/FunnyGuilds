@@ -206,7 +206,7 @@ public class PlayerMove implements Listener {
                     }
                 }
 
-                cache.setNotificationTime(System.currentTimeMillis() + 1000 * config.regionNotificationCooldown);
+                cache.setNotificationTime(System.currentTimeMillis() + 1000L * config.regionNotificationCooldown);
             }
         });
     }

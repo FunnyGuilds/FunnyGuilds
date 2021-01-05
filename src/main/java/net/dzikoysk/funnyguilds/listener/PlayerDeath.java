@@ -95,7 +95,7 @@ public class PlayerDeath implements Listener {
             Long victimTimestamp = attackerCache.wasVictimOf(attacker);
 
             if (attackTimestamp != null) {
-                if (attackTimestamp + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
+                if (attackTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
                     playerVictim.sendMessage(messages.rankLastVictimV);
                     playerAttacker.sendMessage(messages.rankLastVictimA);
 
@@ -106,7 +106,7 @@ public class PlayerDeath implements Listener {
                 }
             }
             else if (victimTimestamp != null) {
-                if (victimTimestamp + (config.rankFarmingCooldown * 1000) >= System.currentTimeMillis()) {
+                if (victimTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
                     playerVictim.sendMessage(messages.rankLastAttackerV);
                     playerAttacker.sendMessage(messages.rankLastAttackerA);
 
@@ -133,14 +133,14 @@ public class PlayerDeath implements Listener {
         }
 
         int[] rankChanges = new int[2];
-        int aP = attacker.getRank().getPoints();
-        int vP = victim.getRank().getPoints();
+        int victimPoints = victim.getRank().getPoints();
+        int attackerPoints = attacker.getRank().getPoints();
 
         switch (config.rankSystem) {
             case PERCENT:
-                Double d = victim.getRank().getPoints() * (config.percentRankChange / 100);
-                rankChanges[0] = d.intValue();
-                rankChanges[1] = d.intValue();
+                double value = victim.getRank().getPoints() * (config.percentRankChange / 100.0);
+                rankChanges[0] = (int) value;
+                rankChanges[1] = (int) value;
                 break;
             case STATIC:
                 rankChanges[0] = config.staticAttackerChange;
@@ -148,7 +148,7 @@ public class PlayerDeath implements Listener {
                 break;
             case ELO:
             default:
-                rankChanges = getEloValues(vP, aP);
+                rankChanges = getEloValues(victimPoints, attackerPoints);
                 break;
         }
 
@@ -169,7 +169,6 @@ public class PlayerDeath implements Listener {
                 int givenPoints = 0;
 
                 Map<User, Double> damage = MapUtil.sortByValue(victimCache.getDamage());
-
                 int assists = 0;
 
                 for (Entry<User, Double> assist : damage.entrySet()) {
@@ -202,8 +201,8 @@ public class PlayerDeath implements Listener {
                     assist.getKey().getRank().addPoints(addedPoints);
                 }
 
-                double attackerPoints = attackerEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
-                attackerEvent.setChange((int) Math.round(attackerPoints));
+                double updatedAttackerPoints = attackerEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
+                attackerEvent.setChange((int) Math.round(updatedAttackerPoints));
             }
 
             attacker.getRank().addKill();
@@ -251,8 +250,7 @@ public class PlayerDeath implements Listener {
                 .register("{VICTIM}", victim.getName())
                 .register("{+}", Integer.toString(attackerEvent.getChange()))
                 .register("{-}", Math.min(victimPointsBeforeChange, victimEvent.getChange()))
-                .register("{POINTS-FORMAT}",
-                        IntegerRange.inRange(vP, config.pointsFormat, "POINTS"))
+                .register("{POINTS-FORMAT}", IntegerRange.inRange(victimPoints, config.pointsFormat, "POINTS"))
                 .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))

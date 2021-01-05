@@ -36,6 +36,8 @@ public final class ItemUtils {
         }
     }
 
+    private ItemUtils() {}
+
     public static String translateTextPlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
         StringBuilder contentBuilder = new StringBuilder();
 
@@ -78,7 +80,7 @@ public final class ItemUtils {
         String[] typeSplit = split[1].split(":");
         String subtype = typeSplit.length > 1 ? typeSplit[1] : "0";
 
-        Material mat = MaterialUtils.parseMaterial(typeSplit[0], false);
+        Material material = MaterialUtils.parseMaterial(typeSplit[0], false);
 
         int stack;
         int data;
@@ -93,10 +95,10 @@ public final class ItemUtils {
             data = 0;
         }
 
-        ItemBuilder item = new ItemBuilder(mat, stack, data);
+        ItemBuilder item = new ItemBuilder(material, stack, data);
 
-        for (int i = 2; i < split.length; i++) {
-            String[] itemAttribute = split[i].split(":");
+        for (int index = 2; index < split.length; index++) {
+            String[] itemAttribute = split[index].split(":");
 
             String attributeName = itemAttribute[0];
             String[] attributeValue = Arrays.copyOfRange(itemAttribute, 1, itemAttribute.length);
@@ -108,8 +110,8 @@ public final class ItemUtils {
                 String[] lores = String.join(":", attributeValue).split("#");
                 List<String> lore = new ArrayList<>();
 
-                for (String s : lores) {
-                    lore.add(StringUtils.replace(StringUtils.replace(ChatUtils.colored(s), "_", " "), "{HASH}", "#"));
+                for (String loreLine : lores) {
+                    lore.add(StringUtils.replace(StringUtils.replace(ChatUtils.colored(loreLine), "_", " "), "{HASH}", "#"));
                 }
 
                 item.setLore(lore);
@@ -120,7 +122,7 @@ public final class ItemUtils {
                 try {
                     level = Integer.parseInt(attributeValue[1]);
                 }
-                catch (NumberFormatException e) {
+                catch (NumberFormatException numberFormatException) {
                     FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant level: " + attributeValue[1]);
                     level = 1;
                 }
@@ -158,7 +160,7 @@ public final class ItemUtils {
             }
             else if (attributeName.equalsIgnoreCase("armorcolor")) {
                 if (! (item.getMeta() instanceof LeatherArmorMeta)) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[i]);
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[index]);
                     continue;
                 }
 
@@ -169,8 +171,8 @@ public final class ItemUtils {
                             Integer.parseInt(color[1]), Integer.parseInt(color[2])));
                     item.refreshMeta();
                 }
-                catch (NumberFormatException e) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid armor color: " + attributeValue);
+                catch (NumberFormatException numberFormatException) {
+                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid armor color: " + Arrays.toString(attributeValue));
                 }
             }
             else if (attributeName.equalsIgnoreCase("eggtype")) {
@@ -181,7 +183,7 @@ public final class ItemUtils {
                     try {
                         type = EntityType.valueOf(entityTypeName);
                     }
-                    catch (Exception e) {
+                    catch (Exception exception) {
                         FunnyGuilds.getInstance().getPluginLogger().parser("Unknown entity type: " + entityTypeName);
                     }
 
@@ -241,7 +243,5 @@ public final class ItemUtils {
     public static ItemStack[] toArray(Collection<ItemStack> collection) {
         return collection.toArray(new ItemStack[0]);
     }
-
-    private ItemUtils() {}
 
 }

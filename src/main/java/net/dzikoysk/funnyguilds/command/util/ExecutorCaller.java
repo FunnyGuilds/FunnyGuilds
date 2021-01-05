@@ -28,7 +28,7 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
     private String permission;
     private String[] secondary;
     private List<String> aliases;
-    private List<ExecutorCaller> executors = new ArrayList<>();
+    private final List<ExecutorCaller> executors = new ArrayList<>();
 
     public ExecutorCaller(Executor exc, String perm, FunnyCommand command, boolean playerOnly) {
         this(exc, perm, command.name, command.aliases, command.enabled, playerOnly);
@@ -50,22 +50,25 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         
         if (aliases != null && aliases.size() > 0) {
             this.aliases = aliases;
-        } else {
+        }
+        else {
             this.aliases = null;
         }
 
-        String[] splited = command.split("\\s+");
-        this.overriding = splited[0];
-        if (splited.length > 1) {
-            this.secondary = new String[splited.length - 1];
-            System.arraycopy(splited, 1, this.secondary, 0, splited.length - 1);
-        } else {
+        String[] elements = command.split("\\s+");
+        this.overriding = elements[0];
+
+        if (elements.length > 1) {
+            this.secondary = new String[elements.length - 1];
+            System.arraycopy(elements, 1, this.secondary, 0, elements.length - 1);
+        }
+        else {
             this.secondary = null;
         }
 
-        for (ExecutorCaller ec : ecs) {
-            if (ec.overriding.equalsIgnoreCase(this.overriding)) {
-                ec.executors.add(this);
+        for (ExecutorCaller caller : ecs) {
+            if (caller.overriding.equalsIgnoreCase(this.overriding)) {
+                caller.executors.add(this);
                 return;
             }
         }
@@ -81,15 +84,17 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         }
         
         ExecutorCaller main = null;
-        for (ExecutorCaller ec : this.executors) {
-            if (ec.secondary != null) {
-                if (ec.secondary.length > args.length) {
+
+        for (ExecutorCaller caller : this.executors) {
+            if (caller.secondary != null) {
+                if (caller.secondary.length > args.length) {
                     continue;
                 }
                 
                 boolean sec = false;
-                for (int i = 0; i < ec.secondary.length; i++) {
-                    if (!ec.secondary[i].equalsIgnoreCase(args[i])) {
+
+                for (int index = 0; index < caller.secondary.length; index++) {
+                    if (!caller.secondary[index].equalsIgnoreCase(args[index])) {
                         sec = true;
                         break;
                     }
@@ -99,51 +104,57 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
                     continue;
                 }
                 
-                args = Arrays.copyOfRange(args, ec.secondary.length, args.length);
-            } else {
-                main = ec;
+                args = Arrays.copyOfRange(args, caller.secondary.length, args.length);
+            }
+            else {
+                main = caller;
                 continue;
             }
             
             if (sender instanceof Player) {
-                if (ec.permission != null && !sender.hasPermission(ec.permission)) {
+                if (caller.permission != null && !sender.hasPermission(caller.permission)) {
                     sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
                     return true;
                 }
             }
             
-            ec.executor.execute(sender, args);
+            caller.executor.execute(sender, args);
             return true;
         }
-        
+
+        if (main == null) {
+            throw new RuntimeException("Cannot find command " + cmd.getName());
+        }
+
         if (sender instanceof Player) {
             if (main.permission != null && !sender.hasPermission(main.permission)) {
                 sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
                 return true;
             }
         }
-        
+
         main.executor.execute(sender, args);
         return true;
     }
 
     private void register() {
         try {
-            Performer p = new Performer(this.overriding);
+            Performer performer = new Performer(this.overriding);
+
             if (this.aliases != null) {
-                p.setAliases(this.aliases);
+                performer.setAliases(this.aliases);
             }
 
-            p.setPermissionMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
-            Field f = Bukkit.getServer().getClass().getDeclaredField("commandMap");
-            f.setAccessible(true);
+            performer.setPermissionMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
+            Field commandMapField = Bukkit.getServer().getClass().getDeclaredField("commandMap");
+            commandMapField.setAccessible(true);
             
-            CommandMap cmap = (CommandMap) f.get(Bukkit.getServer());
-            cmap.register(FunnyGuilds.getInstance().getPluginConfiguration().pluginName, p);
-            p.setExecutor(this);
+            CommandMap commandMap = (CommandMap) commandMapField.get(Bukkit.getServer());
+            commandMap.register(FunnyGuilds.getInstance().getPluginConfiguration().pluginName, performer);
+            performer.setExecutor(this);
         }
-        catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not register command", ex);
+        catch (Exception exception) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not register command", exception);
         }
     }
 
@@ -172,8 +183,10 @@ public class ExecutorCaller implements CommandExecutor, TabExecutor {
         
         if (this.secondary != null) {
             return Arrays.asList(this.secondary);
-        } else {
+        }
+        else {
             return null;
         }
     }
+
 }

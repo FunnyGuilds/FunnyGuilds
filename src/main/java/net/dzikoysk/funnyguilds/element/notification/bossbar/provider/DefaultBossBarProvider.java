@@ -45,7 +45,7 @@ public final class DefaultBossBarProvider implements BossBarProvider {
         this.hideBossBarTask = Bukkit.getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
             this.bossBar.removePlayer(player);
             this.bossBar.setVisible(false);
-        },20 * timeout);
+        }, 20L * timeout);
     }
 
     @Override
@@ -63,4 +63,5 @@ public final class DefaultBossBarProvider implements BossBarProvider {
     public BossBar getBossBar() {
         return this.bossBar;
     }
+
 }
