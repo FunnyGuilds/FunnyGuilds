@@ -34,7 +34,7 @@ public class RankUtils {
             String pointsFormat = config.gtopPoints;
 
             if (!pointsFormat.isEmpty()) {
-                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRange(points, config.pointsFormat, "POINTS"));
+                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
                 pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
             }
 
@@ -69,7 +69,7 @@ public class RankUtils {
             String pointsFormat = config.ptopPoints;
 
             if (!pointsFormat.isEmpty()) {
-                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRange(points, config.pointsFormat, "POINTS"));
+                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
                 pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
             }
 

@@ -237,30 +237,31 @@ public class PlayerDeath implements Listener {
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
         }
 
-        ConcurrencyTask task = taskBuilder
+        concurrencyManager.postTask(taskBuilder
                 .delegate(new DummyGlobalUpdateUserRequest(victim))
                 .delegate(new DummyGlobalUpdateUserRequest(attacker))
                 .delegate(new RankUpdateUserRequest(victim))
                 .delegate(new RankUpdateUserRequest(attacker))
-                .build();
-        concurrencyManager.postTask(task);
+                .build());
 
         MessageFormatter killMessageFormatter = new MessageFormatter()
                 .register("{ATTACKER}", attacker.getName())
                 .register("{VICTIM}", victim.getName())
                 .register("{+}", Integer.toString(attackerEvent.getChange()))
                 .register("{-}", Math.min(victimPointsBeforeChange, victimEvent.getChange()))
-                .register("{POINTS-FORMAT}", IntegerRange.inRange(victimPoints, config.pointsFormat, "POINTS"))
+                .register("{POINTS-FORMAT}", IntegerRange.inRangeToString(victimPoints, config.pointsFormat))
                 .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
                 .register("{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)))
-                .register("{VTAG}", victim.hasGuild() ?
-                        StringUtils.replace(config.chatGuild, "{TAG}", victim.getGuild().getTag()) : "")
-                .register("{ATAG}", attacker.hasGuild() ?
-                        StringUtils.replace(config.chatGuild, "{TAG}", attacker.getGuild().getTag()) : "")
-                .register("{ASSISTS}", config.assistEnable && ! assistEntries.isEmpty() ?
-                        StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))
+                .register("{VTAG}", victim.hasGuild()
+                        ? StringUtils.replace(config.chatGuild, "{TAG}", victim.getGuild().getTag())
+                        : "")
+                .register("{ATAG}", attacker.hasGuild()
+                        ? StringUtils.replace(config.chatGuild, "{TAG}", attacker.getGuild().getTag())
+                        : "")
+                .register("{ASSISTS}", config.assistEnable && ! assistEntries.isEmpty()
+                        ? StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))
                         : "");
 
         if (config.displayTitleNotificationForKiller) {
@@ -304,11 +305,11 @@ public class PlayerDeath implements Listener {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         int[] rankChanges = new int[2];
 
-        int aC = IntegerRange.inRange(attackerPoints, config.eloConstants, "ELO_CONSTANTS");
-        int vC = IntegerRange.inRange(victimPoints, config.eloConstants, "ELO_CONSTANTS");
+        int attackerElo = IntegerRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
+        int victimElo = IntegerRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
 
-        rankChanges[0] = (int) Math.round(aC * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider)))));
-        rankChanges[1] = (int) Math.round(vC * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * - 1);
+        rankChanges[0] = (int) Math.round(attackerElo * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider)))));
+        rankChanges[1] = (int) Math.round(victimElo * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * - 1);
 
         return rankChanges;
     }

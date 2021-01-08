@@ -3,11 +3,13 @@ package net.dzikoysk.funnyguilds.util;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.panda_lang.utilities.commons.function.Option;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 
 public final class IntegerRange {
 
@@ -26,55 +28,68 @@ public final class IntegerRange {
     public int getMaxRange() {
         return this.maxRange;
     }
-    
-    public static <V> V inRange(int value, Map<IntegerRange, V> rangeMap, String rangeType) {
+
+    public static <V> Option<V> inRange(int value, Map<IntegerRange, V> rangeMap) {
         for (Entry<IntegerRange, V> entry : rangeMap.entrySet()) {
             IntegerRange range = entry.getKey();
 
             if (value >= range.getMinRange() && value <= range.getMaxRange()) {
-                return entry.getValue();
+                return Option.of(entry.getValue());
             }
         }
         
-        throw new MissingFormatException(value, rangeType);
+        return Option.none();
+    }
+
+    public static <V> String inRangeToString(int value, Map<IntegerRange, V> rangeMap) {
+        return inRange(value, rangeMap)
+                .map(Objects::toString)
+                .orElseGet(Integer.toString(value));
     }
 
     public static Map<IntegerRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
         Map<IntegerRange, String> parsed = new HashMap<>();
 
         for (String rangeEntry : rangeEntries) {
-            String[] split = rangeEntry.split(" ");
+            String[] rangeParts = rangeEntry.split(" ", 2);
 
-            if (split.length < 2) {
+            if (rangeParts.length != 2) {
                 FunnyGuilds.getInstance().getPluginLogger().parser("\"" + rangeEntry + "\" is not a valid range String!");
                 continue;
             }
 
-            String[] range = split[0].split("-");
+            String rangeValue = rangeParts[0].trim();
 
-            if (range.length < 2) {
+            int splitOperator = rangeValue.startsWith("-")
+                    ? rangeValue.indexOf('-', 1)
+                    : rangeValue.indexOf('-');
+
+            if (splitOperator == -1) {
                 FunnyGuilds.getInstance().getPluginLogger().parser("\"" + rangeEntry + "\" is not a valid integer range String!");
                 continue;
             }
+
+            String minRangeValue = rangeValue.substring(0, splitOperator).trim();
+            String maxRangeValue = rangeValue.substring(splitOperator + 1).trim();
 
             int minRange;
             int maxRange;
 
             try {
-                minRange = Integer.parseInt(range[0]);
-            } catch (NumberFormatException e) {
-                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + range[0] + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
+                minRange = minRangeValue.equals("-*") ? Integer.MIN_VALUE : Integer.parseInt(minRangeValue);
+            } catch (NumberFormatException numberFormatException) {
+                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + minRangeValue + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
                 continue;
             }
 
             try {
-                maxRange = range[1].equals("*") ? Integer.MAX_VALUE : Integer.parseInt(range[1]);
-            } catch (NumberFormatException e) {
-                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + range[1] + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
+                maxRange = maxRangeValue.equals("*") ? Integer.MAX_VALUE : Integer.parseInt(maxRangeValue);
+            } catch (NumberFormatException numberFormatException) {
+                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + maxRangeValue + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
                 continue;
             }
 
-            String valueString = StringUtils.join(split, " ", 1, split.length);
+            String valueString = StringUtils.join(rangeParts, " ", 1, rangeParts.length);
 
             if (rangeEntry.endsWith(" ")) {
                 valueString += " ";

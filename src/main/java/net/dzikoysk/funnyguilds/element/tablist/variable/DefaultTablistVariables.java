@@ -25,12 +25,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 public final class DefaultTablistVariables {
 
     private static final Map<String, TablistVariable> FUNNY_VARIABLES = new ConcurrentHashMap<>();
     private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
-    
+
+    private DefaultTablistVariables() {}
+
     public static Map<String, TablistVariable> getFunnyVariables() {
         if (FUNNY_VARIABLES.isEmpty()) {
             createFunnyVariables();
@@ -44,20 +47,20 @@ public final class DefaultTablistVariables {
     }
     
     public static void install(TablistVariablesParser parser) {
-        parser.add(new TimeFormattedVariable("HOUR", (user, time) -> String.valueOf(time.getHour())));
-        parser.add(new TimeFormattedVariable("MINUTE", (user, time) -> String.valueOf(time.getMinute())));
-        parser.add(new TimeFormattedVariable("SECOND", (user, time) -> String.valueOf(time.getSecond())));
+        parser.add(new TimeFormattedVariable("HOUR", (user, time) -> time.getHour()));
+        parser.add(new TimeFormattedVariable("MINUTE", (user, time) -> time.getMinute()));
+        parser.add(new TimeFormattedVariable("SECOND", (user, time) -> time.getSecond()));
         parser.add(new TimeFormattedVariable("DAY_OF_WEEK", (user, time) -> time.getDayOfWeek().getDisplayName(TextStyle.FULL, POLISH_LOCALE)));
-        parser.add(new TimeFormattedVariable("DAY_OF_MONTH", (user, time) -> String.valueOf(time.getDayOfMonth())));
+        parser.add(new TimeFormattedVariable("DAY_OF_MONTH", (user, time) -> time.getDayOfMonth()));
         parser.add(new TimeFormattedVariable("MONTH", (user, time) -> time.getMonth().getDisplayName(TextStyle.FULL, POLISH_LOCALE)));
-        parser.add(new TimeFormattedVariable("MONTH_NUMBER", (user, time) -> String.valueOf(time.getMonthValue())));
-        parser.add(new TimeFormattedVariable("YEAR", (user, time) -> String.valueOf(time.getYear())));
+        parser.add(new TimeFormattedVariable("MONTH_NUMBER", (user, time) -> time.getMonthValue()));
+        parser.add(new TimeFormattedVariable("YEAR", (user, time) -> time.getYear()));
 
         parser.add(new SimpleTablistVariable("PLAYER", User::getName));
         parser.add(new SimpleTablistVariable("TPS", user -> {
             try {
                 return MinecraftServerUtils.getRecentTPS(0);
-            } catch (IntegerRange.MissingFormatException ex) {
+            } catch (IntegerRange.MissingFormatException missingFormatException) {
                 return "0";
             }
         }));
@@ -79,7 +82,7 @@ public final class DefaultTablistVariables {
                 return "";
             }
             
-            return Long.toString(Bukkit.getOnlinePlayers().stream().filter(p -> p != null && userPlayer.canSee(p)).count());
+            return Bukkit.getOnlinePlayers().stream().filter(onlinePlayer -> onlinePlayer != null && userPlayer.canSee(onlinePlayer)).count();
         }));
 
         for (TablistVariable variable : getFunnyVariables().values()) {
@@ -105,48 +108,87 @@ public final class DefaultTablistVariables {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         
-        FUNNY_VARIABLES.put("guilds", new SimpleTablistVariable("GUILDS", user -> String.valueOf(GuildUtils.getGuilds().size())));
-        FUNNY_VARIABLES.put("users", new SimpleTablistVariable("USERS", user -> String.valueOf(UserUtils.getUsers().size())));
-        
-        FUNNY_VARIABLES.put("ping-format", new SimpleTablistVariable("PING-FORMAT", user -> IntegerRange.inRange(user.getPing(), config.pingFormat, "PING").replace("{PING}", String.valueOf(user.getPing()))));
-        FUNNY_VARIABLES.put("ping", new SimpleTablistVariable("PING", user -> String.valueOf(user.getPing())));
-        FUNNY_VARIABLES.put("points-format", new SimpleTablistVariable("POINTS-FORMAT", user -> IntegerRange.inRange(user.getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(user.getRank().getPoints()))));
-        FUNNY_VARIABLES.put("points", new SimpleTablistVariable("POINTS", user -> String.valueOf(user.getRank().getPoints())));
-        FUNNY_VARIABLES.put("position", new SimpleTablistVariable("POSITION", user -> String.valueOf(user.getRank().getPosition())));
-        FUNNY_VARIABLES.put("kills", new SimpleTablistVariable("KILLS", user -> String.valueOf(user.getRank().getKills())));
-        FUNNY_VARIABLES.put("deaths", new SimpleTablistVariable("DEATHS", user -> String.valueOf(user.getRank().getDeaths())));
-        FUNNY_VARIABLES.put("kdr", new SimpleTablistVariable("KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR())));
+        putSimple("guilds", "GUILDS", user -> GuildUtils.getGuilds().size());
+        putSimple("users", "USERS", user -> UserUtils.getUsers().size());
+        putSimple("ping", "PING", User::getPing);
+        putSimple("points", "POINTS", user -> user.getRank().getPoints());
+        putSimple("position", "POSITION", user -> user.getRank().getPosition());
+        putSimple("kills", "KILLS", user -> user.getRank().getKills());
+        putSimple("deaths", "DEATHS", user -> user.getRank().getDeaths());
+        putSimple("kdr", "KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR()));
+
+        putSimple("ping-format", "PING-FORMAT", user ->
+                IntegerRange.inRangeToString(user.getPing(), config.pingFormat)
+                        .replace("{PING}", String.valueOf(user.getPing())));
+
+        putSimple("points-format", "POINTS-FORMAT", user ->
+                IntegerRange.inRangeToString(user.getRank().getPoints(), config.pointsFormat)
+                        .replace("{POINTS}", String.valueOf(user.getRank().getPoints())));
 
         FUNNY_VARIABLES.put("g-name", GuildDependentTablistVariable.ofGuild("G-NAME", Guild::getName, user -> messages.gNameNoValue));
         FUNNY_VARIABLES.put("g-tag", GuildDependentTablistVariable.ofGuild("G-TAG", Guild::getTag, user -> messages.gTagNoValue));
         FUNNY_VARIABLES.put("g-owner", GuildDependentTablistVariable.ofGuild("G-OWNER", guild -> guild.getOwner().getName(), user -> messages.gOwnerNoValue));
-        FUNNY_VARIABLES.put("g-deputies", GuildDependentTablistVariable.ofGuild("G-DEPUTIES", guild -> guild.getDeputies().isEmpty() ? messages.gDeputiesNoValue : ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false), user -> messages.gDeputiesNoValue));
 
-        FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY", guild -> guild.getDeputies().isEmpty() ? messages.gDeputyNoValue : guild.getDeputies().iterator().next().getName(), user -> messages.gDeputyNoValue));
+        FUNNY_VARIABLES.put("g-deputies", GuildDependentTablistVariable.ofGuild("G-DEPUTIES",
+                guild -> guild.getDeputies().isEmpty()
+                        ? messages.gDeputiesNoValue
+                        : ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false),
+                user -> messages.gDeputiesNoValue));
+
+        FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY",
+                guild -> guild.getDeputies().isEmpty()
+                        ? messages.gDeputyNoValue
+                        : guild.getDeputies().iterator().next().getName(),
+                user -> messages.gDeputyNoValue));
+
         //FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY", guild -> guild.getDeputies().isEmpty() ? messages.gDeputyNoValue : guild.getDeputies().iterator().next(RandomUtils.RANDOM_INSTANCE.nextInt(guild.getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
 
-        FUNNY_VARIABLES.put("g-lives", new GuildDependentTablistVariable("G-LIVES", user -> String.valueOf(user.getGuild().getLives()), user -> "0"));
-        FUNNY_VARIABLES.put("g-allies", new GuildDependentTablistVariable("G-ALLIES", user -> String.valueOf(user.getGuild().getAllies().size()), user -> "0"));
-        FUNNY_VARIABLES.put("g-points-format", new GuildDependentTablistVariable("G-POINTS-FORMAT", user -> IntegerRange.inRange(user.getGuild().getRank().getPoints(), config.pointsFormat, "POINTS").replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())), user -> IntegerRange.inRange(0, config.pointsFormat, "POINTS").replace("{POINTS}", "0")));
-        FUNNY_VARIABLES.put("g-points", new GuildDependentTablistVariable("G-POINTS", user -> String.valueOf(user.getGuild().getRank().getPoints()), user -> "0"));
-        FUNNY_VARIABLES.put("g-kills", new GuildDependentTablistVariable("G-KILLS", user -> String.valueOf(user.getGuild().getRank().getKills()), user -> "0"));
-        FUNNY_VARIABLES.put("g-deaths", new GuildDependentTablistVariable("G-DEATHS", user -> String.valueOf(user.getGuild().getRank().getDeaths()), user -> "0"));
-        FUNNY_VARIABLES.put("g-kdr", new GuildDependentTablistVariable("G-KDR", user -> String.format(Locale.US, "%.2f", user.getGuild().getRank().getKDR()), user -> "0.00"));
-        FUNNY_VARIABLES.put("g-members-online", new GuildDependentTablistVariable("G-MEMBERS-ONLINE", user -> String.valueOf(user.getGuild().getOnlineMembers().size()), user -> "0"));
-        FUNNY_VARIABLES.put("g-members-all", new GuildDependentTablistVariable("G-MEMBERS-ALL", user -> String.valueOf(user.getGuild().getMembers().size()), user -> "0"));
+        putGuild("g-lives", "G-LIVES", user -> user.getGuild().getLives(), user -> "0");
+        putGuild("g-allies", "G-ALLIES", user -> user.getGuild().getAllies().size(), user -> "0");
+        putGuild("g-points", "G-POINTS", user -> user.getGuild().getRank().getPoints(), user -> "0");
+        putGuild("g-kills", "G-KILLS", user -> user.getGuild().getRank().getKills(), user -> "0");
+        putGuild("g-deaths", "G-DEATHS", user -> user.getGuild().getRank().getDeaths(), user -> "0");
+        putGuild("g-kdr", "G-KDR", user -> String.format(Locale.US, "%.2f", user.getGuild().getRank().getKDR()), user -> "0.00");
+        putGuild("g-members-online", "G-MEMBERS-ONLINE", user -> user.getGuild().getOnlineMembers().size(), user -> "0");
+        putGuild("g-members-all", "G-MEMBERS-ALL", user -> user.getGuild().getMembers().size(), user -> "0");
 
-        FUNNY_VARIABLES.put("g-position", new GuildDependentTablistVariable("G-POSITION", user -> user.getGuild().getMembers().size() >= FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude ? String.valueOf(user.getGuild().getRank().getPosition()) : messages.minMembersToIncludeNoValue, user -> messages.minMembersToIncludeNoValue));
-        FUNNY_VARIABLES.put("g-validity", new GuildDependentTablistVariable("G-VALIDITY", user -> FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(user.getGuild().getValidityDate()), user -> messages.gValidityNoValue));
-        FUNNY_VARIABLES.put("g-region-size", new GuildDependentTablistVariable("G-REGION-SIZE", user -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled ? String.valueOf(user.getGuild().getRegion().getSize()) : messages.gRegionSizeNoValue, user -> messages.gRegionSizeNoValue));
+        putGuild("g-validity", "G-VALIDITY",
+                user -> FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(user.getGuild().getValidityDate()),
+                user -> messages.gValidityNoValue);
+
+        putGuild("g-points-format", "G-POINTS-FORMAT",
+                user -> IntegerRange.inRangeToString(user.getGuild().getRank().getPoints(), config.pointsFormat)
+                            .replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())),
+                user -> IntegerRange.inRangeToString(0, config.pointsFormat)
+                            .replace("{POINTS}", "0"));
+
+        putGuild("g-position", "G-POSITION",
+                user -> user.getGuild().getMembers().size() >= FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude
+                        ? String.valueOf(user.getGuild().getRank().getPosition())
+                        : messages.minMembersToIncludeNoValue,
+                user -> messages.minMembersToIncludeNoValue);
+
+        putGuild("g-region-size", "G-REGION-SIZE",
+                user -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled
+                        ? String.valueOf(user.getGuild().getRegion().getSize())
+                        : messages.gRegionSizeNoValue,
+                user -> messages.gRegionSizeNoValue);
     }
-    
+
+    private static void putSimple(String variable, String placeholder, Function<User, Object> function) {
+        FUNNY_VARIABLES.put(variable, new SimpleTablistVariable(placeholder, function));
+    }
+
+    private static void putGuild(String variable, String placeholder, Function<User, Object> whenInGuild, Function<User, Object> whenNotInGuild) {
+        FUNNY_VARIABLES.put(variable, new GuildDependentTablistVariable(placeholder, whenInGuild, whenNotInGuild));
+    }
+
     private static List<String> getWorldGuardRegionNames(User user) {
         if (user == null || user.getPlayer() == null) {
             return Collections.emptyList();
         }
 
         Location location = user.getPlayer().getLocation();
-
         List<String> regionNames = PluginHook.WORLD_GUARD.getRegionNames(location);
 
         if (regionNames != null && ! regionNames.isEmpty()) {
@@ -155,7 +197,5 @@ public final class DefaultTablistVariables {
 
         return null;
     }
-    
-    private DefaultTablistVariables() {}
-    
+
 }

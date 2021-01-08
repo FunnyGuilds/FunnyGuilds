@@ -23,7 +23,7 @@ public final class MinecraftServerUtils {
         catch (IllegalAccessException | InvocationTargetException ex) {
             FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize MinecraftServerUtils", ex);
         }
-        catch (NoSuchFieldException ex) {
+        catch (NoSuchFieldException noSuchFieldException) {
             tpsField = null;
         }
     }
@@ -33,8 +33,8 @@ public final class MinecraftServerUtils {
         try {
             return tpsField != null ? FORMAT.format(Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last])) : "N/A";
         }
-        catch (IllegalAccessException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve recent TPS", ex);
+        catch (IllegalAccessException illegalAccessException) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve recent TPS", illegalAccessException);
             return null;
         }
     }

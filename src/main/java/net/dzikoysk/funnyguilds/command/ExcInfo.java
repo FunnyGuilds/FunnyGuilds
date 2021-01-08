@@ -74,7 +74,7 @@ public class ExcInfo implements Executor {
             messageLine = StringUtils.replace(messageLine, "{GUILD-ADDITIONAL-PROTECTION}", additionalProtectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(additionalProtectionEndTime - now));
 
             Rank rank = guild.getRank();
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRange(rank.getPoints(), config.pointsFormat, "POINTS"));
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getPoints(), config.pointsFormat));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));
