@@ -1104,7 +1104,7 @@ public class PluginConfiguration {
     @CfgName("translated-materials-enable")
     public boolean translatedMaterialsEnable = true;
 
-    @CfgComment("Tlumaczenia nazw przedmiotow dla znacznikow {ITEM}, {ITEMS}, {WEAPON}")
+    @CfgComment("Tlumaczenia nazw przedmiotow dla znacznikow {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
     @CfgComment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
     @CfgName("translated-materials-name")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)

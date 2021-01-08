@@ -50,6 +50,12 @@ public final class ItemComponentUtils {
 
                 if (symbol == ChatColor.COLOR_CHAR) {
                     messageColor += symbol;
+
+                    if (index + 1 >= messageChars.length) {
+                        FunnyGuilds.getInstance().getLogger().warning("Invalid placeholder: " + message + " (exceeds array limit at + " + index + ")");
+                        continue;
+                    }
+
                     messageColor += messageChars[index + 1];
                 }
                 
