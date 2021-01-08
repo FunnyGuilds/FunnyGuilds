@@ -77,7 +77,7 @@ public final class MaterialUtils {
             return ChatUtils.colored(FunnyGuilds.getInstance().getPluginConfiguration().translatedMaterials.get(material));
         }
 
-        return StringUtils.capitalize(StringUtils.replaceChars(material.toString().toLowerCase(), '_', ' '));
+        return StringUtils.replaceChars(material.toString().toLowerCase(), '_', ' ');
     }
 
     @Nullable
