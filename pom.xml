@@ -265,12 +265,23 @@
                     </relocations>
                     <filters>
                         <filter>
+                            <artifact>net.dzikoysk:funnycommands</artifact>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </filter>
+                        <filter>
                             <artifact>com.fasterxml.jackson.core:jackson-core</artifact>
                             <includes>
                                 <include>com/fasterxml/jackson/core/**</include>
                             </includes>
                         </filter>
                     </filters>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                            <resource>META-INF/annotations/net.dzikoysk.funnycommands.stereotypes.FunnyComponent</resource>
+                        </transformer>
+                    </transformers>
                 </configuration>
             </plugin>
             <plugin>

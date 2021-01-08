@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds;
 
+import net.dzikoysk.funnycommands.FunnyCommands;
+import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.RankRecalculationTask;
@@ -71,6 +73,7 @@ public class FunnyGuilds extends JavaPlugin {
     private PluginConfiguration    pluginConfiguration;
     private MessageConfiguration   messageConfiguration;
     private ConcurrencyManager     concurrencyManager;
+    private FunnyCommands          funnyCommands;
     private DynamicListenerManager dynamicListenerManager;
 
     private volatile BukkitTask guildValidationTask;
@@ -120,8 +123,8 @@ public class FunnyGuilds extends JavaPlugin {
             this.pluginConfiguration.load();
             this.messageConfiguration.load();
         }
-        catch (Exception ex) {
-            this.getPluginLogger().error("Could not load plugin configuration", ex);
+        catch (Exception exception) {
+            this.getPluginLogger().error("Could not load plugin configuration", exception);
             this.getServer().getPluginManager().disablePlugin(this);
             this.forceDisabling = true;
             return;
@@ -133,6 +136,11 @@ public class FunnyGuilds extends JavaPlugin {
         this.concurrencyManager = new ConcurrencyManager(settings.concurrencyThreads);
         this.concurrencyManager.printStatus();
 
+        this.funnyCommands = FunnyCommands.configuration(() -> this)
+                .registerProcessedComponents()
+                .type(new PlayerType(super.getServer()))
+                .hook();
+
         Commands commands = new Commands();
         commands.register();
 
@@ -143,6 +151,7 @@ public class FunnyGuilds extends JavaPlugin {
     @Override
     public void onEnable() {
         funnyguilds = this;
+
         if (this.forceDisabling) {
             return;
         }

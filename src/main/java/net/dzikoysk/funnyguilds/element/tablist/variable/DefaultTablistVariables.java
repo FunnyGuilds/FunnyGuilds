@@ -56,7 +56,6 @@ public final class DefaultTablistVariables {
         parser.add(new TimeFormattedVariable("MONTH_NUMBER", (user, time) -> time.getMonthValue()));
         parser.add(new TimeFormattedVariable("YEAR", (user, time) -> time.getYear()));
 
-        parser.add(new SimpleTablistVariable("PLAYER", User::getName));
         parser.add(new SimpleTablistVariable("TPS", user -> {
             try {
                 return MinecraftServerUtils.getRecentTPS(0);
@@ -107,7 +106,8 @@ public final class DefaultTablistVariables {
     private static void createFunnyVariables() {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        
+
+        putSimple("player", "PLAYER", User::getName);
         putSimple("guilds", "GUILDS", user -> GuildUtils.getGuilds().size());
         putSimple("users", "USERS", user -> UserUtils.getUsers().size());
         putSimple("ping", "PING", User::getPing);
