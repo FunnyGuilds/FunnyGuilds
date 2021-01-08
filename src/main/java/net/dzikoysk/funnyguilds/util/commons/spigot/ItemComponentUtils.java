@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.util.commons.spigot;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -48,12 +50,6 @@ public final class ItemComponentUtils {
 
                 if (symbol == ChatColor.COLOR_CHAR) {
                     messageColor += symbol;
-
-                    if (messageChars.length + 1 >= message.length()) {
-                        FunnyGuilds.getInstance().getLogger().warning("Invalid placeholder: " + message + " (exceeds array limit at + " + index + ")");
-                        continue;
-                    }
-
                     messageColor += messageChars[index + 1];
                 }
                 
@@ -108,8 +104,9 @@ public final class ItemComponentUtils {
 
     public static TextComponent getItemComponent(ItemStack item, String messageColor) {
         TextComponent itemComponent = new TextComponent();
-        
-        for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + item.getAmount() + " " + item.getType().toString().toLowerCase())) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+
+        for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + item.getAmount() + " " + config.itemAmountSuffix + MaterialUtils.getMaterialName(item.getType()))) {
             itemComponent.addExtra(extra);
         }
         

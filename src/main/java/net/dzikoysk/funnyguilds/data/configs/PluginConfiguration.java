@@ -287,10 +287,10 @@ public class PluginConfiguration {
     @CfgComment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
     @CfgComment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
     @CfgComment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
-    @CfgComment("{ITEM-CAPITALIZED} - nazwa przedmiotu pisana wielka litera. (np. Golden apple)")
+    @CfgComment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby. (np. golden_apple)")
     @CfgName("gui-items-name")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String guiItemsName_ = "&7>> &a{ITEM-CAPITALIZED} &7<<";
+    public String guiItemsName_ = "&7>> &a{ITEM-NO-AMOUNT} &7<<";
 
     @CfgExclude
     public String guiItemsName;
@@ -1100,21 +1100,31 @@ public class PluginConfiguration {
     @CfgName("guild-tag-uppercase")
     public boolean guildTagUppercase = false;
 
-    @CfgComment("Czy wlaczyc tlumaczenie nazw przedmiotow przy zabojstwie")
+    @CfgComment("Czy wlaczyc tlumaczenie nazw przedmiotow?")
     @CfgName("translated-materials-enable")
     public boolean translatedMaterialsEnable = true;
 
-    @CfgComment("Tlumaczenia nazw przedmiotow przy zabojstwie")
+    @CfgComment("Tlumaczenia nazw przedmiotow dla znacznikow {ITEM}, {ITEMS}, {WEAPON}")
     @CfgComment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
     @CfgName("translated-materials-name")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public Map<String, String> translatedMaterials_ = ImmutableMap.<String, String>builder()
             .put("diamond_sword", "&3diamentowy miecz")
             .put("iron_sword", "&7zelazny miecz")
+            .put("gold_ingot", "&eZloto")
             .build();
 
     @CfgExclude
     public Map<Material, String> translatedMaterials;
+
+    @CfgComment("Wyglad znacznikow {ITEM} i {ITEMS} (suffix, za iloscia przedmiotu)")
+    @CfgComment("Dla np. item-amount-suffix: \"szt.\" 1szt. golden_apple")
+    @CfgName("item-amount-suffix")
+    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    public String itemAmountSuffix_ = "x";
+
+    @CfgExclude
+    public String itemAmountSuffix;
 
     @CfgComment("Czy filtry nazw i tagow gildii powinny byc wlaczone")
     @CfgName("check-for-restricted-guild-names")
@@ -1460,6 +1470,8 @@ public class PluginConfiguration {
 
             translatedMaterials.put(material, translatedMaterials_.get(materialName));
         }
+
+        this.itemAmountSuffix = ChatUtils.colored(this.itemAmountSuffix_);
 
         for (String s : this.regionEnterNotificationStyle_) {
             this.regionEnterNotificationStyle.add(NotificationStyle.valueOf(s.toUpperCase()));

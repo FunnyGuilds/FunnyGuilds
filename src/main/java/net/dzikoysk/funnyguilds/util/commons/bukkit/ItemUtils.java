@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
@@ -40,11 +41,12 @@ public final class ItemUtils {
 
     public static String translateTextPlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
         StringBuilder contentBuilder = new StringBuilder();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (message.contains("{ITEM}")) {
             contentBuilder.append(item.getAmount());
-            contentBuilder.append(" ");
-            contentBuilder.append(item.getType().toString().toLowerCase());
+            contentBuilder.append(config.itemAmountSuffix + " ");
+            contentBuilder.append(MaterialUtils.getMaterialName(item.getType()));
 
             message = StringUtils.replace(message, "{ITEM}", contentBuilder.toString());
         }
@@ -56,8 +58,8 @@ public final class ItemUtils {
                 contentBuilder.setLength(0);
 
                 contentBuilder.append(itemStack.getAmount());
-                contentBuilder.append(" ");
-                contentBuilder.append(itemStack.getType().toString().toLowerCase());
+                contentBuilder.append(config.itemAmountSuffix + " ");
+                contentBuilder.append(MaterialUtils.getMaterialName(itemStack.getType()));
 
                 translatedItems.add(contentBuilder.toString());
             }
@@ -65,11 +67,11 @@ public final class ItemUtils {
             message = StringUtils.replace(message, "{ITEMS}", ChatUtils.toString(translatedItems, true));
         }
 
-        if (message.contains("{ITEM-CAPITALIZED}")) {
+        if (message.contains("{ITEM-NO-AMOUNT}")) {
             contentBuilder.setLength(0);
-            contentBuilder.append(StringUtils.capitalize(item.getType().toString().replace("_", " ").toLowerCase()));
+            contentBuilder.append(MaterialUtils.getMaterialName(item.getType()));
 
-            message = StringUtils.replace(message, "{ITEM-CAPITALIZED}", contentBuilder.toString());
+            message = StringUtils.replace(message, "{ITEM-NO-AMOUNT}", contentBuilder.toString());
         }
 
         return message;
