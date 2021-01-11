@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 public final class GuildsEnabledCommand {
 
     @FunnyCommand(
-        name = "${admin.enabled.name}",
+        name = "${admin.guilds-enabled.name}",
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )

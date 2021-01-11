@@ -20,7 +20,7 @@ import org.panda_lang.utilities.commons.text.Formatter;
 public final class BanCommand {
 
     @FunnyCommand(
-        name = "${admin.add.ban}",
+        name = "${admin.ban.name}",
         permission = "funnyguilds.admin",
         acceptsExceeded = true,
         playerOnly = true

@@ -94,31 +94,32 @@ public final class CommandsConfiguration {
                 .command("validity", commands.validity, new ValidityCommand());
 
         CommandComponents adminCommands = new CommandComponents("admin")
-                .command(new AddCommand())
-                .command(new BaseAdminCommand())
-                .command(new BanCommand())
-                .command(new DeathsCommand())
-                .command(new DeleteAdminCommand())
-                .command(new DeputyAdminCommand())
-                .command(new GuildsEnabledCommand())
-                .command(new KickAdminCommand())
-                .command(new KillsCommand())
-                .command(new LeaderAdminCommand())
-                .command(new LivesCommand())
-                .command(new MainCommand())
-                .command(new MoveCommand())
-                .command(new NameCommand())
-                .command(new PointsCommand())
-                .command(new ProtectionCommand())
-                .command(new SpyCommand())
-                .command(new TagCommand())
-                .command(new TeleportCommand())
-                .command(new UnbanCommand())
-                .command(new ValidityAdminCommand());
+                .command("add", commands.admin.add, new AddCommand())
+                .command("base", commands.admin.base, new BaseAdminCommand())
+                .command("ban", commands.admin.ban, new BanCommand())
+                .command("deaths", commands.admin.deaths, new DeathsCommand())
+                .command("delete", commands.admin.delete, new DeleteAdminCommand())
+                .command("deputy", commands.admin.deputy, new DeputyAdminCommand())
+                .command("guilds-enabled", commands.admin.enabled, new GuildsEnabledCommand())
+                .command("kick", commands.admin.kick, new KickAdminCommand())
+                .command("kills", commands.admin.kills, new KillsCommand())
+                .command("leader", commands.admin.leader, new LeaderAdminCommand())
+                .command("lives", commands.admin.lives, new LivesCommand())
+                .command("main", commands.admin.main, new MainCommand())
+                .command("move", commands.admin.move, new MoveCommand())
+                .command("name", commands.admin.name, new NameCommand())
+                .command("points", commands.admin.points, new PointsCommand())
+                .command("protection", commands.admin.protection, new ProtectionCommand())
+                .command("spy", commands.admin.spy, new SpyCommand())
+                .command("tag", commands.admin.tag, new TagCommand())
+                .command("teleport", commands.admin.teleport, new TeleportCommand())
+                .command("unban", commands.admin.unban, new UnbanCommand())
+                .command("validity", commands.admin.validity, new ValidityAdminCommand());
 
         return FunnyCommands.configuration(() -> funnyGuilds)
                 .registerDefaultComponents()
                 .placeholders(userCommands.placeholders)
+                .placeholders(adminCommands.placeholders)
                 .type(new PlayerType(server))
                 .registerComponents(userCommands.commands)
                 .registerComponents(adminCommands.commands)
@@ -137,15 +138,17 @@ public final class CommandsConfiguration {
 
         private CommandComponents command(String name, FunnyCommand configuration, Object command) {
             if (configuration.enabled) {
-                this.commands.add(command);
                 this.placeholders.put(group + "." + name + ".name", key -> configuration.name);
                 this.placeholders.put(group + "." + name + ".aliases", key -> Joiner.on(", ").join(configuration.aliases).toString());
+                this.placeholders.put(group + "." + name + ".description", key -> "");
+                this.commands.add(command);
             }
 
             return this;
         }
 
-        private CommandComponents command(Object command) {
+        private CommandComponents command(String name, String alias, Object command) {
+            this.placeholders.put(group + "." + name + ".name", key -> alias);
             this.commands.add(command);
             return this;
         }
