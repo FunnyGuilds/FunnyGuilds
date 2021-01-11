@@ -94,7 +94,7 @@ public class TablistImpl extends AbstractTablist {
 
             for (int i = 0; i < cells; i++) {
                 if (profileCache[i] == null) {
-                    profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, ChatUtils.appendDigit(i))), "");
+                    profileCache[i] = gameProfileConstructor.newInstance(UUID.fromString(String.format(UUID_PATTERN, ChatUtils.appendDigit(i))), " ");
                 }
 
                 String text = preparedCells[i];
