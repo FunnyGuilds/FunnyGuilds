@@ -1,8 +1,10 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import net.dzikoysk.funnyguilds.util.commons.spigot.ItemComponentUtils;
 import net.dzikoysk.funnyguilds.util.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +12,7 @@ import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -38,6 +41,28 @@ public final class ItemUtils {
     }
 
     private ItemUtils() {}
+
+    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+
+        for (ItemStack requiredItem : requiredItems) {
+            if (player.getInventory().containsAtLeast(requiredItem, requiredItem.getAmount())) {
+                continue;
+            }
+
+            if (config.enableItemComponent) {
+                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
+            }
+            else {
+                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
+            }
+
+            return false;
+        }
+
+        return true;
+    }
 
     public static String translateTextPlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
         StringBuilder contentBuilder = new StringBuilder();

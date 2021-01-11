@@ -1,13 +1,22 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public final class LocationUtils {
 
     public static double flatDistance(Location a, Location b) {
         return Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getZ() - a.getZ(), 2));
+    }
+
+    public static boolean checkWorld(Player player) {
+        List<String> blockedWorlds = FunnyGuilds.getInstance().getPluginConfiguration().blockedWorlds;
+        return blockedWorlds != null && blockedWorlds.size() > 0 && blockedWorlds.contains(player.getWorld().getName());
     }
 
     public static Location parseLocation(String string) {

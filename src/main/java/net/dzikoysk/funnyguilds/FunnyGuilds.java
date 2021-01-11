@@ -1,13 +1,12 @@
 package net.dzikoysk.funnyguilds;
 
 import net.dzikoysk.funnycommands.FunnyCommands;
-import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.command.Commands;
+import net.dzikoysk.funnyguilds.command.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
@@ -19,6 +18,7 @@ import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.element.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
+import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
 import net.dzikoysk.funnyguilds.listener.PlayerChat;
@@ -26,7 +26,6 @@ import net.dzikoysk.funnyguilds.listener.PlayerDeath;
 import net.dzikoysk.funnyguilds.listener.PlayerJoin;
 import net.dzikoysk.funnyguilds.listener.PlayerLogin;
 import net.dzikoysk.funnyguilds.listener.PlayerQuit;
-import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
 import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
@@ -70,10 +69,10 @@ public class FunnyGuilds extends JavaPlugin {
     private final File pluginDataFolderFile     = new File(this.getDataFolder(), "data");
 
     private FunnyGuildsLogger      logger;
+    private FunnyCommands          funnyCommands;
     private PluginConfiguration    pluginConfiguration;
     private MessageConfiguration   messageConfiguration;
     private ConcurrencyManager     concurrencyManager;
-    private FunnyCommands          funnyCommands;
     private DynamicListenerManager dynamicListenerManager;
 
     private volatile BukkitTask guildValidationTask;
@@ -130,19 +129,13 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        PluginConfiguration settings = FunnyGuilds.getInstance().getPluginConfiguration();
-        descriptionChanger.rename(settings.pluginName);
+        descriptionChanger.rename(pluginConfiguration.pluginName);
 
-        this.concurrencyManager = new ConcurrencyManager(settings.concurrencyThreads);
+        this.concurrencyManager = new ConcurrencyManager(pluginConfiguration.concurrencyThreads);
         this.concurrencyManager.printStatus();
 
-        this.funnyCommands = FunnyCommands.configuration(() -> this)
-                .registerProcessedComponents()
-                .type(new PlayerType(super.getServer()))
-                .hook();
-
-        Commands commands = new Commands();
-        commands.register();
+        CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
+        this.funnyCommands = commandsConfiguration.createFunnyCommands(getServer(), this);
 
         this.dynamicListenerManager = new DynamicListenerManager(this);
         PluginHook.earlyInit();
@@ -227,6 +220,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.isDisabling = true;
 
+        this.funnyCommands.dispose();
         this.dynamicListenerManager.unregisterAll();
         GuildEntityHelper.despawnGuildHearts();
 

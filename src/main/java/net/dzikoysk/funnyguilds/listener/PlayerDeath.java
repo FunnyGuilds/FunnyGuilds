@@ -29,7 +29,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.panda_lang.utilities.commons.text.MessageFormatter;
+import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -244,7 +244,7 @@ public class PlayerDeath implements Listener {
                 .delegate(new RankUpdateUserRequest(attacker))
                 .build());
 
-        MessageFormatter killMessageFormatter = new MessageFormatter()
+        Formatter killFormatter = new Formatter()
                 .register("{ATTACKER}", attacker.getName())
                 .register("{VICTIM}", victim.getName())
                 .register("{+}", Integer.toString(attackerEvent.getChange()))
@@ -266,8 +266,8 @@ public class PlayerDeath implements Listener {
 
         if (config.displayTitleNotificationForKiller) {
             List<Object> titlePackets = NotificationUtil.createTitleNotification(
-                    killMessageFormatter.format(messages.rankKillTitle),
-                    killMessageFormatter.format(messages.rankKillSubtitle),
+                    killFormatter.format(messages.rankKillTitle),
+                    killFormatter.format(messages.rankKillSubtitle),
                     config.notificationTitleFadeIn,
                     config.notificationTitleStay,
                     config.notificationTitleFadeOut
@@ -276,7 +276,7 @@ public class PlayerDeath implements Listener {
             PacketSender.sendPacket(playerAttacker, titlePackets);
         }
 
-        String deathMessage = killMessageFormatter.format(messages.rankDeathMessage);
+        String deathMessage = killFormatter.format(messages.rankDeathMessage);
 
         if (config.broadcastDeathMessage) {
             if (config.ignoreDisabledDeathMessages) {

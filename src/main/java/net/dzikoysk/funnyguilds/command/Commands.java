@@ -1,51 +1,11 @@
 package net.dzikoysk.funnyguilds.command;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.command.admin.AxcAdd;
-import net.dzikoysk.funnyguilds.command.admin.AxcBan;
-import net.dzikoysk.funnyguilds.command.admin.AxcBase;
-import net.dzikoysk.funnyguilds.command.admin.AxcDeaths;
-import net.dzikoysk.funnyguilds.command.admin.AxcDelete;
-import net.dzikoysk.funnyguilds.command.admin.AxcDeputy;
-import net.dzikoysk.funnyguilds.command.admin.AxcEnabled;
-import net.dzikoysk.funnyguilds.command.admin.AxcKick;
-import net.dzikoysk.funnyguilds.command.admin.AxcKills;
-import net.dzikoysk.funnyguilds.command.admin.AxcLeader;
-import net.dzikoysk.funnyguilds.command.admin.AxcLives;
-import net.dzikoysk.funnyguilds.command.admin.AxcMain;
-import net.dzikoysk.funnyguilds.command.admin.AxcMove;
-import net.dzikoysk.funnyguilds.command.admin.AxcName;
-import net.dzikoysk.funnyguilds.command.admin.AxcPoints;
-import net.dzikoysk.funnyguilds.command.admin.AxcProtection;
-import net.dzikoysk.funnyguilds.command.admin.AxcSpy;
-import net.dzikoysk.funnyguilds.command.admin.AxcTag;
-import net.dzikoysk.funnyguilds.command.admin.AxcTeleport;
-import net.dzikoysk.funnyguilds.command.admin.AxcUnban;
-import net.dzikoysk.funnyguilds.command.admin.AxcValidity;
-import net.dzikoysk.funnyguilds.command.manager.MxcBase;
-import net.dzikoysk.funnyguilds.command.manager.MxcPvP;
-import net.dzikoysk.funnyguilds.command.util.ExecutorCaller;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-
 public class Commands {
 
-    private static Commands instance;
-
-    public Commands() {
-        instance = this;
-    }
-
-    public static Commands getInstance() {
-        if (instance == null) {
-            return new Commands();
-        }
-        
-        return instance;
-    }
-
+    /*
     public void register() {
         PluginConfiguration.Commands commands = FunnyGuilds.getInstance().getPluginConfiguration().commands;
-        
+
         new ExecutorCaller(new ExcFunnyGuilds(), null, commands.funnyguilds, false);
         new ExecutorCaller(new ExcCreate(), "funnyguilds.create", commands.create, true);
         new ExecutorCaller(new ExcDelete(), "funnyguilds.delete", commands.delete, true);
@@ -70,8 +30,8 @@ public class Commands {
         new ExecutorCaller(new ExcEscape(), "funnyguilds.escape", commands.escape, true);
         new ExecutorCaller(new ExcRankReset(), "funnyguilds.rankreset", commands.rankReset, true);
 
-        new ExecutorCaller(new MxcPvP(), "funnyguilds.manage", commands.pvp, true);
-        new ExecutorCaller(new MxcBase(), "funnyguilds.manage", commands.setbase, true);
+        new ExecutorCaller(new ExcPvP(), "funnyguilds.manage", commands.pvp, true);
+        new ExecutorCaller(new ExcSetBase(), "funnyguilds.manage", commands.setbase, true);
 
         new ExecutorCaller(new AxcMain(), commands.admin.main, null, true, false);
         new ExecutorCaller(new AxcAdd(), commands.admin.add, null, true, false);
@@ -95,4 +55,5 @@ public class Commands {
         new ExecutorCaller(new AxcProtection(), commands.admin.protection, null, true, false);
         new ExecutorCaller(new AxcBase(), commands.admin.base, null, true, false);
     }
+    */
 }

@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.command.ExcPlayer;
+import net.dzikoysk.funnyguilds.command.user.PlayerCommand;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.Cooldown;
@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 
 public class EntityInteract implements Listener {
 
-    private final ExcPlayer playerExecutor = new ExcPlayer();
+    private final PlayerCommand playerExecutor = new PlayerCommand();
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
 
     @EventHandler
