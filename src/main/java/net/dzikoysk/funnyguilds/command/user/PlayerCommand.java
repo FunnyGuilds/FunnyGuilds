@@ -22,6 +22,7 @@ public final class PlayerCommand {
         description = "${user.player.description}",
         aliases = "${user.player.aliases}",
         permission = "funnyguilds.player",
+        completer = "online-players:3",
         acceptsExceeded = true,
         playerOnly = true
     )

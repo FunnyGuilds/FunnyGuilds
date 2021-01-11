@@ -25,7 +25,7 @@ public final class ConfirmCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender sender) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;
         User user = User.get(player);
@@ -51,8 +51,8 @@ public final class ConfirmCommand {
         }
 
         ConfirmationList.remove(user.getUUID());
-
         Guild guild = user.getGuild();
+
         if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.USER, user, guild))) {
             return;
         }

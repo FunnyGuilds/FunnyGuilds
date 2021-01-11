@@ -120,7 +120,10 @@ public final class CommandsConfiguration {
                 .registerDefaultComponents()
                 .placeholders(userCommands.placeholders)
                 .placeholders(adminCommands.placeholders)
+                .bind(new UserBind())
                 .type(new PlayerType(server))
+                .completer(new GuildsCompleter())
+                .completer(new MembersCompleter())
                 .registerComponents(userCommands.commands)
                 .registerComponents(adminCommands.commands)
                 .hook();

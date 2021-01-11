@@ -23,6 +23,7 @@ public final class KickCommand {
         description = "${user.kick.description}",
         aliases = "${user.kick.aliases}",
         permission = "funnyguilds.kick",
+        completer = "members:3",
         acceptsExceeded = true,
         playerOnly = true
     )

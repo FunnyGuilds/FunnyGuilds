@@ -31,6 +31,7 @@ public final class JoinCommand {
         description = "${user.join.description}",
         aliases = "${user.join.aliases}",
         permission = "funnyguilds.join",
+        completer = "guilds:3",
         acceptsExceeded = true,
         playerOnly = true
     )

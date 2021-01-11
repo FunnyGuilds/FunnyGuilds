@@ -21,6 +21,7 @@ public final class InviteCommand {
         description = "${user.invite.description}",
         aliases = "${user.invite.aliases}",
         permission = "funnyguilds.invite",
+        completer = "online-players:3",
         acceptsExceeded = true,
         playerOnly = true
     )

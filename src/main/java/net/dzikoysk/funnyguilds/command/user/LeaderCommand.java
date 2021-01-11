@@ -18,6 +18,7 @@ public final class LeaderCommand {
         description = "${user.leader.description}",
         aliases = "${user.leader.aliases}",
         permission = "funnyguilds.leader",
+        completer = "members:3",
         acceptsExceeded = true,
         playerOnly = true
     )

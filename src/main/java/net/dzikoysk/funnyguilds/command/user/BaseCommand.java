@@ -29,7 +29,7 @@ public final class BaseCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(CommandSender sender) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Player player = (Player) sender;

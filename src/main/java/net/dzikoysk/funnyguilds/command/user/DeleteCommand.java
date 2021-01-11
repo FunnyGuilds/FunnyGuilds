@@ -46,10 +46,10 @@ public final class DeleteCommand {
         
         if (config.commands.confirm.enabled) {
             player.sendMessage(messages.deleteConfirm);
+            return;
         }
-        else {
-            CONFIRM_EXECUTOR.execute(sender, null);
-        }
+
+        CONFIRM_EXECUTOR.execute(sender);
     }
 
 }

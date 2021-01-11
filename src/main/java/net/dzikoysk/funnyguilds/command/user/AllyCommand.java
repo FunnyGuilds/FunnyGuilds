@@ -32,6 +32,7 @@ public final class AllyCommand {
         description = "${user.ally.description}",
         aliases = "${user.ally.aliases}",
         permission = "funnyguilds.ally",
+        completer = "guilds:3",
         acceptsExceeded = true,
         playerOnly = true
     )

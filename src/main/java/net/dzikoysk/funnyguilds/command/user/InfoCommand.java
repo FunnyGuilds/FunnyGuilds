@@ -27,6 +27,7 @@ public final class InfoCommand {
         description = "${user.info.description}",
         aliases = "${user.info.aliases}",
         permission = "funnyguilds.info",
+        completer = "guilds:3",
         acceptsExceeded = true,
         playerOnly = true
     )

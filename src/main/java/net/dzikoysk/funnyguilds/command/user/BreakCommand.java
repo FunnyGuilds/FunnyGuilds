@@ -26,6 +26,7 @@ public final class BreakCommand {
         description = "${user.break.description}",
         aliases = "${user.break.aliases}",
         permission = "funnyguilds.break",
+        completer = "guilds:3",
         acceptsExceeded = true,
         playerOnly = true
     )

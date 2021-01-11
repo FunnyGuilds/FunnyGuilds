@@ -18,6 +18,7 @@ public final class DeputyCommand {
         description = "${user.deputy.description}",
         aliases = "${user.deputy.aliases}",
         permission = "funnyguilds.deputy",
+        completer = "online-players:3",
         acceptsExceeded = true,
         playerOnly = true
     )
