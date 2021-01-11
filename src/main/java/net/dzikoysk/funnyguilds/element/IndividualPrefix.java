@@ -155,13 +155,13 @@ public class IndividualPrefix {
                 team = scoreboard.registerNewTeam(guild.getTag());
             }
             
-            for (User u : guild.getMembers()) {
-                if (u.getName() == null) {
+            for (User member : guild.getMembers()) {
+                if (member.getName() == null) {
                     continue;
                 }
                 
-                if (!team.hasEntry(u.getName())) {
-                    team.addEntry(u.getName());
+                if (!team.hasEntry(member.getName())) {
+                    team.addEntry(member.getName());
                 }
             }
             

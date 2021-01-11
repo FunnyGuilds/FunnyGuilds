@@ -36,20 +36,16 @@ public class PlayerJoin implements Listener {
 
         if (user == null) {
             user = User.create(player);
-        } else {
+        }
+        else {
             if (! user.getName().equals(player.getName())) {
                 user.setName(player.getName());
             }
         }
 
         user.updateReference(player);
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (config.playerListEnable && ! AbstractTablist.hasTablist(player)) {
-            AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
-        }
-
         UserCache cache = user.getCache();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (cache.getScoreboard() == null) {
             if (config.useSharedScoreboard) {
@@ -65,6 +61,10 @@ public class PlayerJoin implements Listener {
             prefix.initialize();
 
             cache.setIndividualPrefix(prefix);
+        }
+
+        if (config.playerListEnable && ! AbstractTablist.hasTablist(player)) {
+            AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
