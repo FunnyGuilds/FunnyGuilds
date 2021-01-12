@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildBreakAllyEvent;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -30,11 +29,7 @@ public final class BreakCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
-        User user = User.get(player);
-
+    public void execute(MessageConfiguration messages, Player player, User user, String[] args) {
         if (!user.hasGuild()) {
             player.sendMessage(messages.generalHasNoGuild);
             return;

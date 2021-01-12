@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
@@ -11,7 +10,6 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberInviteEvent;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberRevokeInviteEvent;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public final class InviteCommand {
@@ -25,12 +23,7 @@ public final class InviteCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
-        User user = User.get(player);
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user, String[] args) {
         if (!user.hasGuild()) {
             player.sendMessage(messages.generalHasNoGuild);
             return;

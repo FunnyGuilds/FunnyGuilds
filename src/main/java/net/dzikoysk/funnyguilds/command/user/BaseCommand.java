@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -29,12 +28,7 @@ public final class BaseCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
-        User user = User.get(player);
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
         if (!config.regionsEnabled) {
             player.sendMessage(messages.regionsDisabled);
             return;

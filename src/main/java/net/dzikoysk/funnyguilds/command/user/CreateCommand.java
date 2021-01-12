@@ -27,7 +27,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.WorldBorder;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.panda_lang.utilities.commons.text.Formatter;
@@ -46,13 +45,7 @@ public final class CreateCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        Player player = (Player) sender;
-        User user = User.get(player);
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user, String[] args) {
         if (!config.guildsEnabled) {
             player.sendMessage(messages.adminGuildsDisabled);
             return;

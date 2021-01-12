@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -16,12 +16,12 @@ public final class TopCommand {
         permission = "funnyguilds.top",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender) {
+    public void execute(MessageConfiguration messages, CommandSender sender) {
         User user = sender instanceof Player
                 ? User.get((Player) sender)
                 : null;
 
-        for (String messageLine : FunnyGuilds.getInstance().getMessageConfiguration().topList) {
+        for (String messageLine : messages.topList) {
             String parsedRank = RankUtils.parseRank(user, messageLine);
             sender.sendMessage(parsedRank == null ? messageLine : parsedRank);
         }

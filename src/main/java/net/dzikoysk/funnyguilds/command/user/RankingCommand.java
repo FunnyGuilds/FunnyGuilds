@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.bukkit.command.CommandSender;
 
 public final class RankingCommand {
@@ -14,8 +14,8 @@ public final class RankingCommand {
         permission = "funnyguilds.ranking",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender) {
-        for (String messageLine : FunnyGuilds.getInstance().getMessageConfiguration().rankingList) {
+    public void execute(MessageConfiguration messages, CommandSender sender) {
+        for (String messageLine : messages.rankingList) {
             String parsedRank = RankUtils.parseRank(null, messageLine);
             sender.sendMessage(parsedRank == null ? messageLine : parsedRank);
         }

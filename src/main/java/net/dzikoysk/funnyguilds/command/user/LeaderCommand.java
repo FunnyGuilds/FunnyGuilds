@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaderEvent;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public final class LeaderCommand {
@@ -22,11 +21,7 @@ public final class LeaderCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
-        User owner = User.get(player);
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User owner, String[] args) {
         if (!owner.hasGuild()) {
             player.sendMessage(messages.generalHasNoGuild);
             return;

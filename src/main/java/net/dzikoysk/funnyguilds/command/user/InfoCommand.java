@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
@@ -28,12 +27,9 @@ public final class InfoCommand {
         aliases = "${user.info.aliases}",
         permission = "funnyguilds.info",
         completer = "guilds:3",
-        acceptsExceeded = true,
-        playerOnly = true
+        acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
         String tag = null;
 
         if (args.length > 0) {

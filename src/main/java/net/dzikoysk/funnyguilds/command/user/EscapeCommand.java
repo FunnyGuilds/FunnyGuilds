@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,11 +26,7 @@ public final class EscapeCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
         if (!config.regionsEnabled) {
             player.sendMessage(messages.regionsDisabled);
             return;
@@ -41,8 +36,6 @@ public final class EscapeCommand {
             player.sendMessage(messages.escapeDisabled);
             return;
         }
-        
-        User user = User.get(player);
 
         if (user.getCache().getTeleportation() != null) {
             player.sendMessage(messages.escapeInProgress);

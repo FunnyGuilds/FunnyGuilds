@@ -1,12 +1,10 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public final class DeleteCommand {
@@ -21,12 +19,7 @@ public final class DeleteCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
-        User user = User.get(player);
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
         if (!user.hasGuild()) {
             player.sendMessage(messages.generalHasNoGuild);
             return;
@@ -49,7 +42,7 @@ public final class DeleteCommand {
             return;
         }
 
-        CONFIRM_EXECUTOR.execute(sender);
+        CONFIRM_EXECUTOR.execute(config, messages, player, user);
     }
 
 }

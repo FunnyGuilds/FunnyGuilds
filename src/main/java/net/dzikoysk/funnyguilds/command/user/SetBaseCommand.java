@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildBaseChangeEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public final class SetBaseCommand {
@@ -26,11 +25,7 @@ public final class SetBaseCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
-        User user = User.get(player);
-
+    public void execute(MessageConfiguration messages, Player player, User user) {
         if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             player.sendMessage(messages.regionsDisabled);
             return;
@@ -48,21 +43,23 @@ public final class SetBaseCommand {
 
         Guild guild = user.getGuild();
         Region region = RegionUtils.get(guild.getName());
-        Location loc = player.getLocation();
+        Location location = player.getLocation();
 
-        if (!region.isIn(loc)) {
+        if (!region.isIn(location)) {
             player.sendMessage(messages.setbaseOutside);
             return;
         }
 
-        if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, user, guild, loc))) {
+        if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, user, guild, location))) {
             return;
         }
-        
-        guild.setHome(loc);
+
+        guild.setHome(location);
+
         if (guild.getHome().getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
-            for (int i = guild.getHome().getBlockY(); i > 0; i--) {
-                guild.getHome().setY(i);
+            for (int y = guild.getHome().getBlockY(); y > 0; y--) {
+                guild.getHome().setY(y);
+
                 if (guild.getHome().getBlock().getType() != Material.AIR) {
                     break;
                 }

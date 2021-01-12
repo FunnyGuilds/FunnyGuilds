@@ -1,13 +1,11 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,17 +21,12 @@ public final class RankResetCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
         List<ItemStack> requiredItems = config.rankResetItems;
 
         if (! ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
-
-        User user = User.get(player);
 
         if (user != null) {
             int lastRank = user.getRank().getPoints();

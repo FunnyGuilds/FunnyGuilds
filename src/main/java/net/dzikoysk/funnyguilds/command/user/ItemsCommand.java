@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.element.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,10 +26,7 @@ public final class ItemsCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender) {
-        Player player = (Player) sender;
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
+    public void execute(PluginConfiguration config, Player player) {
         List<ItemStack> guiItems = config.guiItems;
         String title = config.guiItemsTitle;
 

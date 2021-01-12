@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
@@ -11,7 +10,6 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,13 +26,7 @@ public final class ValidityCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
-        User user = User.get(player);
-        Guild guild = user.getGuild();
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
         if (!user.hasGuild()) {
             player.sendMessage(messages.generalHasNoGuild);
             return;
@@ -44,6 +36,8 @@ public final class ValidityCommand {
             player.sendMessage(messages.generalIsNotOwner);
             return;
         }
+
+        Guild guild = user.getGuild();
 
         if (config.validityWhen != 0) {
             long validity = guild.getValidity();

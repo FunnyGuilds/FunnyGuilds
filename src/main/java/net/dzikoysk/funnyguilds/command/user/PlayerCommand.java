@@ -23,13 +23,9 @@ public final class PlayerCommand {
         aliases = "${user.player.aliases}",
         permission = "funnyguilds.player",
         completer = "online-players:3",
-        acceptsExceeded = true,
-        playerOnly = true
+        acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        
+    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
         if (args.length == 0 && !(sender instanceof Player)) {
             sender.sendMessage(messages.playerOnly);
             return;
@@ -49,7 +45,6 @@ public final class PlayerCommand {
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        
         Rank rank = infoUser.getRank();
 
         for (String messageLine : baseMessage) {
