@@ -4,6 +4,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.IsMember;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
@@ -25,12 +26,7 @@ public final class LeaveCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, User user) {
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.generalHasNoGuild);
-            return;
-        }
-
+    public void execute(MessageConfiguration messages, Player player, @IsMember User user) {
         if (user.isOwner()) {
             player.sendMessage(messages.leaveIsOwner);
             return;

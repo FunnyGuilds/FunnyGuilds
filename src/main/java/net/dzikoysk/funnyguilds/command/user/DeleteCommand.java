@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.IsOwner;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
@@ -19,17 +20,7 @@ public final class DeleteCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.generalHasNoGuild);
-            return;
-        }
-
-        if (!user.isOwner()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user) {
         if (config.guildDeleteCancelIfSomeoneIsOnRegion && user.getGuild().isSomeoneInRegion()) {
             player.sendMessage(messages.deleteSomeoneIsNear);
             return;
@@ -42,7 +33,7 @@ public final class DeleteCommand {
             return;
         }
 
-        CONFIRM_EXECUTOR.execute(config, messages, player, user);
+        CONFIRM_EXECUTOR.execute(messages, player, user);
     }
 
 }

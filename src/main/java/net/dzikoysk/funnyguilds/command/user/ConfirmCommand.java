@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.IsOwner;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -24,17 +25,7 @@ public final class ConfirmCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, User user) {
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.generalHasNoGuild);
-            return;
-        }
-
-        if (!user.isOwner()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
+    public void execute(MessageConfiguration messages, Player player, @IsOwner User user) {
         if (FunnyGuilds.getInstance().getPluginConfiguration().guildDeleteCancelIfSomeoneIsOnRegion && user.getGuild().isSomeoneInRegion()) {
             player.sendMessage(messages.deleteSomeoneIsNear);
             return;

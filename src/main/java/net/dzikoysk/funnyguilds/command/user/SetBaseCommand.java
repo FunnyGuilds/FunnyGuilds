@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.IsMember;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -25,14 +26,9 @@ public final class SetBaseCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, User user) {
+    public void execute(MessageConfiguration messages, Player player, @IsMember User user) {
         if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             player.sendMessage(messages.regionsDisabled);
-            return;
-        }
-        
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.generalHasNoGuild);
             return;
         }
 

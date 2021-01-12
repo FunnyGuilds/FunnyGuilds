@@ -3,8 +3,8 @@ package net.dzikoysk.funnyguilds.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.IsOwner;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaderEvent;
@@ -21,17 +21,7 @@ public final class LeaderCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User owner, String[] args) {
-        if (!owner.hasGuild()) {
-            player.sendMessage(messages.generalHasNoGuild);
-            return;
-        }
-
-        if (!owner.isOwner()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
+    public void execute(MessageConfiguration messages, Player player, @IsOwner User owner, String[] args) {
         if (args.length < 1) {
             player.sendMessage(messages.generalNoNickGiven);
             return;

@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.IsMember;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
@@ -23,12 +24,7 @@ public final class InviteCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user, String[] args) {
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.generalHasNoGuild);
-            return;
-        }
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user, String[] args) {
         if (!user.isOwner() && !user.isDeputy()) {
             player.sendMessage(messages.generalIsNotOwner);
             return;

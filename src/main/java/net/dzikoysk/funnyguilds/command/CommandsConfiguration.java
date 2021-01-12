@@ -127,6 +127,8 @@ public final class CommandsConfiguration {
                 .type(new PlayerType(server))
                 .completer(new GuildsCompleter())
                 .completer(new MembersCompleter())
+                .validator(new MemberValidator())
+                .validator(new OwnerValidator())
                 .registerComponents(userCommands.commands)
                 .registerComponents(adminCommands.commands)
                 .hook();

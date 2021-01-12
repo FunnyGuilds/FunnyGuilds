@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.IsOwner;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
@@ -35,17 +36,7 @@ public final class AllyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user, String[] args) {
-        if (!user.hasGuild()) {
-            player.sendMessage(messages.generalHasNoGuild);
-            return;
-        }
-
-        if (!user.isOwner()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user, String[] args) {
         Guild guild = user.getGuild();
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(guild);
 
