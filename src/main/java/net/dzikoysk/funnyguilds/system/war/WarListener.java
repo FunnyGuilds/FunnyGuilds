@@ -89,7 +89,7 @@ public final class WarListener {
                     return;
                 }
 
-                INFO_EXECUTOR.execute(player, new String[]{ entry.getKey().getTag() });
+                INFO_EXECUTOR.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[]{ entry.getKey().getTag() });
             }
         }
     }

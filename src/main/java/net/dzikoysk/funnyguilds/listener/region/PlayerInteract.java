@@ -55,7 +55,7 @@ public class PlayerInteract implements Listener {
                         WarSystem.getInstance().attack(player, guild);
                     }
                     else if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                        infoExecutor.execute(player, new String[]{ guild.getTag() });
+                        infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[]{ guild.getTag() });
                     }
                 }
                 else if (eventAction == Action.RIGHT_CLICK_BLOCK) {

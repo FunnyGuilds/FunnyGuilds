@@ -42,7 +42,7 @@ import net.dzikoysk.funnyguilds.command.user.JoinCommand;
 import net.dzikoysk.funnyguilds.command.user.KickCommand;
 import net.dzikoysk.funnyguilds.command.user.LeaderCommand;
 import net.dzikoysk.funnyguilds.command.user.LeaveCommand;
-import net.dzikoysk.funnyguilds.command.user.PlayerCommand;
+import net.dzikoysk.funnyguilds.command.user.PlayerInfoCommand;
 import net.dzikoysk.funnyguilds.command.user.PvPCommand;
 import net.dzikoysk.funnyguilds.command.user.RankResetCommand;
 import net.dzikoysk.funnyguilds.command.user.RankingCommand;
@@ -85,7 +85,7 @@ public final class CommandsConfiguration {
                 .command("kick", commands.kick, new KickCommand())
                 .command("leader", commands.leader, new LeaderCommand())
                 .command("leave", commands.leave, new LeaveCommand())
-                .command("player", commands.player, new PlayerCommand())
+                .command("player", commands.player, new PlayerInfoCommand())
                 .command("pvp", commands.pvp, new PvPCommand())
                 .command("ranking", commands.ranking, new RankingCommand())
                 .command("rank-reset", commands.rankReset, new RankResetCommand())

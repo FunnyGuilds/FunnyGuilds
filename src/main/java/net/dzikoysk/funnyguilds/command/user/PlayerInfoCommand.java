@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 @FunnyComponent
-public final class PlayerCommand {
+public final class PlayerInfoCommand {
 
     @FunnyCommand(
         name = "${user.player.name}",
