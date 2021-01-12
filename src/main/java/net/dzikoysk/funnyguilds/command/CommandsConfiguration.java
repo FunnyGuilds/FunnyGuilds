@@ -125,7 +125,6 @@ public final class CommandsConfiguration {
                 .placeholders(adminCommands.placeholders)
                 .bind(new SettingsBind())
                 .bind(new MessagesBind())
-                .bind(new PlayerBind())
                 .bind(new UserBind())
                 .bind(new GuildBind())
                 .type(new PlayerType(server))

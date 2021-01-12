@@ -18,7 +18,7 @@
         <dependency>
             <groupId>net.dzikoysk</groupId>
             <artifactId>funnycommands</artifactId>
-            <version>0.3.3</version>
+            <version>0.3.4</version>
         </dependency>
         <dependency>
             <groupId>org.panda-lang</groupId>
