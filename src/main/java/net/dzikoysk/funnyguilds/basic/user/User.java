@@ -69,6 +69,10 @@ public class User extends AbstractBasic {
         this.ban = ban;
     }
 
+    public boolean canManage() {
+        return isOwner() || isDeputy();
+    }
+
     public boolean isOwner() {
         if (! hasGuild()) {
             return false;

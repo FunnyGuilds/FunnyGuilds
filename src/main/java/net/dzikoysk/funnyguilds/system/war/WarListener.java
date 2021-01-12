@@ -1,8 +1,9 @@
 package net.dzikoysk.funnyguilds.system.war;
 
+import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.command.ExcInfo;
+import net.dzikoysk.funnyguilds.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public final class WarListener {
 
-    private static final ExcInfo INFO_EXECUTOR = new ExcInfo();
+    private static final InfoCommand INFO_EXECUTOR = new InfoCommand();
     
     private static final Class<?> USE_ENTITY_CLASS;
     private static final Field PACKET_ID_FIELD;
@@ -89,7 +90,11 @@ public final class WarListener {
                     return;
                 }
 
-                INFO_EXECUTOR.execute(player, new String[]{ entry.getKey().getTag() });
+                try {
+                    INFO_EXECUTOR.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[]{ entry.getKey().getTag() });
+                } catch (ValidationException validatorException) {
+                    validatorException.getValidationMessage().peek(player::sendMessage);
+                }
             }
         }
     }

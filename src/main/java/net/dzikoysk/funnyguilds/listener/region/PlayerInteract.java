@@ -1,13 +1,13 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.command.ExcInfo;
+import net.dzikoysk.funnyguilds.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.system.war.WarSystem;
 import org.bukkit.Material;
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerInteract implements Listener {
 
-    private final ExcInfo infoExecutor = new ExcInfo();
+    private final InfoCommand infoExecutor = new InfoCommand();
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
@@ -56,7 +56,11 @@ public class PlayerInteract implements Listener {
                         WarSystem.getInstance().attack(player, guild);
                     }
                     else if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                        infoExecutor.execute(player, new String[]{ guild.getTag() });
+                        try {
+                            infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[] { guild.getTag() });
+                        } catch (ValidationException validatorException) {
+                            validatorException.getValidationMessage().peek(player::sendMessage);
+                        }
                     }
                 }
                 else if (eventAction == Action.RIGHT_CLICK_BLOCK) {

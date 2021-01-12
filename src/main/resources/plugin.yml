@@ -35,17 +35,17 @@ permissions:
   funnyguilds.player:
     default: true
     children:
+      funnyguilds.ally: true
+      funnyguilds.base: true
+      funnyguilds.break: true
       funnyguilds.create: true
       funnyguilds.delete: true
       funnyguilds.invite: true
       funnyguilds.join: true
       funnyguilds.leave: true
       funnyguilds.kick: true
-      funnyguilds.base: true
       funnyguilds.enlarge: true
       funnyguilds.help: true
-      funnyguilds.ally: true
-      funnyguilds.break: true
       funnyguilds.info: true
       funnyguilds.top: true
       funnyguilds.validity: true

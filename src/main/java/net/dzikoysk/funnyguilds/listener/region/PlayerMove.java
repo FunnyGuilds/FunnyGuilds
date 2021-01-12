@@ -23,7 +23,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.panda_lang.utilities.commons.text.MessageFormatter;
+import org.panda_lang.utilities.commons.text.Formatter;
 
 public class PlayerMove implements Listener {
 
@@ -77,7 +77,7 @@ public class PlayerMove implements Listener {
                         }
                     }, 40L);
 
-                    MessageFormatter formatter = new MessageFormatter()
+                    Formatter formatter = new Formatter()
                                     .register("{GUILD}", guild.getName())
                                     .register("{TAG}", guild.getTag());
                     
@@ -127,7 +127,7 @@ public class PlayerMove implements Listener {
                     }
                 }, 40L);
 
-                MessageFormatter formatter = new MessageFormatter()
+                Formatter formatter = new Formatter()
                                 .register("{GUILD}", guild.getName())
                                 .register("{TAG}", guild.getTag())
                                 .register("{PLAYER}", player.getName());
