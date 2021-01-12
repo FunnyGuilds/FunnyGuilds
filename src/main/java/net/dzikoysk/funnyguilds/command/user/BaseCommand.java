@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
@@ -19,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@FunnyComponent
 public final class BaseCommand {
 
     @FunnyCommand(
@@ -29,7 +31,7 @@ public final class BaseCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user) {
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user, Guild guild) {
         if (!config.regionsEnabled) {
             player.sendMessage(messages.regionsDisabled);
             return;
@@ -39,8 +41,6 @@ public final class BaseCommand {
             player.sendMessage(messages.baseTeleportationDisabled);
             return;
         }
-
-        Guild guild = user.getGuild();
 
         if (user.getCache().getTeleportation() != null) {
             player.sendMessage(messages.baseIsTeleportation);

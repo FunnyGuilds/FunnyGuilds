@@ -1,10 +1,12 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.command.IsMember;
+import net.dzikoysk.funnyguilds.command.CanManage;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -13,6 +15,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildEnlargeEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+@FunnyComponent
 public final class EnlargeCommand {
 
     @FunnyCommand(
@@ -22,7 +25,7 @@ public final class EnlargeCommand {
         permission = "funnyguilds.enlarge",
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user) {
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
         if (!config.regionsEnabled) {
             player.sendMessage(messages.regionsDisabled);
             return;
@@ -32,12 +35,7 @@ public final class EnlargeCommand {
             return;
         }
 
-        if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
-        Region region = user.getGuild().getRegion();
+        Region region = guild.getRegion();
 
         if (region == null) {
             player.sendMessage(messages.regionsDisabled);
@@ -80,6 +78,7 @@ public final class EnlargeCommand {
                 .replace("{SIZE}", Integer.toString(region.getSize()))
                 .replace("{LEVEL}", Integer.toString(region.getEnlarge()));
 
-        user.getGuild().broadcast(enlargeDoneMessage);
+        guild.broadcast(enlargeDoneMessage);
     }
+
 }

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 import java.util.Date;
 import java.util.Locale;
 
+@FunnyComponent
 public final class InfoCommand {
 
     @FunnyCommand(

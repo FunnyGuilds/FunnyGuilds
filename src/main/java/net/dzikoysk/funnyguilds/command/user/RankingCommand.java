@@ -1,10 +1,12 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.bukkit.command.CommandSender;
 
+@FunnyComponent
 public final class RankingCommand {
 
     @FunnyCommand(

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -19,6 +20,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+@FunnyComponent
 public final class BreakCommand {
 
     @FunnyCommand(
@@ -30,10 +32,8 @@ public final class BreakCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @IsOwner User user, String[] args) {
-        Guild guild = user.getGuild();
-
-        if (guild.getAllies() == null || guild.getAllies().isEmpty()) {
+    public void execute(MessageConfiguration messages, Player player, @IsOwner User user, Guild guild, String[] args) {
+        if (guild.getAllies().isEmpty()) {
             player.sendMessage(messages.breakHasNotAllies);
             return;
         }

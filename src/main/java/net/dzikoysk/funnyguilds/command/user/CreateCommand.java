@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -33,6 +34,7 @@ import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.List;
 
+@FunnyComponent
 public final class CreateCommand {
 
     private static final int SKY_LIMIT = 256;

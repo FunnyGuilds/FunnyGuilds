@@ -1,15 +1,17 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.command.IsMember;
+import net.dzikoysk.funnyguilds.command.CanManage;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
 
+@FunnyComponent
 public final class PvPCommand {
 
     @FunnyCommand(
@@ -20,16 +22,9 @@ public final class PvPCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user, String[] args) {
-        if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
-        Guild guild = user.getGuild();
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild, String[] args) {
         if (args.length > 0) {
-            if (! config.damageAlly) {
+            if (!config.damageAlly) {
                 player.sendMessage(messages.generalAllyPvpDisabled);
                 return;
             }
@@ -45,7 +40,7 @@ public final class PvPCommand {
                 return;
             }
 
-            if (! guild.getAllies().contains(targetAlliedGuild)) {
+            if (!guild.getAllies().contains(targetAlliedGuild)) {
                 player.sendMessage(guildTagFormatter.format(messages.allyDoesntExist));
                 return;
             }
@@ -55,14 +50,8 @@ public final class PvPCommand {
             return;
         }
 
-        if (guild.getPvP()) {
-            guild.setPvP(false);
-            player.sendMessage(messages.pvpOff);
-        }
-        else {
-            guild.setPvP(true);
-            player.sendMessage(messages.pvpOn);
-        }
+        guild.setPvP(!guild.getPvP());
+        player.sendMessage(guild.getPvP() ? messages.pvpOn : messages.pvpOff);
     }
 
 }

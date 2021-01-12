@@ -1,10 +1,11 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.command.IsMember;
+import net.dzikoysk.funnyguilds.command.CanManage;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
@@ -16,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
 
+@FunnyComponent
 public final class KickCommand {
 
     @FunnyCommand(
@@ -27,12 +29,7 @@ public final class KickCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @IsMember User user, String[] args) {
-        if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
+    public void execute(MessageConfiguration messages, Player player, @CanManage User user, Guild guild, String[] args) {
         if (args.length < 1) {
             player.sendMessage(messages.generalNoNickGiven);
             return;
@@ -50,7 +47,7 @@ public final class KickCommand {
             return;
         }
 
-        if (!user.getGuild().equals(formerUser.getGuild())) {
+        if (!guild.equals(formerUser.getGuild())) {
             player.sendMessage(messages.kickOtherGuild);
             return;
         }
@@ -59,8 +56,6 @@ public final class KickCommand {
             player.sendMessage(messages.kickOwner);
             return;
         }
-
-        Guild guild = user.getGuild();
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
             return;

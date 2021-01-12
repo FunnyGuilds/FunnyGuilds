@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
+@FunnyComponent
 public final class RankResetCommand {
 
     @FunnyCommand(
@@ -24,21 +26,19 @@ public final class RankResetCommand {
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
         List<ItemStack> requiredItems = config.rankResetItems;
 
-        if (! ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
 
-        if (user != null) {
-            int lastRank = user.getRank().getPoints();
-            user.getRank().setPoints(config.rankStart);
-            player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
+        int lastRank = user.getRank().getPoints();
+        user.getRank().setPoints(config.rankStart);
+        player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
-            String resetMessage = messages.rankResetMessage;
-            resetMessage = StringUtils.replace(resetMessage, "{LAST-RANK}", String.valueOf(lastRank));
-            resetMessage = StringUtils.replace(resetMessage, "{CURRENT-RANK}", String.valueOf(user.getRank().getPoints()));
+        String resetMessage = messages.rankResetMessage;
+        resetMessage = StringUtils.replace(resetMessage, "{LAST-RANK}", String.valueOf(lastRank));
+        resetMessage = StringUtils.replace(resetMessage, "{CURRENT-RANK}", String.valueOf(user.getRank().getPoints()));
 
-            player.sendMessage(resetMessage);
-        }
+        player.sendMessage(resetMessage);
     }
 
 }

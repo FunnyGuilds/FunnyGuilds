@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.command.IsMember;
+import net.dzikoysk.funnyguilds.command.CanManage;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -17,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Date;
 import java.util.List;
 
+@FunnyComponent
 public final class ValidityCommand {
 
     @FunnyCommand(
@@ -27,14 +29,7 @@ public final class ValidityCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user) {
-        if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
-        Guild guild = user.getGuild();
-
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
         if (config.validityWhen != 0) {
             long validity = guild.getValidity();
             long delta = validity - System.currentTimeMillis();

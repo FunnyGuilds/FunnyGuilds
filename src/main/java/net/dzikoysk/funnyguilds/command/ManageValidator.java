@@ -9,15 +9,15 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import org.panda_lang.utilities.inject.InjectorProperty;
 
 @FunnyComponent
-final class OwnerValidator implements Validator<IsOwner, User, ValidationException> {
+final class ManageValidator implements Validator<CanManage, User, ValidationException> {
 
     private static final MemberValidator MEMBER_VALIDATOR = new MemberValidator();
 
     @Override
-    public boolean validate(Origin origin, IsOwner annotation, InjectorProperty property, User user) throws ValidationException {
+    public boolean validate(Origin origin, CanManage annotation, InjectorProperty property, User user) throws ValidationException {
         MEMBER_VALIDATOR.isMember(user);
 
-        if (!user.isOwner()) {
+        if (!user.canManage()) {
             throw new ValidationException(FunnyGuilds.getInstance().getMessageConfiguration().generalIsNotOwner);
         }
 

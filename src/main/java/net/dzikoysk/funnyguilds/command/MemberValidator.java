@@ -13,6 +13,10 @@ final class MemberValidator implements Validator<IsMember, User, ValidationExcep
 
     @Override
     public boolean validate(Origin origin, IsMember annotation, InjectorProperty property, User user) throws ValidationException {
+        return isMember(user);
+    }
+
+    boolean isMember(User user) {
         if (!user.hasGuild()) {
             throw new ValidationException(FunnyGuilds.getInstance().getMessageConfiguration().generalHasNoGuild);
         }

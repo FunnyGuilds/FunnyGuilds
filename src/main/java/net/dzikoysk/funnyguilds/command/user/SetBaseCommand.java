@@ -1,13 +1,14 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.command.IsMember;
+import net.dzikoysk.funnyguilds.command.CanManage;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildBaseChangeEvent;
@@ -16,6 +17,7 @@ import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
+@FunnyComponent
 public final class SetBaseCommand {
 
     @FunnyCommand(
@@ -26,18 +28,12 @@ public final class SetBaseCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @IsMember User user) {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
+        if (!config.regionsEnabled) {
             player.sendMessage(messages.regionsDisabled);
             return;
         }
 
-        if (!user.isOwner() && !user.isDeputy()) {
-            player.sendMessage(messages.generalIsNotOwner);
-            return;
-        }
-
-        Guild guild = user.getGuild();
         Region region = RegionUtils.get(guild.getName());
         Location location = player.getLocation();
 

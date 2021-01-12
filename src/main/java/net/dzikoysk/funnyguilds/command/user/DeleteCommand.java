@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.IsOwner;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
@@ -8,6 +10,7 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import org.bukkit.entity.Player;
 
+@FunnyComponent
 public final class DeleteCommand {
 
     private static final ConfirmCommand CONFIRM_EXECUTOR = new ConfirmCommand();
@@ -20,8 +23,8 @@ public final class DeleteCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user) {
-        if (config.guildDeleteCancelIfSomeoneIsOnRegion && user.getGuild().isSomeoneInRegion()) {
+    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user, Guild guild) {
+        if (config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion()) {
             player.sendMessage(messages.deleteSomeoneIsNear);
             return;
         }
@@ -33,7 +36,7 @@ public final class DeleteCommand {
             return;
         }
 
-        CONFIRM_EXECUTOR.execute(messages, player, user);
+        CONFIRM_EXECUTOR.execute(config, messages, player, user, guild);
     }
 
 }

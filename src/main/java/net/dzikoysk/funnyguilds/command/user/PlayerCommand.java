@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.user.User;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Locale;
 
+@FunnyComponent
 public final class PlayerCommand {
 
     @FunnyCommand(

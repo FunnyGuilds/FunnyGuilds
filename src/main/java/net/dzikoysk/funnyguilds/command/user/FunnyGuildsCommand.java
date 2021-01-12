@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
 import net.dzikoysk.funnyguilds.concurrency.requests.FunnybinRequest;
@@ -11,6 +12,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Optional;
 
+@FunnyComponent
 public final class FunnyGuildsCommand {
 
     @FunnyCommand(
@@ -20,7 +22,9 @@ public final class FunnyGuildsCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        String parameter = args.length > 0 ? args[0].toLowerCase() : "";
+        String parameter = args.length > 0
+                ? args[0].toLowerCase()
+                : "";
 
         switch (parameter) {
             case "reload":
