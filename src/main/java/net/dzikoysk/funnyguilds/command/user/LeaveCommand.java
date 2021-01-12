@@ -17,6 +17,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class LeaveCommand {
 
@@ -29,10 +31,7 @@ public final class LeaveCommand {
         playerOnly = true
     )
     public void execute(MessageConfiguration messages, Player player, @IsMember User user, Guild guild) {
-        if (user.isOwner()) {
-            player.sendMessage(messages.leaveIsOwner);
-            return;
-        }
+        when (user.isOwner(), messages.leaveIsOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, user, guild, user))) {
             return;

@@ -5,11 +5,15 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.IsOwner;
+import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
 import org.bukkit.entity.Player;
+import org.panda_lang.utilities.commons.function.Option;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class DeputyCommand {
@@ -23,54 +27,29 @@ public final class DeputyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @IsOwner User owner, String[] args) {
-        if (args.length < 1) {
-            player.sendMessage(messages.generalNoNickGiven);
-            return;
-        }
+    public void execute(MessageConfiguration messages, Player player, @IsOwner User owner, Guild guild, String[] args) {
+        when (args.length < 1, messages.generalNoNickGiven);
 
-        String name = args[0];
-        User deputyUser = User.get(name);
-
-        if (deputyUser == null) {
-            player.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
-        
-        if (owner.equals(deputyUser)) {
-            player.sendMessage(messages.deputyMustBeDifferent);
-            return;
-        }
-
-        Guild guild = owner.getGuild();
-        Player deputyPlayer = deputyUser.getPlayer();
-
-        if (!guild.getMembers().contains(deputyUser)) {
-            player.sendMessage(messages.generalIsNotMember);
-            return;
-        }
+        User deputyUser = UserValidation.requireUserByName(args[0]);
+        when (owner.equals(deputyUser), messages.deputyMustBeDifferent);
+        when (!guild.getMembers().contains(deputyUser), messages.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
             return;
         }
-        
-        if (deputyUser.isDeputy()) {
-            guild.removeDeputy(deputyUser);;
-            player.sendMessage(messages.deputyRemove);
-            
-            if (deputyPlayer != null) {
-                deputyPlayer.sendMessage(messages.deputyMember);
-            }
 
+        Option<Player> deputyPlayer = Option.of(deputyUser.getPlayer());
+
+        if (deputyUser.isDeputy()) {
+            guild.removeDeputy(deputyUser);
+            player.sendMessage(messages.deputyRemove);
+            deputyPlayer.peek(value -> value.sendMessage(messages.deputyMember));
             return;
         }
 
         guild.addDeputy(deputyUser);
         player.sendMessage(messages.deputySet);
-        
-        if (deputyPlayer != null) {
-            deputyPlayer.sendMessage(messages.deputyOwner);
-        }
+        deputyPlayer.peek(value -> value.sendMessage(messages.deputyOwner));
     }
 
 }

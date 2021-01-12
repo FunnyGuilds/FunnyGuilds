@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.user;
 
+import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
@@ -7,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
@@ -16,6 +18,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.panda_lang.utilities.commons.ObjectUtils;
+import org.panda_lang.utilities.commons.function.Option;
 
 import java.util.Date;
 import java.util.Locale;
@@ -32,36 +36,15 @@ public final class InfoCommand {
         acceptsExceeded = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
-        String tag = null;
+        String tag = Option.when(args.length > 0, () -> args[0])
+                .orElse(() -> Option.when(sender instanceof Player, () -> ObjectUtils.cast(Player.class, sender))
+                        .map(User::get)
+                        .filter(User::hasGuild)
+                        .map(User::getGuild)
+                        .map(Guild::getTag))
+                .orThrow(() -> new ValidationException(messages.infoTag));
 
-        if (args.length > 0) {
-            tag = args[0];
-        }
-        else if (sender instanceof Player) {
-            User user = User.get((Player) sender);
-
-            if (user.hasGuild()) {
-                tag = user.getGuild().getTag();
-            }
-        }
-
-        if (tag == null || tag.isEmpty()) {
-            sender.sendMessage(messages.infoTag);
-            return;
-        }
-
-        if (!GuildUtils.tagExists(tag)) {
-            sender.sendMessage(messages.infoExists);
-            return;
-        }
-
-        Guild guild = GuildUtils.getByTag(tag);
-
-        if (guild == null) {
-            sender.sendMessage(messages.infoExists);
-            return;
-        }
-
+        Guild guild = GuildValidation.requireGuildByTag(tag);
         String validity = config.dateFormat.format(new Date(guild.getValidity()));
         
         long now = System.currentTimeMillis();
@@ -91,14 +74,16 @@ public final class InfoCommand {
             
             if (guild.getMembers().size() >= config.minMembersToInclude) {
                 messageLine = StringUtils.replace(messageLine, "{RANK}", String.valueOf(rank.getPosition()));
-            } else {
+            }
+            else {
                 messageLine = StringUtils.replace(messageLine, "{RANK}", messages.minMembersToIncludeNoValue);
             }
             
             if (!guild.getAllies().isEmpty()) {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), true));
                 messageLine = StringUtils.replace(messageLine, "{ALLIES-TAGS}", ChatUtils.toString(GuildUtils.getTags(guild.getAllies()), true));
-            } else {
+            }
+            else {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", messages.alliesNoValue);
                 messageLine = StringUtils.replace(messageLine, "{ALLIES-TAGS}", messages.alliesNoValue);
             }

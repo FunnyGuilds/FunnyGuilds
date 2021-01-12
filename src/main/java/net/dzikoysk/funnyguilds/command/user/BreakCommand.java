@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.command.IsOwner;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
@@ -20,6 +21,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class BreakCommand {
 
@@ -33,10 +36,7 @@ public final class BreakCommand {
         playerOnly = true
     )
     public void execute(MessageConfiguration messages, Player player, @IsOwner User user, Guild guild, String[] args) {
-        if (guild.getAllies().isEmpty()) {
-            player.sendMessage(messages.breakHasNotAllies);
-            return;
-        }
+        when(guild.getAllies().isEmpty(), messages.breakHasNotAllies);
 
         if (args.length < 1) {
             List<String> list = messages.breakAlliesList;
@@ -49,17 +49,8 @@ public final class BreakCommand {
             return;
         }
 
-        String tag = args[0];
-        Guild oppositeGuild = GuildUtils.getByTag(tag);
-
-        if (oppositeGuild == null) {
-            player.sendMessage(messages.generalGuildNotExists.replace("{TAG}", tag));
-            return;
-        }
-
-        if (!guild.getAllies().contains(oppositeGuild)) {
-            player.sendMessage(messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", tag));
-        }
+        Guild oppositeGuild = GuildValidation.requireGuildByTag(args[0]);
+        when(!guild.getAllies().contains(oppositeGuild), () -> messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
 
         if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
             return;

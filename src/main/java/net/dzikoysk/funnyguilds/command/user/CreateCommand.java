@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.command.user;
 
+import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -34,6 +35,8 @@ import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.List;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class CreateCommand {
 
@@ -48,33 +51,15 @@ public final class CreateCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user, String[] args) {
-        if (!config.guildsEnabled) {
-            player.sendMessage(messages.adminGuildsDisabled);
-            return;
-        }
-
-        if (LocationUtils.checkWorld(player)) {
-            player.sendMessage(messages.blockedWorld);
-            return;
-        }
-
-        if (user.hasGuild()) {
-            player.sendMessage(messages.generalHasGuild);
-            return;
-        }
+        when (!config.guildsEnabled, messages.adminGuildsDisabled);
+        when (LocationUtils.checkWorld(player), messages.blockedWorld);
+        when (user.hasGuild(), messages.generalHasGuild);
 
         if (args.length != 2) {
-            switch (args.length) {
-                case 0:
-                    player.sendMessage(messages.generalNoTagGiven);
-                    return;
-                case 1:
-                    player.sendMessage(messages.generalNoNameGiven);
-                    return;
-                default:
-                    player.sendMessage(messages.createMore);
-                    return;
-            }
+            when (args.length == 0, messages.generalNoTagGiven);
+            when (args.length == 1, messages.generalNoNameGiven);
+
+            throw new ValidationException(messages.createMore);
         }
 
         String tag = args[0];
@@ -85,55 +70,18 @@ public final class CreateCommand {
         
         String name = args[1];
 
-        if (tag.length() > config.createTagLength) {
-            player.sendMessage(messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
-            return;
-        }
-
-        if (tag.length() < config.createTagMinLength) {
-            player.sendMessage(messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
-            return;
-        }
-
-        if (name.length() > config.createNameLength) {
-            player.sendMessage(messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
-            return;
-        }
-
-        if (name.length() < config.createNameMinLength) {
-            player.sendMessage(messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
-            return;
-        }
-
-        if (!tag.matches(config.tagRegex.getPattern())) {
-            player.sendMessage(messages.createOLTag);
-            return;
-        }
-
-        if (!name.matches(config.nameRegex.getPattern())) {
-            player.sendMessage(messages.createOLName);
-            return;
-        }
-
-        if (GuildUtils.nameExists(name)) {
-            player.sendMessage(messages.createNameExists);
-            return;
-        }
-
-        if (GuildUtils.tagExists(tag)) {
-            player.sendMessage(messages.createTagExists);
-            return;
-        }
+        when (tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
+        when (tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
+        when (name.length() > config.createNameLength, messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
+        when (name.length() < config.createNameMinLength, messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
+        when (!tag.matches(config.tagRegex.getPattern()), messages.createOLTag);
+        when (!name.matches(config.nameRegex.getPattern()), messages.createOLName);
+        when (GuildUtils.nameExists(name), messages.createNameExists);
+        when (GuildUtils.tagExists(tag), messages.createTagExists);
 
         if (config.checkForRestrictedGuildNames) {
-            if (!GuildUtils.isNameValid(name)) {
-                player.sendMessage(messages.restrictedGuildName);
-                return;
-            }
-            else if (!GuildUtils.isTagValid(tag)) {
-                player.sendMessage(messages.restrictedGuildTag);
-                return;
-            }
+            when (!GuildUtils.isNameValid(name), messages.restrictedGuildName);
+            when (!GuildUtils.isTagValid(tag), messages.restrictedGuildTag);
         }
 
         Location guildLocation = player.getLocation().getBlock().getLocation();
@@ -153,10 +101,7 @@ public final class CreateCommand {
                 distance += config.enlargeItems.size() * config.enlargeSize;
             }
     
-            if (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation)) {
-                player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
-                return;
-            }
+            when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation), messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
         }
 
         if (config.rankCreateEnable) {
@@ -199,15 +144,8 @@ public final class CreateCommand {
         }
 
         if (config.regionsEnabled) {
-            if (RegionUtils.isIn(guildLocation)) {
-                player.sendMessage(messages.createIsNear);
-                return;
-            }
-            
-            if (RegionUtils.isNear(guildLocation)) {
-                player.sendMessage(messages.createIsNear);
-                return;
-            }
+            when (RegionUtils.isIn(guildLocation), messages.createIsNear);
+            when (RegionUtils.isNear(guildLocation), messages.createIsNear);
 
             if (config.createMinDistanceFromBorder != -1) {
                 WorldBorder border = player.getWorld().getWorldBorder();

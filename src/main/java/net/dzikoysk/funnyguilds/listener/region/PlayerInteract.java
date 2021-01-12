@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
@@ -55,7 +56,11 @@ public class PlayerInteract implements Listener {
                         WarSystem.getInstance().attack(player, guild);
                     }
                     else if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                        infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[]{ guild.getTag() });
+                        try {
+                            infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[] { guild.getTag() });
+                        } catch (ValidationException validatorException) {
+                            validatorException.getValidationMessage().peek(player::sendMessage);
+                        }
                     }
                 }
                 else if (eventAction == Action.RIGHT_CLICK_BLOCK) {

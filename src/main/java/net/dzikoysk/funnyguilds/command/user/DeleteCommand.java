@@ -10,6 +10,8 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import org.bukkit.entity.Player;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class DeleteCommand {
 
@@ -24,18 +26,10 @@ public final class DeleteCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user, Guild guild) {
-        if (config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion()) {
-            player.sendMessage(messages.deleteSomeoneIsNear);
-            return;
-        }
-
+        when (config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messages.deleteSomeoneIsNear);
         ConfirmationList.add(user.getUUID());
-        
-        if (config.commands.confirm.enabled) {
-            player.sendMessage(messages.deleteConfirm);
-            return;
-        }
 
+        when (config.commands.confirm.enabled, messages.deleteConfirm);
         CONFIRM_EXECUTOR.execute(config, messages, player, user, guild);
     }
 

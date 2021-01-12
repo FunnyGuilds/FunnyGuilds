@@ -4,10 +4,9 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.command.IsOwner;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
@@ -26,6 +25,8 @@ import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.List;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class AllyCommand {
 
@@ -42,43 +43,20 @@ public final class AllyCommand {
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            if (invitations.size() == 0) {
-                player.sendMessage(messages.allyHasNotInvitation);
-                return;
-            }
-
-            List<String> list = messages.allyInvitationList;
+            when(invitations.size() == 0, messages.allyHasNotInvitation);
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
-            for (String msg : list) {
+            for (String msg : messages.allyInvitationList) {
                 player.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
 
             return;
         }
 
-        String tag = args[0];
-        Guild invitedGuild = GuildUtils.getByTag(tag);
-
-        if (invitedGuild == null) {
-            player.sendMessage(StringUtils.replace(messages.generalGuildNotExists, "{TAG}", tag));
-            return;
-        }
-
-        if (guild.equals(invitedGuild)) {
-            player.sendMessage(messages.allySame);
-            return;
-        }
-
-        if (guild.getAllies().contains(invitedGuild)) {
-            player.sendMessage(messages.allyAlly);
-            return;
-        }
-
-        if (guild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
-            player.sendMessage(messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
-            return;
-        }
+        Guild invitedGuild = GuildValidation.requireGuildByTag(args[0]);
+        when(guild.equals(invitedGuild), messages.allySame);
+        when(guild.getAllies().contains(invitedGuild), messages.allyAlly);
+        when(guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
 
         if (invitedGuild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
             Formatter formatter = new Formatter()
@@ -89,6 +67,8 @@ public final class AllyCommand {
             player.sendMessage(formatter.format(messages.inviteAllyTargetAmount));
             return;
         }
+
+        Player invitedOwner = invitedGuild.getOwner().getPlayer();
 
         if (InvitationList.hasInvitationFrom(guild, invitedGuild)) {
             if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
@@ -105,16 +85,13 @@ public final class AllyCommand {
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
             player.sendMessage(allyDoneMessage);
 
-            Player owner = invitedGuild.getOwner().getPlayer();
-
-            if (owner != null) {
+            if (invitedOwner != null) {
                 String allyIDoneMessage = messages.allyIDone;
                 allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
                 allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
-                owner.sendMessage(allyIDoneMessage);
+                invitedOwner.sendMessage(allyIDoneMessage);
             }
 
-            ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
             ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
             for (User member : guild.getMembers()) {
@@ -125,8 +102,7 @@ public final class AllyCommand {
                 taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
             }
 
-            ConcurrencyTask task = taskBuilder.build();
-            concurrencyManager.postTask(task);
+            FunnyGuilds.getInstance().getConcurrencyManager().postTask(taskBuilder.build());
             return;
         }
 
@@ -142,13 +118,12 @@ public final class AllyCommand {
             allyReturnMessage = StringUtils.replace(allyReturnMessage, "{TAG}", invitedGuild.getTag());
             player.sendMessage(allyReturnMessage);
 
-            Player owner = invitedGuild.getOwner().getPlayer();
 
-            if (owner !=null) {
+            if (invitedOwner != null) {
                 String allyIReturnMessage = messages.allyIReturn;
                 allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{GUILD}", guild.getName());
                 allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{TAG}", guild.getTag());
-                owner.sendMessage(allyIReturnMessage);
+                invitedOwner.sendMessage(allyIReturnMessage);
             }
 
             return;
@@ -165,13 +140,11 @@ public final class AllyCommand {
         allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{TAG}", invitedGuild.getTag());
         player.sendMessage(allyInviteDoneMessage);
 
-        Player owner = invitedGuild.getOwner().getPlayer();
-
-        if (owner !=null) {
+        if (invitedOwner !=null) {
             String allyToInvitedMessage = messages.allyToInvited;
             allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{GUILD}", guild.getName());
             allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{TAG}", guild.getTag());
-            owner.sendMessage(allyToInvitedMessage);
+            invitedOwner.sendMessage(allyToInvitedMessage);
         }
     }
 

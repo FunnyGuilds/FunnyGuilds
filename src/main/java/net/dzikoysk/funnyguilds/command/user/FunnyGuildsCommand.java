@@ -12,6 +12,8 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Optional;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.*;
+
 @FunnyComponent
 public final class FunnyGuildsCommand {
 
@@ -56,23 +58,17 @@ public final class FunnyGuildsCommand {
     }
 
     private void reload(CommandSender sender) {
-        if (!sender.hasPermission("funnyguilds.reload")) {
-            sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
-            return;
-        }
+        when (!sender.hasPermission("funnyguilds.reload"), FunnyGuilds.getInstance().getMessageConfiguration().permission);
 
         sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
         FunnyGuilds.getInstance().getConcurrencyManager().postRequests(new ReloadRequest(sender));
     }
 
     private void saveAll(CommandSender sender) {
-        if (!sender.hasPermission("funnyguilds.admin")) {
-            sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
-            return;
-        }
+        when (!sender.hasPermission("funnyguilds.admin"), FunnyGuilds.getInstance().getMessageConfiguration().permission);
 
         sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
-        long l = System.currentTimeMillis();
+        long currentTime = System.currentTimeMillis();
 
         DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
 
@@ -85,18 +81,14 @@ public final class FunnyGuildsCommand {
             return;
         }
 
-        sender.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - l) / 1000.0F + "s" + ChatColor.GRAY + ")!");
+        sender.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - currentTime) / 1000.0F + "s" + ChatColor.GRAY + ")!");
     }
 
     private void post(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("funnyguilds.admin")) {
-            sender.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().permission);
-            return;
-        }
-
+        when (!sender.hasPermission("funnyguilds.admin"), FunnyGuilds.getInstance().getMessageConfiguration().permission);
         Optional<FunnybinRequest> request = FunnybinRequest.of(sender, args);
 
-        if(request.isPresent()) {
+        if (request.isPresent()) {
             FunnyGuilds.getInstance().getConcurrencyManager().postRequests(request.get());;
             return;
         }

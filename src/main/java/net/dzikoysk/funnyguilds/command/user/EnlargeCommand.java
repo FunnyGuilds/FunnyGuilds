@@ -15,6 +15,8 @@ import net.dzikoysk.funnyguilds.event.guild.GuildEnlargeEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class EnlargeCommand {
 
@@ -26,45 +28,17 @@ public final class EnlargeCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
-        if (!config.regionsEnabled) {
-            player.sendMessage(messages.regionsDisabled);
-            return;
-        }
-        
-        if (!config.enlargeEnable) {
-            return;
-        }
+        when (!config.regionsEnabled, messages.regionsDisabled);
 
         Region region = guild.getRegion();
-
-        if (region == null) {
-            player.sendMessage(messages.regionsDisabled);
-            return;
-        }
+        when (region == null, messages.regionsDisabled);
 
         int enlarge = region.getEnlarge();
-
-        if (enlarge > config.enlargeItems.size() - 1) {
-            player.sendMessage(messages.enlargeMaxSize);
-            return;
-        }
+        when (enlarge > config.enlargeItems.size() - 1, messages.enlargeMaxSize);
 
         ItemStack need = config.enlargeItems.get(enlarge);
-
-        if (!player.getInventory().containsAtLeast(need, need.getAmount())) {
-            StringBuilder messageBuilder = new StringBuilder();
-            messageBuilder.append(need.getAmount());
-            messageBuilder.append(" ");
-            messageBuilder.append(need.getType().toString().toLowerCase());
-
-            player.sendMessage(messages.enlargeItem.replace("{ITEM}", messageBuilder.toString()));
-            return;
-        }
-
-        if (RegionUtils.isNear(region.getCenter())) {
-            player.sendMessage(messages.enlargeIsNear);
-            return;
-        }
+        when (!player.getInventory().containsAtLeast(need, need.getAmount()), messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
+        when (RegionUtils.isNear(region.getCenter()), messages.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, user.getGuild()))) {
             return;
@@ -74,11 +48,9 @@ public final class EnlargeCommand {
         region.setEnlarge(++enlarge);
         region.setSize(region.getSize() + config.enlargeSize);
 
-        String enlargeDoneMessage = messages.enlargeDone
+        guild.broadcast(messages.enlargeDone
                 .replace("{SIZE}", Integer.toString(region.getSize()))
-                .replace("{LEVEL}", Integer.toString(region.getEnlarge()));
-
-        guild.broadcast(enlargeDoneMessage);
+                .replace("{LEVEL}", Integer.toString(region.getEnlarge())));
     }
 
 }

@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
@@ -24,6 +25,8 @@ import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.List;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class JoinCommand {
 
@@ -37,17 +40,10 @@ public final class JoinCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user, String[] args) {
-        if (user.hasGuild()) {
-            player.sendMessage(messages.joinHasGuild);
-            return;
-        }
+        when (user.hasGuild(), messages.joinHasGuild);
 
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(player);
-
-        if (invitations.size() == 0) {
-            player.sendMessage(messages.joinHasNotInvitation);
-            return;
-        }
+        when (invitations.size() == 0, messages.joinHasNotInvitation);
 
         if (args.length < 1) {
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(player), false);
@@ -59,22 +55,12 @@ public final class JoinCommand {
             return;
         }
 
-        String tag = args[0];
-        Guild guild = GuildUtils.getByTag(tag);
-
-        if (guild == null) {
-            player.sendMessage(messages.joinTagExists);
-            return;
-        }
-
-        if (!InvitationList.hasInvitationFrom(player, GuildUtils.getByTag(tag))) {
-            player.sendMessage(messages.joinHasNotInvitationTo);
-            return;
-        }
+        Guild guild = GuildValidation.requireGuildByTag(args[0]);
+        when (!InvitationList.hasInvitationFrom(player, GuildUtils.getByTag(guild.getTag())), messages.joinHasNotInvitationTo);
 
         List<ItemStack> requiredItems = config.joinItems;
 
-        if (! ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
         

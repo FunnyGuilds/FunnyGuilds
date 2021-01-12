@@ -66,6 +66,9 @@ public final class CommandsConfiguration {
         PluginConfiguration configuration = funnyGuilds.getPluginConfiguration();
         PluginConfiguration.Commands commands = configuration.commands;
 
+        FunnyCommand enlargeCommand = commands.enlarge;
+        enlargeCommand.enabled = enlargeCommand.enabled && configuration.enlargeEnable;
+
         CommandComponents userCommands = new CommandComponents("user")
                 .command("ally", commands.ally, new AllyCommand())
                 .command("base", commands.base, new BaseCommand())
@@ -74,7 +77,7 @@ public final class CommandsConfiguration {
                 .command("create", commands.create, new CreateCommand())
                 .command("delete", commands.delete, new DeleteCommand())
                 .command("deputy", commands.deputy, new DeputyCommand())
-                .command("enlarge", commands.enlarge, new EnlargeCommand())
+                .command("enlarge", enlargeCommand, new EnlargeCommand())
                 .command("escape", commands.escape, new EscapeCommand())
                 .command("funnyguilds", commands.funnyguilds, new FunnyGuildsCommand())
                 .command("guild", commands.guild, new GuildCommand())

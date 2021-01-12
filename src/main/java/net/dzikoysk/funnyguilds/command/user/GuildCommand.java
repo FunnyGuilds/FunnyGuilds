@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.bukkit.command.CommandSender;
 
 @FunnyComponent
@@ -15,10 +15,8 @@ public final class GuildCommand {
         permission = "funnyguilds.guild",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender) {
-        for (String line : FunnyGuilds.getInstance().getMessageConfiguration().helpList) {
-            sender.sendMessage(line);
-        }
+    public void execute(MessageConfiguration messages, CommandSender sender) {
+        messages.helpList.forEach(sender::sendMessage);
     }
 
 }

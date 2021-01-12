@@ -16,6 +16,8 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Locale;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class PlayerInfoCommand {
 
@@ -28,18 +30,14 @@ public final class PlayerInfoCommand {
         acceptsExceeded = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
-        if (args.length == 0 && !(sender instanceof Player)) {
-            sender.sendMessage(messages.playerOnly);
-            return;
-        }
+        when (args.length == 0 && !(sender instanceof Player), messages.playerOnly);
         
-        String name = args.length == 0 ? sender.getName() : args[0];
-        User user = UserUtils.get(name, config.playerLookupIgnorecase);
+        String name = args.length == 0
+                ? sender.getName()
+                : args[0];
 
-        if (user == null) {
-            sender.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
+        User user = UserUtils.get(name, config.playerLookupIgnorecase);
+        when (user == null, messages.generalNotPlayedBefore);
 
         sendInfoMessage(messages.playerInfoList, user, sender);
     }

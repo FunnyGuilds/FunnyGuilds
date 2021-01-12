@@ -20,6 +20,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class BaseCommand {
 
@@ -32,26 +34,15 @@ public final class BaseCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user, Guild guild) {
-        if (!config.regionsEnabled) {
-            player.sendMessage(messages.regionsDisabled);
-            return;
-        }
-        
-        if (!config.baseEnable) {
-            player.sendMessage(messages.baseTeleportationDisabled);
-            return;
-        }
-
-        if (user.getCache().getTeleportation() != null) {
-            player.sendMessage(messages.baseIsTeleportation);
-            return;
-        }
+        when(!config.regionsEnabled, messages.regionsDisabled);
+        when(!config.baseEnable, messages.baseTeleportationDisabled);
+        when(user.getCache().getTeleportation() != null, messages.baseIsTeleportation);
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.base")
                 ? Collections.emptyList()
                 : config.baseItems;
 
-        if (! ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
 
@@ -64,7 +55,10 @@ public final class BaseCommand {
             return;
         }
 
-        int time = player.hasPermission("funnyguilds.vip.baseTeleportTime") ? config.baseDelayVip : config.baseDelay;
+        int time = player.hasPermission("funnyguilds.vip.baseTeleportTime")
+                ? config.baseDelayVip
+                : config.baseDelay;
+
         Location before = player.getLocation();
         AtomicInteger timeCounter = new AtomicInteger(1);
         UserCache cache = user.getCache();

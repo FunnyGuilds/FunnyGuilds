@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.user.PlayerInfoCommand;
@@ -38,7 +39,11 @@ public class EntityInteract implements Listener {
             }
 
             if (config.infoPlayerCommand) {
-                playerExecutor.execute(config, messages, eventCaller, new String[]{clickedPlayer.getName()});
+                try {
+                    playerExecutor.execute(config, messages, eventCaller, new String[]{clickedPlayer.getName()});
+                } catch (ValidationException validatorException) {
+                    validatorException.getValidationMessage().peek(eventCaller::sendMessage);
+                }
             }
             else {
                 playerExecutor.sendInfoMessage(messages.playerRightClickInfo, User.get(clickedPlayer), eventCaller);

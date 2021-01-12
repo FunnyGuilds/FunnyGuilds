@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.*;
+
 @FunnyComponent
 public final class EscapeCommand {
 
@@ -29,47 +31,24 @@ public final class EscapeCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
-        if (!config.regionsEnabled) {
-            player.sendMessage(messages.regionsDisabled);
-            return;
-        }
-        
-        if (!config.escapeEnable || !config.baseEnable) {
-            player.sendMessage(messages.escapeDisabled);
-            return;
-        }
-
-        if (user.getCache().getTeleportation() != null) {
-            player.sendMessage(messages.escapeInProgress);
-            return;
-        }
+        when (!config.regionsEnabled, messages.regionsDisabled);
+        when (!config.escapeEnable || !config.baseEnable, messages.escapeDisabled);
+        when (user.getCache().getTeleportation() != null, messages.escapeInProgress);
 
         Location playerLocation = player.getLocation();
         Region region = RegionUtils.getAt(playerLocation);
-
-        if (region == null) {
-            player.sendMessage(messages.escapeNoNeedToRun);
-            return;
-        }
+        whenNull (region, messages.escapeNoNeedToRun);
 
         int time = FunnyGuilds.getInstance().getPluginConfiguration().escapeDelay;
 
         if (!user.hasGuild()) {
-            if (config.escapeSpawn) {
-                scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {});
-                return;
-            }
-
-            player.sendMessage(messages.escapeNoUserGuild);
+            when (!config.escapeSpawn, messages.escapeNoUserGuild);
+            scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {});
             return;
         }
         
         Guild guild = user.getGuild();
-
-        if (guild.equals(region.getGuild())) {
-            player.sendMessage(messages.escapeOnYourRegion);
-            return;
-        }
+        when (guild.equals(region.getGuild()), messages.escapeOnYourRegion);
 
         if (time >= 1) {
             player.sendMessage(messages.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
@@ -91,6 +70,7 @@ public final class EscapeCommand {
     }
 
     private void scheduleTeleportation(Player player, User user, Location destination, int time, Runnable onSuccess) {
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Location before = player.getLocation();
         AtomicInteger timeCounter = new AtomicInteger(0);
         UserCache cache = user.getCache();
@@ -102,15 +82,12 @@ public final class EscapeCommand {
                 return;
             }
 
-            MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
                 player.sendMessage(messages.escapeCancelled);
                 cache.setTeleportation(null);
                 return;
             }
-
 
             if (timeCounter.getAndIncrement() > time) {
                 cache.getTeleportation().cancel();

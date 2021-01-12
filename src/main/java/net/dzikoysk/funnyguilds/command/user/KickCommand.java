@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.CanManage;
+import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
@@ -16,6 +17,8 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.*;
 
 @FunnyComponent
 public final class KickCommand {
@@ -30,32 +33,12 @@ public final class KickCommand {
         playerOnly = true
     )
     public void execute(MessageConfiguration messages, Player player, @CanManage User user, Guild guild, String[] args) {
-        if (args.length < 1) {
-            player.sendMessage(messages.generalNoNickGiven);
-            return;
-        }
+        when (args.length < 1, messages.generalNoNickGiven);
 
-        User formerUser = User.get(args[0]);
-
-        if (formerUser == null) {
-            player.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
-
-        if (!formerUser.hasGuild()) {
-            player.sendMessage(messages.generalPlayerHasNoGuild);
-            return;
-        }
-
-        if (!guild.equals(formerUser.getGuild())) {
-            player.sendMessage(messages.kickOtherGuild);
-            return;
-        }
-
-        if (formerUser.isOwner()) {
-            player.sendMessage(messages.kickOwner);
-            return;
-        }
+        User formerUser = UserValidation.requireUserByName(args[0]);
+        when (!formerUser.hasGuild(), messages.generalPlayerHasNoGuild);
+        when (!guild.equals(formerUser.getGuild()), messages.kickOtherGuild);
+        when (formerUser.isOwner(), messages.kickOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
             return;

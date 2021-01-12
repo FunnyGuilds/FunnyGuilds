@@ -16,6 +16,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class ConfirmCommand {
 
@@ -28,15 +30,8 @@ public final class ConfirmCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user, Guild guild) {
-        if (config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion()) {
-            player.sendMessage(messages.deleteSomeoneIsNear);
-            return;
-        }
-
-        if (!ConfirmationList.contains(user.getUUID())) {
-            player.sendMessage(messages.deleteToConfirm);
-            return;
-        }
+        when(config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messages.deleteSomeoneIsNear);
+        when(!ConfirmationList.contains(user.getUUID()), messages.deleteToConfirm);
 
         ConfirmationList.remove(user.getUUID());
 

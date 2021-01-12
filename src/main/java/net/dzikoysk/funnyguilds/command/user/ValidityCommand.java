@@ -18,6 +18,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Date;
 import java.util.List;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 @FunnyComponent
 public final class ValidityCommand {
 
@@ -33,12 +35,8 @@ public final class ValidityCommand {
         if (config.validityWhen != 0) {
             long validity = guild.getValidity();
             long delta = validity - System.currentTimeMillis();
-            
-            if (delta > config.validityWhen) {
-                long when = delta - config.validityWhen;
-                player.sendMessage(messages.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(when)));
-                return;
-            }
+
+            when (delta > config.validityWhen, messages.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta - config.validityWhen)));
         }
 
         List<ItemStack> requiredItems = config.validityItems;
