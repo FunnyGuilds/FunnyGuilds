@@ -15,6 +15,8 @@ public final class FunnyGuildsVersion {
 
     private static final String GH_COMMITS_URL = "https://api.github.com/repos/FunnyGuilds/FunnyGuilds/commits";
     private static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
+    private static final String GITHUB_URL = "https://github.com/funnyguilds/funnyguilds";
+    private static final String DISCORD_URL = "https://discord.com/invite/CYvyq3u";
 
     private FunnyGuildsVersion() {}
 
@@ -66,10 +68,11 @@ public final class FunnyGuildsVersion {
     private static void printNewVersionAvailable(CommandSender sender, String latest, boolean isNightly) {
         sender.sendMessage("");
         sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
-        sender.sendMessage(ChatColor.GRAY + "Dostepna jest nowa wersja " + ChatColor.AQUA
-                + "FunnyGuilds" + (isNightly ? " Nightly" : "") + ChatColor.GRAY + '!');
+        sender.sendMessage(ChatColor.GRAY + "Dostepna jest nowa wersja " + ChatColor.AQUA + "FunnyGuilds" + (isNightly ? " Nightly" : "") + ChatColor.GRAY + '!');
         sender.sendMessage(ChatColor.GRAY + "Obecna: " + ChatColor.AQUA + FunnyGuilds.getInstance().getFullVersion());
         sender.sendMessage(ChatColor.GRAY + "Najnowsza: " + ChatColor.AQUA + latest);
+        sender.sendMessage(ChatColor.GRAY + "GitHub: " + ChatColor.AQUA + GITHUB_URL);
+        sender.sendMessage(ChatColor.GRAY + "Discord: " + ChatColor.AQUA + DISCORD_URL);
         sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
         sender.sendMessage("");
     }
