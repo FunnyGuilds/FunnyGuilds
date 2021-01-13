@@ -17,8 +17,7 @@ public final class LivesCommand {
     @FunnyCommand(
         name = "${admin.lives.name}",
         permission = "funnyguilds.admin",
-        acceptsExceeded = true,
-        playerOnly = true
+        acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();

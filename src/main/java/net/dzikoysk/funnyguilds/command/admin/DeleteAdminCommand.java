@@ -18,8 +18,7 @@ public final class DeleteAdminCommand {
 
     @FunnyCommand(
         name = "${admin.delete.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+        permission = "funnyguilds.admin"
     )
     public void execute(CommandSender sender, String[] args) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();

@@ -30,7 +30,8 @@ public final class MoveCommand {
     @FunnyCommand(
         name = "${admin.move.name}",
         permission = "funnyguilds.admin",
-        acceptsExceeded = true
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(CommandSender sender, String[] args) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();

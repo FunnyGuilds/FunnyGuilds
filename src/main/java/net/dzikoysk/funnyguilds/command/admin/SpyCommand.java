@@ -13,7 +13,8 @@ public final class SpyCommand {
     @FunnyCommand(
         name = "${admin.spy.name}",
         permission = "funnyguilds.admin",
-        acceptsExceeded = true
+        acceptsExceeded = true,
+        playerOnly = true
     )
     public void execute(CommandSender sender) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
