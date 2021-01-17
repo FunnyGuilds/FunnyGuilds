@@ -18,7 +18,7 @@
         <dependency>
             <groupId>net.dzikoysk</groupId>
             <artifactId>funnycommands</artifactId>
-            <version>0.3.5</version>
+            <version>0.3.6</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
