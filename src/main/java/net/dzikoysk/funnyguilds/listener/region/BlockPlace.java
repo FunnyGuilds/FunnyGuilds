@@ -42,8 +42,12 @@ public class BlockPlace implements Listener {
             return;
         }
 
-        // remove one item from the player
+        // clone item before changing amount in the player's inventory
         ItemStack itemInHand = event.getItemInHand();
+        ItemStack returnItem = itemInHand.clone();
+        returnItem.setAmount(1);
+
+        // remove one item from the player's inventory
         if ((itemInHand.getAmount() - 1) == 0) {
             // wondering why? because bukkit and you probably don't want dupe glitches
             if (Reflections.USE_PRE_9_METHODS) {
@@ -72,9 +76,6 @@ public class BlockPlace implements Listener {
             block.setType(type);
 
             // start timer and return the item to the player if specified to do so
-            ItemStack returnItem = event.getItemInHand().clone();
-            returnItem.setAmount(1);
-
             Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> {
                 event.getBlockReplacedState().update(true);
                 if (!player.isOnline()) {
