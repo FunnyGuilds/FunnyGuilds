@@ -83,7 +83,6 @@ public final class NameCommand {
         }
         
         guild.setName(args[1]);
-        FunnyGuilds.getInstance().getDataModel().save(false);
         sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
     }
 

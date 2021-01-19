@@ -55,10 +55,11 @@ public final class TagCommand {
         }
 
         String oldTag = guild.getTag();
-
         guild.setTag(tag);
-        FunnyGuilds.getInstance().getDataModel().save(false);
-        sender.sendMessage(messages.adminTagChanged.replace("{TAG}", guild.getTag()));
+
+        sender.sendMessage(messages.adminTagChanged
+                .replace("{OLD_TAG}", oldTag)
+                .replace("{TAG}", guild.getTag()));
 
         SimpleEventHandler.handle(new GuildTagChangeEvent(eventCause, admin, guild, oldTag, tag));
     }
