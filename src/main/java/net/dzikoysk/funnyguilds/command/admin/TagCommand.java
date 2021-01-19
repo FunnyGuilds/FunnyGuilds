@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildPreTagChangeEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildTagChangeEvent;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,13 +46,21 @@ public final class TagCommand {
                 ? User.get(sender.getName())
                 : null;
 
-        if (!SimpleEventHandler.handle(new GuildTagChangeEvent(admin == null ? FunnyEvent.EventCause.CONSOLE : FunnyEvent.EventCause.ADMIN, admin, guild, args[1]))) {
+        FunnyEvent.EventCause eventCause = admin == null
+                ? FunnyEvent.EventCause.CONSOLE
+                : FunnyEvent.EventCause.ADMIN;
+
+        if (!SimpleEventHandler.handle(new GuildPreTagChangeEvent(eventCause, admin, guild, tag))) {
             return;
         }
-        
+
+        String oldTag = guild.getTag();
+
         guild.setTag(tag);
         FunnyGuilds.getInstance().getDataModel().save(false);
         sender.sendMessage(messages.adminTagChanged.replace("{TAG}", guild.getTag()));
+
+        SimpleEventHandler.handle(new GuildTagChangeEvent(eventCause, admin, guild, oldTag, tag));
     }
 
 }

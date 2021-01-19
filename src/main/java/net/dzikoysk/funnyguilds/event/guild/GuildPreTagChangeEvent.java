@@ -4,9 +4,8 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.event.HandlerList;
 
-public class GuildTagChangeEvent extends GuildEvent {
+public class GuildPreTagChangeEvent extends GuildEvent {
 
-    private final String oldTag;
     private final String newTag;
     private static final HandlerList handlers = new HandlerList();
 
@@ -19,15 +18,10 @@ public class GuildTagChangeEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildTagChangeEvent(EventCause eventCause, User doer, Guild guild, String oldTag, String newTag) {
+    public GuildPreTagChangeEvent(EventCause eventCause, User doer, Guild guild, String newTag) {
         super(eventCause, doer, guild);
 
-        this.oldTag = oldTag;
         this.newTag = newTag;
-    }
-
-    public String getOldTag() {
-        return oldTag;
     }
 
     public String getNewTag() {
