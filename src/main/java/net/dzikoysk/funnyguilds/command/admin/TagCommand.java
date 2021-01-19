@@ -4,8 +4,13 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.event.FunnyEvent;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildTagChangeEvent;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public final class TagCommand {
 
@@ -33,6 +38,14 @@ public final class TagCommand {
 
         if (GuildUtils.tagExists(tag)) {
             sender.sendMessage(messages.createTagExists);
+            return;
+        }
+
+        User admin = (sender instanceof Player)
+                ? User.get(sender.getName())
+                : null;
+
+        if (!SimpleEventHandler.handle(new GuildTagChangeEvent(admin == null ? FunnyEvent.EventCause.CONSOLE : FunnyEvent.EventCause.ADMIN, admin, guild, args[1]))) {
             return;
         }
         
