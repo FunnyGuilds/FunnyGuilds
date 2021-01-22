@@ -57,6 +57,15 @@ public class UserUtils {
         BY_NAME_USER_COLLECTION.remove(user.getName());
     }
 
+    public static void updateUsername(User user, String newUsername) {
+        Validate.notNull(user, "user can't be null!");
+
+        BY_NAME_USER_COLLECTION.remove(user.getName());
+        BY_NAME_USER_COLLECTION.put(newUsername, user);
+
+        user.setName(newUsername);
+    }
+
     public static boolean playedBefore(String nickname) {
         return playedBefore(nickname, false);
     }

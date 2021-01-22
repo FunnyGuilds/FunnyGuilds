@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
+import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
@@ -38,8 +39,10 @@ public class PlayerJoin implements Listener {
             user = User.create(player);
         }
         else {
-            if (! user.getName().equals(player.getName())) {
-                user.setName(player.getName());
+            String playerName = player.getName();
+
+            if (! user.getName().equals(playerName)) {
+                UserUtils.updateUsername(user, playerName);
             }
         }
 
