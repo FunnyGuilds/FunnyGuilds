@@ -56,3 +56,4 @@ permissions:
       funnyguilds.escape: true
       funnyguilds.rankreset: true
       funnyguilds.manage: true
+      funnyguilds.guild: true
