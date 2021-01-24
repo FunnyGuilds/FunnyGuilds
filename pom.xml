@@ -251,7 +251,7 @@
                 </executions>
                 <configuration>
                     <minimizeJar>true</minimizeJar>
-                    <finalName>${project.name} ${project.version} (MC 1.8-1.16.4)</finalName>
+                    <finalName>${project.name} ${project.version} (MC 1.8-1.16.5)</finalName>
                     <relocations>
                         <relocation>
                             <pattern>com.google.common.</pattern>
