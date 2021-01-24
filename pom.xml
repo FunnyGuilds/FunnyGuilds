@@ -250,6 +250,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <minimizeJar>true</minimizeJar>
                     <finalName>${project.name} ${project.version} (MC 1.8-1.16.4)</finalName>
                     <relocations>
                         <relocation>
