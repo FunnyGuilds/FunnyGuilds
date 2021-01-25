@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.panda-lang</groupId>
             <artifactId>panda-utilities</artifactId>
-            <version>0.2.1-alpha</version>
+            <version>0.3.0-alpha</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.tinylog</groupId>
