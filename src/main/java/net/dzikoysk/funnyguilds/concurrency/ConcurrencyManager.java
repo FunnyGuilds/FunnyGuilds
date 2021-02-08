@@ -8,10 +8,12 @@ import java.util.concurrent.TimeUnit;
 
 public class ConcurrencyManager {
 
+    private final FunnyGuilds funnyGuilds;
     private final int threads;
     private final ExecutorService executor;
 
-    public ConcurrencyManager(int threads) {
+    public ConcurrencyManager(FunnyGuilds funnyGuilds, int threads) {
+        this.funnyGuilds = funnyGuilds;
         this.threads = threads;
         this.executor = Executors.newFixedThreadPool(threads);
     }
@@ -32,14 +34,14 @@ public class ConcurrencyManager {
             this.executor.awaitTermination(timeout, TimeUnit.SECONDS);
         }
         catch (InterruptedException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("ConcurrencyManager termination failed", ex);
+            funnyGuilds.getPluginLogger().error("ConcurrencyManager termination failed", ex);
         }
     }
 
     public void printStatus() {
-        FunnyGuilds.getInstance().getPluginLogger().info("Available Processors: " + Runtime.getRuntime().availableProcessors());
-        FunnyGuilds.getInstance().getPluginLogger().info("Active Threads: " + Thread.activeCount());
-        FunnyGuilds.getInstance().getPluginLogger().info("Pool size: " + threads);
+        funnyGuilds.getPluginLogger().info("Available Processors: " + Runtime.getRuntime().availableProcessors());
+        funnyGuilds.getPluginLogger().info("Active Threads: " + Thread.activeCount());
+        funnyGuilds.getPluginLogger().info("Pool size: " + threads);
     }
 
 }

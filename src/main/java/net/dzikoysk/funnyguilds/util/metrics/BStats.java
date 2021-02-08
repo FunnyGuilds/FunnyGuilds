@@ -262,7 +262,7 @@ public class BStats {
         JSONObject data = new JSONObject();
 
         data.put("pluginName", "FunnyGuilds"); // Append the name of the plugin
-        data.put("pluginVersion", FunnyGuilds.getInstance().getMainVersion()); // Append the version of the plugin
+        data.put("pluginVersion", FunnyGuilds.getInstance().getVersion().getMainVersion()); // Append the version of the plugin
 
         JSONArray customCharts = new JSONArray();
         for (CustomChart customChart : charts) {

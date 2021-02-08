@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
@@ -79,7 +78,7 @@ public class PlayerJoin implements Listener {
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             PacketExtension.registerPlayer(player);
-            FunnyGuildsVersion.isNewAvailable(player, false);
+            this.plugin.getVersion().isNewAvailable(player, false);
 
             Region region = RegionUtils.getAt(player.getLocation());
             if (region == null || region.getGuild() == null) {

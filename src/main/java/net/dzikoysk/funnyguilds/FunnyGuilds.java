@@ -18,36 +18,15 @@ import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.element.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
-import net.dzikoysk.funnyguilds.listener.BlockFlow;
-import net.dzikoysk.funnyguilds.listener.EntityDamage;
-import net.dzikoysk.funnyguilds.listener.EntityInteract;
-import net.dzikoysk.funnyguilds.listener.PlayerChat;
-import net.dzikoysk.funnyguilds.listener.PlayerDeath;
-import net.dzikoysk.funnyguilds.listener.PlayerJoin;
-import net.dzikoysk.funnyguilds.listener.PlayerLogin;
-import net.dzikoysk.funnyguilds.listener.PlayerQuit;
+import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
-import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
-import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
-import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
-import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
-import net.dzikoysk.funnyguilds.listener.region.BucketAction;
-import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
-import net.dzikoysk.funnyguilds.listener.region.EntityPlace;
-import net.dzikoysk.funnyguilds.listener.region.GuildHeartProtectionHandler;
-import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
-import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
-import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
-import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
-import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
-import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
+import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -61,14 +40,12 @@ public class FunnyGuilds extends JavaPlugin {
 
     private static FunnyGuilds funnyguilds;
 
-    private String fullVersion;
-    private String mainVersion;
-
     private final File pluginConfigurationFile  = new File(this.getDataFolder(), "config.yml");
     private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
     private final File pluginDataFolderFile     = new File(this.getDataFolder(), "data");
 
     private FunnyGuildsLogger      logger;
+    private FunnyGuildsVersion     version;
     private FunnyCommands          funnyCommands;
     private PluginConfiguration    pluginConfiguration;
     private MessageConfiguration   messageConfiguration;
@@ -90,20 +67,15 @@ public class FunnyGuilds extends JavaPlugin {
     public void onLoad() {
         funnyguilds = this;
         this.logger = new FunnyGuildsLogger(this);
-
-        DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
-        Pair<String, String> versions = descriptionChanger.extractVersion();
-
-        this.fullVersion = versions.getLeft();
-        this.mainVersion = versions.getValue();
+        this.version = new FunnyGuildsVersion(this);
 
         try {
             Class.forName("net.md_5.bungee.api.ChatColor");
         }
         catch (Exception spigotNeeded) {
-            FunnyGuilds.getInstance().getPluginLogger().error("FunnyGuilds requires spigot to work, your server seems to be using something else");
-            FunnyGuilds.getInstance().getPluginLogger().error("If you think that is not true - contact plugin developers");
-            FunnyGuilds.getInstance().getPluginLogger().error("https://github.com/FunnyGuilds/FunnyGuilds");
+            this.logger.error("FunnyGuilds requires spigot to work, your server seems to be using something else");
+            this.logger.error("If you think that is not true - contact plugin developers");
+            this.logger.error("https://github.com/FunnyGuilds/FunnyGuilds");
 
             getServer().getPluginManager().disablePlugin(this);
             this.forceDisabling = true;
@@ -129,9 +101,10 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
+        DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
         descriptionChanger.rename(pluginConfiguration.pluginName);
 
-        this.concurrencyManager = new ConcurrencyManager(pluginConfiguration.concurrencyThreads);
+        this.concurrencyManager = new ConcurrencyManager(this, pluginConfiguration.concurrencyThreads);
         this.concurrencyManager.printStatus();
 
         CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
@@ -206,10 +179,10 @@ public class FunnyGuilds extends JavaPlugin {
         this.dynamicListenerManager.reloadAll();
         this.patch();
 
-        FunnyGuildsVersion.isNewAvailable(this.getServer().getConsoleSender(), true);
+        this.version.isNewAvailable(this.getServer().getConsoleSender(), true);
         PluginHook.init();
 
-        FunnyGuilds.getInstance().getPluginLogger().info("~ Created by FunnyGuilds Team ~");
+        this.logger.info("~ Created by FunnyGuilds Team ~");
     }
 
     @Override
@@ -287,6 +260,10 @@ public class FunnyGuilds extends JavaPlugin {
         return this.logger;
     }
 
+    public FunnyGuildsVersion getVersion() {
+        return this.version;
+    }
+
     public File getPluginDataFolder() {
         return this.pluginDataFolderFile;
     }
@@ -331,14 +308,6 @@ public class FunnyGuilds extends JavaPlugin {
     public void reloadMessageConfiguration() {
         this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
         this.messageConfiguration.load();
-    }
-
-    public String getFullVersion() {
-        return this.fullVersion;
-    }
-
-    public String getMainVersion() {
-        return this.mainVersion;
     }
 
     public static FunnyGuilds getInstance() {

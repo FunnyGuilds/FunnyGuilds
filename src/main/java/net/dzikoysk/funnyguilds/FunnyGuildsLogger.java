@@ -63,7 +63,7 @@ public final class FunnyGuildsLogger {
 
         error("");
         error("Server Information:");
-        error("  FunnyGuilds: " + this.funnyGuilds.getFullVersion());
+        error("  FunnyGuilds: " + this.funnyGuilds.getVersion().getFullVersion());
         error("  Bukkit: " + Bukkit.getBukkitVersion());
         error("  Java: " + System.getProperty("java.version"));
         error("  Thread: " + Thread.currentThread());

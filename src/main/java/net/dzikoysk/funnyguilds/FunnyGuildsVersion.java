@@ -18,10 +18,20 @@ public final class FunnyGuildsVersion {
     private static final String GITHUB_URL = "https://github.com/funnyguilds/funnyguilds";
     private static final String DISCORD_URL = "https://discord.com/invite/CYvyq3u";
 
-    private FunnyGuildsVersion() {}
+    private final FunnyGuilds funnyGuilds;
+    private final String fullVersion;
+    private final String mainVersion;
 
-    public static void isNewAvailable(CommandSender sender, boolean force) {
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().updateInfo && !force) {
+    public FunnyGuildsVersion(FunnyGuilds funnyGuilds) {
+        this.funnyGuilds = funnyGuilds;
+
+        String version = funnyGuilds.getDescription().getVersion();
+        this.fullVersion = version;
+        this.mainVersion = version.substring(0, version.lastIndexOf('-'));
+    }
+
+    public void isNewAvailable(CommandSender sender, boolean force) {
+        if (!this.funnyGuilds.getPluginConfiguration().updateInfo && !force) {
             return;
         }
 
@@ -29,14 +39,14 @@ public final class FunnyGuildsVersion {
             return;
         }
 
-        FunnyGuilds.getInstance().getServer().getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
+        this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
             String latest = IOUtils.getContent(VERSION_FILE_URL);
 
             if (latest != null) {
                 String currentNightlyHash = getCurrentNightlyHash(latest);
 
                 if (StringUtils.isNotBlank(currentNightlyHash)) {
-                    if (FunnyGuilds.getInstance().getPluginConfiguration().updateNightlyInfo) {
+                    if (this.funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
                         try {
                             String ghResponse = IOUtils.getContent(GH_COMMITS_URL);
                             JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
@@ -53,23 +63,23 @@ public final class FunnyGuildsVersion {
                             }
                         }
                         catch (Throwable th) {
-                            FunnyGuilds.getInstance().getPluginLogger().update("Could not retrieve latest nightly version!");
-                            FunnyGuilds.getInstance().getPluginLogger().update(Throwables.getStackTraceAsString(th));
+                            this.funnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
+                            this.funnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
                         }
                     }
                 }
-                else if (! latest.equalsIgnoreCase(FunnyGuilds.getInstance().getFullVersion())) {
+                else if (! latest.equalsIgnoreCase(this.fullVersion)) {
                     printNewVersionAvailable(sender, latest, false);
                 }
             }
         });
     }
 
-    private static void printNewVersionAvailable(CommandSender sender, String latest, boolean isNightly) {
+    private void printNewVersionAvailable(CommandSender sender, String latest, boolean isNightly) {
         sender.sendMessage("");
         sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
         sender.sendMessage(ChatColor.GRAY + "Dostepna jest nowa wersja " + ChatColor.AQUA + "FunnyGuilds" + (isNightly ? " Nightly" : "") + ChatColor.GRAY + '!');
-        sender.sendMessage(ChatColor.GRAY + "Obecna: " + ChatColor.AQUA + FunnyGuilds.getInstance().getFullVersion());
+        sender.sendMessage(ChatColor.GRAY + "Obecna: " + ChatColor.AQUA + this.fullVersion);
         sender.sendMessage(ChatColor.GRAY + "Najnowsza: " + ChatColor.AQUA + latest);
         sender.sendMessage(ChatColor.GRAY + "GitHub: " + ChatColor.AQUA + GITHUB_URL);
         sender.sendMessage(ChatColor.GRAY + "Discord: " + ChatColor.AQUA + DISCORD_URL);
@@ -77,8 +87,8 @@ public final class FunnyGuildsVersion {
         sender.sendMessage("");
     }
 
-    private static String getCurrentNightlyHash(String latest) {
-        String remainder = StringUtils.replace(FunnyGuilds.getInstance().getFullVersion(), latest, "").trim();
+    private String getCurrentNightlyHash(String latest) {
+        String remainder = StringUtils.replace(this.fullVersion, latest, "").trim();
 
         // hyphen + short commit hash
         if (remainder.length() != 8 || ! remainder.startsWith("-")) {
@@ -88,4 +98,11 @@ public final class FunnyGuildsVersion {
         return StringUtils.replace(remainder, "-", "");
     }
 
+    public String getFullVersion() {
+        return this.fullVersion;
+    }
+
+    public String getMainVersion() {
+        return this.mainVersion;
+    }
 }

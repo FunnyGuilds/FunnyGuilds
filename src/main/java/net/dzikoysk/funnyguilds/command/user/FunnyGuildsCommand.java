@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.FunnyGuildsVersion;
 import net.dzikoysk.funnyguilds.concurrency.requests.FunnybinRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.ReloadRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -12,10 +11,16 @@ import org.bukkit.command.CommandSender;
 
 import java.util.Optional;
 
-import static net.dzikoysk.funnyguilds.command.DefaultValidation.*;
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class FunnyGuildsCommand {
+
+    private final FunnyGuilds funnyGuilds;
+
+    public FunnyGuildsCommand(final FunnyGuilds funnyGuilds) {
+        this.funnyGuilds = funnyGuilds;
+    }
 
     @FunnyCommand(
         name = "${user.funnyguilds.name}",
@@ -35,7 +40,7 @@ public final class FunnyGuildsCommand {
                 break;
             case "check":
             case "update":
-                FunnyGuildsVersion.isNewAvailable(sender, true);
+                this.funnyGuilds.getVersion().isNewAvailable(sender, true);
                 break;
             case "save-all":
                 saveAll(sender);
@@ -51,7 +56,7 @@ public final class FunnyGuildsCommand {
                 sender.sendMessage(ChatColor.GRAY + "/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)");
                 break;
             default:
-                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + FunnyGuilds.getInstance().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
+                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + this.funnyGuilds.getVersion().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
                 break;
         }
 

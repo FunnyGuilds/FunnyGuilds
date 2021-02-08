@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.BooleanSupplier;
 
 public final class PluginHook {
 
@@ -107,9 +107,9 @@ public final class PluginHook {
         });
     }
 
-    public static void tryInit(final String plugin, final Supplier<Boolean> init, final boolean notifyIfMissing) {
+    public static void tryInit(final String plugin, final BooleanSupplier init, final boolean notifyIfMissing) {
         if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
-            if (! init.get()) {
+            if (! init.getAsBoolean()) {
                 return;
             }
 
@@ -120,7 +120,7 @@ public final class PluginHook {
         }
     }
 
-    public static void tryInit(final String plugin, final Supplier<Boolean> init) {
+    public static void tryInit(final String plugin, final BooleanSupplier init) {
         tryInit(plugin, init, true);
     }
 

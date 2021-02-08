@@ -7,17 +7,18 @@ import org.bukkit.Bukkit;
 public final class FunnyTabHook {
 
     public static void initFunnyDisabler() {
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!      FUNNYTAB JEST JUZ      !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!        PRZESTARZALY         !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!                             !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!       SKASUJ GO PRZED       !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!    UZYWANIEM FUNNYGUILDS    !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!                             !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!     DO CZASU USUNIECIA      !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!     FUNNYGUILDS BEDZIE      !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
-        FunnyGuilds.getInstance().getPluginLogger().info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        final FunnyGuildsLogger logger = FunnyGuilds.getInstance().getPluginLogger();
+        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        logger.info("!!!      FUNNYTAB JEST JUZ      !!!");
+        logger.info("!!!        PRZESTARZALY         !!!");
+        logger.info("!!!                             !!!");
+        logger.info("!!!       SKASUJ GO PRZED       !!!");
+        logger.info("!!!    UZYWANIEM FUNNYGUILDS    !!!");
+        logger.info("!!!                             !!!");
+        logger.info("!!!     DO CZASU USUNIECIA      !!!");
+        logger.info("!!!     FUNNYGUILDS BEDZIE      !!!");
+        logger.info("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
+        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         
         Bukkit.getPluginManager().disablePlugin(FunnyGuilds.getInstance());
     }
