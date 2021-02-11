@@ -51,7 +51,7 @@ public class EntityExplode implements Listener {
             destroyedBlocks.removeIf(block -> {
                 Region region = RegionUtils.getAt(block.getLocation());
 
-                return region == null || region.getGuild() == null;
+                return (region == null || region.getGuild() == null) && block.getType() != Material.TNT;
             });
 
             blockSphereLocations.removeIf(location -> {
@@ -60,11 +60,6 @@ public class EntityExplode implements Listener {
                 return region == null || region.getGuild() == null;
             });
         }
-
-        destroyedBlocks.removeIf(block -> {
-            Region region = RegionUtils.getAt(block.getLocation());
-            return region != null && region.getGuild() != null && ! region.getGuild().canBeAttacked();
-        });
 
         Region region = RegionUtils.getAt(explodeLocation);
 
@@ -91,8 +86,8 @@ public class EntityExplode implements Listener {
                 return;
             }
 
-            Location protect = region.getHeart();
-            destroyedBlocks.removeIf(block -> block.getLocation().equals(protect));
+            Location guildHeartLocation = region.getHeart();
+            destroyedBlocks.removeIf(block -> block.getLocation().equals(guildHeartLocation));
             guild.setBuild(System.currentTimeMillis() + config.regionExplode * 1000L);
 
             for (User user : guild.getMembers()) {
@@ -102,6 +97,13 @@ public class EntityExplode implements Listener {
                     player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
                 }
             }
+        }
+
+        if (config.warTntProtection) {
+            destroyedBlocks.removeIf(block -> {
+                Region regionAtExplosion = RegionUtils.getAt(block.getLocation());
+                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && ! regionAtExplosion.getGuild().canBeAttacked();
+            });
         }
 
         List<Block> affectedBlocks = new ArrayList<>();
