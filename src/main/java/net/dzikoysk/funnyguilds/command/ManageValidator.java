@@ -24,4 +24,14 @@ final class ManageValidator implements Validator<CanManage, User, ValidationExce
         return true;
     }
 
+    @Override
+    public Class<CanManage> getAnnotation() {
+        return CanManage.class;
+    }
+
+    @Override
+    public Class<User> getType() {
+        return User.class;
+    }
+
 }

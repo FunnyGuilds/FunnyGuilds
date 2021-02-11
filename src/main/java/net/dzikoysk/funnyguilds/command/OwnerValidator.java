@@ -24,4 +24,14 @@ final class OwnerValidator implements Validator<IsOwner, User, ValidationExcepti
         return true;
     }
 
+    @Override
+    public Class<IsOwner> getAnnotation() {
+        return IsOwner.class;
+    }
+
+    @Override
+    public Class<User> getType() {
+        return User.class;
+    }
+
 }

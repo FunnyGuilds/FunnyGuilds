@@ -24,4 +24,14 @@ final class MemberValidator implements Validator<IsMember, User, ValidationExcep
         return true;
     }
 
+    @Override
+    public Class<IsMember> getAnnotation() {
+        return IsMember.class;
+    }
+
+    @Override
+    public Class<User> getType() {
+        return User.class;
+    }
+
 }
