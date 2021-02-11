@@ -40,20 +40,20 @@ permissions:
       funnyguilds.break: true
       funnyguilds.create: true
       funnyguilds.delete: true
-      funnyguilds.invite: true
-      funnyguilds.join: true
-      funnyguilds.leave: true
-      funnyguilds.kick: true
+      funnyguilds.deputy: true
       funnyguilds.enlarge: true
-      funnyguilds.help: true
+      funnyguilds.escape: true
+      funnyguilds.guild: true
       funnyguilds.info: true
+      funnyguilds.invite: true
+      funnyguilds.items: true
+      funnyguilds.join: true
+      funnyguilds.kick: true
+      funnyguilds.leader: true
+      funnyguilds.leave: true
+      funnyguilds.pvp: true
+      funnyguilds.ranking: true
+      funnyguilds.rankreset: true
+      funnyguilds.setbase: true
       funnyguilds.top: true
       funnyguilds.validity: true
-      funnyguilds.leader: true
-      funnyguilds.deputy: true
-      funnyguilds.ranking: true
-      funnyguilds.items: true
-      funnyguilds.escape: true
-      funnyguilds.rankreset: true
-      funnyguilds.manage: true
-      funnyguilds.guild: true
