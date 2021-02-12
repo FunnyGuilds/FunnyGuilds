@@ -583,6 +583,10 @@ public class PluginConfiguration {
     @CfgName("explode-should-affect-only-guild")
     public boolean explodeShouldAffectOnlyGuild = false;
 
+    @CfgComment("Możliwość podbijanai gildii")
+    @CfgName("war-enabled")
+    public boolean warEnabled = true;
+
     @CfgComment("Ile zyc ma gildia")
     @CfgName("war-lives")
     public int warLives = 3;

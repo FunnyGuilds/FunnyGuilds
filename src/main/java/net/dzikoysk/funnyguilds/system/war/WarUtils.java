@@ -34,6 +34,9 @@ public final class WarUtils {
                 message = messages.warAttacked;
                 message = StringUtils.replace(message, "{ATTACKER}", ((Guild) values[0]).getTag());
                 break;
+            case 5:
+                message = messages.warDisabled;
+                break;
         }
         
         player.sendMessage(message);
