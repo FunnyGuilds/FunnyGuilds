@@ -45,6 +45,11 @@ public class WarSystem {
             WarUtils.message(player, 1);
             return;
         }
+
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().warEnabled){
+            WarUtils.message(player, 5);
+            return;
+        }
         
         if (!guild.canBeAttacked()) {
             WarUtils.message(player, 2, (guild.getAttacked() + FunnyGuilds.getInstance().getPluginConfiguration().warWait) - System.currentTimeMillis());

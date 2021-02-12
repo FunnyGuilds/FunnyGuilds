@@ -428,6 +428,7 @@ public class MessageConfiguration {
     public String validityDone = "&7Waznosc gildii przedluzona do &a{DATE}&7!";
 
     @CfgComment("<------- War Messages -------> #")
+    public String warDisabled = "&cPodbijanie gildii jest wyłączone.";
     public String warHasNotGuild = "&cMusisz miec gildie, aby zaatkowac inna!";
     public String warAlly = "&cNie mozesz zaatakowac sojusznika!";
     @CfgComment("Dostepne zmienne: {TIME}")
