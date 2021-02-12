@@ -149,6 +149,7 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerLogin(), this);
         pluginManager.registerEvents(new PlayerQuit(), this);
         pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
+        pluginManager.registerEvents(new TntProtection(), this);
 
         if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
             pluginManager.registerEvents(new BlockFlow(), this);
