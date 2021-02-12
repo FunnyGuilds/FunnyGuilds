@@ -35,7 +35,7 @@ public class TntProtection implements Listener {
             return;
         }
 
-        if (config.guildTNTProtectionGlobal || config.guildTNTProtectionEnabled && region != null) {
+        if (config.guildTNTProtectionGlobal || (config.guildTNTProtectionEnabled && region != null)) {
             event.setCancelled(true);
         }
     }
