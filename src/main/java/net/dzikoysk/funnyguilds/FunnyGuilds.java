@@ -21,6 +21,7 @@ import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.*;
+import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -149,6 +150,7 @@ public class FunnyGuilds extends JavaPlugin {
         pluginManager.registerEvents(new PlayerLogin(), this);
         pluginManager.registerEvents(new PlayerQuit(), this);
         pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
+        pluginManager.registerEvents(new TntProtection(), this);
 
         if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
             pluginManager.registerEvents(new BlockFlow(), this);
