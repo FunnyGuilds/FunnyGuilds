@@ -1,12 +1,10 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildBanEvent;
 import net.dzikoysk.funnyguilds.system.ban.BanUtils;
@@ -14,8 +12,9 @@ import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 public final class BanCommand {
 
@@ -24,40 +23,16 @@ public final class BanCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+        when (args.length < 1, messages.generalNoTagGiven);
+        when (args.length < 2, messages.adminNoBanTimeGiven);
+        when(args.length < 3, messages.adminNoReasonGiven);
 
-        if (args.length < 1) {
-            sender.sendMessage(messages.generalNoTagGiven);
-            return;
-        }
-        else if (args.length < 2) {
-            sender.sendMessage(messages.adminNoBanTimeGiven);
-            return;
-        }
-        else if (args.length < 3) {
-            sender.sendMessage(messages.adminNoReasonGiven);
-            return;
-        }
-
-        Guild guild = GuildUtils.getByTag(args[0]);
-
-        if (guild == null) {
-            sender.sendMessage(messages.generalNoGuildFound);
-            return;
-        } 
-        
-        if (guild.isBanned()) {
-            sender.sendMessage(messages.adminGuildBanned);
-            return;
-        }
+        Guild guild = GuildValidation.requireGuildByTag(args[0]);
+        when (guild.isBanned(), messages.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
-
-        if (time < 1) {
-            sender.sendMessage(messages.adminTimeError);
-            return;
-        }
+        when (time < 1, messages.adminTimeError);
 
         StringBuilder reasonBuilder = new StringBuilder();
 
@@ -67,12 +42,12 @@ public final class BanCommand {
         }
         
         String reason = reasonBuilder.toString();
-        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
-        
-        if (!SimpleEventHandler.handle(new GuildBanEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, time, reason))) {
+        User admin = AdminUtils.getAdminUser(sender);
+
+        if (!SimpleEventHandler.handle(new GuildBanEvent(AdminUtils.getCause(admin), admin, guild, time, reason))) {
             return;
         }
-        
+
         BanUtils.ban(guild, time, reason);
 
         Formatter formatter = new Formatter()

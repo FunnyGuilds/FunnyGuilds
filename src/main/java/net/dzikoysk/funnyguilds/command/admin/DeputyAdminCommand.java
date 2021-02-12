@@ -1,17 +1,17 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
+import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 public final class DeputyAdminCommand {
 
@@ -20,58 +20,27 @@ public final class DeputyAdminCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        
-        if (args.length < 1) {
-            sender.sendMessage(messages.generalNoTagGiven);
-            return;
-        }
+    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+        when (args.length < 1, messages.generalNoTagGiven);
 
-        Guild guild = GuildUtils.getByTag(args[0]);
+        Guild guild = GuildValidation.requireGuildByTag(args[0]);
+        when (args.length < 2, messages.generalNoNickGiven);
         
-        if (guild == null) {
-            sender.sendMessage(messages.generalNoGuildFound);
-            return;
-        }
-        
-        if (args.length < 2) {
-            sender.sendMessage(messages.generalNoNickGiven);
+        User userToMove = UserValidation.requireUserByName(args[1]);
+        when (!guild.getMembers().contains(userToMove), messages.adminUserNotMemberOf);
+
+        User admin = AdminUtils.getAdminUser(sender);
+
+        if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(AdminUtils.getCause(admin), admin, guild, userToMove))) {
             return;
         }
         
-        User user = User.get(args[1]);
+        Formatter formatter = new Formatter().register("{PLAYER}", userToMove.getName());
 
-        if (user == null) {
-            sender.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
-
-        Player player = user.getPlayer();
-
-        if (!guild.getMembers().contains(user)) {
-            sender.sendMessage(messages.adminUserNotMemberOf);
-            return;
-        }
-        
-        User admin = (sender instanceof Player)
-                ? User.get(sender.getName())
-                : null;
-
-        if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, user))) {
-            return;
-        }
-        
-        Formatter formatter = new Formatter()
-                .register("{PLAYER}", user.getName());
-
-        if (user.isDeputy()) {
-            guild.removeDeputy(user);
+        if (userToMove.isDeputy()) {
+            guild.removeDeputy(userToMove);
             sender.sendMessage(messages.deputyRemove);
-            
-            if (player != null) {
-                player.sendMessage(messages.deputyMember);
-            }
+            userToMove.sendMessage(messages.deputyMember);
 
             String message = formatter.format(messages.deputyNoLongerMembers);
 
@@ -82,12 +51,9 @@ public final class DeputyAdminCommand {
             return;
         }
 
-        guild.addDeputy(user);
+        guild.addDeputy(userToMove);
         sender.sendMessage(messages.deputySet);
-        
-        if (player != null) {
-            player.sendMessage(messages.deputyOwner);
-        }
+        userToMove.sendMessage(messages.deputyOwner);
 
         String message = formatter.format(messages.deputyMembers);
 

@@ -136,4 +136,5 @@ public class UserUtils {
     public static boolean validateUsername(String name) {
         return USERNAME_PATTERN.matcher(name).matches();
     }
+
 }

@@ -170,6 +170,17 @@ public class User extends AbstractBasic {
         this.playerRef = new WeakReference<>(player);
     }
 
+    public boolean sendMessage(String message) {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return false;
+        }
+
+        player.sendMessage(message);
+        return true;
+    }
+
     public BossBarProvider getBossBar() {
         return this.bossBarProvider;
     }

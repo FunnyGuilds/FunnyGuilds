@@ -5,16 +5,17 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
+import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 public final class AddCommand {
 
@@ -24,70 +25,32 @@ public final class AddCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+        when (args.length < 1, messages.generalNoTagGiven);
+        when (!GuildUtils.tagExists(args[0]), messages.generalNoGuildFound);
+        when (args.length < 2, messages.generalNoNickGiven);
+        
+        User userToAdd = UserValidation.requireUserByName(args[1]);
+        when (userToAdd.hasGuild(), messages.generalUserHasGuild);
 
-        if (args.length < 1) {
-            sender.sendMessage(messages.generalNoTagGiven);
-            return;
-        }
+        Guild guild = GuildValidation.requireGuildByTag(args[0]);
+        User admin = AdminUtils.getAdminUser(sender);
 
-        if (!GuildUtils.tagExists(args[0])) {
-            sender.sendMessage(messages.generalNoGuildFound);
+        if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(AdminUtils.getCause(admin), admin, guild, userToAdd))) {
             return;
         }
         
-        if (args.length < 2) {
-            sender.sendMessage(messages.generalNoNickGiven);
-            return;
-        }
-        
-        User user = User.get(args[1]);
-
-        if (user == null) {
-            sender.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
-
-        if (user.hasGuild()) {
-            sender.sendMessage(messages.generalUserHasGuild);
-            return;
-        }
-
-        Guild guild = GuildUtils.getByTag(args[0]);
-
-        if (guild == null) {
-            sender.sendMessage(messages.generalNoGuildFound);
-            return;
-        }
-
-        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
-        if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, user))) {
-            return;
-        }
-        
-        guild.addMember(user);
-        user.setGuild(guild);
-
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(user.getName()));
+        guild.addMember(userToAdd);
+        userToAdd.setGuild(guild);
+        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(new PrefixGlobalAddPlayerRequest(userToAdd.getName()));
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", user.getName());
+                .register("{PLAYER}", userToAdd.getName());
 
-        Player player = user.getPlayer();
-        Player owner = guild.getOwner().getPlayer();
-
-        if (player != null) {
-            player.sendMessage(formatter.format(messages.joinToMember));
-        }
-
-        if (owner != null) {
-            owner.sendMessage(formatter.format(messages.joinToOwner));
-        }
-
+        userToAdd.sendMessage(formatter.format(messages.joinToMember));
+        guild.getOwner().sendMessage(formatter.format(messages.joinToOwner));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
     }
 

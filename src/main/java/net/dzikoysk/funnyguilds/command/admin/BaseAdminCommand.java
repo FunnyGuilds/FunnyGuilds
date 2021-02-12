@@ -1,14 +1,14 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.user.UserUtils;
+import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.*;
 
 public final class BaseAdminCommand {
 
@@ -17,43 +17,22 @@ public final class BaseAdminCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+        when (args.length < 1, messages.generalNoNickGiven);
         
-        if (args.length < 1) {
-            sender.sendMessage(messages.generalNoNickGiven);
-            return;
-        }
+        User userToTeleport = UserValidation.requireUserByName(args[0]);
+        when (!userToTeleport.isOnline(), messages.generalNotOnline);
+        when (!userToTeleport.hasGuild(), messages.generalPlayerHasNoGuild);
         
-        User user = UserUtils.get(args[0], true);
+        Location guildHome = userToTeleport.getGuild().getHome();
+        whenNull (guildHome, messages.adminGuildHasNoHome);
 
-        if (user == null) {
-            sender.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
-        
-        if (!user.isOnline()) {
-            sender.sendMessage(messages.generalNotOnline);
-            return;
-        }
-        
-        if (!user.hasGuild()) {
-            sender.sendMessage(messages.generalPlayerHasNoGuild);
-            return;
-        }
-        
-        Location guildHome = user.getGuild().getHome();
+        Formatter formatter = new Formatter()
+                .register("{ADMIN}", sender.getName())
+                .register("{PLAYER}", userToTeleport.getName());
 
-        if (guildHome == null) {
-            sender.sendMessage(messages.adminGuildHasNoHome);
-            return;
-        }
-        
-        Player targetPlayer = user.getPlayer();
-        targetPlayer.teleport(guildHome);
-        
-        Formatter formatter = new Formatter().register("{ADMIN}", sender.getName()).register("{PLAYER}", targetPlayer.getName());
-        targetPlayer.sendMessage(formatter.format(messages.adminTeleportedToBase));
+        userToTeleport.getPlayer().teleport(guildHome);
+        userToTeleport.sendMessage(formatter.format(messages.adminTeleportedToBase));
         sender.sendMessage(formatter.format(messages.adminTargetTeleportedToBase));
     }
 
