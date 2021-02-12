@@ -66,21 +66,6 @@ public class EntityExplode implements Listener {
         if (region != null) {
             Guild guild = region.getGuild();
 
-            if (config.guildTNTProtectionEnabled) {
-                LocalTime now = LocalTime.now();
-                LocalTime start = config.guildTNTProtectionStartTime;
-                LocalTime end = config.guildTNTProtectionEndTime;
-
-                boolean isWithinTimeframe = config.guildTNTProtectionPassingMidnight ?
-                        now.isAfter(start) || now.isBefore(end) :
-                        now.isAfter(start) && now.isBefore(end);
-
-                if (isWithinTimeframe) {
-                    event.setCancelled(true);
-                    return;
-                }
-            }
-
             if (config.warTntProtection && ! guild.canBeAttacked()) {
                 event.setCancelled(true);
                 return;

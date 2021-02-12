@@ -527,6 +527,10 @@ public class PluginConfiguration {
     @CfgName("guild-tnt-protection-enabled")
     public boolean guildTNTProtectionEnabled = false;
 
+    @CfgComment("Czy wlaczyc ochrone przed TNT na całym serwerze w podanych godzinach")
+    @CfgName("guild-tnt-protection-global")
+    public boolean guildTNTProtectionGlobal = false;
+
     @CfgComment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
     @CfgComment("Godzina w formacie HH:mm")
     @CfgName("guild-tnt-protection-start-time")
