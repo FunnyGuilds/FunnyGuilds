@@ -74,8 +74,6 @@ public class Region extends AbstractBasic {
     }
 
     public boolean isIn(Location loc) {
-        this.update();
-
         if (loc == null || this.firstCorner == null || this.secondCorner == null) {
             return false;
         }

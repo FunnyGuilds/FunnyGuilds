@@ -32,7 +32,7 @@ public final class RegionUtils {
         }
         
         for (Region region : REGION_LIST) {
-            if (region != null && region.getName() != null && region.getName().equalsIgnoreCase(name)) {
+            if (name.equalsIgnoreCase(region.getName())) {
                 return region;
             }
         }
