@@ -15,7 +15,7 @@ import java.util.Iterator;
 
 public class TntProtection implements Listener {
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onExplode(EntityExplodeEvent event) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 

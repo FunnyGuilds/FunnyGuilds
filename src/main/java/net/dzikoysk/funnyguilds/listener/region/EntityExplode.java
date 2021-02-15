@@ -30,34 +30,41 @@ public class EntityExplode implements Listener {
 
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onExplode(EntityExplodeEvent event) {
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void preNormalExplosionHandler(EntityExplodeEvent event) {
         List<Block> destroyedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        Map<Material, Double> explosiveMaterials = config.explodeMaterials;
 
-        List<Location> blockSphereLocations = SpaceUtils.sphere(
+        List<Block> blocksInSphere = SpaceUtils.sphereBlocks(
                 explodeLocation,
                 config.explodeRadius,
                 config.explodeRadius,
+                0,
                 false,
-                true,
-                0
+                true
         );
+
+        blocksInSphere.stream()
+                .filter(block -> config.allMaterialsAreExplosive || (explosiveMaterials.containsKey(block.getType())))
+                .filter(block -> ! destroyedBlocks.contains(block))
+                .forEach(destroyedBlocks::add);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void postNormalExplosionHandler(EntityExplodeEvent event) {
+        List<Block> explodedBlocks = event.blockList();
+        Location explodeLocation = event.getLocation();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         Map<Material, Double> explosiveMaterials = config.explodeMaterials;
 
         if (config.explodeShouldAffectOnlyGuild) {
-            destroyedBlocks.removeIf(block -> {
+            explodedBlocks.removeIf(block -> {
                 Region region = RegionUtils.getAt(block.getLocation());
 
                 return (region == null || region.getGuild() == null) && block.getType() != Material.TNT;
-            });
-
-            blockSphereLocations.removeIf(location -> {
-                Region region = RegionUtils.getAt(location);
-
-                return region == null || region.getGuild() == null;
             });
         }
 
@@ -72,7 +79,7 @@ public class EntityExplode implements Listener {
             }
 
             Location guildHeartLocation = region.getHeart();
-            destroyedBlocks.removeIf(block -> block.getLocation().equals(guildHeartLocation));
+            explodedBlocks.removeIf(block -> block.getLocation().equals(guildHeartLocation));
             guild.setBuild(System.currentTimeMillis() + config.regionExplode * 1000L);
 
             for (User user : guild.getMembers()) {
@@ -85,16 +92,16 @@ public class EntityExplode implements Listener {
         }
 
         if (config.warTntProtection) {
-            destroyedBlocks.removeIf(block -> {
+            explodedBlocks.removeIf(block -> {
                 Region regionAtExplosion = RegionUtils.getAt(block.getLocation());
                 return regionAtExplosion != null && regionAtExplosion.getGuild() != null && ! regionAtExplosion.getGuild().canBeAttacked();
             });
         }
 
-        List<Block> affectedBlocks = new ArrayList<>();
+        List<Block> filteredExplodedBlocks = new ArrayList<>();
 
-        for (Location blockLocation : blockSphereLocations) {
-            Material material = blockLocation.getBlock().getType();
+        for (Block explodedBlock : explodedBlocks) {
+            Material material = explodedBlock.getType();
             Double explodeChance = explosiveMaterials.get(material);
 
             if (explodeChance == null) {
@@ -106,23 +113,23 @@ public class EntityExplode implements Listener {
             }
 
             if (SpaceUtils.chance(explodeChance)) {
-                affectedBlocks.add(blockLocation.getBlock());
+                filteredExplodedBlocks.add(explodedBlock);
             }
         }
 
-        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, affectedBlocks))) {
+        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, filteredExplodedBlocks))) {
             event.setCancelled(true);
             return;
         }
 
-        for (Block affectedBlock : affectedBlocks) {
-            Material material = affectedBlock.getType();
+        for (Block explodedBlock : filteredExplodedBlocks) {
+            Material material = explodedBlock.getType();
 
             if (material == Material.WATER || material == Material.LAVA) {
-                affectedBlock.setType(Material.AIR);
+                explodedBlock.setType(Material.AIR);
             }
             else {
-                affectedBlock.breakNaturally();
+                explodedBlock.breakNaturally();
             }
         }
     }
