@@ -13,11 +13,9 @@ import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 

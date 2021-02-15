@@ -1,19 +1,16 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 

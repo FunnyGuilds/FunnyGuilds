@@ -1,14 +1,11 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaderEvent;
 import org.bukkit.command.CommandSender;
@@ -24,7 +21,7 @@ public final class LeaderAdminCommand {
         acceptsExceeded = true
     )
     public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length <1, messages.generalNoNickGiven);
+        when (args.length <1, messages.generalNoTagGiven);
         when (args.length < 2, messages.generalNoNickGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
@@ -42,7 +39,9 @@ public final class LeaderAdminCommand {
         guild.setOwner(user);
         sender.sendMessage(messages.leaderSet);
 
-        when (leaderPlayer != null, messages.leaderOwner);
+        if (leaderPlayer != null){
+            leaderPlayer.sendMessage(messages.leaderOwner);
+        }
 
         String message = messages.leaderMembers.replace("{PLAYER}", user.getName());
 

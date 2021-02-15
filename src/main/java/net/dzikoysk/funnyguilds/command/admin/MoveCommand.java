@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
@@ -21,7 +20,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -36,11 +34,10 @@ public final class MoveCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
+    public void execute(MessageConfiguration messages, PluginConfiguration config, Player player, String[] args) {
         when (!config.regionsEnabled, messages.regionsDisabled);
         when (args.length < 1, messages.generalNoTagGiven);
 
-        Player player = (Player) sender;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         Location location = player.getLocation();
@@ -59,7 +56,7 @@ public final class MoveCommand {
                 messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
         when (RegionUtils.isNear(location), messages.createIsNear);
 
-        User admin = AdminUtils.getAdminUser(sender);
+        User admin = AdminUtils.getAdminUser(player);
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
             return;
         }

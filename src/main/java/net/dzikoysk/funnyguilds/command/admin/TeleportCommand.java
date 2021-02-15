@@ -1,9 +1,7 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
@@ -21,11 +19,10 @@ public final class TeleportCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
+    public void execute(MessageConfiguration messages, PluginConfiguration config, Player player, String[] args) {
         when (!config.regionsEnabled, messages.regionsDisabled);
         when (args.length < 1, messages.generalNoTagGiven);
 
-        Player player = (Player) sender;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         Region region = guild.getRegion();
