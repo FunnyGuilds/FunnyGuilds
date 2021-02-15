@@ -430,6 +430,10 @@ public class PluginConfiguration {
     @CfgName("max-allies")
     public int maxAlliesBetweenGuilds = 15;
 
+    @CfgComment("Maksymalna liczba wojen miedzy gildiami")
+    @CfgName("max-enemies")
+    public int maxEnemiesBetweenGuilds = 15;
+
     @CfgComment("Lista nazw swiatow, na ktorych mozliwosc utworzenia gildii powinna byc zablokowana")
     @CfgName("blocked-worlds")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
@@ -948,6 +952,14 @@ public class PluginConfiguration {
 
     @CfgExclude
     public String prefixOther;
+
+    @CfgComment("Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)")
+    @CfgName("prefix-other")
+    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    public String prefixEnemies_ = "&7{TAG}&f ";
+
+    @CfgExclude
+    public String prefixEnemies;
 
     @CfgComment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
     @CfgComment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
@@ -1527,6 +1539,7 @@ public class PluginConfiguration {
         this.prefixOur = ChatUtils.colored(this.prefixOur_);
         this.prefixAllies = ChatUtils.colored(this.prefixAllies_);
         this.prefixOther = ChatUtils.colored(this.prefixOther_);
+        this.prefixEnemies = ChatUtils.colored(this.prefixEnemies_);
 
         this.ptopOnline = ChatUtils.colored(this.ptopOnline_);
         this.ptopOffline = ChatUtils.colored(this.ptopOffline_);
@@ -1584,6 +1597,7 @@ public class PluginConfiguration {
         public FunnyCommand base      = new FunnyCommand("baza");
         public FunnyCommand enlarge   = new FunnyCommand("powieksz");
         public FunnyCommand ally      = new FunnyCommand("sojusz");
+        public FunnyCommand war       = new FunnyCommand("wojna");
         public FunnyCommand items     = new FunnyCommand("przedmioty");
         public FunnyCommand escape    = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
         public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));

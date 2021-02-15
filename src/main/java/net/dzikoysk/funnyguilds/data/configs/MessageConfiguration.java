@@ -23,6 +23,7 @@ public class MessageConfiguration {
     public String gValidityNoValue = "Brak (G-VALIDITY)";
     public String gRegionSizeNoValue = "Brak (G-REGION-SIZE)";
     public String alliesNoValue = "Brak (ALLIES)";
+    public String enemiesNoValue = "Brak (ENEMIES)";
     public String gtopNoValue = "Brak (GTOP-x)";
     public String ptopNoValue = "Brak (PTOP-x)";
     public String wgRegionNoValue = "Brak (WG-REGION)";
@@ -194,7 +195,7 @@ public class MessageConfiguration {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
     
-    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}, {GUILD-ADDITIONAL-PROTECTION}")
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}, {GUILD-ADDITIONAL-PROTECTION}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
@@ -207,6 +208,7 @@ public class MessageConfiguration {
             "&7Waznosc: &c{VALIDITY}",
             "&7Czlonkowie: &7{MEMBERS}",
             "&7Sojusze: &c{ALLIES}",
+            "&7Wojny: &c{ENEMIES}",
             "&8-------------------------------");
 
     @CfgComment("<------- Top Messages -------> #")
@@ -379,6 +381,24 @@ public class MessageConfiguration {
     public String baseDontMove = "&7Nie ruszaj sie przez &c{TIME} &7sekund!";
     public String baseMove = "&cRuszyles sie, teleportacja przerwana!";
     public String baseTeleport = "&aTeleportacja&7...";
+
+    @CfgComment("<------- War Messages -------> #")
+    public String enemyCorrectUse = "&7Aby rozpoczac wojne z gildia wpisz &c/wojna [tag]";
+    public String enemySame = "&cNie mozesz rozpoczac wojny z wlasna gildia!";
+    public String enemyAlly = "&cNie mozesz rozpoczac wojny z ta gildia poniewaz jestescie sojusznikami!";
+    public String enemyAlready = "&cProwadzisz juz wojne z ta gildia!";
+    @CfgComment("Dostepne zmienne: {AMOUNT}")
+    public String enemyMaxAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe wojen miedzygildyjnych! (&c{AMOUNT}&7)";
+    @CfgComment("Dostepne zmienne: {AMOUNT}, {GUILD}, {TAG}")
+    public String enemyMaxTargetAmount = "&7Gildia {TAG} posiada juz maksymalna liczbe wojen! (&c{AMOUNT}&7)";
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String enemyDone = "&7Wypowiedziano gildii &a{GUILD}&7 wojne!";
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String enemyIDone = "&7Gildia &a{GUILD} &7wypowiedziala twojej gildii wojne!";
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String enemyEnd= "&7Zakonczono wojne z gildia &a{GUILD}&7!";
+    @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
+    public String enemyIEnd = "&7Gildia &a{GUILD} &7zakonczyla wojne z twoja gildia!";
 
     @CfgComment("<------- Ally Messages -------> #")
     public String allyHasNotInvitation = "&7Aby zaprosic gildie do sojuszy wpisz &c/sojusz [tag]";

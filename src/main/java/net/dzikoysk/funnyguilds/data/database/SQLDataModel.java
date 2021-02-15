@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -38,6 +39,7 @@ public class SQLDataModel implements DataModel {
 
         usersTable(db);
         regionsTable(db);
+        guildsTableUpDate(db);
         guildsTable(db);
 
         loadUsers(config);
@@ -200,7 +202,7 @@ public class SQLDataModel implements DataModel {
 
     public void guildsTable(Database db) {
         StringBuilder sb = new StringBuilder();
-        
+
         sb.append("create table if not exists `");
         sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
         sb.append("`(`uuid` varchar(100) not null,");
@@ -219,10 +221,11 @@ public class SQLDataModel implements DataModel {
         sb.append("`pvp` boolean not null,");
         sb.append("`attacked` bigint,");
         sb.append("`allies` text,");
+        sb.append("`enemies` text,");
         sb.append("`info` text,");
         sb.append("`deputy` text,");
         sb.append("primary key (uuid));");
-        
+
         db.executeUpdate(sb.toString());
     }
 
@@ -255,6 +258,17 @@ public class SQLDataModel implements DataModel {
         sb.append("`reason` text,");
         sb.append("primary key (uuid));");
         
+        db.executeUpdate(sb.toString());
+    }
+
+    @Deprecated // (Prosze o pomoc ;_;)
+    public void guildsTableUpDate(Database db) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("alter table `");
+        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
+        sb.append("` add column `enemies` text after `allies`");
+
         db.executeUpdate(sb.toString());
     }
     

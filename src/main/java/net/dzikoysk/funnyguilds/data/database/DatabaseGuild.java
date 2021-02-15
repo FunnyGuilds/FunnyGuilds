@@ -169,16 +169,17 @@ public class DatabaseGuild {
         String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
+        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
         sb.append("INSERT INTO `");
         sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
         sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `regions`, `members`, `allies`, ");
-        sb.append("`points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
+        sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
         sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%','%regions',");
-        sb.append("'%members%','%allies%',%points%,%born%,");
+        sb.append("'%members%','%allies%','%enemies%',%points%,%born%,");
         sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%,'%deputy%') ON DUPLICATE KEY UPDATE ");
         sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
         sb.append("`region`='%region%', `regions`='%regions%', `members`='%members%',`allies`='%allies%',");
-        sb.append("`points`=%points%,`born`=%born%,`validity`=%validity%,");
+        sb.append("`enemies`='%enemies%',`points`=%points%,`born`=%born%,`validity`=%validity%,");
         sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%,`deputy`='%deputy%'");
         
         String is = sb.toString();
@@ -192,6 +193,7 @@ public class DatabaseGuild {
         is = StringUtils.replace(is, "%regions%", "#abandoned");
         is = StringUtils.replace(is, "%members%", members);
         is = StringUtils.replace(is, "%allies%", allies);
+        is = StringUtils.replace(is, "%enemies%", enemies);
         is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));
         is = StringUtils.replace(is, "%born%", Long.toString(guild.getBorn()));
         is = StringUtils.replace(is, "%validity%", Long.toString(guild.getValidity()));
