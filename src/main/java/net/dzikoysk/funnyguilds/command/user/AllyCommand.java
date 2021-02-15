@@ -43,7 +43,7 @@ public final class AllyCommand {
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            when(invitations.size() == 0, messages.allyHasNotInvitation);
+            when (invitations.size() == 0, messages.allyHasNotInvitation);
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
             for (String msg : messages.allyInvitationList) {
@@ -55,8 +55,9 @@ public final class AllyCommand {
 
         Guild invitedGuild = GuildValidation.requireGuildByTag(args[0]);
         Player invitedOwner = invitedGuild.getOwner().getPlayer();
-        when(guild.equals(invitedGuild), messages.allySame);
-        when(guild.getAllies().contains(invitedGuild), messages.allyAlly);
+
+        when (guild.equals(invitedGuild), messages.allySame);
+        when (guild.getAllies().contains(invitedGuild), messages.allyAlly);
 
         if (guild.getEnemies().contains(invitedGuild)) {
             guild.removeEnemy(invitedGuild);
@@ -74,7 +75,7 @@ public final class AllyCommand {
             }
         }
 
-        when(guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
+        when (guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
 
         if (invitedGuild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
             Formatter formatter = new Formatter()

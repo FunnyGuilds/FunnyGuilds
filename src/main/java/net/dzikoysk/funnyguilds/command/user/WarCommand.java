@@ -31,14 +31,14 @@ public final class WarCommand {
             playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user, Guild guild, String[] args) {
-        when(args.length < 1, messages.enemyCorrectUse);
+        when (args.length < 1, messages.enemyCorrectUse);
 
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
-        when(guild.equals(enemyGuild), messages.enemySame);
-        when(guild.getAllies().contains(enemyGuild), messages.enemyAlly);
-        when(guild.getEnemies().contains(enemyGuild), messages.enemyAlready);
-        when(guild.getEnemies().size() >= config.maxEnemiesBetweenGuilds, () -> messages.enemyMaxAmount.replace("{AMOUNT}", Integer.toString(config.maxEnemiesBetweenGuilds)));
+        when (guild.equals(enemyGuild), messages.enemySame);
+        when (guild.getAllies().contains(enemyGuild), messages.enemyAlly);
+        when (guild.getEnemies().contains(enemyGuild), messages.enemyAlready);
+        when (guild.getEnemies().size() >= config.maxEnemiesBetweenGuilds, () -> messages.enemyMaxAmount.replace("{AMOUNT}", Integer.toString(config.maxEnemiesBetweenGuilds)));
 
         if (enemyGuild.getEnemies().size() >= config.maxEnemiesBetweenGuilds) {
             Formatter formatter = new Formatter()
