@@ -21,9 +21,9 @@ import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 public final class KickAdminCommand {
 
     @FunnyCommand(
-            name = "${admin.kick.name}",
-            permission = "funnyguilds.admin",
-            acceptsExceeded = true
+        name = "${admin.kick.name}",
+        permission = "funnyguilds.admin",
+        acceptsExceeded = true
     )
     public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
