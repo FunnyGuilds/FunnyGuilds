@@ -35,13 +35,10 @@ public final class LeaderAdminCommand {
             return;
         }
         
-        Player leaderPlayer = user.getPlayer();
         guild.setOwner(user);
         sender.sendMessage(messages.leaderSet);
 
-        if (leaderPlayer != null){
-            leaderPlayer.sendMessage(messages.leaderOwner);
-        }
+        user.sendMessage(messages.leaderOwner);
 
         String message = messages.leaderMembers.replace("{PLAYER}", user.getName());
 
