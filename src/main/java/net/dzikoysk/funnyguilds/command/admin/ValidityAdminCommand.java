@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -13,8 +14,11 @@ import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.checkerframework.checker.units.qual.A;
 
 import java.util.Date;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 public final class ValidityAdminCommand {
 
@@ -23,52 +27,29 @@ public final class ValidityAdminCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
+        when (args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 2, messages.adminNoValidityTimeGiven);
 
-        if (args.length < 1) {
-            sender.sendMessage(messages.generalNoTagGiven);
-            return;
-        }
-        else if (args.length < 2) {
-            sender.sendMessage(messages.adminNoValidityTimeGiven);
-            return;
-        }
-
-        Guild guild = GuildUtils.getByTag(args[0]);
-
-        if (guild == null) {
-            sender.sendMessage(messages.generalNoGuildFound);
-            return;
-        }
-
-        if (guild.isBanned()) {
-            sender.sendMessage(messages.adminGuildBanned);
-            return;
-        }
+        Guild guild = GuildValidation.requireGuildByTag(args[0]);
+        when(guild.isBanned(), messages.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
-
         if (time < 1) {
             sender.sendMessage(messages.adminTimeError);
             return;
         }
 
-        User admin = (sender instanceof Player)
-                ? User.get(sender.getName())
-                : null;
-
-        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, time))) {
+        User admin = AdminUtils.getAdminUser(sender);
+        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(AdminUtils.getCause(admin), admin, guild, time))) {
             return;
         }
-        
-        long validity = guild.getValidity();
 
+        long validity = guild.getValidity();
         if (validity == 0) {
             validity = System.currentTimeMillis();
         }
-        
+
         validity += time;
         guild.setValidity(validity);
 

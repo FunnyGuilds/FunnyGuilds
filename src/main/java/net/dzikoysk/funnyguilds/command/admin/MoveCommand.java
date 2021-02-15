@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -25,6 +26,8 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 public final class MoveCommand {
 
     @FunnyCommand(
@@ -33,27 +36,12 @@ public final class MoveCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
+        when (!config.regionsEnabled, messages.regionsDisabled);
+        when (args.length < 1, messages.generalNoTagGiven);
+
         Player player = (Player) sender;
-
-        if (!config.regionsEnabled) {
-            player.sendMessage(messages.regionsDisabled);
-            return;
-        }
-        
-        if (args.length < 1) {
-            player.sendMessage(messages.generalNoTagGiven);
-            return;
-        }
-
-        Guild guild = GuildUtils.getByTag(args[0]);
-
-        if (guild == null) {
-            player.sendMessage(messages.generalNoGuildFound);
-            return;
-        }
+        Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         Location location = player.getLocation();
 
@@ -67,18 +55,12 @@ public final class MoveCommand {
             distance = config.enlargeItems.size() * config.enlargeSize + distance;
         }
 
-        if (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location)) {
-            player.sendMessage(messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
-            return;
-        }
+        when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
+                messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
+        when (RegionUtils.isNear(location), messages.createIsNear);
 
-        if (RegionUtils.isNear(location)) {
-            player.sendMessage(messages.createIsNear);
-            return;
-        }
-
-        User admin = User.get(player);
-        if (!SimpleEventHandler.handle(new GuildMoveEvent(EventCause.ADMIN, admin, guild, location))) {
+        User admin = AdminUtils.getAdminUser(sender);
+        if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
             return;
         }
         

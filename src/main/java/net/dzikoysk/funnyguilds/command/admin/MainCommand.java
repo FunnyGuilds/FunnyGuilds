@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import org.bukkit.command.CommandSender;
 
 public final class MainCommand {
@@ -11,8 +13,8 @@ public final class MainCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender) {
-        for (String line : FunnyGuilds.getInstance().getMessageConfiguration().adminHelpList) {
+    public void execute(MessageConfiguration messages, CommandSender sender) {
+        for (String line : messages.adminHelpList) {
             sender.sendMessage(line);
         }
     }

@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -15,6 +16,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
 
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+
 public final class UnbanCommand {
 
     @FunnyCommand(
@@ -22,31 +25,14 @@ public final class UnbanCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+        when (args.length < 1, messages.generalNoTagGiven);
 
-        if (args.length < 1) {
-            sender.sendMessage(messages.generalNoTagGiven);
-            return;
-        }
-
-        Guild guild = GuildUtils.getByTag(args[0]);
-
-        if (guild == null) {
-            sender.sendMessage(messages.generalNoGuildFound);
-            return;
-        }
-
-        if (!guild.isBanned()) {
-            sender.sendMessage(messages.adminGuildNotBanned);
-            return;
-        }
+        Guild guild = GuildValidation.requireGuildByTag(args[0]);
+        when(!guild.isBanned(), messages.adminGuildNotBanned);
         
-        User admin = (sender instanceof Player)
-                ? User.get(sender.getName())
-                : null;
-
-        if (!SimpleEventHandler.handle(new GuildUnbanEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild))) {
+        User admin = AdminUtils.getAdminUser(sender);
+        if (!SimpleEventHandler.handle(new GuildUnbanEvent(AdminUtils.getCause(admin), admin, guild))) {
             return;
         }
 
