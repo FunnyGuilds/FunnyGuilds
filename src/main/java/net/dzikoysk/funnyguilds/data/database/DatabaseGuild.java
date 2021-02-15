@@ -93,6 +93,7 @@ public class DatabaseGuild {
             values[5] = RegionUtils.get(regionName);
             values[6] = members;
             values[7] = Sets.newHashSet();
+            values[8] = Sets.newHashSet();
             values[9] = born;
             values[10] = validity;
             values[11] = attacked;

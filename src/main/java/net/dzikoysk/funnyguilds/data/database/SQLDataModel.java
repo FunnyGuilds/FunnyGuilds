@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
