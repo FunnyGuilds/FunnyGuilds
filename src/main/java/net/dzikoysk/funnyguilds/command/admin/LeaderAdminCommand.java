@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaderEvent;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
