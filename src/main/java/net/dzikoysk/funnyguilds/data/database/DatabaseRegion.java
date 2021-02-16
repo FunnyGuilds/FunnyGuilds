@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
@@ -77,7 +78,7 @@ public class DatabaseRegion {
     }
 
     public PreparedStatement getInsert() {
-        SQLBuilderStatement builderPS = SQLDataModel.getBuilderInsert(SQLDataModel.tabRegions);
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabRegions);
 
         builderPS.set("name", region.getName());
         builderPS.set("center", LocationUtils.toString(region.getCenter()));

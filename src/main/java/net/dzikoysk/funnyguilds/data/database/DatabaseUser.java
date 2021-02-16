@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
+import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 
 import java.sql.PreparedStatement;
@@ -62,7 +63,7 @@ public class DatabaseUser {
 
     public void updatePoints() {
         SQLTable table = SQLDataModel.tabUsers;
-        SQLBuilderStatement builderPS = SQLDataModel.getBuilderUpdate(table, table.getSQLElement("points"));
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderUpdate(table, table.getSQLElement("points"));
 
         builderPS.set("points", user.getRank().getPoints());
         builderPS.set("uuid", user.getUUID().toString());
@@ -75,7 +76,7 @@ public class DatabaseUser {
             return null;
         }
 
-        SQLBuilderStatement builderPS = SQLDataModel.getBuilderInsert(SQLDataModel.tabUsers);
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabUsers);
 
         builderPS.set("uuid", user.getUUID().toString());
         builderPS.set("name", user.getName());

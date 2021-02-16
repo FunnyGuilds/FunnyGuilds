@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
@@ -172,7 +173,7 @@ public class DatabaseGuild {
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-        SQLBuilderStatement builderPS = SQLDataModel.getBuilderInsert(SQLDataModel.tabGuilds);
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabGuilds);
 
         builderPS.set("uuid",     guild.getUUID().toString());
         builderPS.set("name",     guild.getName());
