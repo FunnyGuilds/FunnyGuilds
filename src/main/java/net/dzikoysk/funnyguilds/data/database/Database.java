@@ -61,7 +61,7 @@ public class Database {
         }
     }
 
-    public int executeUpdate(String query) {
+    public int executeUpdate(String query, boolean ignoreFail) {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             if (statement == null) {
@@ -71,32 +71,13 @@ public class Database {
             return statement.executeUpdate();
         }
         catch (Exception ex) {
+            if (ignoreFail) {
+                return 0;
+            }
+
             FunnyGuilds.getInstance().getPluginLogger().error("Could not execute update", ex);
         }
         return 0;
-    }
-
-    public boolean columnExist(String table, String column) {
-        StringBuilder query = new StringBuilder();
-
-        query.append("show columns from `");
-        query.append(table);
-        query.append("` where field = \"");
-        query.append(column);
-        query.append("\"");
-
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query.toString())) {
-            if (statement == null) {
-                return false;
-            }
-
-            return statement.executeQuery().next();
-        }
-        catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not check column", ex);
-            return false;
-        }
     }
 
     public void shutdown() {

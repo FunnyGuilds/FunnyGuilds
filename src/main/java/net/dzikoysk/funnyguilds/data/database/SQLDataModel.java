@@ -276,7 +276,7 @@ public class SQLDataModel implements DataModel {
         sb.append(table.getPrimaryKey().getKey());
         sb.append("));");
 
-        db.executeUpdate(sb.toString());
+        db.executeUpdate(sb.toString(), false);
         tableRepair(db, table);
     }
 
@@ -292,10 +292,6 @@ public class SQLDataModel implements DataModel {
         for (int index = 0; index < table.getSqlElements().size(); index++) {
             SQLElement element = table.getSqlElements().get(index);
 
-            if (db.columnExist(table.getName(), element.getKey())) {
-                continue;
-            }
-
             sb.setLength(startChar);
             sb.append(" `").append(element.getKey()).append("` ");
             sb.append(element.getType());
@@ -303,7 +299,7 @@ public class SQLDataModel implements DataModel {
             sb.append(";");
 
             FunnyGuilds.getInstance().getPluginLogger().info("Updating Table... [Add a column " + element.getKey() + "]");
-            db.executeUpdate(sb.toString());
+            db.executeUpdate(sb.toString(), true);
         }
     }
 
