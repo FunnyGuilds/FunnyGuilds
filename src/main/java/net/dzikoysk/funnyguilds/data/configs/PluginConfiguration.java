@@ -945,6 +945,14 @@ public class PluginConfiguration {
     @CfgExclude
     public String prefixAllies;
 
+    @CfgComment("Wyglad tagu wrogiej gildii")
+    @CfgName("prefix-enemies")
+    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    public String prefixEnemies_ = "&c{TAG}&f ";
+
+    @CfgExclude
+    public String prefixEnemies;
+
     @CfgComment("Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)")
     @CfgName("prefix-other")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
@@ -952,14 +960,6 @@ public class PluginConfiguration {
 
     @CfgExclude
     public String prefixOther;
-
-    @CfgComment("Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)")
-    @CfgName("prefix-other")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String prefixEnemies_ = "&7{TAG}&f ";
-
-    @CfgExclude
-    public String prefixEnemies;
 
     @CfgComment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
     @CfgComment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
