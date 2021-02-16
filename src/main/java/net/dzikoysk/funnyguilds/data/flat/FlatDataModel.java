@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesAndEnemiesRequest;
+import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
@@ -248,7 +248,7 @@ public class FlatDataModel implements DataModel {
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new DatabaseFixAlliesAndEnemiesRequest(), new PrefixGlobalUpdateRequest());
+        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest());
 
         FunnyGuilds.getInstance().getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }

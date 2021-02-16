@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 
 import java.sql.ResultSet;
@@ -73,21 +74,14 @@ public class DatabaseRegion {
     }
 
     public String getInsert() {
-        StringBuilder sb = new StringBuilder();
-        
-        sb.append("INSERT INTO `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
-        sb.append("` (`name`, `center`, `size`, `enlarge`) VALUES (");
-        sb.append("'" + region.getName() + "',");
-        sb.append("'" + LocationUtils.toString(region.getCenter()) + "',");
-        sb.append("'" + region.getSize() + "',");
-        sb.append("'" + region.getEnlarge() + "'");
-        sb.append(") ON DUPLICATE KEY UPDATE ");
-        sb.append("`center`='" + LocationUtils.toString(region.getCenter()) + "',");
-        sb.append("`size`='" + region.getSize() + "',");
-        sb.append("`enlarge`='" + region.getEnlarge() + "';");
-        
-        return sb.toString();
+        String is = SQLDataModel.getBasicsInsert(SQLDataModel.tabRegions);
+
+        is = StringUtils.replace(is, "%name%", region.getName());
+        is = StringUtils.replace(is, "%center%", LocationUtils.toString(region.getCenter()));
+        is = StringUtils.replace(is, "%size%", String.valueOf(region.getSize()));
+        is = StringUtils.replace(is, "%enlarge%", String.valueOf(region.getEnlarge()));
+
+        return is;
     }
     
 }

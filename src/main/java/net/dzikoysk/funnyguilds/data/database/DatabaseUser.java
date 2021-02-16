@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.database;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.ResultSet;
 
@@ -82,44 +83,18 @@ public class DatabaseUser {
             return null;
         }
 
-        StringBuilder sb = new StringBuilder();
+        String is = SQLDataModel.getBasicsInsert(SQLDataModel.tabUsers);
 
-        sb.append("INSERT INTO `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-        sb.append("` (`uuid`, `name`, `points`, `kills`, `deaths`, `ban`, `reason`) VALUES (");
-        sb.append("'" + user.getUUID().toString() + "',");
-        sb.append("'" + user.getName() + "',");
-        sb.append("'" + user.getRank().getPoints() + "',");
-        sb.append("'" + user.getRank().getKills() + "',");
-        sb.append("'" + user.getRank().getDeaths() + "',");
-        sb.append("'" + (user.isBanned() ? user.getBan().getBanTime() : 0) + "',");
-        sb.append("'" + (user.isBanned() ? user.getBan().getReason() : null) + "'");
-        sb.append(") ON DUPLICATE KEY UPDATE ");
-        sb.append("`name`='" + user.getName() + "',");
-        sb.append("`points`='" + user.getRank().getPoints() + "',");
-        sb.append("`kills`='" + user.getRank().getKills() + "',");
-        sb.append("`deaths`='" + user.getRank().getDeaths() + "',");
-        sb.append("`ban`='" + (user.isBanned() ? user.getBan().getBanTime() : 0) + "',");
-        sb.append("`reason`='" + (user.isBanned() ? user.getBan().getReason() : null) + "'");
+        is = StringUtils.replace(is, "%uuid%", user.getUUID().toString());
+        is = StringUtils.replace(is, "%name%", user.getName());
+        is = StringUtils.replace(is, "%points%", String.valueOf(user.getRank().getPoints()));
+        is = StringUtils.replace(is, "%kills%", String.valueOf(user.getRank().getKills()));
+        is = StringUtils.replace(is, "%deaths%", String.valueOf(user.getRank().getDeaths()));
+        is = StringUtils.replace(is, "'%guild%'", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "NULL");
+        is = StringUtils.replace(is, "%ban%", String.valueOf((user.isBanned() ? user.getBan().getBanTime() : 0)));
+        is = StringUtils.replace(is, "%reason%", (user.isBanned() ? user.getBan().getReason() : null));
 
-        if (user.hasGuild()) {
-            sb.append("; UPDATE `");
-            sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-            sb.append("` SET `guild`='");
-            sb.append(user.getGuild().getName());
-            sb.append("' WHERE `uuid`='");
-            sb.append(user.getUUID().toString());
-            sb.append("'");
-        }
-        else {
-            sb.append("; UPDATE `");
-            sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-            sb.append("` SET `guild`=NULL WHERE `uuid`='");
-            sb.append(user.getUUID().toString());
-            sb.append("'");
-        }
-
-        return sb.toString();
+        return is;
     }
 
 }

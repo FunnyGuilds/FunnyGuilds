@@ -11,6 +11,9 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
+import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
 import java.util.HashSet;
@@ -19,9 +22,13 @@ import java.util.Set;
 public class SQLDataModel implements DataModel {
 
     private static SQLDataModel instance;
+    public static SQLTable tabUsers;
+    public static SQLTable tabRegions;
+    public static SQLTable tabGuilds;
 
     public SQLDataModel() {
         instance = this;
+        loadModels();
     }
 
     public static SQLDataModel getInstance() {
@@ -32,14 +39,56 @@ public class SQLDataModel implements DataModel {
         return new SQLDataModel();
     }
 
+    public static void loadModels() {
+        tabUsers = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
+        tabRegions = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
+        tabGuilds = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
+
+        tabUsers.add("uuid",      SQLType.VARCHAR, 36, true);
+        tabUsers.add("name",      SQLType.TEXT,    true);
+        tabUsers.add("points",    SQLType.INT,     true);
+        tabUsers.add("kills",     SQLType.INT,     true);
+        tabUsers.add("deaths",    SQLType.INT,     true);
+        tabUsers.add("guild",     SQLType.VARCHAR, 100);
+        tabUsers.add("ban",       SQLType.BIGINT);
+        tabUsers.add("reason",    SQLType.TEXT);
+        tabUsers.setPrimaryKey("uuid");
+
+        tabRegions.add("name",    SQLType.VARCHAR, 100, true);
+        tabRegions.add("center",  SQLType.TEXT,    true);
+        tabRegions.add("size",    SQLType.INT,     true);
+        tabRegions.add("enlarge", SQLType.INT,     true);
+        tabRegions.setPrimaryKey("name");
+
+        tabGuilds.add("uuid",     SQLType.VARCHAR, 100, true);
+        tabGuilds.add("name",     SQLType.TEXT,    true);
+        tabGuilds.add("tag",      SQLType.TEXT,    true);
+        tabGuilds.add("owner",    SQLType.TEXT,    true);
+        tabGuilds.add("home",     SQLType.TEXT,    true);
+        tabGuilds.add("region",   SQLType.TEXT,    true);
+        tabGuilds.add("regions",  SQLType.TEXT,    true);
+        tabGuilds.add("members",  SQLType.TEXT,    true);
+        tabGuilds.add("points",   SQLType.INT,     true);
+        tabGuilds.add("lives",    SQLType.INT,     true);
+        tabGuilds.add("ban",      SQLType.BIGINT,  true);
+        tabGuilds.add("born",     SQLType.BIGINT,  true);
+        tabGuilds.add("validity", SQLType.BIGINT,  true);
+        tabGuilds.add("pvp",      SQLType.BOOLEAN, true);
+        tabGuilds.add("attacked", SQLType.BIGINT);
+        tabGuilds.add("allies",   SQLType.TEXT);
+        tabGuilds.add("enemies",  SQLType.TEXT);
+        tabGuilds.add("info",     SQLType.TEXT);
+        tabGuilds.add("deputy",   SQLType.TEXT);
+        tabGuilds.setPrimaryKey("uuid");
+    }
+
     public void load() {
         Database db = Database.getInstance();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        usersTable(db);
-        regionsTable(db);
-        guildsTableUpDate(db);
-        guildsTable(db);
+        createTableIfNotExists(db, tabUsers);
+        createTableIfNotExists(db, tabRegions);
+        createTableIfNotExists(db, tabGuilds);
 
         loadUsers(config);
         loadRegions(config);
@@ -113,7 +162,7 @@ public class SQLDataModel implements DataModel {
             }
         });
 
-        Database.getInstance().executeQuery("SELECT `tag`, `allies` FROM `" + config.mysql.guildsTableName + "`", result -> {
+        Database.getInstance().executeQuery("SELECT `tag`, `allies`, `enemies` FROM `" + config.mysql.guildsTableName + "`", result -> {
             try {
                 while (result.next()) {
                     Guild guild = GuildUtils.getByTag(result.getString("tag"));
@@ -123,14 +172,20 @@ public class SQLDataModel implements DataModel {
                     }
 
                     String alliesList = result.getString("allies");
-
+                    String enemiesList = result.getString("enemies");
                     Set<Guild> allies = new HashSet<>();
+                    Set<Guild> enemies = new HashSet<>();
 
                     if (alliesList != null && !alliesList.equals("")) {
                         allies = GuildUtils.getGuilds(ChatUtils.fromString(alliesList));
                     }
 
+                    if (enemiesList != null && !enemiesList.equals("")) {
+                        enemies = GuildUtils.getGuilds(ChatUtils.fromString(enemiesList));
+                    }
+
                     guild.setAllies(allies);
+                    guild.setEnemies(enemies);
                 }
             }
             catch (Exception ex) {
@@ -157,7 +212,7 @@ public class SQLDataModel implements DataModel {
                     continue;
                 }
             }
-            
+
             try {
                 new DatabaseUser(user).save(db);
             }
@@ -173,7 +228,7 @@ public class SQLDataModel implements DataModel {
                         continue;
                     }
                 }
-                
+
                 try {
                     new DatabaseRegion(region).save(db);
                 }
@@ -182,14 +237,14 @@ public class SQLDataModel implements DataModel {
                 }
             }
         }
-        
+
         for (Guild guild : GuildUtils.getGuilds()) {
             if (ignoreNotChanged) {
                 if (! guild.wasChanged()) {
                     continue;
                 }
             }
-            
+
             try {
                 new DatabaseGuild(guild).save(db);
             }
@@ -199,76 +254,91 @@ public class SQLDataModel implements DataModel {
         }
     }
 
-    public void guildsTable(Database db) {
+    public void createTableIfNotExists(Database db, SQLTable table) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("create table if not exists `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-        sb.append("`(`uuid` varchar(100) not null,");
-        sb.append("`name` text not null,");
-        sb.append("`tag` text not null,");
-        sb.append("`owner` text not null,");
-        sb.append("`home` text not null,");
-        sb.append("`region` text not null,");
-        sb.append("`regions` text not null,");
-        sb.append("`members` text not null,");
-        sb.append("`points` int not null,");
-        sb.append("`lives` int not null,");
-        sb.append("`ban` bigint not null,");
-        sb.append("`born` bigint not null,");
-        sb.append("`validity` bigint not null,");
-        sb.append("`pvp` boolean not null,");
-        sb.append("`attacked` bigint,");
-        sb.append("`allies` text,");
-        sb.append("`enemies` text,");
-        sb.append("`info` text,");
-        sb.append("`deputy` text,");
-        sb.append("primary key (uuid));");
+        sb.append("create table if not exists");
+        sb.append(" `").append(table.getName()).append("` ");
+        sb.append("(");
+
+        for (SQLElement element : table.getSqlElements()) {
+            sb.append("`").append(element.getKey()).append("` ");
+            sb.append(element.getType());
+
+            if (element.isNotNull()) {
+                sb.append(" not null");
+            }
+
+            sb.append(",");
+        }
+
+        sb.append("primary key (");
+        sb.append(table.getPrimaryKey().getKey());
+        sb.append("));");
 
         db.executeUpdate(sb.toString());
+        tableRepair(db, table);
     }
 
-    public void regionsTable(Database db) {
-        StringBuilder sb = new StringBuilder();
-        
-        sb.append("create table if not exists `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
-        sb.append("`(`name` varchar(100) not null,");
-        sb.append("`center` text not null,");
-        sb.append("`size` int not null,");
-        sb.append("`enlarge` int not null,");
-        sb.append("primary key (name));");
-        
-        db.executeUpdate(sb.toString());
-    }
-
-    public void usersTable(Database db) {
-        StringBuilder sb = new StringBuilder();
-        
-        sb.append("create table if not exists `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-        sb.append("`(`uuid` varchar(36) not null,");
-        sb.append("`name` text not null,");
-        sb.append("`points` int not null,");
-        sb.append("`kills` int not null,");
-        sb.append("`deaths` int not null,");
-        sb.append("`guild` varchar(100),");
-        sb.append("`ban` bigint,");
-        sb.append("`reason` text,");
-        sb.append("primary key (uuid));");
-        
-        db.executeUpdate(sb.toString());
-    }
-
-    @Deprecated // (Prosze o pomoc ;_;)
-    public void guildsTableUpDate(Database db) {
+    public void tableRepair(Database db, SQLTable table) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("alter table `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-        sb.append("` add column `enemies` text after `allies`");
+        sb.append("alter table");
+        sb.append(" `").append(table.getName()).append("` ");
+        sb.append("add column");
 
-        db.executeUpdate(sb.toString());
+        int startChar = sb.length();
+
+        for (int index = 0; index < table.getSqlElements().size(); index++) {
+            SQLElement element = table.getSqlElements().get(index);
+
+            if (db.columnExist(table.getName(), element.getKey())) {
+                continue;
+            }
+
+            sb.setLength(startChar);
+            sb.append(" `").append(element.getKey()).append("` ");
+            sb.append(element.getType());
+            sb.append(index == 0 ? " first" : " after " + table.getSqlElements().get(index - 1).getKey());
+            sb.append(";");
+
+            FunnyGuilds.getInstance().getPluginLogger().info("Updating Table... [Add a column " + element.getKey() + "]");
+            db.executeUpdate(sb.toString());
+        }
     }
-    
+
+    public static String getBasicsInsert(SQLTable table) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("INSERT INTO `");
+        sb.append(table.getName());
+        sb.append("` (");
+
+        for (SQLElement element : table.getSqlElements()) {
+            sb.append(element.getKeyGraveAccent());
+            sb.append(",");
+        }
+
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(") VALUES (");
+
+        for (SQLElement element : table.getSqlElements()) {
+            sb.append(element.getPlaceholder());
+            sb.append(",");
+        }
+
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(") ON DUPLICATE KEY UPDATE ");
+
+        for (SQLElement element : table.getSqlElements()) {
+            sb.append(element.getKeyGraveAccent());
+            sb.append("=");
+            sb.append(element.getPlaceholder());
+            sb.append(",");
+        }
+
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
+    }
+
 }

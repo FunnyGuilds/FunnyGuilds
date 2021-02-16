@@ -41,7 +41,7 @@ public class DatabaseGuild {
             String dp = rs.getString("deputy");
             String home = rs.getString("home");
             String regionName = rs.getString("region");
-            String m = rs.getString("members");
+            String membersString = rs.getString("members");
             boolean pvp = rs.getBoolean("pvp");
             long born = rs.getLong("born");
             long validity = rs.getLong("validity");
@@ -67,8 +67,8 @@ public class DatabaseGuild {
             }
 
             Set<User> members = new HashSet<>();
-            if (m != null && !m.equals("")) {
-                members = UserUtils.getUsers(ChatUtils.fromString(m));
+            if (membersString != null && !membersString.equals("")) {
+                members = UserUtils.getUsers(ChatUtils.fromString(membersString));
             }
 
             if (born == 0) {
@@ -166,43 +166,31 @@ public class DatabaseGuild {
     }
 
     public String getInsert() {
-        StringBuilder sb = new StringBuilder();
         String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-        sb.append("INSERT INTO `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-        sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `regions`, `members`, `allies`, ");
-        sb.append("`enemies`, `points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
-        sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%','%regions',");
-        sb.append("'%members%','%allies%','%enemies%',%points%,%born%,");
-        sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%,'%deputy%') ON DUPLICATE KEY UPDATE ");
-        sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
-        sb.append("`region`='%region%', `regions`='%regions%', `members`='%members%',`allies`='%allies%',");
-        sb.append("`enemies`='%enemies%',`points`=%points%,`born`=%born%,`validity`=%validity%,");
-        sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%,`deputy`='%deputy%'");
-        
-        String is = sb.toString();
-        
-        is = StringUtils.replace(is, "%uuid%", guild.getUUID().toString());
-        is = StringUtils.replace(is, "%name%", guild.getName());
-        is = StringUtils.replace(is, "%tag%", guild.getTag());
-        is = StringUtils.replace(is, "%owner%", guild.getOwner().getName());
-        is = StringUtils.replace(is, "%home%", LocationUtils.toString(guild.getHome()));
-        is = StringUtils.replace(is, "%region%", RegionUtils.toString(guild.getRegion()));
+        String is = SQLDataModel.getBasicsInsert(SQLDataModel.tabGuilds);
+
+        is = StringUtils.replace(is, "%uuid%",     guild.getUUID().toString());
+        is = StringUtils.replace(is, "%name%",     guild.getName());
+        is = StringUtils.replace(is, "%tag%",      guild.getTag());
+        is = StringUtils.replace(is, "%owner%",    guild.getOwner().getName());
+        is = StringUtils.replace(is, "%home%",     LocationUtils.toString(guild.getHome()));
+        is = StringUtils.replace(is, "%region%",   RegionUtils.toString(guild.getRegion()));
         is = StringUtils.replace(is, "%regions%", "#abandoned");
-        is = StringUtils.replace(is, "%members%", members);
-        is = StringUtils.replace(is, "%allies%", allies);
-        is = StringUtils.replace(is, "%enemies%", enemies);
-        is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));
-        is = StringUtils.replace(is, "%born%", Long.toString(guild.getBorn()));
+        is = StringUtils.replace(is, "%members%",  members);
+        is = StringUtils.replace(is, "%deputy%",   deputies);
+        is = StringUtils.replace(is, "%allies%",   allies);
+        is = StringUtils.replace(is, "%enemies%",  enemies);
+        is = StringUtils.replace(is, "%points%",   Integer.toString(guild.getRank().getPoints()));
+        is = StringUtils.replace(is, "%lives%",    Integer.toString(guild.getLives()));
+        is = StringUtils.replace(is, "%born%",     Long.toString(guild.getBorn()));
         is = StringUtils.replace(is, "%validity%", Long.toString(guild.getValidity()));
         is = StringUtils.replace(is, "%attacked%", Long.toString(guild.getAttacked()));
-        is = StringUtils.replace(is, "%ban%", Long.toString(guild.getBan()));
-        is = StringUtils.replace(is, "%lives%", Integer.toString(guild.getLives()));
-        is = StringUtils.replace(is, "%pvp%", Boolean.toString(guild.getPvP()));
-        is = StringUtils.replace(is, "%deputy%", deputies);
+        is = StringUtils.replace(is, "%ban%",      Long.toString(guild.getBan()));
+        is = StringUtils.replace(is, "%pvp%",      Boolean.toString(guild.getPvP()));
+        is = StringUtils.replace(is, "%info%",     "");
         
         return is;
     }
