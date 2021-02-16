@@ -186,13 +186,13 @@ public class DatabaseGuild {
         builderPS.set("deputy",   deputies);
         builderPS.set("allies",   allies);
         builderPS.set("enemies",  enemies);
-        builderPS.set("points",   Integer.toString(guild.getRank().getPoints()));
-        builderPS.set("lives",    Integer.toString(guild.getLives()));
-        builderPS.set("born",     Long.toString(guild.getBorn()));
-        builderPS.set("validity", Long.toString(guild.getValidity()));
-        builderPS.set("attacked", Long.toString(guild.getAttacked()));
-        builderPS.set("ban",      Long.toString(guild.getBan()));
-        builderPS.set("pvp",      Boolean.toString(guild.getPvP()));
+        builderPS.set("points",   guild.getRank().getPoints());
+        builderPS.set("lives",    guild.getLives());
+        builderPS.set("born",     guild.getBorn());
+        builderPS.set("validity", guild.getValidity());
+        builderPS.set("attacked", guild.getAttacked());
+        builderPS.set("ban",      guild.getBan());
+        builderPS.set("pvp",      guild.getPvP());
         builderPS.set("info",     "");
         
         return builderPS.build();

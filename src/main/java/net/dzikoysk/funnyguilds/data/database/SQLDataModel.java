@@ -298,7 +298,6 @@ public class SQLDataModel implements DataModel {
             sb.append(index == 0 ? " first" : " after " + table.getSqlElements().get(index - 1).getKey());
             sb.append(";");
 
-            FunnyGuilds.getInstance().getPluginLogger().info("Updating Table... [Add a column " + element.getKey() + "]");
             db.executeUpdate(sb.toString(), true);
         }
     }

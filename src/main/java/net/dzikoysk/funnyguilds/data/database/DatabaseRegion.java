@@ -82,8 +82,8 @@ public class DatabaseRegion {
 
         builderPS.set("name", region.getName());
         builderPS.set("center", LocationUtils.toString(region.getCenter()));
-        builderPS.set("size", String.valueOf(region.getSize()));
-        builderPS.set("enlarge", String.valueOf(region.getEnlarge()));
+        builderPS.set("size", region.getSize());
+        builderPS.set("enlarge", region.getEnlarge());
 
         return builderPS.build();
     }

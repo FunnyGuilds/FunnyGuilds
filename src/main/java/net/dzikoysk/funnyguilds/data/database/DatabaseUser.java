@@ -80,11 +80,11 @@ public class DatabaseUser {
 
         builderPS.set("uuid", user.getUUID().toString());
         builderPS.set("name", user.getName());
-        builderPS.set("points", String.valueOf(user.getRank().getPoints()));
-        builderPS.set("kills", String.valueOf(user.getRank().getKills()));
-        builderPS.set("deaths", String.valueOf(user.getRank().getDeaths()));
+        builderPS.set("points", user.getRank().getPoints());
+        builderPS.set("kills", user.getRank().getKills());
+        builderPS.set("deaths", user.getRank().getDeaths());
         builderPS.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
-        builderPS.set("ban%", String.valueOf((user.isBanned() ? user.getBan().getBanTime() : 0)));
+        builderPS.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
         builderPS.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
 
         return builderPS.build();

@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.database.element;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.Database;
 
+import javax.xml.stream.Location;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -10,7 +11,7 @@ import java.util.Map;
 
 public class SQLBuilderStatement {
 
-    private final Map<String, String> placeholders = new HashMap<>();
+    private final Map<String, Object> placeholders = new HashMap<>();
     private final Map<String, Integer> keyMapIndex;
     private final String sql;
 
@@ -19,20 +20,12 @@ public class SQLBuilderStatement {
         this.keyMapIndex = keyMap;
     }
 
-    public void set(String key, String value) {
+    public void set(String key, Object value) {
         if (!keyMapIndex.containsKey(key)) {
             return;
         }
 
         placeholders.put(key, value);
-    }
-
-    public void set(String key, int value) {
-        if (!keyMapIndex.containsKey(key)) {
-            return;
-        }
-
-        placeholders.put(key, String.valueOf(value));
     }
 
     public void remove(String key) {
@@ -49,8 +42,20 @@ public class SQLBuilderStatement {
                 return null;
             }
 
-            for (Map.Entry<String, String> placeholder : placeholders.entrySet()) {
-                preparedStatement.setString(keyMapIndex.get(placeholder.getKey()), placeholder.getValue());
+            for (Map.Entry<String, Object> placeholder : placeholders.entrySet()) {
+                if (placeholder.getValue() instanceof Integer) {
+                    preparedStatement.setInt(keyMapIndex.get(placeholder.getKey()), (Integer) placeholder.getValue());
+                }
+
+                if (placeholder.getValue() instanceof Long) {
+                    preparedStatement.setLong(keyMapIndex.get(placeholder.getKey()), (Long) placeholder.getValue());
+                }
+
+                if (placeholder.getValue() instanceof Boolean) {
+                    preparedStatement.setBoolean(keyMapIndex.get(placeholder.getKey()), (Boolean) placeholder.getValue());
+                }
+
+                preparedStatement.setObject(keyMapIndex.get(placeholder.getKey()), placeholder.getValue());
             }
 
             return preparedStatement;

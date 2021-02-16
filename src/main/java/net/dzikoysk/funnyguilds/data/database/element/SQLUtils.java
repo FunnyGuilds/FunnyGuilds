@@ -14,9 +14,11 @@ public class SQLUtils {
         sb.append("INSERT INTO `").append(table.getName()).append("` (");
         sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyGraveAccent));
         sb.append(") VALUES (");
-        sb.append(Joiner.on(", ").join(table.getSqlElements(), "?"));
+        sb.append(Joiner.on(", ").join(table.getSqlElements(), value -> "?"));
         sb.append(") ON DUPLICATE KEY UPDATE ");
         sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyValuesAssignment));
+
+        System.out.println(sb.toString());
 
         return new SQLBuilderStatement(sb.toString(), table.getMapElementsKey(1));
     }
