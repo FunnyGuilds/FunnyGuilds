@@ -53,7 +53,7 @@ public class DatabaseUser {
         if (update != null) {
             for (String query : update.split(";")) {
                 try {
-                    db.executeUpdate(query, false);
+                    db.executeUpdate(query);
                 }
                 catch (Exception ex) {
                     FunnyGuilds.getInstance().getPluginLogger().error("[MySQL] Update: " + query);
@@ -75,7 +75,7 @@ public class DatabaseUser {
         update.append(user.getUUID().toString());
         update.append("'");
 
-        db.executeUpdate(update.toString(), false);
+        db.executeUpdate(update.toString());
     }
 
     public String getInsert() {

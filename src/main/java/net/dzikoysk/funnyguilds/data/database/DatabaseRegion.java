@@ -56,7 +56,7 @@ public class DatabaseRegion {
     public void save(Database db) {
         String update = getInsert();
         if (update != null) {
-            db.executeUpdate(update, false);
+            db.executeUpdate(update);
         }
     }
 
@@ -70,7 +70,7 @@ public class DatabaseRegion {
         update.append(region.getName());
         update.append("';");
         
-        db.executeUpdate(update.toString(), false);
+        db.executeUpdate(update.toString());
     }
 
     public String getInsert() {

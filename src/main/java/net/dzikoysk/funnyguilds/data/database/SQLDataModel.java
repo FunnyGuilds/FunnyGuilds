@@ -276,7 +276,7 @@ public class SQLDataModel implements DataModel {
         sb.append(table.getPrimaryKey().getKey());
         sb.append("));");
 
-        db.executeUpdate(sb.toString(), false);
+        db.executeUpdate(sb.toString());
         tableRepair(db, table);
     }
 

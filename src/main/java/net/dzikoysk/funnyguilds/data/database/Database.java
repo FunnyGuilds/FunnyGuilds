@@ -61,6 +61,21 @@ public class Database {
         }
     }
 
+    public int executeUpdate(String query) {
+        try (Connection connection = this.dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            if (statement == null) {
+                return 0;
+            }
+
+            return statement.executeUpdate();
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute update", ex);
+        }
+        return 0;
+    }
+
     public int executeUpdate(String query, boolean ignoreFail) {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -72,6 +87,7 @@ public class Database {
         }
         catch (Exception ex) {
             if (ignoreFail) {
+                FunnyGuilds.getInstance().getPluginLogger().debug("Could not execute update - ignored exception: " +  ex.getMessage());
                 return 0;
             }
 

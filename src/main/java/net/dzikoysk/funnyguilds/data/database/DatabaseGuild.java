@@ -115,7 +115,7 @@ public class DatabaseGuild {
         String update = getInsert();
         if (update != null) {
             for (String query : update.split(";")) {
-                db.executeUpdate(query, false);
+                db.executeUpdate(query);
             }
         }
     }
@@ -135,7 +135,7 @@ public class DatabaseGuild {
             update.append(guild.getUUID().toString());
             update.append("'");
 
-            db.executeUpdate(update.toString(), false);
+            db.executeUpdate(update.toString());
         } else if (guild.getName() != null) {
             Database db = Database.getInstance();
             StringBuilder update = new StringBuilder();
@@ -146,7 +146,7 @@ public class DatabaseGuild {
             update.append(guild.getName());
             update.append("'");
             
-            db.executeUpdate(update.toString(), false);
+            db.executeUpdate(update.toString());
         }
     }
 
@@ -162,7 +162,7 @@ public class DatabaseGuild {
         update.append(guild.getUUID().toString());
         update.append("'");
         
-        db.executeUpdate(update.toString(), false);
+        db.executeUpdate(update.toString());
     }
 
     public String getInsert() {
