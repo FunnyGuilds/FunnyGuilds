@@ -11,12 +11,11 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
-import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
-import net.dzikoysk.funnyguilds.data.database.element.SQLType;
+import net.dzikoysk.funnyguilds.data.database.element.*;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.panda_lang.utilities.commons.text.Joiner;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -304,29 +303,36 @@ public class SQLDataModel implements DataModel {
         }
     }
 
-    @Deprecated
-    public static String getBasicsInsert(SQLTable table) {
+    public static SQLBuilderStatement getBuilderInsert(SQLTable table) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("INSERT INTO `");
-        sb.append(table.getName());
-        sb.append("` (");
+        sb.append("INSERT INTO `").append(table.getName()).append("` (");
         sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyGraveAccent));
-
         sb.append(") VALUES (");
-        sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getPlaceholder));
-
+        sb.append(Joiner.on(", ").join(table.getSqlElements(), "?"));
         sb.append(") ON DUPLICATE KEY UPDATE ");
+        sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyValuesAssignment));
 
-        for (SQLElement element : table.getSqlElements()) {
-            sb.append(element.getKeyGraveAccent());
-            sb.append("=");
-            sb.append(element.getPlaceholder());
-            sb.append(",");
-        }
+        return new SQLBuilderStatement(sb.toString(), table.getMapElementsKey(1));
+    }
 
-        sb.deleteCharAt(sb.length() - 1);
-        return sb.toString();
+    public static SQLBuilderStatement getBuilderUpdate(SQLTable table, SQLElement element) {
+        HashMap<String, Integer> keyMap = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("UPDATE `");
+        sb.append(table.getName());
+        sb.append("` SET ");
+        sb.append(element.getKeyGraveAccent());
+        sb.append(" = ?");
+        sb.append(" WHERE ");
+        sb.append(table.getPrimaryKey().getKeyGraveAccent());
+        sb.append(" = ?");
+
+        keyMap.put(element.getKey(), 1);
+        keyMap.put(table.getPrimaryKey().getKey(), 2);
+
+        return new SQLBuilderStatement(sb.toString(), keyMap);
     }
 
 }

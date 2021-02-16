@@ -7,11 +7,12 @@ import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
-import org.apache.commons.lang3.StringUtils;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -112,12 +113,13 @@ public class DatabaseGuild {
     }
 
     public void save(Database db) {
-        String update = getInsert();
-        if (update != null) {
-            for (String query : update.split(";")) {
-                db.executeUpdate(query);
-            }
+        PreparedStatement update = getInsert();
+
+        if (update == null) {
+            return;
         }
+
+        db.executeUpdate(update);
     }
 
     public void delete() {
@@ -165,34 +167,34 @@ public class DatabaseGuild {
         db.executeUpdate(update.toString());
     }
 
-    public String getInsert() {
+    public PreparedStatement getInsert() {
         String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-        String is = SQLDataModel.getBasicsInsert(SQLDataModel.tabGuilds);
+        SQLBuilderStatement builderPS = SQLDataModel.getBuilderInsert(SQLDataModel.tabGuilds);
 
-        is = StringUtils.replace(is, "%uuid%",     guild.getUUID().toString());
-        is = StringUtils.replace(is, "%name%",     guild.getName());
-        is = StringUtils.replace(is, "%tag%",      guild.getTag());
-        is = StringUtils.replace(is, "%owner%",    guild.getOwner().getName());
-        is = StringUtils.replace(is, "%home%",     LocationUtils.toString(guild.getHome()));
-        is = StringUtils.replace(is, "%region%",   RegionUtils.toString(guild.getRegion()));
-        is = StringUtils.replace(is, "%regions%", "#abandoned");
-        is = StringUtils.replace(is, "%members%",  members);
-        is = StringUtils.replace(is, "%deputy%",   deputies);
-        is = StringUtils.replace(is, "%allies%",   allies);
-        is = StringUtils.replace(is, "%enemies%",  enemies);
-        is = StringUtils.replace(is, "%points%",   Integer.toString(guild.getRank().getPoints()));
-        is = StringUtils.replace(is, "%lives%",    Integer.toString(guild.getLives()));
-        is = StringUtils.replace(is, "%born%",     Long.toString(guild.getBorn()));
-        is = StringUtils.replace(is, "%validity%", Long.toString(guild.getValidity()));
-        is = StringUtils.replace(is, "%attacked%", Long.toString(guild.getAttacked()));
-        is = StringUtils.replace(is, "%ban%",      Long.toString(guild.getBan()));
-        is = StringUtils.replace(is, "%pvp%",      Boolean.toString(guild.getPvP()));
-        is = StringUtils.replace(is, "%info%",     "");
+        builderPS.set("uuid",     guild.getUUID().toString());
+        builderPS.set("name",     guild.getName());
+        builderPS.set("tag",      guild.getTag());
+        builderPS.set("owner",    guild.getOwner().getName());
+        builderPS.set("home",     LocationUtils.toString(guild.getHome()));
+        builderPS.set("region",   RegionUtils.toString(guild.getRegion()));
+        builderPS.set("regions", "#abandoned");
+        builderPS.set("members",  members);
+        builderPS.set("deputy",   deputies);
+        builderPS.set("allies",   allies);
+        builderPS.set("enemies",  enemies);
+        builderPS.set("points",   Integer.toString(guild.getRank().getPoints()));
+        builderPS.set("lives",    Integer.toString(guild.getLives()));
+        builderPS.set("born",     Long.toString(guild.getBorn()));
+        builderPS.set("validity", Long.toString(guild.getValidity()));
+        builderPS.set("attacked", Long.toString(guild.getAttacked()));
+        builderPS.set("ban",      Long.toString(guild.getBan()));
+        builderPS.set("pvp",      Boolean.toString(guild.getPvP()));
+        builderPS.set("info",     "");
         
-        return is;
+        return builderPS.build();
     }
 
 }

@@ -2,11 +2,12 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Location;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class DatabaseRegion {
@@ -54,10 +55,12 @@ public class DatabaseRegion {
     }
 
     public void save(Database db) {
-        String update = getInsert();
-        if (update != null) {
-            db.executeUpdate(update);
+        PreparedStatement update = getInsert();
+        if (update == null) {
+            return;
         }
+
+        db.executeUpdate(update);
     }
 
     public void delete() {
@@ -73,15 +76,15 @@ public class DatabaseRegion {
         db.executeUpdate(update.toString());
     }
 
-    public String getInsert() {
-        String is = SQLDataModel.getBasicsInsert(SQLDataModel.tabRegions);
+    public PreparedStatement getInsert() {
+        SQLBuilderStatement builderPS = SQLDataModel.getBuilderInsert(SQLDataModel.tabRegions);
 
-        is = StringUtils.replace(is, "%name%", region.getName());
-        is = StringUtils.replace(is, "%center%", LocationUtils.toString(region.getCenter()));
-        is = StringUtils.replace(is, "%size%", String.valueOf(region.getSize()));
-        is = StringUtils.replace(is, "%enlarge%", String.valueOf(region.getEnlarge()));
+        builderPS.set("name", region.getName());
+        builderPS.set("center", LocationUtils.toString(region.getCenter()));
+        builderPS.set("size", String.valueOf(region.getSize()));
+        builderPS.set("enlarge", String.valueOf(region.getEnlarge()));
 
-        return is;
+        return builderPS.build();
     }
     
 }

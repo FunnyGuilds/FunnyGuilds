@@ -13,7 +13,7 @@ public class DatabaseUpdateUserPointsRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() throws Exception {
+    public void execute() {
         DatabaseUser databaseUser = new DatabaseUser(user);
         databaseUser.updatePoints();
     }

@@ -2,9 +2,11 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import org.apache.commons.lang3.StringUtils;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class DatabaseUser {
@@ -49,52 +51,42 @@ public class DatabaseUser {
     }
 
     public void save(Database db) {
-        String update = getInsert();
-        if (update != null) {
-            for (String query : update.split(";")) {
-                try {
-                    db.executeUpdate(query);
-                }
-                catch (Exception ex) {
-                    FunnyGuilds.getInstance().getPluginLogger().error("[MySQL] Update: " + query);
-                    FunnyGuilds.getInstance().getPluginLogger().error("Could not save user to database", ex);
-                }
-            }
+        PreparedStatement update = getInsert();
+
+        if (update == null) {
+            return;
         }
+
+        db.executeUpdate(update);
     }
 
     public void updatePoints() {
-        Database db = Database.getInstance();
-        StringBuilder update = new StringBuilder();
+        SQLTable table = SQLDataModel.tabUsers;
+        SQLBuilderStatement builderPS = SQLDataModel.getBuilderUpdate(table, table.getSQLElement("points"));
 
-        update.append("UPDATE `");
-        update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-        update.append("` SET `points`='");
-        update.append(user.getRank().getPoints());
-        update.append("' WHERE `uuid`='");
-        update.append(user.getUUID().toString());
-        update.append("'");
+        builderPS.set("points", user.getRank().getPoints());
+        builderPS.set("uuid", user.getUUID().toString());
 
-        db.executeUpdate(update.toString());
+        Database.getInstance().executeUpdate(builderPS.build());
     }
 
-    public String getInsert() {
+    public PreparedStatement getInsert() {
         if (user.getUUID() == null) {
             return null;
         }
 
-        String is = SQLDataModel.getBasicsInsert(SQLDataModel.tabUsers);
+        SQLBuilderStatement builderPS = SQLDataModel.getBuilderInsert(SQLDataModel.tabUsers);
 
-        is = StringUtils.replace(is, "%uuid%", user.getUUID().toString());
-        is = StringUtils.replace(is, "%name%", user.getName());
-        is = StringUtils.replace(is, "%points%", String.valueOf(user.getRank().getPoints()));
-        is = StringUtils.replace(is, "%kills%", String.valueOf(user.getRank().getKills()));
-        is = StringUtils.replace(is, "%deaths%", String.valueOf(user.getRank().getDeaths()));
-        is = StringUtils.replace(is, "'%guild%'", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "NULL");
-        is = StringUtils.replace(is, "%ban%", String.valueOf((user.isBanned() ? user.getBan().getBanTime() : 0)));
-        is = StringUtils.replace(is, "%reason%", (user.isBanned() ? user.getBan().getReason() : null));
+        builderPS.set("uuid", user.getUUID().toString());
+        builderPS.set("name", user.getName());
+        builderPS.set("points", String.valueOf(user.getRank().getPoints()));
+        builderPS.set("kills", String.valueOf(user.getRank().getKills()));
+        builderPS.set("deaths", String.valueOf(user.getRank().getDeaths()));
+        builderPS.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
+        builderPS.set("ban%", String.valueOf((user.isBanned() ? user.getBan().getBanTime() : 0)));
+        builderPS.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
 
-        return is;
+        return builderPS.build();
     }
 
 }

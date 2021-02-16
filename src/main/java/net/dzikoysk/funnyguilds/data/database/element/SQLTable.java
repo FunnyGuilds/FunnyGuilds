@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SQLTable {
 
@@ -73,5 +74,15 @@ public class SQLTable {
         }
 
         return null;
+    }
+
+    public HashMap<String, Integer> getMapElementsKey(int startIndex) {
+        HashMap<String, Integer> elementsMap = new HashMap<>();
+
+        for (int i = startIndex; i < sqlElements.size() + startIndex; i++) {
+            elementsMap.put(sqlElements.get(i - startIndex).getKey(), i);
+        }
+
+        return elementsMap;
     }
 }

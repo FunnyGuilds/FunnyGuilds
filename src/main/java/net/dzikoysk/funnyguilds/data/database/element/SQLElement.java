@@ -22,16 +22,16 @@ public class SQLElement {
         return "`" + key + "`";
     }
 
-    public String getPlaceholder() {
-        if (type.equals(SQLType.TEXT) || type.equals(SQLType.VARCHAR)) {
-            return "'%" + key + "%'";
-        }
-
-        return "%" + key + "%";
+    public String getKeyValuesAssignment() {
+        return getKeyGraveAccent() + "=VALUES(" + getKeyGraveAccent() + ")";
     }
 
     public String getType() {
         return size != - 1 ? type.getName() + "(" + size + ")" : type.getName();
+    }
+
+    public SQLType getSQLType() {
+        return type;
     }
 
     public boolean isNotNull() {
