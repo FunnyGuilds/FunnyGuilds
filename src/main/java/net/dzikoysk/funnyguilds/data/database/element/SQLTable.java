@@ -54,4 +54,24 @@ public class SQLTable {
     public ArrayList<SQLElement> getSqlElements() {
         return sqlElements;
     }
+
+    public boolean containKey(String key) {
+        for (SQLElement element : sqlElements) {
+            if (element.getKey().equalsIgnoreCase(key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public SQLElement getSQLElement(String key) {
+        for (SQLElement element : sqlElements) {
+            if (element.getKey().equalsIgnoreCase(key)) {
+                return element;
+            }
+        }
+
+        return null;
+    }
 }

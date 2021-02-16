@@ -49,6 +49,10 @@ public class Database {
         return instance;
     }
 
+    public HikariDataSource getDataSource() {
+        return dataSource;
+    }
+
     public void executeQuery(String query, Consumer<ResultSet> action) {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);

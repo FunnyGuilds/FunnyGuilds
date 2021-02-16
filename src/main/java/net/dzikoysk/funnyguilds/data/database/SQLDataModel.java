@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import org.panda_lang.utilities.commons.text.Joiner;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -303,27 +304,18 @@ public class SQLDataModel implements DataModel {
         }
     }
 
+    @Deprecated
     public static String getBasicsInsert(SQLTable table) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("INSERT INTO `");
         sb.append(table.getName());
         sb.append("` (");
+        sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyGraveAccent));
 
-        for (SQLElement element : table.getSqlElements()) {
-            sb.append(element.getKeyGraveAccent());
-            sb.append(",");
-        }
-
-        sb.deleteCharAt(sb.length() - 1);
         sb.append(") VALUES (");
+        sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getPlaceholder));
 
-        for (SQLElement element : table.getSqlElements()) {
-            sb.append(element.getPlaceholder());
-            sb.append(",");
-        }
-
-        sb.deleteCharAt(sb.length() - 1);
         sb.append(") ON DUPLICATE KEY UPDATE ");
 
         for (SQLElement element : table.getSqlElements()) {
