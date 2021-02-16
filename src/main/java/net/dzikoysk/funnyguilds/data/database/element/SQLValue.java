@@ -14,6 +14,14 @@ public class SQLValue {
         return sqlElement;
     }
 
+    public String getKeyGraveAccent() {
+        return sqlElement.getKeyGraveAccent();
+    }
+
+    public String getKeyAssignment() {
+        return sqlElement.getKeyGraveAccent() + " = ?";
+    }
+
     public String getValue() {
         return value;
     }

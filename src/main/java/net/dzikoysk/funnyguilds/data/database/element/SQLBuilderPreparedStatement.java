@@ -28,31 +28,27 @@ public class SQLBuilderPreparedStatement {
     public PreparedStatement build() {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("INSERT INTO `?` (");
-        sb.append(Joiner.on(", ").join(sqlValues, "?"));
+        sb.append("INSERT INTO `").append(table.getName()).append("` (");
+        sb.append(Joiner.on(", ").join(sqlValues, SQLValue::getKeyGraveAccent));
         sb.append(") VALUES (");
         sb.append(Joiner.on(", ").join(sqlValues, "?"));
         sb.append(") ON DUPLICATE KEY UPDATE ");
-        sb.append(Joiner.on(", ").join(sqlValues, "? = ?"));
+        sb.append(Joiner.on(", ").join(sqlValues, SQLValue::getKeyAssignment));
 
         try {
             PreparedStatement preparedStatement = Database.getInstance().getDataSource().getConnection().prepareStatement(sb.toString());
-            int valueNumber = 1;
+            int valueNumber = 0;
 
             if (preparedStatement == null) {
                 FunnyGuilds.getInstance().getPluginLogger().error("Could not execute create preparedStatement");
                 return null;
             }
 
-            preparedStatement.setString(1, table.getName());
-
             for (SQLValue sqlValue : sqlValues) {
                 valueNumber++;
 
-                preparedStatement.setString(valueNumber, sqlValue.getSqlElement().getKeyGraveAccent());
+                preparedStatement.setString(valueNumber, sqlValue.getValue());
                 preparedStatement.setString((valueNumber + sqlValues.size()), sqlValue.getValue());
-                preparedStatement.setString((valueNumber + (sqlValues.size() * 2)), sqlValue.getSqlElement().getKeyGraveAccent());
-                preparedStatement.setString((valueNumber + (sqlValues.size() * 3)), sqlValue.getValue());
 
                 return preparedStatement;
             }
