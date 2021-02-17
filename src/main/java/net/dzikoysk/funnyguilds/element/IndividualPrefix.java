@@ -40,6 +40,11 @@ public class IndividualPrefix {
             addGuild(user.getGuild());
             team = scoreboard.getTeam(user.getGuild().getTag());
         }
+
+        if (team == null) {
+            FunnyGuilds.getInstance().getPluginLogger().debug("We're trying to add Prefix for player, but guild team is null");
+            return;
+        }
         
         if (this.getUser().hasGuild()) {
             if (this.getUser().equals(user) || this.getUser().getGuild().getMembers().contains(user)) {
@@ -81,6 +86,10 @@ public class IndividualPrefix {
             if (guild.getAllies().contains(to)) {
                 prefix = FunnyGuilds.getInstance().getPluginConfiguration().prefixAllies;
             }
+
+            if (guild.getEnemies().contains(to) || to.getEnemies().contains(guild)) {
+                prefix = FunnyGuilds.getInstance().getPluginConfiguration().prefixEnemies;
+            }
             
             team.setPrefix(replace(prefix, "{TAG}", to.getTag()));
         }
@@ -109,7 +118,7 @@ public class IndividualPrefix {
         Team team = getScoreboard().getEntryTeam(player);
         if (team != null) {
             team.removeEntry(player);
-            if (team.getName() != null) {
+            if (team.getName().isEmpty()) {
                 team.setPrefix(replace(FunnyGuilds.getInstance().getPluginConfiguration().prefixOther, "{TAG}", team.getName()));
             }
         }
@@ -121,8 +130,15 @@ public class IndividualPrefix {
         if (guild == null || guild.getTag() == null || guild.getTag().isEmpty()) {
             return;
         }
+
+        Scoreboard scoreboard = this.getUser().getCache().getScoreboard();
+
+        if (scoreboard == null) {
+            FunnyGuilds.getInstance().getPluginLogger().debug("We're trying to remove Prefix for player, but cached scoreboard is null (server has been reloaded?)");
+            return;
+        }
         
-        Team team = this.getUser().getCache().getScoreboard().getTeam(guild.getTag());
+        Team team = scoreboard.getTeam(guild.getTag());
 
         if (team != null) {
             team.unregister();
@@ -148,6 +164,7 @@ public class IndividualPrefix {
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             String our = config.prefixOur;
             String ally = config.prefixAllies;
+            String enemy = config.prefixEnemies;
             String other = config.prefixOther;
             Team team = scoreboard.getTeam(guild.getTag());
             
@@ -190,6 +207,9 @@ public class IndividualPrefix {
                 
                 if (guild.getAllies().contains(one)) {
                     team.setPrefix(replace(ally, "{TAG}", one.getTag()));
+                }
+                else if (guild.getEnemies().contains(one) || one.getEnemies().contains(guild)) {
+                    team.setPrefix(replace(enemy, "{TAG}", one.getTag()));
                 }
                 else {
                     team.setPrefix(replace(other, "{TAG}", one.getTag()));
