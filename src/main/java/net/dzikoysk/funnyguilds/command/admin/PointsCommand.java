@@ -1,18 +1,18 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 public final class PointsCommand {
 
@@ -21,22 +21,11 @@ public final class PointsCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (args.length < 1) {
-            sender.sendMessage(messages.generalNoNickGiven);
-            return;
-        }
-
-        if (args.length < 2) {
-            sender.sendMessage(messages.adminNoPointsGiven);
-            return;
-        }
+    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
+        when (args.length < 1, messages.generalNoNickGiven);
+        when (args.length < 2, messages.adminNoPointsGiven);
 
         int points;
-
         try {
             points = Integer.parseInt(args[1]);
         } catch (NumberFormatException numberFormatException) {
@@ -44,21 +33,13 @@ public final class PointsCommand {
             return;
         }
 
-        User user = User.get(args[0]);
-
-        if (user == null) {
-            sender.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
+        User user = UserValidation.requireUserByName(args[0]);
 
         Rank userRank = user.getRank();
         int change = points - userRank.getPoints();
 
-        User admin = (sender instanceof Player)
-                ? User.get(sender.getName())
-                : null;
-
-        if (!SimpleEventHandler.handle(new PointsChangeEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, userRank, admin, change))) {
+        User admin = AdminUtils.getAdminUser(sender);
+        if (!SimpleEventHandler.handle(new PointsChangeEvent(AdminUtils.getCause(admin), userRank, admin, change))) {
             return;
         }
         

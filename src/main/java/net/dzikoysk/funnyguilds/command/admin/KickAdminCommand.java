@@ -4,17 +4,19 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
-import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.commons.text.Formatter;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 public final class KickAdminCommand {
 
@@ -23,35 +25,17 @@ public final class KickAdminCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+        when (args.length < 1, messages.generalNoTagGiven);
 
-        if (args.length < 1) {
-            sender.sendMessage(messages.generalNoNickGiven);
-            return;
-        }
-
-        User user = User.get(args[0]);
-
-        if (user == null) {
-            sender.sendMessage(messages.generalNotPlayedBefore);
-            return;
-        }
-
-        if (!user.hasGuild()) {
-            sender.sendMessage(messages.generalPlayerHasNoGuild);
-            return;
-        }
-
-        if (user.isOwner()) {
-            sender.sendMessage(messages.adminGuildOwner);
-            return;
-        }
+        User user = UserValidation.requireUserByName(args[0]);
+        when (!user.hasGuild(), messages.generalPlayerHasNoGuild);
+        when (user.isOwner(), messages.adminGuildOwner);
 
         Guild guild = user.getGuild();
-        User admin = (sender instanceof Player) ? User.get(sender.getName()) : null;
+        User admin = AdminUtils.getAdminUser(sender);
 
-        if (!SimpleEventHandler.handle(new GuildMemberKickEvent(admin == null ? EventCause.CONSOLE : EventCause.ADMIN, admin, guild, user))) {
+        if (!SimpleEventHandler.handle(new GuildMemberKickEvent(AdminUtils.getCause(admin), admin, guild, user))) {
             return;
         }
 

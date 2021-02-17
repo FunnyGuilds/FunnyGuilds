@@ -1,13 +1,15 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 
 public final class TeleportCommand {
 
@@ -17,33 +19,14 @@ public final class TeleportCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(CommandSender sender, String[] args) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        Player player = (Player) sender;
+    public void execute(MessageConfiguration messages, PluginConfiguration config, Player player, String[] args) {
+        when (!config.regionsEnabled, messages.regionsDisabled);
+        when (args.length < 1, messages.generalNoTagGiven);
 
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-            player.sendMessage(messages.regionsDisabled);
-            return;
-        }
-        
-        if (args.length < 1) {
-            player.sendMessage(messages.generalNoTagGiven);
-            return;
-        }
-
-        Guild guild = GuildUtils.getByTag(args[0]);
-
-        if (guild == null) {
-            player.sendMessage(messages.generalNoGuildFound);
-            return;
-        }
+        Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         Region region = guild.getRegion();
-
-        if (region == null || region.getCenter() == null) {
-            player.sendMessage(messages.adminNoRegionFound);
-            return;
-        }
+        when(region == null || region.getCenter() == null, messages.adminNoRegionFound);
 
         player.sendMessage(messages.baseTeleport);
         player.teleport(region.getCenter());
