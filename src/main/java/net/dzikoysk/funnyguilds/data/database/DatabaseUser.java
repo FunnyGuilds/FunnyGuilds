@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class DatabaseUser {
@@ -51,29 +50,9 @@ public class DatabaseUser {
         return null;
     }
 
-    public void save(Database db) {
-        PreparedStatement update = getInsert();
-
-        if (update == null) {
-            return;
-        }
-
-        db.executeUpdate(update);
-    }
-
-    public void updatePoints() {
-        SQLTable table = SQLDataModel.tabUsers;
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderUpdate(table, table.getSQLElement("points"));
-
-        builderPS.set("points", user.getRank().getPoints());
-        builderPS.set("uuid", user.getUUID().toString());
-
-        Database.getInstance().executeUpdate(builderPS.build());
-    }
-
-    public PreparedStatement getInsert() {
+    public void save() {
         if (user.getUUID() == null) {
-            return null;
+            return;
         }
 
         SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabUsers);
@@ -86,8 +65,15 @@ public class DatabaseUser {
         builderPS.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
         builderPS.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
         builderPS.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
-
-        return builderPS.build();
+        builderPS.executeUpdate();
     }
 
+    public void updatePoints() {
+        SQLTable table = SQLDataModel.tabUsers;
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderUpdate(table, table.getSQLElement("points"));
+
+        builderPS.set("points", user.getRank().getPoints());
+        builderPS.set("uuid", user.getUUID().toString());
+        builderPS.executeUpdate();
+    }
 }

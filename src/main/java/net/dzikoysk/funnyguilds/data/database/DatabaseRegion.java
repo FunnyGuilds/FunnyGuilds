@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 public class DatabaseRegion {
@@ -55,13 +54,14 @@ public class DatabaseRegion {
         return null;
     }
 
-    public void save(Database db) {
-        PreparedStatement update = getInsert();
-        if (update == null) {
-            return;
-        }
+    public void save() {
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabRegions);
 
-        db.executeUpdate(update);
+        builderPS.set("name", region.getName());
+        builderPS.set("center", LocationUtils.toString(region.getCenter()));
+        builderPS.set("size", region.getSize());
+        builderPS.set("enlarge", region.getEnlarge());
+        builderPS.executeUpdate();
     }
 
     public void delete() {
@@ -76,16 +76,4 @@ public class DatabaseRegion {
         
         db.executeUpdate(update.toString());
     }
-
-    public PreparedStatement getInsert() {
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabRegions);
-
-        builderPS.set("name", region.getName());
-        builderPS.set("center", LocationUtils.toString(region.getCenter()));
-        builderPS.set("size", region.getSize());
-        builderPS.set("enlarge", region.getEnlarge());
-
-        return builderPS.build();
-    }
-    
 }

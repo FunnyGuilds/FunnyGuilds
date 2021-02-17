@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
@@ -30,14 +29,13 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 
         try {
             if (dataModel instanceof SQLDataModel) {
-                Database database = Database.getInstance();
                 DatabaseGuild guild = new DatabaseGuild(this.guild);
                 DatabaseRegion region = new DatabaseRegion(this.guild.getRegion());
 
-                guild.save(database);
-                region.save(database);
+                guild.save();
+                region.save();
                 Stream.concat(this.guild.getMembers().stream(), Stream.of(this.guild.getOwner()))
-                        .map(DatabaseUser::new).forEach(databaseUser -> databaseUser.save(database));
+                        .map(DatabaseUser::new).forEach(DatabaseUser::save);
             }
             else if (dataModel instanceof FlatDataModel) {
                 FlatGuild flatGuild = new FlatGuild(this.guild);

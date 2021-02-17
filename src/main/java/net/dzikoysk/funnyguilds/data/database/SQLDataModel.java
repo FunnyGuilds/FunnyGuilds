@@ -13,9 +13,7 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.element.*;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import org.panda_lang.utilities.commons.text.Joiner;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -205,7 +203,6 @@ public class SQLDataModel implements DataModel {
 
     @Override
     public void save(boolean ignoreNotChanged) {
-        Database db = Database.getInstance();
         for (User user : UserUtils.getUsers()) {
             if (ignoreNotChanged) {
                 if (! user.wasChanged()) {
@@ -214,7 +211,7 @@ public class SQLDataModel implements DataModel {
             }
 
             try {
-                new DatabaseUser(user).save(db);
+                new DatabaseUser(user).save();
             }
             catch (Exception ex) {
                 FunnyGuilds.getInstance().getPluginLogger().error("Could not save user to database", ex);
@@ -230,7 +227,7 @@ public class SQLDataModel implements DataModel {
                 }
 
                 try {
-                    new DatabaseRegion(region).save(db);
+                    new DatabaseRegion(region).save();
                 }
                 catch (Exception ex) {
                     FunnyGuilds.getInstance().getPluginLogger().error("Could not save region to database", ex);
@@ -246,7 +243,7 @@ public class SQLDataModel implements DataModel {
             }
 
             try {
-                new DatabaseGuild(guild).save(db);
+                new DatabaseGuild(guild).save();
             }
             catch (Exception ex) {
                 FunnyGuilds.getInstance().getPluginLogger().error("Could not save guild to database", ex);

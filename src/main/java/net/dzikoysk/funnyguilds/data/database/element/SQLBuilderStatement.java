@@ -32,14 +32,14 @@ public class SQLBuilderStatement {
         placeholders.remove(key);
     }
 
-    public PreparedStatement build() {
+    public void executeUpdate() {
 
         try (Connection connection = Database.getInstance().getDataSource().getConnection()) {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             if (preparedStatement == null) {
                 FunnyGuilds.getInstance().getPluginLogger().error("Could not execute create preparedStatement");
-                return null;
+                return;
             }
 
             for (Map.Entry<String, Object> placeholder : placeholders.entrySet()) {
@@ -61,12 +61,10 @@ public class SQLBuilderStatement {
                 preparedStatement.setObject(keyMapIndex.get(placeholder.getKey()), placeholder.getValue());
             }
 
-            return preparedStatement;
+            preparedStatement.executeUpdate();
         }
         catch (SQLException sqlException) {
             FunnyGuilds.getInstance().getPluginLogger().error("Could not execute create preparedStatement", sqlException);
         }
-
-        return null;
     }
 }

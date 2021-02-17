@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashSet;
 import java.util.Set;
@@ -113,7 +112,7 @@ public class DatabaseGuild {
         return null;
     }
 
-    public void save(Database db) {
+    public void save() {
         String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
@@ -140,7 +139,7 @@ public class DatabaseGuild {
         builderPS.set("pvp",      guild.getPvP());
         builderPS.set("info",     "");
 
-        db.executeUpdate(builderPS.build());
+        builderPS.executeUpdate();
     }
 
     public void delete() {

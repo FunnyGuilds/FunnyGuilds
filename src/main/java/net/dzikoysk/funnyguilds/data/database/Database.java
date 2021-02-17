@@ -79,15 +79,6 @@ public class Database {
         }
     }
 
-    public void executeUpdate(PreparedStatement statement) {
-        try {
-            statement.executeUpdate();
-        }
-        catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute update", ex);
-        }
-    }
-
     public void executeUpdate(String query, boolean ignoreFail) {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
