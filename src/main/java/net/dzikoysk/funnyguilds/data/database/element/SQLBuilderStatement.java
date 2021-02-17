@@ -43,21 +43,6 @@ public class SQLBuilderStatement {
             }
 
             for (Map.Entry<String, Object> placeholder : placeholders.entrySet()) {
-                if (placeholder.getValue() instanceof Integer) {
-                    preparedStatement.setInt(keyMapIndex.get(placeholder.getKey()), (Integer) placeholder.getValue());
-                    continue;
-                }
-
-                if (placeholder.getValue() instanceof Long) {
-                    preparedStatement.setLong(keyMapIndex.get(placeholder.getKey()), (Long) placeholder.getValue());
-                    continue;
-                }
-
-                if (placeholder.getValue() instanceof Boolean) {
-                    preparedStatement.setBoolean(keyMapIndex.get(placeholder.getKey()), (Boolean) placeholder.getValue());
-                    continue;
-                }
-
                 preparedStatement.setObject(keyMapIndex.get(placeholder.getKey()), placeholder.getValue());
             }
 
