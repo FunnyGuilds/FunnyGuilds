@@ -114,13 +114,33 @@ public class DatabaseGuild {
     }
 
     public void save(Database db) {
-        PreparedStatement update = getInsert();
+        String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
+        String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
+        String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
+        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabGuilds);
 
-        if (update == null) {
-            return;
-        }
+        builderPS.set("uuid",     guild.getUUID().toString());
+        builderPS.set("name",     guild.getName());
+        builderPS.set("tag",      guild.getTag());
+        builderPS.set("owner",    guild.getOwner().getName());
+        builderPS.set("home",     LocationUtils.toString(guild.getHome()));
+        builderPS.set("region",   RegionUtils.toString(guild.getRegion()));
+        builderPS.set("regions", "#abandoned");
+        builderPS.set("members",  members);
+        builderPS.set("deputy",   deputies);
+        builderPS.set("allies",   allies);
+        builderPS.set("enemies",  enemies);
+        builderPS.set("points",   guild.getRank().getPoints());
+        builderPS.set("lives",    guild.getLives());
+        builderPS.set("born",     guild.getBorn());
+        builderPS.set("validity", guild.getValidity());
+        builderPS.set("attacked", guild.getAttacked());
+        builderPS.set("ban",      guild.getBan());
+        builderPS.set("pvp",      guild.getPvP());
+        builderPS.set("info",     "");
 
-        db.executeUpdate(update);
+        db.executeUpdate(builderPS.build());
     }
 
     public void delete() {
@@ -167,35 +187,4 @@ public class DatabaseGuild {
         
         db.executeUpdate(update.toString());
     }
-
-    public PreparedStatement getInsert() {
-        String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
-        String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
-        String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
-        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabGuilds);
-
-        builderPS.set("uuid",     guild.getUUID().toString());
-        builderPS.set("name",     guild.getName());
-        builderPS.set("tag",      guild.getTag());
-        builderPS.set("owner",    guild.getOwner().getName());
-        builderPS.set("home",     LocationUtils.toString(guild.getHome()));
-        builderPS.set("region",   RegionUtils.toString(guild.getRegion()));
-        builderPS.set("regions", "#abandoned");
-        builderPS.set("members",  members);
-        builderPS.set("deputy",   deputies);
-        builderPS.set("allies",   allies);
-        builderPS.set("enemies",  enemies);
-        builderPS.set("points",   guild.getRank().getPoints());
-        builderPS.set("lives",    guild.getLives());
-        builderPS.set("born",     guild.getBorn());
-        builderPS.set("validity", guild.getValidity());
-        builderPS.set("attacked", guild.getAttacked());
-        builderPS.set("ban",      guild.getBan());
-        builderPS.set("pvp",      guild.getPvP());
-        builderPS.set("info",     "");
-        
-        return builderPS.build();
-    }
-
 }

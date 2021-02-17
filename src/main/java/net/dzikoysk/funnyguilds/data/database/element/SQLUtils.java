@@ -18,8 +18,6 @@ public class SQLUtils {
         sb.append(") ON DUPLICATE KEY UPDATE ");
         sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyValuesAssignment));
 
-        System.out.println(sb.toString());
-
         return new SQLBuilderStatement(sb.toString(), table.getMapElementsKey(1));
     }
 
