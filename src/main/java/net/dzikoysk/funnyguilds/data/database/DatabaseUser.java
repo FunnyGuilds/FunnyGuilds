@@ -2,6 +2,9 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
+import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 
 import java.sql.ResultSet;
@@ -47,79 +50,30 @@ public class DatabaseUser {
         return null;
     }
 
-    public void save(Database db) {
-        String update = getInsert();
-        if (update != null) {
-            for (String query : update.split(";")) {
-                try {
-                    db.executeUpdate(query);
-                }
-                catch (Exception ex) {
-                    FunnyGuilds.getInstance().getPluginLogger().error("[MySQL] Update: " + query);
-                    FunnyGuilds.getInstance().getPluginLogger().error("Could not save user to database", ex);
-                }
-            }
+    public void save() {
+        if (user.getUUID() == null) {
+            return;
         }
+
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabUsers);
+
+        builderPS.set("uuid", user.getUUID().toString());
+        builderPS.set("name", user.getName());
+        builderPS.set("points", user.getRank().getPoints());
+        builderPS.set("kills", user.getRank().getKills());
+        builderPS.set("deaths", user.getRank().getDeaths());
+        builderPS.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
+        builderPS.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
+        builderPS.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
+        builderPS.executeUpdate();
     }
 
     public void updatePoints() {
-        Database db = Database.getInstance();
-        StringBuilder update = new StringBuilder();
+        SQLTable table = SQLDataModel.tabUsers;
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderUpdate(table, table.getSQLElement("points"));
 
-        update.append("UPDATE `");
-        update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-        update.append("` SET `points`='");
-        update.append(user.getRank().getPoints());
-        update.append("' WHERE `uuid`='");
-        update.append(user.getUUID().toString());
-        update.append("'");
-
-        db.executeUpdate(update.toString());
+        builderPS.set("points", user.getRank().getPoints());
+        builderPS.set("uuid", user.getUUID().toString());
+        builderPS.executeUpdate();
     }
-
-    public String getInsert() {
-        if (user.getUUID() == null) {
-            return null;
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("INSERT INTO `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-        sb.append("` (`uuid`, `name`, `points`, `kills`, `deaths`, `ban`, `reason`) VALUES (");
-        sb.append("'" + user.getUUID().toString() + "',");
-        sb.append("'" + user.getName() + "',");
-        sb.append("'" + user.getRank().getPoints() + "',");
-        sb.append("'" + user.getRank().getKills() + "',");
-        sb.append("'" + user.getRank().getDeaths() + "',");
-        sb.append("'" + (user.isBanned() ? user.getBan().getBanTime() : 0) + "',");
-        sb.append("'" + (user.isBanned() ? user.getBan().getReason() : null) + "'");
-        sb.append(") ON DUPLICATE KEY UPDATE ");
-        sb.append("`name`='" + user.getName() + "',");
-        sb.append("`points`='" + user.getRank().getPoints() + "',");
-        sb.append("`kills`='" + user.getRank().getKills() + "',");
-        sb.append("`deaths`='" + user.getRank().getDeaths() + "',");
-        sb.append("`ban`='" + (user.isBanned() ? user.getBan().getBanTime() : 0) + "',");
-        sb.append("`reason`='" + (user.isBanned() ? user.getBan().getReason() : null) + "'");
-
-        if (user.hasGuild()) {
-            sb.append("; UPDATE `");
-            sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-            sb.append("` SET `guild`='");
-            sb.append(user.getGuild().getName());
-            sb.append("' WHERE `uuid`='");
-            sb.append(user.getUUID().toString());
-            sb.append("'");
-        }
-        else {
-            sb.append("; UPDATE `");
-            sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-            sb.append("` SET `guild`=NULL WHERE `uuid`='");
-            sb.append(user.getUUID().toString());
-            sb.append("'");
-        }
-
-        return sb.toString();
-    }
-
 }

@@ -7,10 +7,11 @@ import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.sql.ResultSet;
 import java.util.HashSet;
@@ -41,7 +42,7 @@ public class DatabaseGuild {
             String dp = rs.getString("deputy");
             String home = rs.getString("home");
             String regionName = rs.getString("region");
-            String m = rs.getString("members");
+            String membersString = rs.getString("members");
             boolean pvp = rs.getBoolean("pvp");
             long born = rs.getLong("born");
             long validity = rs.getLong("validity");
@@ -67,8 +68,8 @@ public class DatabaseGuild {
             }
 
             Set<User> members = new HashSet<>();
-            if (m != null && !m.equals("")) {
-                members = UserUtils.getUsers(ChatUtils.fromString(m));
+            if (membersString != null && !membersString.equals("")) {
+                members = UserUtils.getUsers(ChatUtils.fromString(membersString));
             }
 
             if (born == 0) {
@@ -93,6 +94,7 @@ public class DatabaseGuild {
             values[5] = RegionUtils.get(regionName);
             values[6] = members;
             values[7] = Sets.newHashSet();
+            values[8] = Sets.newHashSet();
             values[9] = born;
             values[10] = validity;
             values[11] = attacked;
@@ -110,13 +112,34 @@ public class DatabaseGuild {
         return null;
     }
 
-    public void save(Database db) {
-        String update = getInsert();
-        if (update != null) {
-            for (String query : update.split(";")) {
-                db.executeUpdate(query);
-            }
-        }
+    public void save() {
+        String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
+        String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
+        String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
+        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabGuilds);
+
+        builderPS.set("uuid",     guild.getUUID().toString());
+        builderPS.set("name",     guild.getName());
+        builderPS.set("tag",      guild.getTag());
+        builderPS.set("owner",    guild.getOwner().getName());
+        builderPS.set("home",     LocationUtils.toString(guild.getHome()));
+        builderPS.set("region",   RegionUtils.toString(guild.getRegion()));
+        builderPS.set("regions", "#abandoned");
+        builderPS.set("members",  members);
+        builderPS.set("deputy",   deputies);
+        builderPS.set("allies",   allies);
+        builderPS.set("enemies",  enemies);
+        builderPS.set("points",   guild.getRank().getPoints());
+        builderPS.set("lives",    guild.getLives());
+        builderPS.set("born",     guild.getBorn());
+        builderPS.set("validity", guild.getValidity());
+        builderPS.set("attacked", guild.getAttacked());
+        builderPS.set("ban",      guild.getBan());
+        builderPS.set("pvp",      guild.getPvP());
+        builderPS.set("info",     "");
+
+        builderPS.executeUpdate();
     }
 
     public void delete() {
@@ -133,7 +156,7 @@ public class DatabaseGuild {
             update.append("` WHERE `uuid`='");
             update.append(guild.getUUID().toString());
             update.append("'");
-            
+
             db.executeUpdate(update.toString());
         } else if (guild.getName() != null) {
             Database db = Database.getInstance();
@@ -163,45 +186,4 @@ public class DatabaseGuild {
         
         db.executeUpdate(update.toString());
     }
-
-    public String getInsert() {
-        StringBuilder sb = new StringBuilder();
-        String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
-        String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
-        String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
-        sb.append("INSERT INTO `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-        sb.append("` (`uuid`, `name`, `tag`, `owner`, `home`, `region`, `regions`, `members`, `allies`, ");
-        sb.append("`points`, `born`, `validity`, `attacked`, `ban`, `lives`, `pvp`, `deputy`");
-        sb.append(") VALUES ('%uuid%','%name%','%tag%','%owner%','%home%','%region%','%regions',");
-        sb.append("'%members%','%allies%',%points%,%born%,");
-        sb.append("%validity%,%attacked%,%ban%,%lives%,%pvp%,'%deputy%') ON DUPLICATE KEY UPDATE ");
-        sb.append("`uuid`='%uuid%',`name`='%name%',`tag`='%tag%',`owner`='%owner%',`home`='%home%',");
-        sb.append("`region`='%region%', `regions`='%regions%', `members`='%members%',`allies`='%allies%',");
-        sb.append("`points`=%points%,`born`=%born%,`validity`=%validity%,");
-        sb.append("`attacked`=%attacked%,`ban`=%ban%,`lives`=%lives%,`pvp`=%pvp%,`deputy`='%deputy%'");
-        
-        String is = sb.toString();
-        
-        is = StringUtils.replace(is, "%uuid%", guild.getUUID().toString());
-        is = StringUtils.replace(is, "%name%", guild.getName());
-        is = StringUtils.replace(is, "%tag%", guild.getTag());
-        is = StringUtils.replace(is, "%owner%", guild.getOwner().getName());
-        is = StringUtils.replace(is, "%home%", LocationUtils.toString(guild.getHome()));
-        is = StringUtils.replace(is, "%region%", RegionUtils.toString(guild.getRegion()));
-        is = StringUtils.replace(is, "%regions%", "#abandoned");
-        is = StringUtils.replace(is, "%members%", members);
-        is = StringUtils.replace(is, "%allies%", allies);
-        is = StringUtils.replace(is, "%points%", Integer.toString(guild.getRank().getPoints()));
-        is = StringUtils.replace(is, "%born%", Long.toString(guild.getBorn()));
-        is = StringUtils.replace(is, "%validity%", Long.toString(guild.getValidity()));
-        is = StringUtils.replace(is, "%attacked%", Long.toString(guild.getAttacked()));
-        is = StringUtils.replace(is, "%ban%", Long.toString(guild.getBan()));
-        is = StringUtils.replace(is, "%lives%", Integer.toString(guild.getLives()));
-        is = StringUtils.replace(is, "%pvp%", Boolean.toString(guild.getPvP()));
-        is = StringUtils.replace(is, "%deputy%", deputies);
-        
-        return is;
-    }
-
 }

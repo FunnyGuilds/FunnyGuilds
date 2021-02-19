@@ -50,7 +50,8 @@ public final class CommandsConfiguration {
                 .command("rank-reset", commands.rankReset, new RankResetCommand())
                 .command("set-base", commands.setbase, new SetBaseCommand())
                 .command("top", commands.top, new TopCommand())
-                .command("validity", commands.validity, new ValidityCommand());
+                .command("validity", commands.validity, new ValidityCommand())
+                .command("war", commands.war, new WarCommand());
 
         CommandComponents adminCommands = new CommandComponents("admin")
                 .command("add", commands.admin.add, new AddCommand())

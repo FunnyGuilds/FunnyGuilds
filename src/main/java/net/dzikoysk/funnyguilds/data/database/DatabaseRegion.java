@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
@@ -52,11 +54,14 @@ public class DatabaseRegion {
         return null;
     }
 
-    public void save(Database db) {
-        String update = getInsert();
-        if (update != null) {
-            db.executeUpdate(update);
-        }
+    public void save() {
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabRegions);
+
+        builderPS.set("name", region.getName());
+        builderPS.set("center", LocationUtils.toString(region.getCenter()));
+        builderPS.set("size", region.getSize());
+        builderPS.set("enlarge", region.getEnlarge());
+        builderPS.executeUpdate();
     }
 
     public void delete() {
@@ -71,23 +76,4 @@ public class DatabaseRegion {
         
         db.executeUpdate(update.toString());
     }
-
-    public String getInsert() {
-        StringBuilder sb = new StringBuilder();
-        
-        sb.append("INSERT INTO `");
-        sb.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
-        sb.append("` (`name`, `center`, `size`, `enlarge`) VALUES (");
-        sb.append("'" + region.getName() + "',");
-        sb.append("'" + LocationUtils.toString(region.getCenter()) + "',");
-        sb.append("'" + region.getSize() + "',");
-        sb.append("'" + region.getEnlarge() + "'");
-        sb.append(") ON DUPLICATE KEY UPDATE ");
-        sb.append("`center`='" + LocationUtils.toString(region.getCenter()) + "',");
-        sb.append("`size`='" + region.getSize() + "',");
-        sb.append("`enlarge`='" + region.getEnlarge() + "';");
-        
-        return sb.toString();
-    }
-    
 }

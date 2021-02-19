@@ -24,5 +24,4 @@ public class DatabaseFixAlliesRequest extends DefaultConcurrencyRequest {
             ally.addAlly(guild);
         }
     }
-
 }

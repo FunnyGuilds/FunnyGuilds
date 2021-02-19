@@ -72,6 +72,10 @@ public class GuildUtils {
             ally.removeAlly(guild);
         }
 
+        for (Guild globalGuild : GuildUtils.getGuilds()) {
+            globalGuild.removeEnemy(guild);
+        }
+
         if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) FunnyGuilds.getInstance().getDataModel());
             dataModel.getGuildFile(guild).delete();

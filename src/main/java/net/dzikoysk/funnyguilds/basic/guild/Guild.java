@@ -30,6 +30,7 @@ public class Guild extends AbstractBasic {
     private Set<User>  members;
     private Set<User>  deputies;
     private Set<Guild> allies;
+    private Set<Guild> enemies;
     private Location   enderCrystal;
     private boolean    pvp;
     private long       born;
@@ -49,6 +50,7 @@ public class Guild extends AbstractBasic {
         this.members = ConcurrentHashMap.newKeySet();
         this.deputies = ConcurrentHashMap.newKeySet();
         this.allies = ConcurrentHashMap.newKeySet();
+        this.enemies = ConcurrentHashMap.newKeySet();
         this.alliedFFGuilds = ConcurrentHashMap.newKeySet();
     }
 
@@ -91,6 +93,15 @@ public class Guild extends AbstractBasic {
         this.allies.add(guild);
     }
 
+    public void addEnemy(Guild guild) {
+        if (this.enemies.contains(guild)) {
+            return;
+        }
+
+        this.enemies.add(guild);
+        this.markChanged();
+    }
+
     public void deserializationUpdate() {
         this.owner.setGuild(this);
         UserUtils.setGuild(this.members, this);
@@ -110,6 +121,11 @@ public class Guild extends AbstractBasic {
 
     public void removeAlly(Guild guild) {
         this.allies.remove(guild);
+        this.markChanged();
+    }
+
+    public void removeEnemy(Guild guild) {
+        this.enemies.remove(guild);
         this.markChanged();
     }
 
@@ -203,6 +219,11 @@ public class Guild extends AbstractBasic {
 
     public void setAllies(Set<Guild> guilds) {
         this.allies = guilds;
+        this.markChanged();
+    }
+
+    public void setEnemies(Set<Guild> guilds) {
+        this.enemies = guilds;
         this.markChanged();
     }
 
@@ -346,6 +367,10 @@ public class Guild extends AbstractBasic {
 
     public Set<Guild> getAllies() {
         return this.allies;
+    }
+
+    public Set<Guild> getEnemies() {
+        return enemies;
     }
 
     public boolean getPvP() {

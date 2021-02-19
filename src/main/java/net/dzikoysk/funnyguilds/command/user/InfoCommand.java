@@ -87,6 +87,15 @@ public final class InfoCommand {
                 messageLine = StringUtils.replace(messageLine, "{ALLIES}", messages.alliesNoValue);
                 messageLine = StringUtils.replace(messageLine, "{ALLIES-TAGS}", messages.alliesNoValue);
             }
+
+            if (!guild.getEnemies().isEmpty()) {
+                messageLine = StringUtils.replace(messageLine, "{ENEMIES}", ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), true));
+                messageLine = StringUtils.replace(messageLine, "{ENEMIES-TAGS}", ChatUtils.toString(GuildUtils.getTags(guild.getEnemies()), true));
+            }
+            else {
+                messageLine = StringUtils.replace(messageLine, "{ENEMIES}", messages.enemiesNoValue);
+                messageLine = StringUtils.replace(messageLine, "{ENEMIES-TAGS}", messages.enemiesNoValue);
+            }
             
             if (messageLine.contains("<online>")) {
                 String color = ChatColor.getLastColors(messageLine.split("<online>")[0]);
