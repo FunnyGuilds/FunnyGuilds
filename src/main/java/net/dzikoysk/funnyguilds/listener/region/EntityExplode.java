@@ -128,6 +128,11 @@ public class EntityExplode implements Listener {
         List<Block> filteredExplodedBlocks = new ArrayList<>();
 
         for (Block explodedBlock : explodedBlocks) {
+            if (explodedBlock.getType() == Material.TNT) {
+                // We want to preserve TNT chain explosions, see GH-1414.
+                continue;
+            }
+
             Material material = explodedBlock.getType();
             Double explodeChance = explosiveMaterials.get(material);
 
