@@ -13,25 +13,28 @@ public class PlayerQuit implements Listener {
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {
-        quit(event.getPlayer());
+        handleQuit(event.getPlayer());
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
-        quit(event.getPlayer());
+        handleQuit(event.getPlayer());
     }
 
-    private void quit(Player player) {
+    private void handleQuit(Player player) {
         User user = User.get(player);
 
-        UserCache cache = user.getCache();
-        cache.setIndividualPrefix(null);
-        cache.setScoreboard(null);
-        cache.setDummy(null);
-        cache.clearDamage();
+        if (user != null) {
+            UserCache cache = user.getCache();
+            cache.setIndividualPrefix(null);
+            cache.setScoreboard(null);
+            cache.setDummy(null);
+            cache.clearDamage();
+
+            user.getBossBar().removeNotification();
+        }
 
         AbstractTablist.removeTablist(player);
-        user.getBossBar().removeNotification();
     }
 
 }
