@@ -65,15 +65,9 @@ public class DatabaseRegion {
     }
 
     public void delete() {
-        Database db = Database.getInstance();
-        StringBuilder update = new StringBuilder();
-        
-        update.append("DELETE FROM `");
-        update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
-        update.append("` WHERE `name`='");
-        update.append(region.getName());
-        update.append("';");
-        
-        db.executeUpdate(update.toString());
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderDelete(SQLDataModel.tabRegions);
+
+        builderPS.set("name", region.getName());
+        builderPS.executeUpdate();
     }
 }

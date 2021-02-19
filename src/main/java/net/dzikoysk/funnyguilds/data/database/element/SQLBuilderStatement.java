@@ -17,10 +17,22 @@ public class SQLBuilderStatement {
 
     public SQLBuilderStatement(String sql, Map<String, Integer> keyMap) {
         this.sql = sql;
+
+        for (Map.Entry<String, Integer> entry : keyMap.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(entry.getKey().toLowerCase())) {
+                continue;
+            }
+
+            keyMap.put(entry.getKey().toLowerCase(), entry.getValue());
+            keyMap.remove(entry.getKey());
+        }
+
         this.keyMapIndex = keyMap;
     }
 
     public void set(String key, Object value) {
+        key = key.toLowerCase();
+
         if (!keyMapIndex.containsKey(key)) {
             return;
         }
