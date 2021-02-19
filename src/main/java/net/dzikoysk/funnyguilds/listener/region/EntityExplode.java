@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -14,13 +15,14 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.SpaceUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +58,9 @@ public class EntityExplode implements Listener {
     public void postNormalExplosionHandler(EntityExplodeEvent event) {
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
+        Entity explosionEntity = event.getEntity();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
         Map<Material, Double> explosiveMaterials = config.explodeMaterials;
 
@@ -75,6 +79,17 @@ public class EntityExplode implements Listener {
 
             if (config.warTntProtection && ! guild.canBeAttacked()) {
                 event.setCancelled(true);
+
+                if (explosionEntity instanceof TNTPrimed) {
+                    TNTPrimed entityTnt = (TNTPrimed) explosionEntity;
+                    Entity explosionSource = entityTnt.getSource();
+
+                    if (explosionSource instanceof Player) {
+                        Player explosionPlayer = (Player) explosionSource;
+                        explosionPlayer.sendMessage(messages.regionExplosionHasProtection);
+                    }
+                }
+
                 return;
             }
 
@@ -92,10 +107,22 @@ public class EntityExplode implements Listener {
         }
 
         if (config.warTntProtection) {
-            explodedBlocks.removeIf(block -> {
+            boolean anyRemoved = explodedBlocks.removeIf(block -> {
                 Region regionAtExplosion = RegionUtils.getAt(block.getLocation());
                 return regionAtExplosion != null && regionAtExplosion.getGuild() != null && ! regionAtExplosion.getGuild().canBeAttacked();
             });
+
+            if (anyRemoved) {
+                if (explosionEntity instanceof TNTPrimed) {
+                    TNTPrimed entityTnt = (TNTPrimed) explosionEntity;
+                    Entity explosionSource = entityTnt.getSource();
+
+                    if (explosionSource instanceof Player) {
+                        Player explosionPlayer = (Player) explosionSource;
+                        explosionPlayer.sendMessage(messages.regionExplosionHasProtection);
+                    }
+                }
+            }
         }
 
         List<Block> filteredExplodedBlocks = new ArrayList<>();
