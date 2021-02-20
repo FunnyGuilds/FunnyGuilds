@@ -1,10 +1,12 @@
 package net.dzikoysk.funnyguilds;
 
-import org.bukkit.Bukkit;
-
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 
 public final class FunnyGuildsLogger {
 
@@ -68,7 +70,18 @@ public final class FunnyGuildsLogger {
         error("  Java: " + System.getProperty("java.version"));
         error("  Thread: " + Thread.currentThread());
         error("  Loaded plugins: " + loadedPlugins);
+        error("  Reload count: " + this.getReloadCount());
         error("");
     }
 
+    private int getReloadCount() {
+        Server server = Bukkit.getServer();
+
+        try {
+            final Field reloadCountField = server.getClass().getDeclaredField("reloadCount");
+            return reloadCountField.getInt(server);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return -1;
+        }
+    }
 }
