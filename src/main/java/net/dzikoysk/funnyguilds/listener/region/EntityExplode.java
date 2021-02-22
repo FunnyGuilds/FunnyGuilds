@@ -18,6 +18,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -26,11 +27,13 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.concurrent.TimeUnit;
 
 public class EntityExplode implements Listener {
 
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
+    private final Map<Event, List<Block>> originalBlockLists = new WeakHashMap<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void preNormalExplosionHandler(EntityExplodeEvent event) {
@@ -47,6 +50,8 @@ public class EntityExplode implements Listener {
                 false,
                 true
         );
+
+        this.originalBlockLists.put(event, new ArrayList<>(destroyedBlocks));
 
         blocksInSphere.stream()
                 .filter(block -> config.allMaterialsAreExplosive || (explosiveMaterials.containsKey(block.getType())))
@@ -164,6 +169,10 @@ public class EntityExplode implements Listener {
                 explodedBlock.breakNaturally();
             }
         }
+
+        event.blockList().clear();
+        List<Block> originalBlockList = this.originalBlockLists.remove(event);
+        event.blockList().addAll(originalBlockList);
     }
 
 }
