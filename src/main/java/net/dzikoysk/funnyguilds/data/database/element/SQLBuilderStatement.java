@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.database.element;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.Database;
+import org.diorite.utils.collections.maps.CaseInsensitiveMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,27 +13,15 @@ import java.util.Map;
 public class SQLBuilderStatement {
 
     private final Map<String, Object> placeholders = new HashMap<>();
-    private final Map<String, Integer> keyMapIndex;
+    private final CaseInsensitiveMap<Integer> keyMapIndex;
     private final String sql;
 
     public SQLBuilderStatement(String sql, Map<String, Integer> keyMap) {
         this.sql = sql;
-
-        for (Map.Entry<String, Integer> entry : keyMap.entrySet()) {
-            if (entry.getKey().equalsIgnoreCase(entry.getKey().toLowerCase())) {
-                continue;
-            }
-
-            keyMap.put(entry.getKey().toLowerCase(), entry.getValue());
-            keyMap.remove(entry.getKey());
-        }
-
-        this.keyMapIndex = keyMap;
+        this.keyMapIndex = new CaseInsensitiveMap<>(keyMap);
     }
 
     public void set(String key, Object value) {
-        key = key.toLowerCase();
-
         if (!keyMapIndex.containsKey(key)) {
             return;
         }
