@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
@@ -146,44 +147,19 @@ public class DatabaseGuild {
         if (guild == null) {
             return;
         }
-        
-        if (guild.getUUID() != null) {
-            Database db = Database.getInstance();
-            StringBuilder update = new StringBuilder();
-            
-            update.append("DELETE FROM `");
-            update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-            update.append("` WHERE `uuid`='");
-            update.append(guild.getUUID().toString());
-            update.append("'");
 
-            db.executeUpdate(update.toString());
-        } else if (guild.getName() != null) {
-            Database db = Database.getInstance();
-            StringBuilder update = new StringBuilder();
-            
-            update.append("DELETE FROM `");
-            update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-            update.append("` WHERE `name`='");
-            update.append(guild.getName());
-            update.append("'");
-            
-            db.executeUpdate(update.toString());
-        }
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderDelete(SQLDataModel.tabGuilds);
+
+        builderPS.set("uuid", guild.getUUID().toString());
+        builderPS.executeUpdate();
     }
 
     public void updatePoints() {
-        Database db = Database.getInstance();
-        StringBuilder update = new StringBuilder();
-        
-        update.append("UPDATE `");
-        update.append(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
-        update.append("` SET `points`=");
-        update.append(guild.getRank().getPoints());
-        update.append(" WHERE `uuid`='");
-        update.append(guild.getUUID().toString());
-        update.append("'");
-        
-        db.executeUpdate(update.toString());
+        SQLTable table = SQLDataModel.tabGuilds;
+        SQLBuilderStatement builderPS = SQLUtils.getBuilderUpdate(table, table.getSQLElement("points"));
+
+        builderPS.set("points", guild.getRank().getPoints());
+        builderPS.set("uuid", guild.getUUID().toString());
+        builderPS.executeUpdate();
     }
 }

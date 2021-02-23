@@ -40,4 +40,18 @@ public class SQLUtils {
         return new SQLBuilderStatement(sb.toString(), keyMap);
     }
 
+    public static SQLBuilderStatement getBuilderDelete(SQLTable table) {
+        HashMap<String, Integer> keyMap = new HashMap<>();
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("DELETE FROM `");
+        sb.append(table.getName());
+        sb.append("` WHERE ");
+        sb.append(table.getPrimaryKey().getKeyGraveAccent());
+        sb.append(" = ?");
+
+        keyMap.put(table.getPrimaryKey().getKey(), 1);
+
+        return new SQLBuilderStatement(sb.toString(), keyMap);
+    }
 }
