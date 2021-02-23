@@ -51,7 +51,7 @@ import java.util.concurrent.TimeUnit;
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("                                #")
 @CfgComment("          FunnyGuilds           #")
-@CfgComment("         4.9.1 Tribute          #")
+@CfgComment("         4.9.2 Tribute          #")
 @CfgComment("                                #")
 @CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @CfgComment("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
@@ -1076,7 +1076,7 @@ public class PluginConfiguration {
     @CfgComment("Wyglad naglowka w liscie graczy.")
     @CfgName("player-list-header")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String playerListHeader = "&7FunnyGuilds &b4.9.1 Tribute";
+    public String playerListHeader = "&7FunnyGuilds &b4.9.2 Tribute";
 
     @CfgComment("Wyglad stopki w liscie graczy.")
     @CfgName("player-list-footer")
