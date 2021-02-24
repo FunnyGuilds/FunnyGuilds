@@ -3,8 +3,53 @@ package net.dzikoysk.funnyguilds.command;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.command.admin.*;
-import net.dzikoysk.funnyguilds.command.user.*;
+import net.dzikoysk.funnyguilds.command.admin.AddCommand;
+import net.dzikoysk.funnyguilds.command.admin.BanCommand;
+import net.dzikoysk.funnyguilds.command.admin.BaseAdminCommand;
+import net.dzikoysk.funnyguilds.command.admin.DeathsCommand;
+import net.dzikoysk.funnyguilds.command.admin.DeleteAdminCommand;
+import net.dzikoysk.funnyguilds.command.admin.DeputyAdminCommand;
+import net.dzikoysk.funnyguilds.command.admin.GuildsEnabledCommand;
+import net.dzikoysk.funnyguilds.command.admin.KickAdminCommand;
+import net.dzikoysk.funnyguilds.command.admin.KillsCommand;
+import net.dzikoysk.funnyguilds.command.admin.LeaderAdminCommand;
+import net.dzikoysk.funnyguilds.command.admin.LivesCommand;
+import net.dzikoysk.funnyguilds.command.admin.MainCommand;
+import net.dzikoysk.funnyguilds.command.admin.MoveCommand;
+import net.dzikoysk.funnyguilds.command.admin.NameCommand;
+import net.dzikoysk.funnyguilds.command.admin.PointsCommand;
+import net.dzikoysk.funnyguilds.command.admin.ProtectionCommand;
+import net.dzikoysk.funnyguilds.command.admin.SpyCommand;
+import net.dzikoysk.funnyguilds.command.admin.TagCommand;
+import net.dzikoysk.funnyguilds.command.admin.TeleportCommand;
+import net.dzikoysk.funnyguilds.command.admin.UnbanCommand;
+import net.dzikoysk.funnyguilds.command.admin.ValidityAdminCommand;
+import net.dzikoysk.funnyguilds.command.user.AllyCommand;
+import net.dzikoysk.funnyguilds.command.user.BaseCommand;
+import net.dzikoysk.funnyguilds.command.user.BreakCommand;
+import net.dzikoysk.funnyguilds.command.user.ConfirmCommand;
+import net.dzikoysk.funnyguilds.command.user.CreateCommand;
+import net.dzikoysk.funnyguilds.command.user.DeleteCommand;
+import net.dzikoysk.funnyguilds.command.user.DeputyCommand;
+import net.dzikoysk.funnyguilds.command.user.EnlargeCommand;
+import net.dzikoysk.funnyguilds.command.user.EscapeCommand;
+import net.dzikoysk.funnyguilds.command.user.FunnyGuildsCommand;
+import net.dzikoysk.funnyguilds.command.user.GuildCommand;
+import net.dzikoysk.funnyguilds.command.user.InfoCommand;
+import net.dzikoysk.funnyguilds.command.user.InviteCommand;
+import net.dzikoysk.funnyguilds.command.user.ItemsCommand;
+import net.dzikoysk.funnyguilds.command.user.JoinCommand;
+import net.dzikoysk.funnyguilds.command.user.KickCommand;
+import net.dzikoysk.funnyguilds.command.user.LeaderCommand;
+import net.dzikoysk.funnyguilds.command.user.LeaveCommand;
+import net.dzikoysk.funnyguilds.command.user.PlayerInfoCommand;
+import net.dzikoysk.funnyguilds.command.user.PvPCommand;
+import net.dzikoysk.funnyguilds.command.user.RankResetCommand;
+import net.dzikoysk.funnyguilds.command.user.RankingCommand;
+import net.dzikoysk.funnyguilds.command.user.SetBaseCommand;
+import net.dzikoysk.funnyguilds.command.user.TopCommand;
+import net.dzikoysk.funnyguilds.command.user.ValidityCommand;
+import net.dzikoysk.funnyguilds.command.user.WarCommand;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.Commands.FunnyCommand;
 import org.bukkit.Server;
@@ -92,6 +137,7 @@ public final class CommandsConfiguration {
                 .validator(new OwnerValidator())
                 .registerComponents(userCommands.commands)
                 .registerComponents(adminCommands.commands)
+                .exceptionHandler(new FunnyGuildsExceptionHandler(funnyGuilds))
                 .hook();
     }
 

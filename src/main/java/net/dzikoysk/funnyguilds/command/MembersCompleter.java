@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.command;
 
-import io.vavr.control.Option;
 import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Origin;
@@ -8,6 +7,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.panda_lang.utilities.commons.function.Option;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +22,7 @@ final class MembersCompleter implements Completer {
                 .filter(User::hasGuild)
                 .map(User::getGuild)
                 .map(guild -> CommandUtils.collectCompletions(guild.getMembers(), prefix, limit, ArrayList::new, User::getName))
-                .getOrElse(Collections.emptyList());
+                .orElseGet(Collections.emptyList());
     }
 
     @Override
