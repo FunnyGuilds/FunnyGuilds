@@ -33,20 +33,21 @@ public final class DefaultTablistVariables {
     private static final Map<String, TablistVariable> FUNNY_VARIABLES = new ConcurrentHashMap<>();
     private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
 
-    private DefaultTablistVariables() {}
+    private DefaultTablistVariables() {
+    }
 
     public static Map<String, TablistVariable> getFunnyVariables() {
         if (FUNNY_VARIABLES.isEmpty()) {
             createFunnyVariables();
         }
-        
+
         return new ConcurrentHashMap<>(FUNNY_VARIABLES);
     }
-    
+
     public static void clearFunnyVariables() {
         FUNNY_VARIABLES.clear();
     }
-    
+
     public static void install(TablistVariablesParser parser) {
         parser.add(new TimeFormattedVariable("HOUR", (user, time) -> time.getHour()));
         parser.add(new TimeFormattedVariable("MINUTE", (user, time) -> time.getMinute()));
@@ -64,31 +65,31 @@ public final class DefaultTablistVariables {
                 return "0";
             }
         }));
-        
+
         parser.add(new SimpleTablistVariable("WORLD", user -> {
             Player userPlayer = user.getPlayer();
 
             if (userPlayer == null) {
                 return "";
             }
-            
+
             return userPlayer.getWorld().getName();
         }));
-        
+
         parser.add(new SimpleTablistVariable("ONLINE", user -> {
             Player userPlayer = user.getPlayer();
 
             if (userPlayer == null) {
                 return "";
             }
-            
-            return Bukkit.getOnlinePlayers().stream().filter(onlinePlayer -> onlinePlayer != null && userPlayer.canSee(onlinePlayer)).count();
+
+            return Bukkit.getOnlinePlayers().stream().filter(userPlayer::canSee).count();
         }));
 
         for (TablistVariable variable : getFunnyVariables().values()) {
             parser.add(variable);
         }
-        
+
         if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
             String wgRegionNoValue = FunnyGuilds.getInstance().getMessageConfiguration().wgRegionNoValue;
 
@@ -103,16 +104,12 @@ public final class DefaultTablistVariables {
             }));
         }
 
-        if (PluginHook.isPresent(PluginHook.PLUGIN_VAULT)) {
+        if (PluginHook.isPresent(PluginHook.PLUGIN_VAULT) && VaultHook.isEconomyHooked()) {
             parser.add(new SimpleTablistVariable("VAULT-MONEY", user -> {
                 Player userPlayer = user.getPlayer();
 
                 if (userPlayer == null) {
-                    return "0";
-                }
-
-                if (!VaultHook.isEconomyHooked()) {
-                    return "0";
+                    return "";
                 }
 
                 return VaultHook.accountBalance(userPlayer);
@@ -175,9 +172,9 @@ public final class DefaultTablistVariables {
 
         putGuild("g-points-format", "G-POINTS-FORMAT",
                 user -> IntegerRange.inRangeToString(user.getGuild().getRank().getPoints(), config.pointsFormat)
-                            .replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())),
+                        .replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())),
                 user -> IntegerRange.inRangeToString(0, config.pointsFormat)
-                            .replace("{POINTS}", "0"));
+                        .replace("{POINTS}", "0"));
 
         putGuild("g-position", "G-POSITION",
                 user -> user.getGuild().getMembers().size() >= FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude
@@ -208,7 +205,7 @@ public final class DefaultTablistVariables {
         Location location = user.getPlayer().getLocation();
         List<String> regionNames = PluginHook.WORLD_GUARD.getRegionNames(location);
 
-        if (regionNames != null && ! regionNames.isEmpty()) {
+        if (regionNames != null && !regionNames.isEmpty()) {
             return regionNames;
         }
 
