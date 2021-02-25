@@ -42,6 +42,11 @@ public final class VaultHook {
         return permissionHook != null;
     }
 
+    public static double accountBalance(Player player) {
+        Validate.notNull(player, "Player can not be null!");
+        return economyHook.getBalance(player);
+    }
+
     public static boolean canAfford(Player player, double money) {
         Validate.notNull(player, "Player can not be null!");
         return economyHook.has(player, money);
