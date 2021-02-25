@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.util.commons.MapUtil;
 import net.dzikoysk.funnyguilds.util.nms.PacketSender;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 
 import java.time.LocalDateTime;
@@ -41,6 +42,11 @@ public abstract class AbstractTablist {
     protected boolean firstPacket = true;
 
     public AbstractTablist(Map<Integer, String> tablistPattern, String header, String footer, int ping, User user) {
+        Validate.notNull(tablistPattern, "tablist pattern can't be null");
+        Validate.notNull(header, "header can't be null");
+        Validate.notNull(footer, "footer can't be null");
+        Validate.notNull(user, "user can't be null");
+
         this.tablistPattern = tablistPattern;
         this.header = header;
         this.footer = footer;
@@ -170,8 +176,10 @@ public abstract class AbstractTablist {
     protected String putVars(String cell) {
         String formatted = cell;
 
-        if (this.user == null) {
-            throw new IllegalStateException("Given player is null!");
+        Player player = this.user.getPlayer();
+
+        if (player == null) {
+            return formatted;
         }
 
         VariableParsingResult result = this.variables.createResultFor(this.user);
@@ -179,11 +187,11 @@ public abstract class AbstractTablist {
         formatted = ChatUtils.colored(formatted);
 
         if (PluginHook.isPresent(PluginHook.PLUGIN_PLACEHOLDERAPI)) {
-            formatted = PlaceholderAPIHook.replacePlaceholders(this.user.getPlayer(), formatted);
+            formatted = PlaceholderAPIHook.replacePlaceholders(player, formatted);
         }
         
         if (PluginHook.isPresent(PluginHook.PLUGIN_MVDWPLACEHOLDERAPI)) {
-            formatted = MVdWPlaceholderAPIHook.replacePlaceholders(this.user.getPlayer(), formatted);
+            formatted = MVdWPlaceholderAPIHook.replacePlaceholders(player, formatted);
         }
         
         return formatted;
