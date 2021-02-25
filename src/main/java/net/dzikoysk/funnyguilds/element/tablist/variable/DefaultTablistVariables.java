@@ -108,11 +108,11 @@ public final class DefaultTablistVariables {
                 Player userPlayer = user.getPlayer();
 
                 if (userPlayer == null) {
-                    return "0";
+                    return "0.0";
                 }
 
                 if (!VaultHook.isEconomyHooked()) {
-                    return "0";
+                    return "0.0";
                 }
 
                 return VaultHook.accountBalance(userPlayer);
