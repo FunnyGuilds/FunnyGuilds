@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.element.tablist.variable.impl.GuildDependentTabl
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.element.tablist.variable.impl.TimeFormattedVariable;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
+import net.dzikoysk.funnyguilds.hook.VaultHook;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
@@ -99,6 +100,22 @@ public final class DefaultTablistVariables {
             parser.add(new SimpleTablistVariable("WG-REGIONS", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
                 return regionNames != null && !regionNames.isEmpty() ? StringUtils.join(regionNames, ", ") : wgRegionNoValue;
+            }));
+        }
+
+        if (PluginHook.isPresent(PluginHook.PLUGIN_VAULT)) {
+            parser.add(new SimpleTablistVariable("VAULT-MONEY", user -> {
+                Player userPlayer = user.getPlayer();
+
+                if (userPlayer == null) {
+                    return "0";
+                }
+
+                if (!VaultHook.isEconomyHooked()) {
+                    return "0";
+                }
+
+                return VaultHook.accountBalance(userPlayer);
             }));
         }
     }

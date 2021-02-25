@@ -1014,6 +1014,7 @@ public class PluginConfiguration {
     @CfgComment("{KDR} - stosunek zabojstw do smierci gracza")
     @CfgComment("{WG-REGION} - region WorldGuard'a, na ktorym znajduje sie gracz (pierwszy, jesli jest ich kilka)")
     @CfgComment("{WG-REGIONS} - regiony WorldGuard'a, na ktorych znajduje sie gracz (oddzielone przecinkami)")
+    @CfgComment("{VAULT-MONEY} - balans konta gracza pobierany z pluginu Vault")
     @CfgComment("> Spis zmiennych gildyjnych:")
     @CfgComment("{G-NAME} - nazwa gildii do ktorej nalezy gracz")
     @CfgComment("{G-TAG} - tag gildii gracza")
