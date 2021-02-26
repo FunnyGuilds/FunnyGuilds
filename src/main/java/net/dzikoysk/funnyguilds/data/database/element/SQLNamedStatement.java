@@ -31,7 +31,6 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate() {
-
         try (Connection con = Database.getConnection()) {
             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
 
@@ -43,7 +42,6 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate(boolean ignoreFails) {
-
         try (Connection con = Database.getConnection()) {
             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
 
@@ -60,7 +58,6 @@ public class SQLNamedStatement {
     }
 
     public ResultSet executeQuery() {
-
         try (Connection con = Database.getConnection()) {
             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
 
