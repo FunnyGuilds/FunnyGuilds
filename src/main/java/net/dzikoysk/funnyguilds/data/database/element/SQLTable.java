@@ -69,7 +69,7 @@ public class SQLTable {
             return index;
         }
 
-        return 0;
+        return -1;
     }
 
     public SQLElement getSQLElement(String key) {
