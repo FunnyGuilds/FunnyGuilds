@@ -233,7 +233,6 @@ public class User extends AbstractBasic {
 
     public static User create(Player player) {
         Validate.notNull(player, "player can't be null!");
-        Validate.notNull(player.getUniqueId(), "uuid can't be null!");
 
         User user = new User(player);
         UserUtils.addUser(user);
