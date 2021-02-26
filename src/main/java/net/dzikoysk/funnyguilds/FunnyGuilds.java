@@ -77,9 +77,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.logger.error("If you think that is not true - contact plugin developers");
             this.logger.error("https://github.com/FunnyGuilds/FunnyGuilds");
 
-            getServer().getPluginManager().disablePlugin(this);
-            this.forceDisabling = true;
-
+            shutdown("Spigot required for service not detected!");
             return;
         }
 
@@ -96,8 +94,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
         catch (Exception exception) {
             this.getPluginLogger().error("Could not load plugin configuration", exception);
-            this.getServer().getPluginManager().disablePlugin(this);
-            this.forceDisabling = true;
+            shutdown("Critical error has been encountered!");
             return;
         }
 
@@ -128,6 +125,8 @@ public class FunnyGuilds extends JavaPlugin {
         }
         catch (Exception ex) {
             FunnyGuilds.getInstance().getPluginLogger().error("Could not load data from database", ex);
+            shutdown("Critical error has been encountered!");
+            return;
         }
 
         this.dataPersistenceHandler = new DataPersistenceHandler(this);
@@ -223,6 +222,16 @@ public class FunnyGuilds extends JavaPlugin {
         Database.getInstance().shutdown();
 
         funnyguilds = null;
+    }
+
+    public void shutdown(String content) {
+        if (this.isDisabling() || this.forceDisabling) {
+            return;
+        }
+
+        this.forceDisabling = true;
+        FunnyGuilds.getInstance().getPluginLogger().warning("The FunnyGuilds is going to shut down! " + content);
+        this.getServer().getPluginManager().disablePlugin(this);
     }
 
     private void patch() {
