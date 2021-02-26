@@ -112,45 +112,45 @@ public class DatabaseGuild {
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-        SQLNamedStatement namedPS = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
 
-        namedPS.set("uuid",     guild.getUUID().toString());
-        namedPS.set("name",     guild.getName());
-        namedPS.set("tag",      guild.getTag());
-        namedPS.set("owner",    guild.getOwner().getName());
-        namedPS.set("home",     LocationUtils.toString(guild.getHome()));
-        namedPS.set("region",   RegionUtils.toString(guild.getRegion()));
-        namedPS.set("regions", "#abandoned");
-        namedPS.set("members",  members);
-        namedPS.set("deputy",   deputies);
-        namedPS.set("allies",   allies);
-        namedPS.set("enemies",  enemies);
-        namedPS.set("points",   guild.getRank().getPoints());
-        namedPS.set("lives",    guild.getLives());
-        namedPS.set("born",     guild.getBorn());
-        namedPS.set("validity", guild.getValidity());
-        namedPS.set("attacked", guild.getAttacked());
-        namedPS.set("ban",      guild.getBan());
-        namedPS.set("pvp",      guild.getPvP());
-        namedPS.set("info",     "");
+        statement.set("uuid",     guild.getUUID().toString());
+        statement.set("name",     guild.getName());
+        statement.set("tag",      guild.getTag());
+        statement.set("owner",    guild.getOwner().getName());
+        statement.set("home",     LocationUtils.toString(guild.getHome()));
+        statement.set("region",   RegionUtils.toString(guild.getRegion()));
+        statement.set("regions", "#abandoned");
+        statement.set("members",  members);
+        statement.set("deputy",   deputies);
+        statement.set("allies",   allies);
+        statement.set("enemies",  enemies);
+        statement.set("points",   guild.getRank().getPoints());
+        statement.set("lives",    guild.getLives());
+        statement.set("born",     guild.getBorn());
+        statement.set("validity", guild.getValidity());
+        statement.set("attacked", guild.getAttacked());
+        statement.set("ban",      guild.getBan());
+        statement.set("pvp",      guild.getPvP());
+        statement.set("info",     "");
 
-        namedPS.executeUpdate();
+        statement.executeUpdate();
     }
 
     public static void delete(Guild guild) {
-        SQLNamedStatement namedPS = SQLBasicUtils.getDelete(SQLDataModel.tabGuilds);
+        SQLNamedStatement statement = SQLBasicUtils.getDelete(SQLDataModel.tabGuilds);
 
-        namedPS.set("uuid", guild.getUUID().toString());
-        namedPS.executeUpdate();
+        statement.set("uuid", guild.getUUID().toString());
+        statement.executeUpdate();
     }
 
     public static void updatePoints(Guild guild) {
         SQLTable table = SQLDataModel.tabGuilds;
-        SQLNamedStatement namedPS = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
+        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
 
-        namedPS.set("points", guild.getRank().getPoints());
-        namedPS.set("uuid", guild.getUUID().toString());
-        namedPS.executeUpdate();
+        statement.set("points", guild.getRank().getPoints());
+        statement.set("uuid", guild.getUUID().toString());
+        statement.executeUpdate();
     }
 
     private DatabaseGuild() {}

@@ -49,20 +49,20 @@ public class DatabaseRegion {
     }
 
     public static void save(Region region) {
-        SQLNamedStatement namedPS = SQLBasicUtils.getInsert(SQLDataModel.tabRegions);
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabRegions);
 
-        namedPS.set("name", region.getName());
-        namedPS.set("center", LocationUtils.toString(region.getCenter()));
-        namedPS.set("size", region.getSize());
-        namedPS.set("enlarge", region.getEnlarge());
-        namedPS.executeUpdate();
+        statement.set("name", region.getName());
+        statement.set("center", LocationUtils.toString(region.getCenter()));
+        statement.set("size", region.getSize());
+        statement.set("enlarge", region.getEnlarge());
+        statement.executeUpdate();
     }
 
     public static void delete(Region region) {
-        SQLNamedStatement namedPS = SQLBasicUtils.getDelete(SQLDataModel.tabRegions);
+        SQLNamedStatement statement = SQLBasicUtils.getDelete(SQLDataModel.tabRegions);
 
-        namedPS.set("name", region.getName());
-        namedPS.executeUpdate();
+        statement.set("name", region.getName());
+        statement.executeUpdate();
     }
 
     private DatabaseRegion() {}
