@@ -124,7 +124,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.dataModel.load();
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not load data from database", ex);
+            this.getPluginLogger().error("Could not load data from database", ex);
             shutdown("Critical error has been encountered!");
             return;
         }
@@ -230,7 +230,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.forceDisabling = true;
-        FunnyGuilds.getInstance().getPluginLogger().warning("The FunnyGuilds is going to shut down! " + content);
+        this.getPluginLogger().warning("The FunnyGuilds is going to shut down! " + content);
         this.getServer().getPluginManager().disablePlugin(this);
     }
 
