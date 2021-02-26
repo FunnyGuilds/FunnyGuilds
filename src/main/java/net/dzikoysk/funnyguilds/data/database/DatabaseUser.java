@@ -45,26 +45,26 @@ public class DatabaseUser {
     }
 
     public static void save(User user) {
-        SQLNamedStatement namedPS = SQLBasicUtils.getInsert(SQLDataModel.tabUsers);
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabUsers);
 
-        namedPS.set("uuid", user.getUUID().toString());
-        namedPS.set("name", user.getName());
-        namedPS.set("points", user.getRank().getPoints());
-        namedPS.set("kills", user.getRank().getKills());
-        namedPS.set("deaths", user.getRank().getDeaths());
-        namedPS.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
-        namedPS.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
-        namedPS.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
-        namedPS.executeUpdate();
+        statement.set("uuid", user.getUUID().toString());
+        statement.set("name", user.getName());
+        statement.set("points", user.getRank().getPoints());
+        statement.set("kills", user.getRank().getKills());
+        statement.set("deaths", user.getRank().getDeaths());
+        statement.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
+        statement.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
+        statement.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
+        statement.executeUpdate();
     }
 
     public static void updatePoints(User user) {
         SQLTable table = SQLDataModel.tabUsers;
-        SQLNamedStatement namedPS = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
+        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
 
-        namedPS.set("points", user.getRank().getPoints());
-        namedPS.set("uuid", user.getUUID().toString());
-        namedPS.executeUpdate();
+        statement.set("points", user.getRank().getPoints());
+        statement.set("uuid", user.getUUID().toString());
+        statement.executeUpdate();
     }
 
     private DatabaseUser() {}
