@@ -175,7 +175,8 @@ public class FunnyGuilds extends JavaPlugin {
                 new HangingBreak(),
                 new HangingPlace(),
                 new PlayerCommand(),
-                new PlayerInteract()
+                new PlayerInteract(),
+                new EntityProtect()
         );
 
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, new PlayerMove());
