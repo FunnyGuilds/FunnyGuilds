@@ -9,12 +9,13 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
 public interface DataModel {
 
-    void load();
+    void load() throws SQLException;
 
     void save(boolean ignoreNotChanged);
 
@@ -57,11 +58,10 @@ public interface DataModel {
     }
 
     static DataModel create(FunnyGuilds funnyGuilds, PluginConfiguration.DataModel dataModel) {
-        switch (dataModel) {
-            case MYSQL:
-                return new SQLDataModel();
-            default:
-                return new FlatDataModel(funnyGuilds);
+        if (dataModel == PluginConfiguration.DataModel.MYSQL) {
+            return new SQLDataModel();
         }
+
+        return new FlatDataModel(funnyGuilds);
     }
 }

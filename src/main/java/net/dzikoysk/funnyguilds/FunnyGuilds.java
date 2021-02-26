@@ -122,8 +122,13 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
-        this.dataModel.load();
+        try {
+            this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
+            this.dataModel.load();
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getInstance().getPluginLogger().error("Could not load data from database", ex);
+        }
 
         this.dataPersistenceHandler = new DataPersistenceHandler(this);
         this.dataPersistenceHandler.startHandler();

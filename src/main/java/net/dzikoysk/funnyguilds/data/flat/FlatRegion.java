@@ -19,18 +19,18 @@ public class FlatRegion {
     }
 
     public static Region deserialize(File file) {
-        YamlWrapper pc = new YamlWrapper(file);
-        String name = pc.getString("name");
-        String cs = pc.getString("center");
-        int size = pc.getInt("size");
-        int enlarge = pc.getInt("enlarge");
+        YamlWrapper wrapper = new YamlWrapper(file);
+        String name = wrapper.getString("name");
+        String centerString = wrapper.getString("center");
+        int size = wrapper.getInt("size");
+        int enlarge = wrapper.getInt("enlarge");
 
-        if (name == null || cs == null) {
+        if (name == null || centerString == null) {
             FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: name/center is null");
             return null;
         }
 
-        Location center = LocationUtils.parseLocation(cs);
+        Location center = LocationUtils.parseLocation(centerString);
 
         if (center == null) {
             FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: center is null");
@@ -52,14 +52,14 @@ public class FlatRegion {
 
     public boolean serialize(FlatDataModel flatDataModel) {
         File file = flatDataModel.loadCustomFile(BasicType.REGION, region.getName());
-        YamlWrapper pc = new YamlWrapper(file);
+        YamlWrapper wrapper = new YamlWrapper(file);
 
-        pc.set("name", region.getName());
-        pc.set("center", LocationUtils.toString(region.getCenter()));
-        pc.set("size", region.getSize());
-        pc.set("enlarge", region.getEnlarge());
+        wrapper.set("name", region.getName());
+        wrapper.set("center", LocationUtils.toString(region.getCenter()));
+        wrapper.set("size", region.getSize());
+        wrapper.set("enlarge", region.getEnlarge());
 
-        pc.save();
+        wrapper.save();
         return true;
     }
 

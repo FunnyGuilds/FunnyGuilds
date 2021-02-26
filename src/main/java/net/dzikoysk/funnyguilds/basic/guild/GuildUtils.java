@@ -81,7 +81,7 @@ public class GuildUtils {
             dataModel.getGuildFile(guild).delete();
         }
         else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            new DatabaseGuild(guild).delete();
+            DatabaseGuild.delete(guild);
         }
 
         guild.delete();

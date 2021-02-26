@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
@@ -29,22 +30,20 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 
         try {
             if (dataModel instanceof SQLDataModel) {
-                DatabaseGuild guild = new DatabaseGuild(this.guild);
-                DatabaseRegion region = new DatabaseRegion(this.guild.getRegion());
-
-                guild.save();
-                region.save();
-                Stream.concat(this.guild.getMembers().stream(), Stream.of(this.guild.getOwner()))
-                        .map(DatabaseUser::new).forEach(DatabaseUser::save);
+                DatabaseGuild.save(guild);
+                DatabaseRegion.save(guild.getRegion());
+                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(DatabaseUser::save);
+                return;
             }
-            else if (dataModel instanceof FlatDataModel) {
-                FlatGuild flatGuild = new FlatGuild(this.guild);
+
+            if (dataModel instanceof FlatDataModel) {
+                FlatGuild flatGuild = new FlatGuild(guild);
                 flatGuild.serialize((FlatDataModel) dataModel);
 
-                FlatRegion flatRegion = new FlatRegion(this.guild.getRegion());
+                FlatRegion flatRegion = new FlatRegion(guild.getRegion());
                 flatRegion.serialize((FlatDataModel) dataModel);
 
-                Stream.concat(this.guild.getMembers().stream(), Stream.of(this.guild.getOwner()))
+                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner()))
                         .map(FlatUser::new).forEach(flatUser -> flatUser.serialize((FlatDataModel) dataModel));
             }
         }

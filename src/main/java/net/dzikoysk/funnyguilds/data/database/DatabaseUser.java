@@ -2,20 +2,14 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
-import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 
 import java.sql.ResultSet;
 
 public class DatabaseUser {
-
-    private final User user;
-
-    public DatabaseUser(User user) {
-        this.user = user;
-    }
 
     public static User deserialize(ResultSet rs) {
         if (rs == null) {
@@ -50,30 +44,28 @@ public class DatabaseUser {
         return null;
     }
 
-    public void save() {
-        if (user.getUUID() == null) {
-            return;
-        }
+    public static void save(User user) {
+        SQLNamedStatement namedPS = SQLBasicUtils.getInsert(SQLDataModel.tabUsers);
 
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabUsers);
-
-        builderPS.set("uuid", user.getUUID().toString());
-        builderPS.set("name", user.getName());
-        builderPS.set("points", user.getRank().getPoints());
-        builderPS.set("kills", user.getRank().getKills());
-        builderPS.set("deaths", user.getRank().getDeaths());
-        builderPS.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
-        builderPS.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
-        builderPS.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
-        builderPS.executeUpdate();
+        namedPS.set("uuid", user.getUUID().toString());
+        namedPS.set("name", user.getName());
+        namedPS.set("points", user.getRank().getPoints());
+        namedPS.set("kills", user.getRank().getKills());
+        namedPS.set("deaths", user.getRank().getDeaths());
+        namedPS.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
+        namedPS.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
+        namedPS.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
+        namedPS.executeUpdate();
     }
 
-    public void updatePoints() {
+    public static void updatePoints(User user) {
         SQLTable table = SQLDataModel.tabUsers;
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderUpdate(table, table.getSQLElement("points"));
+        SQLNamedStatement namedPS = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
 
-        builderPS.set("points", user.getRank().getPoints());
-        builderPS.set("uuid", user.getUUID().toString());
-        builderPS.executeUpdate();
+        namedPS.set("points", user.getRank().getPoints());
+        namedPS.set("uuid", user.getUUID().toString());
+        namedPS.executeUpdate();
     }
+
+    private DatabaseUser() {}
 }

@@ -7,9 +7,9 @@ import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
-import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
@@ -20,12 +20,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class DatabaseGuild {
-
-    private final Guild guild;
-
-    public DatabaseGuild(Guild guild) {
-        this.guild = guild;
-    }
 
     public static Guild deserialize(ResultSet rs) {
         if (rs == null) {
@@ -113,53 +107,52 @@ public class DatabaseGuild {
         return null;
     }
 
-    public void save() {
+    public static void save(Guild guild) {
         String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabGuilds);
+        SQLNamedStatement namedPS = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
 
-        builderPS.set("uuid",     guild.getUUID().toString());
-        builderPS.set("name",     guild.getName());
-        builderPS.set("tag",      guild.getTag());
-        builderPS.set("owner",    guild.getOwner().getName());
-        builderPS.set("home",     LocationUtils.toString(guild.getHome()));
-        builderPS.set("region",   RegionUtils.toString(guild.getRegion()));
-        builderPS.set("regions", "#abandoned");
-        builderPS.set("members",  members);
-        builderPS.set("deputy",   deputies);
-        builderPS.set("allies",   allies);
-        builderPS.set("enemies",  enemies);
-        builderPS.set("points",   guild.getRank().getPoints());
-        builderPS.set("lives",    guild.getLives());
-        builderPS.set("born",     guild.getBorn());
-        builderPS.set("validity", guild.getValidity());
-        builderPS.set("attacked", guild.getAttacked());
-        builderPS.set("ban",      guild.getBan());
-        builderPS.set("pvp",      guild.getPvP());
-        builderPS.set("info",     "");
+        namedPS.set("uuid",     guild.getUUID().toString());
+        namedPS.set("name",     guild.getName());
+        namedPS.set("tag",      guild.getTag());
+        namedPS.set("owner",    guild.getOwner().getName());
+        namedPS.set("home",     LocationUtils.toString(guild.getHome()));
+        namedPS.set("region",   RegionUtils.toString(guild.getRegion()));
+        namedPS.set("regions", "#abandoned");
+        namedPS.set("members",  members);
+        namedPS.set("deputy",   deputies);
+        namedPS.set("allies",   allies);
+        namedPS.set("enemies",  enemies);
+        namedPS.set("points",   guild.getRank().getPoints());
+        namedPS.set("lives",    guild.getLives());
+        namedPS.set("born",     guild.getBorn());
+        namedPS.set("validity", guild.getValidity());
+        namedPS.set("attacked", guild.getAttacked());
+        namedPS.set("ban",      guild.getBan());
+        namedPS.set("pvp",      guild.getPvP());
+        namedPS.set("info",     "");
 
-        builderPS.executeUpdate();
+        namedPS.executeUpdate();
     }
 
-    public void delete() {
-        if (guild == null) {
-            return;
-        }
+    public static void delete(Guild guild) {
+        SQLNamedStatement namedPS = SQLBasicUtils.getDelete(SQLDataModel.tabGuilds);
 
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderDelete(SQLDataModel.tabGuilds);
-
-        builderPS.set("uuid", guild.getUUID().toString());
-        builderPS.executeUpdate();
+        namedPS.set("uuid", guild.getUUID().toString());
+        namedPS.executeUpdate();
     }
 
-    public void updatePoints() {
+    public static void updatePoints(Guild guild) {
         SQLTable table = SQLDataModel.tabGuilds;
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderUpdate(table, table.getSQLElement("points"));
+        SQLNamedStatement namedPS = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
 
-        builderPS.set("points", guild.getRank().getPoints());
-        builderPS.set("uuid", guild.getUUID().toString());
-        builderPS.executeUpdate();
+        namedPS.set("points", guild.getRank().getPoints());
+        namedPS.set("uuid", guild.getUUID().toString());
+        namedPS.executeUpdate();
     }
+
+    private DatabaseGuild() {}
+
 }
