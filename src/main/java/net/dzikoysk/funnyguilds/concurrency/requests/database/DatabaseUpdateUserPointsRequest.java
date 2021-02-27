@@ -14,8 +14,7 @@ public class DatabaseUpdateUserPointsRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() {
-        DatabaseUser databaseUser = new DatabaseUser(user);
-        databaseUser.updatePoints();
+        DatabaseUser.updatePoints(user);
     }
 
 }

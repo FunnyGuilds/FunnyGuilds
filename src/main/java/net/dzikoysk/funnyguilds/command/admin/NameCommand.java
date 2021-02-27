@@ -47,7 +47,7 @@ public final class NameCommand {
             }
 
             if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-                new DatabaseRegion(region).delete();
+                DatabaseRegion.delete(region);
             }
             
             region.setName(args[1]);
@@ -59,7 +59,7 @@ public final class NameCommand {
         }
 
         if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            new DatabaseGuild(guild).delete();
+            DatabaseGuild.delete(guild);
         }
         
         guild.setName(args[1]);

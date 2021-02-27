@@ -13,9 +13,8 @@ public class DatabaseUpdateGuildPointsRequest extends DefaultConcurrencyRequest 
     }
 
     @Override
-    public void execute() throws Exception {
-        DatabaseGuild databaseGuild = new DatabaseGuild(guild);
-        databaseGuild.updatePoints();
+    public void execute() {
+        DatabaseGuild.updatePoints(guild);
     }
 
 }

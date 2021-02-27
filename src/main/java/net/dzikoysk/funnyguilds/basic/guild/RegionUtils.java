@@ -110,7 +110,7 @@ public final class RegionUtils {
         }
 
         if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            new DatabaseRegion(region).delete();
+            DatabaseRegion.delete(region);
         }
         
         region.delete();

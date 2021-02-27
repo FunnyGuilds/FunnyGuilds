@@ -2,8 +2,8 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.data.database.element.SQLBuilderStatement;
-import net.dzikoysk.funnyguilds.data.database.element.SQLUtils;
+import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
@@ -11,12 +11,6 @@ import org.bukkit.Location;
 import java.sql.ResultSet;
 
 public class DatabaseRegion {
-
-    private final Region region;
-
-    public DatabaseRegion(Region region) {
-        this.region = region;
-    }
 
     public static Region deserialize(ResultSet rs) {
         if (rs == null) {
@@ -54,20 +48,23 @@ public class DatabaseRegion {
         return null;
     }
 
-    public void save() {
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderInsert(SQLDataModel.tabRegions);
+    public static void save(Region region) {
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabRegions);
 
-        builderPS.set("name", region.getName());
-        builderPS.set("center", LocationUtils.toString(region.getCenter()));
-        builderPS.set("size", region.getSize());
-        builderPS.set("enlarge", region.getEnlarge());
-        builderPS.executeUpdate();
+        statement.set("name", region.getName());
+        statement.set("center", LocationUtils.toString(region.getCenter()));
+        statement.set("size", region.getSize());
+        statement.set("enlarge", region.getEnlarge());
+        statement.executeUpdate();
     }
 
-    public void delete() {
-        SQLBuilderStatement builderPS = SQLUtils.getBuilderDelete(SQLDataModel.tabRegions);
+    public static void delete(Region region) {
+        SQLNamedStatement statement = SQLBasicUtils.getDelete(SQLDataModel.tabRegions);
 
-        builderPS.set("name", region.getName());
-        builderPS.executeUpdate();
+        statement.set("name", region.getName());
+        statement.executeUpdate();
     }
+
+    private DatabaseRegion() {}
+
 }

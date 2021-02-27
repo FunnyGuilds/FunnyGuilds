@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 
 public final class TimeUtils {
 
+    private TimeUtils() {}
+
     public static long parseTime(String string) {
         if (string == null || string.isEmpty()) {
             return 0;
@@ -29,7 +31,7 @@ public final class TimeUtils {
                     }
 
                     try {
-                        long i = Integer.valueOf(value.toString());
+                        long i = Integer.parseInt(value.toString());
                         switch (type.pop()) {
                             case 'd':
                                 time += i * 86400000L;
@@ -146,5 +148,4 @@ public final class TimeUtils {
         return (sb.toString());
     }
 
-    private TimeUtils() {}
 }

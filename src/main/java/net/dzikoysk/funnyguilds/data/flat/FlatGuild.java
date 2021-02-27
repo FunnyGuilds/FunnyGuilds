@@ -33,39 +33,45 @@ public class FlatGuild {
 
     public static Guild deserialize(File file) {
         PluginConfiguration configuration = FunnyGuilds.getInstance().getPluginConfiguration();
-        YamlWrapper data = new YamlWrapper(file);
-        
-        String id = data.getString("uuid");
-        String name = data.getString("name");
-        String tag = data.getString("tag");
-        String ownerName = data.getString("owner");
-        String deputyName = data.getString("deputy");
-        String hs = data.getString("home");
-        String regionName = data.getString("region");
-        boolean pvp = data.getBoolean("pvp");
-        long born = data.getLong("born");
-        long validity = data.getLong("validity");
-        long attacked = data.getLong("attacked");
-        long ban = data.getLong("ban");
-        int lives = data.getInt("lives");
+        YamlWrapper wrapper = new YamlWrapper(file);
+
+        String id = wrapper.getString("uuid");
+        String name = wrapper.getString("name");
+        String tag = wrapper.getString("tag");
+        String ownerName = wrapper.getString("owner");
+        String deputyName = wrapper.getString("deputy");
+        String hs = wrapper.getString("home");
+        String regionName = wrapper.getString("region");
+        boolean pvp = wrapper.getBoolean("pvp");
+        long born = wrapper.getLong("born");
+        long validity = wrapper.getLong("validity");
+        long attacked = wrapper.getLong("attacked");
+        long ban = wrapper.getLong("ban");
+        int lives = wrapper.getInt("lives");
 
         if (name == null) {
             FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
             return null;
-        } else if (tag == null) {
+        }
+
+        if (tag == null) {
             FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
             return null;
-        } else if (ownerName == null) {
+        }
+
+        if (ownerName == null) {
             FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
             return null;
-        } else if (regionName == null && configuration.regionsEnabled) {
+        }
+
+        if (regionName == null && configuration.regionsEnabled) {
             FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
             return null;
         }
 
-        Set<String> memberNames = loadSet(data, "members");
-        Set<String> allyNames = loadSet(data, "allies");
-        Set<String> enemyNames = loadSet(data, "enemies");
+        Set<String> memberNames = loadSet(wrapper, "members");
+        Set<String> allyNames = loadSet(wrapper, "allies");
+        Set<String> enemyNames = loadSet(wrapper, "enemies");
 
         final Region region = RegionUtils.get(regionName);
         if (region == null && configuration.regionsEnabled) {
@@ -77,9 +83,9 @@ public class FlatGuild {
         if (id != null && !id.isEmpty()) {
             uuid = UUID.fromString(id);
         }
-        
+
         final User owner = User.get(ownerName);
-        
+
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
         if (deputyName != null && !deputyName.isEmpty()) {
             deputies = UserUtils.getUsers(ChatUtils.fromString(deputyName));
@@ -99,7 +105,7 @@ public class FlatGuild {
             memberNames = new HashSet<>();
             memberNames.add(ownerName);
         }
-        
+
         Set<User> members = UserUtils.getUsers(memberNames);
         Set<Guild> allies = loadGuilds(allyNames);
         Set<Guild> enemies = loadGuilds(enemyNames);
@@ -107,17 +113,17 @@ public class FlatGuild {
         if (born == 0) {
             born = System.currentTimeMillis();
         }
-        
+
         if (validity == 0) {
             validity = System.currentTimeMillis() + configuration.validityStart;
         }
-        
+
         if (lives == 0) {
             lives = configuration.warLives;
         }
 
         final Object[] values = new Object[17];
-        
+
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
@@ -134,7 +140,7 @@ public class FlatGuild {
         values[13] = ban;
         values[14] = deputies;
         values[15] = pvp;
-        
+
         return DeserializationUtils.deserializeGuild(values);
     }
 
@@ -142,40 +148,45 @@ public class FlatGuild {
         if (guild.getName() == null) {
             FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild! Caused by: name is null");
             return false;
-        } else if (guild.getTag() == null) {
+        }
+
+        if (guild.getTag() == null) {
             FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
             return false;
-        } else if (guild.getOwner() == null) {
+        }
+
+        if (guild.getOwner() == null) {
             FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
             return false;
         }
-        else if (guild.getRegion() == null && FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+
+        if (guild.getRegion() == null && FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
             return false;
         }
 
         File file = flatDataModel.loadCustomFile(BasicType.GUILD, guild.getName());
-        YamlWrapper pc = new YamlWrapper(file);
+        YamlWrapper wrapper = new YamlWrapper(file);
 
-        pc.set("uuid", guild.getUUID().toString());
-        pc.set("name", guild.getName());
-        pc.set("tag", guild.getTag());
-        pc.set("owner", guild.getOwner().getName());
-        pc.set("home", LocationUtils.toString(guild.getHome()));
-        pc.set("members", UserUtils.getNames(guild.getMembers()));
-        pc.set("region", RegionUtils.toString(guild.getRegion()));
-        pc.set("regions", null);
-        pc.set("allies", GuildUtils.getNames(guild.getAllies()));
-        pc.set("enemies", GuildUtils.getNames(guild.getEnemies()));
-        pc.set("born", guild.getBorn());
-        pc.set("validity", guild.getValidity());
-        pc.set("attacked", guild.getAttacked());
-        pc.set("lives", guild.getLives());
-        pc.set("ban", guild.getBan());
-        pc.set("pvp", guild.getPvP());
-        pc.set("deputy", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
-        
-        pc.save();
+        wrapper.set("uuid", guild.getUUID().toString());
+        wrapper.set("name", guild.getName());
+        wrapper.set("tag", guild.getTag());
+        wrapper.set("owner", guild.getOwner().getName());
+        wrapper.set("home", LocationUtils.toString(guild.getHome()));
+        wrapper.set("members", UserUtils.getNames(guild.getMembers()));
+        wrapper.set("region", RegionUtils.toString(guild.getRegion()));
+        wrapper.set("regions", null);
+        wrapper.set("allies", GuildUtils.getNames(guild.getAllies()));
+        wrapper.set("enemies", GuildUtils.getNames(guild.getEnemies()));
+        wrapper.set("born", guild.getBorn());
+        wrapper.set("validity", guild.getValidity());
+        wrapper.set("attacked", guild.getAttacked());
+        wrapper.set("lives", guild.getLives());
+        wrapper.set("ban", guild.getBan());
+        wrapper.set("pvp", guild.getPvP());
+        wrapper.set("deputy", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
+
+        wrapper.save();
         return true;
     }
 
@@ -195,7 +206,7 @@ public class FlatGuild {
 
     private static Set<Guild> loadGuilds(Collection<String> guilds) {
         Set<Guild> set = new HashSet<>();
-        
+
         if (guilds == null) {
             return set;
         }
@@ -207,7 +218,7 @@ public class FlatGuild {
                 set.add(guild);
             }
         }
-        
+
         return set;
     }
 

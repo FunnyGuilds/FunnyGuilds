@@ -19,15 +19,15 @@ public class FlatUser {
             return null;
         }
 
-        YamlWrapper pc = new YamlWrapper(file);
+        YamlWrapper wrapper = new YamlWrapper(file);
 
-        String id = pc.getString("uuid");
-        String name = pc.getString("name");
-        int points = pc.getInt("points");
-        int kills = pc.getInt("kills");
-        int deaths = pc.getInt("deaths");
-        long ban = pc.getLong("ban");
-        String reason = pc.getString("reason");
+        String id = wrapper.getString("uuid");
+        String name = wrapper.getString("name");
+        int points = wrapper.getInt("points");
+        int kills = wrapper.getInt("kills");
+        int deaths = wrapper.getInt("deaths");
+        long ban = wrapper.getLong("ban");
+        String reason = wrapper.getString("reason");
 
         if (id == null || name == null) {
             return null;
@@ -51,20 +51,20 @@ public class FlatUser {
             return false;
         }
 
-        YamlWrapper pc = new YamlWrapper(file);
+        YamlWrapper wrapper = new YamlWrapper(file);
         
-        pc.set("uuid", user.getUUID().toString());
-        pc.set("name", user.getName());
-        pc.set("points", user.getRank().getPoints());
-        pc.set("kills", user.getRank().getKills());
-        pc.set("deaths", user.getRank().getDeaths());
+        wrapper.set("uuid", user.getUUID().toString());
+        wrapper.set("name", user.getName());
+        wrapper.set("points", user.getRank().getPoints());
+        wrapper.set("kills", user.getRank().getKills());
+        wrapper.set("deaths", user.getRank().getDeaths());
 
         if (user.isBanned()) {
-            pc.set("ban", user.getBan().getBanTime());
-            pc.set("reason", user.getBan().getReason());
+            wrapper.set("ban", user.getBan().getBanTime());
+            wrapper.set("reason", user.getBan().getReason());
         }
 
-        pc.save();
+        wrapper.save();
         return true;
     }
 }

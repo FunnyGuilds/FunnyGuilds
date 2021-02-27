@@ -52,18 +52,24 @@ public class SQLTable {
         return name;
     }
 
+    public String getNameGraveAccent() {
+        return "`" + name + "`";
+    }
+
     public ArrayList<SQLElement> getSqlElements() {
         return sqlElements;
     }
 
-    public boolean containKey(String key) {
-        for (SQLElement element : sqlElements) {
-            if (element.getKey().equalsIgnoreCase(key)) {
-                return true;
+    public int getIndexElement(String key) {
+        for (int index = 0; index < sqlElements.size(); index++) {
+            if (!sqlElements.get(index).getKey().equalsIgnoreCase(key)) {
+                continue;
             }
+
+            return index;
         }
 
-        return false;
+        return -1;
     }
 
     public SQLElement getSQLElement(String key) {

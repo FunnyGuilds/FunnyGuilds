@@ -5,9 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.function.Consumer;
+import java.sql.SQLException;
 
 public class Database {
 
@@ -28,9 +26,9 @@ public class Database {
 
         this.dataSource.setMaximumPoolSize(poolSize);
         this.dataSource.setConnectionTimeout(c.connectionTimeout);
-
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
         this.dataSource.setUsername(c.user);
+
         if (c.password != null && ! c.password.isEmpty()) {
             this.dataSource.setPassword(c.password);
         }
@@ -53,49 +51,8 @@ public class Database {
         return dataSource;
     }
 
-    public void executeQuery(String query, Consumer<ResultSet> action) {
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet result = statement.executeQuery()) {
-
-            action.accept(result);
-        }
-        catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute query", ex);
-        }
-    }
-
-    public void executeUpdate(String query) {
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            if (statement == null) {
-                return;
-            }
-
-            statement.executeUpdate();
-        }
-        catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute update", ex);
-        }
-    }
-
-    public void executeUpdate(String query, boolean ignoreFail) {
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            if (statement == null) {
-                return;
-            }
-
-            statement.executeUpdate();
-        }
-        catch (Exception ex) {
-            if (ignoreFail) {
-                FunnyGuilds.getInstance().getPluginLogger().debug("Could not execute update - ignored exception: " +  ex.getMessage());
-                return;
-            }
-
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute update", ex);
-        }
+    public static Connection getConnection() throws SQLException {
+        return getInstance().getDataSource().getConnection();
     }
 
     public void shutdown() {

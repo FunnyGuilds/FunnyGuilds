@@ -13,6 +13,8 @@ import java.util.function.Supplier;
 
 public final class SpaceUtils {
 
+    private SpaceUtils() {}
+
     public static boolean chance(double chance) {
         return chance >= 100 || chance > ThreadLocalRandom.current().nextDouble(0, 100);
     }
@@ -52,7 +54,5 @@ public final class SpaceUtils {
 
         return result;
     }
-
-    private SpaceUtils() {}
     
 }

@@ -10,12 +10,11 @@ import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.element.*;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class SQLDataModel implements DataModel {
 
@@ -80,118 +79,91 @@ public class SQLDataModel implements DataModel {
         tabGuilds.setPrimaryKey("uuid");
     }
 
-    public void load() {
-        Database db = Database.getInstance();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+    public void load() throws SQLException {
+        createTableIfNotExists(tabUsers);
+        createTableIfNotExists(tabRegions);
+        createTableIfNotExists(tabGuilds);
 
-        createTableIfNotExists(db, tabUsers);
-        createTableIfNotExists(db, tabRegions);
-        createTableIfNotExists(db, tabGuilds);
-
-        loadUsers(config);
-        loadRegions(config);
-        loadGuilds(config);
+        loadUsers();
+        loadRegions();
+        loadGuilds();
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
     }
 
-    public void loadUsers(PluginConfiguration config) {
-        Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.usersTableName + "`", usersResult -> {
-            try {
-                while (usersResult.next()) {
-                    String userName = usersResult.getString("name");
+    public void loadUsers() throws SQLException {
+        ResultSet result = SQLBasicUtils.getSelectAll(SQLDataModel.tabUsers).executeQuery();
 
-                    if (!UserUtils.validateUsername(userName)) {
-                        FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
-                        continue;
-                    }
+        while (result.next()) {
+            String userName = result.getString("name");
 
-                    User user = DatabaseUser.deserialize(usersResult);
-                    if (user != null) {
-                        user.wasChanged();
-                    }
-                }
-
-                FunnyGuilds.getInstance().getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+            if (!UserUtils.validateUsername(userName)) {
+                FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
+                continue;
             }
-            catch (Exception ex) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Could not load users from database", ex);
+
+            User user = DatabaseUser.deserialize(result);
+
+            if (user != null) {
+                user.wasChanged();
             }
-        });
-    }
-
-    public void loadRegions(PluginConfiguration config) {
-        if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-            Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.regionsTableName + "`", regionsResult -> {
-                try {
-                    while (regionsResult.next()) {
-                        Region region = DatabaseRegion.deserialize(regionsResult);
-                        if (region != null) {
-                            region.wasChanged();
-                        }
-                    }
-
-                    FunnyGuilds.getInstance().getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
-                } catch (Exception ex) {
-                    FunnyGuilds.getInstance().getPluginLogger().error("Could not load regions from database", ex);
-                }
-            });
-
-        } else {
-            FunnyGuilds.getInstance().getPluginLogger().info("Regions are disabled and thus - not loaded");
         }
+
+        FunnyGuilds.getInstance().getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
     }
 
-    public void loadGuilds(PluginConfiguration config) {
-        Database.getInstance().executeQuery("SELECT * FROM `" + config.mysql.guildsTableName + "`", guildsResult -> {
-            try {
-                while (guildsResult.next()) {
-                    Guild guild = DatabaseGuild.deserialize(guildsResult);
-                    if (guild != null) {
-                        guild.wasChanged();
-                    }
-                }
+    public void loadRegions() throws SQLException {
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+            FunnyGuilds.getInstance().getPluginLogger().info("Regions are disabled and thus - not loaded");
+            return;
+        }
 
-                FunnyGuilds.getInstance().getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
+        ResultSet result = SQLBasicUtils.getSelectAll(SQLDataModel.tabRegions).executeQuery();
+
+        while (result.next()) {
+            Region region = DatabaseRegion.deserialize(result);
+
+            if (region != null) {
+                region.wasChanged();
             }
-            catch (Exception ex) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Could not load guilds from database", ex);
+        }
+
+        FunnyGuilds.getInstance().getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
+    }
+
+    public void loadGuilds() throws SQLException {
+        ResultSet resultAll = SQLBasicUtils.getSelectAll(SQLDataModel.tabGuilds).executeQuery();
+
+        while (resultAll.next()) {
+            Guild guild = DatabaseGuild.deserialize(resultAll);
+
+            if (guild != null) {
+                guild.wasChanged();
             }
-        });
+        }
 
-        Database.getInstance().executeQuery("SELECT `tag`, `allies`, `enemies` FROM `" + config.mysql.guildsTableName + "`", result -> {
-            try {
-                while (result.next()) {
-                    Guild guild = GuildUtils.getByTag(result.getString("tag"));
+        ResultSet result = SQLBasicUtils.getSelect(SQLDataModel.tabGuilds, "tag", "allies", "enemies").executeQuery();
 
-                    if (guild == null) {
-                        continue;
-                    }
+        while (result.next()) {
+            Guild guild = GuildUtils.getByTag(result.getString("tag"));
 
-                    String alliesList = result.getString("allies");
-                    String enemiesList = result.getString("enemies");
-                    Set<Guild> allies = new HashSet<>();
-                    Set<Guild> enemies = new HashSet<>();
-
-                    if (alliesList != null && !alliesList.equals("")) {
-                        allies = GuildUtils.getGuilds(ChatUtils.fromString(alliesList));
-                    }
-
-                    if (enemiesList != null && !enemiesList.equals("")) {
-                        enemies = GuildUtils.getGuilds(ChatUtils.fromString(enemiesList));
-                    }
-
-                    guild.setAllies(allies);
-                    guild.setEnemies(enemies);
-                }
+            if (guild == null) {
+                continue;
             }
-            catch (Exception ex) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Could not load allies from database", ex);
-            }
-        });
 
-        // TODO
+            String alliesList = result.getString("allies");
+            String enemiesList = result.getString("enemies");
+
+            if (alliesList != null && !alliesList.equals("")) {
+                guild.setAllies(GuildUtils.getGuilds(ChatUtils.fromString(alliesList)));
+            }
+
+            if (enemiesList != null && !enemiesList.equals("")) {
+                guild.setEnemies(GuildUtils.getGuilds(ChatUtils.fromString(enemiesList)));
+            }
+        }
+
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getOwner() != null) {
                 continue;
@@ -199,103 +171,46 @@ public class SQLDataModel implements DataModel {
 
             GuildUtils.deleteGuild(guild);
         }
+
+        FunnyGuilds.getInstance().getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
 
     @Override
     public void save(boolean ignoreNotChanged) {
         for (User user : UserUtils.getUsers()) {
-            if (ignoreNotChanged) {
-                if (! user.wasChanged()) {
-                    continue;
-                }
+            if (ignoreNotChanged && !user.wasChanged()) {
+                continue;
             }
 
-            try {
-                new DatabaseUser(user).save();
-            }
-            catch (Exception ex) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Could not save user to database", ex);
-            }
-        }
-
-        if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-            for (Region region : RegionUtils.getRegions()) {
-                if (ignoreNotChanged) {
-                    if (! region.wasChanged()) {
-                        continue;
-                    }
-                }
-
-                try {
-                    new DatabaseRegion(region).save();
-                }
-                catch (Exception ex) {
-                    FunnyGuilds.getInstance().getPluginLogger().error("Could not save region to database", ex);
-                }
-            }
+            DatabaseUser.save(user);
         }
 
         for (Guild guild : GuildUtils.getGuilds()) {
-            if (ignoreNotChanged) {
-                if (! guild.wasChanged()) {
-                    continue;
-                }
+            if (ignoreNotChanged && !guild.wasChanged()) {
+                continue;
             }
 
-            try {
-                new DatabaseGuild(guild).save();
+            DatabaseGuild.save(guild);
+        }
+
+        if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+            return;
+        }
+
+        for (Region region : RegionUtils.getRegions()) {
+            if (ignoreNotChanged && !region.wasChanged()) {
+                continue;
             }
-            catch (Exception ex) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Could not save guild to database", ex);
-            }
+
+            DatabaseRegion.save(region);
         }
     }
 
-    public void createTableIfNotExists(Database db, SQLTable table) {
-        StringBuilder sb = new StringBuilder();
+    public void createTableIfNotExists(SQLTable table) {
+        SQLBasicUtils.getCreate(table).executeUpdate();
 
-        sb.append("create table if not exists");
-        sb.append(" `").append(table.getName()).append("` ");
-        sb.append("(");
-
-        for (SQLElement element : table.getSqlElements()) {
-            sb.append("`").append(element.getKey()).append("` ");
-            sb.append(element.getType());
-
-            if (element.isNotNull()) {
-                sb.append(" not null");
-            }
-
-            sb.append(",");
-        }
-
-        sb.append("primary key (");
-        sb.append(table.getPrimaryKey().getKey());
-        sb.append("));");
-
-        db.executeUpdate(sb.toString());
-        tableRepair(db, table);
-    }
-
-    public void tableRepair(Database db, SQLTable table) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("alter table");
-        sb.append(" `").append(table.getName()).append("` ");
-        sb.append("add column");
-
-        int startChar = sb.length();
-
-        for (int index = 0; index < table.getSqlElements().size(); index++) {
-            SQLElement element = table.getSqlElements().get(index);
-
-            sb.setLength(startChar);
-            sb.append(" `").append(element.getKey()).append("` ");
-            sb.append(element.getType());
-            sb.append(index == 0 ? " first" : " after " + table.getSqlElements().get(index - 1).getKey());
-            sb.append(";");
-
-            db.executeUpdate(sb.toString(), true);
+        for (SQLElement sqlElement : table.getSqlElements()) {
+            SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true);
         }
     }
 }

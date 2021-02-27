@@ -61,30 +61,21 @@ public class FlatDataModel implements DataModel {
                 IOUtils.initialize(file, true);
                 return file;
             }
-            default:
-                return null;
         }
+
+        return null;
     }
 
     public File getUserFile(User user) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(user.getName());
-        sb.append(".yml");
-        return new File(this.usersFolderFile, sb.toString());
+        return new File(this.usersFolderFile, user.getName() + ".yml");
     }
 
     public File getRegionFile(Region region) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(region.getName());
-        sb.append(".yml");
-        return new File(this.regionsFolderFile, sb.toString());
+        return new File(this.regionsFolderFile, region.getName() + ".yml");
     }
 
     public File getGuildFile(Guild guild) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(guild.getName());
-        sb.append(".yml");
-        return new File(this.guildsFolderFile, sb.toString());
+        return new File(this.guildsFolderFile, guild.getName() + ".yml");
     }
 
     @Override
@@ -110,10 +101,8 @@ public class FlatDataModel implements DataModel {
 
         for (User user : UserUtils.getUsers()) {
             if (user.getUUID() != null && user.getName() != null) {
-                if (! ignoreNotChanged) {
-                    if (! user.wasChanged()) {
-                        continue;
-                    }
+                if (ignoreNotChanged && !user.wasChanged()) {
+                    continue;
                 }
 
                 new FlatUser(user).serialize(this);
@@ -122,14 +111,14 @@ public class FlatDataModel implements DataModel {
     }
 
     private void loadUsers() {
-        int i = 0;
+        int repaired = 0;
         File[] path = usersFolderFile.listFiles();
 
         if (path != null) {
             for (File file : path) {
                 if (file.isDirectory() || file.length() == 0) {
                     file.delete();
-                    i++;
+                    repaired++;
                     continue;
                 }
 
@@ -142,45 +131,45 @@ public class FlatDataModel implements DataModel {
 
                 if (user == null) {
                     file.delete();
-                    i++;
+                    repaired++;
+                    continue;
                 }
-                else {
-                    user.wasChanged();
-                }
+
+                user.wasChanged();
             }
         }
 
-        if (i > 0) {
-            FunnyGuilds.getInstance().getPluginLogger().warning("Repaired conflicts: " + i);
+        if (repaired > 0) {
+            FunnyGuilds.getInstance().getPluginLogger().warning("Repaired conflicts: " + repaired);
         }
 
         FunnyGuilds.getInstance().getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
     }
 
     private void saveRegions(boolean ignoreNotChanged) {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return;
         }
 
-        int i = 0;
+        int defective = 0;
         for (Region region : RegionUtils.getRegions()) {
-            if (ignoreNotChanged) {
-                if (! region.wasChanged()) {
-                    continue;
-                }
+            if (ignoreNotChanged && !region.wasChanged()) {
+                continue;
             }
-            if (! new FlatRegion(region).serialize(this)) {
+
+            if (!new FlatRegion(region).serialize(this)) {
                 RegionUtils.delete(region);
-                i++;
+                defective++;
             }
         }
-        if (i > 0) {
-            FunnyGuilds.getInstance().getPluginLogger().warning("Deleted defective regions: " + i);
+
+        if (defective > 0) {
+            FunnyGuilds.getInstance().getPluginLogger().warning("Deleted defective regions: " + defective);
         }
     }
 
     private void loadRegions() {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             FunnyGuilds.getInstance().getPluginLogger().info("Regions are disabled and thus - not loaded");
             return;
         }
@@ -231,10 +220,10 @@ public class FlatDataModel implements DataModel {
 
                 if (guild == null) {
                     file.delete();
+                    continue;
                 }
-                else {
-                    guild.wasChanged();
-                }
+
+                guild.wasChanged();
             }
         }
 

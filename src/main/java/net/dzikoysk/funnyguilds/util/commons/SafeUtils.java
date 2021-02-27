@@ -4,6 +4,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class SafeUtils {
 
+    private SafeUtils() {}
+
     private static void reportUnsafe(Throwable th) {
         FunnyGuilds.getInstance().getPluginLogger().error("Something went wrong while handling unsafe", th);
     }
@@ -22,5 +24,4 @@ public final class SafeUtils {
         T initialize() throws Exception;
     }
 
-    private SafeUtils() {}
 }
