@@ -6,6 +6,8 @@ import java.util.HashMap;
 
 public class SQLBasicUtils {
 
+    private SQLBasicUtils() {}
+
     public static SQLNamedStatement getInsert(SQLTable table) {
         StringBuilder sb = new StringBuilder();
 
@@ -117,7 +119,5 @@ public class SQLBasicUtils {
 
         return new SQLNamedStatement(sb.toString(),  new HashMap<>());
     }
-
-    private SQLBasicUtils() {}
 
 }

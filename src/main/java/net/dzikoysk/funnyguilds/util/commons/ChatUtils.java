@@ -10,6 +10,8 @@ import java.util.Locale;
 
 public final class ChatUtils {
 
+    private ChatUtils() {}
+
     public static String colored(String message) {
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
     }
@@ -71,7 +73,5 @@ public final class ChatUtils {
     public static String getPercent(double fraction) {
         return String.format(Locale.US, "%.1f", 100.0D * fraction);
     }
-    
-    private ChatUtils() {}
 
 }

@@ -10,6 +10,8 @@ import java.util.List;
 
 public final class LocationUtils {
 
+    private LocationUtils() {}
+
     public static double flatDistance(Location a, Location b) {
         return Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getZ() - a.getZ(), 2));
     }
@@ -60,7 +62,5 @@ public final class LocationUtils {
                 "," +
                 location.getBlockZ();
     }
-    
-    private LocationUtils() {}
 
 }

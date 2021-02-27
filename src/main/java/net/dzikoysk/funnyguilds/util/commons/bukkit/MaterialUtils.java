@@ -17,6 +17,8 @@ public final class MaterialUtils {
     private static final Method MATCH_MATERIAL_METHOD =
             Reflections.getMethod(Material.class, "matchMaterial", String.class, boolean.class);
 
+    private MaterialUtils() {}
+
     public static Material parseMaterial(String string, boolean allowNullReturn) {
         if (string == null) {
             FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material: null");
@@ -103,8 +105,5 @@ public final class MaterialUtils {
             return null;
         }
     }
-
-
-    private MaterialUtils() {}
 
 }

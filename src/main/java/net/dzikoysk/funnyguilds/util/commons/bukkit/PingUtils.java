@@ -19,6 +19,8 @@ public class PingUtils {
         pingField = Reflections.getField(Reflections.getNMSClass("EntityPlayer"), "ping");
     }
 
+    private PingUtils() {}
+
     public static int getPing(Player player) {
         int ping = 0;
 

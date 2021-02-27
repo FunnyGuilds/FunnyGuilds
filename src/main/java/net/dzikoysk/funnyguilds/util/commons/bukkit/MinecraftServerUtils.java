@@ -28,6 +28,8 @@ public final class MinecraftServerUtils {
         }
     }
 
+    private MinecraftServerUtils() {}
+
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
     public static String getRecentTPS(int last) {
         try {
@@ -37,9 +39,6 @@ public final class MinecraftServerUtils {
             FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve recent TPS", illegalAccessException);
             return null;
         }
-    }
-
-    private MinecraftServerUtils() {
     }
 
 }

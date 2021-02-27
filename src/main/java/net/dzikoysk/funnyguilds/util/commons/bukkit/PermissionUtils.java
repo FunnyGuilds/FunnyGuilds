@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.hook.VaultHook;
 import org.bukkit.OfflinePlayer;
 
 public final class PermissionUtils {
+
     private PermissionUtils() {}
 
     public static boolean isPrivileged(User user, String permission) {
