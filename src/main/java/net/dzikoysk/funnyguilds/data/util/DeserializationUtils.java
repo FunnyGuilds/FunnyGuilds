@@ -35,6 +35,7 @@ public final class DeserializationUtils {
         guild.setLives((int) values[12]);
         guild.setBan((long) values[13]);
         guild.setDeputies((Set<User>) values[14]);
+        guild.setPvP((boolean) values[15]);
         guild.deserializationUpdate();
         
         return guild;
