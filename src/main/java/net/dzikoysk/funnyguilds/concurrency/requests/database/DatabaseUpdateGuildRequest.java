@@ -31,7 +31,11 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
         try {
             if (dataModel instanceof SQLDataModel) {
                 DatabaseGuild.save(guild);
-                DatabaseRegion.save(guild.getRegion());
+
+                if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+                    DatabaseRegion.save(guild.getRegion());
+                }
+
                 Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(DatabaseUser::save);
                 return;
             }
@@ -40,8 +44,10 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
                 FlatGuild flatGuild = new FlatGuild(guild);
                 flatGuild.serialize((FlatDataModel) dataModel);
 
-                FlatRegion flatRegion = new FlatRegion(guild.getRegion());
-                flatRegion.serialize((FlatDataModel) dataModel);
+                if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+                    FlatRegion flatRegion = new FlatRegion(guild.getRegion());
+                    flatRegion.serialize((FlatDataModel) dataModel);
+                }
 
                 Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner()))
                         .map(FlatUser::new).forEach(flatUser -> flatUser.serialize((FlatDataModel) dataModel));
