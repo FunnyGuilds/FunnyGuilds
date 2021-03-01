@@ -17,6 +17,8 @@ public class Rank implements Comparable<Rank> {
     private int points;
     private int kills;
     private int deaths;
+    private int assist;
+    private int logouts;
 
     public Rank(Basic basic) {
         this.basic = basic;
@@ -54,6 +56,16 @@ public class Rank implements Comparable<Rank> {
 
     public void addDeath() {
         this.deaths++;
+        this.basic.markChanged();
+    }
+
+    public void addAssist() {
+        this.assist++;
+        this.basic.markChanged();
+    }
+
+    public void addLogout() {
+        this.logouts++;
         this.basic.markChanged();
     }
 
@@ -152,6 +164,42 @@ public class Rank implements Comparable<Rank> {
         this.basic.markChanged();
     }
 
+    public int getAssists() {
+        if (this.type.equals(BasicType.USER)) {
+            return this.assist;
+        }
+
+        int assist = 0;
+        for (User user : this.guild.getMembers()) {
+            assist += user.getRank().getAssists();
+        }
+
+        return assist;
+    }
+
+    public void setAssists(int assist) {
+        this.assist = assist;
+        this.basic.markChanged();
+    }
+
+    public int getLogouts() {
+        if (this.type.equals(BasicType.USER)) {
+            return this.logouts;
+        }
+
+        int logouts = 0;
+        for (User user : this.guild.getMembers()) {
+            logouts += user.getRank().getLogouts();
+        }
+
+        return logouts;
+    }
+
+    public void setLogouts(int logouts) {
+        this.logouts = logouts;
+        this.basic.markChanged();
+    }
+
     public float getKDR() {
         if (getDeaths() == 0) {
             return getKills();
@@ -159,7 +207,7 @@ public class Rank implements Comparable<Rank> {
     
         return 1.0F * getKills() / getDeaths();
     }
-    
+
     public String getIdentityName() {
         return identityName;
     }

@@ -22,18 +22,22 @@ public class DatabaseUser {
             int points = rs.getInt("points");
             int kills = rs.getInt("kills");
             int deaths = rs.getInt("deaths");
+            int assists = rs.getInt("assists");
+            int logouts = rs.getInt("logouts");
             long ban = rs.getLong("ban");
             String reason = rs.getString("reason");
 
-            Object[] values = new Object[7];
+            Object[] values = new Object[9];
 
             values[0] = uuid;
             values[1] = name;
             values[2] = points;
             values[3] = kills;
             values[4] = deaths;
-            values[5] = ban;
-            values[6] = reason;
+            values[5] = assists;
+            values[6] = logouts;
+            values[7] = ban;
+            values[8] = reason;
 
             return DeserializationUtils.deserializeUser(values);
         }
@@ -52,7 +56,8 @@ public class DatabaseUser {
         statement.set("points", user.getRank().getPoints());
         statement.set("kills", user.getRank().getKills());
         statement.set("deaths", user.getRank().getDeaths());
-        statement.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
+        statement.set("assists", user.getRank().getAssists());
+        statement.set("logouts", user.getRank().getLogouts());
         statement.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
         statement.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
         statement.executeUpdate();
