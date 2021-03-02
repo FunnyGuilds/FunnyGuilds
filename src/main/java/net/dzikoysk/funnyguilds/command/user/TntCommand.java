@@ -19,7 +19,7 @@ public final class TntCommand {
         aliases = "${user.tnt.aliases}",
         acceptsExceeded = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
+    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender) {
         when (!config.guildTNTProtectionEnabled, messages.tntProtectDisable);
 
         LocalTime now = LocalTime.now();

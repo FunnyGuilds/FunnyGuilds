@@ -470,7 +470,7 @@ public class MessageConfiguration {
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String leaderMembers = "&7{PLAYER} zostal nowym &aliderem &7gildii!";
 
-    @CfgComment("")
+    @CfgComment("<------- TNT Hours Messages -------> #")
     public String tntInfo = "&7TNT na teranach gildii działa od {FROM} do {TO}";
     public String tntProtectDisable = "&7TNT wybucha o każdej porze.";
     public String tntNowEnabled = "&aTNT aktualnie jest włączone.";
