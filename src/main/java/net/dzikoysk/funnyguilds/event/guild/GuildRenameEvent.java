@@ -6,6 +6,7 @@ import org.bukkit.event.HandlerList;
 
 public class GuildRenameEvent extends GuildEvent {
 
+    private final String oldName;
     private final String newName;
     private static final HandlerList handlers = new HandlerList();
 
@@ -18,10 +19,15 @@ public class GuildRenameEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildRenameEvent(EventCause eventCause, User doer, Guild guild, String newName) {
+    public GuildRenameEvent(EventCause eventCause, User doer, Guild guild, String oldName, String newName) {
         super(eventCause, doer, guild);
 
+        this.oldName = oldName;
         this.newName = newName;
+    }
+
+    public String getOldName() {
+        return this.oldName;
     }
 
     public String getNewName() {
