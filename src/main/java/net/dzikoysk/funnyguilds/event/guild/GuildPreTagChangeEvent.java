@@ -6,6 +6,7 @@ import org.bukkit.event.HandlerList;
 
 public class GuildPreTagChangeEvent extends GuildEvent {
 
+    private final String oldTag;
     private final String newTag;
     private static final HandlerList handlers = new HandlerList();
 
@@ -18,10 +19,15 @@ public class GuildPreTagChangeEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildPreTagChangeEvent(EventCause eventCause, User doer, Guild guild, String newTag) {
+    public GuildPreTagChangeEvent(EventCause eventCause, User doer, Guild guild, String oldTag, String newTag) {
         super(eventCause, doer, guild);
 
+        this.oldTag = oldTag;
         this.newTag = newTag;
+    }
+
+    public String getOldTag() {
+        return oldTag;
     }
 
     public String getNewTag() {

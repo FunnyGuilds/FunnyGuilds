@@ -29,11 +29,12 @@ public final class TagCommand {
         when (GuildUtils.tagExists(tag), messages.createTagExists);
 
         User admin = AdminUtils.getAdminUser(sender);
-        if (!SimpleEventHandler.handle(new GuildPreTagChangeEvent(AdminUtils.getCause(admin), admin, guild, tag))) {
+
+        String oldTag = guild.getTag();
+        if (!SimpleEventHandler.handle(new GuildPreTagChangeEvent(AdminUtils.getCause(admin), admin, guild, oldTag, tag))) {
             return;
         }
 
-        String oldTag = guild.getTag();
         guild.setTag(tag);
 
         sender.sendMessage(messages.adminTagChanged
