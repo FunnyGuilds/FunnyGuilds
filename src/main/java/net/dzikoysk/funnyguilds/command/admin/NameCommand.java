@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildPreRenameEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import org.bukkit.command.CommandSender;
 
@@ -34,7 +35,9 @@ public final class NameCommand {
         when (GuildUtils.nameExists(args[1]), messages.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
-        if (!SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, args[1]))) {
+
+        String oldName = guild.getName();
+        if (!SimpleEventHandler.handle(new GuildPreRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]))) {
             return;
         }
 
@@ -64,6 +67,8 @@ public final class NameCommand {
         
         guild.setName(args[1]);
         sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
+
+        SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }
 
 }

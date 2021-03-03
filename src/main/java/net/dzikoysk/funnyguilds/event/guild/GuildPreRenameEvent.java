@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.event.HandlerList;
 
-public class GuildRenameEvent extends GuildEvent {
+public class GuildPreRenameEvent extends GuildEvent {
 
     private final String oldName;
     private final String newName;
@@ -19,7 +19,7 @@ public class GuildRenameEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildRenameEvent(EventCause eventCause, User doer, Guild guild, String oldName, String newName) {
+    public GuildPreRenameEvent(EventCause eventCause, User doer, Guild guild, String oldName, String newName) {
         super(eventCause, doer, guild);
 
         this.oldName = oldName;
