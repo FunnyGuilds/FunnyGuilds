@@ -27,7 +27,7 @@ public class GuildTagChangeEvent extends GuildEvent {
     }
 
     public String getOldTag() {
-        return oldTag;
+        return this.oldTag;
     }
 
     public String getNewTag() {

@@ -27,7 +27,7 @@ public class GuildPreRenameEvent extends GuildEvent {
     }
 
     public String getOldName() {
-        return oldName;
+        return this.oldName;
     }
 
     public String getNewName() {
