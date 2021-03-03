@@ -195,7 +195,7 @@ public class MessageConfiguration {
     @CfgComment("<------- Info Messages -------> #")
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
-    
+
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}, {GUILD-ADDITIONAL-PROTECTION}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> infoList = Arrays.asList(
@@ -262,7 +262,7 @@ public class MessageConfiguration {
     public String generalPlayerHasNoGuild = "&cTen gracz nie ma gildii!";
     public String generalCommandDisabled = "&cTa komenda jest wylaczona!";
     public String generalAllyPvpDisabled = "&cPVP pomiedzy sojuszami jest wylaczone w konfiguracji!";
-    
+
     @CfgComment("<------- Escape Messages -------> #")
     public String escapeDisabled = "&cPrzykro mi, ucieczki sa wylaczone!";
     @CfgComment("Dostepne zmienne: {TIME}")
@@ -469,6 +469,12 @@ public class MessageConfiguration {
     public String leaderOwner = "&7Zostales nowym &aliderem &7gildii!";
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String leaderMembers = "&7{PLAYER} zostal nowym &aliderem &7gildii!";
+
+    @CfgComment("<------- TNT Hours Messages -------> #")
+    public String tntInfo = "&7TNT na teranach gildii działa od {FROM} do {TO}";
+    public String tntProtectDisable = "&7TNT wybucha o każdej porze.";
+    public String tntNowEnabled = "&aTNT aktualnie jest włączone.";
+    public String tntNowDisabled = "&cTNT aktualnie jest wyłączone.";
 
     @CfgComment("<------- Deputy Messages -------> #")
     public String deputyMustBeDifferent = "&cNie mozesz mianowac siebie zastepca!";

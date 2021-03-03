@@ -1602,6 +1602,7 @@ public class PluginConfiguration {
         public FunnyCommand items     = new FunnyCommand("przedmioty");
         public FunnyCommand escape    = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
         public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
+        public FunnyCommand tnt       = new FunnyCommand("tnt");
 
         @CfgName("break")
         public FunnyCommand break_ = new FunnyCommand("rozwiaz");
