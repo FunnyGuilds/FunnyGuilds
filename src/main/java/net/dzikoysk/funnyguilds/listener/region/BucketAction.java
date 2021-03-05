@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ public class BucketAction implements Listener {
     public void onFill(PlayerBucketFillEvent e) {
         if (ProtectionSystem.isProtected(e.getPlayer(), e.getBlockClicked().getLocation())) {
             e.setCancelled(true);
+            e.getPlayer().sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         }
     }
 
@@ -19,6 +21,7 @@ public class BucketAction implements Listener {
     public void onEmpty(PlayerBucketEmptyEvent e) {
         if (ProtectionSystem.isProtected(e.getPlayer(), e.getBlockClicked().getLocation())) {
             e.setCancelled(true);
+            e.getPlayer().sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         }
     }
 

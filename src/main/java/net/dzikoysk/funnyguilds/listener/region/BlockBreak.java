@@ -12,6 +12,7 @@ public class BlockBreak implements Listener {
     public void onBreak(BlockBreakEvent event) {
         if (ProtectionSystem.isProtected(event.getPlayer(), event.getBlock().getLocation(), FunnyGuilds.getInstance().getPluginConfiguration().regionExplodeBlockBreaking)) {
             event.setCancelled(true);
+            event.getPlayer().sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         }
     }
 

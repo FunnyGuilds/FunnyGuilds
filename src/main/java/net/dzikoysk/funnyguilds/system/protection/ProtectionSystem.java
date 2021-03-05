@@ -52,7 +52,6 @@ public final class ProtectionSystem {
             return false;
         }
 
-        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         return true;
     }
 
