@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,7 @@ public class BlockIgnite implements Listener {
     public void onIgnite(BlockIgniteEvent e) {
         if (ProtectionSystem.isProtected(e.getPlayer(), e.getBlock().getLocation())) {
             e.setCancelled(true);
+            e.getPlayer().sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         }
     }
 
