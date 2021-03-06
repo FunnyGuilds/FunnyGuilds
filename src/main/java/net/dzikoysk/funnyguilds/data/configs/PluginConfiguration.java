@@ -75,7 +75,7 @@ public class PluginConfiguration {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String pluginName = "FunnyGuilds";
 
-    @CfgComment("Czy plugin ma dzialac w trybie debug (wysylanie dodatkowych wiadomosci w celu zdiagnozowania bledow itp.)")
+    @CfgComment("Czy plugin ma dzialac w trybie debug. Sluzy on do wysylania dodatkowych wiadomosci w celu zdiagnozowania bledow itp.")
     @CfgName("debug-mode")
     public boolean debugMode = false;
 
@@ -88,11 +88,11 @@ public class PluginConfiguration {
     @CfgName("update-nightly-info")
     public boolean updateNightlyInfo = true;
 
-    @CfgComment("Mozliwosc zakladania gildii (mozna zmienic takze za pomoca komendy /ga enabled)")
+    @CfgComment("Mozliwosc zakladania gildii. Mozna ja zmienic takze za pomoca komendy /ga enabled")
     @CfgName("guilds-enabled")
     public boolean guildsEnabled = true;
 
-    @CfgComment("Czy tworzenie regionow gildii (i inne zwiazane z nimi rzeczy) maja byc wlaczone")
+    @CfgComment("Czy tworzenie regionow gildii, oraz inne zwiazane z nimi rzeczy, maja byc wlaczone")
     @CfgComment("UWAGA - dobrze przemysl decyzje o wylaczeniu regionow!")
     @CfgComment(
             "Gildie nie beda mialy w sobie zadnych informacji o regionach, a jesli regiony sa wlaczone - te informacje musza byc obecne")
@@ -164,7 +164,7 @@ public class PluginConfiguration {
     public boolean enableItemComponent = false;
 
     @CfgComment("Przedmioty wymagane do zalozenia gildii")
-    @CfgComment("Tylko wartosci ujete w <> sa wymagane, reszta (ujeta w []) jest opcjonalna")
+    @CfgComment("Tylko wartosci ujete w <> sa wymagane, reszta, ujeta w [], jest opcjonalna")
     @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant:eggtype:skullowner:armorcolor:flags]")
     @CfgComment("Przyklad: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
     @CfgComment("")
@@ -217,15 +217,15 @@ public class PluginConfiguration {
     @CfgName("required-money-vip")
     public double requiredMoneyVip = 0;
 
-    @CfgComment("Czy opcja wymaganego rankingu do zalozenia gildi ma byc wlaczona?")
+    @CfgComment("Czy opcja wymaganego rankingu do zalozenia gildii ma byc wlaczona?")
     @CfgName("rank-create-enable")
     public boolean rankCreateEnable = true;
 
-    @CfgComment("Minimalny ranking wymagany do zalozenia gildi")
+    @CfgComment("Minimalny ranking wymagany do zalozenia gildii")
     @CfgName("rank-create")
     public int rankCreate = 1000;
 
-    @CfgComment("Minimalny ranking wymagany do zalozenia gildi dla osoby z uprawnieniem funnyguilds.vip.rank")
+    @CfgComment("Minimalny ranking wymagany do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.rank")
     @CfgName("rank-create-vip")
     public int rankCreateVip = 800;
 
@@ -254,7 +254,7 @@ public class PluginConfiguration {
     public List<ItemStack> guiItems;
 
     @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
-    @CfgComment("Nazwa moze zawierac max. 32 znaki (wliczajac w to kody kolorow)")
+    @CfgComment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
     @CfgName("gui-items-title")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guiItemsTitle_ = "&5&lPrzedmioty na gildie";
@@ -276,7 +276,7 @@ public class PluginConfiguration {
     public List<ItemStack> guiItemsVip;
 
     @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
-    @CfgComment("Nazwa moze zawierac max. 32 znaki (wliczajac w to kody kolorow)")
+    @CfgComment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
     @CfgName("gui-items-vip-title")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String guiItemsVipTitle_ = "&5&lPrzedmioty na gildie (VIP)";
@@ -388,7 +388,7 @@ public class PluginConfiguration {
     public boolean buggedBlocks = false;
 
     @CfgComment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete")
-    @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
+    @CfgComment("Czas podawany w tickach. 1 sekunda = 20 tickow")
     @CfgName("bugged-blocks-timer")
     public long buggedBlocksTimer = 20L;
 
@@ -457,15 +457,15 @@ public class PluginConfiguration {
     @CfgName("base-enable")
     public boolean baseEnable = true;
 
-    @CfgComment("Czas oczekiwania na teleportacje (w sekundach)")
+    @CfgComment("Czas oczekiwania na teleportacje, w sekundach")
     @CfgName("base-delay")
     public int baseDelay = 5;
 
-    @CfgComment("Czas oczekiwania na teleportacje (w sekundach) dla graczy posiadajacych uprawnienie (funnyguilds.vip.baseTeleportTime)")
+    @CfgComment("Czas oczekiwania na teleportacje, w sekundach, dla graczy posiadajacych uprawnienie funnyguilds.vip.baseTeleportTime")
     @CfgName("base-delay-vip")
     public int baseDelayVip = 3;
 
-    @CfgComment("Koszt teleportacji do gildii (jezeli brak, wystarczy zrobic: base-items: [])")
+    @CfgComment("Koszt teleportacji do gildii. Jezeli teleportacja ma byc darmowa, wystarczy wpisac: base-items: []")
     @CfgName("base-items")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
@@ -474,7 +474,7 @@ public class PluginConfiguration {
     @CfgExclude
     public List<ItemStack> baseItems;
 
-    @CfgComment("Koszt dolaczenia do gildii (jezeli brak, wystarczy zrobic: join-items: [])")
+    @CfgComment("Koszt dolaczenia do gildii. Jezeli dolaczenie ma byc darmowe, wystarczy wpisac: join-items: []")
     @CfgName("join-items")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
@@ -509,11 +509,11 @@ public class PluginConfiguration {
     @CfgName("region-min-distance")
     public int regionMinDistance = 10;
 
-    @CfgComment("Czas wyswietlania powiadomienia na pasku powiadomien (w sekundach)")
+    @CfgComment("Czas wyswietlania powiadomienia na pasku powiadomien, w sekundach")
     @CfgName("region-notification-time")
     public int regionNotificationTime = 15;
 
-    @CfgComment("Co ile moze byc wywolywany pasek powiadomien przez jednego gracza (w sekundach)")
+    @CfgComment("Co ile moze byc wywolywany pasek powiadomien przez jednego gracza, w sekundach")
     @CfgName("region-notification-cooldown")
     public int regionNotificationCooldown = 60;
 
@@ -565,7 +565,7 @@ public class PluginConfiguration {
     @CfgName("region-explode-block-interactions")
     public boolean regionExplodeBlockInteractions = false;
 
-    @CfgComment("Jaki ma byc zasieg pobieranych przedmiotow po wybuchu (jezeli chcesz wylaczyc, wpisz 0)")
+    @CfgComment("Zasieg pobieranych przedmiotow po wybuchu. Jezeli chcesz wylaczyc, wpisz 0")
     @CfgName("explode-radius")
     public int explodeRadius = 3;
 
@@ -637,7 +637,7 @@ public class PluginConfiguration {
     @CfgExclude
     public long validityTime;
 
-    @CfgComment("Ile dni przed koncem wygasania mozna przedluzyc gildie (wpisz 0, jezeli funkcja ma byc wylaczona)")
+    @CfgComment("Ile dni przed koncem wygasania mozna przedluzyc gildie. Wpisz 0, jezeli funkcja ma byc wylaczona")
     @CfgName("validity-when")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String validityWhen_ = "14d";
@@ -680,7 +680,7 @@ public class PluginConfiguration {
     @CfgExclude
     public long lastAttackerAsKillerConsiderationTimeout_;
 
-    @CfgComment("Czas (w sekundach) blokady nabijania rankingu po walce dwoch osob")
+    @CfgComment("Czas w sekundach blokady nabijania rankingu po walce dwoch osob")
     @CfgName("rank-farming-cooldown")
     public int rankFarmingCooldown = 7200;
 
@@ -703,7 +703,7 @@ public class PluginConfiguration {
     @CfgName("rank-assist-enable")
     public boolean assistEnable = true;
 
-    @CfgComment("Limit asyst (liczba ujemna = wylaczony)")
+    @CfgComment("Limit asyst. Wpisz liczbe ujemna aby wylaczyc")
     @CfgName("assists-limit")
     public int assistsLimit = - 1;
 
@@ -821,21 +821,21 @@ public class PluginConfiguration {
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPositionMember = "";
 
-    @CfgComment("Wyglad znaczika {TAG} wstawionego w format chatu")
+    @CfgComment("Wyglad znacznika {TAG} wstawionego w format chatu")
     @CfgName("chat-guild")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatGuild_ = "&b{TAG} ";
     @CfgExclude
     public String chatGuild;
 
-    @CfgComment("Wyglad znaczika {RANK} wstawionego w format chatu")
+    @CfgComment("Wyglad znacznika {RANK} wstawionego w format chatu")
     @CfgName("chat-rank")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatRank_ = "&b{RANK} ";
     @CfgExclude
     public String chatRank;
 
-    @CfgComment("Wyglad znaczika {POINTS} wstawionego w format chatu")
+    @CfgComment("Wyglad znacznika {POINTS} wstawionego w format chatu")
     @CfgComment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
     @CfgName("chat-points")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
@@ -844,7 +844,7 @@ public class PluginConfiguration {
     public String chatPoints;
 
     @CfgComment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
-    @CfgComment("{G-POINTS-FORMAT} (tak samo jak {G-POINTS}) jest uzywane jedynie na liscie graczy")
+    @CfgComment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS} jest uzywane jedynie na liscie graczy")
     @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
     @CfgComment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
     @CfgComment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
@@ -887,7 +887,7 @@ public class PluginConfiguration {
     @CfgExclude
     public Map<IntegerRange, String> pingFormat;
 
-    @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do gildii gildii")
+    @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do gildii")
     @CfgName("chat-priv")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String chatPriv = "!";
@@ -953,7 +953,7 @@ public class PluginConfiguration {
     @CfgExclude
     public String prefixEnemies;
 
-    @CfgComment("Wyglad tagu gildii neutralnej (widziany rowniez przez graczy bez gildii)")
+    @CfgComment("Wyglad tagu gildii neutralnej. Widziany rowniez przez graczy bez gildii")
     @CfgName("prefix-other")
     @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
     public String prefixOther_ = "&7{TAG}&f ";
@@ -1182,19 +1182,19 @@ public class PluginConfiguration {
     public List<NotificationStyle> regionEnterNotificationStyle = new ArrayList<>();
 
     @CfgComment("Jak dlugo title/subtitle powinien sie pojawiac")
-    @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
+    @CfgComment("Czas podawany w tickach. 1 sekunda = 20 tickow")
     @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CfgName("notification-title-fade-in")
     public int notificationTitleFadeIn = 10;
 
     @CfgComment("Jak dlugo title/subtitle powinien pozostac na ekranie gracza")
-    @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
+    @CfgComment("Czas podawany w tickach. 1 sekunda = 20 tickow")
     @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CfgName("notification-title-stay")
     public int notificationTitleStay = 10;
 
     @CfgComment("Jak dlugo title/subtitle powinien znikac")
-    @CfgComment("Czas podawany w tickach (1 sekunda = 20 tickow)")
+    @CfgComment("Czas podawany w tickach. 1 sekunda = 20 tickow")
     @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CfgName("notification-title-fade-out")
     public int notificationTitleFadeOut = 10;
