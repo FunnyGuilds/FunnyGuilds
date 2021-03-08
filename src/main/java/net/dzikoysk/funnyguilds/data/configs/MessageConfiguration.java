@@ -567,7 +567,7 @@ public class MessageConfiguration {
 
     @CfgComment("<------- SecuritySystem Messages -------> #")
     @CfgComment("Przedrostek przed wiadomościami systemu bezpieczeństwa")
-    public String SecuritySystemPrefix = "Przylapano gracza &d{PLAYER}&c na uzywaniu cheatu &d{CHEAT} &club innemu o podobnym dzialaniu!";
+    public String SecuritySystemPrefix = "&c!!!&4[FunnyGuilds-SecuritySystem]&c!!! ";
     @CfgComment("Dostepne zmienne: {PLAYER}, {CHEAT}")
     public String SecuritySystemInfo = "Przylapano gracza &d{PLAYER}&c na uzywaniu cheatu &d{CHEAT} &club innemu o podobnym dzialaniu!";
     @CfgComment("Dostepne zmienne: {NOTE}")
