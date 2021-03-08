@@ -13,7 +13,7 @@ public class DummyGlobalUpdateUserRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() throws Exception {
+    public void execute() {
         DummyManager.updateScore(user);
     }
 
