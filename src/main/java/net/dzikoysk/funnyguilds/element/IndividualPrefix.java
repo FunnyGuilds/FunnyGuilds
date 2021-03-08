@@ -42,7 +42,7 @@ public class IndividualPrefix {
         }
 
         if (team == null) {
-            FunnyGuilds.getInstance().getPluginLogger().debug("We're trying to add Prefix for player, but guild team is null");
+            FunnyGuilds.getPluginLogger().debug("We're trying to add Prefix for player, but guild team is null");
             return;
         }
         
@@ -134,7 +134,7 @@ public class IndividualPrefix {
         Scoreboard scoreboard = this.getUser().getCache().getScoreboard();
 
         if (scoreboard == null) {
-            FunnyGuilds.getInstance().getPluginLogger().debug("We're trying to remove Prefix for player, but cached scoreboard is null (server has been reloaded?)");
+            FunnyGuilds.getPluginLogger().debug("We're trying to remove Prefix for player, but cached scoreboard is null (server has been reloaded?)");
             return;
         }
         

@@ -54,7 +54,7 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
             }
         }
         catch (Throwable th) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not update guild", th);
+            FunnyGuilds.getPluginLogger().error("Could not update guild", th);
         }
     }
 }

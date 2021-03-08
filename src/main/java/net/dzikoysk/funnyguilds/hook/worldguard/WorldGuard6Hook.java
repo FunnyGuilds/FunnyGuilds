@@ -60,7 +60,7 @@ public class WorldGuard6Hook implements WorldGuardHook {
             ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(noPointsFlag);
         }
         catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
+            FunnyGuilds.getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
         }
     }
 

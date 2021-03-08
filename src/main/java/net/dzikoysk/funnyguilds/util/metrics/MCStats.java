@@ -12,6 +12,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
@@ -62,11 +63,12 @@ public class MCStats {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = null;
 
+        //todo
         try {
             gzos = new GZIPOutputStream(baos);
             gzos.write(input.getBytes("UTF-8"));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException exception) {
+            FunnyGuilds.getPluginLogger().error("MCStats error", exception);
         } finally {
             if (gzos != null) {
                 try {
@@ -88,6 +90,7 @@ public class MCStats {
                 isValueNumeric = true;
             }
         } catch (NumberFormatException e) {
+            //todo
             isValueNumeric = false;
         }
 

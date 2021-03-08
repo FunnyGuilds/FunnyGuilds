@@ -26,14 +26,14 @@ public class FlatRegion {
         int enlarge = wrapper.getInt("enlarge");
 
         if (name == null || centerString == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: name/center is null");
+            FunnyGuilds.getPluginLogger().error("Cannot deserialize region! Caused by: name/center is null");
             return null;
         }
 
         Location center = LocationUtils.parseLocation(centerString);
 
         if (center == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: center is null");
+            FunnyGuilds.getPluginLogger().error("Cannot deserialize region! Caused by: center is null");
             return null;
         }
 

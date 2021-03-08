@@ -56,7 +56,7 @@ public final class BungeeTabListPlusHook {
             });
         }
 
-        FunnyGuilds.getInstance().getPluginLogger().info("BungeeTabListPlus hook has been enabled!");
+        FunnyGuilds.getPluginLogger().info("BungeeTabListPlus hook has been enabled!");
     }
 
     private BungeeTabListPlusHook() {}

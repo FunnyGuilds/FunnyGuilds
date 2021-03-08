@@ -63,8 +63,8 @@ public final class FunnyGuildsVersion {
                             }
                         }
                         catch (Throwable th) {
-                            this.funnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
-                            this.funnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
+                            FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
+                            FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
                         }
                     }
                 }

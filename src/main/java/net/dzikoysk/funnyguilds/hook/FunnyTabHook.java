@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 public final class FunnyTabHook {
 
     public static void initFunnyDisabler() {
-        final FunnyGuildsLogger logger = FunnyGuilds.getInstance().getPluginLogger();
+        final FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         logger.info("!!!      FUNNYTAB JEST JUZ      !!!");
         logger.info("!!!        PRZESTARZALY         !!!");

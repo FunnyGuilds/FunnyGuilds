@@ -88,6 +88,7 @@ public final class GuildEntityHelper {
                 break;
         }
 
+        //todo
         Object packet = null;
         if (OBJECT_TYPE == null) {
             packet = SPAWN_ENTITY_LIVING_CONSTRUCTOR.newInstance(entity);
@@ -135,8 +136,8 @@ public final class GuildEntityHelper {
             }
             
             PacketSender.sendPacket(players, value);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("Could not spawn guild heart", exception);
         }
 
     }
@@ -154,8 +155,8 @@ public final class GuildEntityHelper {
 
             Object o = createDespawnGuildHeartPacket(id);
             PacketSender.sendPacket(Bukkit.getOnlinePlayers(), o);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("Could not despawn guild heart", exception);
         }
     }
 
@@ -169,18 +170,14 @@ public final class GuildEntityHelper {
             Object o = createDespawnGuildHeartPacket(id);
             
             PacketSender.sendPacket(players, o);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("Could not despawn guild heart", exception);
         }
     }
 
     public static void despawnGuildHearts() {
         for (Guild guild : GuildUtils.getGuilds()) {
-            try {
-                despawnGuildHeart(guild);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            despawnGuildHeart(guild);
         }
     }
 

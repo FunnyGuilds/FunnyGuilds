@@ -7,7 +7,7 @@ public final class SafeUtils {
     private SafeUtils() {}
 
     private static void reportUnsafe(Throwable th) {
-        FunnyGuilds.getInstance().getPluginLogger().error("Something went wrong while handling unsafe", th);
+        FunnyGuilds.getPluginLogger().error("Something went wrong while handling unsafe", th);
     }
 
     public static <T> T safeInit(SafeInitializer<T> initializer) {

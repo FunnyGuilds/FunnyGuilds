@@ -40,7 +40,7 @@ public class Dummy {
         Scoreboard scoreboard = this.user.getCache().getScoreboard();
 
         if (scoreboard == null) {
-            FunnyGuilds.getInstance().getPluginLogger().debug(
+            FunnyGuilds.getPluginLogger().debug(
                     "We're trying to update Dummy score but scoreboard hasn't been initialized yet" +
                             "(maybe player left the game while updating?)");
             return;
@@ -67,7 +67,7 @@ public class Dummy {
         Scoreboard scoreboard = this.user.getCache().getScoreboard();
 
         if (scoreboard == null) {
-            FunnyGuilds.getInstance().getPluginLogger().debug(
+            FunnyGuilds.getPluginLogger().debug(
                     "We're trying to initialize Dummy, but we haven't initialized scoreboard yet " +
                             "(maybe player left the game while initializing?)");
             return;
@@ -85,7 +85,7 @@ public class Dummy {
             User user = User.get(player);
 
             if (user == null) {
-                FunnyGuilds.getInstance().getPluginLogger().debug(MessageFormat.format(
+                FunnyGuilds.getPluginLogger().debug(MessageFormat.format(
                         "Online player named: {0} does not have corresponding user instance while initializing Dummy for user: {1}",
                         player.getName(), this.user.getName()));
                 continue;

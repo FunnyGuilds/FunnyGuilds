@@ -18,7 +18,7 @@ public final class PlaceholderAPIHook {
 
     public static void initPlaceholderHook() {
         new FunnyGuildsPlaceholder().register();
-        FunnyGuilds.getInstance().getPluginLogger().info("PlaceholderAPI hook has been enabled!");
+        FunnyGuilds.getPluginLogger().info("PlaceholderAPI hook has been enabled!");
     }
 
     public static String replacePlaceholders(Player user, String base) {

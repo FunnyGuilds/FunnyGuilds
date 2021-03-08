@@ -42,7 +42,7 @@ public class WorldEdit7Hook implements WorldEditHook {
             return true;
         }
         catch (IOException | WorldEditException e) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not paste schematic: " + schematicFile.getAbsolutePath(), e);
+            FunnyGuilds.getPluginLogger().error("Could not paste schematic: " + schematicFile.getAbsolutePath(), e);
             return false;
         }
     }

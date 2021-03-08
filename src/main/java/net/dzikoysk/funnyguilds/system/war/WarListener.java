@@ -60,7 +60,7 @@ public final class WarListener {
 
             call(player, id, actionEnum.toString(), enumHand == null ? "" : enumHand.toString());
         } catch (Exception exception) {
-            exception.printStackTrace();
+            FunnyGuilds.getPluginLogger().error("WarListener error", exception);
         }
     }
 

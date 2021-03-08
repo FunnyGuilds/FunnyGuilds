@@ -42,7 +42,7 @@ public final class PluginHook {
                 return true;
             }
             catch (final ClassNotFoundException exception) {
-                FunnyGuilds.getInstance().getPluginLogger().warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
+                FunnyGuilds.getPluginLogger().warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
                 return false;
             }
         });
@@ -116,7 +116,7 @@ public final class PluginHook {
             HOOK_LIST.add(plugin);
         }
         else if (notifyIfMissing) {
-            FunnyGuilds.getInstance().getPluginLogger().info(plugin + " plugin could not be found, some features may not be available");
+            FunnyGuilds.getPluginLogger().info(plugin + " plugin could not be found, some features may not be available");
         }
     }
 

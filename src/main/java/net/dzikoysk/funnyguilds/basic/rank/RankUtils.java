@@ -17,7 +17,7 @@ public class RankUtils {
         int i = getIndex(var);
 
         if (i <= 0) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Index in TOP- must be greater or equal to 1!");
+            FunnyGuilds.getPluginLogger().error("Index in TOP- must be greater or equal to 1!");
             return null;
         }
 
@@ -112,7 +112,7 @@ public class RankUtils {
         try {
             result = Integer.parseInt(sb.toString());
         } catch(NumberFormatException e) {
-            FunnyGuilds.getInstance().getPluginLogger().parser(var + " contains an invalid number: " + sb.toString());
+            FunnyGuilds.getPluginLogger().parser(var + " contains an invalid number: " + sb.toString());
         }
 
         return result;

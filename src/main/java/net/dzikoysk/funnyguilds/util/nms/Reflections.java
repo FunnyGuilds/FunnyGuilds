@@ -46,7 +46,7 @@ public final class Reflections {
             CLASS_CACHE.put(className, c);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve class", ex);
+            FunnyGuilds.getPluginLogger().error("Could not retrieve class", ex);
             
             CLASS_CACHE.put(className, INVALID_CLASS);
         }
@@ -70,7 +70,7 @@ public final class Reflections {
             return getMethod(entity.getClass(), "getHandle").invoke(entity);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not get entity handle", ex);
+            FunnyGuilds.getPluginLogger().error("Could not get entity handle", ex);
             
             return null;
         }
@@ -81,7 +81,7 @@ public final class Reflections {
             return getMethod(world.getClass(), "getHandle").invoke(world);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not get world handle", ex);
+            FunnyGuilds.getPluginLogger().error("Could not get world handle", ex);
             
             return null;
         }
@@ -105,7 +105,7 @@ public final class Reflections {
             FIELD_CACHE.put(cacheKey, field);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve field", ex);
+            FunnyGuilds.getPluginLogger().error("Could not retrieve field", ex);
             
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }
@@ -192,7 +192,7 @@ public final class Reflections {
             FIELD_CACHE.put(cacheKey, c);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve field", ex);
+            FunnyGuilds.getPluginLogger().error("Could not retrieve field", ex);
             
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }

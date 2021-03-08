@@ -582,7 +582,7 @@ public class MessageConfiguration {
             }
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not load message configuration", ex);
+            FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
     }
 }

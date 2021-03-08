@@ -25,10 +25,10 @@ public class DatabaseRegion {
             Location location = LocationUtils.parseLocation(center);
 
             if (name == null) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: name == null");
+                FunnyGuilds.getPluginLogger().error("Cannot deserialize region! Caused by: name == null");
                 return null;
             } else if (location == null) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
+                FunnyGuilds.getPluginLogger().error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
                 return null;
             }
 
@@ -42,7 +42,7 @@ public class DatabaseRegion {
             return DeserializationUtils.deserializeRegion(values);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not deserialize region", ex);
+            FunnyGuilds.getPluginLogger().error("Could not deserialize region", ex);
         }
         
         return null;

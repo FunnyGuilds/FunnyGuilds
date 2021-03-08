@@ -26,7 +26,7 @@ public class BlockDataChanger {
             setDataMethod.invoke(targetBlock, newData);
         }
         catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Failed to change block data for a block at: " + LocationUtils.toString(targetBlock.getLocation()), ex);
+            FunnyGuilds.getPluginLogger().error("Failed to change block data for a block at: " + LocationUtils.toString(targetBlock.getLocation()), ex);
         }
     }
 

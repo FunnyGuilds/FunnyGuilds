@@ -21,7 +21,7 @@ public final class MaterialUtils {
 
     public static Material parseMaterial(String string, boolean allowNullReturn) {
         if (string == null) {
-            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material: null");
+            FunnyGuilds.getPluginLogger().parser("Unknown material: null");
             return allowNullReturn ? null : Material.AIR;
         }
 
@@ -29,7 +29,7 @@ public final class MaterialUtils {
         Material material = matchMaterial(materialName);
 
         if (material == null) {
-            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material: " + string);
+            FunnyGuilds.getPluginLogger().parser("Unknown material: " + string);
             return allowNullReturn ? null : Material.AIR;
         }
 
@@ -38,7 +38,7 @@ public final class MaterialUtils {
 
     public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
         if (string == null) {
-            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material data: null");
+            FunnyGuilds.getPluginLogger().parser("Unknown material data: null");
             return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
 
@@ -46,7 +46,7 @@ public final class MaterialUtils {
         Material material = parseMaterial(data[0], allowNullReturn);
 
         if (material == null) {
-            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown material in material data: " + string);
+            FunnyGuilds.getPluginLogger().parser("Unknown material in material data: " + string);
             return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
 

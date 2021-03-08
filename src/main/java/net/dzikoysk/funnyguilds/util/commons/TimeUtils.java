@@ -47,7 +47,7 @@ public final class TimeUtils {
                                 break;
                         }
                     } catch (NumberFormatException e) {
-                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown number: " + value.toString());
+                        FunnyGuilds.getPluginLogger().parser("Unknown number: " + value.toString());
                         return time;
                     }
 
