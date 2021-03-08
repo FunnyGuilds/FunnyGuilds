@@ -61,21 +61,11 @@ public class MCStats {
 
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        GZIPOutputStream gzos = null;
 
-        //todo
-        try {
-            gzos = new GZIPOutputStream(baos);
-            gzos.write(input.getBytes("UTF-8"));
+        try (GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
+            gzos.write(input.getBytes(StandardCharsets.UTF_8));
         } catch (IOException exception) {
             FunnyGuilds.getPluginLogger().error("MCStats error", exception);
-        } finally {
-            if (gzos != null) {
-                try {
-                    gzos.close();
-                } catch (IOException ignore) {
-                }
-            }
         }
 
         return baos.toByteArray();
@@ -90,8 +80,7 @@ public class MCStats {
                 isValueNumeric = true;
             }
         } catch (NumberFormatException e) {
-            //todo
-            isValueNumeric = false;
+            FunnyGuilds.getPluginLogger().debug("[MCStats] Value isn't numeric.");
         }
 
         if (json.charAt(json.length() - 1) != '{') {
@@ -136,7 +125,7 @@ public class MCStats {
                 default:
                     if (chr < ' ') {
                         String t = "000" + Integer.toHexString(chr);
-                        builder.append("\\u" + t.substring(t.length() - 4));
+                        builder.append("\\u").append(t.substring(t.length() - 4));
                     } else {
                         builder.append(chr);
                     }

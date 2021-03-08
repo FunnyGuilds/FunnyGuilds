@@ -88,8 +88,7 @@ public final class GuildEntityHelper {
                 break;
         }
 
-        //todo
-        Object packet = null;
+        Object packet;
         if (OBJECT_TYPE == null) {
             packet = SPAWN_ENTITY_LIVING_CONSTRUCTOR.newInstance(entity);
         } else {

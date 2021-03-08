@@ -227,7 +227,6 @@ public class FlatDataModel implements DataModel {
             }
         }
 
-        // TODO
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getOwner() != null) {
                 continue;
