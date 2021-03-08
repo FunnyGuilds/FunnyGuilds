@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests.dummy;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 
+@Deprecated
 public class DummyUpdateUserRequest extends DefaultConcurrencyRequest {
 
     private final User user;
