@@ -13,7 +13,7 @@ public enum GuildRegex {
     LETTERS_DIGITS ("[a-zA-Z0-9]+"),
     LETTERS_DIGITS_UNDERSCORE ("[a-zA-Z0-9_]+");
     
-    private String pattern;
+    private final String pattern;
     
     GuildRegex(String pattern) {
         this.pattern = pattern;

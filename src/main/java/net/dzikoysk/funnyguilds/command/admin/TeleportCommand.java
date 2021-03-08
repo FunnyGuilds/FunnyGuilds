@@ -26,7 +26,7 @@ public final class TeleportCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         Region region = guild.getRegion();
-        when(region == null || region.getCenter() == null, messages.adminNoRegionFound);
+        when (region == null || region.getCenter() == null, messages.adminNoRegionFound);
 
         player.sendMessage(messages.baseTeleport);
         player.teleport(region.getCenter());

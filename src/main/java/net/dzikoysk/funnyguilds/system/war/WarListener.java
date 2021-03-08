@@ -78,8 +78,10 @@ public final class WarListener {
 
             if ("ATTACK".equalsIgnoreCase(action)) {
                 WarSystem.getInstance().attack(player, entry.getKey());
+                return;
             }
-            else if ("INTERACT_AT".equalsIgnoreCase(action)) {
+
+            if ("INTERACT_AT".equalsIgnoreCase(action)) {
                 PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
                 
                 if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {

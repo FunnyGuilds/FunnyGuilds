@@ -39,7 +39,7 @@ public final class SecuritySystem {
     }
 
     public boolean checkPlayer(Player player, SecurityType type, Object... values) {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return false;
         }
         

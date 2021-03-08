@@ -93,10 +93,10 @@ public class Region extends AbstractBasic {
 
     private int compareCoordinates(boolean upper, int a, int b) {
         if (upper) {
-            return b < a ? a : b;
+            return Math.max(b, a);
         }
         else {
-            return a > b ? b : a;
+            return Math.min(a, b);
         }
     }
 

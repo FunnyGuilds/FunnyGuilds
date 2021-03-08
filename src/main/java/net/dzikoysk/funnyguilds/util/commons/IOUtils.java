@@ -14,6 +14,8 @@ import java.net.URLConnection;
 
 public final class IOUtils {
 
+    private IOUtils() {}
+
     public static File initialize(File file, boolean b) {
         if (!file.exists()) {
             try {
@@ -121,5 +123,4 @@ public final class IOUtils {
         }
     }
 
-    private IOUtils() {}
 }
