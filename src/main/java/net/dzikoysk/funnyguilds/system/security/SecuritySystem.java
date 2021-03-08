@@ -28,9 +28,9 @@ public final class SecuritySystem {
         return instance;
     }
 
-    public boolean checkPlayer(Player player, Object... values) {
-        for (SecurityType type : SecurityType.values()) {
-            if (checkPlayer(player, type, values)) {
+    public boolean isCheating(Player player, Guild guild) {
+        for (CheatType type : CheatType.getByType(SecurityType.GUILD)) {
+            if (isCheating(player, type, guild)) {
                 return true;
             }
         }
@@ -38,7 +38,7 @@ public final class SecuritySystem {
         return false;
     }
 
-    public boolean checkPlayer(Player player, SecurityType type, Object... values) {
+    private boolean isCheating(Player player, CheatType type, Object... values) {
         if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return false;
         }
@@ -67,28 +67,29 @@ public final class SecuritySystem {
                     return false;
                 }
 
-                int distance = (int) region.getCenter().distance(player.getLocation());
+                double distance = region.getCenter().distance(player.getEyeLocation());
 
-                if (distance < 6) {
+                if (distance < 5.2) {
                     return false;
                 }
-                
-                for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-                    if (onlinePlayer.isOp()) {
-                        onlinePlayer.sendMessage(SecurityUtils.getBustedMessage(player.getName(), "FreeCam"));
-                        onlinePlayer.sendMessage(SecurityUtils.getNoteMessage("Zaatakowal krysztal z odleglosci &c" + distance + " kratek"));
-                    }
-                }
-                
+
+                sendToOperator(player, type, "Zaatakowal krysztal z odleglosci &c" + distance + " kratek");
                 blocked.add(User.get(player));
                 return true;
-            case EVERYTHING:
-                break;
-            default:
-                break;
         }
         
         return false;
+    }
+
+    public void sendToOperator(Player player, CheatType type, String message) {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            if (!(onlinePlayer.isOp() || onlinePlayer.hasPermission("funnyguilds.admin"))) {
+                continue;
+            }
+
+            onlinePlayer.sendMessage(SecurityUtils.getBustedMessage(player, type));
+            onlinePlayer.sendMessage(SecurityUtils.getNoteMessage(message));
+        }
     }
 
     public boolean isBanned(User user) {

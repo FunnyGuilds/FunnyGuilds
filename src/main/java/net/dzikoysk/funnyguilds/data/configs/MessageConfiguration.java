@@ -565,6 +565,15 @@ public class MessageConfiguration {
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String adminTargetTeleportedToBase = "&aGracz &7{PLAYER} &azostal teleportowany do bazy gildii!";
 
+    @CfgComment("<------- SecuritySystem Messages -------> #")
+    @CfgComment("Przedrostek przed wiadomościami systemu bezpieczeństwa")
+    public String SecuritySystemPrefix = "Przylapano gracza &d{PLAYER}&c na uzywaniu cheatu &d{CHEAT} &club innemu o podobnym dzialaniu!";
+    @CfgComment("Dostepne zmienne: {PLAYER}, {CHEAT}")
+    public String SecuritySystemInfo = "Przylapano gracza &d{PLAYER}&c na uzywaniu cheatu &d{CHEAT} &club innemu o podobnym dzialaniu!";
+    @CfgComment("Dostepne zmienne: {NOTE}")
+    public String SecuritySystemNote = "Notatka: &7{NOTE}";
+
+
     public void load() {
         try {
             for (Field field : this.getClass().getDeclaredFields()) {
