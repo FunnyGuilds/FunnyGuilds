@@ -1262,7 +1262,7 @@ public class PluginConfiguration {
     @CfgComment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
     @CfgComment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
     @CfgName("reach-compensation")
-    public double reachCompensation = 0.25;
+    public double reachCompensation = 0.26;
 
     @CfgComment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
     @CfgName("freeCam-compensation")

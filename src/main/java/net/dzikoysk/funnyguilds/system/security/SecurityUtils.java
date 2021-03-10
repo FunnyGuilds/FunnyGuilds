@@ -13,7 +13,7 @@ public final class SecurityUtils {
     private SecurityUtils() {}
 
     public static double compensationMs(double millisecond) {
-        return 0.007 * millisecond;
+        return 0.0056 * millisecond;
     }
 
     public static void sendToOperator(Player player, String cheat, String note) {

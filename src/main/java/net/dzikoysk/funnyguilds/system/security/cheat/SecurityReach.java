@@ -22,15 +22,15 @@ public class SecurityReach {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         double compensation = player.getGameMode().equals(GameMode.CREATIVE) ? 4.5 : 3.0;
         compensation += FunnyGuilds.getInstance().getPluginConfiguration().reachCompensation;
-        compensation += SecurityUtils.compensationMs(PingUtils.getPing(player));
-        compensation += SecurityUtils.compensationMs(1000.0 / MinecraftServerUtils.getRecentTPS(0));
+        compensation += SecurityUtils.compensationMs(PingUtils.getPing(player) * 0.93);
+        compensation += SecurityUtils.compensationMs((1000 / MinecraftServerUtils.getRecentTPS(0) - 50) * 10);
 
         if (distance < compensation) {
             return;
         }
 
         String message = messages.SecuritySystemReach;
-        message += StringUtils.replace(message, "{DISTANCE}", FORMAT.format(distance));
+        message = StringUtils.replace(message, "{DISTANCE}", FORMAT.format(distance));
 
         SecurityUtils.addVL(User.get(player));
         SecurityUtils.sendToOperator(player, "Reach", message);
