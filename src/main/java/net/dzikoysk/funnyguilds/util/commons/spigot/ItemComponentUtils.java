@@ -52,7 +52,7 @@ public final class ItemComponentUtils {
                     messageColor += symbol;
 
                     if (index + 1 >= messageChars.length) {
-                        FunnyGuilds.getInstance().getLogger().warning("Invalid placeholder: " + message + " (exceeds array limit at + " + index + ")");
+                        FunnyGuilds.getPluginLogger().warning("Invalid placeholder: " + message + " (exceeds array limit at + " + index + ")");
                         continue;
                     }
 

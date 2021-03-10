@@ -47,7 +47,7 @@ public final class ItemsCommand {
                 ItemMeta meta = item.getItemMeta();
 
                 if (meta == null) {
-                    FunnyGuilds.getInstance().getLogger().warning("Item meta is not defined (" + item + ")");
+                    FunnyGuilds.getPluginLogger().warning("Item meta is not defined (" + item + ")");
                     continue;
                 }
 

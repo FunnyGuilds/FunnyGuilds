@@ -98,7 +98,7 @@ public class UserUtils {
             User user = User.get(name);
 
             if (user == null) {
-                FunnyGuilds.getInstance().getLogger().warning("Corrupted user: " + name);
+                FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name);
                 continue;
             }
 
