@@ -56,7 +56,7 @@ public class PlayerInteract implements Listener {
 
             Guild guild = region.getGuild();
 
-            if (SecuritySystem.getSecurity().isCheating(player, guild)) {
+            if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;
             }
 

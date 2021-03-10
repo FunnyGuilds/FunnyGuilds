@@ -1255,6 +1255,19 @@ public class PluginConfiguration {
     @CfgExclude
     public boolean eventPhysics;
 
+    @CfgComment("Czy System Security ma byc wlaczony?")
+    @CfgName("system-security-enable")
+    public boolean systemSecurityEnable = true;
+
+    @CfgComment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
+    @CfgComment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
+    @CfgName("reach-compensation")
+    public double reachCompensation = 0.25;
+
+    @CfgComment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
+    @CfgName("freeCam-compensation")
+    public int freeCamCompensation = 0;
+
     @CfgComment("Ilość wątków używanych przez ConcurrencyManager")
     @CfgName("concurrency-threads")
     public int concurrencyThreads = 1;

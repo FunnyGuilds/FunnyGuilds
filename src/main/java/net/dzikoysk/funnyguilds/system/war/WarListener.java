@@ -72,7 +72,7 @@ public final class WarListener {
 
             Guild guild = entry.getKey();
 
-            if (SecuritySystem.getSecurity().isCheating(player, guild)) {
+            if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;
             }
 

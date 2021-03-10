@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.system.security;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang.StringUtils;
@@ -15,17 +16,25 @@ public final class SecurityUtils {
         return 0.007 * millisecond;
     }
 
-    public static void sendToOperator(Player player, CheatType cheat, String note) {
+    public static void sendToOperator(Player player, String cheat, String note) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         String message = messages.SecuritySystemPrefix + messages.SecuritySystemInfo;
         String messageNote = messages.SecuritySystemPrefix + messages.SecuritySystemNote;
 
         message = StringUtils.replace(message, "{PLAYER}", player.getName());
-        message = StringUtils.replace(message, "{CHEAT}", cheat.getName());
+        message = StringUtils.replace(message, "{CHEAT}", cheat);
         messageNote = StringUtils.replace(messageNote, "{NOTE}", note);
 
         Bukkit.broadcast(ChatUtils.colored(message), "funnyguilds.admin");
         Bukkit.broadcast(ChatUtils.colored(messageNote), "funnyguilds.admin");
+    }
+
+    public static void addVL(User user) {
+        SecuritySystem.getPlayersVL().put(user, SecuritySystem.getPlayersVL().getOrDefault(user, 0) + 1);
+    }
+
+    public static boolean isBlocked(User user) {
+        return SecuritySystem.getPlayersVL().getOrDefault(user, 0) > 1;
     }
 
 }
