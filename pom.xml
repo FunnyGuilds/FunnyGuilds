@@ -154,7 +154,7 @@
 
     <repositories>
         <repository>
-            <id>spigot-repo</id>
+            <id>spigot-repository</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
         <repository>
@@ -163,25 +163,20 @@
             <url>https://repo.panda-lang.org/</url>
         </repository>
         <repository>
-            <id>sk89q-repo</id>
+            <id>sk89q-repository</id>
             <name>sk89q Repository</name>
             <url>https://maven.sk89q.com/repo/</url>
         </repository>
         <repository>
-            <id>okaeri</id>
-            <name>Okaeri Repository</name>
-            <url>https://repo.okaeri.eu/</url>
-        </repository>
-        <repository>
-            <id>placeholderapi</id>
+            <id>placeholderapi-repository</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
         </repository>
         <repository>
-            <id>codecrafter47-repo</id>
+            <id>codecrafter47-repository</id>
             <url>https://nexus.codecrafter47.de/content/repositories/public/</url>
         </repository>
         <repository>
-            <id>mvdw-software</id>
+            <id>mvdw-software-repository</id>
             <name>MVdW Public Repositories</name>
             <url>https://repo.mvdw-software.be/content/groups/public/</url>
         </repository>
