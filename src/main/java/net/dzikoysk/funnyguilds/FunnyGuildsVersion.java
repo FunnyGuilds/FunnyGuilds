@@ -48,7 +48,7 @@ public final class FunnyGuildsVersion {
 
             if (latest.contains("Warning:")) {
                 FunnyGuilds.getInstance().getPluginLogger().warning(latest);
-                latest = "Blad Polaczenia!";
+                return;
             }
 
             String currentNightlyHash = getCurrentNightlyHash(latest);
@@ -68,10 +68,6 @@ public final class FunnyGuildsVersion {
 
                     JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
                     String commitHash = latestCommit.get("sha").getAsString().substring(0, 7);
-
-                    if (latest.equals("Blad Polaczenia!")) {
-                        commitHash = "0000000";
-                    }
 
                     if (!commitHash.equals(currentNightlyHash)) {
                         printNewVersionAvailable(sender, latest + "-" + commitHash, true);
