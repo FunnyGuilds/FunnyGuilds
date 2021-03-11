@@ -28,7 +28,6 @@ public class SecurityFreeCam {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         BlockIterator blockIterator = new BlockIterator(player.getWorld(), origin, hitPoint, 0, Math.max((int) distance, 1));
         ArrayList<Block> blocks = Streams.stream(blockIterator)
-                .filter(block -> !block.getType().isAir())
                 .filter(block -> !block.isLiquid())
                 .filter(block -> !block.isPassable())
                 .filter(block -> block.getType().isSolid())
