@@ -2,11 +2,12 @@ package net.dzikoysk.funnyguilds.system.security;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.system.security.cheat.SecurityFreeCam;
 import net.dzikoysk.funnyguilds.system.security.cheat.SecurityReach;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
@@ -48,19 +49,19 @@ public final class SecuritySystem {
                 return;
             }
 
-            Region region = guild.getRegion();
+            Location center = guild.getRegion().getCenter();
 
-            if (region == null) {
-                return;
-            }
+            double x = center.getX() + 0.5;
+            double y = center.getY();
+            double z = center.getZ() + 0.5;
 
-            double x = region.getCenter().getX() + 0.5;
-            double y = region.getCenter().getY();
-            double z = region.getCenter().getZ() + 0.5;
+            Location eye = player.getEyeLocation();
+            Vector direction = eye.getDirection();
+            Vector origin = player.isSneaking() && !Reflections.USE_PRE_9_METHODS ? eye.add(0.0, 0.35, 0.0).toVector() : eye.toVector();
+            BoundingBox boundingBox = config.createType.equalsIgnoreCase("ender_crystal")
+                    ? new BoundingBox(x - 1.0, y - 1.0 ,z - 1.0, x + 1.0, y + 1.0 ,z + 1.0)
+                    : player.getWorld().getBlockAt(center).getBoundingBox();
 
-            Vector origin = player.getEyeLocation().toVector();
-            Vector direction = player.getEyeLocation().getDirection();
-            BoundingBox boundingBox = new BoundingBox(x - 1.0, y - 1.0 ,z - 1.0, x + 1.0, y + 1.0 ,z + 1.0);
             RayTraceResult rayTraceResult = boundingBox.rayTrace(origin, direction, 6);
 
             if (rayTraceResult == null) {
@@ -68,7 +69,7 @@ public final class SecuritySystem {
             }
 
             Vector hitPoint = rayTraceResult.getHitPosition();
-            double distance = hitPoint.distance(player.getEyeLocation().toVector());
+            double distance = hitPoint.distance(origin);
 
             SecurityFreeCam.on(player, origin, hitPoint, distance);
             SecurityReach.on(player, distance);
