@@ -38,13 +38,13 @@ import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
-    private static FunnyGuilds funnyguilds;
+    private static FunnyGuilds       funnyguilds;
+    private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile  = new File(this.getDataFolder(), "config.yml");
     private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
     private final File pluginDataFolderFile     = new File(this.getDataFolder(), "data");
 
-    private static FunnyGuildsLogger      logger;
     private FunnyGuildsVersion     version;
     private FunnyCommands          funnyCommands;
     private PluginConfiguration    pluginConfiguration;
