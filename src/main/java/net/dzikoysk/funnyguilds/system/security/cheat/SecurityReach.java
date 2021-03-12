@@ -15,10 +15,10 @@ import java.text.DecimalFormat;
 public class SecurityReach {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
-    private static final double creativeReach = 4.5;
-    private static final double survivalReach = 3.0;
-    private static final double importanceOfPing = 0.93;
-    private static final double importanceOfTps = 10.0;
+    private static final double CREATIVE_REACH = 4.5;
+    private static final double SURVIVAL_REACH = 3.0;
+    private static final double IMPORTANCE_OF_PING = 0.93;
+    private static final double IMPORTANCE_OF_TPS = 10.0;
 
     private SecurityReach() {}
 
@@ -27,11 +27,11 @@ public class SecurityReach {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         double ping = PingUtils.getPing(player);
         double tpsDelayMs = (1000.0 / MinecraftServerUtils.getRecentTPS(0) - 50.0);
-        double compensation = player.getGameMode().equals(GameMode.CREATIVE) ? creativeReach : survivalReach;
+        double compensation = player.getGameMode().equals(GameMode.CREATIVE) ? CREATIVE_REACH : SURVIVAL_REACH;
 
         compensation += config.reachCompensation;
-        compensation += SecurityUtils.compensationMs(importanceOfPing * ping);
-        compensation += SecurityUtils.compensationMs(importanceOfTps * tpsDelayMs);
+        compensation += SecurityUtils.compensationMs(IMPORTANCE_OF_PING * ping);
+        compensation += SecurityUtils.compensationMs(IMPORTANCE_OF_TPS * tpsDelayMs);
 
         if (distance < compensation) {
             return;
