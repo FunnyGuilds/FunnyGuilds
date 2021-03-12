@@ -27,6 +27,8 @@ public class SecurityFreeCam {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         BlockIterator blockIterator = new BlockIterator(player.getWorld(), origin, hitPoint, 0, Math.max((int) distance, 1));
+        /* compensationSneaking will be removed after add the cursor height check on each client version. */
+        int compensationSneaking = player.isSneaking() ? 1 : 0;
         List<Block> blocks = Streams.stream(blockIterator)
                 .filter(block -> !block.isLiquid())
                 .filter(block -> !block.isPassable())
@@ -36,7 +38,7 @@ public class SecurityFreeCam {
                 .collect(toList());
 
 
-        if (blocks.size() <= config.freeCamCompensation + (player.isSneaking() ? 1 : 0)) {
+        if (blocks.size() <= config.freeCamCompensation + compensationSneaking) {
             return;
         }
 
