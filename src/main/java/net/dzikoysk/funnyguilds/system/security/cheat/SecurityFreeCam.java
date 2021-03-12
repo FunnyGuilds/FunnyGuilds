@@ -15,9 +15,9 @@ import org.bukkit.util.Vector;
 import org.panda_lang.utilities.commons.StringUtils;
 import org.panda_lang.utilities.commons.text.Joiner;
 
-import java.util.ArrayList;
+import java.util.List;
 
-import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 public class SecurityFreeCam {
 
@@ -27,13 +27,13 @@ public class SecurityFreeCam {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         BlockIterator blockIterator = new BlockIterator(player.getWorld(), origin, hitPoint, 0, Math.max((int) distance, 1));
-        ArrayList<Block> blocks = Streams.stream(blockIterator)
+        List<Block> blocks = Streams.stream(blockIterator)
                 .filter(block -> !block.isLiquid())
                 .filter(block -> !block.isPassable())
                 .filter(block -> block.getType().isSolid())
                 .filter(block -> block.getType().isOccluding() || block.getType().equals(Material.GLASS))
                 .limit(8)
-                .collect((toCollection(ArrayList::new)));
+                .collect(toList());
 
 
         if (blocks.size() <= config.freeCamCompensation + (player.isSneaking() ? 1 : 0)) {
