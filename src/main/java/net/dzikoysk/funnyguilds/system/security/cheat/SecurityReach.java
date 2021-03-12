@@ -38,7 +38,7 @@ public class SecurityReach {
         }
 
         String message = messages.SecuritySystemReach.replace("{DISTANCE}", FORMAT.format(distance));
-        SecurityUtils.addVL(User.get(player));
+        SecurityUtils.addViolationLevel(User.get(player));
         SecurityUtils.sendToOperator(player, "Reach", message);
     }
 }

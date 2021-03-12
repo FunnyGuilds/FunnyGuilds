@@ -18,7 +18,11 @@ import java.util.Map;
 
 public final class SecuritySystem {
 
-    private static final Map<User, Integer> playersVL = new HashMap<>();
+    private static final double ADDITIONAL_SNEAKING_HEIGHT_CURSOR = 0.35;
+
+    private static final Map<User, Integer> playersViolationLevel = new HashMap<>();
+
+    private SecuritySystem() {}
 
     public static boolean onHitCrystal(Player player, Guild guild) {
         scan(player, SecurityType.GUILD, guild);
@@ -57,7 +61,9 @@ public final class SecuritySystem {
 
             Location eye = player.getEyeLocation();
             Vector direction = eye.getDirection();
-            Vector origin = player.isSneaking() && !Reflections.USE_PRE_9_METHODS ? eye.add(0.0, 0.35, 0.0).toVector() : eye.toVector();
+            Vector origin = player.isSneaking() && !Reflections.USE_PRE_9_METHODS
+                    ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
+                    : eye.toVector();
             BoundingBox boundingBox = config.createType.equalsIgnoreCase("ender_crystal")
                     ? new BoundingBox(x - 1.0, y - 1.0 ,z - 1.0, x + 1.0, y + 1.0 ,z + 1.0)
                     : player.getWorld().getBlockAt(center).getBoundingBox();
@@ -76,8 +82,8 @@ public final class SecuritySystem {
         }
     }
 
-    protected static Map<User, Integer> getPlayersVL() {
-        return playersVL;
+    protected static Map<User, Integer> getPlayersViolationLevel() {
+        return playersViolationLevel;
     }
 
 }

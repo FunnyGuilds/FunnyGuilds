@@ -8,12 +8,16 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.Map;
+
 public final class SecurityUtils {
+
+    private static final double COMPENSATION_RATIO = 0.0056;
 
     private SecurityUtils() {}
 
     public static double compensationMs(double millisecond) {
-        return 0.0056 * millisecond;
+        return millisecond * COMPENSATION_RATIO;
     }
 
     public static void sendToOperator(Player player, String cheat, String note) {
@@ -29,12 +33,15 @@ public final class SecurityUtils {
         Bukkit.broadcast(ChatUtils.colored(messageNote), "funnyguilds.admin");
     }
 
-    public static void addVL(User user) {
-        SecuritySystem.getPlayersVL().put(user, SecuritySystem.getPlayersVL().getOrDefault(user, 0) + 1);
+    public static void addViolationLevel(User user) {
+        Map<User, Integer> playersViolationLevel = SecuritySystem.getPlayersViolationLevel();
+        playersViolationLevel.put(user, playersViolationLevel.getOrDefault(user, 0) + 1);
+
+        Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> playersViolationLevel.remove(user), 18000);
     }
 
     public static boolean isBlocked(User user) {
-        return SecuritySystem.getPlayersVL().getOrDefault(user, 0) > 1;
+        return SecuritySystem.getPlayersViolationLevel().getOrDefault(user, 0) > 1;
     }
 
 }
