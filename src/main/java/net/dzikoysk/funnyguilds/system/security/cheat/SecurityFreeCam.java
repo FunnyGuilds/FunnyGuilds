@@ -36,7 +36,7 @@ public class SecurityFreeCam {
                 .collect((toCollection(ArrayList::new)));
 
 
-        if (blocks.size() <= config.freeCamCompensation) {
+        if (blocks.size() <= config.freeCamCompensation + (player.isSneaking() ? 1 : 0)) {
             return;
         }
 
