@@ -19,7 +19,6 @@ import java.util.Map;
 public final class SecuritySystem {
 
     private static final double ADDITIONAL_SNEAKING_HEIGHT_CURSOR = 0.35;
-
     private static final Map<User, Integer> playersViolationLevel = new HashMap<>();
 
     private SecuritySystem() {}
