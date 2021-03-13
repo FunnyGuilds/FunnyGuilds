@@ -41,13 +41,13 @@ public final class FunnyGuildsVersion {
 
         this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
             String latest = IOUtils.getContent(VERSION_FILE_URL);
-
+            
             if (latest == null) {
                 return;
             }
 
             if (latest.contains("Warning:")) {
-                FunnyGuilds.getInstance().getPluginLogger().warning(latest);
+                FunnyGuilds.getPluginLogger().warning(latest);
                 return;
             }
 
@@ -74,8 +74,8 @@ public final class FunnyGuildsVersion {
                     }
                 }
                 catch (Throwable th) {
-                    this.funnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
-                    this.funnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
+                    FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
+                    FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
                 }
 
                 return;

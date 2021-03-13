@@ -37,7 +37,7 @@ public class SQLNamedStatement {
             statement.executeUpdate();
         }
         catch (SQLException sqlException) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute update", sqlException);
+            FunnyGuilds.getPluginLogger().error("Could not execute update", sqlException);
         }
     }
 
@@ -49,11 +49,11 @@ public class SQLNamedStatement {
         }
         catch (SQLException sqlException) {
             if (ignoreFails) {
-                FunnyGuilds.getInstance().getPluginLogger().debug("Could not execute update (ignoreFails)");
+                FunnyGuilds.getPluginLogger().debug("Could not execute update (ignoreFails)");
                 return;
             }
 
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute update", sqlException);
+            FunnyGuilds.getPluginLogger().error("Could not execute update", sqlException);
         }
     }
 
@@ -64,7 +64,7 @@ public class SQLNamedStatement {
             return statement.executeQuery();
         }
         catch (SQLException sqlException) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not execute query", sqlException);
+            FunnyGuilds.getPluginLogger().error("Could not execute query", sqlException);
         }
 
         return null;

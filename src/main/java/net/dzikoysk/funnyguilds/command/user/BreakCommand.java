@@ -36,7 +36,7 @@ public final class BreakCommand {
         playerOnly = true
     )
     public void execute(MessageConfiguration messages, Player player, @IsOwner User user, Guild guild, String[] args) {
-        when(guild.getAllies().isEmpty(), messages.breakHasNotAllies);
+        when (guild.getAllies().isEmpty(), messages.breakHasNotAllies);
 
         if (args.length < 1) {
             List<String> list = messages.breakAlliesList;
@@ -50,7 +50,7 @@ public final class BreakCommand {
         }
 
         Guild oppositeGuild = GuildValidation.requireGuildByTag(args[0]);
-        when(!guild.getAllies().contains(oppositeGuild), () -> messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
+        when (!guild.getAllies().contains(oppositeGuild), () -> messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
 
         if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
             return;

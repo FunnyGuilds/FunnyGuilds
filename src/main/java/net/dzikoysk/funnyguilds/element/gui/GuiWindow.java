@@ -148,7 +148,7 @@ public class GuiWindow {
     }
 
     private int roundUp(int size) {
-        return (size + 8) / 9 * 9 > 54 ? 54 : (size + 8) / 9 * 9;
+        return Math.min((size + 8) / 9 * 9, 54);
     }
 
 }

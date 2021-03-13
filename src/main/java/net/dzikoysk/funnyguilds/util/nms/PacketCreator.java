@@ -58,8 +58,8 @@ public final class PacketCreator {
         try {
             this.packetInstance = this.packetConstructor.newInstance();
         }
-        catch (final InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            e.printStackTrace();
+        catch (final InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException exception) {
+            FunnyGuilds.getPluginLogger().error("PacketCreator error", exception);
         }
 
         return this;
@@ -76,7 +76,7 @@ public final class PacketCreator {
             field.set(this.packetInstance, value);
         }
         catch (final IllegalAccessException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve field from given packet class", ex);
+            FunnyGuilds.getPluginLogger().error("Could not retrieve field from given packet class", ex);
         }
 
         return this;
@@ -92,13 +92,13 @@ public final class PacketCreator {
             Field field = this.packetFields.get(fieldName);
 
             if (! fieldType.isAssignableFrom(field.getType())) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Given fieldType is not assignable from found field's type");
+                FunnyGuilds.getPluginLogger().error("Given fieldType is not assignable from found field's type");
             }
 
             field.set(this.packetInstance, value);
         }
         catch (final IllegalAccessException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve field from given packet class", ex);
+            FunnyGuilds.getPluginLogger().error("Could not retrieve field from given packet class", ex);
         }
 
         return this;

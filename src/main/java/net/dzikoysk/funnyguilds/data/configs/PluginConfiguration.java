@@ -1255,6 +1255,19 @@ public class PluginConfiguration {
     @CfgExclude
     public boolean eventPhysics;
 
+    @CfgComment("Czy System Security ma byc wlaczony?")
+    @CfgName("system-security-enable")
+    public boolean systemSecurityEnable = true;
+
+    @CfgComment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
+    @CfgComment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
+    @CfgName("reach-compensation")
+    public double reachCompensation = 0.26;
+
+    @CfgComment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
+    @CfgName("freeCam-compensation")
+    public int freeCamCompensation = 0;
+
     @CfgComment("Ilość wątków używanych przez ConcurrencyManager")
     @CfgName("concurrency-threads")
     public int concurrencyThreads = 1;
@@ -1328,7 +1341,7 @@ public class PluginConfiguration {
                     }
                 }
                 catch (IndexOutOfBoundsException e) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
+                    FunnyGuilds.getPluginLogger().parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
             }
             else if (var.contains("ITEM-")) {
@@ -1340,7 +1353,7 @@ public class PluginConfiguration {
                     }
                 }
                 catch (IndexOutOfBoundsException e) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
+                    FunnyGuilds.getPluginLogger().parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
             }
             else {
@@ -1365,7 +1378,7 @@ public class PluginConfiguration {
         }
         catch (Exception e) {
             this.nameRegex = GuildRegex.LETTERS;
-            FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.nameRegex_ + "\" is not a valid regex option!");
+            FunnyGuilds.getPluginLogger().error("\"" + this.nameRegex_ + "\" is not a valid regex option!");
         }
 
         try {
@@ -1373,7 +1386,7 @@ public class PluginConfiguration {
         }
         catch (Exception e) {
             this.tagRegex = GuildRegex.LETTERS;
-            FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.tagRegex_ + "\" is not a valid regex option!");
+            FunnyGuilds.getPluginLogger().error("\"" + this.tagRegex_ + "\" is not a valid regex option!");
         }
 
         this.createItems = loadItemStackList(this.items_);
@@ -1410,7 +1423,7 @@ public class PluginConfiguration {
         }
 
         if (this.buggedBlocksTimer < 0L) {
-            FunnyGuilds.getInstance().getPluginLogger().error("The field named \"bugged-blocks-timer\" can not be less than zero!");
+            FunnyGuilds.getPluginLogger().error("The field named \"bugged-blocks-timer\" can not be less than zero!");
             this.buggedBlocksTimer = 20L; // default value
         }
 
@@ -1431,7 +1444,7 @@ public class PluginConfiguration {
         }
         catch (Exception ex) {
             this.rankSystem = RankSystem.ELO;
-            FunnyGuilds.getInstance().getPluginLogger().error("\"" + this.rankSystem_ + "\" is not a valid rank system!");
+            FunnyGuilds.getPluginLogger().error("\"" + this.rankSystem_ + "\" is not a valid rank system!");
         }
 
         if (this.rankSystem == RankSystem.ELO) {
@@ -1442,7 +1455,7 @@ public class PluginConfiguration {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
                 }
                 catch (NumberFormatException e) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
+                    FunnyGuilds.getPluginLogger().parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
                 }
             }
 
@@ -1499,17 +1512,17 @@ public class PluginConfiguration {
         }
 
         if (this.notificationTitleFadeIn <= 0) {
-            FunnyGuilds.getInstance().getPluginLogger().error("The field named \"notification-title-fade-in\" can not be less than or equal to zero!");
+            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-fade-in\" can not be less than or equal to zero!");
             this.notificationTitleFadeIn = 10;
         }
 
         if (this.notificationTitleStay <= 0) {
-            FunnyGuilds.getInstance().getPluginLogger().error("The field named \"notification-title-stay\" can not be less than or equal to zero!");
+            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-stay\" can not be less than or equal to zero!");
             this.notificationTitleStay = 10;
         }
 
         if (this.notificationTitleFadeOut <= 0) {
-            FunnyGuilds.getInstance().getPluginLogger().error("The field named \"notification-title-fade-out\" can not be less than or equal to zero!");
+            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-fade-out\" can not be less than or equal to zero!");
             this.notificationTitleFadeOut = 10;
         }
 
@@ -1564,14 +1577,14 @@ public class PluginConfiguration {
 
         if (this.pasteSchematicOnCreation) {
             if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
-                FunnyGuilds.getInstance().getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!");
+                FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!");
                 this.pasteSchematicOnCreation = false;
             }
             else {
                 this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName);
 
                 if (! this.guildSchematicFile.exists()) {
-                    FunnyGuilds.getInstance().getPluginLogger().error("File with given name in field \"guild-schematic-file-name\" does not exist!");
+                    FunnyGuilds.getPluginLogger().error("File with given name in field \"guild-schematic-file-name\" does not exist!");
                     this.pasteSchematicOnCreation = false;
                 }
             }

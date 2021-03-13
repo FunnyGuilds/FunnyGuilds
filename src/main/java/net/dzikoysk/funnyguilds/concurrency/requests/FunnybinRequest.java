@@ -34,7 +34,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() throws Exception {
+    public void execute() {
         List<FunnybinResponse> sentPastes = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
@@ -75,7 +75,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 }
                 catch (IOException e) {
                     sender.sendMessage(ChatColor.RED + "Podany plik: " + fileName + " nie mogl być otworzony (szczegoly w konsoli)");
-                    FunnyGuilds.getInstance().getPluginLogger().error("Failed to open a file: " + fileName, e);
+                    FunnyGuilds.getPluginLogger().error("Failed to open a file: " + fileName, e);
                     continue;
                 }
             }
@@ -85,7 +85,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
             }
             catch (IOException e) {
                 sender.sendMessage(ChatColor.RED + "Podany plik: " + fileName + " nie mogl byc wyslany (szczegoly w konsoli)");
-                FunnyGuilds.getInstance().getPluginLogger().error("Failed to submit a paste: " + fileName, e);
+                FunnyGuilds.getPluginLogger().error("Failed to submit a paste: " + fileName, e);
             }
         }
 
@@ -102,7 +102,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
         }
         catch (IOException e) {
             sender.sendMessage(ChatColor.RED + "Wystapil blad podczas tworzenia paczki. ");
-            FunnyGuilds.getInstance().getPluginLogger().error("Failed to submit a bundle. Files: " + files, e);
+            FunnyGuilds.getPluginLogger().error("Failed to submit a bundle. Files: " + files, e);
         }
     }
 

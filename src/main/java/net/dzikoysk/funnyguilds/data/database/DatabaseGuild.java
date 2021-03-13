@@ -46,7 +46,7 @@ public class DatabaseGuild {
             int lives = rs.getInt("lives");
 
             if (name == null || tag == null || os == null) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
+                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
                 return null;
             }
 
@@ -101,7 +101,7 @@ public class DatabaseGuild {
             return DeserializationUtils.deserializeGuild(values);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", ex);
+            FunnyGuilds.getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", ex);
         }
         
         return null;

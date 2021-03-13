@@ -50,22 +50,22 @@ public class FlatGuild {
         int lives = wrapper.getInt("lives");
 
         if (name == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
+            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: name is null");
             return null;
         }
 
         if (tag == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
+            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: tag is null");
             return null;
         }
 
         if (ownerName == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
+            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
             return null;
         }
 
         if (regionName == null && configuration.regionsEnabled) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
+            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
             return null;
         }
 
@@ -75,7 +75,7 @@ public class FlatGuild {
 
         final Region region = RegionUtils.get(regionName);
         if (region == null && configuration.regionsEnabled) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
+            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
             return null;
         }
 
@@ -146,22 +146,22 @@ public class FlatGuild {
 
     public boolean serialize(FlatDataModel flatDataModel) {
         if (guild.getName() == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild! Caused by: name is null");
+            FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild! Caused by: name is null");
             return false;
         }
 
         if (guild.getTag() == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
+            FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
             return false;
         }
 
         if (guild.getOwner() == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
+            FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
             return false;
         }
 
         if (guild.getRegion() == null && FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
+            FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
             return false;
         }
 

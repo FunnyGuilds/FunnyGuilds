@@ -31,56 +31,70 @@ public class PlayerInteract implements Listener {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         Action eventAction = event.getAction();
         Player player = event.getPlayer();
+        Block clicked = event.getClickedBlock();
 
-        if (eventAction == Action.RIGHT_CLICK_BLOCK || eventAction == Action.LEFT_CLICK_BLOCK) {
-            Block clicked = event.getClickedBlock();
-            Region region = RegionUtils.getAt(clicked.getLocation());
+        if (eventAction != Action.RIGHT_CLICK_BLOCK && eventAction != Action.LEFT_CLICK_BLOCK) {
+            return;
+        }
 
-            if (region != null) {
-                Block heart = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
+        if (clicked == null) {
+            return;
+        }
 
-                if (clicked.equals(heart)) {
-                    if (heart.getType() == Material.DRAGON_EGG) {
-                        event.setCancelled(true);
-                    }
+        Region region = RegionUtils.getAt(clicked.getLocation());
 
-                    Guild guild = region.getGuild();
+        if (region == null) {
+            return;
+        }
 
-                    if (SecuritySystem.getSecurity().checkPlayer(player, guild)) {
-                        return;
-                    }
+        Block heart = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
 
-                    event.setCancelled(true);
+        if (clicked.equals(heart)) {
+            if (heart.getType() == Material.DRAGON_EGG) {
+                event.setCancelled(true);
+            }
 
-                    if (eventAction == Action.LEFT_CLICK_BLOCK) {
-                        WarSystem.getInstance().attack(player, guild);
-                    }
-                    else if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                        try {
-                            infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[] { guild.getTag() });
-                        } catch (ValidationException validatorException) {
-                            validatorException.getValidationMessage().peek(player::sendMessage);
-                        }
-                    }
-                }
-                else if (eventAction == Action.RIGHT_CLICK_BLOCK) {
-                    Guild guild = region.getGuild();
+            Guild guild = region.getGuild();
 
-                    if (guild == null || guild.getName() == null) {
-                        return;
-                    }
+            if (SecuritySystem.onHitCrystal(player, guild)) {
+                return;
+            }
 
-                    User user = User.get(player);
-                    boolean blocked = config.blockedInteract.contains(clicked.getType());
+            event.setCancelled(true);
 
-                    if (guild.getMembers().contains(user)) {
-                        event.setCancelled(blocked && config.regionExplodeBlockInteractions && !guild.canBuild());
-                    } else {
-                        event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));
-                    }
+            if (eventAction == Action.LEFT_CLICK_BLOCK) {
+                WarSystem.getInstance().attack(player, guild);
+                return;
+            }
+
+            if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                try {
+                    infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[] { guild.getTag() });
+                } catch (ValidationException validatorException) {
+                    validatorException.getValidationMessage().peek(player::sendMessage);
                 }
             }
+
+            return;
         }
+
+        if (eventAction == Action.RIGHT_CLICK_BLOCK) {
+            Guild guild = region.getGuild();
+
+            if (guild == null || guild.getName() == null) {
+                return;
+            }
+
+            User user = User.get(player);
+            boolean blocked = config.blockedInteract.contains(clicked.getType());
+
+            if (guild.getMembers().contains(user)) {
+                event.setCancelled(blocked && config.regionExplodeBlockInteractions && !guild.canBuild());
+            } else {
+                event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));
+            }
+        }
+
     }
 
 }

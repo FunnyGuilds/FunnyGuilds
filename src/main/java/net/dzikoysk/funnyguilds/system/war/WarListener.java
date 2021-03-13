@@ -60,7 +60,7 @@ public final class WarListener {
 
             call(player, id, actionEnum.toString(), enumHand == null ? "" : enumHand.toString());
         } catch (Exception exception) {
-            exception.printStackTrace();
+            FunnyGuilds.getPluginLogger().error("WarListener error", exception);
         }
     }
 
@@ -72,14 +72,16 @@ public final class WarListener {
 
             Guild guild = entry.getKey();
 
-            if (SecuritySystem.getSecurity().checkPlayer(player, guild)) {
+            if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;
             }
 
             if ("ATTACK".equalsIgnoreCase(action)) {
                 WarSystem.getInstance().attack(player, entry.getKey());
+                return;
             }
-            else if ("INTERACT_AT".equalsIgnoreCase(action)) {
+
+            if ("INTERACT_AT".equalsIgnoreCase(action)) {
                 PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
                 
                 if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {

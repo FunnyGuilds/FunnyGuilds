@@ -34,9 +34,9 @@ public final class BaseCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user, Guild guild) {
-        when(!config.regionsEnabled, messages.regionsDisabled);
-        when(!config.baseEnable, messages.baseTeleportationDisabled);
-        when(user.getCache().getTeleportation() != null, messages.baseIsTeleportation);
+        when (!config.regionsEnabled, messages.regionsDisabled);
+        when (!config.baseEnable, messages.baseTeleportationDisabled);
+        when (user.getCache().getTeleportation() != null, messages.baseIsTeleportation);
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.base")
                 ? Collections.emptyList()

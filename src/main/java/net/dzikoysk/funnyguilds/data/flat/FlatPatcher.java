@@ -15,8 +15,8 @@ public class FlatPatcher {
         boolean regionsExists = regions.exists();
 
         if (guildsExists || regionsExists) {
-            FunnyGuilds.getInstance().getPluginLogger().update("Updating flat files ...");
-            FunnyGuilds.getInstance().getPluginLogger().update("Scanning files ...");
+            FunnyGuilds.getPluginLogger().update("Updating flat files ...");
+            FunnyGuilds.getPluginLogger().update("Scanning files ...");
             int filesFound = 0;
 
             File[] guildsList = guilds.listFiles();
@@ -25,8 +25,8 @@ public class FlatPatcher {
             filesFound += guildsList != null ? guildsList.length : 0;
             filesFound += regionsList != null ? regionsList.length : 0;
 
-            FunnyGuilds.getInstance().getPluginLogger().update(filesFound + " files found ...");
-            FunnyGuilds.getInstance().getPluginLogger().update("Updating files ...");
+            FunnyGuilds.getPluginLogger().update(filesFound + " files found ...");
+            FunnyGuilds.getPluginLogger().update("Updating files ...");
 
             if (guildsExists) {
                 guilds.renameTo(flatDataModel.getGuildsFolder());
@@ -46,8 +46,8 @@ public class FlatPatcher {
                 IOUtils.delete(regions);
             }
 
-            FunnyGuilds.getInstance().getPluginLogger().update("Done!");
-            FunnyGuilds.getInstance().getPluginLogger().update("Updated files: " + filesFound);
+            FunnyGuilds.getPluginLogger().update("Done!");
+            FunnyGuilds.getPluginLogger().update("Updated files: " + filesFound);
         }
     }
 

@@ -99,7 +99,7 @@ public class SQLDataModel implements DataModel {
             String userName = result.getString("name");
 
             if (!UserUtils.validateUsername(userName)) {
-                FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
+                FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
                 continue;
             }
 
@@ -110,12 +110,12 @@ public class SQLDataModel implements DataModel {
             }
         }
 
-        FunnyGuilds.getInstance().getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+        FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
     }
 
     public void loadRegions() throws SQLException {
         if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-            FunnyGuilds.getInstance().getPluginLogger().info("Regions are disabled and thus - not loaded");
+            FunnyGuilds.getPluginLogger().info("Regions are disabled and thus - not loaded");
             return;
         }
 
@@ -129,7 +129,7 @@ public class SQLDataModel implements DataModel {
             }
         }
 
-        FunnyGuilds.getInstance().getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
+        FunnyGuilds.getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
     }
 
     public void loadGuilds() throws SQLException {
@@ -172,7 +172,7 @@ public class SQLDataModel implements DataModel {
             GuildUtils.deleteGuild(guild);
         }
 
-        FunnyGuilds.getInstance().getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
+        FunnyGuilds.getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
 
     @Override

@@ -15,7 +15,7 @@ public final class DeserializationUtils {
     @SuppressWarnings("unchecked")
     public static Guild deserializeGuild(Object[] values) {
         if (values == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: null");
+            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: null");
             return null;
         }
         
@@ -43,7 +43,7 @@ public final class DeserializationUtils {
 
     public static Region deserializeRegion(Object[] values) {
         if (values == null) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Cannot deserialize region! Caused by: null");
+            FunnyGuilds.getPluginLogger().error("Cannot deserialize region! Caused by: null");
             return null;
         }
         

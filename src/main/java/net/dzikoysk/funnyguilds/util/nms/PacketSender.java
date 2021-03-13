@@ -25,7 +25,7 @@ public final class PacketSender {
 
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize PacketSender class", ex);
+            FunnyGuilds.getPluginLogger().error("Could not initialize PacketSender class", ex);
         }
     }
 
@@ -62,8 +62,8 @@ public final class PacketSender {
             for (Object packet : packets) {
                 sendPacket.invoke(connection, packet);
             }
-        } catch (IllegalAccessException | InvocationTargetException ex) {
-            ex.printStackTrace();
+        } catch (IllegalAccessException | InvocationTargetException exception) {
+            FunnyGuilds.getPluginLogger().error("Failed to send packets", exception);
         }
     }
 

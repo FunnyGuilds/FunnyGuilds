@@ -53,7 +53,7 @@ public interface DataModel {
         }
 
         if (repaired > 0) {
-            FunnyGuilds.getInstance().getPluginLogger().warning("Repaired conflicts: " + repaired);
+            FunnyGuilds.getPluginLogger().warning("Repaired conflicts: " + repaired);
         }
     }
 

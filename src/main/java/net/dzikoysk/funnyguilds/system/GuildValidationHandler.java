@@ -25,14 +25,16 @@ public class GuildValidationHandler implements Runnable {
 
     private void validateGuildLifetime() {
         for (Guild guild : GuildUtils.getGuilds()) {
-            if (! guild.isValid()) {
-                if (! SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, null, guild))) {
-                    continue;
-                }
-
-                ValidityUtils.broadcast(guild);
-                GuildUtils.deleteGuild(guild);
+            if (guild.isValid()) {
+                continue;
             }
+
+            if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, null, guild))) {
+                continue;
+            }
+
+            ValidityUtils.broadcast(guild);
+            GuildUtils.deleteGuild(guild);
         }
 
         this.validateGuildsCounter = 0;

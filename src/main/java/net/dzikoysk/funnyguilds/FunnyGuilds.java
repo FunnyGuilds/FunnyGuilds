@@ -38,13 +38,13 @@ import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
-    private static FunnyGuilds funnyguilds;
+    private static FunnyGuilds       funnyguilds;
+    private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile  = new File(this.getDataFolder(), "config.yml");
     private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
     private final File pluginDataFolderFile     = new File(this.getDataFolder(), "data");
 
-    private FunnyGuildsLogger      logger;
     private FunnyGuildsVersion     version;
     private FunnyCommands          funnyCommands;
     private PluginConfiguration    pluginConfiguration;
@@ -66,16 +66,16 @@ public class FunnyGuilds extends JavaPlugin {
     @Override
     public void onLoad() {
         funnyguilds = this;
-        this.logger = new FunnyGuildsLogger(this);
+        logger = new FunnyGuildsLogger(this);
         this.version = new FunnyGuildsVersion(this);
 
         try {
             Class.forName("net.md_5.bungee.api.ChatColor");
         }
         catch (Exception spigotNeeded) {
-            this.logger.error("FunnyGuilds requires spigot to work, your server seems to be using something else");
-            this.logger.error("If you think that is not true - contact plugin developers");
-            this.logger.error("https://github.com/FunnyGuilds/FunnyGuilds");
+            logger.error("FunnyGuilds requires spigot to work, your server seems to be using something else");
+            logger.error("If you think that is not true - contact plugin developers");
+            logger.error("https://github.com/FunnyGuilds/FunnyGuilds");
 
             shutdown("Spigot required for service not detected!");
             return;
@@ -93,7 +93,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.messageConfiguration.load();
         }
         catch (Exception exception) {
-            this.getPluginLogger().error("Could not load plugin configuration", exception);
+            logger.error("Could not load plugin configuration", exception);
             shutdown("Critical error has been encountered!");
             return;
         }
@@ -124,7 +124,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.dataModel.load();
         }
         catch (Exception ex) {
-            this.getPluginLogger().error("Could not load data from database", ex);
+            logger.error("Could not load data from database", ex);
             shutdown("Critical error has been encountered!");
             return;
         }
@@ -163,7 +163,7 @@ public class FunnyGuilds extends JavaPlugin {
             pluginManager.registerEvents(new EntityPlace(), this);
         }
         else {
-            getLogger().warning("Cannot register EntityPlaceEvent listener on this version of server");
+            logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
         }
 
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
@@ -188,7 +188,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.version.isNewAvailable(this.getServer().getConsoleSender(), true);
         PluginHook.init();
 
-        this.logger.info("~ Created by FunnyGuilds Team ~");
+        logger.info("~ Created by FunnyGuilds Team ~");
     }
 
     @Override
@@ -231,7 +231,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.forceDisabling = true;
-        this.getPluginLogger().warning("The FunnyGuilds is going to shut down! " + content);
+        logger.warning("The FunnyGuilds is going to shut down! " + content);
         this.getServer().getPluginManager().disablePlugin(this);
     }
 
@@ -270,10 +270,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     public boolean isDisabling() {
         return this.isDisabling;
-    }
-
-    public FunnyGuildsLogger getPluginLogger() {
-        return this.logger;
     }
 
     public FunnyGuildsVersion getVersion() {
@@ -328,6 +324,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public static FunnyGuilds getInstance() {
         return funnyguilds;
+    }
+
+    public static FunnyGuildsLogger getPluginLogger() {
+        return logger;
     }
 
 }

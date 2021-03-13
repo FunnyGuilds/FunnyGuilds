@@ -16,6 +16,8 @@ import org.diorite.utils.network.DioriteURLUtils;
  */
 public class FunnyTelemetry {
 
+    private FunnyTelemetry() {}
+
     private static final Gson   gson                 = new Gson();
     public static final  String URL                  = "https://funnytelemetry.dzikoysk.net";
     public static final  String FUNNYBIN_POST        = URL + "/funnybin/api/post";

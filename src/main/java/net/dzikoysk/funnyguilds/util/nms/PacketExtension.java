@@ -23,8 +23,8 @@ public final class PacketExtension {
             playerConnection = Reflections.getField(Reflections.getNMSClass("EntityPlayer"), "playerConnection");
             networkManager = Reflections.getField(Reflections.getNMSClass("PlayerConnection"), "networkManager");
             handleMethod = Reflections.getMethod(Reflections.getCraftBukkitClass("entity.CraftEntity"), "getHandle");
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("PacketExtension Error", exception);
         }
     }
 
@@ -32,8 +32,8 @@ public final class PacketExtension {
         try {
             Object eP = handleMethod.invoke(player);
             return clientChannel.get(networkManager.get(playerConnection.get(eP)));
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("PacketExtension Error", exception);
             return null;
         }
     }
@@ -82,8 +82,8 @@ public final class PacketExtension {
                     pipeline.addBefore("packet_handler", "FunnyGuilds", handler);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("PacketExtension Error", exception);
         }
     }
 

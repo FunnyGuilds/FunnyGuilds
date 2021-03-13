@@ -25,7 +25,7 @@ public final class UnbanCommand {
         when (args.length < 1, messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(!guild.isBanned(), messages.adminGuildNotBanned);
+        when (!guild.isBanned(), messages.adminGuildNotBanned);
         
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildUnbanEvent(AdminUtils.getCause(admin), admin, guild))) {

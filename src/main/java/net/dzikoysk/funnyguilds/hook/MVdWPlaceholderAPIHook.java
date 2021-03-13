@@ -46,7 +46,7 @@ public final class MVdWPlaceholderAPIHook {
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + index, event -> RankUtils.parseRank(null, "{PTOP-" + index + "}"));
         }
 
-        FunnyGuilds.getInstance().getPluginLogger().info("MVdWPlaceholderAPI hook has been enabled!");
+        FunnyGuilds.getPluginLogger().info("MVdWPlaceholderAPI hook has been enabled!");
     }
     
     public static String replacePlaceholders(Player user, String base) {

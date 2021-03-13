@@ -9,25 +9,25 @@ import org.apache.commons.lang3.StringUtils;
 
 public class RankUtils {
 
-    public static String parseRank(User source, String var) {
-        if (! var.contains("TOP-")) {
+    public static String parseRank(User source, String rankTop) {
+        if (! rankTop.contains("TOP-")) {
             return null;
         }
 
-        int i = getIndex(var);
+        int i = getIndex(rankTop);
 
         if (i <= 0) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Index in TOP- must be greater or equal to 1!");
+            FunnyGuilds.getPluginLogger().error("Index in TOP- must be greater or equal to 1!");
             return null;
         }
 
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        if (var.contains("GTOP")) {
+        if (rankTop.contains("GTOP")) {
             Guild guild = RankManager.getInstance().getGuild(i);
 
             if (guild == null) {
-                return StringUtils.replace(var, "{GTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().gtopNoValue);
+                return StringUtils.replace(rankTop, "{GTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().gtopNoValue);
             }
 
             int points = guild.getRank().getPoints();
@@ -55,14 +55,14 @@ public class RankUtils {
                 }
             }
 
-            return StringUtils.replace(var, "{GTOP-" + i + '}', guildTag + pointsFormat);
+            return StringUtils.replace(rankTop, "{GTOP-" + i + '}', guildTag + pointsFormat);
 
         }
-        else if (var.contains("PTOP")) {
+        else if (rankTop.contains("PTOP")) {
             User user = RankManager.getInstance().getUser(i);
 
             if (user == null) {
-                return StringUtils.replace(var, "{PTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().ptopNoValue);
+                return StringUtils.replace(rankTop, "{PTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().ptopNoValue);
             }
 
             int points = user.getRank().getPoints();
@@ -73,19 +73,19 @@ public class RankUtils {
                 pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
             }
 
-            return StringUtils.replace(var, "{PTOP-" + i + '}', (user.isOnline() ? config.ptopOnline : config.ptopOffline) + user.getName() + pointsFormat);
+            return StringUtils.replace(rankTop, "{PTOP-" + i + '}', (user.isOnline() ? config.ptopOnline : config.ptopOffline) + user.getName() + pointsFormat);
         }
 
         return null;
     }
 
-    public static int getIndex(String var) {
+    public static int getIndex(String rank) {
         StringBuilder sb = new StringBuilder();
         boolean open = false;
         boolean start = false;
         int result = -1;
 
-        for (char c : var.toCharArray()) {
+        for (char c : rank.toCharArray()) {
             boolean end = false;
 
             switch (c) {
@@ -112,7 +112,7 @@ public class RankUtils {
         try {
             result = Integer.parseInt(sb.toString());
         } catch(NumberFormatException e) {
-            FunnyGuilds.getInstance().getPluginLogger().parser(var + " contains an invalid number: " + sb.toString());
+            FunnyGuilds.getPluginLogger().parser(rank + " contains an invalid number: " + sb.toString());
         }
 
         return result;

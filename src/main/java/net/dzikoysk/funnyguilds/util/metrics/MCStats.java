@@ -12,6 +12,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
@@ -60,20 +61,11 @@ public class MCStats {
 
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        GZIPOutputStream gzos = null;
 
-        try {
-            gzos = new GZIPOutputStream(baos);
-            gzos.write(input.getBytes("UTF-8"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (gzos != null) {
-                try {
-                    gzos.close();
-                } catch (IOException ignore) {
-                }
-            }
+        try (GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
+            gzos.write(input.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException exception) {
+            FunnyGuilds.getPluginLogger().error("MCStats error", exception);
         }
 
         return baos.toByteArray();
@@ -88,7 +80,7 @@ public class MCStats {
                 isValueNumeric = true;
             }
         } catch (NumberFormatException e) {
-            isValueNumeric = false;
+            FunnyGuilds.getPluginLogger().debug("[MCStats] Value isn't numeric.");
         }
 
         if (json.charAt(json.length() - 1) != '{') {
@@ -133,7 +125,7 @@ public class MCStats {
                 default:
                     if (chr < ' ') {
                         String t = "000" + Integer.toHexString(chr);
-                        builder.append("\\u" + t.substring(t.length() - 4));
+                        builder.append("\\u").append(t.substring(t.length() - 4));
                     } else {
                         builder.append(chr);
                     }

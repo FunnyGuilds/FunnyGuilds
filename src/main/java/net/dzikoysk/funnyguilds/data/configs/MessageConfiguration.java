@@ -565,6 +565,19 @@ public class MessageConfiguration {
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String adminTargetTeleportedToBase = "&aGracz &7{PLAYER} &azostal teleportowany do bazy gildii!";
 
+    @CfgComment("<------- SecuritySystem Messages -------> #")
+    @CfgComment("Przedrostek przed wiadomościami systemu bezpieczeństwa")
+    public String SecuritySystemPrefix = "&8[&4Security&8] &7";
+    @CfgComment("Dostepne zmienne: {PLAYER}, {CHEAT}")
+    public String SecuritySystemInfo = "&7Gracz &c{PLAYER}&7 może używać &c{CHEAT}&7 lub innego cheata o podobnym dzialaniu!";
+    @CfgComment("Dostepne zmienne: {NOTE}")
+    public String SecuritySystemNote = "Notatka: &7{NOTE}";
+    @CfgComment("Dostepne zmienne: {DISTANCE}")
+    public String SecuritySystemReach = "&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!";
+    @CfgComment("Dostepne zmienne: {BLOCKS}")
+    public String SecuritySystemFreeCam = "Zaatakowal krysztal przez bloki: &c{BLOCKS}";
+
+
     public void load() {
         try {
             for (Field field : this.getClass().getDeclaredFields()) {
@@ -582,7 +595,7 @@ public class MessageConfiguration {
             }
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not load message configuration", ex);
+            FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
     }
 }

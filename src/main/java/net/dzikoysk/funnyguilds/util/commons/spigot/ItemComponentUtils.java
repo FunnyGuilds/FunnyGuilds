@@ -52,7 +52,7 @@ public final class ItemComponentUtils {
                     messageColor += symbol;
 
                     if (index + 1 >= messageChars.length) {
-                        FunnyGuilds.getInstance().getLogger().warning("Invalid placeholder: " + message + " (exceeds array limit at + " + index + ")");
+                        FunnyGuilds.getPluginLogger().warning("Invalid placeholder: " + message + " (exceeds array limit at + " + index + ")");
                         continue;
                     }
 
@@ -119,8 +119,8 @@ public final class ItemComponentUtils {
         try {
             String jsonItem = SAVE.invoke(AS_NMS_COPY.invoke(null, item), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
             itemComponent.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[]{new TextComponent(jsonItem)}));
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException exception) {
+            FunnyGuilds.getPluginLogger().error("Could not get item component", exception);
         }
         
         return itemComponent;

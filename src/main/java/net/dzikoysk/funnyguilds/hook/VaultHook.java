@@ -23,14 +23,14 @@ public final class VaultHook {
             economyHook = economyProvider.getProvider();
         }
         else {
-            FunnyGuilds.getInstance().getPluginLogger().warning("No economy provider found, some features may not be available");
+            FunnyGuilds.getPluginLogger().warning("No economy provider found, some features may not be available");
         }
 
         if (permissionProvider != null) {
             permissionHook = permissionProvider.getProvider();
         }
         else {
-            FunnyGuilds.getInstance().getPluginLogger().warning("No permission provider found, some features may not be available");
+            FunnyGuilds.getPluginLogger().warning("No permission provider found, some features may not be available");
         }
     }
 

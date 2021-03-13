@@ -29,7 +29,7 @@ public class PlayerChat implements Listener {
 
             if (sendGuildMessage(event, message, config, player, guild)) {
                 if (config.logGuildChat) {
-                    FunnyGuilds.getInstance().getLogger().info("[Guild Chat] " + message);
+                    FunnyGuilds.getPluginLogger().info("[Guild Chat] " + message);
                 }
 
                 return;

@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.element.DummyManager;
 public class DummyGlobalUpdateRequest extends DefaultConcurrencyRequest {
 
     @Override
-    public void execute() throws Exception {
+    public void execute() {
         DummyManager.updatePlayers();
     }
 

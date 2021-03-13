@@ -24,10 +24,10 @@ public final class ValidityAdminCommand {
     )
     public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
-        when(args.length < 2, messages.adminNoValidityTimeGiven);
+        when (args.length < 2, messages.adminNoValidityTimeGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(guild.isBanned(), messages.adminGuildBanned);
+        when (guild.isBanned(), messages.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
         if (time < 1) {

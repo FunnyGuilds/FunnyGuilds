@@ -7,7 +7,7 @@ public class DefaultConcurrencyExceptionHandler implements ConcurrencyExceptionH
 
     @Override
     public void handleException(Exception exception) {
-        FunnyGuilds.getInstance().getPluginLogger().error("An error occurred while handling concurrent request", exception);
+        FunnyGuilds.getPluginLogger().error("An error occurred while handling concurrent request", exception);
     }
 
 }

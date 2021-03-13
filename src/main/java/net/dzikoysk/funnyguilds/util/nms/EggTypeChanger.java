@@ -40,7 +40,7 @@ public final class EggTypeChanger {
             setSpawnedTypeMethod.invoke(meta, type);
         }
         catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Failed to set entity type for SpawnEggMeta object", ex);
+            FunnyGuilds.getPluginLogger().error("Failed to set entity type for SpawnEggMeta object", ex);
         }
     }
 

@@ -34,7 +34,7 @@ public class PingUtils {
             ping = (int) pingField.get(handle);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve player's ping", ex);
+            FunnyGuilds.getPluginLogger().error("Could not retrieve player's ping", ex);
         }
 
         return Math.max(0, ping);
