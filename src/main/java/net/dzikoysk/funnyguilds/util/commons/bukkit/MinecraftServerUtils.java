@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -48,6 +50,18 @@ public final class MinecraftServerUtils {
         catch (IllegalAccessException illegalAccessException) {
             FunnyGuilds.getPluginLogger().error("Could not retrieve recent TPS", illegalAccessException);
             return - 1.0;
+        }
+    }
+
+    public static int getReloadCount() {
+        Server server = Bukkit.getServer();
+
+        try {
+            final Field reloadCountField = server.getClass().getDeclaredField("reloadCount");
+            return reloadCountField.getInt(server);
+        }
+        catch (IllegalAccessException | NoSuchFieldException illegalAccessException) {
+            return - 1;
         }
     }
 
