@@ -553,7 +553,6 @@ public class MessageConfiguration {
     
     public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
     public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
-    public String adminAlreadyDeputy = "&cTen gracz jest juz zastepca gildii!";
 
     public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
     public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
