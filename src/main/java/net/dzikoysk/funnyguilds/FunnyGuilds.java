@@ -191,9 +191,7 @@ public class FunnyGuilds extends JavaPlugin {
         PluginHook.init();
 
         if (MinecraftServerUtils.getReloadCount() > 0) {
-            Bukkit.broadcast(ChatUtils.colored("&cFunnyGuilds nie moze poprawnie pracowac po wykonaniu reload'u!"), "funnyguilds.admin");
-            Bukkit.broadcast(ChatUtils.colored("&cZaleca sie jak najszybciej przeprowadzic restart serwera!"), "funnyguilds.admin");
-            Bukkit.broadcast(ChatUtils.colored("&eFor the FunnyGuilds to work properly, restart the server!"), "funnyguilds.admin");
+            Bukkit.broadcast(ChatUtils.colored(messageConfiguration.reloadWarn), "funnyguilds.admin");
         }
 
         logger.info("~ Created by FunnyGuilds Team ~");
