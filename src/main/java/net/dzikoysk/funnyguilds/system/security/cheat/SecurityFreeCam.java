@@ -42,7 +42,7 @@ public class SecurityFreeCam {
             return;
         }
 
-        String message = messages.SecuritySystemFreeCam;
+        String message = messages.securitySystemFreeCam;
         message = StringUtils.replace(message, "{BLOCKS}, ", Joiner.on(", ").join(blocks, b -> MaterialUtils.getMaterialName(b.getType())).toString());
 
         SecurityUtils.addViolationLevel(User.get(player));

@@ -33,6 +33,7 @@ public final class DeputyCommand {
         User deputyUser = UserValidation.requireUserByName(args[0]);
         when (owner.equals(deputyUser), messages.deputyMustBeDifferent);
         when (!guild.getMembers().contains(deputyUser), messages.generalIsNotMember);
+        when (guild.getDeputies().contains(deputyUser), messages.adminAlreadyDeputy);
 
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
             return;
