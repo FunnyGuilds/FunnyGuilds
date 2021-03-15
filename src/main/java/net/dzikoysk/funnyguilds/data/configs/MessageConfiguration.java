@@ -578,7 +578,7 @@ public class MessageConfiguration {
     public String SecuritySystemFreeCam = "Zaatakowal krysztal przez bloki: &c{BLOCKS}";
 
     @CfgComment("<------- System Messages -------> #")
-    public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zaleca sie przeprowadzic restart serwera.";
+    public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!";
 
     public void load() {
         try {
