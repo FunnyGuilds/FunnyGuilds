@@ -22,7 +22,9 @@ import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
+import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
@@ -187,6 +189,10 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.version.isNewAvailable(this.getServer().getConsoleSender(), true);
         PluginHook.init();
+
+        if (MinecraftServerUtils.getReloadCount() > 0) {
+            Bukkit.broadcast(ChatUtils.colored(messageConfiguration.reloadWarn), "funnyguilds.admin");
+        }
 
         logger.info("~ Created by FunnyGuilds Team ~");
     }
