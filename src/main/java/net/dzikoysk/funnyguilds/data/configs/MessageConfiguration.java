@@ -553,7 +553,6 @@ public class MessageConfiguration {
     
     public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
     public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
-    public String adminAlreadyDeputy = "&cTen gracz jest juz zastepca gildii!";
 
     public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
     public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
@@ -567,15 +566,15 @@ public class MessageConfiguration {
 
     @CfgComment("<------- SecuritySystem Messages -------> #")
     @CfgComment("Przedrostek przed wiadomościami systemu bezpieczeństwa")
-    public String SecuritySystemPrefix = "&8[&4Security&8] &7";
+    public String securitySystemPrefix = "&8[&4Security&8] &7";
     @CfgComment("Dostepne zmienne: {PLAYER}, {CHEAT}")
-    public String SecuritySystemInfo = "&7Gracz &c{PLAYER}&7 może używać &c{CHEAT}&7 lub innego cheata o podobnym dzialaniu!";
+    public String securitySystemInfo = "&7Gracz &c{PLAYER}&7 może używać &c{CHEAT}&7 lub innego cheata o podobnym dzialaniu!";
     @CfgComment("Dostepne zmienne: {NOTE}")
-    public String SecuritySystemNote = "Notatka: &7{NOTE}";
+    public String securitySystemNote = "Notatka: &7{NOTE}";
     @CfgComment("Dostepne zmienne: {DISTANCE}")
-    public String SecuritySystemReach = "&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!";
+    public String securitySystemReach = "&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!";
     @CfgComment("Dostepne zmienne: {BLOCKS}")
-    public String SecuritySystemFreeCam = "Zaatakowal krysztal przez bloki: &c{BLOCKS}";
+    public String securitySystemFreeCam = "Zaatakowal krysztal przez bloki: &c{BLOCKS}";
 
     @CfgComment("<------- System Messages -------> #")
     public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!";

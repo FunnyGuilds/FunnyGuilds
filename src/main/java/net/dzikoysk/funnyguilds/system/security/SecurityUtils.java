@@ -22,8 +22,8 @@ public final class SecurityUtils {
 
     public static void sendToOperator(Player player, String cheat, String note) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        String message = messages.SecuritySystemPrefix + messages.SecuritySystemInfo;
-        String messageNote = messages.SecuritySystemPrefix + messages.SecuritySystemNote;
+        String message = messages.securitySystemPrefix + messages.securitySystemInfo;
+        String messageNote = messages.securitySystemPrefix + messages.securitySystemNote;
 
         message = StringUtils.replace(message, "{PLAYER}", player.getName());
         message = StringUtils.replace(message, "{CHEAT}", cheat);
