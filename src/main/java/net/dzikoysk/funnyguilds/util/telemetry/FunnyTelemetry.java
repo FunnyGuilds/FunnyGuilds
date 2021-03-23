@@ -67,13 +67,13 @@ public class FunnyTelemetry {
         return URLEncoder.encode(str, "UTF-8");
     }
 
-    public static String createQueryElement(String key, String value) throws UnsupportedEncodingException {
+    private static String createQueryElement(String key, String value) throws UnsupportedEncodingException {
         String result = encodeUTF8(key);
         if (value != null) result += "=" + encodeUTF8(value);
         return result;
     }
 
-    public static StringBuilder addQueryElement(String key, String value, StringBuilder builder) throws UnsupportedEncodingException {
+    private static StringBuilder addQueryElement(String key, String value, StringBuilder builder) throws UnsupportedEncodingException {
         builder.append(encodeUTF8(key));
         if (value != null) {
             builder.append('=');
