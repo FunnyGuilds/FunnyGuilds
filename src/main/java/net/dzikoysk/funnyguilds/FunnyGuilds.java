@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.bukkit.BukkitConfigurer;
 import eu.okaeri.configs.postprocessor.SectionSeparator;
+import eu.okaeri.configs.serdes.SimpleObjectTransformer;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -93,6 +94,7 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, (it) -> {
                 it.withConfigurer(new BukkitConfigurer(SectionSeparator.NONE));
+                it.withSerdesPack(registry -> registry.register(SimpleObjectTransformer.of(String.class, String.class, MessageConfiguration::decolor)));
                 it.withBindFile(this.messageConfigurationFile);
                 it.saveDefaults();
                 it.load(true);
