@@ -1,16 +1,17 @@
 package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import com.google.common.io.Files;
+import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.bukkit.BukkitConfigurer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
-import net.dzikoysk.funnyguilds.util.commons.LoggingUtils;
 import net.dzikoysk.funnyguilds.util.telemetry.FunnyTelemetry;
 import net.dzikoysk.funnyguilds.util.telemetry.FunnybinResponse;
 import net.dzikoysk.funnyguilds.util.telemetry.PasteType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.panda_lang.utilities.commons.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,7 +35,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws IOException, IllegalAccessException {
         List<FunnybinResponse> sentPastes = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
@@ -53,13 +54,23 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 file = null;
                 type = PasteType.CONFIG;
 
-                PluginConfiguration config = ConfigHelper.loadConfig(FunnyGuilds.getInstance().getPluginConfigurationFile(), PluginConfiguration.class);
+                PluginConfiguration config = ConfigManager.create(PluginConfiguration.class, (it) -> {
+                    it.withConfigurer(new BukkitConfigurer());
+                    it.withBindFile(FunnyGuilds.getInstance().getPluginConfigurationFile());
+                    it.load();
+                });
+
                 config.mysql.hostname = "<CUT>";
                 config.mysql.database = "<CUT>";
                 config.mysql.user = "<CUT>";
                 config.mysql.password = "<CUT>";
 
-                content = ConfigHelper.configToString(config);
+                File tempFile = File.createTempFile("funnyguilds-", "-config");
+                config.setBindFile(tempFile);
+                config.save();
+
+                content = FileUtils.getContentOfFile(tempFile);
+                tempFile.delete();
             }
             else {
                 file = new File(fileName);

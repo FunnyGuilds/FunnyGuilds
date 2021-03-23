@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds;
 
+import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.bukkit.BukkitConfigurer;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -23,7 +25,6 @@ import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
@@ -37,6 +38,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.panda_lang.utilities.commons.ClassUtils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -88,11 +90,18 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         try {
-            this.pluginConfiguration = ConfigHelper.loadConfig(this.pluginConfigurationFile, PluginConfiguration.class);
-            this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
-
-            this.pluginConfiguration.load();
-            this.messageConfiguration.load();
+            this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, (it) -> {
+                it.withConfigurer(new BukkitConfigurer());
+                it.withBindFile(this.messageConfigurationFile);
+                it.saveDefaults();
+                it.load(true);
+            });
+            this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, (it) -> {
+                it.withConfigurer(new BukkitConfigurer());
+                it.withBindFile(this.pluginConfigurationFile);
+                it.saveDefaults();
+                it.load(true);
+            });
         }
         catch (Exception exception) {
             logger.error("Could not load plugin configuration", exception);
@@ -318,13 +327,11 @@ public class FunnyGuilds extends JavaPlugin {
         return this.dynamicListenerManager;
     }
 
-    public void reloadPluginConfiguration() {
-        this.pluginConfiguration = ConfigHelper.loadConfig(this.pluginConfigurationFile, PluginConfiguration.class);
+    public void reloadPluginConfiguration() throws IOException, IllegalAccessException {
         this.pluginConfiguration.load();
     }
 
-    public void reloadMessageConfiguration() {
-        this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
+    public void reloadMessageConfiguration() throws IOException, IllegalAccessException {
         this.messageConfiguration.load();
     }
 

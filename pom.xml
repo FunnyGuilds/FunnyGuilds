@@ -36,9 +36,9 @@
             <version>3.12.0</version>
         </dependency>
         <dependency>
-            <groupId>org.diorite</groupId>
-            <artifactId>diorite-config-minimal</artifactId>
-            <version>1.2</version>
+            <groupId>eu.okaeri</groupId>
+            <artifactId>okaeri-configs-bukkit</artifactId>
+            <version>1.5.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -163,6 +163,10 @@
             <url>https://repo.panda-lang.org/</url>
         </repository>
         <repository>
+            <id>okaeri-repo</id>
+            <url>https://storehouse.okaeri.eu/repository/maven-public/</url>
+        </repository>
+        <repository>
             <id>sk89q-repository</id>
             <name>sk89q Repository</name>
             <url>https://maven.sk89q.com/repo/</url>
@@ -255,6 +259,10 @@
                         <relocation>
                             <pattern>org.apache.logging.log4j.</pattern>
                             <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging.log4j.</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>eu.okaeri.configs.</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.eu.okaeri.configs.</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
