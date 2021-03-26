@@ -32,6 +32,7 @@ import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
+import org.bukkit.util.Vector;
 import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.List;
@@ -160,10 +161,11 @@ public final class CreateCommand {
 
             WorldBorder border = player.getWorld().getWorldBorder();
             double radius = border.getSize() / 2;
-            BoundingBox bbox = BoundingBox.of(border.getCenter().toVector(),
-                    radius - config.createMinDistanceFromBorder, 0, radius - config.createMinDistanceFromBorder);
+            BoundingBox bbox = BoundingBox.of(border.getCenter().toVector(), radius - config.createMinDistanceFromBorder, 256, radius - config.createMinDistanceFromBorder);
+            BoundingBox gbox = BoundingBox.of(region.getFirstCorner(), region.getSecondCorner());
 
-            if (! (bbox.contains(region.getFirstCorner().toVector()) && bbox.contains(region.getSecondCorner().toVector()))) {
+            // border box does not contain guild box
+            if (!bbox.contains(gbox)) {
                 String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
                 notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
                 player.sendMessage(notEnoughDistanceMessage);
