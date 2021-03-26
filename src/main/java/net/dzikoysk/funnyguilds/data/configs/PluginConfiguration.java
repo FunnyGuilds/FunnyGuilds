@@ -1277,7 +1277,7 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     @Override
-    public OkaeriConfig load() throws IOException, IllegalAccessException {
+    public OkaeriConfig load() throws Exception {
 
         super.load();
         this.dateFormat = new SimpleDateFormat(FunnyGuilds.getInstance().getMessageConfiguration().dateFormat);

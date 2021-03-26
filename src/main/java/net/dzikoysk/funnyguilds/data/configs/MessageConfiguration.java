@@ -6,7 +6,6 @@ import eu.okaeri.configs.annotation.Exclude;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
@@ -573,7 +572,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!";
 
     @Override
-    public OkaeriConfig load() throws IOException, IllegalAccessException {
+    public OkaeriConfig load() throws Exception {
         super.load();
         try {
             for (Field field : this.getClass().getDeclaredFields()) {

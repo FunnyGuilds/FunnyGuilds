@@ -9,8 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.IOException;
-
 public final class ReloadRequest extends DefaultConcurrencyRequest {
 
     private final CommandSender sender;
@@ -22,7 +20,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() throws IOException, IllegalAccessException {
+    public void execute() throws Exception {
         FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
         funnyGuilds.reloadPluginConfiguration();
         funnyGuilds.reloadMessageConfiguration();

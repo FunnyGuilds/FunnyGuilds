@@ -36,7 +36,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() throws IOException, IllegalAccessException {
+    public void execute() throws Exception {
         List<FunnybinResponse> sentPastes = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {

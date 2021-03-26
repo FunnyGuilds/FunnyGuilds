@@ -40,7 +40,6 @@ import org.bukkit.scheduler.BukkitTask;
 import org.panda_lang.utilities.commons.ClassUtils;
 
 import java.io.File;
-import java.io.IOException;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -330,11 +329,11 @@ public class FunnyGuilds extends JavaPlugin {
         return this.dynamicListenerManager;
     }
 
-    public void reloadPluginConfiguration() throws IOException, IllegalAccessException {
+    public void reloadPluginConfiguration() throws Exception {
         this.pluginConfiguration.load();
     }
 
-    public void reloadMessageConfiguration() throws IOException, IllegalAccessException {
+    public void reloadMessageConfiguration() throws Exception {
         this.messageConfiguration.load();
     }
 
