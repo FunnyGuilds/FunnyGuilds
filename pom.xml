@@ -37,8 +37,8 @@
         </dependency>
         <dependency>
             <groupId>eu.okaeri</groupId>
-            <artifactId>okaeri-configs-bukkit</artifactId>
-            <version>1.6.4</version>
+            <artifactId>okaeri-configs-yaml-bukkit</artifactId>
+            <version>2.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
