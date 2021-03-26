@@ -47,7 +47,7 @@ public final class DeserializationUtils {
             return null;
         }
         
-        Region region = Region.get((String) values[0]);
+        Region region = Region.getOrCreate((String) values[0]);
 
         region.setCenter((Location) values[1]);
         region.setSize((int) values[2]);

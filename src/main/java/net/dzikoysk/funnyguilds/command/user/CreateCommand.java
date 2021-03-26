@@ -31,6 +31,7 @@ import org.bukkit.Material;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
 import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.List;
@@ -69,6 +70,7 @@ public final class CreateCommand {
         }
         
         String name = args[1];
+        Location guildLocation = player.getLocation().getBlock().getLocation();
 
         when (tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
         when (tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
@@ -78,13 +80,13 @@ public final class CreateCommand {
         when (!name.matches(config.nameRegex.getPattern()), messages.createOLName);
         when (GuildUtils.nameExists(name), messages.createNameExists);
         when (GuildUtils.tagExists(tag), messages.createTagExists);
+        when (config.regionsEnabled && RegionUtils.isIn(guildLocation), messages.createIsNear);
+        when (config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
 
         if (config.checkForRestrictedGuildNames) {
             when (!GuildUtils.isNameValid(name), messages.restrictedGuildName);
             when (!GuildUtils.isTagValid(tag), messages.restrictedGuildTag);
         }
-
-        Location guildLocation = player.getLocation().getBlock().getLocation();
 
         if (config.regionsEnabled) {
             if (config.createCenterY != 0) {
@@ -143,27 +145,6 @@ public final class CreateCommand {
             return;
         }
 
-        if (config.regionsEnabled) {
-            when (RegionUtils.isIn(guildLocation), messages.createIsNear);
-            when (RegionUtils.isNear(guildLocation), messages.createIsNear);
-
-            if (config.createMinDistanceFromBorder != -1) {
-                WorldBorder border = player.getWorld().getWorldBorder();
-                double borderSize = border.getSize() / 2;
-                double borderX = border.getCenter().getX() + borderSize;
-                double borderZ = border.getCenter().getZ() + borderSize;
-                double distanceX = Math.abs(borderX) - Math.abs(player.getLocation().getX());
-                double distanceZ = Math.abs(borderZ) - Math.abs(player.getLocation().getZ());
-
-                if ( (distanceX < config.createMinDistanceFromBorder) || (distanceZ < config.createMinDistanceFromBorder) ) {
-                    String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
-                    notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
-                    player.sendMessage(notEnoughDistanceMessage);
-                    return;
-                }
-            }
-        }
-
         Guild guild = new Guild(name);
         guild.setTag(tag);
         guild.setOwner(user);
@@ -173,6 +154,26 @@ public final class CreateCommand {
         guild.setAttacked(System.currentTimeMillis() - config.warWait + config.warProtection);
         guild.setPvP(config.damageGuild);
         guild.setHome(guildLocation);
+
+        if (config.regionsEnabled) {
+            Region region = new Region(guild, guildLocation, config.regionSize);
+
+            if (config.createMinDistanceFromBorder > 0) {
+                WorldBorder border = player.getWorld().getWorldBorder();
+                double radius = border.getSize() / 2;
+                BoundingBox bbox = BoundingBox.of(border.getCenter().toVector(),
+                        radius - config.createMinDistanceFromBorder, 0, radius - config.createMinDistanceFromBorder);
+
+                if (! (bbox.contains(region.getFirstCorner().toVector()) && bbox.contains(region.getSecondCorner().toVector()))) {
+                    String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
+                    notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
+                    player.sendMessage(notEnoughDistanceMessage);
+                    return;
+                }
+            }
+
+            guild.setRegion(region);
+        }
 
         if (!SimpleEventHandler.handle(new GuildPreCreateEvent(EventCause.USER, user, guild))) {
             return;
@@ -184,14 +185,8 @@ public final class CreateCommand {
         if (VaultHook.isEconomyHooked()) {
             VaultHook.withdrawFromPlayerBank(player, requiredMoney);
         }
-
-        user.setGuild(guild);
-        GuildUtils.addGuild(guild);
         
         if (config.regionsEnabled) {
-            Region region = new Region(guild, guildLocation, config.regionSize);
-            guild.setRegion(region);
-
             if (config.pasteSchematicOnCreation) {
                 if (! PluginHook.WORLD_EDIT.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir)) {
                     player.sendMessage(messages.createGuildCouldNotPasteSchematic);
@@ -217,6 +212,13 @@ public final class CreateCommand {
             
             GuildUtils.spawnHeart(guild);
             player.teleport(guildLocation);
+        }
+
+        user.setGuild(guild);
+        GuildUtils.addGuild(guild);
+
+        if (config.regionsEnabled) {
+            RegionUtils.addRegion(guild.getRegion());
         }
 
         FunnyGuilds.getInstance().getConcurrencyManager().postRequests(
