@@ -158,18 +158,16 @@ public final class CreateCommand {
         if (config.regionsEnabled) {
             Region region = new Region(guild, guildLocation, config.regionSize);
 
-            if (config.createMinDistanceFromBorder > 0) {
-                WorldBorder border = player.getWorld().getWorldBorder();
-                double radius = border.getSize() / 2;
-                BoundingBox bbox = BoundingBox.of(border.getCenter().toVector(),
-                        radius - config.createMinDistanceFromBorder, 0, radius - config.createMinDistanceFromBorder);
+            WorldBorder border = player.getWorld().getWorldBorder();
+            double radius = border.getSize() / 2;
+            BoundingBox bbox = BoundingBox.of(border.getCenter().toVector(),
+                    radius - config.createMinDistanceFromBorder, 0, radius - config.createMinDistanceFromBorder);
 
-                if (! (bbox.contains(region.getFirstCorner().toVector()) && bbox.contains(region.getSecondCorner().toVector()))) {
-                    String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
-                    notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
-                    player.sendMessage(notEnoughDistanceMessage);
-                    return;
-                }
+            if (! (bbox.contains(region.getFirstCorner().toVector()) && bbox.contains(region.getSecondCorner().toVector()))) {
+                String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
+                notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
+                player.sendMessage(notEnoughDistanceMessage);
+                return;
             }
 
             guild.setRegion(region);
