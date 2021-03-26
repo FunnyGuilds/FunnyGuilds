@@ -32,7 +32,6 @@ import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
-import org.bukkit.util.Vector;
 import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.List;
