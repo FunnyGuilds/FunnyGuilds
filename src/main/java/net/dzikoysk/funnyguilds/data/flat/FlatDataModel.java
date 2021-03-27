@@ -184,6 +184,7 @@ public class FlatDataModel implements DataModel {
                 }
                 else {
                     region.wasChanged();
+                    RegionUtils.addRegion(region);
                 }
             }
         }

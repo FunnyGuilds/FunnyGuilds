@@ -324,9 +324,8 @@ public class PluginConfiguration {
     public int createDistance = 100;
 
     @CfgComment("Minimalna odleglosc od granicy mapy, na ktorej znajduje sie gracz")
-    @CfgComment("Wartosc -1 oznacza brak minimalnej odlegosci od granicy")
     @CfgName("create-guild-min-distance")
-    public double createMinDistanceFromBorder = - 1.0;
+    public double createMinDistanceFromBorder = 50;
 
     @CfgComment("Blok lub entity, ktore jest sercem gildii")
     @CfgComment("Zmiana entity wymaga pelnego restartu serwera")

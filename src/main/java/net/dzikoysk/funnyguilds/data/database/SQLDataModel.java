@@ -126,6 +126,7 @@ public class SQLDataModel implements DataModel {
 
             if (region != null) {
                 region.wasChanged();
+                RegionUtils.addRegion(region);
             }
         }
 
