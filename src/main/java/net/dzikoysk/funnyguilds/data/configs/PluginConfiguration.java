@@ -24,7 +24,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -300,10 +299,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("create-distance")
     public int createDistance = 100;
 
-    @Comment("Minimalna odleglosc od granicy mapy, na ktorej znajduje sie gracz")
-    @Comment("Wartosc -1 oznacza brak minimalnej odlegosci od granicy")
+    @Comment("Minimalna odleglosc od regionu gildii do granicy mapy")
     @CustomKey("create-guild-min-distance")
-    public double createMinDistanceFromBorder = - 1.0;
+    public double createMinDistanceFromBorder = 50;
 
     @Comment("Blok lub entity, ktore jest sercem gildii")
     @Comment("Zmiana entity wymaga pelnego restartu serwera")
