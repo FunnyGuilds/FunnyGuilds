@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds;
 
 import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.configs.postprocessor.SectionSeparator;
 import eu.okaeri.configs.serdes.SimpleObjectTransformer;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
@@ -329,11 +330,11 @@ public class FunnyGuilds extends JavaPlugin {
         return this.dynamicListenerManager;
     }
 
-    public void reloadPluginConfiguration() throws Exception {
+    public void reloadPluginConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
     }
 
-    public void reloadMessageConfiguration() throws Exception {
+    public void reloadMessageConfiguration() throws OkaeriException {
         this.messageConfiguration.load();
     }
 

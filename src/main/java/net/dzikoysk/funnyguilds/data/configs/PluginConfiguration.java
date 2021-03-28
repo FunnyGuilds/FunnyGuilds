@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.configs;
 import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.*;
+import eu.okaeri.configs.exception.OkaeriException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.rank.RankSystem;
@@ -1275,7 +1276,7 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     @Override
-    public OkaeriConfig load() throws Exception {
+    public OkaeriConfig load() throws OkaeriException {
 
         super.load();
         this.dateFormat = new SimpleDateFormat(FunnyGuilds.getInstance().getMessageConfiguration().dateFormat);
