@@ -30,7 +30,7 @@ public final class TntCommand {
                 ? now.isAfter(start) || now.isBefore(end)
                 : now.isAfter(start) && now.isBefore(end);
 
-        sender.sendMessage(messages.tntInfo.replace("{FROM}", config.guildTNTProtectionStartTime_).replace("{TO}", config.guildTNTProtectionEndTime_));
+        sender.sendMessage(messages.tntInfo.replace("{FROM}", config.guildTNTProtectionEndTime_).replace("{TO}", config.guildTNTProtectionStartTime_));
         sender.sendMessage(isWithinTimeframe ? messages.tntNowDisabled : messages.tntNowEnabled);
     }
 
