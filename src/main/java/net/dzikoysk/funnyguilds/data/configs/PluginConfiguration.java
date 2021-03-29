@@ -130,18 +130,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("LETTERS_DIGITS - umozliwia uzycie malych i duzych liter oraz cyrf")
     @Comment("LETTERS_DIGITS_UNDERSCORE - umozliwia uzycie malych i duzych liter, cyrf oraz podkreslnika")
     @CustomKey("name-regex")
-    public String nameRegex_ = "LETTERS";
-
-    @Exclude
-    public GuildRegex nameRegex;
+    public GuildRegex nameRegex = GuildRegex.LETTERS;
 
     @Comment("Zasada sprawdzania tagu gildii przy jej tworzeniu")
     @Comment("Mozliwe zasady sa takie same jak w przypadku name-regex")
     @CustomKey("tag-regex")
-    public String tagRegex_ = "LETTERS";
-
-    @Exclude
-    public GuildRegex tagRegex;
+    public GuildRegex tagRegex = GuildRegex.LETTERS;
 
     @Comment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
     @CustomKey("guild-min-members")
@@ -674,10 +668,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("PERCENT - system, ktory obu graczom zabiera procent rankingu osoby zabitej")
     @Comment("STATIC - system, ktory zawsze zabiera iles rankingu zabijajacemu i iles zabitemu")
     @CustomKey("rank-system")
-    public String rankSystem_ = "ELO";
-
-    @Exclude
-    public RankSystem rankSystem;
+    public RankSystem rankSystem = RankSystem.ELO;
 
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @Comment(
@@ -1085,10 +1076,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Gdzie maja pojawiac sie wiadomosci zwiazane z poruszaniem sie po terenach gildii")
     @Comment("Mozliwe miejsca wyswietlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
     @CustomKey("region-move-notification-style")
-    public List<String> regionEnterNotificationStyle_ = Arrays.asList("ACTIONBAR", "BOSSBAR");
-
-    @Exclude
-    public List<NotificationStyle> regionEnterNotificationStyle = new ArrayList<>();
+    public List<NotificationStyle> regionEnterNotificationStyle = Arrays.asList(NotificationStyle.ACTIONBAR, NotificationStyle.BOSSBAR);
 
     @Comment("Jak dlugo title/subtitle powinien sie pojawiac")
     @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
@@ -1281,22 +1269,6 @@ public class PluginConfiguration extends OkaeriConfig {
         super.load();
         this.dateFormat = new SimpleDateFormat(FunnyGuilds.getInstance().getMessageConfiguration().dateFormat);
 
-        try {
-            this.nameRegex = GuildRegex.valueOf(this.nameRegex_.toUpperCase());
-        }
-        catch (Exception e) {
-            this.nameRegex = GuildRegex.LETTERS;
-            FunnyGuilds.getPluginLogger().error("\"" + this.nameRegex_ + "\" is not a valid regex option!");
-        }
-
-        try {
-            this.tagRegex = GuildRegex.valueOf(this.tagRegex_.toUpperCase());
-        }
-        catch (Exception e) {
-            this.tagRegex = GuildRegex.LETTERS;
-            FunnyGuilds.getPluginLogger().error("\"" + this.tagRegex_ + "\" is not a valid regex option!");
-        }
-
         this.createItems = loadItemStackList(this.items_);
         this.createItemsVip = loadItemStackList(this.itemsVip_);
 
@@ -1345,14 +1317,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
         for (String s : this.buggedBlocksExclude_) {
             this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(s, false));
-        }
-
-        try {
-            this.rankSystem = RankSystem.valueOf(this.rankSystem_.toUpperCase());
-        }
-        catch (Exception ex) {
-            this.rankSystem = RankSystem.ELO;
-            FunnyGuilds.getPluginLogger().error("\"" + this.rankSystem_ + "\" is not a valid rank system!");
         }
 
         if (this.rankSystem == RankSystem.ELO) {
@@ -1414,10 +1378,6 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         this.itemAmountSuffix = ChatUtils.colored(this.itemAmountSuffix_);
-
-        for (String s : this.regionEnterNotificationStyle_) {
-            this.regionEnterNotificationStyle.add(NotificationStyle.valueOf(s.toUpperCase()));
-        }
 
         if (this.notificationTitleFadeIn <= 0) {
             FunnyGuilds.getPluginLogger().error("The field named \"notification-title-fade-in\" can not be less than or equal to zero!");
