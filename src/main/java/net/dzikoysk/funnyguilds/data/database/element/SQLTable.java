@@ -82,11 +82,11 @@ public class SQLTable {
         return null;
     }
 
-    public HashMap<String, Integer> getMapElementsKey(int startIndex) {
+    public HashMap<String, Integer> getMapElementsKey() {
         HashMap<String, Integer> elementsMap = new HashMap<>();
 
-        for (int i = startIndex; i < sqlElements.size() + startIndex; i++) {
-            elementsMap.put(sqlElements.get(i - startIndex).getKey(), i);
+        for (int i = 1; i < sqlElements.size() + 1; i++) {
+            elementsMap.put(sqlElements.get(i - 1).getKey(), i);
         }
 
         return elementsMap;

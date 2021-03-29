@@ -21,7 +21,6 @@ public class Region extends AbstractBasic {
 
     private Region(String name) {
         this.name = name;
-        RegionUtils.addRegion(this);
     }
 
     public Region(Guild guild, Location loc, int size) {
@@ -31,7 +30,6 @@ public class Region extends AbstractBasic {
         this.center = loc;
         this.size = size;
         this.update();
-        RegionUtils.addRegion(this);
     }
 
     public synchronized void update() {
@@ -93,10 +91,10 @@ public class Region extends AbstractBasic {
 
     private int compareCoordinates(boolean upper, int a, int b) {
         if (upper) {
-            return b < a ? a : b;
+            return Math.max(b, a);
         }
         else {
-            return a > b ? b : a;
+            return Math.min(a, b);
         }
     }
 
@@ -114,14 +112,12 @@ public class Region extends AbstractBasic {
         this.center = loc;
         this.world = loc.getWorld();
         this.update();
-        super.markChanged();
     }
 
     public void setSize(int i) {
         this.size = i;
         this.update();
     }
-
 
     public void setEnlarge(int i) {
         this.enlarge = i;
@@ -176,6 +172,14 @@ public class Region extends AbstractBasic {
         return compareCoordinates(false, firstCorner.getBlockZ(), secondCorner.getBlockZ());
     }
 
+    public Location getFirstCorner() {
+        return this.firstCorner;
+    }
+
+    public Location getSecondCorner() {
+        return this.secondCorner;
+    }
+
     @Override
     public BasicType getType() {
         return BasicType.REGION;
@@ -191,7 +195,7 @@ public class Region extends AbstractBasic {
         return this.name;
     }
 
-    public static Region get(String name) {
+    public static Region getOrCreate(String name) {
         for (Region region : RegionUtils.getRegions()) {
             if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
                 return region;

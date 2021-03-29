@@ -117,7 +117,7 @@ public final class ItemUtils {
             data = Integer.parseInt(subtype);
         }
         catch (NumberFormatException e) {
-            FunnyGuilds.getInstance().getPluginLogger().parser("Unknown size: " + split[0]);
+            FunnyGuilds.getPluginLogger().parser("Unknown size: " + split[0]);
             stack = 1;
             data = 0;
         }
@@ -150,14 +150,14 @@ public final class ItemUtils {
                     level = Integer.parseInt(attributeValue[1]);
                 }
                 catch (NumberFormatException numberFormatException) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant level: " + attributeValue[1]);
+                    FunnyGuilds.getPluginLogger().parser("Unknown enchant level: " + attributeValue[1]);
                     level = 1;
                 }
 
                 Enchantment enchant = matchEnchant(attributeValue[0]);
 
                 if (enchant == null) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Unknown enchant: " + attributeValue[0]);
+                    FunnyGuilds.getPluginLogger().parser("Unknown enchant: " + attributeValue[0]);
                     continue;
                 }
 
@@ -177,7 +177,7 @@ public final class ItemUtils {
                     ItemFlag matchedFlag = matchItemFlag(flag);
 
                     if (matchedFlag == null) {
-                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown item flag: " + flag);
+                        FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flag);
                         continue;
                     }
 
@@ -187,7 +187,7 @@ public final class ItemUtils {
             }
             else if (attributeName.equalsIgnoreCase("armorcolor")) {
                 if (! (item.getMeta() instanceof LeatherArmorMeta)) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[index]);
+                    FunnyGuilds.getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[index]);
                     continue;
                 }
 
@@ -199,7 +199,7 @@ public final class ItemUtils {
                     item.refreshMeta();
                 }
                 catch (NumberFormatException numberFormatException) {
-                    FunnyGuilds.getInstance().getPluginLogger().parser("Invalid armor color: " + Arrays.toString(attributeValue));
+                    FunnyGuilds.getPluginLogger().parser("Invalid armor color: " + Arrays.toString(attributeValue));
                 }
             }
             else if (attributeName.equalsIgnoreCase("eggtype")) {
@@ -211,7 +211,7 @@ public final class ItemUtils {
                         type = EntityType.valueOf(entityTypeName);
                     }
                     catch (Exception exception) {
-                        FunnyGuilds.getInstance().getPluginLogger().parser("Unknown entity type: " + entityTypeName);
+                        FunnyGuilds.getPluginLogger().parser("Unknown entity type: " + entityTypeName);
                     }
 
                     if (type != null) {
@@ -220,7 +220,7 @@ public final class ItemUtils {
                     }
                 }
                 else {
-                    FunnyGuilds.getInstance().getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
+                    FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
                 }
             }
         }

@@ -82,7 +82,7 @@ public final class FunnyGuildsCommand {
             FunnyGuilds.getInstance().getInvitationPersistenceHandler().saveInvitations();
         }
         catch (Exception e) {
-            FunnyGuilds.getInstance().getPluginLogger().error("An error occurred while saving plugin data!", e);
+            FunnyGuilds.getPluginLogger().error("An error occurred while saving plugin data!", e);
             return;
         }
 

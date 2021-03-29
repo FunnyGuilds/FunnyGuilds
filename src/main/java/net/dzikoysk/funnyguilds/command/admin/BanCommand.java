@@ -26,7 +26,7 @@ public final class BanCommand {
     public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
         when (args.length < 2, messages.adminNoBanTimeGiven);
-        when(args.length < 3, messages.adminNoReasonGiven);
+        when (args.length < 3, messages.adminNoReasonGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         when (guild.isBanned(), messages.adminGuildBanned);

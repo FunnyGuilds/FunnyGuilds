@@ -14,6 +14,8 @@ import java.net.URLConnection;
 
 public final class IOUtils {
 
+    private IOUtils() {}
+
     public static File initialize(File file, boolean b) {
         if (!file.exists()) {
             try {
@@ -25,7 +27,7 @@ public final class IOUtils {
                 }
             }
             catch (IOException ex) {
-                FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize file: " + file.getAbsolutePath(), ex);
+                FunnyGuilds.getPluginLogger().error("Could not initialize file: " + file.getAbsolutePath(), ex);
             }
         }
         
@@ -49,8 +51,8 @@ public final class IOUtils {
             in.close();
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().update("Connection to the update server (" + s + ") failed!");
-            FunnyGuilds.getInstance().getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(ex));
+            FunnyGuilds.getPluginLogger().update("Connection to the update server (" + s + ") failed!");
+            FunnyGuilds.getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(ex));
         } finally {
             close(in);
         }
@@ -70,8 +72,8 @@ public final class IOUtils {
                     file.createNewFile();
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("The file could not be created!", exception);
         }
         
         return file;
@@ -91,8 +93,8 @@ public final class IOUtils {
         if (!f.delete()) {
             try {
                 throw new FileNotFoundException("Failed to delete file: " + f);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+            } catch (FileNotFoundException exception) {
+                FunnyGuilds.getPluginLogger().error("The file could not be deleted!", exception);
             }
         }
     }
@@ -100,7 +102,7 @@ public final class IOUtils {
     public static String toString(InputStream in, String encoding) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[8192];
-        int len = 0;
+        int len;
         
         while ((len = in.read(buf)) != -1) {
             baos.write(buf, 0, len);
@@ -117,9 +119,8 @@ public final class IOUtils {
         try {
             closeable.close();
         } catch (IOException exception) {
-            exception.printStackTrace();
+            FunnyGuilds.getPluginLogger().error("Could not close IO", exception);
         }
     }
 
-    private IOUtils() {}
 }

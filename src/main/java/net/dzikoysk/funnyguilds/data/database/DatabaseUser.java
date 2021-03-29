@@ -42,7 +42,7 @@ public class DatabaseUser {
             return DeserializationUtils.deserializeUser(values);
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not deserialize user", ex);
+            FunnyGuilds.getPluginLogger().error("Could not deserialize user", ex);
         }
 
         return null;

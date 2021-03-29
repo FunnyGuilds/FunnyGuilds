@@ -50,6 +50,7 @@ import net.dzikoysk.funnyguilds.command.user.SetBaseCommand;
 import net.dzikoysk.funnyguilds.command.user.TopCommand;
 import net.dzikoysk.funnyguilds.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.command.user.WarCommand;
+import net.dzikoysk.funnyguilds.command.user.TntCommand;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.Commands.FunnyCommand;
 import org.bukkit.Server;
@@ -96,7 +97,8 @@ public final class CommandsConfiguration {
                 .command("set-base", commands.setbase, new SetBaseCommand())
                 .command("top", commands.top, new TopCommand())
                 .command("validity", commands.validity, new ValidityCommand())
-                .command("war", commands.war, new WarCommand());
+                .command("war", commands.war, new WarCommand())
+                .command("tnt", commands.tnt, new TntCommand());
 
         CommandComponents adminCommands = new CommandComponents("admin")
                 .command("add", commands.admin.add, new AddCommand())

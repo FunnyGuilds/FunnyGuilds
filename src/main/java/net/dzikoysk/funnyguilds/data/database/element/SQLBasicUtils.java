@@ -20,7 +20,7 @@ public class SQLBasicUtils {
         sb.append(") ON DUPLICATE KEY UPDATE ");
         sb.append(Joiner.on(", ").join(table.getSqlElements(), SQLElement::getKeyValuesAssignment));
 
-        return new SQLNamedStatement(sb.toString(), table.getMapElementsKey(1));
+        return new SQLNamedStatement(sb.toString(), table.getMapElementsKey());
     }
 
     public static SQLNamedStatement getSelect(SQLTable table, String... sqlElements) {

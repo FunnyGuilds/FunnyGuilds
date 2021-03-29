@@ -1,8 +1,9 @@
 package net.dzikoysk.funnyguilds.util.telemetry;
 
-public enum PasteType
-{
+public enum PasteType {
+
     LOGS,
     CONFIG,
     OTHER
+
 }

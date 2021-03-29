@@ -123,7 +123,7 @@ public class FlatDataModel implements DataModel {
                 }
 
                 if (!UserUtils.validateUsername(StringUtils.removeEnd(file.getName(), ".yml"))) {
-                    FunnyGuilds.getInstance().getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
+                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
                     continue;
                 }
 
@@ -140,10 +140,10 @@ public class FlatDataModel implements DataModel {
         }
 
         if (repaired > 0) {
-            FunnyGuilds.getInstance().getPluginLogger().warning("Repaired conflicts: " + repaired);
+            FunnyGuilds.getPluginLogger().warning("Repaired conflicts: " + repaired);
         }
 
-        FunnyGuilds.getInstance().getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+        FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
     }
 
     private void saveRegions(boolean ignoreNotChanged) {
@@ -164,13 +164,13 @@ public class FlatDataModel implements DataModel {
         }
 
         if (defective > 0) {
-            FunnyGuilds.getInstance().getPluginLogger().warning("Deleted defective regions: " + defective);
+            FunnyGuilds.getPluginLogger().warning("Deleted defective regions: " + defective);
         }
     }
 
     private void loadRegions() {
         if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-            FunnyGuilds.getInstance().getPluginLogger().info("Regions are disabled and thus - not loaded");
+            FunnyGuilds.getPluginLogger().info("Regions are disabled and thus - not loaded");
             return;
         }
 
@@ -184,11 +184,12 @@ public class FlatDataModel implements DataModel {
                 }
                 else {
                     region.wasChanged();
+                    RegionUtils.addRegion(region);
                 }
             }
         }
 
-        FunnyGuilds.getInstance().getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
+        FunnyGuilds.getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
     }
 
     private void saveGuilds(boolean ignoreNotChanged) {
@@ -206,7 +207,7 @@ public class FlatDataModel implements DataModel {
         }
 
         if (deleted > 0) {
-            FunnyGuilds.getInstance().getPluginLogger().warning("Deleted defective guild: " + deleted);
+            FunnyGuilds.getPluginLogger().warning("Deleted defective guild: " + deleted);
         }
     }
 
@@ -227,7 +228,6 @@ public class FlatDataModel implements DataModel {
             }
         }
 
-        // TODO
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getOwner() != null) {
                 continue;
@@ -239,7 +239,7 @@ public class FlatDataModel implements DataModel {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest());
 
-        FunnyGuilds.getInstance().getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
+        FunnyGuilds.getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }
 
 }

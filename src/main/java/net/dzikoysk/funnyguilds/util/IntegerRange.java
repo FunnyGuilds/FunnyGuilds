@@ -54,7 +54,7 @@ public final class IntegerRange {
             String[] rangeParts = rangeEntry.split(" ", 2);
 
             if (rangeParts.length != 2) {
-                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + rangeEntry + "\" is not a valid range String!");
+                FunnyGuilds.getPluginLogger().parser("\"" + rangeEntry + "\" is not a valid range String!");
                 continue;
             }
 
@@ -65,7 +65,7 @@ public final class IntegerRange {
                     : rangeValue.indexOf('-');
 
             if (splitOperator == -1) {
-                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + rangeEntry + "\" is not a valid integer range String!");
+                FunnyGuilds.getPluginLogger().parser("\"" + rangeEntry + "\" is not a valid integer range String!");
                 continue;
             }
 
@@ -78,14 +78,14 @@ public final class IntegerRange {
             try {
                 minRange = minRangeValue.equals("-*") ? Integer.MIN_VALUE : Integer.parseInt(minRangeValue);
             } catch (NumberFormatException numberFormatException) {
-                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + minRangeValue + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
+                FunnyGuilds.getPluginLogger().parser("\"" + minRangeValue + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
                 continue;
             }
 
             try {
                 maxRange = maxRangeValue.equals("*") ? Integer.MAX_VALUE : Integer.parseInt(maxRangeValue);
             } catch (NumberFormatException numberFormatException) {
-                FunnyGuilds.getInstance().getPluginLogger().parser("\"" + maxRangeValue + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
+                FunnyGuilds.getPluginLogger().parser("\"" + maxRangeValue + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
                 continue;
             }
 

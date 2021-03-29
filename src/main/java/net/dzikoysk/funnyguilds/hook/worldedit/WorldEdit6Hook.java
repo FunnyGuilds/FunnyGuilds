@@ -88,7 +88,7 @@ public class WorldEdit6Hook implements WorldEditHook {
             pasteBuilderSetTo.setAccessible(true);
         }
         catch (NoSuchMethodException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not properly initialize WorldGuard hook!");
+            FunnyGuilds.getPluginLogger().error("Could not properly initialize WorldGuard hook!");
         }
     }
 }

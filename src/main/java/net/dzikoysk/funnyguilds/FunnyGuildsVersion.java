@@ -41,36 +41,48 @@ public final class FunnyGuildsVersion {
 
         this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
             String latest = IOUtils.getContent(VERSION_FILE_URL);
+            
+            if (latest == null) {
+                return;
+            }
 
-            if (latest != null) {
-                String currentNightlyHash = getCurrentNightlyHash(latest);
+            if (latest.contains("Warning:")) {
+                FunnyGuilds.getPluginLogger().warning(latest);
+                return;
+            }
 
-                if (StringUtils.isNotBlank(currentNightlyHash)) {
-                    if (this.funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
-                        try {
-                            String ghResponse = IOUtils.getContent(GH_COMMITS_URL);
-                            JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
+            String currentNightlyHash = getCurrentNightlyHash(latest);
 
-                            if (ghCommits.size() == 0) {
-                                return;
-                            }
+            if (StringUtils.isNotBlank(currentNightlyHash)) {
+                if (!this.funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
+                    return;
+                }
 
-                            JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
-                            String commitHash = latestCommit.get("sha").getAsString().substring(0, 7);
+                try {
+                    String ghResponse = IOUtils.getContent(GH_COMMITS_URL);
+                    JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
 
-                            if (! commitHash.equals(currentNightlyHash)) {
-                                printNewVersionAvailable(sender, latest + "-" + commitHash, true);
-                            }
-                        }
-                        catch (Throwable th) {
-                            this.funnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
-                            this.funnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
-                        }
+                    if (ghCommits.size() == 0) {
+                        return;
+                    }
+
+                    JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
+                    String commitHash = latestCommit.get("sha").getAsString().substring(0, 7);
+
+                    if (!commitHash.equals(currentNightlyHash)) {
+                        printNewVersionAvailable(sender, latest + "-" + commitHash, true);
                     }
                 }
-                else if (! latest.equalsIgnoreCase(this.fullVersion)) {
-                    printNewVersionAvailable(sender, latest, false);
+                catch (Throwable th) {
+                    FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
+                    FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
                 }
+
+                return;
+            }
+
+            if (!latest.equalsIgnoreCase(this.fullVersion)) {
+                printNewVersionAvailable(sender, latest, false);
             }
         });
     }

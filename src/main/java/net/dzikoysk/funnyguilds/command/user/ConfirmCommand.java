@@ -30,8 +30,8 @@ public final class ConfirmCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user, Guild guild) {
-        when(config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messages.deleteSomeoneIsNear);
-        when(!ConfirmationList.contains(user.getUUID()), messages.deleteToConfirm);
+        when (config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messages.deleteSomeoneIsNear);
+        when (!ConfirmationList.contains(user.getUUID()), messages.deleteToConfirm);
 
         ConfirmationList.remove(user.getUUID());
 

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.element.tablist.impl.v1_8_R3;
 
 import com.google.common.collect.Lists;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
@@ -71,8 +72,8 @@ public class TablistImpl extends AbstractTablist {
                     UUID.class,
                     String.class
             );
-        } catch (final NoSuchMethodException ex) {
-            ex.printStackTrace();
+        } catch (final NoSuchMethodException exception) {
+            FunnyGuilds.getPluginLogger().error("Method not found", exception);
         }
 
     }
@@ -146,8 +147,8 @@ public class TablistImpl extends AbstractTablist {
             }
 
             this.sendPackets(packets);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
-            ex.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
+            FunnyGuilds.getPluginLogger().error("Could not send packets", exception);
         }
     }
 }

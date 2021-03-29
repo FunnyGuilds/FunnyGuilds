@@ -195,7 +195,7 @@ public class MessageConfiguration {
     @CfgComment("<------- Info Messages -------> #")
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
-    
+
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}, {GUILD-ADDITIONAL-PROTECTION}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> infoList = Arrays.asList(
@@ -262,7 +262,7 @@ public class MessageConfiguration {
     public String generalPlayerHasNoGuild = "&cTen gracz nie ma gildii!";
     public String generalCommandDisabled = "&cTa komenda jest wylaczona!";
     public String generalAllyPvpDisabled = "&cPVP pomiedzy sojuszami jest wylaczone w konfiguracji!";
-    
+
     @CfgComment("<------- Escape Messages -------> #")
     public String escapeDisabled = "&cPrzykro mi, ucieczki sa wylaczone!";
     @CfgComment("Dostepne zmienne: {TIME}")
@@ -470,6 +470,12 @@ public class MessageConfiguration {
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String leaderMembers = "&7{PLAYER} zostal nowym &aliderem &7gildii!";
 
+    @CfgComment("<------- TNT Hours Messages -------> #")
+    public String tntInfo = "&7TNT na teranach gildii działa od {FROM} do {TO}";
+    public String tntProtectDisable = "&7TNT wybucha o każdej porze.";
+    public String tntNowEnabled = "&aTNT aktualnie jest włączone.";
+    public String tntNowDisabled = "&cTNT aktualnie jest wyłączone.";
+
     @CfgComment("<------- Deputy Messages -------> #")
     public String deputyMustBeDifferent = "&cNie mozesz mianowac siebie zastepca!";
     public String deputyRemove = "&7Zdegradowno gracza z funkcji &czastepcy&7!";
@@ -547,7 +553,6 @@ public class MessageConfiguration {
     
     public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
     public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
-    public String adminAlreadyDeputy = "&cTen gracz jest juz zastepca gildii!";
 
     public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
     public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
@@ -558,6 +563,21 @@ public class MessageConfiguration {
     public String adminTeleportedToBase = "&aAdmin &7{ADMIN} &ateleportowal cie do bazy gildii!";
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String adminTargetTeleportedToBase = "&aGracz &7{PLAYER} &azostal teleportowany do bazy gildii!";
+
+    @CfgComment("<------- SecuritySystem Messages -------> #")
+    @CfgComment("Przedrostek przed wiadomościami systemu bezpieczeństwa")
+    public String securitySystemPrefix = "&8[&4Security&8] &7";
+    @CfgComment("Dostepne zmienne: {PLAYER}, {CHEAT}")
+    public String securitySystemInfo = "&7Gracz &c{PLAYER}&7 może używać &c{CHEAT}&7 lub innego cheata o podobnym dzialaniu!";
+    @CfgComment("Dostepne zmienne: {NOTE}")
+    public String securitySystemNote = "Notatka: &7{NOTE}";
+    @CfgComment("Dostepne zmienne: {DISTANCE}")
+    public String securitySystemReach = "&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!";
+    @CfgComment("Dostepne zmienne: {BLOCKS}")
+    public String securitySystemFreeCam = "Zaatakowal krysztal przez bloki: &c{BLOCKS}";
+
+    @CfgComment("<------- System Messages -------> #")
+    public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!";
 
     public void load() {
         try {
@@ -576,7 +596,7 @@ public class MessageConfiguration {
             }
         }
         catch (Exception ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not load message configuration", ex);
+            FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
     }
 }

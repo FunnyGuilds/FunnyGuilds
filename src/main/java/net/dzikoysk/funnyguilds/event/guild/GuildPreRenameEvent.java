@@ -4,10 +4,10 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.event.HandlerList;
 
-public class GuildPreTagChangeEvent extends GuildEvent {
+public class GuildPreRenameEvent extends GuildEvent {
 
-    private final String oldTag;
-    private final String newTag;
+    private final String oldName;
+    private final String newName;
     private static final HandlerList handlers = new HandlerList();
 
     @Override
@@ -19,24 +19,24 @@ public class GuildPreTagChangeEvent extends GuildEvent {
         return handlers;
     }
 
-    public GuildPreTagChangeEvent(EventCause eventCause, User doer, Guild guild, String oldTag, String newTag) {
+    public GuildPreRenameEvent(EventCause eventCause, User doer, Guild guild, String oldName, String newName) {
         super(eventCause, doer, guild);
 
-        this.oldTag = oldTag;
-        this.newTag = newTag;
+        this.oldName = oldName;
+        this.newName = newName;
     }
 
-    public String getOldTag() {
-        return this.oldTag;
+    public String getOldName() {
+        return this.oldName;
     }
 
-    public String getNewTag() {
-        return this.newTag;
+    public String getNewName() {
+        return this.newName;
     }
 
     @Override
     public String getDefaultCancelMessage() {
-        return "[FunnyGuilds] Changing guild tag has been cancelled by the server!";
+        return "[FunnyGuilds] Guild renaming has been cancelled by the server!";
     }
 
 }

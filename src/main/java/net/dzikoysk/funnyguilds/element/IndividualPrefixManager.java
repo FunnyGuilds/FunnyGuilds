@@ -28,7 +28,7 @@ public class IndividualPrefixManager {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (cachedScoreboard == null) {
-            FunnyGuilds.getInstance().getPluginLogger().debug(
+            FunnyGuilds.getPluginLogger().debug(
                     "We're trying to update player scoreboard, but cached scoreboard is null (server has been reloaded?)");
 
             Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
@@ -59,7 +59,7 @@ public class IndividualPrefixManager {
         try {
             player.setScoreboard(cachedScoreboard);
         } catch (IllegalStateException e) {
-            FunnyGuilds.getInstance().getPluginLogger().warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
+            FunnyGuilds.getPluginLogger().warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
         }
     }
 

@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -21,7 +23,7 @@ public final class MinecraftServerUtils {
             tpsField = minecraftServerClass.getDeclaredField("recentTps");
         }
         catch (IllegalAccessException | InvocationTargetException ex) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize MinecraftServerUtils", ex);
+            FunnyGuilds.getPluginLogger().error("Could not initialize MinecraftServerUtils", ex);
         }
         catch (NoSuchFieldException noSuchFieldException) {
             tpsField = null;
@@ -31,13 +33,35 @@ public final class MinecraftServerUtils {
     private MinecraftServerUtils() {}
 
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
-    public static String getRecentTPS(int last) {
+    public static String getFormattedTPS(int last) {
         try {
             return tpsField != null ? FORMAT.format(Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last])) : "N/A";
         }
         catch (IllegalAccessException illegalAccessException) {
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not retrieve recent TPS", illegalAccessException);
+            FunnyGuilds.getPluginLogger().error("Could not retrieve recent TPS", illegalAccessException);
             return null;
+        }
+    }
+
+    public static double getRecentTPS(int last) {
+        try {
+            return tpsField != null ? Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last]) : - 1.0;
+        }
+        catch (IllegalAccessException illegalAccessException) {
+            FunnyGuilds.getPluginLogger().error("Could not retrieve recent TPS", illegalAccessException);
+            return - 1.0;
+        }
+    }
+
+    public static int getReloadCount() {
+        Server server = Bukkit.getServer();
+
+        try {
+            final Field reloadCountField = server.getClass().getDeclaredField("reloadCount");
+            return reloadCountField.getInt(server);
+        }
+        catch (IllegalAccessException | NoSuchFieldException illegalAccessException) {
+            return - 1;
         }
     }
 

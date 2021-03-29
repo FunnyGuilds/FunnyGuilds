@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 
 public class ValidityUtils {
 
+    private ValidityUtils() {}
+
     public static void broadcast(Guild guild) {
         if (guild == null || guild.getName() == null) {
             return;

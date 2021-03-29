@@ -29,7 +29,7 @@ public class TablistVariablesParser {
             String value = tablistVariable.get(user);
             for (String name : tablistVariable.names()) {
                 if (values.containsKey(name)) {
-                    FunnyGuilds.getInstance().getPluginLogger().warning("Conflicting variable name: " + name);
+                    FunnyGuilds.getPluginLogger().warning("Conflicting variable name: " + name);
                 }
 
                 values.put(name, value);

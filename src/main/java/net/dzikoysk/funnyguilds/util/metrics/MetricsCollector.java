@@ -20,14 +20,14 @@ public class MetricsCollector implements Runnable {
         }
         catch (Exception ex) {
             this.mcstats = null;
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize mcstats", ex);
+            FunnyGuilds.getPluginLogger().error("Could not initialize mcstats", ex);
         }
         try {
             this.bstats = new BStats(plugin);
         }
         catch (Exception ex) {
             this.bstats = null;
-            FunnyGuilds.getInstance().getPluginLogger().error("Could not initialize bstats", ex);
+            FunnyGuilds.getPluginLogger().error("Could not initialize bstats", ex);
         }
     }
 

@@ -22,7 +22,7 @@ public class ConcurrencyTask implements Runnable {
             boolean result = execute(request);
 
             if (!result) {
-                FunnyGuilds.getInstance().getPluginLogger().warning("Task #" + id + " has been interrupted");
+                FunnyGuilds.getPluginLogger().warning("Task #" + id + " has been interrupted");
                 return;
             }
         }

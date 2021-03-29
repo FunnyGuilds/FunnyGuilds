@@ -34,7 +34,7 @@ public abstract class FunnyEvent extends Event implements Cancellable {
     public abstract String getDefaultCancelMessage();
     
     public String getCancelMessage() {
-        if(this.cancelMessage == null || this.cancelMessage.isEmpty()) {
+        if (this.cancelMessage == null || this.cancelMessage.isEmpty()) {
             return getDefaultCancelMessage();
         }
         
@@ -56,7 +56,7 @@ public abstract class FunnyEvent extends Event implements Cancellable {
     }
     
     public void notifyDoer() {
-        if (this.doer !=null && this.doer.isOnline()) {
+        if (this.doer != null && this.doer.isOnline()) {
             this.doer.getPlayer().sendMessage(getCancelMessage());
         }
     }

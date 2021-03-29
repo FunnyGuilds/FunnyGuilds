@@ -20,7 +20,7 @@ public final class LeaderAdminCommand {
         acceptsExceeded = true
     )
     public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length <1, messages.generalNoTagGiven);
+        when (args.length < 1, messages.generalNoTagGiven);
         when (args.length < 2, messages.generalNoNickGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);

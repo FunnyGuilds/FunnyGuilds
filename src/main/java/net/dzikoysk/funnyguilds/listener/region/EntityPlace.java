@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
@@ -21,6 +22,7 @@ public class EntityPlace implements Listener {
 
         if (ProtectionSystem.isProtected(player, entity.getLocation(), true)) {
             event.setCancelled(true);
+            player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         }
     }
 }

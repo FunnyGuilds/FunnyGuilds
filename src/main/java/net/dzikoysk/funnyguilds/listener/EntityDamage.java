@@ -68,13 +68,15 @@ public class EntityDamage implements Listener {
                 return;
             }
 
-            if (config.assistEnable && !event.isCancelled()) {
-                if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD) && PluginHook.WORLD_GUARD.isInIgnoredRegion(victim.getLocation())) {
-                    return;
-                }
-
-                victimUser.getCache().addDamage(attackerUser, event.getDamage());
+            if (!config.assistEnable || event.isCancelled()) {
+                return;
             }
+
+            if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD) && PluginHook.WORLD_GUARD.isInIgnoredRegion(victim.getLocation())) {
+                return;
+            }
+
+            victimUser.getCache().addDamage(attackerUser, event.getDamage());
         });
     }
     

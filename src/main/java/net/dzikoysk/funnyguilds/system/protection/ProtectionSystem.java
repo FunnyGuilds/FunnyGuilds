@@ -37,23 +37,22 @@ public final class ProtectionSystem {
         
         User user = User.get(player);
 
-        if (guild.getMembers().contains(user)) {
-            if (includeBuildLock && !guild.canBuild()) {
-                player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract.replace("{TIME}",
-                        Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))));
-                return true;
-            }
-
-            if (location.equals(region.getHeart())) {
-                Pair<Material, Byte> heartMaterial = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
-                return heartMaterial != null && heartMaterial.getLeft() != Material.AIR;
-            }
-            
-            return false;
+        if (!guild.getMembers().contains(user)) {
+            return true;
         }
 
-        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
-        return true;
+        if (includeBuildLock && !guild.canBuild()) {
+            player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract.replace("{TIME}",
+                    Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))));
+            return true;
+        }
+
+        if (location.equals(region.getHeart())) {
+            Pair<Material, Byte> heartMaterial = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
+            return heartMaterial != null && heartMaterial.getLeft() != Material.AIR;
+        }
+
+        return false;
     }
 
     public static boolean isProtected(Player player, Location loc) {
