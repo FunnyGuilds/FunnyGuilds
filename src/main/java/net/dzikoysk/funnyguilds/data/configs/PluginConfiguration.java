@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.*;
 import eu.okaeri.configs.exception.OkaeriException;
+import eu.okaeri.validator.annotation.*;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.rank.RankSystem;
@@ -103,18 +104,22 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("respawn-in-base")
     public boolean respawnInBase = true;
 
+    @Min(1)
     @Comment("Maksymalna dlugosc nazwy gildii")
     @CustomKey("name-length")
     public int createNameLength = 22;
 
+    @Min(1)
     @Comment("Minimalna dlugosc nazwy gildii")
     @CustomKey("name-min-length")
     public int createNameMinLength = 4;
 
+    @Min(1)
     @Comment("Maksymalna dlugosc tagu gildii")
     @CustomKey("tag-length")
     public int createTagLength = 4;
 
+    @Min(1)
     @Comment("Minimalna dlugosc tagu gildii")
     @CustomKey("tag-min-length")
     public int createTagMinLength = 2;
@@ -137,6 +142,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("tag-regex")
     public GuildRegex tagRegex = GuildRegex.LETTERS;
 
+    @Min(0)
     @Comment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
     @CustomKey("guild-min-members")
     public int minMembersToInclude = 1;
@@ -172,10 +178,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public List<ItemStack> createItems;
 
+    @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii")
     @CustomKey("required-experience")
     public int requiredExperience = 0;
 
+    @Min(0)
     @Comment("Wymagana ilosc pieniedzy do zalozenia gildii")
     @Comment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
     @CustomKey("required-money")
@@ -188,10 +196,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public List<ItemStack> createItemsVip;
 
+    @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @CustomKey("required-experience-vip")
     public int requiredExperienceVip = 0;
 
+    @Min(0)
     @Comment("Wymagana ilosc pieniedzy do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @Comment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
     @CustomKey("required-money-vip")
@@ -353,6 +363,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("bugged-blocks")
     public boolean buggedBlocks = false;
 
+    @Min(0)
     @Comment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete")
     @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
     @CustomKey("bugged-blocks-timer")
@@ -386,14 +397,17 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("bugged-blocks-return")
     public boolean buggedBlockReturn = false;
 
+    @Min(1)
     @Comment("Maksymalna liczba czlonkow w gildii")
     @CustomKey("max-members")
     public int maxMembersInGuild = 15;
 
+    @Min(0)
     @Comment("Maksymalna liczba sojuszy miedzy gildiami")
     @CustomKey("max-allies")
     public int maxAlliesBetweenGuilds = 15;
 
+    @Min(0)
     @Comment("Maksymalna liczba wojen miedzy gildiami")
     @CustomKey("max-enemies")
     public int maxEnemiesBetweenGuilds = 15;
@@ -407,6 +421,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("escape-enable")
     public boolean escapeEnable = true;
 
+    @Min(0)
     @Comment("Czas, w sekundach, jaki musi uplynac od wlaczenia ucieczki do teleportacji")
     @CustomKey("escape-delay")
     public int escapeDelay = 120;
@@ -419,10 +434,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("base-enable")
     public boolean baseEnable = true;
 
+    @Min(0)
     @Comment("Czas oczekiwania na teleportacje, w sekundach")
     @CustomKey("base-delay")
     public int baseDelay = 5;
 
+    @Min(0)
     @Comment("Czas oczekiwania na teleportacje, w sekundach, dla graczy posiadajacych uprawnienie funnyguilds.vip.baseTeleportTime")
     @CustomKey("base-delay-vip")
     public int baseDelayVip = 3;
@@ -457,18 +474,22 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public List<ItemStack> enlargeItems;
 
+    @Min(1)
     @Comment("Wielkosc regionu gildii")
     @CustomKey("region-size")
     public int regionSize = 50;
 
+    @Min(0)
     @Comment("Minimalna odleglosc miedzy terenami gildii")
     @CustomKey("region-min-distance")
     public int regionMinDistance = 10;
 
+    @Min(1)
     @Comment("Czas wyswietlania powiadomienia na pasku powiadomien, w sekundach")
     @CustomKey("region-notification-time")
     public int regionNotificationTime = 15;
 
+    @Min(1)
     @Comment("Co ile moze byc wywolywany pasek powiadomien przez jednego gracza, w sekundach")
     @CustomKey("region-notification-cooldown")
     public int regionNotificationCooldown = 60;
@@ -505,6 +526,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public boolean guildTNTProtectionPassingMidnight;
 
+    @Min(0)
     @Comment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     @CustomKey("region-explode")
     public int regionExplode = 120;
@@ -517,6 +539,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("region-explode-block-interactions")
     public boolean regionExplodeBlockInteractions = false;
 
+    @Min(0)
     @Comment("Zasieg pobieranych przedmiotow po wybuchu. Jezeli chcesz wylaczyc, wpisz 0")
     @CustomKey("explode-radius")
     public int explodeRadius = 3;
@@ -547,6 +570,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("war-enabled")
     public boolean warEnabled = true;
 
+    @Min(1)
     @Comment("Ile zyc ma gildia")
     @CustomKey("war-lives")
     public int warLives = 3;
@@ -618,6 +642,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("rank-farming-last-attacker-as-killer")
     public boolean considerLastAttackerAsKiller = false;
 
+    @Min(0)
     @Comment("Przez ile sekund gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
     @CustomKey("rank-farming-consideration-timeout")
     public int lastAttackerAsKillerConsiderationTimeout = 30;
@@ -625,6 +650,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public long lastAttackerAsKillerConsiderationTimeout_;
 
+    @Min(0)
     @Comment("Czas w sekundach blokady nabijania rankingu po walce dwoch osob")
     @CustomKey("rank-farming-cooldown")
     public int rankFarmingCooldown = 7200;
@@ -637,6 +663,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("skip-privileged-players-in-rank-positions")
     public boolean skipPrivilegedPlayersInRankPositions = false;
 
+    @Min(1)
     @Comment("Co ile ticków ranking graczy oraz gildii powinien zostać odświeżony")
     @CustomKey("ranking-update-interval")
     public int rankingUpdateInterval = 40;
@@ -648,10 +675,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("rank-assist-enable")
     public boolean assistEnable = true;
 
+    @Min(-1)
     @Comment("Limit asyst. Wpisz liczbe ujemna aby wylaczyc")
     @CustomKey("assists-limit")
     public int assistsLimit = - 1;
 
+    @DecimalMin("0")
+    @DecimalMax("1")
     @Comment("Jaka czesc rankingu za zabicie idzie na konto zabojcy")
     @Comment("1 to caly ranking, 0 to nic")
     @Comment("Reszta rankingu rozdzielana jest miedzy osoby asystujace w zaleznosci od zadanych obrazen")
@@ -683,28 +713,34 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public Map<IntegerRange, Integer> eloConstants;
 
+    @DecimalMin("0.00001")
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @Comment("Dzielnik obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
     @Comment("Dzielnik powinien byc liczba dodatnia, niezerowa")
     @CustomKey("elo-divider")
     public double eloDivider = 400.0D;
 
+    @DecimalMin("0.00001")
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @Comment("Wykladnik potegi obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
     @Comment("Wykladnik powinien byc liczba dodatnia, niezerowa")
     @CustomKey("elo-exponent")
     public double eloExponent = 10.0D;
 
+    @DecimalMin("0")
+    @DecimalMax("1")
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest PERCENT!")
     @Comment("Procent rankingu osoby zabitej o jaki zmienia sie rankingi po walce")
     @CustomKey("percent-rank-change")
     public double percentRankChange = 1.0;
 
+    @Min(0)
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
     @Comment("Punkty dawane osobie, ktora wygrywa walke")
     @CustomKey("static-attacker-change")
     public int staticAttackerChange = 15;
 
+    @Min(0)
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
     @Comment("Punkty zabierane osobie, ktora przegrywa walke")
     @CustomKey("static-victim-change")
@@ -811,14 +847,17 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public Map<IntegerRange, String> pingFormat;
 
+    @NotBlank
     @Comment("Symbol od ktorego zaczyna sie wiadomosc do gildii")
     @CustomKey("chat-priv")
     public String chatPriv = "!";
 
+    @NotBlank
     @Comment("Symbol od ktorego zaczyna sie wiadomosc do sojusznikow gildii")
     @CustomKey("chat-ally")
     public String chatAlly = "!!";
 
+    @NotBlank
     @Comment("Symbol od ktorego zaczyna sie wiadomosc do wszystkich gildii")
     @CustomKey("chat-global")
     public String chatGlobal = "!!!";
@@ -992,6 +1031,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("player-list-footer")
     public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!";
 
+    @Min(0)
     @Comment("Liczba pingu pokazana przy kazdej komorce.")
     @CustomKey("player-list-ping")
     public int playerListPing = 0;
@@ -1004,6 +1044,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("player-list-enable")
     public boolean playerListEnable = true;
 
+    @Min(1)
     @Comment("Co ile tickow lista graczy powinna zostac odswiezona")
     @CustomKey("player-list-update-interval")
     public int playerListUpdateInterval = 20;
@@ -1078,29 +1119,34 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("region-move-notification-style")
     public List<NotificationStyle> regionEnterNotificationStyle = Arrays.asList(NotificationStyle.ACTIONBAR, NotificationStyle.BOSSBAR);
 
+    @Min(1)
     @Comment("Jak dlugo title/subtitle powinien sie pojawiac")
     @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
     @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-fade-in")
     public int notificationTitleFadeIn = 10;
 
+    @Min(1)
     @Comment("Jak dlugo title/subtitle powinien pozostac na ekranie gracza")
     @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
     @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-stay")
     public int notificationTitleStay = 10;
 
+    @Min(1)
     @Comment("Jak dlugo title/subtitle powinien znikac")
     @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
     @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
     @CustomKey("notification-title-fade-out")
     public int notificationTitleFadeOut = 10;
 
+    @Pattern("PINK|BLUE|RED|GREEN|YELLOW|PURPLE|WHITE")
     @Comment("Jakiego koloru powinien byc boss bar podczas wyswietlania notyfikacji")
     @Comment("Dostepne kolory: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE")
     @CustomKey("notification-boss-bar-color")
     public String bossBarColor = "RED";
 
+    @Pattern("SOLID|SEGMENTED_6|SEGMENTED_10|SEGMENTED_12|SEGMENTED_20")
     @Comment("Jakiego stylu powinien byc boss bar podczas wyswietlania notyfikacji")
     @Comment("Dostepne style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20")
     @CustomKey("notification-boss-bar-style")
@@ -1152,23 +1198,28 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("system-security-enable")
     public boolean systemSecurityEnable = true;
 
+    @DecimalMin("0")
     @Comment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
     @Comment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
     @CustomKey("reach-compensation")
     public double reachCompensation = 0.26;
 
+    @Min(0)
     @Comment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
     @CustomKey("freeCam-compensation")
     public int freeCamCompensation = 0;
 
+    @Min(1)
     @Comment("Ilość wątków używanych przez ConcurrencyManager")
     @CustomKey("concurrency-threads")
     public int concurrencyThreads = 1;
 
+    @Min(1)
     @Comment("Co ile minut ma automatycznie zapisywac dane")
     @CustomKey("data-interval")
     public int dataInterval = 1;
 
+    @Min(0)
     @Comment("Jak dlugo plugin powinien czekac na zatrzymanie wszystkich biezacych zadan przy wylaczaniu pluginu")
     @Comment("Czas podawany w sekundach")
     @CustomKey("plugin-task-termination-timeout")
@@ -1302,11 +1353,6 @@ public class PluginConfiguration extends OkaeriConfig {
             this.enlargeItems = null;
         }
 
-        if (this.buggedBlocksTimer < 0L) {
-            FunnyGuilds.getPluginLogger().error("The field named \"bugged-blocks-timer\" can not be less than zero!");
-            this.buggedBlocksTimer = 20L; // default value
-        }
-
         this.blockedInteract = new HashSet<>();
 
         for (String s : this._blockedInteract) {
@@ -1378,21 +1424,6 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         this.itemAmountSuffix = ChatUtils.colored(this.itemAmountSuffix_);
-
-        if (this.notificationTitleFadeIn <= 0) {
-            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-fade-in\" can not be less than or equal to zero!");
-            this.notificationTitleFadeIn = 10;
-        }
-
-        if (this.notificationTitleStay <= 0) {
-            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-stay\" can not be less than or equal to zero!");
-            this.notificationTitleStay = 10;
-        }
-
-        if (this.notificationTitleFadeOut <= 0) {
-            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-fade-out\" can not be less than or equal to zero!");
-            this.notificationTitleFadeOut = 10;
-        }
 
         if (! "v1_8_R1".equals(Reflections.SERVER_VERSION) && ! "v1_8_R3".equals(Reflections.SERVER_VERSION)) {
             this.bossBarOptions_ = BossBarOptions.builder()

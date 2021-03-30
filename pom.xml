@@ -38,7 +38,12 @@
         <dependency>
             <groupId>eu.okaeri</groupId>
             <artifactId>okaeri-configs-yaml-bukkit</artifactId>
-            <version>2.3.4</version>
+            <version>2.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.okaeri</groupId>
+            <artifactId>okaeri-configs-validator-okaeri</artifactId>
+            <version>2.4.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -261,8 +266,8 @@
                             <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging.log4j.</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>eu.okaeri.configs.</pattern>
-                            <shadedPattern>net.dzikoysk.funnyguilds.libs.eu.okaeri.configs.</shadedPattern>
+                            <pattern>eu.okaeri.</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.eu.okaeri.</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>

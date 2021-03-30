@@ -4,6 +4,7 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.configs.postprocessor.SectionSeparator;
 import eu.okaeri.configs.serdes.SimpleObjectTransformer;
+import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
@@ -100,14 +101,18 @@ public class FunnyGuilds extends JavaPlugin {
                 it.load(true);
             });
             this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, (it) -> {
-                it.withConfigurer(new YamlBukkitConfigurer(SectionSeparator.NONE));
+                it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(SectionSeparator.NONE), true));
                 it.withBindFile(this.pluginConfigurationFile);
                 it.saveDefaults();
                 it.load(true);
             });
         }
         catch (Exception exception) {
-            logger.error("Could not load plugin configuration", exception);
+            if (exception instanceof OkaeriException) {
+                logger.error("Could not initialize plugin configuration", exception.getCause());
+            } else {
+                logger.error("Could not load plugin configuration", exception);
+            }
             shutdown("Critical error has been encountered!");
             return;
         }
