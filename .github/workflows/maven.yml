@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         # Use both LTS releases and latest one
-        jdk: [ 8, 11, 15 ]
+        jdk: [ 8, 11, 16 ]
 
     steps:
     - uses: actions/checkout@v2
