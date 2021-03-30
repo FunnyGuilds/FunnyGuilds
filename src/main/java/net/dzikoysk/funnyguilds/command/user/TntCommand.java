@@ -18,6 +18,7 @@ public final class TntCommand {
         name = "${user.tnt.name}",
         description = "${user.tnt.description}",
         aliases = "${user.tnt.aliases}",
+        permission = "funnyguilds.tnt",
         acceptsExceeded = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender) {
