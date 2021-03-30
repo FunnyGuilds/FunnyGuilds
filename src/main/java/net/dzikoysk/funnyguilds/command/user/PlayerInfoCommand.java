@@ -25,7 +25,7 @@ public final class PlayerInfoCommand {
         name = "${user.player.name}",
         description = "${user.player.description}",
         aliases = "${user.player.aliases}",
-        permission = "funnyguilds.player",
+        permission = "funnyguilds.playerinfo",
         completer = "online-players:3",
         acceptsExceeded = true
     )
