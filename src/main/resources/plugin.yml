@@ -51,9 +51,12 @@ permissions:
       funnyguilds.kick: true
       funnyguilds.leader: true
       funnyguilds.leave: true
+      funnyguilds.playerinfo: true
       funnyguilds.pvp: true
       funnyguilds.ranking: true
       funnyguilds.rankreset: true
       funnyguilds.setbase: true
+      funnyguilds.tnt: true
       funnyguilds.top: true
       funnyguilds.validity: true
+      funnyguilds.war: true
