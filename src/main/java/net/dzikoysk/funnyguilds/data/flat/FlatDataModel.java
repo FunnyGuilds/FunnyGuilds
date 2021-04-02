@@ -111,36 +111,29 @@ public class FlatDataModel implements DataModel {
     }
 
     private void loadUsers() {
-        int repaired = 0;
         File[] path = usersFolderFile.listFiles();
 
-        if (path != null) {
-            for (File file : path) {
-                if (file.isDirectory() || file.length() == 0) {
-                    file.delete();
-                    repaired++;
-                    continue;
-                }
-
-                if (!UserUtils.validateUsername(StringUtils.removeEnd(file.getName(), ".yml"))) {
-                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
-                    continue;
-                }
-
-                User user = FlatUser.deserialize(file);
-
-                if (user == null) {
-                    file.delete();
-                    repaired++;
-                    continue;
-                }
-
-                user.wasChanged();
-            }
+        if (path == null) {
+            return;
         }
 
-        if (repaired > 0) {
-            FunnyGuilds.getPluginLogger().warning("Repaired conflicts: " + repaired);
+        for (File file : path) {
+            if (file.length() == 0) {
+                continue;
+            }
+
+            if (!UserUtils.validateUsername(StringUtils.removeEnd(file.getName(), ".yml"))) {
+                FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
+                continue;
+            }
+
+            User user = FlatUser.deserialize(file);
+
+            if (user == null) {
+                continue;
+            }
+
+            user.wasChanged();
         }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
@@ -179,13 +172,13 @@ public class FlatDataModel implements DataModel {
         if (path != null) {
             for (File file : path) {
                 Region region = FlatRegion.deserialize(file);
+
                 if (region == null) {
-                    file.delete();
+                    continue;
                 }
-                else {
-                    region.wasChanged();
-                    RegionUtils.addRegion(region);
-                }
+
+                region.wasChanged();
+                RegionUtils.addRegion(region);
             }
         }
 
@@ -200,7 +193,7 @@ public class FlatDataModel implements DataModel {
                 continue;
             }
 
-            if (! new FlatGuild(guild).serialize(this)) {
+            if (!new FlatGuild(guild).serialize(this)) {
                 GuildUtils.deleteGuild(guild);
                 deleted++;
             }
@@ -220,7 +213,6 @@ public class FlatDataModel implements DataModel {
                 Guild guild = FlatGuild.deserialize(file);
 
                 if (guild == null) {
-                    file.delete();
                     continue;
                 }
 

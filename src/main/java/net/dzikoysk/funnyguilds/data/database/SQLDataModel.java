@@ -46,7 +46,6 @@ public class SQLDataModel implements DataModel {
         tabUsers.add("points",    SQLType.INT,     true);
         tabUsers.add("kills",     SQLType.INT,     true);
         tabUsers.add("deaths",    SQLType.INT,     true);
-        tabUsers.add("guild",     SQLType.VARCHAR, 100);
         tabUsers.add("ban",       SQLType.BIGINT);
         tabUsers.add("reason",    SQLType.TEXT);
         tabUsers.setPrimaryKey("uuid");
