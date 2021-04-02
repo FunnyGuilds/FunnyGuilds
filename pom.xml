@@ -18,7 +18,7 @@
         <dependency>
             <groupId>net.dzikoysk</groupId>
             <artifactId>funnycommands</artifactId>
-            <version>0.3.9</version>
+            <version>0.3.10</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -79,7 +79,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.60.Final</version>
+            <version>4.1.63.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

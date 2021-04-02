@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.command;
 
-import net.dzikoysk.funnycommands.resources.Origin;
+import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.resources.Validator;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -14,7 +14,7 @@ final class OwnerValidator implements Validator<IsOwner, User, ValidationExcepti
     private static final MemberValidator MEMBER_VALIDATOR = new MemberValidator();
 
     @Override
-    public boolean validate(Origin origin, IsOwner annotation, InjectorProperty property, User user) throws ValidationException {
+    public boolean validate(Context context, IsOwner annotation, InjectorProperty property, User user) throws ValidationException {
         MEMBER_VALIDATOR.isMember(user);
 
         if (!user.isOwner()) {
