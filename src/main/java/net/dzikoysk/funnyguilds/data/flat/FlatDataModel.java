@@ -99,19 +99,29 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        for (User user : UserUtils.getUsers()) {
-            if (user.getUUID() != null && user.getName() != null) {
-                if (ignoreNotChanged && !user.wasChanged()) {
-                    continue;
-                }
+        int errors = 0;
 
-                new FlatUser(user).serialize(this);
+        for (User user : UserUtils.getUsers()) {
+            if (user.getUUID() == null || user.getName() == null) {
+                errors++;
+                continue;
             }
+
+            if (ignoreNotChanged && !user.wasChanged()) {
+                continue;
+            }
+
+            new FlatUser(user).serialize(this);
+        }
+
+        if (errors > 0) {
+            FunnyGuilds.getPluginLogger().error("Users save errors " + errors);
         }
     }
 
     private void loadUsers() {
         File[] path = usersFolderFile.listFiles();
+        int errors = 0;
 
         if (path == null) {
             return;
@@ -130,10 +140,15 @@ public class FlatDataModel implements DataModel {
             User user = FlatUser.deserialize(file);
 
             if (user == null) {
+                errors++;
                 continue;
             }
 
             user.wasChanged();
+        }
+
+        if (errors > 0) {
+            FunnyGuilds.getPluginLogger().error("Users load errors " + errors);
         }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
@@ -144,20 +159,20 @@ public class FlatDataModel implements DataModel {
             return;
         }
 
-        int defective = 0;
+        int errors = 0;
+
         for (Region region : RegionUtils.getRegions()) {
             if (ignoreNotChanged && !region.wasChanged()) {
                 continue;
             }
 
             if (!new FlatRegion(region).serialize(this)) {
-                RegionUtils.delete(region);
-                defective++;
+                errors++;
             }
         }
 
-        if (defective > 0) {
-            FunnyGuilds.getPluginLogger().warning("Deleted defective regions: " + defective);
+        if (errors > 0) {
+            FunnyGuilds.getPluginLogger().error("Regions save errors " + errors);
         }
     }
 
@@ -168,12 +183,14 @@ public class FlatDataModel implements DataModel {
         }
 
         File[] path = regionsFolderFile.listFiles();
+        int errors = 0;
 
         if (path != null) {
             for (File file : path) {
                 Region region = FlatRegion.deserialize(file);
 
                 if (region == null) {
+                    errors++;
                     continue;
                 }
 
@@ -182,11 +199,15 @@ public class FlatDataModel implements DataModel {
             }
         }
 
+        if (errors > 0) {
+            FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
+        }
+
         FunnyGuilds.getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
     }
 
     private void saveGuilds(boolean ignoreNotChanged) {
-        int deleted = 0;
+        int errors = 0;
 
         for (Guild guild : GuildUtils.getGuilds()) {
             if (ignoreNotChanged && ! guild.wasChanged()) {
@@ -194,19 +215,19 @@ public class FlatDataModel implements DataModel {
             }
 
             if (!new FlatGuild(guild).serialize(this)) {
-                GuildUtils.deleteGuild(guild);
-                deleted++;
+                errors++;
             }
         }
 
-        if (deleted > 0) {
-            FunnyGuilds.getPluginLogger().warning("Deleted defective guild: " + deleted);
+        if (errors > 0) {
+            FunnyGuilds.getPluginLogger().error("Guilds save errors: " + errors);
         }
     }
 
     private void loadGuilds() {
         GuildUtils.getGuilds().clear();
         File[] path = guildsFolderFile.listFiles();
+        int errors = 0;
 
         if (path != null) {
             for (File file : path) {
@@ -222,10 +243,15 @@ public class FlatDataModel implements DataModel {
 
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getOwner() != null) {
+                errors++;
                 continue;
             }
 
-            GuildUtils.deleteGuild(guild);
+            FunnyGuilds.getPluginLogger().error("In guild " + guild.getTag() + " owner not exist!");
+        }
+
+        if (errors > 0) {
+            FunnyGuilds.getPluginLogger().error("Guild load errors " + errors);
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
