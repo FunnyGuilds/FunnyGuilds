@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.command;
 
 import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Bind;
-import net.dzikoysk.funnycommands.resources.Origin;
+import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.OfflinePlayer;
@@ -21,8 +21,8 @@ final class UserBind implements Bind, TriFunction<InjectorProperty, Object, Obje
 
     @Override
     public User apply(InjectorProperty injectorProperty, Object annotation, Object[] args) {
-        Origin origin = CommandUtils.getOrigin(args);
-        CommandSender commandSender = origin.getCommandSender();
+        Context context = CommandUtils.getContext(args);
+        CommandSender commandSender = context.getCommandSender();
 
         if (!(commandSender instanceof OfflinePlayer)) {
             throw new IllegalStateException("Cannot use user bind in non-player command");

@@ -140,7 +140,7 @@ public final class CommandsConfiguration {
                 .registerComponents(userCommands.commands)
                 .registerComponents(adminCommands.commands)
                 .exceptionHandler(new FunnyGuildsExceptionHandler(funnyGuilds))
-                .hook();
+                .install();
     }
 
     private final static class CommandComponents {
