@@ -124,6 +124,7 @@ public class FlatDataModel implements DataModel {
         int errors = 0;
 
         if (path == null) {
+            FunnyGuilds.getPluginLogger().error("critical error loading the users!");
             return;
         }
 
@@ -185,18 +186,21 @@ public class FlatDataModel implements DataModel {
         File[] path = regionsFolderFile.listFiles();
         int errors = 0;
 
-        if (path != null) {
-            for (File file : path) {
-                Region region = FlatRegion.deserialize(file);
+        if (path == null) {
+            FunnyGuilds.getPluginLogger().error("critical error loading the regions!");
+            return;
+        }
 
-                if (region == null) {
-                    errors++;
-                    continue;
-                }
+        for (File file : path) {
+            Region region = FlatRegion.deserialize(file);
 
-                region.wasChanged();
-                RegionUtils.addRegion(region);
+            if (region == null) {
+                errors++;
+                continue;
             }
+
+            region.wasChanged();
+            RegionUtils.addRegion(region);
         }
 
         if (errors > 0) {
@@ -210,7 +214,7 @@ public class FlatDataModel implements DataModel {
         int errors = 0;
 
         for (Guild guild : GuildUtils.getGuilds()) {
-            if (ignoreNotChanged && ! guild.wasChanged()) {
+            if (ignoreNotChanged && !guild.wasChanged()) {
                 continue;
             }
 
@@ -229,24 +233,28 @@ public class FlatDataModel implements DataModel {
         File[] path = guildsFolderFile.listFiles();
         int errors = 0;
 
-        if (path != null) {
-            for (File file : path) {
-                Guild guild = FlatGuild.deserialize(file);
-
-                if (guild == null) {
-                    continue;
-                }
-
-                guild.wasChanged();
-            }
+        if (path == null) {
+            FunnyGuilds.getPluginLogger().error("critical error loading the guilds!");
+            return;
         }
 
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (guild.getOwner() != null) {
+        for (File file : path) {
+            Guild guild = FlatGuild.deserialize(file);
+
+            if (guild == null) {
                 errors++;
                 continue;
             }
 
+            guild.wasChanged();
+        }
+
+        for (Guild guild : GuildUtils.getGuilds()) {
+            if (guild.getOwner() != null) {
+                continue;
+            }
+
+            errors++;
             FunnyGuilds.getPluginLogger().error("In guild " + guild.getTag() + " owner not exist!");
         }
 
