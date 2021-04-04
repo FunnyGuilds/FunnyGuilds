@@ -7,21 +7,17 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
-import org.panda_lang.utilities.commons.function.TriFunction;
-import org.panda_lang.utilities.inject.InjectorProperty;
-import org.panda_lang.utilities.inject.InjectorResources;
+import org.panda_lang.utilities.inject.Resources;
 
 @FunnyComponent
-final class UserBind implements Bind, TriFunction<InjectorProperty, Object, Object[], User> {
+final class UserBind implements Bind {
 
     @Override
-    public void accept(InjectorResources injectorResources) {
-        injectorResources.on(User.class).assignHandler(this::apply);
+    public void accept(Resources injectorResources) {
+        injectorResources.on(User.class).assignHandler((property, annotation, args) -> fetchUser(CommandUtils.getContext(args)));
     }
 
-    @Override
-    public User apply(InjectorProperty injectorProperty, Object annotation, Object[] args) {
-        Context context = CommandUtils.getContext(args);
+    public User fetchUser(Context context) {
         CommandSender commandSender = context.getCommandSender();
 
         if (!(commandSender instanceof OfflinePlayer)) {

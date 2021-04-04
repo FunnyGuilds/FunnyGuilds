@@ -5,7 +5,7 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.9.3</version>
+    <version>4.9.4</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>net.dzikoysk</groupId>
             <artifactId>funnycommands</artifactId>
-            <version>0.3.10</version>
+            <version>0.3.11</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>

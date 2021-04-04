@@ -6,7 +6,7 @@ import net.dzikoysk.funnycommands.resources.Validator;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import org.panda_lang.utilities.inject.InjectorProperty;
+import org.panda_lang.utilities.inject.Property;
 
 @FunnyComponent
 final class OwnerValidator implements Validator<IsOwner, User, ValidationException> {
@@ -14,7 +14,7 @@ final class OwnerValidator implements Validator<IsOwner, User, ValidationExcepti
     private static final MemberValidator MEMBER_VALIDATOR = new MemberValidator();
 
     @Override
-    public boolean validate(Context context, IsOwner annotation, InjectorProperty property, User user) throws ValidationException {
+    public boolean validate(Context context, IsOwner annotation, Property property, User user) throws ValidationException {
         MEMBER_VALIDATOR.isMember(user);
 
         if (!user.isOwner()) {
