@@ -1519,7 +1519,7 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment public FunnyCommand tnt       = new FunnyCommand("tnt");
 
         @CustomKey("break")
-        public FunnyCommand break_ = new FunnyCommand("rozwiaz");
+        @Comment public FunnyCommand break_ = new FunnyCommand("rozwiaz");
 
         @Comment public FunnyCommand info     = new FunnyCommand("info");
         @Comment public FunnyCommand player   = new FunnyCommand("gracz");
