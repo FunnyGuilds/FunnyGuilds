@@ -15,6 +15,51 @@ import java.util.Objects;
 
 public class FunnyBox {
 
+    public static FunnyBox of(Block block) {
+        Validate.notNull(block, "block cannot be null");
+        if (getBoundingBox == null) {
+            return ofBlock(block);
+        }
+        try {
+            Object boundingBox = getBoundingBox.invoke(block);
+            double minX = (double) bbGetMinX.invoke(boundingBox);
+            double minY = (double) bbGetMinY.invoke(boundingBox);
+            double minZ = (double) bbGetMinZ.invoke(boundingBox);
+            double maxX = (double) bbGetMaxX.invoke(boundingBox);
+            double maxY = (double) bbGetMaxY.invoke(boundingBox);
+            double maxZ = (double) bbGetMaxZ.invoke(boundingBox);
+            return new FunnyBox(minX, minY, minZ, maxX, maxY, maxZ);
+        }
+        catch (Throwable throwable) {
+            return ofBlock(block);
+        }
+    }
+
+    private static MethodHandle getBoundingBox;
+    private static MethodHandle bbGetMinX;
+    private static MethodHandle bbGetMinY;
+    private static MethodHandle bbGetMinZ;
+    private static MethodHandle bbGetMaxX;
+    private static MethodHandle bbGetMaxY;
+    private static MethodHandle bbGetMaxZ;
+
+    static {
+        try {
+            MethodHandles.Lookup lookup = MethodHandles.publicLookup();
+            Class<?> boundingBoxClazz = Class.forName("org.bukkit.util.BoundingBox");
+            getBoundingBox = lookup.findVirtual(Block.class, "getBoundingBox", MethodType.methodType(boundingBoxClazz));
+            bbGetMinX = lookup.findVirtual(boundingBoxClazz, "getMinX", MethodType.methodType(double.class));
+            bbGetMinY = lookup.findVirtual(boundingBoxClazz, "getMinY", MethodType.methodType(double.class));
+            bbGetMinZ = lookup.findVirtual(boundingBoxClazz, "getMinZ", MethodType.methodType(double.class));
+            bbGetMaxX = lookup.findVirtual(boundingBoxClazz, "getMaxX", MethodType.methodType(double.class));
+            bbGetMaxY = lookup.findVirtual(boundingBoxClazz, "getMaxY", MethodType.methodType(double.class));
+            bbGetMaxZ = lookup.findVirtual(boundingBoxClazz, "getMaxZ", MethodType.methodType(double.class));
+        }
+        catch (Exception ignored) {
+            getBoundingBox = null;
+        }
+    }
+
     public static FunnyBox of(Vector corner1, Vector corner2) {
         Validate.notNull(corner1, "corner1 cannot be null");
         Validate.notNull(corner2, "corner2 cannot be null");
@@ -38,6 +83,10 @@ public class FunnyBox {
         return new FunnyBox(center.getX() - x, center.getY() - y, center.getZ() - z, center.getX() + x, center.getY() + y, center.getZ() + z);
     }
 
+    private static FunnyBox ofBlock(Block block) {
+        return new FunnyBox(block.getX(), block.getY(), block.getZ(), block.getX() + 1, block.getY() + 1, block.getZ() + 1);
+    }
+
     private double minX;
     private double minY;
     private double minZ;
@@ -53,7 +102,6 @@ public class FunnyBox {
     }
 
     public FunnyBox resize(double x1, double y1, double z1, double x2, double y2, double z2) {
-
         NumberConversions.checkFinite(x1, "x1 not finite");
         NumberConversions.checkFinite(y1, "y1 not finite");
         NumberConversions.checkFinite(z1, "z1 not finite");
@@ -141,7 +189,6 @@ public class FunnyBox {
     }
 
     public FunnyBox expand(double negativeX, double negativeY, double negativeZ, double positiveX, double positiveY, double positiveZ) {
-
         if ((negativeX == 0.0d) && (negativeY == 0.0d) && (negativeZ == 0.0d) && (positiveX == 0.0d) && (positiveY == 0.0d) && (positiveZ == 0.0d)) {
             return this;
         }
@@ -209,7 +256,6 @@ public class FunnyBox {
     }
 
     public FunnyBox expand(double dirX, double dirY, double dirZ, double expansion) {
-
         if (expansion == 0.0d) {
             return this;
         }
@@ -234,7 +280,6 @@ public class FunnyBox {
     }
 
     public FunnyBox expand(BlockFace blockFace, double expansion) {
-
         Validate.notNull(blockFace, "blockFace cannot be null");
 
         if (blockFace == BlockFace.SELF) {
@@ -254,7 +299,6 @@ public class FunnyBox {
     }
 
     public FunnyBox union(double posX, double posY, double posZ) {
-
         double newMinX = Math.min(this.minX, posX);
         double newMinY = Math.min(this.minY, posY);
         double newMinZ = Math.min(this.minZ, posZ);
@@ -304,11 +348,9 @@ public class FunnyBox {
     }
 
     public FunnyBox shift(double shiftX, double shiftY, double shiftZ) {
-
         if ((shiftX == 0.0d) && (shiftY == 0.0d) && (shiftZ == 0.0d)) {
             return this;
         }
-
         return this.resize(this.minX + shiftX, this.minY + shiftY, this.minZ + shiftZ,
                 this.maxX + shiftX, this.maxY + shiftY, this.maxZ + shiftZ);
     }
@@ -335,7 +377,6 @@ public class FunnyBox {
     }
 
     public boolean overlaps(Vector min, Vector max) {
-
         Validate.notNull(min, "min cannot be null");
         Validate.notNull(max, "max cannot be null");
 
@@ -373,7 +414,6 @@ public class FunnyBox {
     }
 
     public boolean contains(Vector min, Vector max) {
-
         Validate.notNull(min, "min cannot be null");
         Validate.notNull(max, "max cannot be null");
 
@@ -388,7 +428,6 @@ public class FunnyBox {
     }
 
     public RayTraceResult rayTrace(Vector start, Vector direction, double maxDistance) {
-
         Validate.notNull(start, "start cannot be null");
         start.checkFinite();
 
@@ -513,7 +552,6 @@ public class FunnyBox {
     }
 
     private static Vector normalizeZeros(Vector vector) {
-
         double x = vector.getX();
         double y = vector.getY();
         double z = vector.getZ();
@@ -581,50 +619,4 @@ public class FunnyBox {
         }
     }
 
-    private static FunnyBox ofBlock(Block block) {
-        return new FunnyBox(block.getX(), block.getY(), block.getZ(), block.getX() + 1, block.getY() + 1, block.getZ() + 1);
-    }
-
-    public static FunnyBox of(Block block) {
-        Validate.notNull(block, "block cannot be null");
-        if (getBoundingBox == null) return ofBlock(block);
-        try {
-            Object boundingBox = getBoundingBox.invoke(block);
-            double minX = (double) bbGetMinX.invoke(boundingBox);
-            double minY = (double) bbGetMinY.invoke(boundingBox);
-            double minZ = (double) bbGetMinZ.invoke(boundingBox);
-            double maxX = (double) bbGetMaxX.invoke(boundingBox);
-            double maxY = (double) bbGetMaxY.invoke(boundingBox);
-            double maxZ = (double) bbGetMaxZ.invoke(boundingBox);
-            return new FunnyBox(minX, minY, minZ, maxX, maxY, maxZ);
-        }
-        catch (Throwable throwable) {
-            return ofBlock(block);
-        }
-    }
-
-    private static MethodHandle getBoundingBox;
-    private static MethodHandle bbGetMinX;
-    private static MethodHandle bbGetMinY;
-    private static MethodHandle bbGetMinZ;
-    private static MethodHandle bbGetMaxX;
-    private static MethodHandle bbGetMaxY;
-    private static MethodHandle bbGetMaxZ;
-
-    static {
-        try {
-            MethodHandles.Lookup lookup = MethodHandles.publicLookup();
-            Class<?> boundingBoxClazz = Class.forName("org.bukkit.util.BoundingBox");
-            getBoundingBox = lookup.findVirtual(Block.class, "getBoundingBox", MethodType.methodType(boundingBoxClazz));
-            bbGetMinX = lookup.findVirtual(boundingBoxClazz, "getMinX", MethodType.methodType(double.class));
-            bbGetMinY = lookup.findVirtual(boundingBoxClazz, "getMinY", MethodType.methodType(double.class));
-            bbGetMinZ = lookup.findVirtual(boundingBoxClazz, "getMinZ", MethodType.methodType(double.class));
-            bbGetMaxX = lookup.findVirtual(boundingBoxClazz, "getMaxX", MethodType.methodType(double.class));
-            bbGetMaxY = lookup.findVirtual(boundingBoxClazz, "getMaxY", MethodType.methodType(double.class));
-            bbGetMaxZ = lookup.findVirtual(boundingBoxClazz, "getMaxZ", MethodType.methodType(double.class));
-        }
-        catch (Exception ignored) {
-            getBoundingBox = null;
-        }
-    }
 }
