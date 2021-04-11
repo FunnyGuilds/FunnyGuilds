@@ -65,9 +65,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 config.mysql.user = "<CUT>";
                 config.mysql.password = "<CUT>";
 
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                config.save(outputStream);
-                content = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
+                content = config.saveToString();
             }
             else {
                 file = new File(fileName);
