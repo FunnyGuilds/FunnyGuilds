@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("                                #")
 @Header("          FunnyGuilds           #")
-@Header("         4.9.3 Tribute          #")
+@Header("         4.9.5 Tribute          #")
 @Header("                                #")
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
@@ -1025,7 +1025,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Wyglad naglowka w liscie graczy.")
     @CustomKey("player-list-header")
-    public String playerListHeader = "&7FunnyGuilds &b4.9.3 Tribute";
+    public String playerListHeader = "&7FunnyGuilds &b4.9.5 Tribute";
 
     @Comment("Wyglad stopki w liscie graczy.")
     @CustomKey("player-list-footer")

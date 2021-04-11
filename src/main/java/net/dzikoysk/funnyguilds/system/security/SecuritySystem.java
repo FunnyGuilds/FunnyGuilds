@@ -6,11 +6,10 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.system.security.cheat.SecurityFreeCam;
 import net.dzikoysk.funnyguilds.system.security.cheat.SecurityReach;
+import net.dzikoysk.funnyguilds.util.FunnyBox;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.util.BoundingBox;
-import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -19,7 +18,7 @@ import java.util.Map;
 public final class SecuritySystem {
 
     private static final double ADDITIONAL_SNEAKING_HEIGHT_CURSOR = 0.35;
-    private static final Map<User, Integer> playersViolationLevel = new HashMap<>();
+    private static final Map<User, Integer> PLAYERS_VIOLATION_LEVEL = new HashMap<>();
 
     private SecuritySystem() {}
 
@@ -47,7 +46,7 @@ public final class SecuritySystem {
             }
         }
 
-        if (securityType.equals(SecurityType.GUILD)) {
+        if (securityType == SecurityType.GUILD) {
             if (guild == null) {
                 return;
             }
@@ -60,15 +59,14 @@ public final class SecuritySystem {
 
             Location eye = player.getEyeLocation();
             Vector direction = eye.getDirection();
-            Vector origin = player.isSneaking() && !Reflections.USE_PRE_9_METHODS
+            Vector origin = (player.isSneaking() && !Reflections.USE_PRE_9_METHODS)
                     ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
                     : eye.toVector();
-            BoundingBox boundingBox = config.createType.equalsIgnoreCase("ender_crystal")
-                    ? new BoundingBox(x - 1.0, y - 1.0 ,z - 1.0, x + 1.0, y + 1.0 ,z + 1.0)
-                    : player.getWorld().getBlockAt(center).getBoundingBox();
+            FunnyBox funnyBox = "ender_crystal".equalsIgnoreCase(config.createType)
+                    ? new FunnyBox(x - 1.0, y - 1.0 ,z - 1.0, x + 1.0, y + 1.0 ,z + 1.0)
+                    : FunnyBox.of(player.getWorld().getBlockAt(center));
 
-            RayTraceResult rayTraceResult = boundingBox.rayTrace(origin, direction, 6);
-
+            FunnyBox.RayTraceResult rayTraceResult = funnyBox.rayTrace(origin, direction, 6);
             if (rayTraceResult == null) {
                 return;
             }
@@ -78,11 +76,13 @@ public final class SecuritySystem {
 
             SecurityFreeCam.on(player, origin, hitPoint, distance);
             SecurityReach.on(player, distance);
+            return;
         }
+
+        throw new IllegalArgumentException("unknown securityType: " + securityType);
     }
 
     protected static Map<User, Integer> getPlayersViolationLevel() {
-        return playersViolationLevel;
+        return PLAYERS_VIOLATION_LEVEL;
     }
-
 }
