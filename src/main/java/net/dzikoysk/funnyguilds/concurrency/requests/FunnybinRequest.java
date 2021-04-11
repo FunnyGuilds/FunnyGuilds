@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import com.google.common.io.Files;
 import eu.okaeri.configs.ConfigManager;
-import eu.okaeri.configs.postprocessor.SectionSeparator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
@@ -12,8 +11,8 @@ import net.dzikoysk.funnyguilds.util.telemetry.FunnybinResponse;
 import net.dzikoysk.funnyguilds.util.telemetry.PasteType;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.panda_lang.utilities.commons.FileUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -56,7 +55,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 type = PasteType.CONFIG;
 
                 PluginConfiguration config = ConfigManager.create(PluginConfiguration.class, (it) -> {
-                    it.withConfigurer(new YamlBukkitConfigurer(SectionSeparator.NONE));
+                    it.withConfigurer(new YamlBukkitConfigurer());
                     it.withBindFile(FunnyGuilds.getInstance().getPluginConfigurationFile());
                     it.load();
                 });
@@ -66,12 +65,9 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 config.mysql.user = "<CUT>";
                 config.mysql.password = "<CUT>";
 
-                File tempFile = File.createTempFile("funnyguilds-", "-config");
-                config.setBindFile(tempFile);
-                config.save();
-
-                content = FileUtils.getContentOfFile(tempFile);
-                tempFile.delete();
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                config.save(outputStream);
+                content = new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
             }
             else {
                 file = new File(fileName);

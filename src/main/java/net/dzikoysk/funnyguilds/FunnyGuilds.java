@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.exception.OkaeriException;
-import eu.okaeri.configs.postprocessor.SectionSeparator;
 import eu.okaeri.configs.serdes.SimpleObjectTransformer;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
@@ -94,14 +93,14 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, (it) -> {
-                it.withConfigurer(new YamlBukkitConfigurer(SectionSeparator.NONE));
+                it.withConfigurer(new YamlBukkitConfigurer());
                 it.withSerdesPack(registry -> registry.register(SimpleObjectTransformer.of(String.class, String.class, MessageConfiguration::decolor)));
                 it.withBindFile(this.messageConfigurationFile);
                 it.saveDefaults();
                 it.load(true);
             });
             this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, (it) -> {
-                it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(SectionSeparator.NONE), true));
+                it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true));
                 it.withBindFile(this.pluginConfigurationFile);
                 it.saveDefaults();
                 it.load(true);
