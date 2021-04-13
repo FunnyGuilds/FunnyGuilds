@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.diorite.cfg.system.Template;
 import org.diorite.cfg.system.TemplateCreator;
 

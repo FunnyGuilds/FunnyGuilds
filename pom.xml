@@ -257,6 +257,9 @@
                         <relocation>
                             <pattern>com.google</pattern>
                             <shadedPattern>net.dzikoysk.funnyguilds.libs.com.google</shadedPattern>
+                            <excludes>
+                                <exclude>com.google.gson.*</exclude>
+                            </excludes>
                         </relocation>
                         <relocation>
                             <pattern>org.apache</pattern>
