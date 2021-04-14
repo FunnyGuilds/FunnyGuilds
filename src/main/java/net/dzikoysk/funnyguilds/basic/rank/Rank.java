@@ -165,7 +165,7 @@ public class Rank implements Comparable<Rank> {
     }
 
     public int getAssists() {
-        if (this.type.equals(BasicType.USER)) {
+        if (this.type == BasicType.USER) {
             return this.assist;
         }
 
@@ -183,7 +183,7 @@ public class Rank implements Comparable<Rank> {
     }
 
     public int getLogouts() {
-        if (this.type.equals(BasicType.USER)) {
+        if (this.type == BasicType.USER) {
             return this.logouts;
         }
 
