@@ -1010,6 +1010,8 @@ public class PluginConfiguration {
     @CfgComment("{POSITION} - pozycja gracza w rankingu")
     @CfgComment("{KILLS} - liczba zabojstw gracza")
     @CfgComment("{DEATHS} - liczba smierci gracza")
+    @CfgComment("{ASSISTS} - liczba asyst gracza")
+    @CfgComment("{LOGOUTS} - liczba wylogowań gracza podczas walki")
     @CfgComment("{KDR} - stosunek zabojstw do smierci gracza")
     @CfgComment("{WG-REGION} - region WorldGuard'a, na ktorym znajduje sie gracz (pierwszy, jesli jest ich kilka)")
     @CfgComment("{WG-REGIONS} - regiony WorldGuard'a, na ktorych znajduje sie gracz (oddzielone przecinkami)")
