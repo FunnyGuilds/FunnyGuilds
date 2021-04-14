@@ -194,7 +194,7 @@ public class SQLDataModel implements DataModel {
             DatabaseGuild.save(guild);
         }
 
-        if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return;
         }
 
