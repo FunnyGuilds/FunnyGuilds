@@ -5,7 +5,7 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.9.3</version>
+    <version>4.9.4</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>net.dzikoysk</groupId>
             <artifactId>funnycommands</artifactId>
-            <version>0.3.9</version>
+            <version>0.3.11</version>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -49,20 +49,6 @@
             <groupId>org.panda-lang</groupId>
             <artifactId>panda-utilities</artifactId>
             <version>0.4.0-alpha</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.tinylog</groupId>
-                    <artifactId>tinylog-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.tinylog</groupId>
-                    <artifactId>tinylog-impl</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.tinylog</groupId>
-                    <artifactId>slf4j-tinylog</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -74,7 +60,7 @@
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
-            <version>4.1.60.Final</version>
+            <version>4.1.63.Final</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -249,12 +235,39 @@
                     <finalName>${project.name} ${project.version} (MC 1.8-1.16.5)</finalName>
                     <relocations>
                         <relocation>
-                            <pattern>com.google.common.</pattern>
-                            <shadedPattern>net.dzikoysk.funnyguilds.libs.com.google.common.</shadedPattern>
+                            <pattern>net.dzikoysk.funnycommands</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.apache.logging.log4j.</pattern>
-                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging.log4j.</shadedPattern>
+                            <pattern>org.panda_lang</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.panda_lang</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>javassist</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.javassist</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.diorite</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.diorite</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.zaxxer</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.com.zaxxer</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.google</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.com.google</shadedPattern>
+                            <excludes>
+                                <exclude>com.google.gson.*</exclude>
+                            </excludes>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.apache</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.slf4j</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.slf4j</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>
@@ -271,11 +284,6 @@
                             </includes>
                         </filter>
                     </filters>
-                    <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-                            <resource>META-INF/annotations/net.dzikoysk.funnycommands.stereotypes.FunnyComponent</resource>
-                        </transformer>
-                    </transformers>
                 </configuration>
             </plugin>
             <plugin>

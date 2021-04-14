@@ -20,6 +20,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.hook.VaultHook;
+import net.dzikoysk.funnyguilds.util.FunnyBox;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
@@ -31,7 +32,6 @@ import org.bukkit.Material;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.BoundingBox;
 import org.panda_lang.utilities.commons.text.Formatter;
 
 import java.util.List;
@@ -160,8 +160,8 @@ public final class CreateCommand {
 
             WorldBorder border = player.getWorld().getWorldBorder();
             double radius = border.getSize() / 2;
-            BoundingBox bbox = BoundingBox.of(border.getCenter().toVector(), radius - config.createMinDistanceFromBorder, 256, radius - config.createMinDistanceFromBorder);
-            BoundingBox gbox = BoundingBox.of(region.getFirstCorner(), region.getSecondCorner());
+            FunnyBox bbox = FunnyBox.of(border.getCenter().toVector(), radius - config.createMinDistanceFromBorder, 256, radius - config.createMinDistanceFromBorder);
+            FunnyBox gbox = FunnyBox.of(region.getFirstCorner(), region.getSecondCorner());
 
             // border box does not contain guild box
             if (!bbox.contains(gbox)) {

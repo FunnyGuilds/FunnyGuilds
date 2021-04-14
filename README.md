@@ -1,5 +1,5 @@
-FunnyGuilds
-[![Build Status](https://travis-ci.com/FunnyGuilds/FunnyGuilds.svg?branch=master)](https://travis-ci.com/FunnyGuilds/FunnyGuilds) [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u) [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u) [![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open") [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Average time to resolve an issue")
+FunnyGuilds  
+[![Build Status](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/maven.yml/badge.svg)](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/maven.yml) [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u) [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u) [![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open") [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Average time to resolve an issue")
 ===========
 
 #### About
@@ -9,8 +9,8 @@ Project website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
 <br>
 
 #### Download
-Get the latest stable version: [FunnyGuilds Tribute 4.9.3 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
-Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.9.3+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
+Get the latest stable version: [FunnyGuilds Tribute 4.9.4 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
+Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.9.4+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
 
 
 #### Hooks
@@ -34,7 +34,7 @@ FunnyGuilds hooks into those plugins:
 <dependency>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.9.3</version>
+    <version>4.9.4</version>
 </dependency>
 ```
 
