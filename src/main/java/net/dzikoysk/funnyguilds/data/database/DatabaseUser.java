@@ -52,7 +52,6 @@ public class DatabaseUser {
         statement.set("points", user.getRank().getPoints());
         statement.set("kills", user.getRank().getKills());
         statement.set("deaths", user.getRank().getDeaths());
-        statement.set("guild", user.hasGuild() ? "'" +  user.getGuild().getName() + "'" : "");
         statement.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
         statement.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
         statement.executeUpdate();
