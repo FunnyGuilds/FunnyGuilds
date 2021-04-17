@@ -6,57 +6,74 @@ import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.panda_lang.utilities.commons.function.Option;
 
 import java.util.concurrent.TimeUnit;
 
 public final class ProtectionSystem {
 
-    public static boolean isProtected(Player player, Location location, boolean includeBuildLock) {
+    public enum ProtectionType {
+        UNAUTHORIZED,
+        LOCKED,
+        HEART
+    }
+
+    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, boolean includeBuildLock) {
         if (player == null || location == null) {
-            return false;
+            return Option.none();
         }
         
         if (player.hasPermission("funnyguilds.admin.build")) {
-            return false;
+            return Option.none();
         }
         
         Region region = RegionUtils.getAt(location);
 
         if (region == null) {
-            return false;
+            return Option.none();
         }
         
         Guild guild = region.getGuild();
 
         if (guild == null || guild.getName() == null) {
-            return false;
+            return Option.none();
         }
         
         User user = User.get(player);
 
         if (!guild.getMembers().contains(user)) {
-            return true;
+            return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }
 
         if (includeBuildLock && !guild.canBuild()) {
-            player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract.replace("{TIME}",
-                    Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis()))));
-            return true;
+            return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
         }
 
         if (location.equals(region.getHeart())) {
             Pair<Material, Byte> heartMaterial = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
-            return heartMaterial != null && heartMaterial.getLeft() != Material.AIR;
+            return Option.when(heartMaterial != null && heartMaterial.getLeft() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
-        return false;
+        return Option.none();
     }
 
-    public static boolean isProtected(Player player, Location loc) {
-        return isProtected(player, loc, false);
+    public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
+        if (result.getRight() == ProtectionType.LOCKED) {
+            ProtectionSystem.sendRegionExplodeMessage(result.getLeft(), result.getMiddle());
+        }
+        else {
+            result.getLeft().sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
+        }
+    }
+
+    private static void sendRegionExplodeMessage(Player player, Guild guild) {
+        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract
+                .replace("{TIME}",Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis())))
+        );
     }
 
 }

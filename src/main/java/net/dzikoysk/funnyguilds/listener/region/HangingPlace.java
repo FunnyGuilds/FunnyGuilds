@@ -8,10 +8,10 @@ import org.bukkit.event.hanging.HangingPlaceEvent;
 public class HangingPlace implements Listener {
 
     @EventHandler
-    public void onPlace(HangingPlaceEvent e) {
-        if (ProtectionSystem.isProtected(e.getPlayer(), e.getEntity().getLocation())) {
-            e.setCancelled(true);
-        }
+    public void onPlace(HangingPlaceEvent event) {
+        ProtectionSystem.isProtected(event.getPlayer(), event.getEntity().getLocation(), false)
+                .peek(result -> event.setCancelled(true))
+                .peek(ProtectionSystem::defaultResponse);
     }
     
 }

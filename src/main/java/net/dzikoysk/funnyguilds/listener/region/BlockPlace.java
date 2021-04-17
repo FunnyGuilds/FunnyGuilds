@@ -29,14 +29,17 @@ public class BlockPlace implements Listener {
         Material type = block.getType();
         Location blockLocation = block.getLocation();
 
-        if (!ProtectionSystem.isProtected(player, blockLocation, true)) {
+        boolean isProtected = ProtectionSystem.isProtected(player, blockLocation, true)
+                .peek(ProtectionSystem::defaultResponse)
+                .isPresent();
+
+        if (!isProtected) {
             return;
         }
 
         // always cancel to prevent breaking other protection
         // plugins or plugins using BlockPlaceEvent (eg. special ability blocks)
         event.setCancelled(true);
-        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
 
         // disabled bugged-blocks or blacklisted item
         if (!this.config.buggedBlocks || this.config.buggedBlocksExclude.contains(type)) {
