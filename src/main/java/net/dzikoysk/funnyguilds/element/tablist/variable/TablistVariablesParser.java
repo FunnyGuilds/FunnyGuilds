@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class TablistVariablesParser {
 
-    private Collection<TablistVariable> tablistVariables = new ArrayList<>();
+    private final Collection<TablistVariable> tablistVariables = new ArrayList<>();
 
     public void add(TablistVariable variable) {
         this.tablistVariables.add(variable);

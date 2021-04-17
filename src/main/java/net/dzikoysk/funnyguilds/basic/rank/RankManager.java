@@ -17,8 +17,7 @@ public class RankManager {
     protected NavigableSet<Rank> usersRank = new TreeSet<>(Collections.reverseOrder());
     protected NavigableSet<Rank> guildsRank = new TreeSet<>(Collections.reverseOrder());
 
-    private RankManager() {
-    }
+    private RankManager() {}
 
     public static RankManager getInstance() {
         return INSTANCE;
