@@ -275,8 +275,8 @@
                             <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.commons.lang3</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.apache.logging.log4j</pattern>
-                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging.log4j</shadedPattern>
+                            <pattern>org.apache.logging</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.slf4j</pattern>
