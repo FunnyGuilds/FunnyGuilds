@@ -1,5 +1,10 @@
 package net.dzikoysk.funnyguilds;
 
+import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.exception.OkaeriException;
+import eu.okaeri.configs.serdes.SimpleObjectTransformer;
+import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
+import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -23,7 +28,6 @@ import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import net.dzikoysk.funnyguilds.util.commons.ConfigHelper;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
@@ -88,14 +92,26 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         try {
-            this.pluginConfiguration = ConfigHelper.loadConfig(this.pluginConfigurationFile, PluginConfiguration.class);
-            this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
-
-            this.pluginConfiguration.load();
-            this.messageConfiguration.load();
+            this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, (it) -> {
+                it.withConfigurer(new YamlBukkitConfigurer());
+                it.withSerdesPack(registry -> registry.register(SimpleObjectTransformer.of(String.class, String.class, MessageConfiguration::decolor)));
+                it.withBindFile(this.messageConfigurationFile);
+                it.saveDefaults();
+                it.load(true);
+            });
+            this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, (it) -> {
+                it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true));
+                it.withBindFile(this.pluginConfigurationFile);
+                it.saveDefaults();
+                it.load(true);
+            });
         }
         catch (Exception exception) {
-            logger.error("Could not load plugin configuration", exception);
+            if (exception instanceof OkaeriException) {
+                logger.error("Could not initialize plugin configuration", exception.getCause());
+            } else {
+                logger.error("Could not load plugin configuration", exception);
+            }
             shutdown("Critical error has been encountered!");
             return;
         }
@@ -318,13 +334,11 @@ public class FunnyGuilds extends JavaPlugin {
         return this.dynamicListenerManager;
     }
 
-    public void reloadPluginConfiguration() {
-        this.pluginConfiguration = ConfigHelper.loadConfig(this.pluginConfigurationFile, PluginConfiguration.class);
+    public void reloadPluginConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
     }
 
-    public void reloadMessageConfiguration() {
-        this.messageConfiguration = ConfigHelper.loadConfig(this.messageConfigurationFile, MessageConfiguration.class);
+    public void reloadMessageConfiguration() throws OkaeriException {
         this.messageConfiguration.load();
     }
 
