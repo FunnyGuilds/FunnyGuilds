@@ -171,8 +171,8 @@ public class MessageConfiguration extends OkaeriConfig {
             "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
             "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii",
             "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii");
-    
-    @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
+
+    @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
     public List<String> playerInfoList = Arrays.asList(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -180,10 +180,12 @@ public class MessageConfiguration extends OkaeriConfig {
             "&7Miejsce: &a{RANK} &8(&a{POINTS}&8)",
             "&7Zabojstwa: &a{KILLS}",
             "&7Smierci: &a{DEATHS}",
+            "&7Asysty: &a{ASSISTS}",
+            "&7Logouty: &a{LOGOUTS}",
             "&7KDR: &a{KDR}",
             "&8-------------.------------------");
-    
-    @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
+
+    @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
     public List<String> playerRightClickInfo = Arrays.asList(
             "&8--------------.-----------------",
             "&7Gracz: &a{PLAYER}",
@@ -195,7 +197,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
 
-    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}, {GUILD-ADDITIONAL-PROTECTION}")
+    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}, {GUILD-ADDITIONAL-PROTECTION}")
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",

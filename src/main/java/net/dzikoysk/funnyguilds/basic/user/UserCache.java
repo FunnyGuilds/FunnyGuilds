@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.basic.user;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.Dummy;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 import org.bukkit.scheduler.BukkitTask;
@@ -21,12 +23,12 @@ public class UserCache {
 
     private final Map<User, Double> damage = new HashMap<>();
 
-    private Cache<UUID, Long> attackerCache = CacheBuilder
+    private final Cache<UUID, Long> attackerCache = CacheBuilder
             .newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES)
             .build();
 
-    private Cache<UUID, Long> victimCache = CacheBuilder
+    private final Cache<UUID, Long> victimCache = CacheBuilder
             .newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES)
             .build();
@@ -46,8 +48,8 @@ public class UserCache {
     }
 
     public void addDamage(User user, double damage) {
-        Double currentDamage = this.damage.get(user);
-        this.damage.put(user, (currentDamage == null ? 0.0D : currentDamage) + damage);
+        Double currentDamage = this.damage.getOrDefault(user, 0.0D);
+        this.damage.put(user, currentDamage + damage);
     }
 
     public double killedBy(User user) {
@@ -141,6 +143,19 @@ public class UserCache {
 
     public boolean isAssisted() {
         return !this.damage.isEmpty();
+    }
+
+    public boolean isInCombat() {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        User lastAttacker = this.getLastAttacker();
+
+        if (lastAttacker == null || !lastAttacker.isOnline()) {
+            return false;
+        }
+
+        Long attackTime = this.wasVictimOf(lastAttacker);
+
+        return attackTime != null && attackTime + config.lastAttackerAsKillerConsiderationTimeout_ >= System.currentTimeMillis();
     }
 
     @Nullable

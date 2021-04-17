@@ -26,6 +26,11 @@ public class PlayerQuit implements Listener {
 
         if (user != null) {
             UserCache cache = user.getCache();
+
+            if (cache.isInCombat()) {
+                user.getRank().addLogout();
+            }
+
             cache.setIndividualPrefix(null);
             cache.setScoreboard(null);
             cache.setDummy(null);

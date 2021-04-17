@@ -233,7 +233,7 @@ public class FunnyGuilds extends JavaPlugin {
             user.getBossBar().removeNotification();
         }
 
-        this.dataModel.save(true);
+        this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
 
         this.invitationPersistenceHandler.saveInvitations();

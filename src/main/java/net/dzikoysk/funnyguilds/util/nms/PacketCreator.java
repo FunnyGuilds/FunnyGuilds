@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.util.nms;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Constructor;

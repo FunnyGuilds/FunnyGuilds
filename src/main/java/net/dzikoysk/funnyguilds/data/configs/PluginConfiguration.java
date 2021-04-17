@@ -961,6 +961,8 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("{POSITION} - pozycja gracza w rankingu")
     @Comment("{KILLS} - liczba zabojstw gracza")
     @Comment("{DEATHS} - liczba smierci gracza")
+    @Comment("{ASSISTS} - liczba asyst gracza")
+    @Comment("{LOGOUTS} - liczba wylogowań gracza podczas walki")
     @Comment("{KDR} - stosunek zabojstw do smierci gracza")
     @Comment("{WG-REGION} - region WorldGuard'a, na ktorym znajduje sie gracz (pierwszy, jesli jest ich kilka)")
     @Comment("{WG-REGIONS} - regiony WorldGuard'a, na ktorych znajduje sie gracz (oddzielone przecinkami)")
