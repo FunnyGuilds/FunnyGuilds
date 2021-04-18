@@ -20,7 +20,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
     }
 
     @Override
-    public void execute() {
+    public void execute() throws Exception {
         FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
         funnyGuilds.reloadPluginConfiguration();
         funnyGuilds.reloadMessageConfiguration();

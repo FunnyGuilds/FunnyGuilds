@@ -1,15 +1,16 @@
 package net.dzikoysk.funnyguilds.util.telemetry;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
 
 import com.google.gson.Gson;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
-import org.diorite.utils.network.DioriteURLUtils;
 
 /**
  * TODO: Move this to a separate library.
@@ -24,7 +25,7 @@ public class FunnyTelemetry {
     public static final  String FUNNYBIN_POST_BUNDLE = URL + "/funnybin/api/bundle/post";
 
     public static FunnybinResponse postToFunnybin(String paste, PasteType pasteType, String tag) throws IOException {
-        return sendPost(FUNNYBIN_POST + "?type=" + pasteType.toString() + "&tag=" + DioriteURLUtils.encodeUTF8(tag), paste, FunnybinResponse.class);
+        return sendPost(FUNNYBIN_POST + "?type=" + pasteType + "&tag=" + encodeUTF8(tag), paste, FunnybinResponse.class);
     }
 
     public static FunnybinResponse createBundle(List<String> pastes) throws IOException {
@@ -33,14 +34,14 @@ public class FunnyTelemetry {
         }
 
         Iterator<String> iterator = pastes.iterator();
-        StringBuilder url = new StringBuilder(DioriteURLUtils.createQueryElement("paste", iterator.next()));
+        StringBuilder url = new StringBuilder(createQueryElement("paste", iterator.next()));
 
         while (iterator.hasNext()) {
             url.append("&");
-            DioriteURLUtils.addQueryElement("paste", iterator.next(), url);
+            addQueryElement("paste", iterator.next(), url);
         }
 
-        return sendPost(FUNNYBIN_POST_BUNDLE + "?" + url.toString(), "", FunnybinResponse.class);
+        return sendPost(FUNNYBIN_POST_BUNDLE + "?" + url, "", FunnybinResponse.class);
     }
 
     private static <T> T sendPost(String url, String body, Class<T> response) throws IOException {
@@ -59,5 +60,25 @@ public class FunnyTelemetry {
 
         connection.getOutputStream().write(bodyBytes);
         return gson.fromJson(IOUtils.toString(connection.getInputStream(), "UTF-8"), response);
+    }
+
+    private static String encodeUTF8(String str) throws UnsupportedEncodingException {
+        if (str == null) return "";
+        return URLEncoder.encode(str, "UTF-8");
+    }
+
+    private static String createQueryElement(String key, String value) throws UnsupportedEncodingException {
+        String result = encodeUTF8(key);
+        if (value != null) result += "=" + encodeUTF8(value);
+        return result;
+    }
+
+    private static StringBuilder addQueryElement(String key, String value, StringBuilder builder) throws UnsupportedEncodingException {
+        builder.append(encodeUTF8(key));
+        if (value != null) {
+            builder.append('=');
+            builder.append(encodeUTF8(value));
+        }
+        return builder;
     }
 }

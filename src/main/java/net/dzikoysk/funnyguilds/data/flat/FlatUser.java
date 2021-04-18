@@ -26,6 +26,8 @@ public class FlatUser {
         int points = wrapper.getInt("points");
         int kills = wrapper.getInt("kills");
         int deaths = wrapper.getInt("deaths");
+        int assists = wrapper.getInt("assists");
+        int logouts = wrapper.getInt("logouts");
         long ban = wrapper.getLong("ban");
         String reason = wrapper.getString("reason");
 
@@ -33,14 +35,16 @@ public class FlatUser {
             return null;
         }
 
-        Object[] values = new Object[7];
+        Object[] values = new Object[9];
         values[0] = id;
         values[1] = name;
         values[2] = points;
         values[3] = kills;
         values[4] = deaths;
-        values[5] = ban;
-        values[6] = reason;
+        values[5] = assists;
+        values[6] = logouts;
+        values[7] = ban;
+        values[8] = reason;
         
         return DeserializationUtils.deserializeUser(values);
     }
@@ -58,6 +62,8 @@ public class FlatUser {
         wrapper.set("points", user.getRank().getPoints());
         wrapper.set("kills", user.getRank().getKills());
         wrapper.set("deaths", user.getRank().getDeaths());
+        wrapper.set("assists", user.getRank().getAssists());
+        wrapper.set("logouts", user.getRank().getLogouts());
 
         if (user.isBanned()) {
             wrapper.set("ban", user.getBan().getBanTime());

@@ -5,7 +5,7 @@
     <name>FunnyGuilds</name>
     <groupId>net.dzikoysk</groupId>
     <artifactId>funnyguilds</artifactId>
-    <version>4.9.4</version>
+    <version>4.9.6</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -36,9 +36,14 @@
             <version>3.12.0</version>
         </dependency>
         <dependency>
-            <groupId>org.diorite</groupId>
-            <artifactId>diorite-config-minimal</artifactId>
-            <version>1.2</version>
+            <groupId>eu.okaeri</groupId>
+            <artifactId>okaeri-configs-yaml-bukkit</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>eu.okaeri</groupId>
+            <artifactId>okaeri-configs-validator-okaeri</artifactId>
+            <version>2.7.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -147,6 +152,10 @@
             <id>panda-repository</id>
             <name>Panda Repository</name>
             <url>https://repo.panda-lang.org/</url>
+        </repository>
+        <repository>
+            <id>okaeri-repo</id>
+            <url>https://storehouse.okaeri.eu/repository/maven-public/</url>
         </repository>
         <repository>
             <id>sk89q-repository</id>
@@ -262,12 +271,20 @@
                             </excludes>
                         </relocation>
                         <relocation>
-                            <pattern>org.apache</pattern>
-                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache</shadedPattern>
+                            <pattern>org.apache.commons.lang3</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.commons.lang3</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.apache.logging</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.org.apache.logging</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>org.slf4j</pattern>
                             <shadedPattern>net.dzikoysk.funnyguilds.libs.org.slf4j</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>eu.okaeri.</pattern>
+                            <shadedPattern>net.dzikoysk.funnyguilds.libs.eu.okaeri.</shadedPattern>
                         </relocation>
                     </relocations>
                     <filters>

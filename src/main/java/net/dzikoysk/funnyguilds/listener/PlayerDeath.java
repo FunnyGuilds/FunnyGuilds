@@ -51,7 +51,7 @@ public class PlayerDeath implements Listener {
         victim.getRank().addDeath();
 
         if (playerAttacker == null) {
-            if (! config.considerLastAttackerAsKiller) {
+            if (!config.considerLastAttackerAsKiller) {
                 victimCache.clearDamage();
                 return;
             }
@@ -172,6 +172,7 @@ public class PlayerDeath implements Listener {
                 int assists = 0;
 
                 for (Entry<User, Double> assist : damage.entrySet()) {
+                    User assistUser = assist.getKey();
                     double assistFraction = assist.getValue() / totalDamage;
                     int addedPoints = (int) Math.round(assistFraction * toShare);
 
@@ -188,17 +189,18 @@ public class PlayerDeath implements Listener {
                     }
 
                     if (!config.broadcastDeathMessage) {
-                        messageReceivers.add(assist.getKey());
+                        messageReceivers.add(assistUser);
                     }
 
                     givenPoints += addedPoints;
 
-                    String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assist.getKey().getName());
+                    String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assistUser.getName());
                     assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", ChatUtils.getPercent(assistFraction));
                     assistEntries.add(assistEntry);
 
-                    assist.getKey().getRank().addPoints(addedPoints);
+                    assistUser.getRank().addPoints(addedPoints);
+                    assistUser.getRank().addAssist();
                 }
 
                 double updatedAttackerPoints = attackerEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);

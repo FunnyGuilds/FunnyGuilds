@@ -66,11 +66,13 @@ public final class DeserializationUtils {
         user.getRank().setPoints((int) values[2]);
         user.getRank().setKills((int) values[3]);
         user.getRank().setDeaths((int) values[4]);
+        user.getRank().setAssists((int) values[5]);
+        user.getRank().setLogouts((int) values[6]);
 
-        long banTime = (long) values[5];
+        long banTime = (long) values[7];
 
         if (banTime > 0) {
-            user.setBan(new UserBan((String) values[6], banTime));
+            user.setBan(new UserBan((String) values[8], banTime));
         }
         
         return user;

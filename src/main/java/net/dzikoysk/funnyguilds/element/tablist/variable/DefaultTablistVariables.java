@@ -129,6 +129,8 @@ public final class DefaultTablistVariables {
         putSimple("position", "POSITION", user -> user.getRank().getPosition());
         putSimple("kills", "KILLS", user -> user.getRank().getKills());
         putSimple("deaths", "DEATHS", user -> user.getRank().getDeaths());
+        putSimple("assists", "ASSISTS", user -> user.getRank().getAssists());
+        putSimple("logouts", "LOGOUTS", user -> user.getRank().getLogouts());
         putSimple("kdr", "KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR()));
 
         putSimple("ping-format", "PING-FORMAT", user ->

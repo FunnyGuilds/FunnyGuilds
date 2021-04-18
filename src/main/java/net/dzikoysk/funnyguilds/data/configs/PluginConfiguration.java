@@ -1,6 +1,10 @@
 package net.dzikoysk.funnyguilds.data.configs;
 
 import com.google.common.collect.ImmutableMap;
+import eu.okaeri.configs.OkaeriConfig;
+import eu.okaeri.configs.annotation.*;
+import eu.okaeri.configs.exception.OkaeriException;
+import eu.okaeri.validator.annotation.*;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.basic.rank.RankSystem;
@@ -20,15 +24,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.diorite.cfg.annotations.CfgClass;
-import org.diorite.cfg.annotations.CfgCollectionStyle;
-import org.diorite.cfg.annotations.CfgCollectionStyle.CollectionStyle;
-import org.diorite.cfg.annotations.CfgComment;
-import org.diorite.cfg.annotations.CfgExclude;
-import org.diorite.cfg.annotations.CfgName;
-import org.diorite.cfg.annotations.CfgStringStyle;
-import org.diorite.cfg.annotations.CfgStringStyle.StringStyle;
-import org.diorite.cfg.annotations.defaults.CfgDelegateDefault;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -46,356 +41,337 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-@CfgClass(name = "PluginConfiguration")
-@CfgDelegateDefault("{new}")
-@CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
-@CfgComment("                                #")
-@CfgComment("          FunnyGuilds           #")
-@CfgComment("         4.9.4 Tribute          #")
-@CfgComment("                                #")
-@CfgComment("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
-@CfgComment("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
-@CfgComment("https://www.spigotmc.org/wiki/placeholderapi-plugin-placeholders-page-2/#funnyguilds")
-@CfgComment(" ")
-@CfgComment("FunnyGuilds wspiera takze placeholdery w BungeeTabListPlus i MVdWPlaceholderAPI")
-@CfgComment("Placeholdery sa dokladnie takie same jak w przypadku PlaceholderAPI (bez znaku % oczywiscie)")
-@CfgComment(" ")
-@CfgComment("Jezeli chcesz, aby dana wiadomosc byla pusta, zamiast wiadomosci umiesc: ''")
-@CfgComment(" ")
-public class PluginConfiguration {
+@Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
+@Header("                                #")
+@Header("          FunnyGuilds           #")
+@Header("         4.9.6 Tribute          #")
+@Header("                                #")
+@Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
+@Header("FunnyGuilds wspiera PlaceholderAPI, lista dodawanych placeholderow znajduje sie tutaj:")
+@Header("https://github.com/PlaceholderAPI/PlaceholderAPI/wiki/Placeholders#funnyguilds")
+@Header(" ")
+@Header("FunnyGuilds wspiera takze placeholdery w BungeeTabListPlus i MVdWPlaceholderAPI")
+@Header("Placeholdery sa dokladnie takie same jak w przypadku PlaceholderAPI (bez znaku % oczywiscie)")
+@Header(" ")
+@Header("Jezeli chcesz, aby dana wiadomosc byla pusta, zamiast wiadomosci umiesc: ''")
+@Header(" ")
+@Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
+public class PluginConfiguration extends OkaeriConfig {
 
-    @CfgExclude
+    @Exclude
     public final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
 
-    @CfgExclude
+    @Exclude
     public SimpleDateFormat dateFormat;
 
-    @CfgComment("Wyswietlana nazwa pluginu")
-    @CfgName("plugin-name")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyswietlana nazwa pluginu")
+    @CustomKey("plugin-name")
     public String pluginName = "FunnyGuilds";
 
-    @CfgComment("Czy plugin ma dzialac w trybie debug. Sluzy on do wysylania dodatkowych wiadomosci w celu zdiagnozowania bledow itp.")
-    @CfgName("debug-mode")
+    @Comment("Czy plugin ma dzialac w trybie debug. Sluzy on do wysylania dodatkowych wiadomosci w celu zdiagnozowania bledow itp.")
+    @CustomKey("debug-mode")
     public boolean debugMode = false;
 
-    @CfgComment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
-    @CfgName("update-info")
+    @Comment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
+    @CustomKey("update-info")
     public boolean updateInfo = true;
 
-    @CfgComment("Czy informacje o aktualizacji wersji nightly maja byc widoczne podczas wejscia na serwer")
-    @CfgComment("Ta opcja działa tylko wtedy, gdy także jest włączona opcja 'update-info'")
-    @CfgName("update-nightly-info")
+    @Comment("Czy informacje o aktualizacji wersji nightly maja byc widoczne podczas wejscia na serwer")
+    @Comment("Ta opcja działa tylko wtedy, gdy także jest włączona opcja 'update-info'")
+    @CustomKey("update-nightly-info")
     public boolean updateNightlyInfo = true;
 
-    @CfgComment("Mozliwosc zakladania gildii. Mozna ja zmienic takze za pomoca komendy /ga enabled")
-    @CfgName("guilds-enabled")
+    @Comment("Mozliwosc zakladania gildii. Mozna ja zmienic takze za pomoca komendy /ga enabled")
+    @CustomKey("guilds-enabled")
     public boolean guildsEnabled = true;
 
-    @CfgComment("Czy tworzenie regionow gildii, oraz inne zwiazane z nimi rzeczy, maja byc wlaczone")
-    @CfgComment("UWAGA - dobrze przemysl decyzje o wylaczeniu regionow!")
-    @CfgComment(
+    @Comment("Czy tworzenie regionow gildii, oraz inne zwiazane z nimi rzeczy, maja byc wlaczone")
+    @Comment("UWAGA - dobrze przemysl decyzje o wylaczeniu regionow!")
+    @Comment(
             "Gildie nie beda mialy w sobie zadnych informacji o regionach, a jesli regiony sa wlaczone - te informacje musza byc obecne")
-    @CfgComment("Jesli regiony mialyby byc znowu wlaczone - bedzie trzeba wykasowac WSZYSTKIE dane pluginu")
-    @CfgComment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
-    @CfgName("regions-enabled")
+    @Comment("Jesli regiony mialyby byc znowu wlaczone - bedzie trzeba wykasowac WSZYSTKIE dane pluginu")
+    @Comment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
+    @CustomKey("regions-enabled")
     public boolean regionsEnabled = true;
 
-    @CfgComment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
-    @CfgComment("Dziala tylko jesli regiony sa wlaczone")
-    @CfgName("water-and-lava-flow-only-for-regions")
+    @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
+    @Comment("Dziala tylko jesli regiony sa wlaczone")
+    @CustomKey("water-and-lava-flow-only-for-regions")
     public boolean blockFlow = false;
 
-    @CfgComment("Czy gracz po smierci ma sie pojawiac w bazie swojej gildii")
-    @CfgComment("Dziala tylko jesli regiony sa wlaczone")
-    @CfgName("respawn-in-base")
+    @Comment("Czy gracz po smierci ma sie pojawiac w bazie swojej gildii")
+    @Comment("Dziala tylko jesli regiony sa wlaczone")
+    @CustomKey("respawn-in-base")
     public boolean respawnInBase = true;
 
-    @CfgComment("Maksymalna dlugosc nazwy gildii")
-    @CfgName("name-length")
+    @Min(1)
+    @Comment("Maksymalna dlugosc nazwy gildii")
+    @CustomKey("name-length")
     public int createNameLength = 22;
 
-    @CfgComment("Minimalna dlugosc nazwy gildii")
-    @CfgName("name-min-length")
+    @Min(1)
+    @Comment("Minimalna dlugosc nazwy gildii")
+    @CustomKey("name-min-length")
     public int createNameMinLength = 4;
 
-    @CfgComment("Maksymalna dlugosc tagu gildii")
-    @CfgName("tag-length")
+    @Min(1)
+    @Comment("Maksymalna dlugosc tagu gildii")
+    @CustomKey("tag-length")
     public int createTagLength = 4;
 
-    @CfgComment("Minimalna dlugosc tagu gildii")
-    @CfgName("tag-min-length")
+    @Min(1)
+    @Comment("Minimalna dlugosc tagu gildii")
+    @CustomKey("tag-min-length")
     public int createTagMinLength = 2;
 
-    @CfgComment("Zasada sprawdzania nazwy gildii przy jej tworzeniu")
-    @CfgComment("Dostepne zasady:")
-    @CfgComment("LOWERCASE - umozliwia uzycie tylko malych liter")
-    @CfgComment("UPPERCASE - umozliwia uzycie tylko duzych liter")
-    @CfgComment("DIGITS - umozliwia uzycie tylko cyfr")
-    @CfgComment("LOWERCASE_DIGITS - umozliwia uzycie malych liter i cyfr")
-    @CfgComment("UPPERCASE_DIGITS - umozliwia uzycie duzych liter i cyfr")
-    @CfgComment("LETTERS - umozliwia uzycie malych i duzych liter")
-    @CfgComment("LETTERS_DIGITS - umozliwia uzycie malych i duzych liter oraz cyrf")
-    @CfgComment("LETTERS_DIGITS_UNDERSCORE - umozliwia uzycie malych i duzych liter, cyrf oraz podkreslnika")
-    @CfgName("name-regex")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String nameRegex_ = "LETTERS";
+    @Comment("Zasada sprawdzania nazwy gildii przy jej tworzeniu")
+    @Comment("Dostepne zasady:")
+    @Comment("LOWERCASE - umozliwia uzycie tylko malych liter")
+    @Comment("UPPERCASE - umozliwia uzycie tylko duzych liter")
+    @Comment("DIGITS - umozliwia uzycie tylko cyfr")
+    @Comment("LOWERCASE_DIGITS - umozliwia uzycie malych liter i cyfr")
+    @Comment("UPPERCASE_DIGITS - umozliwia uzycie duzych liter i cyfr")
+    @Comment("LETTERS - umozliwia uzycie malych i duzych liter")
+    @Comment("LETTERS_DIGITS - umozliwia uzycie malych i duzych liter oraz cyrf")
+    @Comment("LETTERS_DIGITS_UNDERSCORE - umozliwia uzycie malych i duzych liter, cyrf oraz podkreslnika")
+    @CustomKey("name-regex")
+    public GuildRegex nameRegex = GuildRegex.LETTERS;
 
-    @CfgExclude
-    public GuildRegex nameRegex;
+    @Comment("Zasada sprawdzania tagu gildii przy jej tworzeniu")
+    @Comment("Mozliwe zasady sa takie same jak w przypadku name-regex")
+    @CustomKey("tag-regex")
+    public GuildRegex tagRegex = GuildRegex.LETTERS;
 
-    @CfgComment("Zasada sprawdzania tagu gildii przy jej tworzeniu")
-    @CfgComment("Mozliwe zasady sa takie same jak w przypadku name-regex")
-    @CfgName("tag-regex")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String tagRegex_ = "LETTERS";
-
-    @CfgExclude
-    public GuildRegex tagRegex;
-
-    @CfgComment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
-    @CfgName("guild-min-members")
+    @Min(0)
+    @Comment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
+    @CustomKey("guild-min-members")
     public int minMembersToInclude = 1;
 
-    @CfgComment("Czy wiadomosci o braku potrzebnych przedmiotow maja zawierac elementy, na ktore mozna najechac")
-    @CfgComment("Takie elementy pokazuja informacje o przedmiocie, np. jego typ, nazwe czy opis")
-    @CfgComment("Funkcja jest obecnie troche niedopracowana i moze powodowac problemy na niektorych wersjach MC, np. 1.8.8")
-    @CfgName("enable-item-component")
+    @Comment("Czy wiadomosci o braku potrzebnych przedmiotow maja zawierac elementy, na ktore mozna najechac")
+    @Comment("Takie elementy pokazuja informacje o przedmiocie, np. jego typ, nazwe czy opis")
+    @Comment("Funkcja jest obecnie troche niedopracowana i moze powodowac problemy na niektorych wersjach MC, np. 1.8.8")
+    @CustomKey("enable-item-component")
     public boolean enableItemComponent = false;
 
-    @CfgComment("Przedmioty wymagane do zalozenia gildii")
-    @CfgComment("Tylko wartosci ujete w <> sa wymagane, reszta, ujeta w [], jest opcjonalna")
-    @CfgComment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant:eggtype:skullowner:armorcolor:flags]")
-    @CfgComment("Przyklad: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
-    @CfgComment("")
-    @CfgComment("Zamiast spacji wstawiaj podkreslnik: _")
-    @CfgComment("Aby zrobic nowa linie lore wstaw hash: #")
-    @CfgComment("Aby w lore uzyc znaku # wstaw {HASH}")
-    @CfgComment("")
-    @CfgComment("eggtype to typ jajka do spawnu moba, uzywane tylko gdy typem przedmiotu jest MONSTER_EGG")
-    @CfgComment("skullowner to nick gracza, ktorego glowa jest tworzona, uzywane tylko gdy typem przedmiotu jest SKULL_ITEM")
-    @CfgComment("armorcolor to kolor, w ktorym bedzie przedmiot, uzywane tylko gdy przedmiot jest czescia zbroi skorzanej")
-    @CfgComment("flags to flagi, ktore maja byc nalozone na przedmiot. Dostepne flagi: HIDE_ENCHANTS, HIDE_ATTRIBUTES, HIDE_UNBREAKABLE, HIDE_DESTROYS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS")
-    @CfgComment("Kolor musi byc podany w postaci: \"R_G_B\"")
-    @CfgComment("")
-    @CfgComment(
+    @Comment("Przedmioty wymagane do zalozenia gildii")
+    @Comment("Tylko wartosci ujete w <> sa wymagane, reszta, ujeta w [], jest opcjonalna")
+    @Comment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant:eggtype:skullowner:armorcolor:flags]")
+    @Comment("Przyklad: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
+    @Comment(" ")
+    @Comment("Zamiast spacji wstawiaj podkreslnik: _")
+    @Comment("Aby zrobic nowa linie lore wstaw hash: #")
+    @Comment("Aby w lore uzyc znaku # wstaw {HASH}")
+    @Comment(" ")
+    @Comment("eggtype to typ jajka do spawnu moba, uzywane tylko gdy typem przedmiotu jest MONSTER_EGG")
+    @Comment("skullowner to nick gracza, ktorego glowa jest tworzona, uzywane tylko gdy typem przedmiotu jest SKULL_ITEM")
+    @Comment("armorcolor to kolor, w ktorym bedzie przedmiot, uzywane tylko gdy przedmiot jest czescia zbroi skorzanej")
+    @Comment("flags to flagi, ktore maja byc nalozone na przedmiot. Dostepne flagi: HIDE_ENCHANTS, HIDE_ATTRIBUTES, HIDE_UNBREAKABLE, HIDE_DESTROYS, HIDE_PLACED_ON, HIDE_POTION_EFFECTS")
+    @Comment("Kolor musi byc podany w postaci: \"R_G_B\"")
+    @Comment(" ")
+    @Comment(
             "UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
-    @CfgComment(
+    @Comment(
             "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
-    @CfgName("items")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @CustomKey("items")
     public List<String> items_ = Arrays.asList("5 stone", "5 dirt", "5 tnt");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> createItems;
 
-    @CfgComment("Wymagana ilosc doswiadczenia do zalozenia gildii")
-    @CfgName("required-experience")
+    @Min(0)
+    @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii")
+    @CustomKey("required-experience")
     public int requiredExperience = 0;
 
-    @CfgComment("Wymagana ilosc pieniedzy do zalozenia gildii")
-    @CfgComment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
-    @CfgName("required-money")
+    @Min(0)
+    @Comment("Wymagana ilosc pieniedzy do zalozenia gildii")
+    @Comment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
+    @CustomKey("required-money")
     public double requiredMoney = 0;
 
-    @CfgComment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CfgName("items-vip")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
+    @CustomKey("items-vip")
     public List<String> itemsVip_ = Collections.singletonList("1 gold_ingot");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> createItemsVip;
 
-    @CfgComment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CfgName("required-experience-vip")
+    @Min(0)
+    @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
+    @CustomKey("required-experience-vip")
     public int requiredExperienceVip = 0;
 
-    @CfgComment("Wymagana ilosc pieniedzy do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CfgComment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
-    @CfgName("required-money-vip")
+    @Min(0)
+    @Comment("Wymagana ilosc pieniedzy do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
+    @Comment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
+    @CustomKey("required-money-vip")
     public double requiredMoneyVip = 0;
 
-    @CfgComment("Czy opcja wymaganego rankingu do zalozenia gildii ma byc wlaczona?")
-    @CfgName("rank-create-enable")
+    @Comment("Czy opcja wymaganego rankingu do zalozenia gildii ma byc wlaczona?")
+    @CustomKey("rank-create-enable")
     public boolean rankCreateEnable = true;
 
-    @CfgComment("Minimalny ranking wymagany do zalozenia gildii")
-    @CfgName("rank-create")
+    @Comment("Minimalny ranking wymagany do zalozenia gildii")
+    @CustomKey("rank-create")
     public int rankCreate = 1000;
 
-    @CfgComment("Minimalny ranking wymagany do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.rank")
-    @CfgName("rank-create-vip")
+    @Comment("Minimalny ranking wymagany do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.rank")
+    @CustomKey("rank-create-vip")
     public int rankCreateVip = 800;
 
-    @CfgComment("Czy GUI z przedmiotami na gildie ma byc wspolne dla wszystkich?")
-    @CfgComment(
+    @Comment("Czy GUI z przedmiotami na gildie ma byc wspolne dla wszystkich?")
+    @Comment(
             "Jesli wlaczone - wszyscy gracze beda widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip bedzie ignorowane")
-    @CfgName("use-common-gui")
+    @CustomKey("use-common-gui")
     public boolean useCommonGUI = false;
 
-    @CfgComment("GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
-    @CfgComment("Jesli wlaczone jest use-common-gui - ponizsze GUI jest uzywane takze dla osob z uprawnieniem funnyguilds.vip.items")
-    @CfgComment(
+    @Comment("GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
+    @Comment("Jesli wlaczone jest use-common-gui - ponizsze GUI jest uzywane takze dla osob z uprawnieniem funnyguilds.vip.items")
+    @Comment(
             "Kazda linijka listy oznacza jeden slot, liczba slotow powinna byc wielokrotnoscia liczby 9 i nie powinna byc wieksza niz 54")
-    @CfgComment(
+    @Comment(
             "Aby uzyc przedmiotu stworzonego w jednym slocie w innym mozna uzyc {GUI-nr}, np. {GUI-1} wstawi ten sam przedmiot, ktory jest w pierwszym slocie")
-    @CfgComment("Aby wstawic przedmiot na gildie nalezy uzyc {ITEM-nr}, np. {ITEM-1} wstawi pierwszy przedmiot na gildie")
-    @CfgComment("Aby wstawic przedmiot na gildie z listy vip nalezy uzyc {VIPITEM-nr}")
-    @CfgName("gui-items")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Aby wstawic przedmiot na gildie nalezy uzyc {ITEM-nr}, np. {ITEM-1} wstawi pierwszy przedmiot na gildie")
+    @Comment("Aby wstawic przedmiot na gildie z listy vip nalezy uzyc {VIPITEM-nr}")
+    @CustomKey("gui-items")
     public List<String> guiItems_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
             "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{ITEM-1}", "{ITEM-2}", "{ITEM-3}", "{GUI-1}",
             "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> guiItems;
 
-    @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
-    @CfgComment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
-    @CfgName("gui-items-title")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
+    @Comment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
+    @CustomKey("gui-items-title")
     public String guiItemsTitle_ = "&5&lPrzedmioty na gildie";
 
-    @CfgExclude
+    @Exclude
     public String guiItemsTitle;
 
-    @CfgComment("GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
-    @CfgComment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
-    @CfgComment("Ponizsze GUI bedzie ignorowane jesli wlaczone jest use-common-gui")
-    @CfgName("gui-items-vip")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
+    @Comment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
+    @Comment("Ponizsze GUI bedzie ignorowane jesli wlaczone jest use-common-gui")
+    @CustomKey("gui-items-vip")
     public List<String> guiItemsVip_ = Arrays.asList("1 glass name:&r", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}",
             "{GUI-1}", "{GUI-1}", "{GUI-1}", "1 paper name:&b&lItemy_na_gildie", "{GUI-1}", "{GUI-1}", "{VIPITEM-1}", "{GUI-3}", "{GUI-1}",
             "{GUI-11}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}", "{GUI-1}");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> guiItemsVip;
 
-    @CfgComment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
-    @CfgComment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
-    @CfgName("gui-items-vip-title")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
+    @Comment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
+    @CustomKey("gui-items-vip-title")
     public String guiItemsVipTitle_ = "&5&lPrzedmioty na gildie (VIP)";
 
-    @CfgExclude
+    @Exclude
     public String guiItemsVipTitle;
 
-    @CfgComment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
-    @CfgComment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
-    @CfgComment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
-    @CfgComment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby. (np. golden_apple)")
-    @CfgName("gui-items-name")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
+    @Comment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
+    @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
+    @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby. (np. golden_apple)")
+    @CustomKey("gui-items-name")
     public String guiItemsName_ = "&7>> &a{ITEM-NO-AMOUNT} &7<<";
 
-    @CfgExclude
+    @Exclude
     public String guiItemsName;
 
-    @CfgComment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
-    @CfgComment("Linie te mozna ustawic ponizej")
-    @CfgName("add-lore-lines")
+    @Comment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
+    @Comment("Linie te mozna ustawic ponizej")
+    @CustomKey("add-lore-lines")
     public boolean addLoreLines = true;
 
-    @CfgComment("Dodatkowe linie opisu, dodawane do kazdego przedmiotu, ktory jest jednoczesnie przedmiotem na gildie")
-    @CfgComment("Dodawane linie nie zaleza od otwieranego GUI - sa wspolne dla zwyklego i VIP")
-    @CfgComment("Mozliwe do uzycia zmienne:")
-    @CfgComment("{REQ-AMOUNT} - calkowita wymagana ilosc przedmiotu")
-    @CfgComment("{PINV-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie")
-    @CfgComment("{PINV-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie")
-    @CfgComment("{EC-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma w enderchescie")
-    @CfgComment("{EC-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma w enderchescie")
-    @CfgComment("{ALL-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie i w enderchescie")
-    @CfgComment("{ALL-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
-    @CfgName("gui-items-lore")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Dodatkowe linie opisu, dodawane do kazdego przedmiotu, ktory jest jednoczesnie przedmiotem na gildie")
+    @Comment("Dodawane linie nie zaleza od otwieranego GUI - sa wspolne dla zwyklego i VIP")
+    @Comment("Mozliwe do uzycia zmienne:")
+    @Comment("{REQ-AMOUNT} - calkowita wymagana ilosc przedmiotu")
+    @Comment("{PINV-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie")
+    @Comment("{PINV-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie")
+    @Comment("{EC-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma w enderchescie")
+    @Comment("{EC-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma w enderchescie")
+    @Comment("{ALL-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie i w enderchescie")
+    @Comment("{ALL-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
+    @CustomKey("gui-items-lore")
     public List<String> guiItemsLore_ = Arrays.asList("", "&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
             "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
 
-    @CfgExclude
+    @Exclude
     public List<String> guiItemsLore;
 
-    @CfgComment("Minimalna odleglosc od spawnu")
-    @CfgName("create-distance")
+    @Comment("Minimalna odleglosc od spawnu")
+    @CustomKey("create-distance")
     public int createDistance = 100;
 
-    @CfgComment("Minimalna odleglosc od granicy mapy, na ktorej znajduje sie gracz")
-    @CfgName("create-guild-min-distance")
+    @Comment("Minimalna odleglosc od regionu gildii do granicy mapy")
+    @CustomKey("create-guild-min-distance")
     public double createMinDistanceFromBorder = 50;
 
-    @CfgComment("Blok lub entity, ktore jest sercem gildii")
-    @CfgComment("Zmiana entity wymaga pelnego restartu serwera")
-    @CfgComment("Bloki musza byc podawane w formacie - material:metadata")
-    @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
-    @CfgComment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
-    @CfgComment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
-    @CfgComment(" ")
-    @CfgComment("UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
-    @CfgComment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie odczytywal go poprawnie!")
-    @CfgName("create-type")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Blok lub entity, ktore jest sercem gildii")
+    @Comment("Zmiana entity wymaga pelnego restartu serwera")
+    @Comment("Bloki musza byc podawane w formacie - material:metadata")
+    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
+    @Comment("Typ entity musi byc zgodny z ta lista (i zdrowym rozsadkiem) - https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
+    @Comment("UWAGA: Zmiana bloku, gdy sa juz zrobione jakies gildie, spowoduje niedzialanie ich regionow")
+    @Comment(" ")
+    @Comment("UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
+    @Comment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie odczytywal go poprawnie!")
+    @CustomKey("create-type")
     public String createType = "ender_crystal";
-    @CfgExclude
+    @Exclude
     public Pair<Material, Byte> createMaterial;
-    @CfgExclude
+    @Exclude
     public EntityType createEntityType;
 
-    @CfgComment("Na jakim poziomie ma byc wyznaczone centrum gildii")
-    @CfgComment("Wpisz 0 jesli ma byc ustalone przez pozycje gracza")
-    @CfgName("create-center-y")
+    @Comment("Na jakim poziomie ma byc wyznaczone centrum gildii")
+    @Comment("Wpisz 0 jesli ma byc ustalone przez pozycje gracza")
+    @CustomKey("create-center-y")
     public int createCenterY = 60;
 
-    @CfgComment("Czy ma sie tworzyc kula z obsydianu dookola centrum gildii")
-    @CfgName("create-center-sphere")
+    @Comment("Czy ma sie tworzyc kula z obsydianu dookola centrum gildii")
+    @CustomKey("create-center-sphere")
     public boolean createCenterSphere = true;
 
-    @CfgComment("Czy przy tworzeniu gildii powinien byc wklejany schemat")
-    @CfgComment("Wklejenie schematu wymaga pluginu WorldEdit")
-    @CfgName("paste-schematic-on-creation")
+    @Comment("Czy przy tworzeniu gildii powinien byc wklejany schemat")
+    @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
+    @CustomKey("paste-schematic-on-creation")
     public boolean pasteSchematicOnCreation = false;
 
-    @CfgComment("Nazwa pliku ze schematem poczatkowym gildii")
-    @CfgComment("Wklejenie schematu wymaga pluginu WorldEdit")
-    @CfgComment("Schemat musi znajdować się w folderze FunnyGuilds")
-    @CfgName("guild-schematic-file-name")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Nazwa pliku ze schematem poczatkowym gildii")
+    @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
+    @Comment("Schemat musi znajdować się w folderze FunnyGuilds")
+    @CustomKey("guild-schematic-file-name")
     public String guildSchematicFileName = "funnyguilds.schematic";
 
-    @CfgComment("Czy schemat przy tworzeniu gildii powinien byc wklejany razem z powietrzem?")
-    @CfgComment("Przy duzych schematach ma to wplyw na wydajnosc")
-    @CfgComment("Wklejenie schematu wymaga pluginu WorldEdit")
-    @CfgName("paste-schematic-with-air")
+    @Comment("Czy schemat przy tworzeniu gildii powinien byc wklejany razem z powietrzem?")
+    @Comment("Przy duzych schematach ma to wplyw na wydajnosc")
+    @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
+    @CustomKey("paste-schematic-with-air")
     public boolean pasteSchematicWithAir = true;
 
-    @CfgExclude
+    @Exclude
     public File guildSchematicFile;
 
-    @CfgComment("Typy blokow, z ktorymi osoba spoza gildii NIE moze prowadzic interakcji na terenie innej gildii")
-    @CfgName("blocked-interact")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Typy blokow, z ktorymi osoba spoza gildii NIE moze prowadzic interakcji na terenie innej gildii")
+    @CustomKey("blocked-interact")
     public List<String> _blockedInteract = Arrays.asList("CHEST", "TRAPPED_CHEST");
-    @CfgExclude
+    @Exclude
     public Set<Material> blockedInteract;
 
-    @CfgComment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
-    @CfgName("bugged-blocks")
+    @Comment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
+    @CustomKey("bugged-blocks")
     public boolean buggedBlocks = false;
 
-    @CfgComment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete")
-    @CfgComment("Czas podawany w tickach. 1 sekunda = 20 tickow")
-    @CfgName("bugged-blocks-timer")
+    @Min(0)
+    @Comment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete")
+    @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
+    @CustomKey("bugged-blocks-timer")
     public long buggedBlocksTimer = 20L;
 
-    @CfgComment("Bloki, ktorych nie mozna 'bugowac'")
-    @CfgComment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
-    @CfgName("bugged-blocks-exclude")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Bloki, ktorych nie mozna 'bugowac'")
+    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
+    @CustomKey("bugged-blocks-exclude")
     public List<String> buggedBlocksExclude_ = Arrays.asList(
             // Ban basic
             "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
@@ -414,164 +390,164 @@ public class PluginConfiguration {
             "TRAPPED_CHEST", "CHEST"
     );
 
-    @CfgExclude
+    @Exclude
     public Set<Material> buggedBlocksExclude;
 
-    @CfgComment("Czy klocki po 'zbugowaniu' maja zostac oddane")
-    @CfgName("bugged-blocks-return")
+    @Comment("Czy klocki po 'zbugowaniu' maja zostac oddane")
+    @CustomKey("bugged-blocks-return")
     public boolean buggedBlockReturn = false;
 
-    @CfgComment("Maksymalna liczba czlonkow w gildii")
-    @CfgName("max-members")
+    @Min(1)
+    @Comment("Maksymalna liczba czlonkow w gildii")
+    @CustomKey("max-members")
     public int maxMembersInGuild = 15;
 
-    @CfgComment("Maksymalna liczba sojuszy miedzy gildiami")
-    @CfgName("max-allies")
+    @Min(0)
+    @Comment("Maksymalna liczba sojuszy miedzy gildiami")
+    @CustomKey("max-allies")
     public int maxAlliesBetweenGuilds = 15;
 
-    @CfgComment("Maksymalna liczba wojen miedzy gildiami")
-    @CfgName("max-enemies")
+    @Min(0)
+    @Comment("Maksymalna liczba wojen miedzy gildiami")
+    @CustomKey("max-enemies")
     public int maxEnemiesBetweenGuilds = 15;
 
-    @CfgComment("Lista nazw swiatow, na ktorych mozliwosc utworzenia gildii powinna byc zablokowana")
-    @CfgName("blocked-worlds")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Lista nazw swiatow, na ktorych mozliwosc utworzenia gildii powinna byc zablokowana")
+    @CustomKey("blocked-worlds")
     public List<String> blockedWorlds = Collections.singletonList("some_world");
 
-    @CfgComment("Mozliwosc ucieczki z terenu innej gildii")
-    @CfgComment("Funkcja niedostepna jesli mozliwosc teleportacji do gildii jest wylaczona")
-    @CfgName("escape-enable")
+    @Comment("Mozliwosc ucieczki z terenu innej gildii")
+    @Comment("Funkcja niedostepna jesli mozliwosc teleportacji do gildii jest wylaczona")
+    @CustomKey("escape-enable")
     public boolean escapeEnable = true;
 
-    @CfgComment("Czas, w sekundach, jaki musi uplynac od wlaczenia ucieczki do teleportacji")
-    @CfgName("escape-delay")
+    @Min(0)
+    @Comment("Czas, w sekundach, jaki musi uplynac od wlaczenia ucieczki do teleportacji")
+    @CustomKey("escape-delay")
     public int escapeDelay = 120;
 
-    @CfgComment("Mozliwosc ucieczki na spawn dla graczy bez gildii")
-    @CfgName("escape-spawn")
+    @Comment("Mozliwosc ucieczki na spawn dla graczy bez gildii")
+    @CustomKey("escape-spawn")
     public boolean escapeSpawn = true;
 
-    @CfgComment("Mozliwosc teleportacji do gildii")
-    @CfgName("base-enable")
+    @Comment("Mozliwosc teleportacji do gildii")
+    @CustomKey("base-enable")
     public boolean baseEnable = true;
 
-    @CfgComment("Czas oczekiwania na teleportacje, w sekundach")
-    @CfgName("base-delay")
+    @Min(0)
+    @Comment("Czas oczekiwania na teleportacje, w sekundach")
+    @CustomKey("base-delay")
     public int baseDelay = 5;
 
-    @CfgComment("Czas oczekiwania na teleportacje, w sekundach, dla graczy posiadajacych uprawnienie funnyguilds.vip.baseTeleportTime")
-    @CfgName("base-delay-vip")
+    @Min(0)
+    @Comment("Czas oczekiwania na teleportacje, w sekundach, dla graczy posiadajacych uprawnienie funnyguilds.vip.baseTeleportTime")
+    @CustomKey("base-delay-vip")
     public int baseDelayVip = 3;
 
-    @CfgComment("Koszt teleportacji do gildii. Jezeli teleportacja ma byc darmowa, wystarczy wpisac: base-items: []")
-    @CfgName("base-items")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Koszt teleportacji do gildii. Jezeli teleportacja ma byc darmowa, wystarczy wpisac: base-items: []")
+    @CustomKey("base-items")
     public List<String> baseItems_ = Arrays.asList("1 diamond", "1 emerald");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> baseItems;
 
-    @CfgComment("Koszt dolaczenia do gildii. Jezeli dolaczenie ma byc darmowe, wystarczy wpisac: join-items: []")
-    @CfgName("join-items")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Koszt dolaczenia do gildii. Jezeli dolaczenie ma byc darmowe, wystarczy wpisac: join-items: []")
+    @CustomKey("join-items")
     public List<String> joinItems_ = Collections.singletonList("1 diamond");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> joinItems;
 
-    @CfgComment("Mozliwosc powiekszania gildii")
-    @CfgName("enlarge-enable")
+    @Comment("Mozliwosc powiekszania gildii")
+    @CustomKey("enlarge-enable")
     public boolean enlargeEnable = true;
 
-    @CfgComment("O ile powieksza teren gildii 1 poziom")
-    @CfgName("enlarge-size")
+    @Comment("O ile powieksza teren gildii 1 poziom")
+    @CustomKey("enlarge-size")
     public int enlargeSize = 5;
 
-    @CfgComment("Koszt powiekszania gildii")
-    @CfgComment("- kazdy myslnik, to 1 poziom gildii")
-    @CfgName("enlarge-items")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Koszt powiekszania gildii")
+    @Comment("- kazdy myslnik, to 1 poziom gildii")
+    @CustomKey("enlarge-items")
     public List<String> enlargeItems_ = Arrays.asList("8 diamond", "16 diamond", "24 diamond", "32 diamond", "40 diamond", "48 diamond", "56 diamond", "64 diamond", "72 diamond", "80 diamond");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> enlargeItems;
 
-    @CfgComment("Wielkosc regionu gildii")
-    @CfgName("region-size")
+    @Min(1)
+    @Comment("Wielkosc regionu gildii")
+    @CustomKey("region-size")
     public int regionSize = 50;
 
-    @CfgComment("Minimalna odleglosc miedzy terenami gildii")
-    @CfgName("region-min-distance")
+    @Min(0)
+    @Comment("Minimalna odleglosc miedzy terenami gildii")
+    @CustomKey("region-min-distance")
     public int regionMinDistance = 10;
 
-    @CfgComment("Czas wyswietlania powiadomienia na pasku powiadomien, w sekundach")
-    @CfgName("region-notification-time")
+    @Min(1)
+    @Comment("Czas wyswietlania powiadomienia na pasku powiadomien, w sekundach")
+    @CustomKey("region-notification-time")
     public int regionNotificationTime = 15;
 
-    @CfgComment("Co ile moze byc wywolywany pasek powiadomien przez jednego gracza, w sekundach")
-    @CfgName("region-notification-cooldown")
+    @Min(1)
+    @Comment("Co ile moze byc wywolywany pasek powiadomien przez jednego gracza, w sekundach")
+    @CustomKey("region-notification-cooldown")
     public int regionNotificationCooldown = 60;
 
-    @CfgComment("Blokowane komendy dla graczy spoza gildii na jej terenie")
-    @CfgName("region-commands")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Blokowane komendy dla graczy spoza gildii na jej terenie")
+    @CustomKey("region-commands")
     public List<String> regionCommands = Collections.singletonList("sethome");
 
-    @CfgComment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
-    @CfgName("guild-delete-cancel-if-someone-is-on-region")
+    @Comment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
+    @CustomKey("guild-delete-cancel-if-someone-is-on-region")
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
 
-    @CfgComment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
-    @CfgName("guild-tnt-protection-enabled")
+    @Comment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
+    @CustomKey("guild-tnt-protection-enabled")
     public boolean guildTNTProtectionEnabled = false;
 
-    @CfgComment("Czy wlaczyc ochrone przed TNT na całym serwerze w podanych godzinach")
-    @CfgName("guild-tnt-protection-global")
+    @Comment("Czy wlaczyc ochrone przed TNT na całym serwerze w podanych godzinach")
+    @CustomKey("guild-tnt-protection-global")
     public boolean guildTNTProtectionGlobal = false;
 
-    @CfgComment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
-    @CfgComment("Godzina w formacie HH:mm")
-    @CfgName("guild-tnt-protection-start-time")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
+    @Comment("Godzina w formacie HH:mm")
+    @CustomKey("guild-tnt-protection-start-time")
     public String guildTNTProtectionStartTime_ = "22:00";
-    @CfgExclude
+    @Exclude
     public LocalTime guildTNTProtectionStartTime;
 
-    @CfgComment("Do której godziny ma dzialac ochrona przed TNT w gildii")
-    @CfgComment("Godzina w formacie HH:mm")
-    @CfgName("guild-tnt-protection-end-time")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Do której godziny ma dzialac ochrona przed TNT w gildii")
+    @Comment("Godzina w formacie HH:mm")
+    @CustomKey("guild-tnt-protection-end-time")
     public String guildTNTProtectionEndTime_ = "06:00";
-    @CfgExclude
+    @Exclude
     public LocalTime guildTNTProtectionEndTime;
-    @CfgExclude
+    @Exclude
     public boolean guildTNTProtectionPassingMidnight;
 
-    @CfgComment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
-    @CfgName("region-explode")
+    @Min(0)
+    @Comment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
+    @CustomKey("region-explode")
     public int regionExplode = 120;
 
-    @CfgComment("Czy blokada po wybuchu ma obejmowac rowniez budowanie")
-    @CfgName("region-explode-block-breaking")
+    @Comment("Czy blokada po wybuchu ma obejmowac rowniez budowanie")
+    @CustomKey("region-explode-block-breaking")
     public boolean regionExplodeBlockBreaking = false;
 
-    @CfgComment("Czy blokada po wybuchu ma obejmowac rowniez interakcje z blocked-interact")
-    @CfgName("region-explode-block-interactions")
+    @Comment("Czy blokada po wybuchu ma obejmowac rowniez interakcje z blocked-interact")
+    @CustomKey("region-explode-block-interactions")
     public boolean regionExplodeBlockInteractions = false;
 
-    @CfgComment("Zasieg pobieranych przedmiotow po wybuchu. Jezeli chcesz wylaczyc, wpisz 0")
-    @CfgName("explode-radius")
+    @Min(0)
+    @Comment("Zasieg pobieranych przedmiotow po wybuchu. Jezeli chcesz wylaczyc, wpisz 0")
+    @CustomKey("explode-radius")
     public int explodeRadius = 3;
 
-    @CfgComment("Jakie materialy i z jaka szansa maja byc niszczone po wybuchu")
-    @CfgComment("<material>: <szansa (w %)")
-    @CfgComment("Jeżeli wszystkie materialy maja miec okreslony % na wybuch, uzyj specjalnego znaku '*'")
-    @CfgName("explode-materials")
+    @Comment("Jakie materialy i z jaka szansa maja byc niszczone po wybuchu")
+    @Comment("<material>: <szansa (w %)")
+    @Comment("Jeżeli wszystkie materialy maja miec okreslony % na wybuch, uzyj specjalnego znaku '*'")
+    @CustomKey("explode-materials")
     public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
             "ender_chest", 20.0,
             "enchantment_table", 20.0,
@@ -579,476 +555,452 @@ public class PluginConfiguration {
             "water", 33.0,
             "lava", 33.0
     );
-    @CfgExclude
+    @Exclude
     public Map<Material, Double> explodeMaterials;
-    @CfgExclude
+    @Exclude
     public boolean allMaterialsAreExplosive;
-    @CfgExclude
+    @Exclude
     public double defaultExplodeChance = -1.0;
 
-    @CfgComment("Czy powstale wybuchy powinny niszczyc bloki wylacznie na terenach gildii")
-    @CfgName("explode-should-affect-only-guild")
+    @Comment("Czy powstale wybuchy powinny niszczyc bloki wylacznie na terenach gildii")
+    @CustomKey("explode-should-affect-only-guild")
     public boolean explodeShouldAffectOnlyGuild = false;
 
-    @CfgComment("Możliwość podbijania gildii")
-    @CfgName("war-enabled")
+    @Comment("Możliwość podbijania gildii")
+    @CustomKey("war-enabled")
     public boolean warEnabled = true;
 
-    @CfgComment("Ile zyc ma gildia")
-    @CfgName("war-lives")
+    @Min(1)
+    @Comment("Ile zyc ma gildia")
+    @CustomKey("war-lives")
     public int warLives = 3;
 
-    @CfgComment("Po jakim czasie od zalozenia mozna zaatakowac gildie")
-    @CfgName("war-protection")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Po jakim czasie od zalozenia mozna zaatakowac gildie")
+    @CustomKey("war-protection")
     public String warProtection_ = "24h";
-    @CfgExclude
+    @Exclude
     public long warProtection;
 
-    @CfgComment("Ile czasu trzeba czekac do nastepnego ataku na gildie")
-    @CfgName("war-wait")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Ile czasu trzeba czekac do nastepnego ataku na gildie")
+    @CustomKey("war-wait")
     public String warWait_ = "24h";
-    @CfgExclude
+    @Exclude
     public long warWait;
 
-    @CfgComment("Czy gildia podczas okresu ochronnego ma posiadac ochrone przeciw TNT")
-    @CfgName("war-tnt-protection")
+    @Comment("Czy gildia podczas okresu ochronnego ma posiadac ochrone przeciw TNT")
+    @CustomKey("war-tnt-protection")
     public boolean warTntProtection = true;
 
-    @CfgComment("Czy zwierzeta na terenie gildii maja byc chronione przed osobami spoza gildii")
-    @CfgName("animals-protection")
+    @Comment("Czy zwierzeta na terenie gildii maja byc chronione przed osobami spoza gildii")
+    @CustomKey("animals-protection")
     public boolean animalsProtection = false;
 
-    @CfgComment("Jaka waznosc ma gildia po jej zalozeniu")
-    @CfgName("validity-start")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Jaka waznosc ma gildia po jej zalozeniu")
+    @CustomKey("validity-start")
     public String validityStart_ = "14d";
 
-    @CfgExclude
+    @Exclude
     public long validityStart;
 
-    @CfgComment("Ile czasu dodaje przedluzenie gildii")
-    @CfgName("validity-time")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Ile czasu dodaje przedluzenie gildii")
+    @CustomKey("validity-time")
     public String validityTime_ = "14d";
 
-    @CfgExclude
+    @Exclude
     public long validityTime;
 
-    @CfgComment("Ile dni przed koncem wygasania mozna przedluzyc gildie. Wpisz 0, jezeli funkcja ma byc wylaczona")
-    @CfgName("validity-when")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Ile dni przed koncem wygasania mozna przedluzyc gildie. Wpisz 0, jezeli funkcja ma byc wylaczona")
+    @CustomKey("validity-when")
     public String validityWhen_ = "14d";
-    @CfgExclude
+    @Exclude
     public long validityWhen;
 
-    @CfgComment("Koszt przedluzenia gildii")
-    @CfgName("validity-items")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Koszt przedluzenia gildii")
+    @CustomKey("validity-items")
     public List<String> validityItems_ = Collections.singletonList("10 diamond");
-    @CfgExclude
+    @Exclude
     public List<ItemStack> validityItems;
 
-    @CfgComment("Czy wiadomosc o zabiciu gracza powinna byc pokazywana wszystkim")
-    @CfgComment("Jesli wylaczone - bedzie pokazywana tylko graczom, ktorzy brali udzial w walce")
-    @CfgName("broadcast-death-message")
+    @Comment("Czy wiadomosc o zabiciu gracza powinna byc pokazywana wszystkim")
+    @Comment("Jesli wylaczone - bedzie pokazywana tylko graczom, ktorzy brali udzial w walce")
+    @CustomKey("broadcast-death-message")
     public boolean broadcastDeathMessage = true;
 
-    @CfgComment("Czy wiadomosc o zabiciu gracza powinna byc wyswietlana bez wzgledu na wylaczone wiadomosci o smierci")
-    @CfgName("ignore-death-messages-disabled")
+    @Comment("Czy wiadomosc o zabiciu gracza powinna byc wyswietlana bez wzgledu na wylaczone wiadomosci o smierci")
+    @CustomKey("ignore-death-messages-disabled")
     public boolean ignoreDisabledDeathMessages = false;
 
-    @CfgComment("Ranking od ktorego rozpoczyna gracz")
-    @CfgName("rank-start")
+    @Comment("Ranking od ktorego rozpoczyna gracz")
+    @CustomKey("rank-start")
     public int rankStart = 1000;
 
-    @CfgComment("Czy blokada nabijania rankingu na tych samych osobach powinna byc wlaczona")
-    @CfgName("rank-farming-protect")
+    @Comment("Czy blokada nabijania rankingu na tych samych osobach powinna byc wlaczona")
+    @CustomKey("rank-farming-protect")
     public boolean rankFarmingProtect = true;
 
-    @CfgComment("Czy ostatni gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
-    @CfgName("rank-farming-last-attacker-as-killer")
+    @Comment("Czy ostatni gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @CustomKey("rank-farming-last-attacker-as-killer")
     public boolean considerLastAttackerAsKiller = false;
 
-    @CfgComment("Przez ile sekund gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
-    @CfgName("rank-farming-consideration-timeout")
+    @Min(0)
+    @Comment("Przez ile sekund gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @CustomKey("rank-farming-consideration-timeout")
     public int lastAttackerAsKillerConsiderationTimeout = 30;
 
-    @CfgExclude
+    @Exclude
     public long lastAttackerAsKillerConsiderationTimeout_;
 
-    @CfgComment("Czas w sekundach blokady nabijania rankingu po walce dwoch osob")
-    @CfgName("rank-farming-cooldown")
+    @Min(0)
+    @Comment("Czas w sekundach blokady nabijania rankingu po walce dwoch osob")
+    @CustomKey("rank-farming-cooldown")
     public int rankFarmingCooldown = 7200;
 
-    @CfgComment("Czy ma byc zablokowana zmiana rankingu, jesli obie osoby z walki maja taki sam adres IP")
-    @CfgName("rank-ip-protect")
+    @Comment("Czy ma byc zablokowana zmiana rankingu, jesli obie osoby z walki maja taki sam adres IP")
+    @CustomKey("rank-ip-protect")
     public boolean rankIPProtect = false;
 
-    @CfgComment("Czy gracze z uprawnieniem 'funnyguilds.ranking.exempt' powinni byc uwzglednieni przy wyznaczaniu pozycji gracza w rankingu")
-    @CfgName("skip-privileged-players-in-rank-positions")
+    @Comment("Czy gracze z uprawnieniem 'funnyguilds.ranking.exempt' powinni byc uwzglednieni przy wyznaczaniu pozycji gracza w rankingu")
+    @CustomKey("skip-privileged-players-in-rank-positions")
     public boolean skipPrivilegedPlayersInRankPositions = false;
 
-    @CfgComment("Co ile ticków ranking graczy oraz gildii powinien zostać odświeżony")
-    @CfgName("ranking-update-interval")
+    @Min(1)
+    @Comment("Co ile ticków ranking graczy oraz gildii powinien zostać odświeżony")
+    @CustomKey("ranking-update-interval")
     public int rankingUpdateInterval = 40;
 
-    @CfgExclude
+    @Exclude
     public long rankingUpdateInterval_;
 
-    @CfgComment("Czy system asyst ma byc wlaczony")
-    @CfgName("rank-assist-enable")
+    @Comment("Czy system asyst ma byc wlaczony")
+    @CustomKey("rank-assist-enable")
     public boolean assistEnable = true;
 
-    @CfgComment("Limit asyst. Wpisz liczbe ujemna aby wylaczyc")
-    @CfgName("assists-limit")
+    @Min(-1)
+    @Comment("Limit asyst. Wpisz liczbe ujemna aby wylaczyc")
+    @CustomKey("assists-limit")
     public int assistsLimit = - 1;
 
-    @CfgComment("Jaka czesc rankingu za zabicie idzie na konto zabojcy")
-    @CfgComment("1 to caly ranking, 0 to nic")
-    @CfgComment("Reszta rankingu rozdzielana jest miedzy osoby asystujace w zaleznosci od zadanych obrazen")
-    @CfgName("rank-assist-killer-share")
+    @DecimalMin("0")
+    @DecimalMax("1")
+    @Comment("Jaka czesc rankingu za zabicie idzie na konto zabojcy")
+    @Comment("1 to caly ranking, 0 to nic")
+    @Comment("Reszta rankingu rozdzielana jest miedzy osoby asystujace w zaleznosci od zadanych obrazen")
+    @CustomKey("rank-assist-killer-share")
     public double assistKillerShare = 0.5;
 
-    @CfgComment("Na jakich regionach ma ignorowac nadawanie asyst")
-    @CfgComment("UWAGA: Wymagany plugin WorldGuard")
-    @CfgName("assists-regions-ignored")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Na jakich regionach ma ignorowac nadawanie asyst")
+    @Comment("UWAGA: Wymagany plugin WorldGuard")
+    @CustomKey("assists-regions-ignored")
     public List<String> assistsRegionsIgnored = Collections.singletonList("spawnGuildHeart");
 
-    @CfgComment("System rankingowy uzywany przez plugin, do wyboru:")
-    @CfgComment("ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")
-    @CfgComment("PERCENT - system, ktory obu graczom zabiera procent rankingu osoby zabitej")
-    @CfgComment("STATIC - system, ktory zawsze zabiera iles rankingu zabijajacemu i iles zabitemu")
-    @CfgName("rank-system")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String rankSystem_ = "ELO";
+    @Comment("System rankingowy uzywany przez plugin, do wyboru:")
+    @Comment("ELO - system bazujacy na rankingu szachowym ELO, najlepiej zbalansowany ze wszystkich trzech")
+    @Comment("PERCENT - system, ktory obu graczom zabiera procent rankingu osoby zabitej")
+    @Comment("STATIC - system, ktory zawsze zabiera iles rankingu zabijajacemu i iles zabitemu")
+    @CustomKey("rank-system")
+    public RankSystem rankSystem = RankSystem.ELO;
 
-    @CfgExclude
-    public RankSystem rankSystem;
-
-    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
-    @CfgComment(
+    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
+    @Comment(
             "Lista stalych obliczen rankingowych ELO, uzywanych przy zmianach rankingu - im mniejsza stala, tym mniejsze zmiany rankingu")
-    @CfgComment("Stale okreslaja tez o ile maksymalnie moze zmienic sie ranking pochodzacy z danego przedzialu")
-    @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
-    @CfgComment("Elementy listy powinny byc postaci: \"minRank-maxRank stala\", np.: \"0-1999 32\"")
-    @CfgComment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"2401-* 16\"")
-    @CfgName("elo-constants")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Stale okreslaja tez o ile maksymalnie moze zmienic sie ranking pochodzacy z danego przedzialu")
+    @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
+    @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank stala\", np.: \"0-1999 32\"")
+    @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"2401-* 16\"")
+    @CustomKey("elo-constants")
     public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
 
-    @CfgExclude
+    @Exclude
     public Map<IntegerRange, Integer> eloConstants;
 
-    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
-    @CfgComment("Dzielnik obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
-    @CfgComment("Dzielnik powinien byc liczba dodatnia, niezerowa")
-    @CfgName("elo-divider")
+    @DecimalMin("0.00001")
+    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
+    @Comment("Dzielnik obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
+    @Comment("Dzielnik powinien byc liczba dodatnia, niezerowa")
+    @CustomKey("elo-divider")
     public double eloDivider = 400.0D;
 
-    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
-    @CfgComment("Wykladnik potegi obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
-    @CfgComment("Wykladnik powinien byc liczba dodatnia, niezerowa")
-    @CfgName("elo-exponent")
+    @DecimalMin("0.00001")
+    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
+    @Comment("Wykladnik potegi obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
+    @Comment("Wykladnik powinien byc liczba dodatnia, niezerowa")
+    @CustomKey("elo-exponent")
     public double eloExponent = 10.0D;
 
-    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest PERCENT!")
-    @CfgComment("Procent rankingu osoby zabitej o jaki zmienia sie rankingi po walce")
-    @CfgName("percent-rank-change")
+    @DecimalMin("0")
+    @DecimalMax("1")
+    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest PERCENT!")
+    @Comment("Procent rankingu osoby zabitej o jaki zmienia sie rankingi po walce")
+    @CustomKey("percent-rank-change")
     public double percentRankChange = 1.0;
 
-    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
-    @CfgComment("Punkty dawane osobie, ktora wygrywa walke")
-    @CfgName("static-attacker-change")
+    @Min(0)
+    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
+    @Comment("Punkty dawane osobie, ktora wygrywa walke")
+    @CustomKey("static-attacker-change")
     public int staticAttackerChange = 15;
 
-    @CfgComment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
-    @CfgComment("Punkty zabierane osobie, ktora przegrywa walke")
-    @CfgName("static-victim-change")
+    @Min(0)
+    @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest STATIC!")
+    @Comment("Punkty zabierane osobie, ktora przegrywa walke")
+    @CustomKey("static-victim-change")
     public int staticVictimChange = 10;
 
-    @CfgComment("Czy pokazywac informacje przy kliknieciu PPM na gracza")
-    @CfgName("info-player-enabled")
+    @Comment("Czy pokazywac informacje przy kliknieciu PPM na gracza")
+    @CustomKey("info-player-enabled")
     public boolean infoPlayerEnabled = true;
 
-    @CfgComment("Czy pokazac informacje z komendy /gracz przy kliknieciu PPM")
-    @CfgComment("Jesli wylaczone - pokazywane beda informacje z sekcji \"playerRightClickInfo\" z messages.yml")
-    @CfgName("info-player-command")
+    @Comment("Czy pokazac informacje z komendy /gracz przy kliknieciu PPM")
+    @Comment("Jesli wylaczone - pokazywane beda informacje z sekcji \"playerRightClickInfo\" z messages.yml")
+    @CustomKey("info-player-command")
     public boolean infoPlayerCommand = true;
 
-    @CfgComment("Cooldown pomiedzy pokazywaniem informacji przez PPM (w sekundach)")
-    @CfgName("info-player-cooldown")
+    @Comment("Cooldown pomiedzy pokazywaniem informacji przez PPM (w sekundach)")
+    @CustomKey("info-player-cooldown")
     public int infoPlayerCooldown = 5;
 
-    @CfgComment("Czy trzeba kucac, zeby przy klikniecu PPM na gracza wyswietlilo informacje o nim")
-    @CfgName("info-player-sneaking")
+    @Comment("Czy trzeba kucac, zeby przy klikniecu PPM na gracza wyswietlilo informacje o nim")
+    @CustomKey("info-player-sneaking")
     public boolean infoPlayerSneaking = true;
 
-    @CfgComment("Czy czlonkowie gildii moga sobie zadawac obrazenia (domyslnie)")
-    @CfgName("damage-guild")
+    @Comment("Czy czlonkowie gildii moga sobie zadawac obrazenia (domyslnie)")
+    @CustomKey("damage-guild")
     public boolean damageGuild = false;
 
-    @CfgComment("Czy sojuszniczy moga sobie zadawac obrazenia")
-    @CfgName("damage-ally")
+    @Comment("Czy sojuszniczy moga sobie zadawac obrazenia")
+    @CustomKey("damage-ally")
     public boolean damageAlly = false;
 
-    @CfgComment("Wyglad znaczika {POS} wstawionego w format chatu")
-    @CfgComment("Znacznik ten pokazuje czy ktos jest liderem, zastepca czy zwyklym czlonkiem gildii")
-    @CfgName("chat-position")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad znaczika {POS} wstawionego w format chatu")
+    @Comment("Znacznik ten pokazuje czy ktos jest liderem, zastepca czy zwyklym czlonkiem gildii")
+    @CustomKey("chat-position")
     public String chatPosition_ = "&b{POS} ";
-    @CfgExclude
+    @Exclude
     public String chatPosition;
 
-    @CfgComment("Znacznik dla lidera gildii")
-    @CfgName("chat-position-leader")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Znacznik dla lidera gildii")
+    @CustomKey("chat-position-leader")
     public String chatPositionLeader = "**";
 
-    @CfgComment("Znacznik dla zastepcy gildii")
-    @CfgName("chat-position-deputy")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Znacznik dla zastepcy gildii")
+    @CustomKey("chat-position-deputy")
     public String chatPositionDeputy = "*";
 
-    @CfgComment("Znacznik dla czlonka gildii")
-    @CfgName("chat-position-member")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Znacznik dla czlonka gildii")
+    @CustomKey("chat-position-member")
     public String chatPositionMember = "";
 
-    @CfgComment("Wyglad znacznika {TAG} wstawionego w format chatu")
-    @CfgName("chat-guild")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad znacznika {TAG} wstawionego w format chatu")
+    @CustomKey("chat-guild")
     public String chatGuild_ = "&b{TAG} ";
-    @CfgExclude
+    @Exclude
     public String chatGuild;
 
-    @CfgComment("Wyglad znacznika {RANK} wstawionego w format chatu")
-    @CfgName("chat-rank")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad znacznika {RANK} wstawionego w format chatu")
+    @CustomKey("chat-rank")
     public String chatRank_ = "&b{RANK} ";
-    @CfgExclude
+    @Exclude
     public String chatRank;
 
-    @CfgComment("Wyglad znacznika {POINTS} wstawionego w format chatu")
-    @CfgComment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
-    @CfgName("chat-points")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad znacznika {POINTS} wstawionego w format chatu")
+    @Comment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
+    @CustomKey("chat-points")
     public String chatPoints_ = "&b{POINTS} ";
-    @CfgExclude
+    @Exclude
     public String chatPoints;
 
-    @CfgComment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
-    @CfgComment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS} jest uzywane jedynie na liscie graczy")
-    @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
-    @CfgComment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
-    @CfgComment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
-    @CfgComment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
-    @CfgName("points-format")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
+    @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS} jest uzywane jedynie na liscie graczy")
+    @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
+    @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
+    @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
+    @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
+    @CustomKey("points-format")
     public List<String> pointsFormat_ = Arrays.asList("0-749 &4{POINTS}", "750-999 &c{POINTS}", "1000-1499 &a{POINTS}", "1500-* &6&l{POINTS}");
 
-    @CfgExclude
+    @Exclude
     public Map<IntegerRange, String> pointsFormat;
 
-    @CfgComment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
-    @CfgComment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
-    @CfgComment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
-    @CfgName("ptop-points")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
+    @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
+    @CustomKey("ptop-points")
     public String ptopPoints_ = " &7[{POINTS}&7]";
 
-    @CfgExclude
+    @Exclude
     public String ptopPoints;
 
-    @CfgComment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
-    @CfgComment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
-    @CfgComment("Jesli nie chcesz wyswietlac punktow, tylko sam tag - nie podawaj tu nic")
-    @CfgName("gtop-points")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
+    @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
+    @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam tag - nie podawaj tu nic")
+    @CustomKey("gtop-points")
     public String gtopPoints_ = " &7[&b{POINTS-FORMAT}&7]";
-    @CfgExclude
+    @Exclude
     public String gtopPoints;
 
-    @CfgComment("Wyglad znacznika {PING-FORMAT} w zaleznosci od wartosci pingu")
-    @CfgComment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
-    @CfgComment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
-    @CfgComment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minPing w gore, np.: \"301-* &c{PING}\"")
-    @CfgName("ping-format")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Wyglad znacznika {PING-FORMAT} w zaleznosci od wartosci pingu")
+    @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
+    @Comment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
+    @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minPing w gore, np.: \"301-* &c{PING}\"")
+    @CustomKey("ping-format")
     public List<String> pingFormat_ = Arrays.asList("0-75 &a{PING}", "76-150 &e{PING}", "151-300 &c{PING}", "301-* &c{PING}");
-    @CfgExclude
+    @Exclude
     public Map<IntegerRange, String> pingFormat;
 
-    @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do gildii")
-    @CfgName("chat-priv")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @NotBlank
+    @Comment("Symbol od ktorego zaczyna sie wiadomosc do gildii")
+    @CustomKey("chat-priv")
     public String chatPriv = "!";
 
-    @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do sojusznikow gildii")
-    @CfgName("chat-ally")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @NotBlank
+    @Comment("Symbol od ktorego zaczyna sie wiadomosc do sojusznikow gildii")
+    @CustomKey("chat-ally")
     public String chatAlly = "!!";
 
-    @CfgComment("Symbol od ktorego zaczyna sie wiadomosc do wszystkich gildii")
-    @CfgName("chat-global")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @NotBlank
+    @Comment("Symbol od ktorego zaczyna sie wiadomosc do wszystkich gildii")
+    @CustomKey("chat-global")
     public String chatGlobal = "!!!";
 
-    @CfgComment("Wyglad wiadomosci wysylanej na czacie gildii")
-    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    @CfgName("chat-priv-design")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad wiadomosci wysylanej na czacie gildii")
+    @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
+    @CustomKey("chat-priv-design")
     public String chatPrivDesign_ = "&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}";
-    @CfgExclude
+    @Exclude
     public String chatPrivDesign;
 
-    @CfgComment("Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow")
-    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    @CfgName("chat-ally-design")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow")
+    @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
+    @CustomKey("chat-ally-design")
     public String chatAllyDesign_ = "&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
-    @CfgExclude
+    @Exclude
     public String chatAllyDesign;
 
-    @CfgComment("Wyglad wiadomosci wysylanej na czacie globalnym gildii")
-    @CfgComment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    @CfgName("chat-global-design")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad wiadomosci wysylanej na czacie globalnym gildii")
+    @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
+    @CustomKey("chat-global-design")
     public String chatGlobalDesign_ = "&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
-    @CfgExclude
+    @Exclude
     public String chatGlobalDesign;
 
-    @CfgComment("Czy wiadomosci z chatow gildyjnych powinny byc wyswietlane w logach serwera")
-    @CfgName("log-guild-chat")
+    @Comment("Czy wiadomosci z chatow gildyjnych powinny byc wyswietlane w logach serwera")
+    @CustomKey("log-guild-chat")
     public boolean logGuildChat = false;
 
-    @CfgComment("Wyglad tagu osob w gildii")
-    @CfgName("prefix-our")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad tagu osob w gildii")
+    @CustomKey("prefix-our")
     public String prefixOur_ = "&a{TAG}&f ";
-    @CfgExclude
+    @Exclude
     public String prefixOur;
 
-    @CfgComment("Wyglad tagu gildii sojuszniczej")
-    @CfgName("prefix-allies")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad tagu gildii sojuszniczej")
+    @CustomKey("prefix-allies")
     public String prefixAllies_ = "&6{TAG}&f ";
 
-    @CfgExclude
+    @Exclude
     public String prefixAllies;
 
-    @CfgComment("Wyglad tagu wrogiej gildii")
-    @CfgName("prefix-enemies")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad tagu wrogiej gildii")
+    @CustomKey("prefix-enemies")
     public String prefixEnemies_ = "&c{TAG}&f ";
 
-    @CfgExclude
+    @Exclude
     public String prefixEnemies;
 
-    @CfgComment("Wyglad tagu gildii neutralnej. Widziany rowniez przez graczy bez gildii")
-    @CfgName("prefix-other")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad tagu gildii neutralnej. Widziany rowniez przez graczy bez gildii")
+    @CustomKey("prefix-other")
     public String prefixOther_ = "&7{TAG}&f ";
 
-    @CfgExclude
+    @Exclude
     public String prefixOther;
 
-    @CfgComment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
-    @CfgComment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
-    @CfgName("ptop-online")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
+    @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
+    @CustomKey("ptop-online")
     public String ptopOnline_ = "&a";
 
-    @CfgExclude
+    @Exclude
     public String ptopOnline;
 
-    @CfgComment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
-    @CfgComment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-online) pusta")
-    @CfgName("ptop-offline")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
+    @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-online) pusta")
+    @CustomKey("ptop-offline")
     public String ptopOffline_ = "&c";
 
-    @CfgExclude
+    @Exclude
     public String ptopOffline;
 
-    @CfgName("use-shared-scoreboard")
-    @CfgComment("Czy FunnyGuilds powinno korzystac z wspoldzielonego scoreboarda")
-    @CfgComment("Ta opcja pozwala na dzialanie pluginu FunnyGuilds oraz innych pluginow modyfikujacych scoreboard ze soba")
-    @CfgComment("UWAGA: Opcja eksperymentalna i moze powodowac bledy przy wyswietlaniu rzeczy zaleznych od scoreboardow!")
+    @CustomKey("use-shared-scoreboard")
+    @Comment("Czy FunnyGuilds powinno korzystac z wspoldzielonego scoreboarda")
+    @Comment("Ta opcja pozwala na dzialanie pluginu FunnyGuilds oraz innych pluginow modyfikujacych scoreboard ze soba")
+    @Comment("UWAGA: Opcja eksperymentalna i moze powodowac bledy przy wyswietlaniu rzeczy zaleznych od scoreboardow!")
     public boolean useSharedScoreboard = false;
 
-    @CfgComment("Czy wlaczyc dummy z punktami")
-    @CfgComment(
+    @Comment("Czy wlaczyc dummy z punktami")
+    @Comment(
             "UWAGA - zalecane jest wylaczenie tej opcji w przypadku konfliktow z BungeeCord'em, wiecej szczegolow tutaj: https://github.com/FunnyGuilds/FunnyGuilds/issues/769")
-    @CfgName("dummy-enable")
+    @CustomKey("dummy-enable")
     public boolean dummyEnable = true;
 
-    @CfgComment("Wyglad nazwy wyswietlanej (suffix, za punktami)")
-    @CfgName("dummy-suffix")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad nazwy wyswietlanej (suffix, za punktami)")
+    @CustomKey("dummy-suffix")
     public String dummySuffix_ = "pkt";
 
-    @CfgExclude
+    @Exclude
     public String dummySuffix;
 
-    @CfgComment("Wyglad listy graczy, przedzial slotow - od 1 do 80")
-    @CfgComment("Schemat wygladu listy: https://github.com/FunnyGuilds/FunnyGuilds/blob/master/assets/tab-scheme.png")
-    @CfgComment("> Spis zmiennych gracza:")
-    @CfgComment("{PLAYER} - nazwa gracza")
-    @CfgComment("{WORLD} - swiat, w ktorym znajduje sie gracz")
-    @CfgComment("{PING} - ping gracza")
-    @CfgComment("{PING-FORMAT} - ping gracza z formatowaniem")
-    @CfgComment("{POINTS} - punkty gracza")
-    @CfgComment("{POINTS-FORMAT} - punkty gracza z formatowaniem")
-    @CfgComment("{POSITION} - pozycja gracza w rankingu")
-    @CfgComment("{KILLS} - liczba zabojstw gracza")
-    @CfgComment("{DEATHS} - liczba smierci gracza")
-    @CfgComment("{KDR} - stosunek zabojstw do smierci gracza")
-    @CfgComment("{WG-REGION} - region WorldGuard'a, na ktorym znajduje sie gracz (pierwszy, jesli jest ich kilka)")
-    @CfgComment("{WG-REGIONS} - regiony WorldGuard'a, na ktorych znajduje sie gracz (oddzielone przecinkami)")
-    @CfgComment("{VAULT-MONEY} - balans konta gracza pobierany z pluginu Vault")
-    @CfgComment("> Spis zmiennych gildyjnych:")
-    @CfgComment("{G-NAME} - nazwa gildii do ktorej nalezy gracz")
-    @CfgComment("{G-TAG} - tag gildii gracza")
-    @CfgComment("{G-OWNER} - wlasciciel gildii")
-    @CfgComment("{G-DEPUTIES} - zastepcy gildii")
-    @CfgComment("{G-DEPUTY} - losowy z zastepcow gildii")
-    @CfgComment("{G-LIVES} - liczba zyc gildii")
-    @CfgComment("{G-ALLIES} - liczba sojusznikow gildii")
-    @CfgComment("{G-POINTS} - punkty gildii")
-    @CfgComment("{G-POINTS-FORMAT} - punkty gildii z formatowaniem")
-    @CfgComment("{G-POSITION} - pozycja gildii gracza w rankingu")
-    @CfgComment("{G-KILLS} - suma zabojstw czlonkow gildii")
-    @CfgComment("{G-DEATHS} - suma smierci czlonkow gildii")
-    @CfgComment("{G-KDR} - stosunek zabojstw do smierci czlonkow gildii")
-    @CfgComment("{G-MEMBERS-ONLINE} - liczba czlonkow gildii online")
-    @CfgComment("{G-MEMBERS-ALL} - liczba wszystkich czlonkow gildii")
-    @CfgComment("{G-VALIDITY} - data wygasniecia gildii")
-    @CfgComment("{G-REGION-SIZE} - rozmiar gildii")
-    @CfgComment("> Spis pozostalych zmiennych:")
-    @CfgComment("{GUILDS} - liczba gildii na serwerze")
-    @CfgComment("{USERS} - liczba uzytkownikow serwera")
-    @CfgComment("{ONLINE} - liczba graczy online")
-    @CfgComment("{TPS} - TPS serwera (wspierane tylko od wersji 1.8.8+ spigot/paperspigot)")
-    @CfgComment("{SECOND} - Sekunda")
-    @CfgComment("{MINUTE} - Minuta")
-    @CfgComment("{HOUR} - Godzina")
-    @CfgComment("{DAY_OF_WEEK} - Dzien tygodnia wyrazony w postaci nazwy dnia")
-    @CfgComment("{DAY_OF_MONTH} - Dzien miesiaca wyrazony w postaci liczby")
-    @CfgComment("{MONTH} - Miesiac wyrazony w postaci nazwy miesiaca")
-    @CfgComment("{MONTH_NUMBER} - Miesiac wyrazony w postaci liczby")
-    @CfgComment("{YEAR} - Rok")
-    @CfgComment("{PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu (np. {PTOP-1}, {PTOP-60})")
-    @CfgComment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
-    @CfgName("player-list")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad listy graczy, przedzial slotow - od 1 do 80")
+    @Comment("Schemat wygladu listy: https://github.com/FunnyGuilds/FunnyGuilds/blob/master/assets/tab-scheme.png")
+    @Comment("> Spis zmiennych gracza:")
+    @Comment("{PLAYER} - nazwa gracza")
+    @Comment("{WORLD} - swiat, w ktorym znajduje sie gracz")
+    @Comment("{PING} - ping gracza")
+    @Comment("{PING-FORMAT} - ping gracza z formatowaniem")
+    @Comment("{POINTS} - punkty gracza")
+    @Comment("{POINTS-FORMAT} - punkty gracza z formatowaniem")
+    @Comment("{POSITION} - pozycja gracza w rankingu")
+    @Comment("{KILLS} - liczba zabojstw gracza")
+    @Comment("{DEATHS} - liczba smierci gracza")
+    @Comment("{ASSISTS} - liczba asyst gracza")
+    @Comment("{LOGOUTS} - liczba wylogowań gracza podczas walki")
+    @Comment("{KDR} - stosunek zabojstw do smierci gracza")
+    @Comment("{WG-REGION} - region WorldGuard'a, na ktorym znajduje sie gracz (pierwszy, jesli jest ich kilka)")
+    @Comment("{WG-REGIONS} - regiony WorldGuard'a, na ktorych znajduje sie gracz (oddzielone przecinkami)")
+    @Comment("{VAULT-MONEY} - balans konta gracza pobierany z pluginu Vault")
+    @Comment("> Spis zmiennych gildyjnych:")
+    @Comment("{G-NAME} - nazwa gildii do ktorej nalezy gracz")
+    @Comment("{G-TAG} - tag gildii gracza")
+    @Comment("{G-OWNER} - wlasciciel gildii")
+    @Comment("{G-DEPUTIES} - zastepcy gildii")
+    @Comment("{G-DEPUTY} - losowy z zastepcow gildii")
+    @Comment("{G-LIVES} - liczba zyc gildii")
+    @Comment("{G-ALLIES} - liczba sojusznikow gildii")
+    @Comment("{G-POINTS} - punkty gildii")
+    @Comment("{G-POINTS-FORMAT} - punkty gildii z formatowaniem")
+    @Comment("{G-POSITION} - pozycja gildii gracza w rankingu")
+    @Comment("{G-KILLS} - suma zabojstw czlonkow gildii")
+    @Comment("{G-DEATHS} - suma smierci czlonkow gildii")
+    @Comment("{G-KDR} - stosunek zabojstw do smierci czlonkow gildii")
+    @Comment("{G-MEMBERS-ONLINE} - liczba czlonkow gildii online")
+    @Comment("{G-MEMBERS-ALL} - liczba wszystkich czlonkow gildii")
+    @Comment("{G-VALIDITY} - data wygasniecia gildii")
+    @Comment("{G-REGION-SIZE} - rozmiar gildii")
+    @Comment("> Spis pozostalych zmiennych:")
+    @Comment("{GUILDS} - liczba gildii na serwerze")
+    @Comment("{USERS} - liczba uzytkownikow serwera")
+    @Comment("{ONLINE} - liczba graczy online")
+    @Comment("{TPS} - TPS serwera (wspierane tylko od wersji 1.8.8+ spigot/paperspigot)")
+    @Comment("{SECOND} - Sekunda")
+    @Comment("{MINUTE} - Minuta")
+    @Comment("{HOUR} - Godzina")
+    @Comment("{DAY_OF_WEEK} - Dzien tygodnia wyrazony w postaci nazwy dnia")
+    @Comment("{DAY_OF_MONTH} - Dzien miesiaca wyrazony w postaci liczby")
+    @Comment("{MONTH} - Miesiac wyrazony w postaci nazwy miesiaca")
+    @Comment("{MONTH_NUMBER} - Miesiac wyrazony w postaci liczby")
+    @Comment("{YEAR} - Rok")
+    @Comment("{PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu (np. {PTOP-1}, {PTOP-60})")
+    @Comment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu (np. {GTOP-1}, {PTOP-50})")
+    @CustomKey("player-list")
     public Map<Integer, String> playerList = ImmutableMap.<Integer, String>builder()
             .put(1, "&7Nick: &b{PLAYER}")
             .put(2, "&7Ping: &b{PING}")
@@ -1073,233 +1025,228 @@ public class PluginConfiguration {
             .put(64, "&73. &b{PTOP-3}")
             .build();
 
-    @CfgComment("Wyglad naglowka w liscie graczy.")
-    @CfgName("player-list-header")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    public String playerListHeader = "&7FunnyGuilds &b4.9.4 Tribute";
+    @Comment("Wyglad naglowka w liscie graczy.")
+    @CustomKey("player-list-header")
+    public String playerListHeader = "&7FunnyGuilds &b4.9.6 Tribute";
 
-    @CfgComment("Wyglad stopki w liscie graczy.")
-    @CfgName("player-list-footer")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad stopki w liscie graczy.")
+    @CustomKey("player-list-footer")
     public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!";
 
-    @CfgComment("Liczba pingu pokazana przy kazdej komorce.")
-    @CfgName("player-list-ping")
+    @Min(0)
+    @Comment("Liczba pingu pokazana przy kazdej komorce.")
+    @CustomKey("player-list-ping")
     public int playerListPing = 0;
 
-    @CfgComment("Czy wszystkie mozliwe komorki maja zostac zapelnione, nie zwazywszy na liczbe graczy online")
-    @CfgName("player-list-fill-cells")
+    @Comment("Czy wszystkie mozliwe komorki maja zostac zapelnione, nie zwazywszy na liczbe graczy online")
+    @CustomKey("player-list-fill-cells")
     public boolean playerListFillCells = true;
 
-    @CfgComment("Czy tablista ma byc wlaczona")
-    @CfgName("player-list-enable")
+    @Comment("Czy tablista ma byc wlaczona")
+    @CustomKey("player-list-enable")
     public boolean playerListEnable = true;
 
-    @CfgComment("Co ile tickow lista graczy powinna zostac odswiezona")
-    @CfgName("player-list-update-interval")
+    @Min(1)
+    @Comment("Co ile tickow lista graczy powinna zostac odswiezona")
+    @CustomKey("player-list-update-interval")
     public int playerListUpdateInterval = 20;
 
-    @CfgExclude
+    @Exclude
     public long playerListUpdateInterval_;
 
-    @CfgComment("Czy zmienne typu {PTOP-%} oraz {GTOP-%} powinny byc pokolorowane w zaleznosci od relacji gildyjnych")
-    @CfgName("player-list-use-relationship-colors")
+    @Comment("Czy zmienne typu {PTOP-%} oraz {GTOP-%} powinny byc pokolorowane w zaleznosci od relacji gildyjnych")
+    @CustomKey("player-list-use-relationship-colors")
     public boolean playerListUseRelationshipColors = false;
 
-    @CfgComment("Czy tagi gildyjne obok nicku gracza maja byc wlaczone")
-    @CfgName("guild-tag-enabled")
+    @Comment("Czy tagi gildyjne obok nicku gracza maja byc wlaczone")
+    @CustomKey("guild-tag-enabled")
     public boolean guildTagEnabled = true;
 
-    @CfgComment("Czy tag gildii podany przy tworzeniu gildii powinien zachowac forme taka, w jakiej zostal wpisany")
-    @CfgComment("UWAGA: Gdy ta opcja jest wlaczona, opcja \"guild-tag-uppercase\" nie bedzie miala wplywu na tag gildii")
-    @CfgName("guild-tag-keep-case")
+    @Comment("Czy tag gildii podany przy tworzeniu gildii powinien zachowac forme taka, w jakiej zostal wpisany")
+    @Comment("UWAGA: Gdy ta opcja jest wlaczona, opcja \"guild-tag-uppercase\" nie bedzie miala wplywu na tag gildii")
+    @CustomKey("guild-tag-keep-case")
     public boolean guildTagKeepCase = true;
 
-    @CfgComment("Czy tagi gildii powinny byc pokazywane wielka litera")
-    @CfgComment("Dziala dopiero po zrestartowaniu serwera")
-    @CfgName("guild-tag-uppercase")
+    @Comment("Czy tagi gildii powinny byc pokazywane wielka litera")
+    @Comment("Dziala dopiero po zrestartowaniu serwera")
+    @CustomKey("guild-tag-uppercase")
     public boolean guildTagUppercase = false;
 
-    @CfgComment("Czy wlaczyc tlumaczenie nazw przedmiotow?")
-    @CfgName("translated-materials-enable")
+    @Comment("Czy wlaczyc tlumaczenie nazw przedmiotow?")
+    @CustomKey("translated-materials-enable")
     public boolean translatedMaterialsEnable = true;
 
-    @CfgComment("Tlumaczenia nazw przedmiotow dla znacznikow {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
-    @CfgComment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
-    @CfgName("translated-materials-name")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Tlumaczenia nazw przedmiotow dla znacznikow {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
+    @Comment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
+    @CustomKey("translated-materials-name")
     public Map<String, String> translatedMaterials_ = ImmutableMap.<String, String>builder()
             .put("diamond_sword", "&3diamentowy miecz")
             .put("iron_sword", "&7zelazny miecz")
             .put("gold_ingot", "&eZloto")
             .build();
 
-    @CfgExclude
+    @Exclude
     public Map<Material, String> translatedMaterials;
 
-    @CfgComment("Wyglad znacznikow {ITEM} i {ITEMS} (suffix, za iloscia przedmiotu)")
-    @CfgComment("Dla np. item-amount-suffix: \"szt.\" 1szt. golden_apple")
-    @CfgName("item-amount-suffix")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    @Comment("Wyglad znacznikow {ITEM} i {ITEMS} (suffix, za iloscia przedmiotu)")
+    @Comment("Dla np. item-amount-suffix: \"szt.\" 1szt. golden_apple")
+    @CustomKey("item-amount-suffix")
     public String itemAmountSuffix_ = "x";
 
-    @CfgExclude
+    @Exclude
     public String itemAmountSuffix;
 
-    @CfgComment("Czy filtry nazw i tagow gildii powinny byc wlaczone")
-    @CfgName("check-for-restricted-guild-names")
+    @Comment("Czy filtry nazw i tagow gildii powinny byc wlaczone")
+    @CustomKey("check-for-restricted-guild-names")
     public boolean checkForRestrictedGuildNames = false;
 
-    @CfgComment("Niedozwolone nazwy przy zakladaniu gildii")
-    @CfgName("restricted-guild-names")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Niedozwolone nazwy przy zakladaniu gildii")
+    @CustomKey("restricted-guild-names")
     public List<String> restrictedGuildNames = Collections.singletonList("Administracja");
 
-    @CfgComment("Niedozwolone tagi przy zakladaniu gildii")
-    @CfgName("restricted-guild-tags")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Niedozwolone tagi przy zakladaniu gildii")
+    @CustomKey("restricted-guild-tags")
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
-    @CfgComment("Czy powiadomienie o zabojstwie gracza powinno sie wyswietlac na title dla zabojcy")
-    @CfgName("display-title-notification-for-killer")
+    @Comment("Czy powiadomienie o zabojstwie gracza powinno sie wyswietlac na title dla zabojcy")
+    @CustomKey("display-title-notification-for-killer")
     public boolean displayTitleNotificationForKiller = false;
 
-    @CfgComment("Czy powiadomienia o wejsciu na teren gildii czlonka gildii powinny byc wyswietlane")
-    @CfgName("notification-guild-member-display")
+    @Comment("Czy powiadomienia o wejsciu na teren gildii czlonka gildii powinny byc wyswietlane")
+    @CustomKey("notification-guild-member-display")
     public boolean regionEnterNotificationGuildMember = false;
 
-    @CfgComment("Gdzie maja pojawiac sie wiadomosci zwiazane z poruszaniem sie po terenach gildii")
-    @CfgComment("Mozliwe miejsca wyswietlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
-    @CfgName("region-move-notification-style")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
-    public List<String> regionEnterNotificationStyle_ = Arrays.asList("ACTIONBAR", "BOSSBAR");
+    @Comment("Gdzie maja pojawiac sie wiadomosci zwiazane z poruszaniem sie po terenach gildii")
+    @Comment("Mozliwe miejsca wyswietlania: ACTIONBAR, BOSSBAR, CHAT, TITLE")
+    @CustomKey("region-move-notification-style")
+    public List<NotificationStyle> regionEnterNotificationStyle = Arrays.asList(NotificationStyle.ACTIONBAR, NotificationStyle.BOSSBAR);
 
-    @CfgExclude
-    public List<NotificationStyle> regionEnterNotificationStyle = new ArrayList<>();
-
-    @CfgComment("Jak dlugo title/subtitle powinien sie pojawiac")
-    @CfgComment("Czas podawany w tickach. 1 sekunda = 20 tickow")
-    @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
-    @CfgName("notification-title-fade-in")
+    @Min(1)
+    @Comment("Jak dlugo title/subtitle powinien sie pojawiac")
+    @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
+    @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
+    @CustomKey("notification-title-fade-in")
     public int notificationTitleFadeIn = 10;
 
-    @CfgComment("Jak dlugo title/subtitle powinien pozostac na ekranie gracza")
-    @CfgComment("Czas podawany w tickach. 1 sekunda = 20 tickow")
-    @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
-    @CfgName("notification-title-stay")
+    @Min(1)
+    @Comment("Jak dlugo title/subtitle powinien pozostac na ekranie gracza")
+    @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
+    @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
+    @CustomKey("notification-title-stay")
     public int notificationTitleStay = 10;
 
-    @CfgComment("Jak dlugo title/subtitle powinien znikac")
-    @CfgComment("Czas podawany w tickach. 1 sekunda = 20 tickow")
-    @CfgComment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
-    @CfgName("notification-title-fade-out")
+    @Min(1)
+    @Comment("Jak dlugo title/subtitle powinien znikac")
+    @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
+    @Comment("Opcja dziala tylko gdy aktywne jest powiadamianie w trybie TITLE")
+    @CustomKey("notification-title-fade-out")
     public int notificationTitleFadeOut = 10;
 
-    @CfgComment("Jakiego koloru powinien byc boss bar podczas wyswietlania notyfikacji")
-    @CfgComment("Dostepne kolory: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE")
-    @CfgName("notification-boss-bar-color")
+    @Pattern("PINK|BLUE|RED|GREEN|YELLOW|PURPLE|WHITE")
+    @Comment("Jakiego koloru powinien byc boss bar podczas wyswietlania notyfikacji")
+    @Comment("Dostepne kolory: PINK, BLUE, RED, GREEN, YELLOW, PURPLE, WHITE")
+    @CustomKey("notification-boss-bar-color")
     public String bossBarColor = "RED";
 
-    @CfgComment("Jakiego stylu powinien byc boss bar podczas wyswietlania notyfikacji")
-    @CfgComment("Dostepne style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20")
-    @CfgName("notification-boss-bar-style")
+    @Pattern("SOLID|SEGMENTED_6|SEGMENTED_10|SEGMENTED_12|SEGMENTED_20")
+    @Comment("Jakiego stylu powinien byc boss bar podczas wyswietlania notyfikacji")
+    @Comment("Dostepne style: SOLID, SEGMENTED_6, SEGMENTED_10, SEGMENTED_12, SEGMENTED_20")
+    @CustomKey("notification-boss-bar-style")
     public String bossBarStyle = "SOLID";
 
-    @CfgComment("Jakie flagi powinny byc nalozone na byc boss bar podczas wyswietlania notyfikacji")
-    @CfgComment("Dostepne flagi: DARKEN_SKY, PLAY_BOSS_MUSIC, CREATE_FOG")
-    @CfgName("notification-boss-bar-flags")
+    @Comment("Jakie flagi powinny byc nalozone na byc boss bar podczas wyswietlania notyfikacji")
+    @Comment("Dostepne flagi: DARKEN_SKY, PLAY_BOSS_MUSIC, CREATE_FOG")
+    @CustomKey("notification-boss-bar-flags")
     public List<String> bossBarFlags = Collections.singletonList("CREATE_FOG");
 
-    @CfgExclude
+    @Exclude
     public BossBarOptions bossBarOptions_;
 
-    @CfgComment("Czy osoba, ktora zalozyla pierwsza gildie na serwerze powinna dostac nagrode")
-    @CfgName("should-give-rewards-for-first-guild")
+    @Comment("Czy osoba, ktora zalozyla pierwsza gildie na serwerze powinna dostac nagrode")
+    @CustomKey("should-give-rewards-for-first-guild")
     public boolean giveRewardsForFirstGuild = false;
 
-    @CfgComment("Przedmioty, ktore zostana nadane graczowi, ktory pierwszy zalozyl gildie na serwerze")
-    @CfgComment("Dziala tylko w wypadku, gdy opcja \"should-give-rewards-for-first-guild\" jest wlaczona")
-    @CfgName("rewards-for-first-guild")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Przedmioty, ktore zostana nadane graczowi, ktory pierwszy zalozyl gildie na serwerze")
+    @Comment("Dziala tylko w wypadku, gdy opcja \"should-give-rewards-for-first-guild\" jest wlaczona")
+    @CustomKey("rewards-for-first-guild")
     public List<String> firstGuildRewards_ = Collections.singletonList("1 diamond name:&bNagroda_za_pierwsza_gildie_na_serwerze");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> firstGuildRewards;
 
-    @CfgComment("Zbior przedmiotow potrzebnych do resetu rankingu")
-    @CfgName("rank-reset-needed-items")
-    @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-    @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
+    @Comment("Zbior przedmiotow potrzebnych do resetu rankingu")
+    @CustomKey("rank-reset-needed-items")
     public List<String> rankResetItems_ = Collections.singletonList("1 diamond");
 
-    @CfgExclude
+    @Exclude
     public List<ItemStack> rankResetItems;
 
-    @CfgComment("Czy przy szukaniu danych o graczu ma byc pomijana wielkosc znakow")
-    @CfgName("player-lookup-ignorecase")
+    @Comment("Czy przy szukaniu danych o graczu ma byc pomijana wielkosc znakow")
+    @CustomKey("player-lookup-ignorecase")
     public boolean playerLookupIgnorecase = false;
 
-    @CfgComment("Nazwy komend")
-    @CfgName("commands")
+    @Comment("Nazwy komend")
+    @CustomKey("commands")
     public Commands commands = new Commands();
 
-    @CfgComment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)")
-    @CfgName("event-move")
+    @Comment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)")
+    @CustomKey("event-move")
     public boolean eventMove = true;
 
-    @CfgExclude
+    @Exclude
     public boolean eventPhysics;
 
-    @CfgComment("Czy System Security ma byc wlaczony?")
-    @CfgName("system-security-enable")
+    @Comment("Czy System Security ma byc wlaczony?")
+    @CustomKey("system-security-enable")
     public boolean systemSecurityEnable = true;
 
-    @CfgComment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
-    @CfgComment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
-    @CfgName("reach-compensation")
+    @DecimalMin("0")
+    @Comment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
+    @Comment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
+    @CustomKey("reach-compensation")
     public double reachCompensation = 0.26;
 
-    @CfgComment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
-    @CfgName("freeCam-compensation")
+    @Min(0)
+    @Comment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
+    @CustomKey("freeCam-compensation")
     public int freeCamCompensation = 0;
 
-    @CfgComment("Ilość wątków używanych przez ConcurrencyManager")
-    @CfgName("concurrency-threads")
+    @Min(1)
+    @Comment("Ilość wątków używanych przez ConcurrencyManager")
+    @CustomKey("concurrency-threads")
     public int concurrencyThreads = 1;
 
-    @CfgComment("Co ile minut ma automatycznie zapisywac dane")
-    @CfgName("data-interval")
+    @Min(1)
+    @Comment("Co ile minut ma automatycznie zapisywac dane")
+    @CustomKey("data-interval")
     public int dataInterval = 1;
 
-    @CfgComment("Jak dlugo plugin powinien czekac na zatrzymanie wszystkich biezacych zadan przy wylaczaniu pluginu")
-    @CfgComment("Czas podawany w sekundach")
-    @CfgName("plugin-task-termination-timeout")
+    @Min(0)
+    @Comment("Jak dlugo plugin powinien czekac na zatrzymanie wszystkich biezacych zadan przy wylaczaniu pluginu")
+    @Comment("Czas podawany w sekundach")
+    @CustomKey("plugin-task-termination-timeout")
     public long pluginTaskTerminationTimeout_ = 30;
 
-    @CfgExclude
+    @Exclude
     public long pluginTaskTerminationTimeout;
 
-    @CfgComment("Typ zapisu danych")
-    @CfgComment("FLAT - Lokalne pliki")
-    @CfgComment("MYSQL - baza danych")
-    @CfgName("data-model")
+    @Comment("Typ zapisu danych")
+    @Comment("FLAT - Lokalne pliki")
+    @Comment("MYSQL - baza danych")
+    @CustomKey("data-model")
     public DataModel dataModel = DataModel.FLAT;
 
-    @CfgComment("Dane wymagane do polaczenia z baza")
-    @CfgComment("UWAGA: connectionTimeout jest w milisekundach!")
-    @CfgComment("Sekcja poolSize odpowiada za liczbe zarezerwowanych polaczen, domyslna wartosc 5 powinna wystarczyc")
-    @CfgComment("Aby umozliwic FG automatyczne zarzadzanie liczba polaczen - ustaw poolSize na -1")
-    @CfgComment("Sekcje usersTableName, guildsTableName i regionsTableName to nazwy tabel z danymi FG w bazie danych")
-    @CfgComment("Najlepiej zmieniac te nazwy tylko wtedy, gdy jest naprawde taka potrzeba (np. wystepuje konflikt z innym pluginem)")
-    @CfgComment("Aby zmienic nazwy tabel, gdy masz juz w bazie jakies dane z FG:")
-    @CfgComment("1. Wylacz serwer")
-    @CfgComment("2. Zmien dane w configu FG")
-    @CfgComment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
-    @CfgName("mysql")
+    @Comment("Dane wymagane do polaczenia z baza")
+    @Comment("UWAGA: connectionTimeout jest w milisekundach!")
+    @Comment("Sekcja poolSize odpowiada za liczbe zarezerwowanych polaczen, domyslna wartosc 5 powinna wystarczyc")
+    @Comment("Aby umozliwic FG automatyczne zarzadzanie liczba polaczen - ustaw poolSize na -1")
+    @Comment("Sekcje usersTableName, guildsTableName i regionsTableName to nazwy tabel z danymi FG w bazie danych")
+    @Comment("Najlepiej zmieniac te nazwy tylko wtedy, gdy jest naprawde taka potrzeba (np. wystepuje konflikt z innym pluginem)")
+    @Comment("Aby zmienic nazwy tabel, gdy masz juz w bazie jakies dane z FG:")
+    @Comment("1. Wylacz serwer")
+    @Comment("2. Zmien dane w configu FG")
+    @Comment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
+    @CustomKey("mysql")
     public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 5, 30000, true, "users", "guilds", "regions");
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
@@ -1369,24 +1316,11 @@ public class PluginConfiguration {
         return items;
     }
 
-    public void load() {
+    @Override
+    public OkaeriConfig load() throws OkaeriException {
+
+        super.load();
         this.dateFormat = new SimpleDateFormat(FunnyGuilds.getInstance().getMessageConfiguration().dateFormat);
-
-        try {
-            this.nameRegex = GuildRegex.valueOf(this.nameRegex_.toUpperCase());
-        }
-        catch (Exception e) {
-            this.nameRegex = GuildRegex.LETTERS;
-            FunnyGuilds.getPluginLogger().error("\"" + this.nameRegex_ + "\" is not a valid regex option!");
-        }
-
-        try {
-            this.tagRegex = GuildRegex.valueOf(this.tagRegex_.toUpperCase());
-        }
-        catch (Exception e) {
-            this.tagRegex = GuildRegex.LETTERS;
-            FunnyGuilds.getPluginLogger().error("\"" + this.tagRegex_ + "\" is not a valid regex option!");
-        }
 
         this.createItems = loadItemStackList(this.items_);
         this.createItemsVip = loadItemStackList(this.itemsVip_);
@@ -1421,11 +1355,6 @@ public class PluginConfiguration {
             this.enlargeItems = null;
         }
 
-        if (this.buggedBlocksTimer < 0L) {
-            FunnyGuilds.getPluginLogger().error("The field named \"bugged-blocks-timer\" can not be less than zero!");
-            this.buggedBlocksTimer = 20L; // default value
-        }
-
         this.blockedInteract = new HashSet<>();
 
         for (String s : this._blockedInteract) {
@@ -1436,14 +1365,6 @@ public class PluginConfiguration {
 
         for (String s : this.buggedBlocksExclude_) {
             this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(s, false));
-        }
-
-        try {
-            this.rankSystem = RankSystem.valueOf(this.rankSystem_.toUpperCase());
-        }
-        catch (Exception ex) {
-            this.rankSystem = RankSystem.ELO;
-            FunnyGuilds.getPluginLogger().error("\"" + this.rankSystem_ + "\" is not a valid rank system!");
         }
 
         if (this.rankSystem == RankSystem.ELO) {
@@ -1505,25 +1426,6 @@ public class PluginConfiguration {
         }
 
         this.itemAmountSuffix = ChatUtils.colored(this.itemAmountSuffix_);
-
-        for (String s : this.regionEnterNotificationStyle_) {
-            this.regionEnterNotificationStyle.add(NotificationStyle.valueOf(s.toUpperCase()));
-        }
-
-        if (this.notificationTitleFadeIn <= 0) {
-            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-fade-in\" can not be less than or equal to zero!");
-            this.notificationTitleFadeIn = 10;
-        }
-
-        if (this.notificationTitleStay <= 0) {
-            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-stay\" can not be less than or equal to zero!");
-            this.notificationTitleStay = 10;
-        }
-
-        if (this.notificationTitleFadeOut <= 0) {
-            FunnyGuilds.getPluginLogger().error("The field named \"notification-title-fade-out\" can not be less than or equal to zero!");
-            this.notificationTitleFadeOut = 10;
-        }
 
         if (! "v1_8_R1".equals(Reflections.SERVER_VERSION) && ! "v1_8_R3".equals(Reflections.SERVER_VERSION)) {
             this.bossBarOptions_ = BossBarOptions.builder()
@@ -1594,52 +1496,50 @@ public class PluginConfiguration {
 
         this.rankingUpdateInterval_ = Math.max(1, this.rankingUpdateInterval);
         this.pluginTaskTerminationTimeout = Math.max(1, this.pluginTaskTerminationTimeout_);
+
+        return this;
     }
 
-    public static class Commands {
+    public static class Commands extends OkaeriConfig {
         public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
-        public FunnyCommand guild     = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
-        public FunnyCommand create    = new FunnyCommand("zaloz");
-        public FunnyCommand delete    = new FunnyCommand("usun");
-        public FunnyCommand confirm   = new FunnyCommand("potwierdz");
-        public FunnyCommand invite    = new FunnyCommand("zapros");
-        public FunnyCommand join      = new FunnyCommand("dolacz");
-        public FunnyCommand leave     = new FunnyCommand("opusc");
-        public FunnyCommand kick      = new FunnyCommand("wyrzuc");
-        public FunnyCommand base      = new FunnyCommand("baza");
-        public FunnyCommand enlarge   = new FunnyCommand("powieksz");
-        public FunnyCommand ally      = new FunnyCommand("sojusz");
-        public FunnyCommand war       = new FunnyCommand("wojna");
-        public FunnyCommand items     = new FunnyCommand("przedmioty");
-        public FunnyCommand escape    = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
-        public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
-        public FunnyCommand tnt       = new FunnyCommand("tnt");
+        @Comment public FunnyCommand guild     = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
+        @Comment public FunnyCommand create    = new FunnyCommand("zaloz");
+        @Comment public FunnyCommand delete    = new FunnyCommand("usun");
+        @Comment public FunnyCommand confirm   = new FunnyCommand("potwierdz");
+        @Comment public FunnyCommand invite    = new FunnyCommand("zapros");
+        @Comment public FunnyCommand join      = new FunnyCommand("dolacz");
+        @Comment public FunnyCommand leave     = new FunnyCommand("opusc");
+        @Comment public FunnyCommand kick      = new FunnyCommand("wyrzuc");
+        @Comment public FunnyCommand base      = new FunnyCommand("baza");
+        @Comment public FunnyCommand enlarge   = new FunnyCommand("powieksz");
+        @Comment public FunnyCommand ally      = new FunnyCommand("sojusz");
+        @Comment public FunnyCommand war       = new FunnyCommand("wojna");
+        @Comment public FunnyCommand items     = new FunnyCommand("przedmioty");
+        @Comment public FunnyCommand escape    = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
+        @Comment public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
+        @Comment public FunnyCommand tnt       = new FunnyCommand("tnt");
 
-        @CfgName("break")
-        public FunnyCommand break_ = new FunnyCommand("rozwiaz");
+        @CustomKey("break")
+        @Comment public FunnyCommand break_ = new FunnyCommand("rozwiaz");
 
-        public FunnyCommand info     = new FunnyCommand("info");
-        public FunnyCommand player   = new FunnyCommand("gracz");
-        public FunnyCommand top      = new FunnyCommand("top", Collections.singletonList("top10"));
-        public FunnyCommand validity = new FunnyCommand("przedluz");
-        public FunnyCommand leader   = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
-        public FunnyCommand deputy   = new FunnyCommand("zastepca");
-        public FunnyCommand ranking  = new FunnyCommand("ranking");
-        public FunnyCommand setbase  = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
-        public FunnyCommand pvp      = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
+        @Comment public FunnyCommand info     = new FunnyCommand("info");
+        @Comment public FunnyCommand player   = new FunnyCommand("gracz");
+        @Comment public FunnyCommand top      = new FunnyCommand("top", Collections.singletonList("top10"));
+        @Comment public FunnyCommand validity = new FunnyCommand("przedluz");
+        @Comment public FunnyCommand leader   = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
+        @Comment public FunnyCommand deputy   = new FunnyCommand("zastepca");
+        @Comment public FunnyCommand ranking  = new FunnyCommand("ranking");
+        @Comment public FunnyCommand setbase  = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
+        @Comment public FunnyCommand pvp      = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
 
-        @CfgComment("Komendy administratora")
+        @Comment({"", "Komendy administratora"})
         public AdminCommands admin = new AdminCommands();
 
-        public static class FunnyCommand {
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+        public static class FunnyCommand extends OkaeriConfig {
+
             public String name;
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
-            @CfgCollectionStyle(CollectionStyle.ALWAYS_NEW_LINE)
             public List<String> aliases;
-
             public boolean enabled;
 
             public FunnyCommand() {
@@ -1660,68 +1560,27 @@ public class PluginConfiguration {
             }
         }
 
-        public static class AdminCommands {
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+        public static class AdminCommands extends OkaeriConfig {
             public String main = "ga";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String add = "ga dodaj";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String delete = "ga usun";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String kick = "ga wyrzuc";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String teleport = "ga tp";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String points = "ga points";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String kills = "ga kills";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String deaths = "ga deaths";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String ban = "ga ban";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String lives = "ga zycia";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String move = "ga przenies";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String unban = "ga unban";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String validity = "ga przedluz";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String name = "ga nazwa";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String tag = "ga tag";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String spy = "ga spy";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String enabled = "ga enabled";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String leader = "ga lider";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String deputy = "ga zastepca";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String protection = "ga ochrona";
-
-            @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
             public String base = "ga baza";
         }
     }
@@ -1731,32 +1590,31 @@ public class PluginConfiguration {
         MYSQL
     }
 
-    public static class MySQL {
-        @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+    public static class MySQL extends OkaeriConfig {
+
+        @Variable("FG_MYSQL_HOSTNAME")
         public String hostname;
-
+        @Variable("FG_MYSQL_PORT")
         public int port;
-
-        @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+        @Variable("FG_MYSQL_DATABASE")
         public String database;
-
-        @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+        @Variable("FG_MYSQL_USER")
         public String user;
-
-        @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+        @Variable("FG_MYSQL_PASSWORD")
         public String password;
 
+        @Variable("FG_MYSQL_POOL_SIZE")
         public int     poolSize;
+        @Variable("FG_MYSQL_CONNECTION_TIMEOUT")
         public int     connectionTimeout;
+        @Variable("FG_MYSQL_USE_SSL")
         public boolean useSSL;
 
-        @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+        @Variable("FG_MYSQL_USERS_TABLE_NAME")
         public String usersTableName;
-
-        @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+        @Variable("FG_MYSQL_GUILDS_TABLE_NAME")
         public String guildsTableName;
-
-        @CfgStringStyle(StringStyle.ALWAYS_QUOTED)
+        @Variable("FG_MYSQL_REGIONS_TABLE_NAME")
         public String regionsTableName;
 
         public MySQL() {

@@ -124,7 +124,7 @@ public class FlatDataModel implements DataModel {
         int errors = 0;
 
         if (path == null) {
-            FunnyGuilds.getPluginLogger().error("critical error loading the users!");
+            FunnyGuilds.getPluginLogger().warning("Users directory is empty");
             return;
         }
 
@@ -187,7 +187,7 @@ public class FlatDataModel implements DataModel {
         int errors = 0;
 
         if (path == null) {
-            FunnyGuilds.getPluginLogger().error("critical error loading the regions!");
+            FunnyGuilds.getPluginLogger().warning("Regions directory is empty");
             return;
         }
 
@@ -234,7 +234,7 @@ public class FlatDataModel implements DataModel {
         int errors = 0;
 
         if (path == null) {
-            FunnyGuilds.getPluginLogger().error("critical error loading the guilds!");
+            FunnyGuilds.getPluginLogger().warning("Guilds directory is empty");
             return;
         }
 

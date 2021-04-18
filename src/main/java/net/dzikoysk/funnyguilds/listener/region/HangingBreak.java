@@ -9,16 +9,17 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 public class HangingBreak implements Listener {
     
     @EventHandler
-    public void onBreak(HangingBreakByEntityEvent e) {
-        if (!(e.getRemover() instanceof Player)) {
+    public void onBreak(HangingBreakByEntityEvent event) {
+        if (!(event.getRemover() instanceof Player)) {
             return;
         }
         
-        Player p = (Player) e.getRemover();
-        
-        if (ProtectionSystem.isProtected(p, e.getEntity().getLocation())) {
-            e.setCancelled(true);
-        }
+        Player player = (Player) event.getRemover();
+
+        ProtectionSystem.isProtected(player, event.getEntity().getLocation(), false)
+                .peek(result -> event.setCancelled(true))
+                .peek(ProtectionSystem::defaultResponse);
+
     }
     
 }
