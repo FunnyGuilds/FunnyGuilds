@@ -28,7 +28,7 @@ public class MessageConfiguration {
     public String ptopNoValue = "Brak (PTOP-x)";
     public String wgRegionNoValue = "Brak (WG-REGION)";
     public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
-    
+
     @CfgComment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";
     public String blockedWorld = "&cZarzadzanie gildiami jest zablokowane na tym swiecie!";
@@ -41,8 +41,8 @@ public class MessageConfiguration {
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
-    @CfgComment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON}";
+    @CfgComment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
+    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
     public String rankKillTitle = "&cZabiles gracza {VICTIM}";
     public String rankKillSubtitle = "&7+{+}";
     @CfgComment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
@@ -76,7 +76,7 @@ public class MessageConfiguration {
     public String notificationActionbarEnterGuildRegion = "&7Wkroczyles na teren gildii &c{TAG}&7!";
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String notificationActionbarLeaveGuildRegion = "&7Opusciles teren gildii &c{TAG}&7!";
-    
+
     @CfgComment("<------- Bossbar Region Messages -------> #")
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String notificationBossbarIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
@@ -92,7 +92,7 @@ public class MessageConfiguration {
     public String notificationChatEnterGuildRegion = notificationActionbarEnterGuildRegion;
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String notificationChatLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
-    
+
     @CfgComment("<------- Title Region Messages -------> #")
     @CfgComment("Dostepne zmienne: {PLAYER}")
     public String notificationTitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
@@ -170,7 +170,7 @@ public class MessageConfiguration {
             "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
             "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii",
             "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii");
-    
+
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> playerInfoList = Arrays.asList(
@@ -182,7 +182,7 @@ public class MessageConfiguration {
             "&7Smierci: &a{DEATHS}",
             "&7KDR: &a{KDR}",
             "&8-------------.------------------");
-    
+
     @CfgComment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {KDR}, {RANK}")
     @CfgCollectionStyle(CfgCollectionStyle.CollectionStyle.ALWAYS_NEW_LINE)
     public List<String> playerRightClickInfo = Arrays.asList(
@@ -277,7 +277,7 @@ public class MessageConfiguration {
     public String escapeNoUserGuild = "&cNie masz gildii do ktorej moglbys uciekac!";
     public String escapeNoNeedToRun = "&cNie znajdujesz sie na terenie zadnej gildii, po co uciekac?";
     public String escapeOnYourRegion = "&cZnajdujesz sie na terenie wlasnej gildii, dokad chcesz uciekac?";
-    
+
     @CfgComment("<------- Create Guild Messages -------> #")
     @CfgComment("Dostepne zmienne: {LENGTH}")
     public String createTagLength = "&7Tag nie moze byc dluzszy niz &c{LENGTH} litery&7!";
@@ -432,7 +432,7 @@ public class MessageConfiguration {
     public List<String> breakAlliesList = Arrays.asList(
             "&7Twoja gildia nawiazala sojusz z &a{GUILDS}",
             "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]");
-    
+
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String breakAllyExists = "&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7&c{GUILD}&7)!";
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
@@ -497,49 +497,49 @@ public class MessageConfiguration {
     @CfgComment("Dostepne zmienne: {TAG}")
     public String pvpAllyOn = "&cWlaczono pvp z sojuszem &7{TAG}!";
     public String pvpAllyOff = "&cWylaczono pvp z sojuszem &7{TAG}!";
-    
+
     @CfgComment("<------- Admin Messages -------> #")
     @CfgComment("Dostepne zmienne: {ADMIN}")
     public String adminGuildBroken = "&cTwoja gildia zostala rozwiazana przez &7{ADMIN}";
     public String adminGuildOwner = "&cTen gracz jest zalozycielem gildii, nie mozna go wyrzucic!";
     public String adminNoRegionFound = "&cGildia nie posiada terenu!";
-    
+
     public String adminNoPointsGiven = "&cPodaj liczbe punktow!";
     @CfgComment("Dostepne zmienne: {ERROR}")
     public String adminErrorInNumber = "&cNieznana jest liczba: {ERROR}";
     @CfgComment("Dostepne zmienne: {PLAYER}, {POINTS}, {POINTS-FORMAT}")
     public String adminPointsChanged = "&aUstawiono &7{POINTS} &apunktow dla gracza &7{PLAYER}";
-    
+
     public String adminNoKillsGiven = "&cPodaj liczbe zabojstw!";
     @CfgComment("Dostepne zmienne: {PLAYER}, {KILLS}")
     public String adminKillsChanged = "&aUstawiono &7{KILLS} &azabojstw dla gracza &7{PLAYER}";
-    
+
     public String adminNoDeathsGiven = "&cPodaj liczbe zgonow!";
     @CfgComment("Dostepne zmienne: {PLAYER}, {DEATHS}")
     public String adminDeathsChanged = "&aUstawiono &7{DEATHS} &azgonow dla gracza &7{PLAYER}";
-    
+
     public String adminNoBanTimeGiven = "&cPodaj czas na jaki ma byc zbanowana gildia!";
     public String adminNoReasonGiven = "&cPodaj powod!";
     public String adminGuildBanned = "&cTa gildia jest juz zbanowana!";
     public String adminTimeError = "&cPodano nieprawidlowy czas!";
     @CfgComment("Dostepne zmienne: {GUILD}, {TIME}")
     public String adminGuildBan = "&aZbanowano gildie &a{GUILD} &7na okres &a{TIME}&7!";
-    
+
     public String adminGuildNotBanned = "&cTa gildia nie jest zbanowana!";
     @CfgComment("Dostepne zmienne: {GUILD}")
     public String adminGuildUnban = "&aOdbanowano gildie &7{GUILD}&a!";
-    
+
     public String adminNoLivesGiven = "&cPodaj liczbe zyc!";
     @CfgComment("Dostepne zmienne: {GUILD}, {LIVES}")
     public String adminLivesChanged = "&aUstawiono &7{LIVES} &azyc dla gildii &7{GUILD}&a!";
-    
+
     @CfgComment("Dostepne zmienne: {GUILD}")
     public String adminGuildRelocated = "&aPrzeniesiono teren gildii &7{GUILD}&a!";
-    
+
     public String adminNoValidityTimeGiven = "&cPodaj czas o jaki ma byc przedluzona waznosc gildii!";
     @CfgComment("Dostepne zmienne: {GUILD}, {VALIDITY}")
     public String adminNewValidity = "&aPrzedluzono waznosc gildii &a{GUILD} &7do &a{VALIDITY}&7!";
-    
+
     public String adminNoNewNameGiven = "&cPodaj nowa nazwe!";
     @CfgComment("Dostepne zmienne: {GUILD}, {TAG}")
     public String adminNameChanged = "&aZmieniono nazwe gildii na &7{GUILD}&a!";
@@ -550,14 +550,14 @@ public class MessageConfiguration {
 
     public String adminGuildsEnabled = "&aZakladanie gildii jest wlaczone!";
     public String adminGuildsDisabled = "&cZakladanie gildii jest wylaczone!";
-    
+
     public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
     public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
 
     public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
     public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
     public String adminAdditionalProtectionSetSuccessfully = "&aPomyslnie nadano dodatkowa ochrone dla gildii &7{TAG} &ado &7{DATE}";
-    
+
     public String adminGuildHasNoHome = "&cGildia gracza nie ma ustawionej bazy!";
     @CfgComment("Dostepne zmienne: {ADMIN}")
     public String adminTeleportedToBase = "&aAdmin &7{ADMIN} &ateleportowal cie do bazy gildii!";
