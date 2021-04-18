@@ -31,7 +31,6 @@ public class MessageConfiguration extends OkaeriConfig {
     public String ptopNoValue = "Brak (PTOP-x)";
     public String wgRegionNoValue = "Brak (WG-REGION)";
     public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
-
     
     @Comment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";
@@ -45,7 +44,6 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
-  
     @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
     public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
     public String rankKillTitle = "&cZabiles gracza {VICTIM}";
@@ -186,7 +184,6 @@ public class MessageConfiguration extends OkaeriConfig {
             "&7Logouty: &a{LOGOUTS}",
             "&7KDR: &a{KDR}",
             "&8-------------.------------------");
-
 
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
     public List<String> playerRightClickInfo = Arrays.asList(
@@ -430,7 +427,6 @@ public class MessageConfiguration extends OkaeriConfig {
     public List<String> breakAlliesList = Arrays.asList(
             "&7Twoja gildia nawiazala sojusz z &a{GUILDS}",
             "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]");
-    
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String breakAllyExists = "&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7&c{GUILD}&7)!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
@@ -495,7 +491,6 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {TAG}")
     public String pvpAllyOn = "&cWlaczono pvp z sojuszem &7{TAG}!";
     public String pvpAllyOff = "&cWylaczono pvp z sojuszem &7{TAG}!";
-
     
     @Comment("<------- Admin Messages -------> #")
     @Comment("Dostepne zmienne: {ADMIN}")
