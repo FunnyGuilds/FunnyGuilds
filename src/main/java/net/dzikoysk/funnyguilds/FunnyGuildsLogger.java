@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -56,10 +58,12 @@ public final class FunnyGuildsLogger {
         error("");
         error(content);
         error("");
-        error(cause.toString());
 
-        for (StackTraceElement element : cause.getStackTrace()) {
-            error("       at " + element.toString());
+        StringWriter errorDump = new StringWriter();
+        cause.printStackTrace(new PrintWriter(errorDump));
+
+        for (String line : errorDump.toString().split("\n")) {
+            error(line);
         }
 
         error("");

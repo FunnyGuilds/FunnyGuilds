@@ -107,11 +107,10 @@ public class FunnyGuilds extends JavaPlugin {
             });
         }
         catch (Exception exception) {
-            if (exception instanceof OkaeriException) {
-                logger.error("Could not initialize plugin configuration", exception.getCause());
-            } else {
-                logger.error("Could not load plugin configuration", exception);
+            while (exception.getCause() instanceof OkaeriException) {
+                exception = (Exception) exception.getCause();
             }
+            logger.error("Could not load plugin configuration", exception);
             shutdown("Critical error has been encountered!");
             return;
         }
