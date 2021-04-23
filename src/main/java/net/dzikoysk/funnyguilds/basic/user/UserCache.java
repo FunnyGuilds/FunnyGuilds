@@ -21,9 +21,11 @@ public class UserCache {
 
     private final User user;
 
-    private final Map<User, Double> damage = new HashMap<>();
+    private final Map<User, DamageCache> damageCaches = new HashMap<>();
 
-    private final Cache<UUID, Long> attackerCache = CacheBuilder
+    private DamageCache lastOldDamageCache = null;
+
+    private final Cache<UUID, Long> killerCache = CacheBuilder
             .newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES)
             .build();
@@ -47,21 +49,29 @@ public class UserCache {
         this.user = user;
     }
 
-    public void addDamage(User user, double damage) {
-        Double currentDamage = this.damage.getOrDefault(user, 0.0D);
-        this.damage.put(user, currentDamage + damage);
+    public void addDamage(User user, double damage, long lastTime) {
+        if (!damageCaches.containsKey(user)) {
+            damageCaches.put(user, new DamageCache(user, damage, lastTime));
+            return;
+        }
+
+        DamageCache damageCache = damageCaches.get(user);
+
+        damageCache.addDamage(damage);
+        damageCache.setLastTime(lastTime);
     }
 
     public double killedBy(User user) {
         if (user == null) {
             return 0.0D;
         }
-        Double dmg = this.damage.remove(user);
-        return dmg == null ? 0.0D : dmg;
+
+        return damageCaches.remove(user).getDamage();
     }
 
     public void clearDamage() {
-        this.damage.clear();
+        this.lastOldDamageCache = this.getLastAttackerDamageCache();
+        this.damageCaches.clear();
     }
 
     public void setSpy(boolean spy) {
@@ -92,13 +102,13 @@ public class UserCache {
         this.victimCache.put(user.getUUID(), System.currentTimeMillis());
     }
 
-    public void registerAttacker(User user) {
-        this.attackerCache.put(user.getUUID(), System.currentTimeMillis());
+    public void registerKiller(User user) {
+        this.killerCache.put(user.getUUID(), System.currentTimeMillis());
     }
 
     @Nullable
-    public User getLastAttacker() {
-        Optional<UUID> lastAttackerUniqueId = this.attackerCache.asMap().entrySet()
+    public User getLastKiller() {
+        Optional<UUID> lastAttackerUniqueId = this.killerCache.asMap().entrySet()
                 .stream()
                 .sorted(Map.Entry.<UUID, Long>comparingByValue().reversed())
                 .map(Entry::getKey).findFirst();
@@ -107,8 +117,30 @@ public class UserCache {
     }
 
     @Nullable
+    public DamageCache getLastAttackerDamageCache() {
+        DamageCache last = null;
+
+        for (DamageCache damageCache : damageCaches.values()) {
+            if (last == null) {
+                last = damageCache;
+                continue;
+            }
+
+            if (last.getLastTime() < damageCache.getLastTime()) {
+                last = damageCache;
+            }
+        }
+
+        if (last == null) {
+            return lastOldDamageCache != null ? lastOldDamageCache : null;
+        }
+
+        return last;
+    }
+
+    @Nullable
     public Long wasVictimOf(User attacker) {
-        return this.attackerCache.getIfPresent(attacker.getUUID());
+        return this.killerCache.getIfPresent(attacker.getUUID());
     }
 
     @Nullable
@@ -129,33 +161,37 @@ public class UserCache {
     }
 
     public Map<User, Double> getDamage() {
-        return new HashMap<>(this.damage);
+        Map<User, Double> damage = new HashMap<>();
+
+        for (DamageCache damageCache : damageCaches.values()) {
+            damage.put(damageCache.getAttacker(), damageCache.getDamage());
+        }
+
+        return damage;
     }
 
     public Double getTotalDamage() {
         double dmg = 0.0D;
-        for (double d : this.damage.values()) {
-            dmg += d;
+        for (DamageCache damageCache : this.damageCaches.values()) {
+            dmg += damageCache.getDamage();
         }
 
         return dmg;
     }
 
     public boolean isAssisted() {
-        return !this.damage.isEmpty();
+        return !this.damageCaches.isEmpty();
     }
 
     public boolean isInCombat() {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        User lastAttacker = this.getLastAttacker();
+        DamageCache damageCache = this.getLastAttackerDamageCache();
 
-        if (lastAttacker == null || !lastAttacker.isOnline()) {
+        if (damageCache == null || !damageCache.getAttacker().isOnline()) {
             return false;
         }
 
-        Long attackTime = this.wasVictimOf(lastAttacker);
-
-        return attackTime != null && attackTime + config.lastAttackerAsKillerConsiderationTimeout_ >= System.currentTimeMillis();
+        return damageCache.getLastTime() + config.lastAttackerAsKillerConsiderationTimeout_ >= System.currentTimeMillis();
     }
 
     @Nullable

@@ -76,7 +76,7 @@ public class EntityDamage implements Listener {
                 return;
             }
 
-            victimUser.getCache().addDamage(attackerUser, event.getDamage());
+            victimUser.getCache().addDamage(attackerUser, event.getDamage(), System.currentTimeMillis());
         });
     }
     
