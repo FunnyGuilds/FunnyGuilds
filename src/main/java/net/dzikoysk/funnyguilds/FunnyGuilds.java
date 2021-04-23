@@ -107,9 +107,6 @@ public class FunnyGuilds extends JavaPlugin {
             });
         }
         catch (Exception exception) {
-            while (exception.getCause() instanceof OkaeriException) {
-                exception = (Exception) exception.getCause();
-            }
             logger.error("Could not load plugin configuration", exception);
             shutdown("Critical error has been encountered!");
             return;
