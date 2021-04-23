@@ -56,7 +56,7 @@ public class PlayerDeath implements Listener {
                 return;
             }
 
-            User lastAttacker = victimCache.getLastAttacker();
+            User lastAttacker = victimCache.getLastKiller();
 
             if (lastAttacker == null || ! lastAttacker.isOnline()) {
                 victimCache.clearDamage();
@@ -214,7 +214,7 @@ public class PlayerDeath implements Listener {
             victimPointsBeforeChange = victim.getRank().getPoints();
 
             victim.getRank().removePoints(victimEvent.getChange());
-            victimCache.registerAttacker(attacker);
+            victimCache.registerKiller(attacker);
             victimCache.clearDamage();
 
             if (!config.broadcastDeathMessage) {
