@@ -44,8 +44,8 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
-    @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON}";
+    @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
+    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
     public String rankKillTitle = "&cZabiles gracza {VICTIM}";
     public String rankKillSubtitle = "&7+{+}";
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
@@ -79,7 +79,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String notificationActionbarEnterGuildRegion = "&7Wkroczyles na teren gildii &c{TAG}&7!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String notificationActionbarLeaveGuildRegion = "&7Opusciles teren gildii &c{TAG}&7!";
-    
+
     @Comment("<------- Bossbar Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
     public String notificationBossbarIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
@@ -95,7 +95,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String notificationChatEnterGuildRegion = notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String notificationChatLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
-    
+
     @Comment("<------- Title Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
     public String notificationTitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
@@ -275,7 +275,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String escapeNoUserGuild = "&cNie masz gildii do ktorej moglbys uciekac!";
     public String escapeNoNeedToRun = "&cNie znajdujesz sie na terenie zadnej gildii, po co uciekac?";
     public String escapeOnYourRegion = "&cZnajdujesz sie na terenie wlasnej gildii, dokad chcesz uciekac?";
-    
+
     @Comment("<------- Create Guild Messages -------> #")
     @Comment("Dostepne zmienne: {LENGTH}")
     public String createTagLength = "&7Tag nie moze byc dluzszy niz &c{LENGTH} litery&7!";
@@ -427,7 +427,6 @@ public class MessageConfiguration extends OkaeriConfig {
     public List<String> breakAlliesList = Arrays.asList(
             "&7Twoja gildia nawiazala sojusz z &a{GUILDS}",
             "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]");
-    
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String breakAllyExists = "&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7&c{GUILD}&7)!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
@@ -498,43 +497,43 @@ public class MessageConfiguration extends OkaeriConfig {
     public String adminGuildBroken = "&cTwoja gildia zostala rozwiazana przez &7{ADMIN}";
     public String adminGuildOwner = "&cTen gracz jest zalozycielem gildii, nie mozna go wyrzucic!";
     public String adminNoRegionFound = "&cGildia nie posiada terenu!";
-    
+
     public String adminNoPointsGiven = "&cPodaj liczbe punktow!";
     @Comment("Dostepne zmienne: {ERROR}")
     public String adminErrorInNumber = "&cNieznana jest liczba: {ERROR}";
     @Comment("Dostepne zmienne: {PLAYER}, {POINTS}, {POINTS-FORMAT}")
     public String adminPointsChanged = "&aUstawiono &7{POINTS} &apunktow dla gracza &7{PLAYER}";
-    
+
     public String adminNoKillsGiven = "&cPodaj liczbe zabojstw!";
     @Comment("Dostepne zmienne: {PLAYER}, {KILLS}")
     public String adminKillsChanged = "&aUstawiono &7{KILLS} &azabojstw dla gracza &7{PLAYER}";
-    
+
     public String adminNoDeathsGiven = "&cPodaj liczbe zgonow!";
     @Comment("Dostepne zmienne: {PLAYER}, {DEATHS}")
     public String adminDeathsChanged = "&aUstawiono &7{DEATHS} &azgonow dla gracza &7{PLAYER}";
-    
+
     public String adminNoBanTimeGiven = "&cPodaj czas na jaki ma byc zbanowana gildia!";
     public String adminNoReasonGiven = "&cPodaj powod!";
     public String adminGuildBanned = "&cTa gildia jest juz zbanowana!";
     public String adminTimeError = "&cPodano nieprawidlowy czas!";
     @Comment("Dostepne zmienne: {GUILD}, {TIME}")
     public String adminGuildBan = "&aZbanowano gildie &a{GUILD} &7na okres &a{TIME}&7!";
-    
+
     public String adminGuildNotBanned = "&cTa gildia nie jest zbanowana!";
     @Comment("Dostepne zmienne: {GUILD}")
     public String adminGuildUnban = "&aOdbanowano gildie &7{GUILD}&a!";
-    
+
     public String adminNoLivesGiven = "&cPodaj liczbe zyc!";
     @Comment("Dostepne zmienne: {GUILD}, {LIVES}")
     public String adminLivesChanged = "&aUstawiono &7{LIVES} &azyc dla gildii &7{GUILD}&a!";
     
     @Comment("Dostepne zmienne: {GUILD}")
     public String adminGuildRelocated = "&aPrzeniesiono teren gildii &7{GUILD}&a!";
-    
+
     public String adminNoValidityTimeGiven = "&cPodaj czas o jaki ma byc przedluzona waznosc gildii!";
     @Comment("Dostepne zmienne: {GUILD}, {VALIDITY}")
     public String adminNewValidity = "&aPrzedluzono waznosc gildii &a{GUILD} &7do &a{VALIDITY}&7!";
-    
+
     public String adminNoNewNameGiven = "&cPodaj nowa nazwe!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String adminNameChanged = "&aZmieniono nazwe gildii na &7{GUILD}&a!";
@@ -545,14 +544,14 @@ public class MessageConfiguration extends OkaeriConfig {
 
     public String adminGuildsEnabled = "&aZakladanie gildii jest wlaczone!";
     public String adminGuildsDisabled = "&cZakladanie gildii jest wylaczone!";
-    
+
     public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
     public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
 
     public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
     public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
     public String adminAdditionalProtectionSetSuccessfully = "&aPomyslnie nadano dodatkowa ochrone dla gildii &7{TAG} &ado &7{DATE}";
-    
+
     public String adminGuildHasNoHome = "&cGildia gracza nie ma ustawionej bazy!";
     @Comment("Dostepne zmienne: {ADMIN}")
     public String adminTeleportedToBase = "&aAdmin &7{ADMIN} &ateleportowal cie do bazy gildii!";

@@ -7,6 +7,8 @@ import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
@@ -80,6 +82,19 @@ public final class MaterialUtils {
         }
 
         return StringUtils.replaceChars(material.toString().toLowerCase(), '_', ' ');
+    }
+
+    public static String getItemCustomName(ItemStack itemStack){
+        if(itemStack == null || !itemStack.hasItemMeta()) {
+            return "";
+        }
+
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta.hasDisplayName()) {
+            return itemMeta.getDisplayName();
+        } else {
+            return "";
+        }
     }
 
     @Nullable
