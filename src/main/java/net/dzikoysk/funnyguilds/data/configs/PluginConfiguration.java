@@ -77,7 +77,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean updateInfo = true;
 
     @Comment("Czy informacje o aktualizacji wersji nightly maja byc widoczne podczas wejscia na serwer")
-    @Comment("Ta opcja działa tylko wtedy, gdy także jest włączona opcja 'update-info'")
+    @Comment("Ta opcja dziala tylko wtedy, gdy takze jest wlaczona opcja 'update-info'")
     @CustomKey("update-nightly-info")
     public boolean updateNightlyInfo = true;
 
@@ -94,7 +94,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("regions-enabled")
     public boolean regionsEnabled = true;
 
-    @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
+    @Comment("Zablokuj rozlewanie sie wody i lawy poza terenem gildii")
     @Comment("Dziala tylko jesli regiony sa wlaczone")
     @CustomKey("water-and-lava-flow-only-for-regions")
     public boolean blockFlow = false;
@@ -269,7 +269,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public String guiItemsVipTitle;
 
     @Comment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
-    @Comment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
+    @Comment("Jesli nie chcesz uzywac tej funkcji, to pozostaw gui-items-name: \"\"")
     @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
     @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby. (np. golden_apple)")
     @CustomKey("gui-items-name")
@@ -340,7 +340,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Nazwa pliku ze schematem poczatkowym gildii")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
-    @Comment("Schemat musi znajdować się w folderze FunnyGuilds")
+    @Comment("Schemat musi znajdowac sie w folderze FunnyGuilds")
     @CustomKey("guild-schematic-file-name")
     public String guildSchematicFileName = "funnyguilds.schematic";
 
@@ -506,18 +506,18 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("guild-tnt-protection-enabled")
     public boolean guildTNTProtectionEnabled = false;
 
-    @Comment("Czy wlaczyc ochrone przed TNT na całym serwerze w podanych godzinach")
+    @Comment("Czy wlaczyc ochrone przed TNT na calym serwerze w podanych godzinach")
     @CustomKey("guild-tnt-protection-global")
     public boolean guildTNTProtectionGlobal = false;
 
-    @Comment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
+    @Comment("O ktorej godzinie ma sie zaczac ochrona przed TNT w gildii")
     @Comment("Godzina w formacie HH:mm")
     @CustomKey("guild-tnt-protection-start-time")
     public String guildTNTProtectionStartTime_ = "22:00";
     @Exclude
     public LocalTime guildTNTProtectionStartTime;
 
-    @Comment("Do której godziny ma dzialac ochrona przed TNT w gildii")
+    @Comment("Do ktorej godziny ma dzialac ochrona przed TNT w gildii")
     @Comment("Godzina w formacie HH:mm")
     @CustomKey("guild-tnt-protection-end-time")
     public String guildTNTProtectionEndTime_ = "06:00";
@@ -546,7 +546,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Jakie materialy i z jaka szansa maja byc niszczone po wybuchu")
     @Comment("<material>: <szansa (w %)")
-    @Comment("Jeżeli wszystkie materialy maja miec okreslony % na wybuch, uzyj specjalnego znaku '*'")
+    @Comment("Jezeli wszystkie materialy maja miec okreslony % na wybuch, uzyj specjalnego znaku '*'")
     @CustomKey("explode-materials")
     public Map<String, Double> explodeMaterials_ = ImmutableMap.of(
             "ender_chest", 20.0,
@@ -566,7 +566,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("explode-should-affect-only-guild")
     public boolean explodeShouldAffectOnlyGuild = false;
 
-    @Comment("Możliwość podbijania gildii")
+    @Comment("Mozliwosc podbijania gildii")
     @CustomKey("war-enabled")
     public boolean warEnabled = true;
 
@@ -664,7 +664,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean skipPrivilegedPlayersInRankPositions = false;
 
     @Min(1)
-    @Comment("Co ile ticków ranking graczy oraz gildii powinien zostać odświeżony")
+    @Comment("Co ile tickow ranking graczy oraz gildii powinien zostac odswiezony")
     @CustomKey("ranking-update-interval")
     public int rankingUpdateInterval = 40;
 
@@ -962,7 +962,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("{KILLS} - liczba zabojstw gracza")
     @Comment("{DEATHS} - liczba smierci gracza")
     @Comment("{ASSISTS} - liczba asyst gracza")
-    @Comment("{LOGOUTS} - liczba wylogowań gracza podczas walki")
+    @Comment("{LOGOUTS} - liczba wylogowan gracza podczas walki")
     @Comment("{KDR} - stosunek zabojstw do smierci gracza")
     @Comment("{WG-REGION} - region WorldGuard'a, na ktorym znajduje sie gracz (pierwszy, jesli jest ich kilka)")
     @Comment("{WG-REGIONS} - regiony WorldGuard'a, na ktorych znajduje sie gracz (oddzielone przecinkami)")
@@ -1100,9 +1100,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("check-for-restricted-guild-names")
     public boolean checkForRestrictedGuildNames = false;
 
-    @Comment("Jeśli ustawione na false, nazwy i tagi z list 'blacklist-guild-names', 'blacklist-guild-tags' będą niedozwolone.")
-    @Comment("Jeśli ustawione na true, listy będą traktowane jako whitelist, czyli będą dozwolone tylko nazwy z 'blacklist-guild-names' i 'blacklist-guild-tags'.")
-    @Comment("Przydatne kiedy chcesz ograniczyć tworzenie np. do 2 gildii \"RED\", \"BLUE\"")
+    @Comment("Jesli ustawione na false, nazwy i tagi z list 'blacklist-guild-names', 'blacklist-guild-tags' beda niedozwolone.")
+    @Comment("Jesli ustawione na true, listy beda traktowane jako whitelist, czyli beda dozwolone tylko nazwy z 'blacklist-guild-names' i 'blacklist-guild-tags'.")
+    @Comment("Przydatne kiedy chcesz ograniczyc tworzenie np. do 2 gildii \"RED\", \"BLUE\"")
     @CustomKey("whitelist")
     public boolean whitelist = false;
 
@@ -1207,18 +1207,18 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean systemSecurityEnable = true;
 
     @DecimalMin("0")
-    @Comment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
-    @Comment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
+    @Comment("Margines sprawdzania jak daleko uderzyl gracz serce gildii")
+    @Comment("Jesli dostajesz falszywe alarmy od Security zwieksz te wartosc do okolo 0.50 lub wiecej")
     @CustomKey("reach-compensation")
     public double reachCompensation = 0.26;
 
     @Min(0)
-    @Comment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
+    @Comment("Margines sprawdzania przez ile blokow uderzyl gracz w serce gildii")
     @CustomKey("freeCam-compensation")
     public int freeCamCompensation = 0;
 
     @Min(1)
-    @Comment("Ilość wątków używanych przez ConcurrencyManager")
+    @Comment("Ilosc watkow uzywanych przez ConcurrencyManager")
     @CustomKey("concurrency-threads")
     public int concurrencyThreads = 1;
 
