@@ -187,7 +187,7 @@ public class GuildUtils {
 
     public static boolean isNameValid(String guildName) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        return config.whitelist != config.restrictedGuildNames.stream().anyMatch(name -> name.equalsIgnoreCase(guildName));
+        return config.whitelist == config.restrictedGuildNames.stream().anyMatch(name -> name.equalsIgnoreCase(guildName));
     }
 
     public static boolean isTagValid(String guildTag) {
