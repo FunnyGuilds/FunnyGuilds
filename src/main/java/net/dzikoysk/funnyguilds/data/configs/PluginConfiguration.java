@@ -1100,13 +1100,19 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("check-for-restricted-guild-names")
     public boolean checkForRestrictedGuildNames = false;
 
+    @Comment("Jeśli ustawione na false, nazwy i tagi z list 'blacklist-guild-names', 'blacklist-guild-tags' będą niedozwolone.")
+    @Comment("Jeśli ustawione na true, listy będą traktowane jako whitelist, czyli będą dozwolone tylko nazwy z 'blacklist-guild-names' i 'blacklist-guild-tags'.")
+    @Comment("Przydatne kiedy chcesz ograniczyć tworzenie np. do 2 gildii \"RED\", \"BLUE\"")
+    @CustomKey("whitelist")
+    public boolean whitelist = false;
+
     @Comment("Niedozwolone nazwy przy zakladaniu gildii")
-    @CustomKey("restricted-guild-names")
-    public List<String> restrictedGuildNames = Collections.singletonList("Administracja");
+    @CustomKey("blacklist-guild-names")
+    public List<String> blacklistGuildNames = Collections.singletonList("Administracja");
 
     @Comment("Niedozwolone tagi przy zakladaniu gildii")
-    @CustomKey("restricted-guild-tags")
-    public List<String> restrictedGuildTags = Collections.singletonList("TEST");
+    @CustomKey("blacklist-guild-tags")
+    public List<String> blacklistGuildTags = Collections.singletonList("TEST");
 
     @Comment("Czy powiadomienie o zabojstwie gracza powinno sie wyswietlac na title dla zabojcy")
     @CustomKey("display-title-notification-for-killer")

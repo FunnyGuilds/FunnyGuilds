@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.basic.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
@@ -186,11 +185,13 @@ public class GuildUtils {
     }
 
     public static boolean isNameValid(String guildName) {
-        return FunnyGuilds.getInstance().getPluginConfiguration().restrictedGuildNames.stream().noneMatch(name -> name.equalsIgnoreCase(guildName));
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        return config.whitelist != config.blacklistGuildNames.stream().anyMatch(name -> name.equalsIgnoreCase(guildName));
     }
 
     public static boolean isTagValid(String guildTag) {
-        return FunnyGuilds.getInstance().getPluginConfiguration().restrictedGuildTags.stream().noneMatch(tag -> tag.equalsIgnoreCase(guildTag));
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        return config.whitelist == config.blacklistGuildTags.stream().anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
     }
 
     private GuildUtils() {}
