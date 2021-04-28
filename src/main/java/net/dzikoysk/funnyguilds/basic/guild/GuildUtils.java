@@ -186,12 +186,12 @@ public class GuildUtils {
 
     public static boolean isNameValid(String guildName) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        return config.whitelist != config.blacklistGuildNames.stream().anyMatch(name -> name.equalsIgnoreCase(guildName));
+        return config.whitelist != config.restrictedGuildNames.stream().anyMatch(name -> name.equalsIgnoreCase(guildName));
     }
 
     public static boolean isTagValid(String guildTag) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        return config.whitelist == config.blacklistGuildTags.stream().anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
+        return config.whitelist == config.restrictedGuildTags.stream().anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
     }
 
     private GuildUtils() {}
