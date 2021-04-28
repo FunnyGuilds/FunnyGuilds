@@ -1096,7 +1096,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public String itemAmountSuffix;
 
-    @Comment("Czy filtry nazw i tagow gildii powinny byc wlaczone")
+    @Comment("Czy blacklista nazw i tagow gildii powinny byc wlaczona")
     @CustomKey("check-for-restricted-guild-names")
     public boolean checkForRestrictedGuildNames = false;
 
