@@ -85,16 +85,21 @@ public final class MaterialUtils {
     }
 
     public static String getItemCustomName(ItemStack itemStack){
-        if(itemStack == null || !itemStack.hasItemMeta()) {
+        if (itemStack == null) {
             return "";
         }
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta.hasDisplayName()) {
-            return itemMeta.getDisplayName();
-        } else {
+
+        if (itemMeta == null) {
             return "";
         }
+
+        if (!itemMeta.hasDisplayName()) {
+            return "";
+        }
+
+        return itemMeta.getDisplayName();
     }
 
     @Nullable
