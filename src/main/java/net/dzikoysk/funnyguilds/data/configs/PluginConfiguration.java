@@ -1096,15 +1096,23 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public String itemAmountSuffix;
 
-    @Comment("Czy filtry nazw i tagow gildii powinny byc wlaczone")
+    @Comment("Czy blacklista nazw i tagow gildii powinny byc wlaczona")
     @CustomKey("check-for-restricted-guild-names")
     public boolean checkForRestrictedGuildNames = false;
 
-    @Comment("Niedozwolone nazwy przy zakladaniu gildii")
+    @Comment("Jesli ustawione na false, nazwy i tagi z list 'restricted-guild-names', 'restricted-guild-tags' beda niedozwolone.")
+    @Comment("Jesli ustawione na true, 'restricted-guild-names', 'restricted-guild-tags' beda traktowane jako whitelist.")
+    @Comment("Przydatne kiedy chcesz ograniczyc tworzenie np. do 2 gildii \"RED\", \"BLUE\"")
+    @CustomKey("whitelist")
+    public boolean whitelist = false;
+
+    @Comment("Blacklista nazw przy zakladaniu gildii")
+    @Comment("Zamienia sie w whiteliste jesli 'whitelist' jest ustawione na true")
     @CustomKey("restricted-guild-names")
     public List<String> restrictedGuildNames = Collections.singletonList("Administracja");
 
-    @Comment("Niedozwolone tagi przy zakladaniu gildii")
+    @Comment("Blacklista tagów przy zakladaniu gildii")
+    @Comment("Zamienia sie w whiteliste jesli 'whitelist' jest ustawione na true")
     @CustomKey("restricted-guild-tags")
     public List<String> restrictedGuildTags = Collections.singletonList("TEST");
 
