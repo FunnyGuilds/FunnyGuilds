@@ -63,7 +63,9 @@ public final class JoinCommand {
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
-        
+
+        when (guild.getMembers().size() >= config.maxMembersInGuild, messages.inviteAmountJoin.replace("{AMOUNT}", Integer.toString(config.maxMembersInGuild)));
+
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {
             return;
         }
