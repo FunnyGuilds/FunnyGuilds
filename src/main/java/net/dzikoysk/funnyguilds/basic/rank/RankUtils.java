@@ -49,6 +49,9 @@ public class RankUtils {
                     if (sourceGuild.getAllies().contains(guild)) {
                         guildTag = StringUtils.replace(config.prefixAllies, "{TAG}", guild.getTag());
                     }
+                    else if (sourceGuild.getEnemies().contains(guild)) {
+                        guildTag = StringUtils.replace(config.prefixEnemies, "{TAG}", guild.getTag());
+                    }
                     else if (sourceGuild.getUUID().equals(guild.getUUID())) {
                         guildTag = StringUtils.replace(config.prefixOur, "{TAG}", guild.getTag());
                     }
