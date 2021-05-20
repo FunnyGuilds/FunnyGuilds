@@ -72,7 +72,7 @@ public class SQLDataModel implements DataModel {
         tabGuilds.add("born",     SQLType.BIGINT,  true);
         tabGuilds.add("validity", SQLType.BIGINT,  true);
         tabGuilds.add("pvp",      SQLType.BOOLEAN, true);
-        tabGuilds.add("attacked", SQLType.BIGINT);
+        tabGuilds.add("attacked", SQLType.BIGINT); //TODO: [FG 5.0] attacked -> protection
         tabGuilds.add("allies",   SQLType.TEXT);
         tabGuilds.add("enemies",  SQLType.TEXT);
         tabGuilds.add("info",     SQLType.TEXT);

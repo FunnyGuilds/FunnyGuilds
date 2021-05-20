@@ -31,7 +31,7 @@ public final class DeserializationUtils {
         guild.setEnemies((Set<Guild>) values[8]);
         guild.setBorn((long) values[9]);
         guild.setValidity((long) values[10]);
-        guild.setAttacked((long) values[11]);
+        guild.setProtection((long) values[11]);
         guild.setLives((int) values[12]);
         guild.setBan((long) values[13]);
         guild.setDeputies((Set<User>) values[14]);
