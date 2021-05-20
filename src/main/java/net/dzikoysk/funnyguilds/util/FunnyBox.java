@@ -429,10 +429,10 @@ public class FunnyBox {
 
     public RayTraceResult rayTrace(Vector start, Vector direction, double maxDistance) {
         Validate.notNull(start, "start cannot be null");
-        start.checkFinite();
+        checkFinite(start);
 
         Validate.notNull(direction, "direction cannot be null");
-        direction.checkFinite();
+        checkFinite(direction);
 
         Validate.isTrue(direction.lengthSquared() > 0, "directions's magnitude is 0");
         if (maxDistance < 0.0d) return null;
@@ -617,6 +617,12 @@ public class FunnyBox {
         public Entity getHitEntity() {
             return this.hitEntity;
         }
+    }
+
+    private void checkFinite(Vector vector) throws IllegalArgumentException {
+        NumberConversions.checkFinite(vector.getX(), "x not finite");
+        NumberConversions.checkFinite(vector.getY(), "y not finite");
+        NumberConversions.checkFinite(vector.getZ(), "z not finite");
     }
 
 }
