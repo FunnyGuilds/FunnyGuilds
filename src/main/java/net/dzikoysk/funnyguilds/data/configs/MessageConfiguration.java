@@ -164,6 +164,7 @@ public class MessageConfiguration extends OkaeriConfig {
             "&a/ga zycia [tag] [zycia] &8- &7Ustawia liczbe zyc gildii",
             "&a/ga przenies [tag] &8- &7Przenosi teren gildii",
             "&a/ga przedluz [tag] [czas] &8- &7Przedluza waznosc gildii o podany czas",
+            "&a/ga ochrona [tag] [czas] &8- &7Ustawia date wygasniecia ochrony",
             "&a/ga nazwa [tag] [nazwa] &8- &7Zmienia nazwe gildii",
             "&a/ga tag [tag] [nowy tag] &8- &7Zmienia tag gildii",
             "&a/ga spy &8- &7Szpieguje czat gildii",
