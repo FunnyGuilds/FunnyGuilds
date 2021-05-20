@@ -320,6 +320,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String invitePlayerExists = "&cNie ma takiego gracza na serwerze!";
     @Comment("Dostepne zmienne: {AMOUNT}")
     public String inviteAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe czlonkow w gildii! (&c{AMOUNT}&7)";
+    public String inviteAmountJoin = "&7Ta gildia osiagnela juz &cmaksymalna &7liczbe czlonkow! (&c{AMOUNT}&7)";
     public String inviteAllyAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe sojuszy miedzygildyjnych! (&c{AMOUNT}&7)";
     @Comment("Dostepne zmienne: {AMOUNT}, {GUILD}, {TAG}")
     public String inviteAllyTargetAmount = "&7Gildia {TAG} posiada juz maksymalna liczbe sojuszy! (&c{AMOUNT}&7)";
