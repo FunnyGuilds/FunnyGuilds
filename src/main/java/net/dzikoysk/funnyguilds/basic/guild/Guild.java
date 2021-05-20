@@ -36,11 +36,10 @@ public class Guild extends AbstractBasic {
     private long       born;
     private long       validity;
     private Date       validityDate;
-    private long       attacked;
+    private long       protection;
     private long       ban;
     private int        lives;
     private long       build;
-    private long       additionalProtection;
     private Set<UUID>  alliedFFGuilds;
 
     private Guild(UUID uuid) {
@@ -149,7 +148,7 @@ public class Guild extends AbstractBasic {
     }
 
     public boolean canBeAttacked() {
-        return this.getProtectionEndTime() < System.currentTimeMillis() && this.additionalProtection < System.currentTimeMillis();
+        return this.getProtection() < System.currentTimeMillis();
     }
 
     public void addDeputy(User user) {
@@ -164,10 +163,6 @@ public class Guild extends AbstractBasic {
     public void removeDeputy(User user) {
         this.deputies.remove(user);
         this.markChanged();
-    }
-
-    public void setAdditionalProtection(long timestamp) {
-        this.additionalProtection = timestamp;
     }
 
     public void setName(String name) {
@@ -262,8 +257,8 @@ public class Guild extends AbstractBasic {
         this.markChanged();
     }
 
-    public void setAttacked(long l) {
-        this.attacked = l;
+    public void setProtection(long protection) {
+        this.protection = protection;
         this.markChanged();
     }
 
@@ -295,14 +290,6 @@ public class Guild extends AbstractBasic {
 
     public void setEnderCrystal(Location loc) {
         this.enderCrystal = loc;
-    }
-
-    public long getProtectionEndTime() {
-        return this.attacked == this.born ? this.attacked + FunnyGuilds.getInstance().getPluginConfiguration().warProtection : this.attacked + FunnyGuilds.getInstance().getPluginConfiguration().warWait;
-    }
-
-    public long getAdditionalProtectionEndTime() {
-        return this.additionalProtection;
     }
 
     public boolean isSomeoneInRegion() {
@@ -389,8 +376,8 @@ public class Guild extends AbstractBasic {
         return this.validityDate == null ? this.validityDate = new Date(this.validity) : this.validityDate;
     }
 
-    public long getAttacked() {
-        return this.attacked;
+    public long getProtection() {
+        return this.protection;
     }
 
     public int getLives() {

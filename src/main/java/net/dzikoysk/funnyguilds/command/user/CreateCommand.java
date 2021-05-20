@@ -151,7 +151,7 @@ public final class CreateCommand {
         guild.setLives(config.warLives);
         guild.setBorn(System.currentTimeMillis());
         guild.setValidity(System.currentTimeMillis() + config.validityStart);
-        guild.setAttacked(System.currentTimeMillis() - config.warWait + config.warProtection);
+        guild.setProtection(System.currentTimeMillis() + config.warProtection);
         guild.setPvP(config.damageGuild);
         guild.setHome(guildLocation);
 

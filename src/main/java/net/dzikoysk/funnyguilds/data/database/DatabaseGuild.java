@@ -129,7 +129,7 @@ public class DatabaseGuild {
         statement.set("lives",    guild.getLives());
         statement.set("born",     guild.getBorn());
         statement.set("validity", guild.getValidity());
-        statement.set("attacked", guild.getAttacked());
+        statement.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
         statement.set("ban",      guild.getBan());
         statement.set("pvp",      guild.getPvP());
         statement.set("info",     "");

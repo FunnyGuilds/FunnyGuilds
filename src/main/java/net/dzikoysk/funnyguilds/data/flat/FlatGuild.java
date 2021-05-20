@@ -180,7 +180,7 @@ public class FlatGuild {
         wrapper.set("enemies", GuildUtils.getNames(guild.getEnemies()));
         wrapper.set("born", guild.getBorn());
         wrapper.set("validity", guild.getValidity());
-        wrapper.set("attacked", guild.getAttacked());
+        wrapper.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
         wrapper.set("lives", guild.getLives());
         wrapper.set("ban", guild.getBan());
         wrapper.set("pvp", guild.getPvP());

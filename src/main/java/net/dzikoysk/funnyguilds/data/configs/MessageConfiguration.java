@@ -164,6 +164,7 @@ public class MessageConfiguration extends OkaeriConfig {
             "&a/ga zycia [tag] [zycia] &8- &7Ustawia liczbe zyc gildii",
             "&a/ga przenies [tag] &8- &7Przenosi teren gildii",
             "&a/ga przedluz [tag] [czas] &8- &7Przedluza waznosc gildii o podany czas",
+            "&a/ga ochrona [tag] [czas] &8- &7Ustawia date wygasniecia ochrony",
             "&a/ga nazwa [tag] [nazwa] &8- &7Zmienia nazwe gildii",
             "&a/ga tag [tag] [nowy tag] &8- &7Zmienia tag gildii",
             "&a/ga spy &8- &7Szpieguje czat gildii",
@@ -197,7 +198,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
 
-    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}, {GUILD-ADDITIONAL-PROTECTION}")
+    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}")
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
@@ -549,9 +550,9 @@ public class MessageConfiguration extends OkaeriConfig {
     public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
     public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
 
-    public String adminNoAdditionalProtectionDateGiven = "&cPodaj date dodatkowej ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
-    public String adminInvalidAdditionalProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
-    public String adminAdditionalProtectionSetSuccessfully = "&aPomyslnie nadano dodatkowa ochrone dla gildii &7{TAG} &ado &7{DATE}";
+    public String adminNoProtectionDateGive = "&cPodaj date ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
+    public String adminInvalidProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
+    public String adminProtectionSetSuccessfully = "&aPomyslnie ustawiono ochrone dla gildii &7{TAG} &ado &7{DATE}";
 
     public String adminGuildHasNoHome = "&cGildia gracza nie ma ustawionej bazy!";
     @Comment("Dostepne zmienne: {ADMIN}")

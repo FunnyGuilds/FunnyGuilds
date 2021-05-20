@@ -48,8 +48,7 @@ public final class InfoCommand {
         String validity = config.dateFormat.format(new Date(guild.getValidity()));
         
         long now = System.currentTimeMillis();
-        long protectionEndTime = guild.getProtectionEndTime();
-        long additionalProtectionEndTime = guild.getAdditionalProtectionEndTime();
+        long protectionEndTime = guild.getProtection();
 
         for (String messageLine : messages.infoList) {
             messageLine = StringUtils.replace(messageLine, "{GUILD}", guild.getName());
@@ -61,7 +60,6 @@ public final class InfoCommand {
             messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", guild.getDeputies().isEmpty() ? "Brak" : ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
             messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", config.regionsEnabled ? String.valueOf(guild.getRegion().getSize()) : messages.gRegionSizeNoValue);
             messageLine = StringUtils.replace(messageLine, "{GUILD-PROTECTION}", protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now));
-            messageLine = StringUtils.replace(messageLine, "{GUILD-ADDITIONAL-PROTECTION}", additionalProtectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(additionalProtectionEndTime - now));
 
             Rank rank = guild.getRank();
             messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getPoints(), config.pointsFormat));

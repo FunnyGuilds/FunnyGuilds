@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
@@ -28,6 +29,7 @@ public class WarSystem {
     }
 
     public void attack(Player player, Guild guild) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         User user = User.get(player);
 
         if (!user.hasGuild()) {
@@ -46,17 +48,17 @@ public class WarSystem {
             return;
         }
 
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().warEnabled){
+        if (!config.warEnabled){
             WarUtils.message(player, 5);
             return;
         }
         
         if (!guild.canBeAttacked()) {
-            WarUtils.message(player, 2, (guild.getAttacked() + FunnyGuilds.getInstance().getPluginConfiguration().warWait) - System.currentTimeMillis());
+            WarUtils.message(player, 2, (guild.getProtection() + config.warWait) - System.currentTimeMillis());
             return;
         }
         
-        guild.setAttacked(System.currentTimeMillis());
+        guild.setProtection(System.currentTimeMillis() + config.warWait);
         
         if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
             guild.removeLive();

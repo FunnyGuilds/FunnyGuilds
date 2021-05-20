@@ -25,7 +25,7 @@ public final class ProtectionCommand {
     )
     public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 3, messages.adminNoAdditionalProtectionDateGiven);
+        when (args.length < 3, messages.adminNoProtectionDateGive);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
@@ -35,17 +35,17 @@ public final class ProtectionCommand {
         try {
             protectionDate = PROTECTION_DATE_FORMAT.parse(protectionDateAsString);
         } catch (ParseException e) {
-            sender.sendMessage(messages.adminInvalidAdditionalProtectionDate);
+            sender.sendMessage(messages.adminInvalidProtectionDate);
             return;
         }
 
-        guild.setAdditionalProtection(protectionDate.getTime());
+        guild.setProtection(protectionDate.getTime());
 
         Formatter formatter = new Formatter()
                 .register("{TAG}", guild.getTag())
                 .register("{DATE}", protectionDateAsString);
 
 
-        sender.sendMessage(formatter.format(messages.adminAdditionalProtectionSetSuccessfully));
+        sender.sendMessage(formatter.format(messages.adminProtectionSetSuccessfully));
     }
 }
