@@ -62,7 +62,7 @@ public class UserCache {
     }
 
     public double killedBy(User user) {
-        if (user == null) {
+        if (user == null || !damageCaches.containsKey(user)) {
             return 0.0D;
         }
 
