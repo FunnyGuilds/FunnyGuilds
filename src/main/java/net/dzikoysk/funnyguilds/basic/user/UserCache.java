@@ -66,7 +66,13 @@ public class UserCache {
             return 0.0D;
         }
 
-        return damageCaches.remove(user).getDamage();
+        DamageCache damageCache = damageCaches.remove(user);
+
+        if (damageCache == null) {
+            return 0.0D;
+        }
+
+        return damageCache.getDamage();
     }
 
     public void clearDamage() {
