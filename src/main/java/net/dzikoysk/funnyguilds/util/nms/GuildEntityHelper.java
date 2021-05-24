@@ -65,6 +65,8 @@ public final class GuildEntityHelper {
         OBJECT_TYPE = entityLivingClass.isAssignableFrom(entityClass) ? null : ObjectType.get(entityType);
     }
 
+    private GuildEntityHelper() {}
+
     public static Map<Guild, Integer> getGuildEntities() {
         return ENTITY_MAP;
     }
@@ -178,9 +180,6 @@ public final class GuildEntityHelper {
         for (Guild guild : GuildUtils.getGuilds()) {
             despawnGuildHeart(guild);
         }
-    }
-
-    private GuildEntityHelper() {
     }
 
 }

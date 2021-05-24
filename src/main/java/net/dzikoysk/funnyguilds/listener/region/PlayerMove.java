@@ -38,10 +38,11 @@ public class PlayerMove implements Listener {
         Location to = event.getTo();
         Player player = event.getPlayer();
 
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
 
-        Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(), () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             if (to == null) {
                 return;
             }
@@ -71,11 +72,9 @@ public class PlayerMove implements Listener {
                         return;
                     }
 
-                    FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
-                        if (config.createEntityType != null) {
-                            GuildEntityHelper.despawnGuildHeart(guild, player);
-                        }
-                    }, 40L);
+                    if (config.createEntityType != null) {
+                        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> GuildEntityHelper.despawnGuildHeart(guild, player), 40L);
+                    }
 
                     Formatter formatter = new Formatter()
                                     .register("{GUILD}", guild.getName())
@@ -121,11 +120,9 @@ public class PlayerMove implements Listener {
 
                 cache.setEnter(true);
 
-                FunnyGuilds.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
-                    if (config.createEntityType != null) {
-                        GuildEntityHelper.spawnGuildHeart(guild, player);
-                    }
-                }, 40L);
+                if (config.createEntityType != null) {
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> GuildEntityHelper.spawnGuildHeart(guild, player), 40L);
+                }
 
                 Formatter formatter = new Formatter()
                                 .register("{GUILD}", guild.getName())
