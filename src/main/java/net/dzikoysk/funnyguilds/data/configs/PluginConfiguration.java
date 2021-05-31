@@ -136,6 +136,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(0)
     @Comment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
+    @CustomKey("guild-min-members")
     public int minMembersToInclude = 1;
 
     @Comment("Czy wiadomosci o braku potrzebnych przedmiotow maja zawierac elementy, na ktore mozna najechac")
@@ -305,6 +306,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Na jakim poziomie ma byc wyznaczone centrum gildii")
     @Comment("Wpisz 0 jesli ma byc ustalone przez pozycje gracza")
+    @CustomKey("create-center-y")
     public int createCenterY = 60;
 
     @Comment("Czy ma sie tworzyc kula z obsydianu dookola centrum gildii")
@@ -366,6 +368,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public Set<Material> buggedBlocksExclude;
 
     @Comment("Czy klocki po 'zbugowaniu' maja zostac oddane")
+    @CustomKey("bugged-blocks-return")
     public boolean buggedBlockReturn = false;
 
     @Min(1)
@@ -461,9 +464,11 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
 
     @Comment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
+    @CustomKey("guild-tnt-protection-enabled")
     public boolean guildTNTProtectionEnabled = false;
 
     @Comment("Czy wlaczyc ochrone przed TNT na całym serwerze w podanych godzinach")
+    @CustomKey("guild-tnt-protection-global")
     public boolean guildTNTProtectionGlobal = false;
 
     @Comment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
@@ -1436,6 +1441,7 @@ public class PluginConfiguration extends OkaeriConfig {
         return this;
     }
 
+    @Names(strategy = NameStrategy.IDENTITY)
     public static class Commands extends OkaeriConfig {
         public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
@@ -1472,6 +1478,7 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment({"", "Komendy administratora"})
         public AdminCommands admin = new AdminCommands();
 
+        @Names(strategy = NameStrategy.IDENTITY)
         public static class FunnyCommand extends OkaeriConfig {
 
             public String name;
@@ -1496,6 +1503,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
         }
 
+        @Names(strategy = NameStrategy.IDENTITY)
         public static class AdminCommands extends OkaeriConfig {
             public String main = "ga";
             public String add = "ga dodaj";
