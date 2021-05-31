@@ -65,24 +65,19 @@ public class PluginConfiguration extends OkaeriConfig {
     public SimpleDateFormat dateFormat;
 
     @Comment("Wyswietlana nazwa pluginu")
-    @CustomKey("plugin-name")
     public String pluginName = "FunnyGuilds";
 
     @Comment("Czy plugin ma dzialac w trybie debug. Sluzy on do wysylania dodatkowych wiadomosci w celu zdiagnozowania bledow itp.")
-    @CustomKey("debug-mode")
     public boolean debugMode = false;
 
     @Comment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
-    @CustomKey("update-info")
     public boolean updateInfo = true;
 
     @Comment("Czy informacje o aktualizacji wersji nightly maja byc widoczne podczas wejscia na serwer")
     @Comment("Ta opcja działa tylko wtedy, gdy także jest włączona opcja 'update-info'")
-    @CustomKey("update-nightly-info")
     public boolean updateNightlyInfo = true;
 
     @Comment("Mozliwosc zakladania gildii. Mozna ja zmienic takze za pomoca komendy /ga enabled")
-    @CustomKey("guilds-enabled")
     public boolean guildsEnabled = true;
 
     @Comment("Czy tworzenie regionow gildii, oraz inne zwiazane z nimi rzeczy, maja byc wlaczone")
@@ -91,7 +86,6 @@ public class PluginConfiguration extends OkaeriConfig {
             "Gildie nie beda mialy w sobie zadnych informacji o regionach, a jesli regiony sa wlaczone - te informacje musza byc obecne")
     @Comment("Jesli regiony mialyby byc znowu wlaczone - bedzie trzeba wykasowac WSZYSTKIE dane pluginu")
     @Comment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
-    @CustomKey("regions-enabled")
     public boolean regionsEnabled = true;
 
     @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
@@ -101,7 +95,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Czy gracz po smierci ma sie pojawiac w bazie swojej gildii")
     @Comment("Dziala tylko jesli regiony sa wlaczone")
-    @CustomKey("respawn-in-base")
     public boolean respawnInBase = true;
 
     @Min(1)
@@ -139,7 +132,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Zasada sprawdzania tagu gildii przy jej tworzeniu")
     @Comment("Mozliwe zasady sa takie same jak w przypadku name-regex")
-    @CustomKey("tag-regex")
     public GuildRegex tagRegex = GuildRegex.LETTERS;
 
     @Min(0)
@@ -150,7 +142,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy wiadomosci o braku potrzebnych przedmiotow maja zawierac elementy, na ktore mozna najechac")
     @Comment("Takie elementy pokazuja informacje o przedmiocie, np. jego typ, nazwe czy opis")
     @Comment("Funkcja jest obecnie troche niedopracowana i moze powodowac problemy na niektorych wersjach MC, np. 1.8.8")
-    @CustomKey("enable-item-component")
     public boolean enableItemComponent = false;
 
     @Comment("Przedmioty wymagane do zalozenia gildii")
@@ -180,13 +171,11 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii")
-    @CustomKey("required-experience")
     public int requiredExperience = 0;
 
     @Min(0)
     @Comment("Wymagana ilosc pieniedzy do zalozenia gildii")
     @Comment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
-    @CustomKey("required-money")
     public double requiredMoney = 0;
 
     @Comment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
@@ -198,31 +187,25 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
-    @CustomKey("required-experience-vip")
     public int requiredExperienceVip = 0;
 
     @Min(0)
     @Comment("Wymagana ilosc pieniedzy do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @Comment("UWAGA: Aby ta opcja mogla dzialac, na serwerze musi byc plugin Vault oraz plugin dodajacy ekonomie")
-    @CustomKey("required-money-vip")
     public double requiredMoneyVip = 0;
 
     @Comment("Czy opcja wymaganego rankingu do zalozenia gildii ma byc wlaczona?")
-    @CustomKey("rank-create-enable")
     public boolean rankCreateEnable = true;
 
     @Comment("Minimalny ranking wymagany do zalozenia gildii")
-    @CustomKey("rank-create")
     public int rankCreate = 1000;
 
     @Comment("Minimalny ranking wymagany do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.rank")
-    @CustomKey("rank-create-vip")
     public int rankCreateVip = 800;
 
     @Comment("Czy GUI z przedmiotami na gildie ma byc wspolne dla wszystkich?")
     @Comment(
             "Jesli wlaczone - wszyscy gracze beda widzieli GUI stworzone w sekcji gui-items, a GUI z sekcji gui-items-vip bedzie ignorowane")
-    @CustomKey("use-common-gui")
     public boolean useCommonGUI = false;
 
     @Comment("GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
@@ -280,7 +263,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
     @Comment("Linie te mozna ustawic ponizej")
-    @CustomKey("add-lore-lines")
     public boolean addLoreLines = true;
 
     @Comment("Dodatkowe linie opisu, dodawane do kazdego przedmiotu, ktory jest jednoczesnie przedmiotem na gildie")
@@ -301,7 +283,6 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> guiItemsLore;
 
     @Comment("Minimalna odleglosc od spawnu")
-    @CustomKey("create-distance")
     public int createDistance = 100;
 
     @Comment("Minimalna odleglosc od regionu gildii do granicy mapy")
@@ -317,7 +298,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment(" ")
     @Comment("UWAGA: Jesli jako serca gildii chcesz uzyc bloku, ktory spada pod wplywem grawitacji - upewnij sie, ze bedzie on stal na jakims bloku!")
     @Comment("Jesli pojawi sie w powietrzu - spadnie i plugin nie bedzie odczytywal go poprawnie!")
-    @CustomKey("create-type")
     public String createType = "ender_crystal";
     @Exclude
     public Pair<Material, Byte> createMaterial;
@@ -330,24 +310,20 @@ public class PluginConfiguration extends OkaeriConfig {
     public int createCenterY = 60;
 
     @Comment("Czy ma sie tworzyc kula z obsydianu dookola centrum gildii")
-    @CustomKey("create-center-sphere")
     public boolean createCenterSphere = true;
 
     @Comment("Czy przy tworzeniu gildii powinien byc wklejany schemat")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
-    @CustomKey("paste-schematic-on-creation")
     public boolean pasteSchematicOnCreation = false;
 
     @Comment("Nazwa pliku ze schematem poczatkowym gildii")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
     @Comment("Schemat musi znajdować się w folderze FunnyGuilds")
-    @CustomKey("guild-schematic-file-name")
     public String guildSchematicFileName = "funnyguilds.schematic";
 
     @Comment("Czy schemat przy tworzeniu gildii powinien byc wklejany razem z powietrzem?")
     @Comment("Przy duzych schematach ma to wplyw na wydajnosc")
     @Comment("Wklejenie schematu wymaga pluginu WorldEdit")
-    @CustomKey("paste-schematic-with-air")
     public boolean pasteSchematicWithAir = true;
 
     @Exclude
@@ -360,13 +336,11 @@ public class PluginConfiguration extends OkaeriConfig {
     public Set<Material> blockedInteract;
 
     @Comment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
-    @CustomKey("bugged-blocks")
     public boolean buggedBlocks = false;
 
     @Min(0)
     @Comment("Czas po ktorym 'zbugowane' klocki maja zostac usuniete")
     @Comment("Czas podawany w tickach. 1 sekunda = 20 tickow")
-    @CustomKey("bugged-blocks-timer")
     public long buggedBlocksTimer = 20L;
 
     @Comment("Bloki, ktorych nie mozna 'bugowac'")
@@ -418,30 +392,24 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Mozliwosc ucieczki z terenu innej gildii")
     @Comment("Funkcja niedostepna jesli mozliwosc teleportacji do gildii jest wylaczona")
-    @CustomKey("escape-enable")
     public boolean escapeEnable = true;
 
     @Min(0)
     @Comment("Czas, w sekundach, jaki musi uplynac od wlaczenia ucieczki do teleportacji")
-    @CustomKey("escape-delay")
     public int escapeDelay = 120;
 
     @Comment("Mozliwosc ucieczki na spawn dla graczy bez gildii")
-    @CustomKey("escape-spawn")
     public boolean escapeSpawn = true;
 
     @Comment("Mozliwosc teleportacji do gildii")
-    @CustomKey("base-enable")
     public boolean baseEnable = true;
 
     @Min(0)
     @Comment("Czas oczekiwania na teleportacje, w sekundach")
-    @CustomKey("base-delay")
     public int baseDelay = 5;
 
     @Min(0)
     @Comment("Czas oczekiwania na teleportacje, w sekundach, dla graczy posiadajacych uprawnienie funnyguilds.vip.baseTeleportTime")
-    @CustomKey("base-delay-vip")
     public int baseDelayVip = 3;
 
     @Comment("Koszt teleportacji do gildii. Jezeli teleportacja ma byc darmowa, wystarczy wpisac: base-items: []")
@@ -459,11 +427,9 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<ItemStack> joinItems;
 
     @Comment("Mozliwosc powiekszania gildii")
-    @CustomKey("enlarge-enable")
     public boolean enlargeEnable = true;
 
     @Comment("O ile powieksza teren gildii 1 poziom")
-    @CustomKey("enlarge-size")
     public int enlargeSize = 5;
 
     @Comment("Koszt powiekszania gildii")
@@ -476,22 +442,18 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("Wielkosc regionu gildii")
-    @CustomKey("region-size")
     public int regionSize = 50;
 
     @Min(0)
     @Comment("Minimalna odleglosc miedzy terenami gildii")
-    @CustomKey("region-min-distance")
     public int regionMinDistance = 10;
 
     @Min(1)
     @Comment("Czas wyswietlania powiadomienia na pasku powiadomien, w sekundach")
-    @CustomKey("region-notification-time")
     public int regionNotificationTime = 15;
 
     @Min(1)
     @Comment("Co ile moze byc wywolywany pasek powiadomien przez jednego gracza, w sekundach")
-    @CustomKey("region-notification-cooldown")
     public int regionNotificationCooldown = 60;
 
     @Comment("Blokowane komendy dla graczy spoza gildii na jej terenie")
@@ -499,7 +461,6 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> regionCommands = Collections.singletonList("sethome");
 
     @Comment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
-    @CustomKey("guild-delete-cancel-if-someone-is-on-region")
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
 
     @Comment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
@@ -528,20 +489,16 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(0)
     @Comment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
-    @CustomKey("region-explode")
     public int regionExplode = 120;
 
     @Comment("Czy blokada po wybuchu ma obejmowac rowniez budowanie")
-    @CustomKey("region-explode-block-breaking")
     public boolean regionExplodeBlockBreaking = false;
 
     @Comment("Czy blokada po wybuchu ma obejmowac rowniez interakcje z blocked-interact")
-    @CustomKey("region-explode-block-interactions")
     public boolean regionExplodeBlockInteractions = false;
 
     @Min(0)
     @Comment("Zasieg pobieranych przedmiotow po wybuchu. Jezeli chcesz wylaczyc, wpisz 0")
-    @CustomKey("explode-radius")
     public int explodeRadius = 3;
 
     @Comment("Jakie materialy i z jaka szansa maja byc niszczone po wybuchu")
@@ -563,16 +520,13 @@ public class PluginConfiguration extends OkaeriConfig {
     public double defaultExplodeChance = -1.0;
 
     @Comment("Czy powstale wybuchy powinny niszczyc bloki wylacznie na terenach gildii")
-    @CustomKey("explode-should-affect-only-guild")
     public boolean explodeShouldAffectOnlyGuild = false;
 
     @Comment("Możliwość podbijania gildii")
-    @CustomKey("war-enabled")
     public boolean warEnabled = true;
 
     @Min(1)
     @Comment("Ile zyc ma gildia")
-    @CustomKey("war-lives")
     public int warLives = 3;
 
     @Comment("Po jakim czasie od zalozenia mozna zaatakowac gildie")
@@ -588,11 +542,9 @@ public class PluginConfiguration extends OkaeriConfig {
     public long warWait;
 
     @Comment("Czy gildia podczas okresu ochronnego ma posiadac ochrone przeciw TNT")
-    @CustomKey("war-tnt-protection")
     public boolean warTntProtection = true;
 
     @Comment("Czy zwierzeta na terenie gildii maja byc chronione przed osobami spoza gildii")
-    @CustomKey("animals-protection")
     public boolean animalsProtection = false;
 
     @Comment("Jaka waznosc ma gildia po jej zalozeniu")
@@ -623,7 +575,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Czy wiadomosc o zabiciu gracza powinna byc pokazywana wszystkim")
     @Comment("Jesli wylaczone - bedzie pokazywana tylko graczom, ktorzy brali udzial w walce")
-    @CustomKey("broadcast-death-message")
     public boolean broadcastDeathMessage = true;
 
     @Comment("Czy wiadomosc o zabiciu gracza powinna byc wyswietlana bez wzgledu na wylaczone wiadomosci o smierci")
@@ -631,11 +582,9 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean ignoreDisabledDeathMessages = false;
 
     @Comment("Ranking od ktorego rozpoczyna gracz")
-    @CustomKey("rank-start")
     public int rankStart = 1000;
 
     @Comment("Czy blokada nabijania rankingu na tych samych osobach powinna byc wlaczona")
-    @CustomKey("rank-farming-protect")
     public boolean rankFarmingProtect = true;
 
     @Comment("Czy ostatni gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
@@ -652,11 +601,9 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(0)
     @Comment("Czas w sekundach blokady nabijania rankingu po walce dwoch osob")
-    @CustomKey("rank-farming-cooldown")
     public int rankFarmingCooldown = 7200;
 
     @Comment("Czy ma byc zablokowana zmiana rankingu, jesli obie osoby z walki maja taki sam adres IP")
-    @CustomKey("rank-ip-protect")
     public boolean rankIPProtect = false;
 
     @Comment("Czy gracze z uprawnieniem 'funnyguilds.ranking.exempt' powinni byc uwzglednieni przy wyznaczaniu pozycji gracza w rankingu")
@@ -665,11 +612,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("Co ile ticków ranking graczy oraz gildii powinien zostać odświeżony")
-    @CustomKey("ranking-update-interval")
     public int rankingUpdateInterval = 40;
-
-    @Exclude
-    public long rankingUpdateInterval_;
 
     @Comment("Czy system asyst ma byc wlaczony")
     @CustomKey("rank-assist-enable")
@@ -1048,11 +991,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("Co ile tickow lista graczy powinna zostac odswiezona")
-    @CustomKey("player-list-update-interval")
     public int playerListUpdateInterval = 20;
-
-    @Exclude
-    public long playerListUpdateInterval_;
 
     @Comment("Czy zmienne typu {PTOP-%} oraz {GTOP-%} powinny byc pokolorowane w zaleznosci od relacji gildyjnych")
     @CustomKey("player-list-use-relationship-colors")
@@ -1241,7 +1180,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Typ zapisu danych")
     @Comment("FLAT - Lokalne pliki")
     @Comment("MYSQL - baza danych")
-    @CustomKey("data-model")
     public DataModel dataModel = DataModel.FLAT;
 
     @Comment("Dane wymagane do polaczenia z baza")
@@ -1254,7 +1192,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("1. Wylacz serwer")
     @Comment("2. Zmien dane w configu FG")
     @Comment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
-    @CustomKey("mysql")
     public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 5, 30000, true, "users", "guilds", "regions");
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
@@ -1499,15 +1436,12 @@ public class PluginConfiguration extends OkaeriConfig {
             }
         }
 
-        this.playerListUpdateInterval_ = Math.max(1, this.playerListUpdateInterval);
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
-
-        this.rankingUpdateInterval_ = Math.max(1, this.rankingUpdateInterval);
-        this.pluginTaskTerminationTimeout = Math.max(1, this.pluginTaskTerminationTimeout_);
 
         return this;
     }
 
+    @Names(strategy = NameStrategy.IDENTITY)
     public static class Commands extends OkaeriConfig {
         public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
@@ -1544,6 +1478,7 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment({"", "Komendy administratora"})
         public AdminCommands admin = new AdminCommands();
 
+        @Names(strategy = NameStrategy.IDENTITY)
         public static class FunnyCommand extends OkaeriConfig {
 
             public String name;
@@ -1568,6 +1503,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
         }
 
+        @Names(strategy = NameStrategy.IDENTITY)
         public static class AdminCommands extends OkaeriConfig {
             public String main = "ga";
             public String add = "ga dodaj";
@@ -1598,6 +1534,7 @@ public class PluginConfiguration extends OkaeriConfig {
         MYSQL
     }
 
+    @Names(strategy = NameStrategy.IDENTITY)
     public static class MySQL extends OkaeriConfig {
 
         @Variable("FG_MYSQL_HOSTNAME")
