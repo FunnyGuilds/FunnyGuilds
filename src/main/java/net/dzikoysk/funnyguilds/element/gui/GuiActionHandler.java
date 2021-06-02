@@ -1,53 +1,34 @@
 package net.dzikoysk.funnyguilds.element.gui;
 
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryInteractEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.InventoryHolder;
 
 public class GuiActionHandler implements Listener {
     
     @EventHandler
-    public void onClick(final InventoryClickEvent e) {
-        if (e.getInventory().getType().equals(InventoryType.CHEST)) {
-            GuiWindow window = GuiWindow.getWindow(e.getView().getTitle());
-            if (window != null) {
-                GuiItem item = window.getItem(e.getRawSlot());
-                if (item != null) {
-                    item.handleClick(e);
-                }
-                
-                e.setResult(Event.Result.DENY);
-            }
+    public void onClick(final InventoryClickEvent event) {
+        InventoryHolder normalHolder = event.getInventory().getHolder();
+
+        if (!(normalHolder instanceof FunnyHolder)) {
+            return;
         }
+
+        FunnyHolder holder = (FunnyHolder) normalHolder;
+
+        event.setCancelled(true);
+        holder.handleClick(event);
     }
 
     @EventHandler
-    public void onOpen(final InventoryOpenEvent e) {
-        GuiWindow window = GuiWindow.getWindow(e.getView().getTitle());
-        if (window != null) {
-            window.handleOpen(e);
-        }
-    }
+    public void onInteract(final InventoryInteractEvent event) {
+        InventoryHolder normalHolder = event.getInventory().getHolder();
 
-    @EventHandler
-    public void onClose(final InventoryCloseEvent e) {
-        GuiWindow window = GuiWindow.getWindow(e.getView().getTitle());
-        if (window != null) {
-            window.handleClose(e);
+        if (!(normalHolder instanceof FunnyHolder)) {
+            return;
         }
-    }
 
-    @EventHandler
-    public void onInteract(final InventoryInteractEvent e) {
-        if (GuiWindow.getWindow(e.getView().getTitle()) != null) {
-            if (e.getInventory().getType().equals(InventoryType.CHEST)) {
-                e.setResult(Event.Result.DENY);
-            }
-        }
+        event.setCancelled(true);
     }
 }
