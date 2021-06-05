@@ -24,7 +24,7 @@ public class GuiWindow {
     }
 
     public void setItem(int slot, ItemStack item, Consumer<InventoryClickEvent> consumer) {
-        this.holder.setCustomer(slot, consumer);
+        this.holder.setActionOnSlot(slot, consumer);
         this.inv.setItem(slot, item);
     }
 

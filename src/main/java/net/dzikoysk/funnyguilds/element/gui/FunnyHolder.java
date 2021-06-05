@@ -33,7 +33,7 @@ public class FunnyHolder implements InventoryHolder {
         return guiWindow;
     }
 
-    public void setCustomer(Integer slot, Consumer<InventoryClickEvent> consumer) {
+    public void setActionOnSlot(Integer slot, Consumer<InventoryClickEvent> consumer) {
         actions.put(slot, consumer != null ? consumer : event -> {});
     }
 
