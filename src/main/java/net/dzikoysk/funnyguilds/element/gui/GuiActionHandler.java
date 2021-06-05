@@ -2,7 +2,8 @@ package net.dzikoysk.funnyguilds.element.gui;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 public class GuiActionHandler implements Listener {
