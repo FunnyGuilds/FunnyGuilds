@@ -4,7 +4,6 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.element.gui.GuiItem;
 import net.dzikoysk.funnyguilds.element.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
@@ -38,7 +37,6 @@ public final class ItemsCommand {
         }
 
         GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
-        gui.setCloseEvent(close -> gui.unregister());
 
         for (ItemStack item : guiItems) {
             item = item.clone();
@@ -81,7 +79,7 @@ public final class ItemsCommand {
                 item.setItemMeta(meta);
             }
 
-            gui.setToNextFree(new GuiItem(item));
+            gui.setToNextFree(item);
         }
 
         gui.open(player);
