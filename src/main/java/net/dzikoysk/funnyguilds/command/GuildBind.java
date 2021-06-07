@@ -12,7 +12,7 @@ import org.panda_lang.utilities.inject.Resources;
 @FunnyComponent
 final class GuildBind implements Bind {
 
-    private static final UserBind USER_BIND = new UserBind();
+    private static final UserBind USER_BIND = new UserBind(FunnyGuilds.getInstance());
 
     @Override
     public void accept(Resources injectorResources) {

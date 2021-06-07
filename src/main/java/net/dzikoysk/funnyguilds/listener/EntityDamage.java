@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.EntityUtils;
@@ -17,11 +18,19 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 public class EntityDamage implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public EntityDamage(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
+        UserManager userManager = plugin.getUserManager();
+
         EntityUtils.getAttacker(event.getDamager()).peek(attacker -> {
-            PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-            User attackerUser = User.get(attacker);
+            PluginConfiguration config = plugin.getPluginConfiguration();
+            User attackerUser = userManager.getUser(attacker);
             Entity victim = event.getEntity();
 
             if (config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
@@ -37,7 +46,7 @@ public class EntityDamage implements Listener {
                 return;
             }
 
-            User victimUser = User.get((Player) event.getEntity());
+            User victimUser = userManager.getUser((Player) event.getEntity());
 
             if (victimUser.hasGuild() && attackerUser.hasGuild()) {
                 if (victimUser.getUUID().equals(attackerUser.getUUID())) {

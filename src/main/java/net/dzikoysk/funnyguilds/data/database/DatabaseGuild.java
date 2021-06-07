@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
@@ -21,7 +22,15 @@ import java.util.UUID;
 
 public class DatabaseGuild {
 
-    public static Guild deserialize(ResultSet rs) {
+    private final FunnyGuilds plugin;
+    private final SQLDataModel sqlDataModel;
+
+    public DatabaseGuild(FunnyGuilds plugin, SQLDataModel sqlDataModel) {
+        this.plugin = plugin;
+        this.sqlDataModel = sqlDataModel;
+    }
+
+    public Guild deserialize(ResultSet rs) {
         if (rs == null) {
             return null;
         }
@@ -54,17 +63,19 @@ public class DatabaseGuild {
             if (id != null && !id.isEmpty()) {
                 uuid = UUID.fromString(id);
             }
-            
-            final User owner = User.get(os);
+
+            UserManager userManager = plugin.getUserManager();
+
+            final User owner = userManager.getUser(os);
             
             Set<User> deputies = new HashSet<>();
             if (dp != null && !dp.isEmpty()) {
-                deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
+                deputies = userManager.getUsers(ChatUtils.fromString(dp));
             }
 
             Set<User> members = new HashSet<>();
             if (membersString != null && !membersString.equals("")) {
-                members = UserUtils.getUsers(ChatUtils.fromString(membersString));
+                members = userManager.getUsers(ChatUtils.fromString(membersString));
             }
 
             if (born == 0) {
@@ -107,12 +118,12 @@ public class DatabaseGuild {
         return null;
     }
 
-    public static void save(Guild guild) {
+    public void save(Guild guild) {
         String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(sqlDataModel.tabGuilds);
 
         statement.set("uuid",     guild.getUUID().toString());
         statement.set("name",     guild.getName());
@@ -137,22 +148,20 @@ public class DatabaseGuild {
         statement.executeUpdate();
     }
 
-    public static void delete(Guild guild) {
-        SQLNamedStatement statement = SQLBasicUtils.getDelete(SQLDataModel.tabGuilds);
+    public void delete(Guild guild) {
+        SQLNamedStatement statement = SQLBasicUtils.getDelete(sqlDataModel.tabGuilds);
 
         statement.set("uuid", guild.getUUID().toString());
         statement.executeUpdate();
     }
 
-    public static void updatePoints(Guild guild) {
-        SQLTable table = SQLDataModel.tabGuilds;
+    public void updatePoints(Guild guild) {
+        SQLTable table = sqlDataModel.tabGuilds;
         SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
 
         statement.set("points", guild.getRank().getPoints());
         statement.set("uuid", guild.getUUID().toString());
         statement.executeUpdate();
     }
-
-    private DatabaseGuild() {}
 
 }

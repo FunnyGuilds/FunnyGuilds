@@ -30,13 +30,15 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 
         try {
             if (dataModel instanceof SQLDataModel) {
-                DatabaseGuild.save(guild);
+                SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
+
+                sqlDataModel.getDatabaseGuild().save(guild);
 
                 if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-                    DatabaseRegion.save(guild.getRegion());
+                    sqlDataModel.getDatabaseRegion().save(guild.getRegion());
                 }
 
-                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(DatabaseUser::save);
+                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(sqlDataModel.getDatabaseUser()::save);
                 return;
             }
 

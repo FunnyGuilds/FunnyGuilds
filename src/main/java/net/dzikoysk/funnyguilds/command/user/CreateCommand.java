@@ -71,6 +71,7 @@ public final class CreateCommand {
         
         String name = args[1];
         Location guildLocation = player.getLocation().getBlock().getLocation();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
 
         when (tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
         when (tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
@@ -220,10 +221,10 @@ public final class CreateCommand {
             RegionUtils.addRegion(guild.getRegion());
         }
 
-        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(
+        plugin.getConcurrencyManager().postRequests(
                 new RankUpdateGuildRequest(guild),
-                new PrefixGlobalAddGuildRequest(guild),
-                new PrefixGlobalAddPlayerRequest(user.getName()),
+                new PrefixGlobalAddGuildRequest(guild, plugin),
+                new PrefixGlobalAddPlayerRequest(user.getName(), plugin),
                 new DatabaseUpdateGuildRequest(guild)
         );
 

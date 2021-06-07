@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
 
 public final class ProtectionSystem {
 
-    public enum ProtectionType {
-        UNAUTHORIZED,
-        LOCKED,
-        HEART
+    private final FunnyGuilds plugin;
+
+    public ProtectionSystem(FunnyGuilds plugin) {
+        this.plugin = plugin;
     }
 
-    public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, boolean includeBuildLock) {
+    public Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, boolean includeBuildLock) {
         if (player == null || location == null) {
             return Option.none();
         }
@@ -43,7 +43,7 @@ public final class ProtectionSystem {
             return Option.none();
         }
         
-        User user = User.get(player);
+        User user = plugin.getUserManager().getUser(player);
 
         if (!guild.getMembers().contains(user)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
@@ -54,26 +54,32 @@ public final class ProtectionSystem {
         }
 
         if (location.equals(region.getHeart())) {
-            Pair<Material, Byte> heartMaterial = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
+            Pair<Material, Byte> heartMaterial = plugin.getPluginConfiguration().createMaterial;
             return Option.when(heartMaterial != null && heartMaterial.getLeft() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
         return Option.none();
     }
 
-    public static void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
+    public void defaultResponse(Triple<Player, Guild, ProtectionType> result) {
         if (result.getRight() == ProtectionType.LOCKED) {
-            ProtectionSystem.sendRegionExplodeMessage(result.getLeft(), result.getMiddle());
+            sendRegionExplodeMessage(result.getLeft(), result.getMiddle());
         }
         else {
-            result.getLeft().sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
+            result.getLeft().sendMessage(plugin.getMessageConfiguration().regionOther);
         }
     }
 
-    private static void sendRegionExplodeMessage(Player player, Guild guild) {
-        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract
+    private void sendRegionExplodeMessage(Player player, Guild guild) {
+        player.sendMessage(plugin.getMessageConfiguration().regionExplodeInteract
                 .replace("{TIME}",Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis())))
         );
+    }
+
+    public enum ProtectionType {
+        UNAUTHORIZED,
+        LOCKED,
+        HEART
     }
 
 }

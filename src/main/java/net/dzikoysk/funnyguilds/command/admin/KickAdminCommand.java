@@ -25,7 +25,7 @@ public final class KickAdminCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds plugin, MessageConfiguration messages, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
 
         User user = UserValidation.requireUserByName(args[0]);
@@ -39,8 +39,8 @@ public final class KickAdminCommand {
             return;
         }
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
+        ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName(), plugin));
 
         Player player = user.getPlayer();
         guild.removeMember(user);
@@ -52,7 +52,7 @@ public final class KickAdminCommand {
                 .register("{PLAYER}", user.getName());
 
         if (player != null) {
-            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
+            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(plugin, player));
             player.sendMessage(formatter.format(messages.kickToPlayer));
         }
 

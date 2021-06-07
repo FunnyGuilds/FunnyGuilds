@@ -59,7 +59,7 @@ public interface DataModel {
 
     static DataModel create(FunnyGuilds funnyGuilds, PluginConfiguration.DataModel dataModel) {
         if (dataModel == PluginConfiguration.DataModel.MYSQL) {
-            return new SQLDataModel();
+            return new SQLDataModel(funnyGuilds);
         }
 
         return new FlatDataModel(funnyGuilds);

@@ -14,23 +14,21 @@ import org.bukkit.entity.Player;
 
 public class WarSystem {
 
-    private static WarSystem instance;
+    private final FunnyGuilds plugin;
+    private final WarListener warListener;
 
-    public WarSystem() {
-        instance = this;
+    public WarSystem(FunnyGuilds plugin) {
+        this.plugin = plugin;
+        this.warListener = new WarListener(plugin);
     }
 
-    public static WarSystem getInstance() {
-        if (instance == null) {
-            new WarSystem();
-        }
-
-        return instance;
+    public WarListener getWarListener() {
+        return warListener;
     }
 
     public void attack(Player player, Guild guild) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        User user = User.get(player);
+        User user = plugin.getUserManager().getUser(player);
 
         if (!user.hasGuild()) {
             WarUtils.message(player, 0);

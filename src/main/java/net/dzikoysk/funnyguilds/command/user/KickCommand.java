@@ -32,7 +32,7 @@ public final class KickCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @CanManage User user, Guild guild, String[] args) {
+    public void execute(FunnyGuilds plugin, MessageConfiguration messages, Player player, @CanManage User user, Guild guild, String[] args) {
         when (args.length < 1, messages.generalNoNickGiven);
 
         User formerUser = UserValidation.requireUserByName(args[0]);
@@ -44,14 +44,14 @@ public final class KickCommand {
             return;
         }
         
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(formerUser.getName()));
+        ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(formerUser.getName(), plugin));
 
         guild.removeMember(formerUser);
         formerUser.removeGuild();
 
         if (formerUser.isOnline()) {
-            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
+            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(plugin, player));
         }
 
         Formatter formatter = new Formatter()

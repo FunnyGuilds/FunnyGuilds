@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
@@ -24,11 +25,20 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerInteract implements Listener {
 
-    private final InfoCommand infoExecutor = new InfoCommand();
+    private final InfoCommand infoExecutor;
+    private final FunnyGuilds plugin;
+
+    public PlayerInteract(FunnyGuilds plugin) {
+        this.infoExecutor = new InfoCommand();
+        this.plugin = plugin;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        UserManager userManager = plugin.getUserManager();
+        SecuritySystem securitySystem = plugin.getSystemManager().getSecuritySystem();
+        WarSystem warSystem = plugin.getSystemManager().getWarSystem();
         Action eventAction = event.getAction();
         Player player = event.getPlayer();
         Block clicked = event.getClickedBlock();
@@ -56,20 +66,20 @@ public class PlayerInteract implements Listener {
 
             Guild guild = region.getGuild();
 
-            if (SecuritySystem.onHitCrystal(player, guild)) {
+            if (securitySystem.onHitCrystal(player, guild)) {
                 return;
             }
 
             event.setCancelled(true);
 
             if (eventAction == Action.LEFT_CLICK_BLOCK) {
-                WarSystem.getInstance().attack(player, guild);
+                warSystem.attack(player, guild);
                 return;
             }
 
             if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 try {
-                    infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[] { guild.getTag() });
+                    infoExecutor.execute(plugin, config, plugin.getMessageConfiguration(), player, new String[] { guild.getTag() });
                 } catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(player::sendMessage);
                 }
@@ -85,7 +95,7 @@ public class PlayerInteract implements Listener {
                 return;
             }
 
-            User user = User.get(player);
+            User user = userManager.getUser(player);
             boolean blocked = config.blockedInteract.contains(clicked.getType());
 
             if (guild.getMembers().contains(user)) {

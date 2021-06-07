@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.listener;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
@@ -13,6 +14,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.DataModel;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -39,13 +41,20 @@ import java.util.Map.Entry;
 
 public class PlayerDeath implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerDeath(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        UserManager userManager = plugin.getUserManager();
         Player playerVictim = event.getEntity();
         Player playerAttacker = event.getEntity().getKiller();
 
-        User victim = User.get(playerVictim);
+        User victim = userManager.getUser(playerVictim);
         UserCache victimCache = victim.getCache();
 
         victim.getRank().addDeath();
@@ -73,7 +82,7 @@ public class PlayerDeath implements Listener {
             playerAttacker = lastAttacker.getPlayer();
         }
 
-        User attacker = User.get(playerAttacker);
+        User attacker = userManager.getUser(playerAttacker);
         UserCache attackerCache = attacker.getCache();
 
         if (victim.equals(attacker)) {
@@ -227,21 +236,23 @@ public class PlayerDeath implements Listener {
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         if (config.dataModel == DataModel.MYSQL) {
+            SQLDataModel sqlDataModel = (SQLDataModel) plugin.getDataModel();
+
             if (victim.hasGuild()) {
-                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild()));
+                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild(), sqlDataModel));
             }
 
             if (attacker.hasGuild()) {
-                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(attacker.getGuild()));
+                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(attacker.getGuild(), sqlDataModel));
             }
 
-            taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
-            taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
+            taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(sqlDataModel, victim));
+            taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(sqlDataModel, attacker));
         }
 
         concurrencyManager.postTask(taskBuilder
-                .delegate(new DummyGlobalUpdateUserRequest(victim))
-                .delegate(new DummyGlobalUpdateUserRequest(attacker))
+                .delegate(new DummyGlobalUpdateUserRequest(victim, plugin))
+                .delegate(new DummyGlobalUpdateUserRequest(attacker, plugin))
                 .delegate(new RankUpdateUserRequest(victim))
                 .delegate(new RankUpdateUserRequest(attacker))
                 .build());

@@ -50,7 +50,7 @@ public class MetricsCollector implements Runnable {
             global.addPlotter(new MCStats.Plotter("Users") {
                 @Override
                 public int getValue() {
-                    return UserUtils.usersSize();
+                    return plugin.getUserManager().usersSize();
                 }
             });
             mcstats.start();
@@ -63,7 +63,7 @@ public class MetricsCollector implements Runnable {
                 @Override
                 public HashMap<String, Integer> getValues(HashMap<String, Integer> hashMap) {
                     hashMap.put("Guilds", GuildUtils.getGuilds().size());
-                    hashMap.put("Users", UserUtils.usersSize());
+                    hashMap.put("Users", plugin.getUserManager().usersSize());
                     return hashMap;
                 }
             });

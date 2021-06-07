@@ -12,7 +12,15 @@ import java.sql.ResultSet;
 
 public class DatabaseRegion {
 
-    public static Region deserialize(ResultSet rs) {
+    private final FunnyGuilds plugin;
+    private final SQLDataModel sqlDataModel;
+
+    public DatabaseRegion(FunnyGuilds plugin, SQLDataModel sqlDataModel) {
+        this.plugin = plugin;
+        this.sqlDataModel = sqlDataModel;
+    }
+
+    public Region deserialize(ResultSet rs) {
         if (rs == null) {
             return null;
         }
@@ -48,8 +56,8 @@ public class DatabaseRegion {
         return null;
     }
 
-    public static void save(Region region) {
-        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabRegions);
+    public void save(Region region) {
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(sqlDataModel.tabRegions);
 
         statement.set("name", region.getName());
         statement.set("center", LocationUtils.toString(region.getCenter()));
@@ -58,13 +66,11 @@ public class DatabaseRegion {
         statement.executeUpdate();
     }
 
-    public static void delete(Region region) {
-        SQLNamedStatement statement = SQLBasicUtils.getDelete(SQLDataModel.tabRegions);
+    public void delete(Region region) {
+        SQLNamedStatement statement = SQLBasicUtils.getDelete(sqlDataModel.tabRegions);
 
         statement.set("name", region.getName());
         statement.executeUpdate();
     }
-
-    private DatabaseRegion() {}
 
 }

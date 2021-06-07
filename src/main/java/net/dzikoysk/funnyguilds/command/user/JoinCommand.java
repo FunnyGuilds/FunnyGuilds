@@ -81,7 +81,7 @@ public final class JoinCommand {
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(user.getName()));
+        concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(user.getName(), FunnyGuilds.getInstance()));
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())

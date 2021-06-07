@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
@@ -18,9 +19,9 @@ public final class TopCommand {
         permission = "funnyguilds.top",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender) {
+    public void execute(FunnyGuilds plugin, MessageConfiguration messages, CommandSender sender) {
         User user = sender instanceof Player
-                ? User.get((Player) sender)
+                ? plugin.getUserManager().getUser((Player) sender)
                 : null;
 
         for (String messageLine : messages.topList) {

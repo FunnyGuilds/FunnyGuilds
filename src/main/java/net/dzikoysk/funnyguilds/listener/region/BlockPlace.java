@@ -20,7 +20,13 @@ public class BlockPlace implements Listener {
 
     private static final Vector ANTI_GLITCH_VELOCITY = new Vector(0, 0.4, 0);
 
-    private final PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+    private final ProtectionSystem protectionSystem;
+    private final PluginConfiguration config;
+
+    public BlockPlace(FunnyGuilds plugin) {
+        this.config = plugin.getPluginConfiguration();
+        this.protectionSystem = plugin.getSystemManager().getProtectionSystem();
+    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlace(BlockPlaceEvent event) {
@@ -29,8 +35,8 @@ public class BlockPlace implements Listener {
         Material type = block.getType();
         Location blockLocation = block.getLocation();
 
-        boolean isProtected = ProtectionSystem.isProtected(player, blockLocation, true)
-                .peek(ProtectionSystem::defaultResponse)
+        boolean isProtected = protectionSystem.isProtected(player, blockLocation, true)
+                .peek(protectionSystem::defaultResponse)
                 .isPresent();
 
         if (!isProtected) {

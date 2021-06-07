@@ -5,6 +5,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ public final class PlaceholderAPIHook {
                 return "";
             }
 
-            User user = User.get(player);
+            User user = UserManager.getInstance().getUser(player);
             if (user == null) {
                 return "";
             }

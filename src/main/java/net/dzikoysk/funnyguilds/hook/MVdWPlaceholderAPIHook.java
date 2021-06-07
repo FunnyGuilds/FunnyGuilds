@@ -25,7 +25,7 @@ public final class MVdWPlaceholderAPIHook {
                     return StringUtils.EMPTY;
                 }
 
-                User user = User.get(target.getUniqueId());
+                User user = plugin.getUserManager().getUser(target.getUniqueId());
 
                 return variable.getValue().get(user);
             });
@@ -35,7 +35,7 @@ public final class MVdWPlaceholderAPIHook {
         for (int i = 1; i <= 100; i++) {
             final int index = i;
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + index, event -> {
-                User user = User.get(event.getPlayer());
+                User user = plugin.getUserManager().getUser(event.getPlayer());
                 return RankUtils.parseRank(user, "{GTOP-" + index + "}");
             });
         }

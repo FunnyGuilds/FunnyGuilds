@@ -30,7 +30,7 @@ public final class LeaveCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @IsMember User user, Guild guild) {
+    public void execute(FunnyGuilds plugin, MessageConfiguration messages, Player player, @IsMember User user, Guild guild) {
         when (user.isOwner(), messages.leaveIsOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, user, guild, user))) {
@@ -40,8 +40,8 @@ public final class LeaveCommand {
         guild.removeMember(user);
         user.removeGuild();
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()), new PrefixGlobalUpdatePlayer(player));
+        ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName(), plugin), new PrefixGlobalUpdatePlayer(plugin, player));
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())

@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.element.tablist;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.rank.RankUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
@@ -78,7 +79,7 @@ public abstract class AbstractTablist {
     }
 
     public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, Player player) {
-        return createTablist(pattern, header, footer, ping, User.get(player));
+        return createTablist(pattern, header, footer, ping, UserManager.getInstance().getUser(player));
     }
     
     public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, User user) {

@@ -16,23 +16,25 @@ import java.util.concurrent.TimeUnit;
 
 public final class WarListener {
 
-    private static final InfoCommand INFO_EXECUTOR = new InfoCommand();
-    
-    private static final Class<?> USE_ENTITY_CLASS;
-    private static final Field PACKET_ID_FIELD;
-    private static final Field PACKET_ACTION_FIELD;
-    private static final Field ENUM_HAND_FIELD;
+    private final InfoCommand INFO_EXECUTOR;
+    private final FunnyGuilds plugin;
 
-    static {
+    private final Class<?> USE_ENTITY_CLASS;
+    private final Field PACKET_ID_FIELD;
+    private final Field PACKET_ACTION_FIELD;
+    private final Field ENUM_HAND_FIELD;
+
+    public WarListener(FunnyGuilds plugin) {
+        this.plugin = plugin;
+        this.INFO_EXECUTOR = new InfoCommand();
+
         USE_ENTITY_CLASS = Reflections.getNMSClass("PacketPlayInUseEntity");
         PACKET_ID_FIELD = Reflections.getPrivateField(USE_ENTITY_CLASS, "a");
         PACKET_ACTION_FIELD = Reflections.getPrivateField(USE_ENTITY_CLASS, "action");
         ENUM_HAND_FIELD = Reflections.SERVER_VERSION.startsWith("v1_8") ? null : Reflections.getPrivateField(USE_ENTITY_CLASS, "d");
     }
 
-    private WarListener() {}
-
-    public static void use(Player player, Object packet) {
+    public void use(Player player, Object packet) {
         try {
             if (packet == null) {
                 return;
@@ -64,7 +66,10 @@ public final class WarListener {
         }
     }
 
-    private static void call(Player player, int id, String action, String hand) {
+    private void call(Player player, int id, String action, String hand) {
+        SecuritySystem securitySystem = plugin.getSystemManager().getSecuritySystem();
+        WarSystem warSystem = plugin.getSystemManager().getWarSystem();
+
         for (Map.Entry<Guild, Integer> entry : GuildEntityHelper.getGuildEntities().entrySet()) {
             if (!entry.getValue().equals(id)) {
                 continue;
@@ -72,17 +77,17 @@ public final class WarListener {
 
             Guild guild = entry.getKey();
 
-            if (SecuritySystem.onHitCrystal(player, guild)) {
+            if (securitySystem.onHitCrystal(player, guild)) {
                 return;
             }
 
             if ("ATTACK".equalsIgnoreCase(action)) {
-                WarSystem.getInstance().attack(player, entry.getKey());
+                warSystem.attack(player, entry.getKey());
                 return;
             }
 
             if ("INTERACT_AT".equalsIgnoreCase(action)) {
-                PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+                PluginConfiguration config = plugin.getPluginConfiguration();
                 
                 if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                     return;
@@ -93,7 +98,7 @@ public final class WarListener {
                 }
 
                 try {
-                    INFO_EXECUTOR.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[]{ entry.getKey().getTag() });
+                    INFO_EXECUTOR.execute(plugin, config, plugin.getMessageConfiguration(), player, new String[]{ entry.getKey().getTag() });
                 } catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(player::sendMessage);
                 }

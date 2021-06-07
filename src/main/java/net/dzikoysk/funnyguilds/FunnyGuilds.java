@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.user.UserUtils;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.command.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
@@ -27,6 +27,7 @@ import net.dzikoysk.funnyguilds.listener.*;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
 import net.dzikoysk.funnyguilds.listener.region.*;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
+import net.dzikoysk.funnyguilds.system.SystemManager;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
@@ -57,6 +58,8 @@ public class FunnyGuilds extends JavaPlugin {
     private MessageConfiguration   messageConfiguration;
     private ConcurrencyManager     concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
+    private UserManager            userManager;
+    private SystemManager          systemManager;
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
@@ -133,6 +136,8 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
+        this.userManager = new UserManager(this);
+
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
@@ -154,18 +159,18 @@ public class FunnyGuilds extends JavaPlugin {
         collector.start();
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
-        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(), 20L, this.pluginConfiguration.playerListUpdateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.pluginConfiguration.playerListUpdateInterval);
+        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new GuiActionHandler(), this);
-        pluginManager.registerEvents(new EntityDamage(), this);
-        pluginManager.registerEvents(new EntityInteract(), this);
-        pluginManager.registerEvents(new PlayerChat(), this);
-        pluginManager.registerEvents(new PlayerDeath(), this);
+        pluginManager.registerEvents(new EntityDamage(this), this);
+        pluginManager.registerEvents(new EntityInteract(this), this);
+        pluginManager.registerEvents(new PlayerChat(this), this);
+        pluginManager.registerEvents(new PlayerDeath(this), this);
         pluginManager.registerEvents(new PlayerJoin(this), this);
-        pluginManager.registerEvents(new PlayerLogin(), this);
-        pluginManager.registerEvents(new PlayerQuit(), this);
+        pluginManager.registerEvents(new PlayerLogin(this), this);
+        pluginManager.registerEvents(new PlayerQuit(this), this);
         pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
         pluginManager.registerEvents(new TntProtection(), this);
 
@@ -174,28 +179,28 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
-            pluginManager.registerEvents(new EntityPlace(), this);
+            pluginManager.registerEvents(new EntityPlace(this), this);
         }
         else {
             logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
         }
 
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
-                new BlockBreak(),
-                new BlockIgnite(),
-                new BlockPlace(),
-                new BucketAction(),
+                new BlockBreak(this),
+                new BlockIgnite(this),
+                new BlockPlace(this),
+                new BucketAction(this),
                 new EntityExplode(),
-                new HangingBreak(),
-                new HangingPlace(),
-                new PlayerCommand(),
-                new PlayerInteract(),
+                new HangingBreak(this),
+                new HangingPlace(this),
+                new PlayerCommand(this),
+                new PlayerInteract(this),
                 new EntityProtect()
         );
 
-        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, new PlayerMove());
+        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, new PlayerMove(this));
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, new BlockPhysics());
-        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, new PlayerRespawn());
+        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, new PlayerRespawn(this));
         this.dynamicListenerManager.reloadAll();
         this.patch();
 
@@ -225,7 +230,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
-        for (User user : UserUtils.getUsers()) {
+        for (User user : userManager.getUsers()) {
             user.getBossBar().removeNotification();
         }
 
@@ -257,7 +262,7 @@ public class FunnyGuilds extends JavaPlugin {
         for (Player player : this.getServer().getOnlinePlayers()) {
             this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
 
-            User user = User.get(player);
+            User user = userManager.getUser(player);
 
             if (user.getCache().getScoreboard() == null) {
                 if (pluginConfiguration.useSharedScoreboard) {
@@ -328,6 +333,14 @@ public class FunnyGuilds extends JavaPlugin {
 
     public DynamicListenerManager getDynamicListenerManager() {
         return this.dynamicListenerManager;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
+    }
+
+    public SystemManager getSystemManager() {
+        return systemManager;
     }
 
     public void reloadPluginConfiguration() throws OkaeriException {

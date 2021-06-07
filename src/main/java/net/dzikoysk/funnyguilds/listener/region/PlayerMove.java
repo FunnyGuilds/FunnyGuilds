@@ -27,6 +27,12 @@ import org.panda_lang.utilities.commons.text.Formatter;
 
 public class PlayerMove implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerMove(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
         onMove(event);
@@ -38,7 +44,6 @@ public class PlayerMove implements Listener {
         Location to = event.getTo();
         Player player = event.getPlayer();
 
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
         PluginConfiguration config = plugin.getPluginConfiguration();
         MessageConfiguration messages = plugin.getMessageConfiguration();
 
@@ -51,7 +56,7 @@ public class PlayerMove implements Listener {
                 return;
             }
 
-            User user = User.get(player);
+            User user = plugin.getUserManager().getUser(player);
 
             if (user == null) {
                 return;

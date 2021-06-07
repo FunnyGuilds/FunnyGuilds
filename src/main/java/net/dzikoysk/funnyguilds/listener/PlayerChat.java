@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import org.apache.commons.lang3.StringUtils;
@@ -17,11 +18,19 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class PlayerChat implements Listener {
 
+    private final FunnyGuilds plugin;
+    private final UserManager userManager;
+
+    public PlayerChat(FunnyGuilds plugin) {
+        this.plugin = plugin;
+        this.userManager = plugin.getUserManager();
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Player player = event.getPlayer();
-        User user = User.get(player);
+        User user = userManager.getUser(player);
 
         if (user.hasGuild()) {
             Guild guild = user.getGuild();
@@ -71,7 +80,7 @@ public class PlayerChat implements Listener {
         String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
 
         for (Player looped : Bukkit.getOnlinePlayers()) {
-            if (User.get(looped).getCache().isSpy()) {
+            if (userManager.getUser(looped).getCache().isSpy()) {
                 looped.sendMessage(spyMessage);
             }
         }
@@ -87,7 +96,7 @@ public class PlayerChat implements Listener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(userManager.getUser(player), config)));
             
             String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
@@ -112,7 +121,7 @@ public class PlayerChat implements Listener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(userManager.getUser(player), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
@@ -141,7 +150,7 @@ public class PlayerChat implements Listener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(userManager.getUser(player), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);

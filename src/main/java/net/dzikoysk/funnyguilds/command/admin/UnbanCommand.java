@@ -1,13 +1,14 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildUnbanEvent;
-import net.dzikoysk.funnyguilds.system.ban.BanUtils;
+import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.commons.text.Formatter;
@@ -21,18 +22,20 @@ public final class UnbanCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds plugin, MessageConfiguration messages, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         when (!guild.isBanned(), messages.adminGuildNotBanned);
         
         User admin = AdminUtils.getAdminUser(sender);
+        BanSystem banSystem = plugin.getSystemManager().getBanSystem();
+
         if (!SimpleEventHandler.handle(new GuildUnbanEvent(AdminUtils.getCause(admin), admin, guild))) {
             return;
         }
 
-        BanUtils.unban(guild);
+        banSystem.unban(guild);
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())

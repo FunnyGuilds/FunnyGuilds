@@ -25,7 +25,7 @@ public final class AddCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds plugin, MessageConfiguration messages, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
         when (!GuildUtils.tagExists(args[0]), messages.generalNoGuildFound);
         when (args.length < 2, messages.generalNoNickGiven);
@@ -42,7 +42,7 @@ public final class AddCommand {
         
         guild.addMember(userToAdd);
         userToAdd.setGuild(guild);
-        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(new PrefixGlobalAddPlayerRequest(userToAdd.getName()));
+        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(new PrefixGlobalAddPlayerRequest(userToAdd.getName(), plugin));
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())

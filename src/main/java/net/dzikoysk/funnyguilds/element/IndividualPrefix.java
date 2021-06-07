@@ -13,17 +13,21 @@ import java.util.Set;
 public class IndividualPrefix {
 
     private final User user;
+    private final FunnyGuilds plugin;
 
-    public IndividualPrefix(User user) {
+    public IndividualPrefix(User user, FunnyGuilds plugin) {
+        this.plugin = plugin;
         this.user = user;
     }
 
     protected void addPlayer(String player) {
+
         if (player == null) {
             return;
         }
         
-        User user = User.get(player);
+        User user = plugin.getUserManager().getUser(player);
+
         if (!user.hasGuild()) {
             return;
         }
@@ -48,7 +52,7 @@ public class IndividualPrefix {
         
         if (this.getUser().hasGuild()) {
             if (this.getUser().equals(user) || this.getUser().getGuild().getMembers().contains(user)) {
-                team.setPrefix(replace(FunnyGuilds.getInstance().getPluginConfiguration().prefixOur, "{TAG}", user.getGuild().getTag()));
+                team.setPrefix(replace(plugin.getPluginConfiguration().prefixOur, "{TAG}", user.getGuild().getTag()));
             }
         }
         
@@ -123,7 +127,7 @@ public class IndividualPrefix {
             }
         }
 
-        registerSoloTeam(User.get(player));
+        registerSoloTeam(plugin.getUserManager().getUser(player));
     }
 
     protected void removeGuild(Guild guild) {

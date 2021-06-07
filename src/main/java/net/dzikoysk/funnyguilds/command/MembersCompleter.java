@@ -4,6 +4,7 @@ import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -16,9 +17,15 @@ import java.util.List;
 @FunnyComponent
 final class MembersCompleter implements Completer {
 
+    private final FunnyGuilds plugin;
+
+    MembersCompleter(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
-        return Option.when(context.getCommandSender() instanceof Player, User.get((OfflinePlayer) context.getCommandSender()))
+        return Option.when(context.getCommandSender() instanceof Player, plugin.getUserManager().getUser((OfflinePlayer) context.getCommandSender()))
                 .filter(User::hasGuild)
                 .map(User::getGuild)
                 .map(guild -> CommandUtils.collectCompletions(guild.getMembers(), prefix, limit, ArrayList::new, User::getName))

@@ -21,7 +21,7 @@ public final class BungeeTabListPlusHook {
                 
                 @Override
                 public String getReplacement(Player player) {                  
-                    User user = User.get(player);
+                    User user = plugin.getUserManager().getUser(player);
                     if (user == null) {
                         return "";
                     }
@@ -38,7 +38,7 @@ public final class BungeeTabListPlusHook {
 
                 @Override
                 public String getReplacement(Player player) {
-                    User user = User.get(player);
+                    User user =  plugin.getUserManager().getUser(player);
                     return RankUtils.parseRank(user, "{GTOP-" + index + "}");
                 }
             });

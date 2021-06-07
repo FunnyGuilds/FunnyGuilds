@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
 import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -294,7 +295,7 @@ public class Guild extends AbstractBasic {
 
     public boolean isSomeoneInRegion() {
         return FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && Bukkit.getOnlinePlayers().stream()
-                .filter(player -> User.get(player).getGuild() != this)
+                .filter(player -> UserManager.getInstance().getUser(player).getGuild() != this)
                 .map(player -> RegionUtils.getAt(player.getLocation()))
                 .anyMatch(region -> region != null && region.getGuild() == this);
     }

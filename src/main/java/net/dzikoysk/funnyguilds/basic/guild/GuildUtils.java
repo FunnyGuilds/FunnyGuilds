@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.basic.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.util.nms.BlockDataChanger;
@@ -35,7 +34,8 @@ public class GuildUtils {
     }
 
     public static void deleteGuild(Guild guild) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
 
         if (guild == null) {
             return;
@@ -50,7 +50,7 @@ public class GuildUtils {
                 } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                     Location centerLocation = region.getCenter().clone();
 
-                    Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
                         Block block = centerLocation.getBlock().getRelative(BlockFace.DOWN);
 
                         if (block.getLocation().getBlockY() > 1) {
@@ -63,8 +63,8 @@ public class GuildUtils {
             RegionUtils.delete(guild.getRegion());
         }
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalRemoveGuildRequest(guild));
+        ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalRemoveGuildRequest(guild, plugin));
 
         UserUtils.removeGuild(guild.getMembers());
 
@@ -76,12 +76,15 @@ public class GuildUtils {
             globalGuild.removeEnemy(guild);
         }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = ((FlatDataModel) FunnyGuilds.getInstance().getDataModel());
-            dataModel.getGuildFile(guild).delete();
+        DataModel dataModel = plugin.getDataModel();
+
+        if (dataModel instanceof FlatDataModel) {
+            FlatDataModel flat = ((FlatDataModel) dataModel);
+            flat.getGuildFile(guild).delete();
         }
-        else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            DatabaseGuild.delete(guild);
+        else if (dataModel instanceof SQLDataModel) {
+            SQLDataModel sql = ((SQLDataModel) dataModel);
+            sql.getDatabaseGuild().delete(guild);
         }
 
         guild.delete();

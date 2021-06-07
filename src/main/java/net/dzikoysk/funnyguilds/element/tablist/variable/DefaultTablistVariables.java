@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
@@ -123,7 +124,7 @@ public final class DefaultTablistVariables {
 
         putSimple("player", "PLAYER", User::getName);
         putSimple("guilds", "GUILDS", user -> GuildUtils.getGuilds().size());
-        putSimple("users", "USERS", user -> UserUtils.getUsers().size());
+        putSimple("users", "USERS", user -> UserManager.getInstance().getUsers().size());
         putSimple("ping", "PING", User::getPing);
         putSimple("points", "POINTS", user -> user.getRank().getPoints());
         putSimple("position", "POSITION", user -> user.getRank().getPosition());

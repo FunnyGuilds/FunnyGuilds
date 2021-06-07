@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -32,7 +33,9 @@ public class FlatGuild {
     }
 
     public static Guild deserialize(File file) {
-        PluginConfiguration configuration = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
+        UserManager userManager = funnyGuilds.getUserManager();
+        PluginConfiguration configuration = funnyGuilds.getPluginConfiguration();
         YamlWrapper wrapper = new YamlWrapper(file);
 
         String id = wrapper.getString("uuid");
@@ -84,11 +87,11 @@ public class FlatGuild {
             uuid = UUID.fromString(id);
         }
 
-        final User owner = User.get(ownerName);
+        final User owner = userManager.getUser(ownerName);
 
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
         if (deputyName != null && !deputyName.isEmpty()) {
-            deputies = UserUtils.getUsers(ChatUtils.fromString(deputyName));
+            deputies = userManager.getUsers(ChatUtils.fromString(deputyName));
         }
 
         Location home = null;
@@ -106,7 +109,7 @@ public class FlatGuild {
             memberNames.add(ownerName);
         }
 
-        Set<User> members = UserUtils.getUsers(memberNames);
+        Set<User> members = userManager.getUsers(memberNames);
         Set<Guild> allies = loadGuilds(allyNames);
         Set<Guild> enemies = loadGuilds(enemyNames);
 

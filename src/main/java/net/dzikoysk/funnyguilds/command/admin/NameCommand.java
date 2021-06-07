@@ -7,10 +7,9 @@ import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.command.GuildValidation;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -27,7 +26,7 @@ public final class NameCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds plugin, MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
         when (args.length < 2, messages.adminNoNewNameGiven);
 
@@ -41,28 +40,32 @@ public final class NameCommand {
             return;
         }
 
+        DataModel dataModel = plugin.getDataModel();
+
         if (config.regionsEnabled) {
             Region region = guild.getRegion();
 
-            if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-                FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
-                dataModel.getRegionFile(region).delete();
+            if (dataModel instanceof FlatDataModel) {
+                FlatDataModel flat = (FlatDataModel) dataModel;
+                flat.getRegionFile(region).delete();
             }
 
-            if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-                DatabaseRegion.delete(region);
+            if (dataModel instanceof SQLDataModel) {
+                SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
+                sqlDataModel.getDatabaseRegion().delete(region);
             }
             
             region.setName(args[1]);
         }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
-            dataModel.getGuildFile(guild).delete();
+        if (dataModel instanceof FlatDataModel) {
+            FlatDataModel flat = (FlatDataModel) dataModel;
+            flat.getGuildFile(guild).delete();
         }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            DatabaseGuild.delete(guild);
+        if (dataModel instanceof SQLDataModel) {
+            SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
+            sqlDataModel.getDatabaseGuild().delete(guild);
         }
         
         guild.setName(args[1]);

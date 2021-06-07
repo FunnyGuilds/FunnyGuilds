@@ -11,11 +11,15 @@ import org.bukkit.entity.Player;
 
 import java.util.Date;
 
-public final class BanUtils {
+public final class BanSystem {
 
-    private BanUtils() {}
+    private final FunnyGuilds plugin;
 
-    public static void ban(Guild guild, long time, String reason) {
+    public BanSystem(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
+    public void ban(Guild guild, long time, String reason) {
         guild.setBan(time + System.currentTimeMillis());
 
         for (User user : guild.getMembers()) {
@@ -28,22 +32,22 @@ public final class BanUtils {
         }
     }
 
-    public static void ban(User user, long time, String reason) {
+    public void ban(User user, long time, String reason) {
         time += System.currentTimeMillis();
         user.setBan(new UserBan(reason, time));
     }
 
-    public static void unban(Guild guild) {
+    public void unban(Guild guild) {
         for (User user : guild.getMembers()) {
             unban(user);
         }
     }
 
-    public static void unban(User user) {
+    public void unban(User user) {
         user.setBan(null);
     }
 
-    public static void checkIfBanShouldExpire(User user) {
+    public void checkIfBanShouldExpire(User user) {
         if (!user.isBanned()) {
             return;
         }
@@ -53,8 +57,8 @@ public final class BanUtils {
         }
     }
 
-    public static String getBanMessage(User user) {
-        String message = FunnyGuilds.getInstance().getMessageConfiguration().banMessage;
+    public String getBanMessage(User user) {
+        String message = plugin.getMessageConfiguration().banMessage;
 
         if (!user.isBanned()) {
             return StringUtils.EMPTY;
@@ -62,7 +66,7 @@ public final class BanUtils {
 
         UserBan userBan = user.getBan();
         message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
-        message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
+        message = StringUtils.replace(message, "{DATE}", plugin.getPluginConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
         message = StringUtils.replace(message, "{REASON}", userBan.getReason());
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
 

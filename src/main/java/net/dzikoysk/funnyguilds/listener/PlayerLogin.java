@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.guild.GuildRegex;
-import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.system.ban.BanUtils;
+import net.dzikoysk.funnyguilds.system.ban.BanSystem;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -12,6 +12,12 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 public class PlayerLogin implements Listener {
+
+    private final FunnyGuilds plugin;
+
+    public PlayerLogin(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
@@ -32,19 +38,20 @@ public class PlayerLogin implements Listener {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
 
-        User user = User.get(event.getPlayer());
+        User user = plugin.getUserManager().getUser(event.getPlayer());
+        BanSystem banSystem = plugin.getSystemManager().getBanSystem();
 
         if (user == null) {
             return;
         }
 
-        BanUtils.checkIfBanShouldExpire(user);
+        banSystem.checkIfBanShouldExpire(user);
 
         if (!user.isBanned()) {
             return;
         }
         
-        event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user));
+        event.disallow(Result.KICK_BANNED, banSystem.getBanMessage(user));
     }
 
 }

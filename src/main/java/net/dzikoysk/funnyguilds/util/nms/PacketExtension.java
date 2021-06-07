@@ -40,7 +40,8 @@ public final class PacketExtension {
 
     public static void registerPlayer(Player player) {
         try {
-            ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+            FunnyGuilds plugin = FunnyGuilds.getInstance();
+            ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
             Channel channel = getChannel(player);
 
             ChannelHandler handler = new ChannelDuplexHandler() {
@@ -60,7 +61,7 @@ public final class PacketExtension {
                             return;
                         }
 
-                        concurrencyManager.postRequests(new WarUseRequest(player, packet));
+                        concurrencyManager.postRequests(new WarUseRequest(player, packet, plugin));
 
                         super.channelRead(ctx, packet);
                     } catch (Exception e) {

@@ -11,7 +11,15 @@ import java.sql.ResultSet;
 
 public class DatabaseUser {
 
-    public static User deserialize(ResultSet rs) {
+    private final FunnyGuilds plugin;
+    private final SQLDataModel sqlDataModel;
+
+    public DatabaseUser(FunnyGuilds plugin, SQLDataModel sqlDataModel) {
+        this.plugin = plugin;
+        this.sqlDataModel = sqlDataModel;
+    }
+
+    public User deserialize(ResultSet rs) {
         if (rs == null) {
             return null;
         }
@@ -48,8 +56,8 @@ public class DatabaseUser {
         return null;
     }
 
-    public static void save(User user) {
-        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabUsers);
+    public void save(User user) {
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(sqlDataModel.tabUsers);
 
         statement.set("uuid", user.getUUID().toString());
         statement.set("name", user.getName());
@@ -63,8 +71,8 @@ public class DatabaseUser {
         statement.executeUpdate();
     }
 
-    public static void updatePoints(User user) {
-        SQLTable table = SQLDataModel.tabUsers;
+    public void updatePoints(User user) {
+        SQLTable table = sqlDataModel.tabUsers;
         SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
 
         statement.set("points", user.getRank().getPoints());
@@ -72,5 +80,4 @@ public class DatabaseUser {
         statement.executeUpdate();
     }
 
-    private DatabaseUser() {}
 }

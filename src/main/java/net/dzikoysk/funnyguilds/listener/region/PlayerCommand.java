@@ -13,6 +13,12 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class PlayerCommand implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerCommand(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
@@ -47,7 +53,7 @@ public class PlayerCommand implements Listener {
         }
 
         Guild guild = region.getGuild();
-        User user = User.get(player);
+        User user = plugin.getUserManager().getUser(player);
 
         if (guild.getMembers().contains(user)) {
             return;

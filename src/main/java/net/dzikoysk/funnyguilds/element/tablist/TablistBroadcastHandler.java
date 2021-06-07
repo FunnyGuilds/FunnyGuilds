@@ -8,6 +8,12 @@ import org.bukkit.entity.Player;
 
 public class TablistBroadcastHandler implements Runnable {
 
+    private final FunnyGuilds plugin;
+
+    public TablistBroadcastHandler(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @Override
     public void run() {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
@@ -18,7 +24,7 @@ public class TablistBroadcastHandler implements Runnable {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (! AbstractTablist.hasTablist(player)) {
-                User user = User.get(player);
+                User user = plugin.getUserManager().getUser(player);
 
                 if (user == null) {
                     continue;

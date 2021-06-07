@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class UserCache {
 
     private final User user;
+    private final UserManager userManager;
 
     private final Map<User, DamageCache> damageCaches = new HashMap<>();
 
@@ -45,8 +46,9 @@ public class UserCache {
     //private boolean bypass;
     private boolean spy;
 
-    public UserCache(User user) {
+    public UserCache(User user, UserManager userManager) {
         this.user = user;
+        this.userManager = userManager;
     }
 
     public void addDamage(User user, double damage, long lastTime) {
@@ -119,7 +121,7 @@ public class UserCache {
                 .sorted(Map.Entry.<UUID, Long>comparingByValue().reversed())
                 .map(Entry::getKey).findFirst();
 
-        return lastAttackerUniqueId.map(UserUtils::get).orElse(null);
+        return lastAttackerUniqueId.map(userManager::getUser).orElse(null);
     }
 
     @Nullable

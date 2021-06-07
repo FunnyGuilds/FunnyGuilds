@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
@@ -10,6 +11,13 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class PlayerQuit implements Listener {
+
+    private final FunnyGuilds plugin;
+
+    public PlayerQuit(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {
@@ -22,7 +30,7 @@ public class PlayerQuit implements Listener {
     }
 
     private void handleQuit(Player player) {
-        User user = User.get(player);
+        User user = plugin.getUserManager().getUser(player);
 
         if (user != null) {
             UserCache cache = user.getCache();

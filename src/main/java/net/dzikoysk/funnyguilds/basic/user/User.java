@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.basic.AbstractBasic;
 import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
-import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.element.notification.bossbar.provider.BossBarProvider;
@@ -30,22 +29,22 @@ public class User extends AbstractBasic {
     private       UserBan               ban;
     private final BossBarProvider       bossBarProvider;
 
-    private User(UUID uuid, String name) {
+    User(UUID uuid, String name, FunnyGuilds funnyGuilds) {
         this.uuid = uuid;
         this.name = name;
-        this.cache = new UserCache(this);
+        this.cache = new UserCache(this, funnyGuilds.getUserManager());
         this.rank = new Rank(this);
         this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
         this.bossBarProvider = BossBarProvider.getBossBar(this);
         this.markChanged();
     }
 
-    private User(String name) {
-        this(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), name);
+    private User(String name, FunnyGuilds funnyGuilds) {
+        this(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), name, funnyGuilds);
     }
 
-    private User(Player player) {
-        this(player.getUniqueId(), player.getName());
+    User(Player player, FunnyGuilds funnyGuilds) {
+        this(player.getUniqueId(), player.getName(), funnyGuilds);
     }
 
     public void removeGuild() {
@@ -218,46 +217,4 @@ public class User extends AbstractBasic {
         return this.name;
     }
 
-    public static User create(UUID uuid, String name) {
-        Validate.notNull(uuid, "uuid can't be null!");
-        Validate.notNull(name, "name can't be null!");
-        Validate.notBlank(name, "name can't be blank!");
-        Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
-
-        User user = new User(uuid, name);
-        UserUtils.addUser(user);
-        RankManager.getInstance().update(user);
-
-        return user;
-    }
-
-    public static User create(Player player) {
-        Validate.notNull(player, "player can't be null!");
-
-        User user = new User(player);
-        UserUtils.addUser(user);
-        RankManager.getInstance().update(user);
-
-        return user;
-    }
-
-    public static User get(UUID uuid) {
-        return UserUtils.get(uuid);
-    }
-
-    public static User get(Player player) {
-        if (player.getUniqueId().version() == 2) {
-            return new User(player);
-        }
-
-        return UserUtils.get(player.getUniqueId());
-    }
-
-    public static User get(OfflinePlayer offline) {
-        return UserUtils.get(offline.getName());
-    }
-
-    public static User get(String name) {
-        return UserUtils.get(name);
-    }
 }

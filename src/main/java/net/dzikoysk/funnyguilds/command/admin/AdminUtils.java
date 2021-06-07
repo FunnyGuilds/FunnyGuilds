@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.command.admin;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -11,8 +13,10 @@ final class AdminUtils {
     private AdminUtils() {}
 
     public static @Nullable User getAdminUser(CommandSender sender) {
+        UserManager userManager = FunnyGuilds.getInstance().getUserManager();
+
         return (sender instanceof Player)
-                ? User.get(sender.getName())
+                ? userManager.getUser(sender.getName())
                 : null;
     }
 

@@ -18,25 +18,36 @@ import java.sql.SQLException;
 
 public class SQLDataModel implements DataModel {
 
-    private static SQLDataModel instance;
-    public static SQLTable tabUsers;
-    public static SQLTable tabRegions;
-    public static SQLTable tabGuilds;
+    private final FunnyGuilds plugin;
+    private final DatabaseGuild databaseGuild;
+    private final DatabaseRegion databaseRegion;
+    private final DatabaseUser databaseUser;
 
-    public SQLDataModel() {
-        instance = this;
+    public SQLTable tabUsers;
+    public SQLTable tabRegions;
+    public SQLTable tabGuilds;
+
+    public SQLDataModel(FunnyGuilds plugin) {
+        this.plugin = plugin;
+        this.databaseGuild = new DatabaseGuild(plugin, this);
+        this.databaseRegion = new DatabaseRegion(plugin, this);
+        this.databaseUser = new DatabaseUser(plugin, this);
         loadModels();
     }
 
-    public static SQLDataModel getInstance() {
-        if (instance != null) {
-            return instance;
-        }
-
-        return new SQLDataModel();
+    public DatabaseGuild getDatabaseGuild() {
+        return databaseGuild;
     }
 
-    public static void loadModels() {
+    public DatabaseRegion getDatabaseRegion() {
+        return databaseRegion;
+    }
+
+    public DatabaseUser getDatabaseUser() {
+        return databaseUser;
+    }
+
+    public void loadModels() {
         tabUsers = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
         tabRegions = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
         tabGuilds = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
@@ -90,11 +101,11 @@ public class SQLDataModel implements DataModel {
         loadGuilds();
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
+        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest(plugin));
     }
 
     public void loadUsers() throws SQLException {
-        ResultSet result = SQLBasicUtils.getSelectAll(SQLDataModel.tabUsers).executeQuery();
+        ResultSet result = SQLBasicUtils.getSelectAll(tabUsers).executeQuery();
 
         while (result.next()) {
             String userName = result.getString("name");
@@ -104,14 +115,14 @@ public class SQLDataModel implements DataModel {
                 continue;
             }
 
-            User user = DatabaseUser.deserialize(result);
+            User user = databaseUser.deserialize(result);
 
             if (user != null) {
                 user.wasChanged();
             }
         }
 
-        FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+        FunnyGuilds.getPluginLogger().info("Loaded users: " + plugin.getUserManager().usersSize());
     }
 
     public void loadRegions() throws SQLException {
@@ -120,10 +131,10 @@ public class SQLDataModel implements DataModel {
             return;
         }
 
-        ResultSet result = SQLBasicUtils.getSelectAll(SQLDataModel.tabRegions).executeQuery();
+        ResultSet result = SQLBasicUtils.getSelectAll(tabRegions).executeQuery();
 
         while (result.next()) {
-            Region region = DatabaseRegion.deserialize(result);
+            Region region = databaseRegion.deserialize(result);
 
             if (region != null) {
                 region.wasChanged();
@@ -135,17 +146,17 @@ public class SQLDataModel implements DataModel {
     }
 
     public void loadGuilds() throws SQLException {
-        ResultSet resultAll = SQLBasicUtils.getSelectAll(SQLDataModel.tabGuilds).executeQuery();
+        ResultSet resultAll = SQLBasicUtils.getSelectAll(tabGuilds).executeQuery();
 
         while (resultAll.next()) {
-            Guild guild = DatabaseGuild.deserialize(resultAll);
+            Guild guild = databaseGuild.deserialize(resultAll);
 
             if (guild != null) {
                 guild.wasChanged();
             }
         }
 
-        ResultSet result = SQLBasicUtils.getSelect(SQLDataModel.tabGuilds, "tag", "allies", "enemies").executeQuery();
+        ResultSet result = SQLBasicUtils.getSelect(tabGuilds, "tag", "allies", "enemies").executeQuery();
 
         while (result.next()) {
             Guild guild = GuildUtils.getByTag(result.getString("tag"));
@@ -179,12 +190,12 @@ public class SQLDataModel implements DataModel {
 
     @Override
     public void save(boolean ignoreNotChanged) {
-        for (User user : UserUtils.getUsers()) {
+        for (User user : plugin.getUserManager().getUsers()) {
             if (ignoreNotChanged && !user.wasChanged()) {
                 continue;
             }
 
-            DatabaseUser.save(user);
+            databaseUser.save(user);
         }
 
         for (Guild guild : GuildUtils.getGuilds()) {
@@ -192,7 +203,7 @@ public class SQLDataModel implements DataModel {
                 continue;
             }
 
-            DatabaseGuild.save(guild);
+            databaseGuild.save(guild);
         }
 
         if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
@@ -204,7 +215,7 @@ public class SQLDataModel implements DataModel {
                 continue;
             }
 
-            DatabaseRegion.save(region);
+            databaseRegion.save(region);
         }
     }
 

@@ -129,17 +129,18 @@ public final class CommandsConfiguration {
                 .placeholders(adminCommands.placeholders)
                 .bind(new SettingsBind())
                 .bind(new MessagesBind())
-                .bind(new UserBind())
+                .bind(new UserBind(funnyGuilds))
                 .bind(new GuildBind())
+                .bind(new PluginBind(funnyGuilds))
                 .type(new PlayerType(server))
                 .completer(new GuildsCompleter())
-                .completer(new MembersCompleter())
+                .completer(new MembersCompleter(funnyGuilds))
                 .validator(new MemberValidator())
                 .validator(new ManageValidator())
                 .validator(new OwnerValidator())
                 .registerComponents(userCommands.commands)
                 .registerComponents(adminCommands.commands)
-                .exceptionHandler(new FunnyGuildsExceptionHandler(funnyGuilds))
+                .exceptionHandler(new FunnyGuildsExceptionHandler())
                 .install();
     }
 

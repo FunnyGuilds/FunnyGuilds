@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.system.security.cheat.SecurityFreeCam;
 import net.dzikoysk.funnyguilds.system.security.cheat.SecurityReach;
 import net.dzikoysk.funnyguilds.util.FunnyBox;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -18,16 +19,20 @@ import java.util.Map;
 public final class SecuritySystem {
 
     private static final double ADDITIONAL_SNEAKING_HEIGHT_CURSOR = 0.35;
-    private static final Map<User, Integer> PLAYERS_VIOLATION_LEVEL = new HashMap<>();
 
-    private SecuritySystem() {}
+    private final Map<User, Integer> playersViolationLevel = new HashMap<>();
+    private final FunnyGuilds plugin;
 
-    public static boolean onHitCrystal(Player player, Guild guild) {
-        scan(player, SecurityType.GUILD, guild);
-        return SecurityUtils.isBlocked(User.get(player));
+    public SecuritySystem(FunnyGuilds plugin) {
+        this.plugin = plugin;
     }
 
-    private static void scan(Player player, SecurityType securityType, Object... values) {
+    public boolean onHitCrystal(Player player, Guild guild) {
+        scan(player, SecurityType.GUILD, guild);
+        return isBlocked(plugin.getUserManager().getUser(player));
+    }
+
+    private void scan(Player player, SecurityType securityType, Object... values) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
         if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
@@ -74,15 +79,23 @@ public final class SecuritySystem {
             Vector hitPoint = rayTraceResult.getHitPosition();
             double distance = hitPoint.distance(origin);
 
-            SecurityFreeCam.on(player, origin, hitPoint, distance);
-            SecurityReach.on(player, distance);
+            SecurityFreeCam.on(player, origin, hitPoint, distance, this);
+            SecurityReach.on(player, distance, this);
             return;
         }
 
         throw new IllegalArgumentException("unknown securityType: " + securityType);
     }
 
-    protected static Map<User, Integer> getPlayersViolationLevel() {
-        return PLAYERS_VIOLATION_LEVEL;
+    public void addViolationLevel(User user) {
+        playersViolationLevel.put(user, playersViolationLevel.getOrDefault(user, 0) + 1);
+
+        Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> playersViolationLevel.remove(user), 18000);
     }
+
+    public boolean isBlocked(User user) {
+        return playersViolationLevel.getOrDefault(user, 0) > 1;
+    }
+
+
 }

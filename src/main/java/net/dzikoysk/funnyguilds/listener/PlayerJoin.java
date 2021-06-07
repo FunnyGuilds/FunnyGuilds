@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserCache;
-import net.dzikoysk.funnyguilds.basic.user.UserUtils;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
@@ -31,17 +31,18 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        UserManager userManager = plugin.getUserManager();
         Player player = e.getPlayer();
-        User user = User.get(player);
+        User user = userManager.getUser(player);
 
         if (user == null) {
-            user = User.create(player);
+            user = userManager.create(player);
         }
         else {
             String playerName = player.getName();
 
             if (! user.getName().equals(playerName)) {
-                UserUtils.updateUsername(user, playerName);
+                userManager.updateUsername(user, playerName);
             }
         }
 
@@ -59,7 +60,7 @@ public class PlayerJoin implements Listener {
         }
 
         if (cache.getIndividualPrefix() == null && config.guildTagEnabled) {
-            IndividualPrefix prefix = new IndividualPrefix(user);
+            IndividualPrefix prefix = new IndividualPrefix(user, plugin);
             prefix.initialize();
 
             cache.setIndividualPrefix(prefix);
@@ -71,8 +72,8 @@ public class PlayerJoin implements Listener {
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(
-                new PrefixGlobalUpdatePlayer(player),
-                new DummyGlobalUpdateUserRequest(user),
+                new PrefixGlobalUpdatePlayer(plugin, player),
+                new DummyGlobalUpdateUserRequest(user, plugin),
                 new RankUpdateUserRequest(user)
         );
 

@@ -17,11 +17,17 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class PlayerRespawn implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerRespawn(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(final PlayerRespawnEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Player player = event.getPlayer();
-        User user = User.get(player);
+        User user = plugin.getUserManager().getUser(player);
 
         if (! user.hasGuild()) {
             return;
@@ -39,7 +45,7 @@ public class PlayerRespawn implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(FunnyGuilds.getInstance(),  () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(plugin,  () -> {
             Region guildRegion = RegionUtils.getAt(home);
 
             if (guildRegion == null) {

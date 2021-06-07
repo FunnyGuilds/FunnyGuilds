@@ -29,14 +29,14 @@ public final class PlayerInfoCommand {
         completer = "online-players:3",
         acceptsExceeded = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds plugin, PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
         when (args.length == 0 && !(sender instanceof Player), messages.playerOnly);
         
         String name = args.length == 0
                 ? sender.getName()
                 : args[0];
 
-        User user = UserUtils.get(name, config.playerLookupIgnorecase);
+        User user = plugin.getUserManager().getUser(name, config.playerLookupIgnorecase);
         when (user == null, messages.generalNotPlayedBefore);
 
         sendInfoMessage(messages.playerInfoList, user, sender);

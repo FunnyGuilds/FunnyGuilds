@@ -16,14 +16,17 @@ import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.Set;
 
 public class FlatDataModel implements DataModel {
 
     private final File guildsFolderFile;
     private final File regionsFolderFile;
     private final File usersFolderFile;
+    private final FunnyGuilds funnyGuilds;
 
     public FlatDataModel(FunnyGuilds funnyGuilds) {
+        this.funnyGuilds = funnyGuilds;
         this.guildsFolderFile = new File(funnyGuilds.getPluginDataFolder(), "guilds");
         this.regionsFolderFile = new File(funnyGuilds.getPluginDataFolder(), "regions");
         this.usersFolderFile = new File(funnyGuilds.getPluginDataFolder(), "users");
@@ -95,13 +98,15 @@ public class FlatDataModel implements DataModel {
     }
 
     private void saveUsers(boolean ignoreNotChanged) {
-        if (UserUtils.getUsers().isEmpty()) {
+        Set<User> users = funnyGuilds.getUserManager().getUsers();
+
+        if (users.isEmpty()) {
             return;
         }
 
         int errors = 0;
 
-        for (User user : UserUtils.getUsers()) {
+        for (User user : users) {
             if (user.getUUID() == null || user.getName() == null) {
                 errors++;
                 continue;
@@ -152,7 +157,7 @@ public class FlatDataModel implements DataModel {
             FunnyGuilds.getPluginLogger().error("Users load errors " + errors);
         }
 
-        FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+        FunnyGuilds.getPluginLogger().info("Loaded users: " + funnyGuilds.getUserManager().usersSize());
     }
 
     private void saveRegions(boolean ignoreNotChanged) {
@@ -263,7 +268,7 @@ public class FlatDataModel implements DataModel {
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest());
+        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest(funnyGuilds));
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
     }

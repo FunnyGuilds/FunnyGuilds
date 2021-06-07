@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.command.user;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.Rank;
@@ -35,10 +36,10 @@ public final class InfoCommand {
         completer = "guilds:3",
         acceptsExceeded = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds plugin, PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
         String tag = Option.when(args.length > 0, () -> args[0])
                 .orElse(() -> Option.when(sender instanceof Player, () -> ObjectUtils.cast(Player.class, sender))
-                        .map(User::get)
+                        .map(plugin.getUserManager()::getUser)
                         .filter(User::hasGuild)
                         .map(User::getGuild)
                         .map(Guild::getTag))

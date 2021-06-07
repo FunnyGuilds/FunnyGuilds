@@ -8,10 +8,16 @@ import org.bukkit.event.block.BlockBreakEvent;
 
 public class BlockBreak implements Listener {
 
+    private final ProtectionSystem protectionSystem;
+
+    public BlockBreak(FunnyGuilds plugin) {
+        this.protectionSystem = plugin.getSystemManager().getProtectionSystem();
+    }
+
     @EventHandler
     public void onBreak(BlockBreakEvent event) {
-        ProtectionSystem.isProtected(event.getPlayer(), event.getBlock().getLocation(), FunnyGuilds.getInstance().getPluginConfiguration().regionExplodeBlockBreaking)
-                .peek(ProtectionSystem::defaultResponse)
+        protectionSystem.isProtected(event.getPlayer(), event.getBlock().getLocation(), FunnyGuilds.getInstance().getPluginConfiguration().regionExplodeBlockBreaking)
+                .peek(protectionSystem::defaultResponse)
                 .peek(result -> event.setCancelled(true));
 
     }
