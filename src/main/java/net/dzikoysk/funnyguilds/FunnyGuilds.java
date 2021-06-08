@@ -137,6 +137,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.userManager = new UserManager(this);
+        this.systemManager = new SystemManager(this);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
