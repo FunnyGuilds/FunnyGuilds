@@ -17,7 +17,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.ref.WeakReference;
-import java.util.HashSet;
 import java.util.UUID;
 
 public class User extends AbstractBasic {
