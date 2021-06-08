@@ -17,6 +17,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.ref.WeakReference;
+import java.util.HashSet;
 import java.util.UUID;
 
 public class User extends AbstractBasic {
@@ -189,7 +190,6 @@ public class User extends AbstractBasic {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (name == null ? 0 : name.hashCode());
         result = prime * result + (uuid == null ? 0 : uuid.hashCode());
         return result;
     }
@@ -206,11 +206,7 @@ public class User extends AbstractBasic {
 
         User user = (User) obj;
 
-        if (! user.getUUID().equals(this.uuid)) {
-            return false;
-        }
-
-        return user.getName().equals(this.name);
+        return user.getUUID().equals(this.uuid);
     }
 
     @Override
