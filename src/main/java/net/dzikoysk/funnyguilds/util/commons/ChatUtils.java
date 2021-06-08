@@ -60,7 +60,7 @@ public final class ChatUtils {
             }
         }
 
-        return s;A
+        return s;
     }
 
     public static List<String> fromString(String s) {
