@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.UUID;
 
 public class FlatDataModel implements DataModel {
 
@@ -67,7 +68,7 @@ public class FlatDataModel implements DataModel {
     }
 
     public File getUserFile(User user) {
-        return new File(this.usersFolderFile, user.getName() + ".yml");
+        return new File(this.usersFolderFile, user.getUUID() + ".yml");
     }
 
     public File getRegionFile(Region region) {
@@ -133,7 +134,9 @@ public class FlatDataModel implements DataModel {
                 continue;
             }
 
-            if (!UserUtils.validateUsername(StringUtils.removeEnd(file.getName(), ".yml"))) {
+            try {
+                UUID.fromString(StringUtils.removeEnd(file.getName(), ".yml"));
+            } catch (IllegalArgumentException e) {
                 FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
                 continue;
             }
