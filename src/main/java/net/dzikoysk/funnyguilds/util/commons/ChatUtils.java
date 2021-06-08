@@ -1,19 +1,34 @@
 package net.dzikoysk.funnyguilds.util.commons;
 
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class ChatUtils {
+    private static final Pattern HEX_PATTERN = Pattern.compile("#[0-9A-Fa-f]{6}");
 
     private ChatUtils() {}
 
     public static String colored(String message) {
-        return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
+        if (message == null) {
+            return null;
+        }
+        
+        Matcher matcher = HEX_PATTERN.matcher(ChatColor.translateAlternateColorCodes('&', message));
+        StringBuilder output  = new StringBuilder();
+
+        while (matcher.find()) {
+            ChatColor color = ChatColor.of(matcher.group());
+            matcher.appendReplacement(output, color.toString());
+        }
+
+        return matcher.appendTail(output).toString();
     }
     
     public static List<String> colored(List<String> messages) {
@@ -45,7 +60,7 @@ public final class ChatUtils {
             }
         }
 
-        return s;
+        return s;A
     }
 
     public static List<String> fromString(String s) {
