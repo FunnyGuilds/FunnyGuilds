@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.command.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
@@ -57,6 +58,7 @@ public class FunnyGuilds extends JavaPlugin {
     private MessageConfiguration   messageConfiguration;
     private ConcurrencyManager     concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
+    private UserManager            userManager;
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
@@ -132,6 +134,8 @@ public class FunnyGuilds extends JavaPlugin {
         if (this.forceDisabling) {
             return;
         }
+
+        this.userManager = new UserManager();
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -328,6 +332,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public DynamicListenerManager getDynamicListenerManager() {
         return this.dynamicListenerManager;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
     }
 
     public void reloadPluginConfiguration() throws OkaeriException {

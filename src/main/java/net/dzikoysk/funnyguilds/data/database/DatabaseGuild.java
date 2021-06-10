@@ -59,12 +59,12 @@ public class DatabaseGuild {
             
             Set<User> deputies = new HashSet<>();
             if (dp != null && !dp.isEmpty()) {
-                deputies = UserUtils.getUsers(ChatUtils.fromString(dp));
+                deputies = UserUtils.getUsersFromString(ChatUtils.fromString(dp));
             }
 
             Set<User> members = new HashSet<>();
             if (membersString != null && !membersString.equals("")) {
-                members = UserUtils.getUsers(ChatUtils.fromString(membersString));
+                members = UserUtils.getUsersFromString(ChatUtils.fromString(membersString));
             }
 
             if (born == 0) {
@@ -108,8 +108,8 @@ public class DatabaseGuild {
     }
 
     public static void save(Guild guild) {
-        String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
-        String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
+        String members = ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getMembers()), false);
+        String deputies = ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
         SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);

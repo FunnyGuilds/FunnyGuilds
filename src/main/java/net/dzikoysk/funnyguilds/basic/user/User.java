@@ -30,7 +30,7 @@ public class User extends AbstractBasic {
     private       UserBan               ban;
     private final BossBarProvider       bossBarProvider;
 
-    private User(UUID uuid, String name) {
+    User(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
         this.cache = new UserCache(this);
@@ -44,7 +44,7 @@ public class User extends AbstractBasic {
         this(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), name);
     }
 
-    private User(Player player) {
+    User(Player player) {
         this(player.getUniqueId(), player.getName());
     }
 
@@ -218,6 +218,15 @@ public class User extends AbstractBasic {
         return this.name;
     }
 
+    /**
+     * Create new instance of User.
+     *
+     * @param uuid the universally unique identifier of User
+     * @param name the name of User
+     * @return the new instance of User.
+     * @deprecated for removal in the future, in favour of {@link UserManager#create(UUID, String)}
+     */
+    @Deprecated
     public static User create(UUID uuid, String name) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
@@ -231,6 +240,14 @@ public class User extends AbstractBasic {
         return user;
     }
 
+    /**
+     * Create new instance of User.
+     *
+     * @param player the instance Player for create a new instance of User
+     * @return the new instance of User.
+     * @deprecated for removal in the future, in favour of {@link UserManager#create(Player)}
+     */
+    @Deprecated
     public static User create(Player player) {
         Validate.notNull(player, "player can't be null!");
 
@@ -241,10 +258,26 @@ public class User extends AbstractBasic {
         return user;
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param uuid the universally unique identifier of User
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(UUID)}
+     */
+    @Deprecated
     public static User get(UUID uuid) {
         return UserUtils.get(uuid);
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param player the instance Player of User
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(Player)}
+     */
+    @Deprecated
     public static User get(Player player) {
         if (player.getUniqueId().version() == 2) {
             return new User(player);
@@ -253,10 +286,26 @@ public class User extends AbstractBasic {
         return UserUtils.get(player.getUniqueId());
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param offline the instance OfflinePlayer of User
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(OfflinePlayer)}
+     */
+    @Deprecated
     public static User get(OfflinePlayer offline) {
         return UserUtils.get(offline.getName());
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param name the name of User
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String)}
+     */
+    @Deprecated
     public static User get(String name) {
         return UserUtils.get(name);
     }

@@ -57,7 +57,7 @@ public final class InfoCommand {
             messageLine = StringUtils.replace(messageLine, "{MEMBERS-ONLINE}", String.valueOf(guild.getOnlineMembers().size()));
             messageLine = StringUtils.replace(messageLine, "{MEMBERS-ALL}", String.valueOf(guild.getMembers().size()));
             messageLine = StringUtils.replace(messageLine, "{MEMBERS}", ChatUtils.toString(UserUtils.getOnlineNames(guild.getMembers()), true));
-            messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", guild.getDeputies().isEmpty() ? "Brak" : ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), true));
+            messageLine = StringUtils.replace(messageLine, "{DEPUTIES}", guild.getDeputies().isEmpty() ? "Brak" : ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), true));
             messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", config.regionsEnabled ? String.valueOf(guild.getRegion().getSize()) : messages.gRegionSizeNoValue);
             messageLine = StringUtils.replace(messageLine, "{GUILD-PROTECTION}", protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now));
 
