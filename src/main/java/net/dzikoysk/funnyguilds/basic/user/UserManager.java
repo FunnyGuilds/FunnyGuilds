@@ -15,12 +15,8 @@ public class UserManager {
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
     private final FunnyGuilds plugin;
 
-    @Deprecated
-    private static UserManager instance;
-
     public UserManager(FunnyGuilds plugin) {
         this.plugin = plugin;
-        instance = this;
     }
 
     public Set<User> getUsers() {
@@ -68,7 +64,7 @@ public class UserManager {
 
     public User getUser(Player player) {
         if (player.getUniqueId().version() == 2) {
-            return new User(player, plugin);
+            return new User(player);
         }
 
         return getUser(player.getUniqueId());
@@ -84,7 +80,7 @@ public class UserManager {
         Validate.notBlank(name, "name can't be blank!");
         Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
 
-        User user = new User(uuid, name, plugin);
+        User user = new User(uuid, name);
 
         addUser(user);
         RankManager.getInstance().update(user);
@@ -95,7 +91,7 @@ public class UserManager {
     public User create(Player player) {
         Validate.notNull(player, "player can't be null!");
 
-        User user = new User(player, plugin);
+        User user = new User(player);
         addUser(user);
         RankManager.getInstance().update(user);
 
@@ -149,18 +145,6 @@ public class UserManager {
 
     public int usersSize() {
         return usersByUuid.size();
-    }
-
-    /**
-     * Gets the user manager.
-     *
-     * @return the user manager
-     * @deprecated for removal in the future, in favour of {@link FunnyGuilds#getUserManager()}
-     */
-
-    @Deprecated
-    public static UserManager getInstance() {
-        return instance;
     }
 
 }

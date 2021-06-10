@@ -29,22 +29,22 @@ public class User extends AbstractBasic {
     private       UserBan               ban;
     private final BossBarProvider       bossBarProvider;
 
-    User(UUID uuid, String name, FunnyGuilds funnyGuilds) {
+    User(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
-        this.cache = new UserCache(this, funnyGuilds.getUserManager());
+        this.cache = new UserCache(this);
         this.rank = new Rank(this);
         this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
         this.bossBarProvider = BossBarProvider.getBossBar(this);
         this.markChanged();
     }
 
-    private User(String name, FunnyGuilds funnyGuilds) {
-        this(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), name, funnyGuilds);
+    private User(String name) {
+        this(UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes(Charsets.UTF_8)), name);
     }
 
-    User(Player player, FunnyGuilds funnyGuilds) {
-        this(player.getUniqueId(), player.getName(), funnyGuilds);
+    User(Player player) {
+        this(player.getUniqueId(), player.getName());
     }
 
     public void removeGuild() {

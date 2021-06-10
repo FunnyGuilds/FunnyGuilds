@@ -294,8 +294,10 @@ public class Guild extends AbstractBasic {
     }
 
     public boolean isSomeoneInRegion() {
-        return FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && Bukkit.getOnlinePlayers().stream()
-                .filter(player -> UserManager.getInstance().getUser(player).getGuild() != this)
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+
+        return plugin.getPluginConfiguration().regionsEnabled && Bukkit.getOnlinePlayers().stream()
+                .filter(player -> plugin.getUserManager().getUser(player).getGuild() != this)
                 .map(player -> RegionUtils.getAt(player.getLocation()))
                 .anyMatch(region -> region != null && region.getGuild() == this);
     }

@@ -36,7 +36,7 @@ public final class PlaceholderAPIHook {
                 return "";
             }
 
-            User user = UserManager.getInstance().getUser(player);
+            User user = FunnyGuilds.getInstance().getUserManager().getUser(player);
             if (user == null) {
                 return "";
             }

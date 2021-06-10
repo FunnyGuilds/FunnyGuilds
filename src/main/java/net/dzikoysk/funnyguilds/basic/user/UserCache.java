@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 public class UserCache {
 
     private final User user;
-    private final UserManager userManager;
 
     private final Map<User, DamageCache> damageCaches = new HashMap<>();
 
@@ -46,9 +45,8 @@ public class UserCache {
     //private boolean bypass;
     private boolean spy;
 
-    public UserCache(User user, UserManager userManager) {
+    public UserCache(User user) {
         this.user = user;
-        this.userManager = userManager;
     }
 
     public void addDamage(User user, double damage, long lastTime) {
@@ -116,6 +114,7 @@ public class UserCache {
 
     @Nullable
     public User getLastKiller() {
+        UserManager userManager = FunnyGuilds.getInstance().getUserManager();
         Optional<UUID> lastAttackerUniqueId = this.killerCache.asMap().entrySet()
                 .stream()
                 .sorted(Map.Entry.<UUID, Long>comparingByValue().reversed())

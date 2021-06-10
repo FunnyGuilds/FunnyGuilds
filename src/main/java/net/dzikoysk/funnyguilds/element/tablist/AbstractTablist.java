@@ -79,7 +79,8 @@ public abstract class AbstractTablist {
     }
 
     public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, Player player) {
-        return createTablist(pattern, header, footer, ping, UserManager.getInstance().getUser(player));
+        User user = FunnyGuilds.getInstance().getUserManager().getUser(player);
+        return createTablist(pattern, header, footer, ping, user);
     }
     
     public static AbstractTablist createTablist(Map<Integer, String> pattern, String header, String footer, int ping, User user) {

@@ -119,12 +119,13 @@ public final class DefaultTablistVariables {
     }
 
     private static void createFunnyVariables() {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
 
         putSimple("player", "PLAYER", User::getName);
         putSimple("guilds", "GUILDS", user -> GuildUtils.getGuilds().size());
-        putSimple("users", "USERS", user -> UserManager.getInstance().getUsers().size());
+        putSimple("users", "USERS", user -> plugin.getUserManager().getUsers().size());
         putSimple("ping", "PING", User::getPing);
         putSimple("points", "POINTS", user -> user.getRank().getPoints());
         putSimple("position", "POSITION", user -> user.getRank().getPosition());
@@ -170,7 +171,7 @@ public final class DefaultTablistVariables {
         putGuild("g-members-all", "G-MEMBERS-ALL", user -> user.getGuild().getMembers().size(), user -> "0");
 
         putGuild("g-validity", "G-VALIDITY",
-                user -> FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(user.getGuild().getValidityDate()),
+                user -> plugin.getPluginConfiguration().dateFormat.format(user.getGuild().getValidityDate()),
                 user -> messages.gValidityNoValue);
 
         putGuild("g-points-format", "G-POINTS-FORMAT",
@@ -180,13 +181,13 @@ public final class DefaultTablistVariables {
                         .replace("{POINTS}", "0"));
 
         putGuild("g-position", "G-POSITION",
-                user -> user.getGuild().getMembers().size() >= FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude
+                user -> user.getGuild().getMembers().size() >= plugin.getPluginConfiguration().minMembersToInclude
                         ? String.valueOf(user.getGuild().getRank().getPosition())
                         : messages.minMembersToIncludeNoValue,
                 user -> messages.minMembersToIncludeNoValue);
 
         putGuild("g-region-size", "G-REGION-SIZE",
-                user -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled
+                user -> plugin.getPluginConfiguration().regionsEnabled
                         ? String.valueOf(user.getGuild().getRegion().getSize())
                         : messages.gRegionSizeNoValue,
                 user -> messages.gRegionSizeNoValue);

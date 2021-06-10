@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.system.security.cheat;
 
 import com.google.common.collect.Streams;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.user.UserManager;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
@@ -25,8 +25,9 @@ public class SecurityFreeCam {
     private SecurityFreeCam() {}
 
     public static void on(Player player, Vector origin, Vector hitPoint, double distance, SecuritySystem system) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Vector directionToHitPoint = hitPoint.clone().subtract(origin);
         BlockIterator blockIterator = new BlockIterator(player.getWorld(), origin, directionToHitPoint, 0, Math.max((int) distance, 1));
         /* compensationSneaking will be removed after add the cursor height check on each client version. */
@@ -44,10 +45,12 @@ public class SecurityFreeCam {
             return;
         }
 
+        User user = plugin.getUserManager().getUser(player);
         String message = messages.securitySystemFreeCam;
-        message = StringUtils.replace(message, "{BLOCKS}", Joiner.on(", ").join(blocks, b -> MaterialUtils.getMaterialName(b.getType())).toString());
+        String blocksInfo = Joiner.on(", ").join(blocks, b -> MaterialUtils.getMaterialName(b.getType())).toString();
 
-        system.addViolationLevel(UserManager.getInstance().getUser(player));
+        message = StringUtils.replace(message, "{BLOCKS}", blocksInfo);
+        system.addViolationLevel(user);
         SecurityUtils.sendToOperator(player, "FreeCam", message);
     }
 
