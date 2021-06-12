@@ -6,7 +6,12 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager {
