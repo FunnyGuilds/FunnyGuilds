@@ -6,11 +6,7 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager {
@@ -18,6 +14,7 @@ public class UserManager {
     private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
+    @Deprecated
     private static UserManager instance;
 
     public UserManager() {
@@ -32,50 +29,50 @@ public class UserManager {
         Set<User> users = new HashSet<>();
 
         for (String name : names) {
-            User user = getUser(name);
+            Optional<User> optional = getUser(name);
 
-            if (user == null) {
+            if (!optional.isPresent()) {
                 FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name);
                 continue;
             }
 
-            users.add(user);
+            users.add(optional.get());
         }
 
         return users;
     }
 
-    public User getUser(String nickname) {
+    public Optional<User> getUser(String nickname) {
         return getUser(nickname, false);
     }
 
-    public User getUser(String nickname, boolean ignoreCase) {
+    public Optional<User> getUser(String nickname, boolean ignoreCase) {
         if (ignoreCase) {
             for (Map.Entry<String, User> entry : usersByName.entrySet()) {
                 if (entry.getKey().equalsIgnoreCase(nickname)) {
-                    return entry.getValue();
+                    return Optional.of(entry.getValue());
                 }
             }
 
-            return null;
+            return Optional.empty();
         }
 
-        return usersByName.get(nickname);
+        return Optional.ofNullable(usersByName.get(nickname));
     }
 
-    public User getUser(UUID uuid) {
-        return usersByUuid.get(uuid);
+    public Optional<User> getUser(UUID uuid) {
+        return Optional.ofNullable(usersByUuid.get(uuid));
     }
 
-    public User getUser(Player player) {
+    public Optional<User> getUser(Player player) {
         if (player.getUniqueId().version() == 2) {
-            return new User(player);
+            return Optional.of(new User(player));
         }
 
         return getUser(player.getUniqueId());
     }
 
-    public User getUser(OfflinePlayer offline) {
+    public Optional<User> getUser(OfflinePlayer offline) {
         return getUser(offline.getName());
     }
 
@@ -152,7 +149,15 @@ public class UserManager {
         return usersByUuid.size();
     }
 
+    /**
+     * Gets the user manager.
+     *
+     * @return the user manager
+     * @deprecated for removal in the future, in favour of {@link FunnyGuilds#getUserManager()}
+     */
+    @Deprecated
     public static UserManager getInstance() {
         return instance;
     }
+
 }

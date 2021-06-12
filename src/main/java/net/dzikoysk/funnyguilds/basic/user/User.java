@@ -16,6 +16,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 
@@ -265,6 +266,7 @@ public class User extends AbstractBasic {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#getUser(UUID)}
      */
+    @Nullable
     @Deprecated
     public static User get(UUID uuid) {
         return UserUtils.get(uuid);
@@ -277,6 +279,7 @@ public class User extends AbstractBasic {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#getUser(Player)}
      */
+    @Nullable
     @Deprecated
     public static User get(Player player) {
         if (player.getUniqueId().version() == 2) {
@@ -293,6 +296,7 @@ public class User extends AbstractBasic {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#getUser(OfflinePlayer)}
      */
+    @Nullable
     @Deprecated
     public static User get(OfflinePlayer offline) {
         return UserUtils.get(offline.getName());
@@ -305,6 +309,7 @@ public class User extends AbstractBasic {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String)}
      */
+    @Nullable
     @Deprecated
     public static User get(String name) {
         return UserUtils.get(name);

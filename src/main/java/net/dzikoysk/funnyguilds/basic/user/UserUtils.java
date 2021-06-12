@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.basic.user;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ public class UserUtils {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String)}
      */
+    @Nullable
     @Deprecated
     public static User get(String nickname) {
         return get(nickname, false);
@@ -42,9 +44,10 @@ public class UserUtils {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String, boolean)}
      */
+    @Nullable
     @Deprecated
     public static User get(String nickname, boolean ignoreCase) {
-        return UserManager.getInstance().getUser(nickname, ignoreCase);
+        return UserManager.getInstance().getUser(nickname, ignoreCase).orElse(null);
     }
 
     /**
@@ -54,9 +57,10 @@ public class UserUtils {
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#getUser(UUID)}
      */
+    @Nullable
     @Deprecated
     public static User get(UUID uuid) {
-        return UserManager.getInstance().getUser(uuid);
+        return UserManager.getInstance().getUser(uuid).orElse(null);
     }
 
     /**
