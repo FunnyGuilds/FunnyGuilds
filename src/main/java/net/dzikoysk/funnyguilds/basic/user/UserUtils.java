@@ -2,10 +2,12 @@ package net.dzikoysk.funnyguilds.basic.user;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import org.apache.commons.lang3.Validate;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Set;
+import java.util.UUID;
+import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -13,85 +15,121 @@ public class UserUtils {
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
 
-    private final static Map<UUID, User> BY_UUID_USER_COLLECTION = new ConcurrentHashMap<>();
-    private final static Map<String, User> BY_NAME_USER_COLLECTION = new ConcurrentHashMap<>();
-
+    /**
+     * Gets the copied set of users.
+     *
+     * @return set of users
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUsers()}
+     */
+    @Deprecated
     public static Set<User> getUsers() {
-        return new HashSet<>(BY_UUID_USER_COLLECTION.values());
+        return UserManager.getInstance().getUsers();
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param nickname the name of User
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String)}
+     */
+    @Nullable
+    @Deprecated
     public static User get(String nickname) {
         return get(nickname, false);
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param nickname the name of User
+     * @param ignoreCase ignore the case of the nickname
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String, boolean)}
+     */
+    @Nullable
+    @Deprecated
     public static User get(String nickname, boolean ignoreCase) {
-        if (ignoreCase) {
-            for (Map.Entry<String, User> entry : BY_NAME_USER_COLLECTION.entrySet()) {
-                if (entry.getKey().equalsIgnoreCase(nickname)) {
-                    return entry.getValue();
-                }
-            }
-
-            return null;
-        }
-        else {
-            return BY_NAME_USER_COLLECTION.get(nickname);
-        }
+        return UserManager.getInstance().getUser(nickname, ignoreCase).getOrNull();
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param uuid the universally unique identifier of User
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(UUID)}
+     */
+    @Nullable
+    @Deprecated
     public static User get(UUID uuid) {
-        return BY_UUID_USER_COLLECTION.get(uuid);
+        return UserManager.getInstance().getUser(uuid).getOrNull();
     }
 
+    /**
+     * Add the user to UserManager.
+     *
+     * @param user User to be appended to UserManager.
+     * @deprecated for removal in the future, in favour of {@link UserManager#addUser(User)}
+     */
+    @Deprecated
     public static void addUser(User user) {
-        Validate.notNull(user, "user can't be null!");
-
-        BY_UUID_USER_COLLECTION.put(user.getUUID(), user);
-        BY_NAME_USER_COLLECTION.put(user.getName(), user);
+        UserManager.getInstance().addUser(user);
     }
 
+    /**
+     * Remove the user from UserManager.
+     *
+     * @param user User to be removed from UserManager, if present
+     * @deprecated for removal in the future, in favour of {@link UserManager#removeUser(User)}
+     */
+    @Deprecated
     public static void removeUser(User user) {
-        Validate.notNull(user, "user can't be null!");
-
-        BY_UUID_USER_COLLECTION.remove(user.getUUID());
-        BY_NAME_USER_COLLECTION.remove(user.getName());
+        UserManager.getInstance().removeUser(user);
     }
 
+    /**
+     * Updates the user's name.
+     *
+     * @param user the user
+     * @param newUsername the new name to be assigned to user
+     * @deprecated for removal in the future, in favour of {@link UserManager#updateUsername(User, String)}
+     */
+    @Deprecated
     public static void updateUsername(User user, String newUsername) {
-        Validate.notNull(user, "user can't be null!");
-
-        BY_NAME_USER_COLLECTION.remove(user.getName());
-        BY_NAME_USER_COLLECTION.put(newUsername, user);
-
-        user.setName(newUsername);
+        UserManager.getInstance().updateUsername(user, newUsername);
     }
 
+    /**
+     * Checks if the player has ever been on the server.
+     *
+     * @param nickname name of player
+     * @return true if the player has played before
+     * @deprecated for removal in the future, in favour of {@link UserManager#playedBefore(String)}
+     */
+    @Deprecated
     public static boolean playedBefore(String nickname) {
         return playedBefore(nickname, false);
     }
 
+    /**
+     * Checks if the player has ever been on the server.
+     *
+     * @param nickname name of player
+     * @param ignoreCase ignore the case of the name
+     * @return true if the player has played before
+     * @deprecated for removal in the future, in favour of {@link UserManager#playedBefore(String, boolean)}
+     */
+    @Deprecated
     public static boolean playedBefore(String nickname, boolean ignoreCase) {
-        if (ignoreCase) {
-            if (nickname != null) {
-                for (String userNickname : BY_NAME_USER_COLLECTION.keySet()) {
-                    if (userNickname.equalsIgnoreCase(nickname)) {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-        else {
-            return nickname != null && BY_NAME_USER_COLLECTION.containsKey(nickname);
-        }
+        return UserManager.getInstance().playedBefore(nickname, ignoreCase);
     }
 
-    public static Set<String> getNames(Collection<User> users) {
+    public static Set<String> getNamesOfUsers(Collection<User> users) {
         return users.stream().map(User::getName).collect(Collectors.toSet());
     }
 
-    public static Set<User> getUsers(Collection<String> names) {
+    public static Set<User> getUsersFromString(Collection<String> names) {
         Set<User> users = new HashSet<>();
 
         for (String name : names) {
@@ -129,8 +167,15 @@ public class UserUtils {
         }
     }
 
+    /**
+     * Gets the number of users.
+     *
+     * @return the number of users
+     * @deprecated for removal in the future, in favour of {@link UserManager#usersSize()}
+     */
+    @Deprecated
     public static int usersSize() {
-        return BY_UUID_USER_COLLECTION.size();
+        return UserManager.getInstance().usersSize();
     }
 
     public static boolean validateUsername(String name) {

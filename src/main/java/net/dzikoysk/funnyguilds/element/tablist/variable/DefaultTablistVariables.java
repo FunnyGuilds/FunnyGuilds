@@ -148,7 +148,7 @@ public final class DefaultTablistVariables {
         FUNNY_VARIABLES.put("g-deputies", GuildDependentTablistVariable.ofGuild("G-DEPUTIES",
                 guild -> guild.getDeputies().isEmpty()
                         ? messages.gDeputiesNoValue
-                        : ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false),
+                        : ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), false),
                 user -> messages.gDeputiesNoValue));
 
         FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY",

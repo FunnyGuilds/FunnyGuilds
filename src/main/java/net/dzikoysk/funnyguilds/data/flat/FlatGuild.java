@@ -88,7 +88,7 @@ public class FlatGuild {
 
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
         if (deputyName != null && !deputyName.isEmpty()) {
-            deputies = UserUtils.getUsers(ChatUtils.fromString(deputyName));
+            deputies = UserUtils.getUsersFromString(ChatUtils.fromString(deputyName));
         }
 
         Location home = null;
@@ -106,7 +106,7 @@ public class FlatGuild {
             memberNames.add(ownerName);
         }
 
-        Set<User> members = UserUtils.getUsers(memberNames);
+        Set<User> members = UserUtils.getUsersFromString(memberNames);
         Set<Guild> allies = loadGuilds(allyNames);
         Set<Guild> enemies = loadGuilds(enemyNames);
 
@@ -173,7 +173,7 @@ public class FlatGuild {
         wrapper.set("tag", guild.getTag());
         wrapper.set("owner", guild.getOwner().getName());
         wrapper.set("home", LocationUtils.toString(guild.getHome()));
-        wrapper.set("members", UserUtils.getNames(guild.getMembers()));
+        wrapper.set("members", UserUtils.getNamesOfUsers(guild.getMembers()));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);
         wrapper.set("allies", GuildUtils.getNames(guild.getAllies()));
@@ -184,7 +184,7 @@ public class FlatGuild {
         wrapper.set("lives", guild.getLives());
         wrapper.set("ban", guild.getBan());
         wrapper.set("pvp", guild.getPvP());
-        wrapper.set("deputy", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
+        wrapper.set("deputy", ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), false));
 
         wrapper.save();
         return true;
