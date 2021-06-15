@@ -16,7 +16,6 @@ import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
-import java.util.UUID;
 
 public class FlatDataModel implements DataModel {
 
@@ -134,9 +133,7 @@ public class FlatDataModel implements DataModel {
                 continue;
             }
 
-            try {
-                UUID.fromString(StringUtils.removeEnd(file.getName(), ".yml"));
-            } catch (IllegalArgumentException e) {
+            if (!UserUtils.validateUUID(StringUtils.removeEnd(file.getName(), ".yml"))) {
                 FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
                 continue;
             }
