@@ -5,13 +5,13 @@ import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.panda_lang.utilities.commons.function.Option;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager {
@@ -34,7 +34,7 @@ public class UserManager {
         Set<User> users = new HashSet<>();
 
         for (String name : names) {
-            Optional<User> optional = getUser(name);
+            Option<User> optional = getUser(name);
 
             if (!optional.isPresent()) {
                 FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name);
@@ -47,37 +47,37 @@ public class UserManager {
         return users;
     }
 
-    public Optional<User> getUser(String nickname) {
+    public Option<User> getUser(String nickname) {
         return getUser(nickname, false);
     }
 
-    public Optional<User> getUser(String nickname, boolean ignoreCase) {
+    public Option<User> getUser(String nickname, boolean ignoreCase) {
         if (ignoreCase) {
             for (Map.Entry<String, User> entry : usersByName.entrySet()) {
                 if (entry.getKey().equalsIgnoreCase(nickname)) {
-                    return Optional.of(entry.getValue());
+                    return Option.of(entry.getValue());
                 }
             }
 
-            return Optional.empty();
+            return Option.none();
         }
 
-        return Optional.ofNullable(usersByName.get(nickname));
+        return Option.of(usersByName.get(nickname));
     }
 
-    public Optional<User> getUser(UUID uuid) {
-        return Optional.ofNullable(usersByUuid.get(uuid));
+    public Option<User> getUser(UUID uuid) {
+        return Option.of(usersByUuid.get(uuid));
     }
 
-    public Optional<User> getUser(Player player) {
+    public Option<User> getUser(Player player) {
         if (player.getUniqueId().version() == 2) {
-            return Optional.of(new User(player));
+            return Option.of(new User(player));
         }
 
         return getUser(player.getUniqueId());
     }
 
-    public Optional<User> getUser(OfflinePlayer offline) {
+    public Option<User> getUser(OfflinePlayer offline) {
         return getUser(offline.getName());
     }
 

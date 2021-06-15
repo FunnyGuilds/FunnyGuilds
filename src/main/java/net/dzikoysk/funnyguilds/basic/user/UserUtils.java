@@ -50,7 +50,7 @@ public class UserUtils {
     @Nullable
     @Deprecated
     public static User get(String nickname, boolean ignoreCase) {
-        return UserManager.getInstance().getUser(nickname, ignoreCase).orElse(null);
+        return UserManager.getInstance().getUser(nickname, ignoreCase).getOrNull();
     }
 
     /**
@@ -63,7 +63,7 @@ public class UserUtils {
     @Nullable
     @Deprecated
     public static User get(UUID uuid) {
-        return UserManager.getInstance().getUser(uuid).orElse(null);
+        return UserManager.getInstance().getUser(uuid).getOrNull();
     }
 
     /**
