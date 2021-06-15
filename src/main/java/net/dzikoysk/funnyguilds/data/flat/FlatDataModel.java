@@ -12,8 +12,10 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -133,9 +135,18 @@ public class FlatDataModel implements DataModel {
                 continue;
             }
 
-            if (!UserUtils.validateUUID(StringUtils.removeEnd(file.getName(), ".yml"))) {
-                FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
-                continue;
+            String filenameWithoutExtension = StringUtils.removeEnd(file.getName(), ".yml");
+
+            if (!UserUtils.validateUUID(filenameWithoutExtension)) {
+                if (UserUtils.validateUsername(filenameWithoutExtension)) {
+                    file = migrateUser(file);
+
+                    if (file == null)
+                        continue;
+                } else {
+                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
+                    continue;
+                }
             }
 
             User user = FlatUser.deserialize(file);
@@ -153,6 +164,31 @@ public class FlatDataModel implements DataModel {
         }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+    }
+
+    private File migrateUser(File file) {
+        YamlWrapper wrapper = new YamlWrapper(file);
+
+        String id = wrapper.getString("uuid");
+
+        if (id == null || !UserUtils.validateUUID(id)) {
+            FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. UUID is invalid.");
+            return null;
+        }
+
+        File dest = new File(usersFolderFile, id + ".yml");
+
+        if (dest.exists()) {
+            return file;
+        }
+
+        if (file.renameTo(dest)) {
+            file.delete();
+
+            return dest;
+        }
+
+        return null;
     }
 
     private void saveRegions(boolean ignoreNotChanged) {
