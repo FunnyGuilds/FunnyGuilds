@@ -101,7 +101,7 @@
         <dependency>
             <groupId>codecrafter47.bungeetablistplus</groupId>
             <artifactId>bungeetablistplus-api-bukkit</artifactId>
-            <version>3.4.3</version>
+            <version>3.4.4</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
