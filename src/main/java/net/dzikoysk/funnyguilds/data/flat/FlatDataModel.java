@@ -15,9 +15,12 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class FlatDataModel implements DataModel {
 
@@ -176,19 +179,18 @@ public class FlatDataModel implements DataModel {
             return null;
         }
 
-        File dest = new File(usersFolderFile, id + ".yml");
+        Path source = file.toPath();
+        Path target = source.resolveSibling(String.format("%s.yml", id));
 
-        if (dest.exists()) {
-            return file;
+        if (Files.exists(target)) {
+            return target.toFile();
         }
 
-        if (file.renameTo(dest)) {
-            file.delete();
-
-            return dest;
+        try {
+            return Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not move file '" + source + "' to '" + target + "'.", e.getCause());
         }
-
-        return null;
     }
 
     private void saveRegions(boolean ignoreNotChanged) {
