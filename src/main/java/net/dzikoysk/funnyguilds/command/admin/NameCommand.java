@@ -10,8 +10,6 @@ import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreRenameEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
@@ -40,35 +38,17 @@ public final class NameCommand {
             return;
         }
 
+        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
+
         if (config.regionsEnabled) {
             Region region = guild.getRegion();
 
-            DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
-
-            if (dataModel instanceof FlatDataModel) {
-                FlatDataModel flatDataModel = ((FlatDataModel) dataModel);
-                flatDataModel.getRegionFile(region).delete();
-            }
-
-            if (dataModel instanceof SQLDataModel) {
-                SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
-                sqlDataModel.deleteRecord(sqlDataModel.tabRegions, region);
-            }
-            
+            dataModel.deleteBasic(region);
             region.setName(args[1]);
         }
 
-        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
+        dataModel.deleteBasic(guild);
 
-        if (dataModel instanceof FlatDataModel) {
-            FlatDataModel flatDataModel = ((FlatDataModel) dataModel);
-            flatDataModel.getGuildFile(guild).delete();
-        }
-        else if (dataModel instanceof SQLDataModel) {
-            SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
-            sqlDataModel.deleteRecord(sqlDataModel.tabGuilds, guild);
-        }
-        
         guild.setName(args[1]);
         sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
 

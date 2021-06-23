@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Basic;
+import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
@@ -16,17 +17,17 @@ import net.dzikoysk.funnyguilds.data.database.element.*;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.apache.commons.lang.StringUtils;
+import org.panda_lang.utilities.commons.function.Option;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class SQLDataModel implements DataModel {
 
     private static SQLDataModel instance;
 
-    private final Set<SQLTable<?>> tables = new HashSet<>();
+    private final Map<BasicType, SQLTable<?>> tables = new HashMap<>();
 
     public final SQLTable<User> tabUsers;
     public final SQLTable<Region> tabRegions;
@@ -42,9 +43,9 @@ public class SQLDataModel implements DataModel {
         tabRegions = new SQLTable<>(config.mysql.regionsTableName);
         tabGuilds = new SQLTable<>(config.mysql.guildsTableName);
 
-        tables.add(tabUsers);
-        tables.add(tabRegions);
-        tables.add(tabGuilds);
+        tables.put(BasicType.USER, tabUsers);
+        tables.put(BasicType.REGION, tabRegions);
+        tables.put(BasicType.GUILD, tabGuilds);
 
         tabUsers.add("uuid",      SQLType.VARCHAR, 36,  true,   user -> user.getUUID().toString());
         tabUsers.add("name",      SQLType.TEXT,             true,   User::getName);
@@ -89,7 +90,7 @@ public class SQLDataModel implements DataModel {
     }
 
     public void load() throws SQLException {
-        for (SQLTable<?> table : tables) {
+        for (SQLTable<?> table : tables.values()) {
             createTableIfNotExists(table);
         }
 
@@ -190,48 +191,41 @@ public class SQLDataModel implements DataModel {
 
     @Override
     public void save(boolean ignoreNotChanged) {
-        for (SQLTable<?> table : tables) {
-            saveTable(table, ignoreNotChanged);
+        for (SQLTable<?> table : tables.values()) {
+            table.saveTable(ignoreNotChanged);
         }
     }
 
-    public <T extends Basic> void saveTable(SQLTable<T> sqlTable, boolean ignoreNotChanged) {
-        for (T data : sqlTable.getGetAll()) {
-            if (ignoreNotChanged && !data.wasChanged()) {
-                continue;
-            }
+    @Override
+    public <T extends Basic> void saveBasic(T data) {
+        Option<SQLTable<T>> table = getTable(data);
 
-            saveRecord(sqlTable, data);
+        if (table.isEmpty()) {
+            return;
         }
 
+        table.get().saveRecord(data);
     }
 
-    public <T extends Basic> void saveRecord(SQLTable<T> sqlTable, T data) {
-        SQLNamedStatement builderPS = SQLBasicUtils.getInsert(sqlTable);
+    @Override
+    public <T extends Basic> void deleteBasic(T data) {
+        Option<SQLTable<T>> table = getTable(data);
 
-        for (SQLElement<T> sqlElement : sqlTable.getSqlElements()) {
-            builderPS.set(sqlElement.getKey(), sqlElement.getToSave(data));
+        if (table.isEmpty()) {
+            return;
         }
 
-        builderPS.executeUpdate();
+        table.get().deleteRecord(data);
     }
 
-    public <T extends Basic> void deleteRecord(SQLTable<T> sqlTable, T data) {
-        SQLNamedStatement builderPS = SQLBasicUtils.getDelete(sqlTable);
-        SQLElement<T> primaryKey = sqlTable.getPrimaryKey();
+    public <T extends Basic> void updateBasic(String toUpdate, T data) {
+        Option<SQLTable<T>> table = getTable(data);
 
-        builderPS.set(primaryKey.getKey(), primaryKey.getToSave(data));
-        builderPS.executeUpdate();
-    }
+        if (table.isEmpty()) {
+            return;
+        }
 
-    public <T extends Basic> void updateRecord(SQLTable<T> sqlTable, String toUpdate, T data) {
-        SQLNamedStatement builderPS = SQLBasicUtils.getDelete(sqlTable);
-        SQLElement<T> primaryKey = sqlTable.getPrimaryKey();
-        SQLElement<T> elementToUpdate = sqlTable.getSQLElement(toUpdate);
-
-        builderPS.set(primaryKey.getKey(), primaryKey.getToSave(data));
-        builderPS.set(elementToUpdate.getKey(), elementToUpdate.getToSave(data));
-        builderPS.executeUpdate();
+        table.get().updateRecord(toUpdate, data);
     }
 
     public <T extends Basic> void createTableIfNotExists(SQLTable<T> table) {
@@ -240,6 +234,18 @@ public class SQLDataModel implements DataModel {
         for (SQLElement<T> sqlElement : table.getSqlElements()) {
             SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true);
         }
+    }
+
+    public <T extends Basic> Option<SQLTable<T>> getTable(T data) {
+        for (Map.Entry<BasicType, SQLTable<?>> entry : tables.entrySet()) {
+            if (entry.getKey() != data.getType()) {
+                continue;
+            }
+
+            return Option.of((SQLTable<T>) entry.getValue());
+        }
+
+        return Option.none();
     }
 
     public static SQLDataModel getInstance() {

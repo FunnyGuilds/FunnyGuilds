@@ -14,8 +14,7 @@ public class DatabaseUpdateUserPointsRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() {
-        SQLDataModel dataModel = SQLDataModel.getInstance();
-        dataModel.updateRecord(dataModel.tabUsers, "points", user);
+        SQLDataModel.getInstance().updateBasic("points", user);
     }
 
 }

@@ -14,8 +14,7 @@ public class DatabaseUpdateGuildPointsRequest extends DefaultConcurrencyRequest 
 
     @Override
     public void execute() {
-        SQLDataModel dataModel = SQLDataModel.getInstance();
-        dataModel.updateRecord(dataModel.tabGuilds, "points", guild);
+        SQLDataModel.getInstance().updateBasic("points", guild);
     }
 
 }

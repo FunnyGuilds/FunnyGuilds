@@ -4,11 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatGuild;
-import net.dzikoysk.funnyguilds.data.flat.FlatRegion;
-import net.dzikoysk.funnyguilds.data.flat.FlatUser;
 
 import java.util.stream.Stream;
 
@@ -22,33 +17,16 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() {
-        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
-
         try {
-            if (dataModel instanceof SQLDataModel) {
-                SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
-                sqlDataModel.saveRecord(sqlDataModel.tabGuilds, guild);
+            DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
 
-                if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-                    sqlDataModel.saveRecord(sqlDataModel.tabRegions, guild.getRegion());
-                }
+            dataModel.saveBasic(guild);
 
-                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(user -> sqlDataModel.saveRecord(sqlDataModel.tabUsers, user));
-                return;
+            if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+                dataModel.saveBasic(guild.getRegion());
             }
 
-            if (dataModel instanceof FlatDataModel) {
-                FlatGuild flatGuild = new FlatGuild(guild);
-                flatGuild.serialize((FlatDataModel) dataModel);
-
-                if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-                    FlatRegion flatRegion = new FlatRegion(guild.getRegion());
-                    flatRegion.serialize((FlatDataModel) dataModel);
-                }
-
-                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner()))
-                        .map(FlatUser::new).forEach(flatUser -> flatUser.serialize((FlatDataModel) dataModel));
-            }
+            Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(dataModel::saveBasic);
         }
         catch (Throwable th) {
             FunnyGuilds.getPluginLogger().error("Could not update guild", th);

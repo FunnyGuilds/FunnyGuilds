@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.Basic;
 import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -92,6 +93,24 @@ public class FlatDataModel implements DataModel {
         this.saveUsers(ignoreNotChanged);
         this.saveRegions(ignoreNotChanged);
         this.saveGuilds(ignoreNotChanged);
+    }
+
+    @Override
+    public <T extends Basic> void saveBasic(T data) {
+        switch (data.getType()) {
+            case GUILD: new FlatGuild((Guild) data).serialize(this); break;
+            case USER: new FlatUser((User) data).serialize(this); break;
+            case REGION: new FlatRegion((Region) data).serialize(this); break;
+        }
+    }
+
+    @Override
+    public <T extends Basic> void deleteBasic(T data) {
+        switch (data.getType()) {
+            case GUILD: getGuildFile((Guild) data).delete(); break;
+            case USER: getUserFile((User) data).delete(); break;
+            case REGION: getRegionFile((Region) data).delete(); break;
+        }
     }
 
     private void saveUsers(boolean ignoreNotChanged) {

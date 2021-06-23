@@ -103,4 +103,44 @@ public class SQLTable<T extends Basic> {
 
         return elementsMap;
     }
+
+    public void saveTable(boolean ignoreNotChanged) {
+        for (T data : getGetAll()) {
+            if (ignoreNotChanged && !data.wasChanged()) {
+                continue;
+            }
+
+            saveRecord(data);
+        }
+
+    }
+
+
+    public void saveRecord(T data) {
+        SQLNamedStatement builderPS = SQLBasicUtils.getInsert(this);
+
+        for (SQLElement<T> sqlElement : getSqlElements()) {
+            builderPS.set(sqlElement.getKey(), sqlElement.getToSave(data));
+        }
+
+        builderPS.executeUpdate();
+    }
+
+    public void deleteRecord(T data) {
+        SQLNamedStatement builderPS = SQLBasicUtils.getDelete(this);
+        SQLElement<T> primaryKey = getPrimaryKey();
+
+        builderPS.set(primaryKey.getKey(), primaryKey.getToSave(data));
+        builderPS.executeUpdate();
+    }
+
+    public void updateRecord(String toUpdate, T data) {
+        SQLNamedStatement builderPS = SQLBasicUtils.getDelete(this);
+        SQLElement<T> primaryKey = getPrimaryKey();
+        SQLElement<T> elementToUpdate = getSQLElement(toUpdate);
+
+        builderPS.set(primaryKey.getKey(), primaryKey.getToSave(data));
+        builderPS.set(elementToUpdate.getKey(), elementToUpdate.getToSave(data));
+        builderPS.executeUpdate();
+    }
 }

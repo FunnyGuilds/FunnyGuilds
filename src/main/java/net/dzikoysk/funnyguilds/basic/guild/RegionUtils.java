@@ -1,10 +1,7 @@
 package net.dzikoysk.funnyguilds.basic.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
 import org.panda_lang.utilities.commons.function.Option;
@@ -104,18 +101,7 @@ public final class RegionUtils {
             return;
         }
 
-        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
-
-        if (dataModel instanceof FlatDataModel) {
-            FlatDataModel flatDataModel = ((FlatDataModel) dataModel);
-            flatDataModel.getRegionFile(region).delete();
-        }
-
-        if (dataModel instanceof SQLDataModel) {
-            SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
-            sqlDataModel.deleteRecord(sqlDataModel.tabRegions, region);
-        }
-        
+        FunnyGuilds.getInstance().getDataModel().deleteBasic(region);
         region.delete();
     }
 

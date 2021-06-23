@@ -4,10 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
-import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
@@ -76,17 +73,7 @@ public class GuildUtils {
             globalGuild.removeEnemy(guild);
         }
 
-        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
-
-        if (dataModel instanceof FlatDataModel) {
-            FlatDataModel flatDataModel = ((FlatDataModel) dataModel);
-            flatDataModel.getGuildFile(guild).delete();
-        }
-        else if (dataModel instanceof SQLDataModel) {
-            SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
-            sqlDataModel.deleteRecord(sqlDataModel.tabGuilds, guild);
-        }
-
+        FunnyGuilds.getInstance().getDataModel().deleteBasic(guild);
         guild.delete();
     }
 

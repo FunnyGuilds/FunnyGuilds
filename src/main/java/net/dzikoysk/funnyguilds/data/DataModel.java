@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.Basic;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
@@ -18,6 +19,10 @@ public interface DataModel {
     void load() throws SQLException;
 
     void save(boolean ignoreNotChanged);
+
+    <T extends Basic> void saveBasic(T data);
+
+    <T extends Basic> void deleteBasic(T data);
 
     default void validateLoadedData() {
         if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
