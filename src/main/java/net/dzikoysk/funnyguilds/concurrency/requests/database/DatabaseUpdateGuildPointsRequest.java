@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 
 public class DatabaseUpdateGuildPointsRequest extends DefaultConcurrencyRequest {
 
@@ -14,7 +14,8 @@ public class DatabaseUpdateGuildPointsRequest extends DefaultConcurrencyRequest 
 
     @Override
     public void execute() {
-        DatabaseGuild.updatePoints(guild);
+        SQLDataModel dataModel = SQLDataModel.getInstance();
+        dataModel.updateRecord(dataModel.tabGuilds, "points", guild);
     }
 
 }

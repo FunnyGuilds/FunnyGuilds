@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.basic.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
@@ -104,13 +104,16 @@ public final class RegionUtils {
             return;
         }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
-            dataModel.getRegionFile(region).delete();
+        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
+
+        if (dataModel instanceof FlatDataModel) {
+            FlatDataModel flatDataModel = ((FlatDataModel) dataModel);
+            flatDataModel.getRegionFile(region).delete();
         }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            DatabaseRegion.delete(region);
+        if (dataModel instanceof SQLDataModel) {
+            SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
+            sqlDataModel.deleteRecord(sqlDataModel.tabRegions, region);
         }
         
         region.delete();

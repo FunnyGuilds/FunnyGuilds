@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.basic.user;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -127,6 +128,10 @@ public class UserUtils {
 
     public static Set<String> getNamesOfUsers(Collection<User> users) {
         return users.stream().map(User::getName).collect(Collectors.toSet());
+    }
+
+    public static String getNamesToSave(Collection<User> users) {
+        return ChatUtils.toString(getNamesOfUsers(users), false);
     }
 
     public static Set<User> getUsersFromString(Collection<String> names) {

@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
-import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
@@ -46,23 +44,6 @@ public class DatabaseRegion {
         }
         
         return null;
-    }
-
-    public static void save(Region region) {
-        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabRegions);
-
-        statement.set("name", region.getName());
-        statement.set("center", LocationUtils.toString(region.getCenter()));
-        statement.set("size", region.getSize());
-        statement.set("enlarge", region.getEnlarge());
-        statement.executeUpdate();
-    }
-
-    public static void delete(Region region) {
-        SQLNamedStatement statement = SQLBasicUtils.getDelete(SQLDataModel.tabRegions);
-
-        statement.set("name", region.getName());
-        statement.executeUpdate();
     }
 
     private DatabaseRegion() {}

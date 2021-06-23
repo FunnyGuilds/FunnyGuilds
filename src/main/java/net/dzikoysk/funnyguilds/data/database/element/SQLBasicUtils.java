@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
+import net.dzikoysk.funnyguilds.basic.Basic;
 import org.panda_lang.utilities.commons.text.Joiner;
 
 import java.util.HashMap;
@@ -8,7 +9,7 @@ public class SQLBasicUtils {
 
     private SQLBasicUtils() {}
 
-    public static SQLNamedStatement getInsert(SQLTable table) {
+    public static <T extends Basic> SQLNamedStatement getInsert(SQLTable<T> table) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("INSERT INTO ");
@@ -23,7 +24,7 @@ public class SQLBasicUtils {
         return new SQLNamedStatement(sb.toString(), table.getMapElementsKey());
     }
 
-    public static SQLNamedStatement getSelect(SQLTable table, String... sqlElements) {
+    public static <T extends Basic> SQLNamedStatement getSelect(SQLTable<T> table, String... sqlElements) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("SELECT ");
@@ -34,7 +35,7 @@ public class SQLBasicUtils {
         return new SQLNamedStatement(sb.toString(), new HashMap<>());
     }
 
-    public static SQLNamedStatement getSelectAll(SQLTable table) {
+    public static <T extends Basic> SQLNamedStatement getSelectAll(SQLTable<T> table) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("SELECT * FROM ");
@@ -43,7 +44,7 @@ public class SQLBasicUtils {
         return new SQLNamedStatement(sb.toString(), new HashMap<>());
     }
 
-    public static SQLNamedStatement getUpdate(SQLTable table, SQLElement element) {
+    public static <T extends Basic> SQLNamedStatement getUpdate(SQLTable<T> table, SQLElement<T> element) {
         HashMap<String, Integer> keyMap = new HashMap<>();
         StringBuilder sb = new StringBuilder();
 
@@ -62,7 +63,7 @@ public class SQLBasicUtils {
         return new SQLNamedStatement(sb.toString(), keyMap);
     }
 
-    public static SQLNamedStatement getCreate(SQLTable table) {
+    public static <T extends Basic> SQLNamedStatement getCreate(SQLTable<T> table) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("CREATE TABLE IF NOT EXISTS ");
@@ -89,7 +90,7 @@ public class SQLBasicUtils {
         return new SQLNamedStatement(sb.toString(), new HashMap<>());
     }
 
-    public static SQLNamedStatement getDelete(SQLTable table) {
+    public static <T extends Basic> SQLNamedStatement getDelete(SQLTable<T> table) {
         HashMap<String, Integer> keyMap = new HashMap<>();
         StringBuilder sb = new StringBuilder();
 
@@ -104,7 +105,7 @@ public class SQLBasicUtils {
         return new SQLNamedStatement(sb.toString(), keyMap);
     }
 
-    public static SQLNamedStatement getAlter(SQLTable table, SQLElement column) {
+    public static <T extends Basic> SQLNamedStatement getAlter(SQLTable<T> table, SQLElement<T> column) {
         StringBuilder sb = new StringBuilder();
         int index = table.getIndexElement(column.getKey());
 

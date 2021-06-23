@@ -3,13 +3,9 @@ package net.dzikoysk.funnyguilds.data.database;
 import com.google.common.collect.Sets;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
-import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
-import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
@@ -105,52 +101,6 @@ public class DatabaseGuild {
         }
         
         return null;
-    }
-
-    public static void save(Guild guild) {
-        String members = ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getMembers()), false);
-        String deputies = ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), false);
-        String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
-        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
-        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
-
-        statement.set("uuid",     guild.getUUID().toString());
-        statement.set("name",     guild.getName());
-        statement.set("tag",      guild.getTag());
-        statement.set("owner",    guild.getOwner().getName());
-        statement.set("home",     LocationUtils.toString(guild.getHome()));
-        statement.set("region",   RegionUtils.toString(guild.getRegion()));
-        statement.set("regions", "#abandoned");
-        statement.set("members",  members);
-        statement.set("deputy",   deputies);
-        statement.set("allies",   allies);
-        statement.set("enemies",  enemies);
-        statement.set("points",   guild.getRank().getPoints());
-        statement.set("lives",    guild.getLives());
-        statement.set("born",     guild.getBorn());
-        statement.set("validity", guild.getValidity());
-        statement.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
-        statement.set("ban",      guild.getBan());
-        statement.set("pvp",      guild.getPvP());
-        statement.set("info",     "");
-
-        statement.executeUpdate();
-    }
-
-    public static void delete(Guild guild) {
-        SQLNamedStatement statement = SQLBasicUtils.getDelete(SQLDataModel.tabGuilds);
-
-        statement.set("uuid", guild.getUUID().toString());
-        statement.executeUpdate();
-    }
-
-    public static void updatePoints(Guild guild) {
-        SQLTable table = SQLDataModel.tabGuilds;
-        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
-
-        statement.set("points", guild.getRank().getPoints());
-        statement.set("uuid", guild.getUUID().toString());
-        statement.executeUpdate();
     }
 
     private DatabaseGuild() {}

@@ -1,14 +1,14 @@
 package net.dzikoysk.funnyguilds.basic.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
+import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import org.bukkit.Bukkit;
@@ -76,12 +76,15 @@ public class GuildUtils {
             globalGuild.removeEnemy(guild);
         }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = ((FlatDataModel) FunnyGuilds.getInstance().getDataModel());
-            dataModel.getGuildFile(guild).delete();
+        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
+
+        if (dataModel instanceof FlatDataModel) {
+            FlatDataModel flatDataModel = ((FlatDataModel) dataModel);
+            flatDataModel.getGuildFile(guild).delete();
         }
-        else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            DatabaseGuild.delete(guild);
+        else if (dataModel instanceof SQLDataModel) {
+            SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
+            sqlDataModel.deleteRecord(sqlDataModel.tabGuilds, guild);
         }
 
         guild.delete();
@@ -155,6 +158,10 @@ public class GuildUtils {
                 .filter(Objects::nonNull)
                 .map(Guild::getName)
                 .collect(Collectors.toSet());
+    }
+
+    public static String getNamesToSave(Collection<Guild> guilds) {
+        return ChatUtils.toString(getNames(guilds), false);
     }
 
     public static List<String> getTags(Collection<Guild> guilds) {

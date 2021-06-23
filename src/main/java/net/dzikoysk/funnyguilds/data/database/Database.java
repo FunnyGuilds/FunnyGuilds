@@ -17,20 +17,20 @@ public class Database {
         instance = this;
 
         this.dataSource = new HikariDataSource();
-        PluginConfiguration.MySQL c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
+        PluginConfiguration.MySQL mysqlConfig = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
 
-        int poolSize = c.poolSize;
+        int poolSize = mysqlConfig.poolSize;
         if (poolSize <= 0) {
             poolSize = Runtime.getRuntime().availableProcessors() * 2 + 1; // (core_count * 2) + spindle [pattern from PostgreSQL wiki]
         }
 
         this.dataSource.setMaximumPoolSize(poolSize);
-        this.dataSource.setConnectionTimeout(c.connectionTimeout);
-        this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
-        this.dataSource.setUsername(c.user);
+        this.dataSource.setConnectionTimeout(mysqlConfig.connectionTimeout);
+        this.dataSource.setJdbcUrl("jdbc:mysql://" + mysqlConfig.hostname + ":" + mysqlConfig.port + "/" + mysqlConfig.database + "?useSSL=" + mysqlConfig.useSSL);
+        this.dataSource.setUsername(mysqlConfig.user);
 
-        if (c.password != null && ! c.password.isEmpty()) {
-            this.dataSource.setPassword(c.password);
+        if (mysqlConfig.password != null && ! mysqlConfig.password.isEmpty()) {
+            this.dataSource.setPassword(mysqlConfig.password);
         }
 
         this.dataSource.addDataSourceProperty("cachePrepStmts", true);

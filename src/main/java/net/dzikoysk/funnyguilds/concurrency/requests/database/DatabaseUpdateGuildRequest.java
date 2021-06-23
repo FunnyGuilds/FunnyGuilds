@@ -2,12 +2,8 @@ package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
-import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatGuild;
@@ -30,13 +26,14 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 
         try {
             if (dataModel instanceof SQLDataModel) {
-                DatabaseGuild.save(guild);
+                SQLDataModel sqlDataModel = (SQLDataModel) dataModel;
+                sqlDataModel.saveRecord(sqlDataModel.tabGuilds, guild);
 
                 if (FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-                    DatabaseRegion.save(guild.getRegion());
+                    sqlDataModel.saveRecord(sqlDataModel.tabRegions, guild.getRegion());
                 }
 
-                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(DatabaseUser::save);
+                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(user -> sqlDataModel.saveRecord(sqlDataModel.tabUsers, user));
                 return;
             }
 

@@ -2,9 +2,6 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
-import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
-import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 
 import java.sql.ResultSet;
@@ -46,30 +43,6 @@ public class DatabaseUser {
         }
 
         return null;
-    }
-
-    public static void save(User user) {
-        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabUsers);
-
-        statement.set("uuid", user.getUUID().toString());
-        statement.set("name", user.getName());
-        statement.set("points", user.getRank().getPoints());
-        statement.set("kills", user.getRank().getKills());
-        statement.set("deaths", user.getRank().getDeaths());
-        statement.set("assists", user.getRank().getAssists());
-        statement.set("logouts", user.getRank().getLogouts());
-        statement.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
-        statement.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
-        statement.executeUpdate();
-    }
-
-    public static void updatePoints(User user) {
-        SQLTable table = SQLDataModel.tabUsers;
-        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
-
-        statement.set("points", user.getRank().getPoints());
-        statement.set("uuid", user.getUUID().toString());
-        statement.executeUpdate();
     }
 
     private DatabaseUser() {}
