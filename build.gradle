@@ -1,0 +1,44 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+        maven {
+            url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
+        }
+
+        maven {
+            url "https://repo.panda-lang.org/"
+        }
+
+        maven {
+            url "https://storehouse.okaeri.eu/repository/maven-public/"
+        }
+
+        maven {
+            url "https://maven.sk89q.com/repo/"
+        }
+
+        maven {
+            url "https://repo.extendedclip.com/content/repositories/placeholderapi/"
+        }
+
+        maven {
+            url "https://nexus.codecrafter47.de/content/repositories/public/"
+        }
+
+        maven {
+            url "https://repo.mvdw-software.be/content/groups/public/"
+        }
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

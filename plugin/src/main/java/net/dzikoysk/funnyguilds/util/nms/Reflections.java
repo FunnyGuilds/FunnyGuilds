@@ -220,7 +220,7 @@ public final class Reflections {
     }
 
     public static Method getMethod(Class<?> cl, String method) {
-        return getMethod(cl, method, null);
+        return getMethod(cl, method, (Class<?>[]) null);
     }
 
     public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... arguments) {

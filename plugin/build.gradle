@@ -1,0 +1,35 @@
+dependencies {
+    // funnyguilds & panda utilities
+    implementation "net.dzikoysk:funnycommands:0.3.11"
+    implementation "org.panda-lang:panda-utilities:0.4.1-alpha"
+
+    // okaeri config library
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:2.7.20"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:2.7.20"
+
+    // general stuff
+    implementation "com.zaxxer:HikariCP:4.0.3"
+    implementation "com.google.guava:guava:30.1.1-jre"
+    implementation "org.apache.commons:commons-lang3:3.12.0"
+
+    // probably fix for some exception?
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.14.1"
+
+    // bukkit shit
+    shadow "org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT" // provided
+    shadow "org.apache.logging.log4j:log4j-core:2.14.1" // provided
+
+    shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4" // provided
+    shadow "me.robin:leaderheads-api:1.0.0" // provided
+    shadow("be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT") { // provided
+        exclude group: "org.spigotmc", module: "spigot"
+    }
+    shadow "me.clip:placeholderapi:2.10.9"
+
+    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.5"
+    shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
+
+    shadow "net.milkbowl.vault:VaultAPI:1.7"
+
+    shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
+}

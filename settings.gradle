@@ -1,0 +1,6 @@
+rootProject.name = 'FunnyGuilds'
+
+include ":plugin"
+include ":nms:api"
+include ":nms:v1_8R3"
+include ":nms:v1_17R1"
