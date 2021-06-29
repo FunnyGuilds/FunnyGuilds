@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class UserUtils {
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
+    private final static Pattern UUID_PATTERN = Pattern.compile("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$");
 
     /**
      * Gets the copied set of users.
@@ -180,6 +181,10 @@ public class UserUtils {
 
     public static boolean validateUsername(String name) {
         return USERNAME_PATTERN.matcher(name).matches();
+    }
+
+    public static boolean validateUUID(String uuid) {
+        return UUID_PATTERN.matcher(uuid).matches();
     }
 
 }

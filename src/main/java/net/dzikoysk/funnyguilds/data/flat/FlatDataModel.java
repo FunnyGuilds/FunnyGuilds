@@ -12,10 +12,15 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.util.commons.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class FlatDataModel implements DataModel {
 
@@ -67,7 +72,7 @@ public class FlatDataModel implements DataModel {
     }
 
     public File getUserFile(User user) {
-        return new File(this.usersFolderFile, user.getName() + ".yml");
+        return new File(this.usersFolderFile, user.getUUID() + ".yml");
     }
 
     public File getRegionFile(Region region) {
@@ -133,9 +138,18 @@ public class FlatDataModel implements DataModel {
                 continue;
             }
 
-            if (!UserUtils.validateUsername(StringUtils.removeEnd(file.getName(), ".yml"))) {
-                FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
-                continue;
+            String filenameWithoutExtension = StringUtils.removeEnd(file.getName(), ".yml");
+
+            if (!UserUtils.validateUUID(filenameWithoutExtension)) {
+                if (UserUtils.validateUsername(filenameWithoutExtension)) {
+                    file = migrateUser(file);
+
+                    if (file == null)
+                        continue;
+                } else {
+                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
+                    continue;
+                }
             }
 
             User user = FlatUser.deserialize(file);
@@ -153,6 +167,30 @@ public class FlatDataModel implements DataModel {
         }
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+    }
+
+    private File migrateUser(File file) {
+        YamlWrapper wrapper = new YamlWrapper(file);
+
+        String id = wrapper.getString("uuid");
+
+        if (id == null || !UserUtils.validateUUID(id)) {
+            FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. UUID is invalid.");
+            return null;
+        }
+
+        Path source = file.toPath();
+        Path target = source.resolveSibling(String.format("%s.yml", id));
+
+        if (Files.exists(target)) {
+            return target.toFile();
+        }
+
+        try {
+            return Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not move file '" + source + "' to '" + target + "'.", e.getCause());
+        }
     }
 
     private void saveRegions(boolean ignoreNotChanged) {
