@@ -19,21 +19,19 @@ dependencies {
     // probably fix for some exception?
     implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.14.1"
 
-    // bukkit shit
-    shadow "org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT" // provided
-    shadow "org.apache.logging.log4j:log4j-core:2.14.1" // provided
+    // bukkit stuff
+    shadow "org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT"
+    shadow "org.apache.logging.log4j:log4j-core:2.14.1"
 
-    shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4" // provided
-    shadow "me.robin:leaderheads-api:1.0.0" // provided
-    shadow("be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT") { // provided
+    // integrations
+    shadow "me.clip:placeholderapi:2.10.9"
+    shadow "me.robin:leaderheads-api:1.0.0"
+    shadow "net.milkbowl.vault:VaultAPI:1.7"
+    shadow("be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT") {
         exclude group: "org.spigotmc", module: "spigot"
     }
-    shadow "me.clip:placeholderapi:2.10.9"
+    shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
 
     shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.5"
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
-
-    shadow "net.milkbowl.vault:VaultAPI:1.7"
-
-    shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
 }

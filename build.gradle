@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'idea'
 }
 
 allprojects {
@@ -32,7 +33,7 @@ allprojects {
         }
 
         maven {
-            url "https://repo.mvdw-software.be/content/groups/public/"
+            url "https://repo.mvdw-software.com/content/groups/public/"
         }
     }
 
@@ -41,4 +42,10 @@ allprojects {
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+idea {
+    project {
+        jdkName = "16"
+    }
 }
