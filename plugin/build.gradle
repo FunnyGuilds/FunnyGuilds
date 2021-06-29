@@ -1,4 +1,8 @@
 dependencies {
+    project(":nms").getSubprojects().each {
+        implementation it
+    }
+
     // funnyguilds & panda utilities
     implementation "net.dzikoysk:funnycommands:0.3.11"
     implementation "org.panda-lang:panda-utilities:0.4.1-alpha"

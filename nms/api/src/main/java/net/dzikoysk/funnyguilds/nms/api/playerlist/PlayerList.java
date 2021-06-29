@@ -1,5 +1,5 @@
 package net.dzikoysk.funnyguilds.nms.api.playerlist;
 
 public interface PlayerList {
-    // todo
+    void send(String[] playerListCells, String header, String footer, int ping);
 }

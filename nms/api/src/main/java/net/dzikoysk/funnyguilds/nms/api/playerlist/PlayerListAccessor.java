@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.nms.api.playerlist;
 
+import org.bukkit.entity.Player;
+
 public interface PlayerListAccessor {
-    void setupTablistOrDoOtherShit(Player player);
+    PlayerList createPlayerList(Player player, int cellCount);
 }

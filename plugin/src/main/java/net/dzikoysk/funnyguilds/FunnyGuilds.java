@@ -24,9 +24,33 @@ import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.element.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
-import net.dzikoysk.funnyguilds.listener.*;
+import net.dzikoysk.funnyguilds.listener.BlockFlow;
+import net.dzikoysk.funnyguilds.listener.EntityDamage;
+import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.PlayerChat;
+import net.dzikoysk.funnyguilds.listener.PlayerDeath;
+import net.dzikoysk.funnyguilds.listener.PlayerJoin;
+import net.dzikoysk.funnyguilds.listener.PlayerLogin;
+import net.dzikoysk.funnyguilds.listener.PlayerQuit;
+import net.dzikoysk.funnyguilds.listener.TntProtection;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
-import net.dzikoysk.funnyguilds.listener.region.*;
+import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
+import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
+import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
+import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
+import net.dzikoysk.funnyguilds.listener.region.BucketAction;
+import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.EntityPlace;
+import net.dzikoysk.funnyguilds.listener.region.EntityProtect;
+import net.dzikoysk.funnyguilds.listener.region.GuildHeartProtectionHandler;
+import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
+import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
+import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
+import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
+import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
+import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
+import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_17R1.V1_17R1NmsAccessor;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
@@ -34,6 +58,7 @@ import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
+import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -59,6 +84,7 @@ public class FunnyGuilds extends JavaPlugin {
     private ConcurrencyManager     concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
     private UserManager            userManager;
+    private NmsAccessor            nmsAccessor;
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
@@ -92,6 +118,8 @@ public class FunnyGuilds extends JavaPlugin {
         if (! this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
+
+        this.nmsAccessor = this.prepareNmsAccessor();
 
         try {
             this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, (it) -> {
@@ -274,7 +302,7 @@ public class FunnyGuilds extends JavaPlugin {
 
             user.getCache().getDummy();
 
-            if (!pluginConfiguration.playerListEnable) {
+            if (! pluginConfiguration.playerListEnable) {
                 continue;
             }
 
@@ -338,6 +366,10 @@ public class FunnyGuilds extends JavaPlugin {
         return userManager;
     }
 
+    public NmsAccessor getNmsAccessor() {
+        return this.nmsAccessor;
+    }
+
     public void reloadPluginConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
     }
@@ -354,4 +386,13 @@ public class FunnyGuilds extends JavaPlugin {
         return logger;
     }
 
+    private NmsAccessor prepareNmsAccessor() {
+        switch (Reflections.SERVER_VERSION) {
+            case "v1_17_R1":
+                return new V1_17R1NmsAccessor();
+            default:
+                throw new RuntimeException(String.format("Could not find matching NmsAccessor for currently running server version: %s",
+                        Reflections.SERVER_VERSION));
+        }
+    }
 }
