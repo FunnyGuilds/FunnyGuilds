@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 public class V1_17R1PlayerListAccessor implements PlayerListAccessor {
 
     @Override
-    public PlayerList createPlayerList(Player player, int cellCount) {
-        return new V1_17R1PlayerList(player, cellCount);
+    public PlayerList createPlayerList(int cellCount) {
+        return new V1_17R1PlayerList(cellCount);
     }
 
 }

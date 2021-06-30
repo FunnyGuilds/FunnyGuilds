@@ -23,20 +23,18 @@ public class V1_17R1PlayerList implements PlayerList {
     private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
     private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.a("");
 
-    private final Player player;
     private final int cellCount;
 
     private final GameProfile[] profileCache = new GameProfile[PlayerListConstants.DEFAULT_CELL_COUNT];
 
     private boolean firstPacket = true;
 
-    public V1_17R1PlayerList(Player player, int cellCount) {
-        this.player = player;
+    public V1_17R1PlayerList(int cellCount) {
         this.cellCount = cellCount;
     }
 
     @Override
-    public void send(String[] playerListCells, String header, String footer, int ping) {
+    public void send(Player player, String[] playerListCells, String header, String footer, int ping) {
         final List<Packet<?>> packets = Lists.newArrayList();
         final Collection<PacketPlayOutPlayerInfo.PlayerInfoData> addPlayerList = Lists.newArrayList();
         final List<PacketPlayOutPlayerInfo.PlayerInfoData> updatePlayerList = Lists.newArrayList();
@@ -95,11 +93,11 @@ public class V1_17R1PlayerList implements PlayerList {
             packets.add(headerFooterPacket);
 
             for (Packet<?> packet : packets) {
-                ((CraftPlayer) this.player).getHandle().b.sendPacket(packet);
+                ((CraftPlayer) player).getHandle().b.sendPacket(packet);
             }
         }
         catch (Exception ex) {
-            throw new RuntimeException(String.format("Failed to send PlayerList for player '%s'", this.player.getName()), ex);
+            throw new RuntimeException(String.format("Failed to send PlayerList for player '%s'", player.getName()), ex);
         }
     }
 }

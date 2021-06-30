@@ -34,6 +34,7 @@ public class PlayerQuit implements Listener {
             cache.setIndividualPrefix(null);
             cache.setScoreboard(null);
             cache.setDummy(null);
+            cache.setPlayerList(null);
             cache.clearDamage();
 
             user.getBossBar().removeNotification();

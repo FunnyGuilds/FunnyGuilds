@@ -1,9 +1,12 @@
 package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -16,7 +19,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
 
     public ReloadRequest(CommandSender sender) {
         this.sender = sender;
-        this.startTime =  System.currentTimeMillis();
+        this.startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -32,7 +35,21 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
             AbstractTablist.wipeCache();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
-                AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
+                User user = funnyGuilds.getUserManager().getUser(player).getOrNull();
+
+                if (user == null) {
+                    continue;
+                }
+
+                IndividualPlayerList playerList = new IndividualPlayerList(user,
+                        funnyGuilds.getNmsAccessor().getPlayerListAccessor().createPlayerList(PlayerListConstants.DEFAULT_CELL_COUNT),
+                        config.playerList,
+                        config.playerListHeader, config.playerListFooter,
+                        config.playerListPing,
+                        config.playerListFillCells
+                );
+
+                user.getCache().setPlayerList(playerList);
             }
         }
 

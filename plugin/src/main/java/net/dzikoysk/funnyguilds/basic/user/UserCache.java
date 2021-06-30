@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.Dummy;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
+import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +36,7 @@ public class UserCache {
             .expireAfterWrite(30, TimeUnit.MINUTES)
             .build();
 
+    private IndividualPlayerList playerList;
     private Scoreboard scoreboard;
     private IndividualPrefix prefix;
     private Dummy dummy;
@@ -98,6 +100,10 @@ public class UserCache {
 
     public void setEnter(boolean enter) {
         this.enter = enter;
+    }
+
+    public void setPlayerList(IndividualPlayerList playerList) {
+        this.playerList = playerList;
     }
 
     public synchronized void setScoreboard(Scoreboard sb) {
@@ -224,5 +230,9 @@ public class UserCache {
 
     public boolean getEnter() {
         return this.enter;
+    }
+
+    public IndividualPlayerList getPlayerList() {
+        return this.playerList;
     }
 }
