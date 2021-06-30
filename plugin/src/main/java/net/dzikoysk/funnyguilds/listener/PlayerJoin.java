@@ -13,9 +13,10 @@ import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
+import net.dzikoysk.funnyguilds.system.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
-import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -84,8 +85,10 @@ public class PlayerJoin implements Listener {
                 new RankUpdateUserRequest(user)
         );
 
+        final FunnyGuildsChannelHandler channelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallChannelHandler(player);
+        channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(player));
+
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
-            PacketExtension.registerPlayer(player);
             this.plugin.getVersion().isNewAvailable(player, false);
 
             Region region = RegionUtils.getAt(player.getLocation());

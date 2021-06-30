@@ -50,14 +50,15 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 import net.dzikoysk.funnyguilds.nms.v1_17R1.V1_17R1NmsAccessor;
 import net.dzikoysk.funnyguilds.system.GuildValidationHandler;
+import net.dzikoysk.funnyguilds.system.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
-import net.dzikoysk.funnyguilds.util.nms.PacketExtension;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -229,7 +230,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, new BlockPhysics());
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, new PlayerRespawn());
         this.dynamicListenerManager.reloadAll();
-        this.patch();
+        this.handleReload();
 
         this.version.isNewAvailable(this.getServer().getConsoleSender(), true);
         PluginHook.init();
@@ -285,9 +286,10 @@ public class FunnyGuilds extends JavaPlugin {
         this.getServer().getPluginManager().disablePlugin(this);
     }
 
-    private void patch() {
+    private void handleReload() {
         for (Player player : this.getServer().getOnlinePlayers()) {
-            this.getServer().getScheduler().runTask(this, () -> PacketExtension.registerPlayer(player));
+            final FunnyGuildsChannelHandler channelHandler = nmsAccessor.getPacketAccessor().getOrInstallChannelHandler(player);
+            channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(player));
 
             User user = User.get(player);
 
