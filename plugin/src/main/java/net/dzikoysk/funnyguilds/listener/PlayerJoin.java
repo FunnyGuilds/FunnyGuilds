@@ -65,10 +65,6 @@ public class PlayerJoin implements Listener {
             cache.setIndividualPrefix(prefix);
         }
 
-        if (config.playerListEnable && ! AbstractTablist.hasTablist(player)) {
-            AbstractTablist.createTablist(config.playerList, config.playerListHeader, config.playerListFooter, config.playerListPing, player);
-        }
-
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(
                 new PrefixGlobalUpdatePlayer(player),

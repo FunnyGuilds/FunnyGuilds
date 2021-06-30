@@ -60,7 +60,7 @@ public final class DefaultTablistVariables {
 
         parser.add(new SimpleTablistVariable("TPS", user -> {
             try {
-                return MinecraftServerUtils.getFormattedTPS(0);
+                return MinecraftServerUtils.getFormattedTPS();
             } catch (IntegerRange.MissingFormatException missingFormatException) {
                 return "0";
             }

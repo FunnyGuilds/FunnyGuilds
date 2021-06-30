@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
@@ -65,8 +66,8 @@ public final class WarListener {
     }
 
     private static void call(Player player, int id, String action, String hand) {
-        for (Map.Entry<Guild, Integer> entry : GuildEntityHelper.getGuildEntities().entrySet()) {
-            if (!entry.getValue().equals(id)) {
+        for (Map.Entry<Guild, FakeEntity> entry : GuildEntityHelper.getGuildEntities().entrySet()) {
+            if (entry.getValue().getId() != id) {
                 continue;
             }
 
@@ -94,6 +95,7 @@ public final class WarListener {
 
                 try {
                     INFO_EXECUTOR.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[]{ entry.getKey().getTag() });
+                    return;
                 } catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(player::sendMessage);
                 }

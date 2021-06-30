@@ -26,7 +26,7 @@ public class SecurityReach {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         double ping = PingUtils.getPing(player);
-        double tpsDelayMs = (1000.0 / MinecraftServerUtils.getRecentTPS(0) - 50.0);
+        double tpsDelayMs = (1000.0 / MinecraftServerUtils.getTpsInLastMinute() - 50.0);
         double compensation = player.getGameMode().equals(GameMode.CREATIVE) ? CREATIVE_REACH : SURVIVAL_REACH;
 
         compensation += config.reachCompensation;

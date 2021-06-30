@@ -1,68 +1,26 @@
 package net.dzikoysk.funnyguilds.util.commons.bukkit;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.nms.Reflections;
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 
 public final class MinecraftServerUtils {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
 
-    private static Object serverInstance;
-    private static Field  tpsField;
-
-    static {
-        try {
-            Class<?> minecraftServerClass = Reflections.getNMSClass("MinecraftServer");
-            serverInstance = Reflections.getMethod(Reflections.getNMSClass("MinecraftServer"), "getServer").invoke(null);
-            tpsField = minecraftServerClass.getDeclaredField("recentTps");
-        }
-        catch (IllegalAccessException | InvocationTargetException ex) {
-            FunnyGuilds.getPluginLogger().error("Could not initialize MinecraftServerUtils", ex);
-        }
-        catch (NoSuchFieldException noSuchFieldException) {
-            tpsField = null;
-        }
-    }
-
     private MinecraftServerUtils() {}
 
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
-    public static String getFormattedTPS(int last) {
-        try {
-            return tpsField != null ? FORMAT.format(Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last])) : "N/A";
-        }
-        catch (IllegalAccessException illegalAccessException) {
-            FunnyGuilds.getPluginLogger().error("Could not retrieve recent TPS", illegalAccessException);
-            return null;
-        }
+    public static String getFormattedTPS() {
+        return FORMAT.format(getTpsInLastMinute());
     }
 
-    public static double getRecentTPS(int last) {
-        try {
-            return tpsField != null ? Math.min(20.0D, ((double[]) tpsField.get(serverInstance))[last]) : - 1.0;
-        }
-        catch (IllegalAccessException illegalAccessException) {
-            FunnyGuilds.getPluginLogger().error("Could not retrieve recent TPS", illegalAccessException);
-            return - 1.0;
-        }
+    public static double getTpsInLastMinute() {
+        return Math.min(20.0D, FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getTpsInLastMinute());
     }
 
     public static int getReloadCount() {
-        Server server = Bukkit.getServer();
-
-        try {
-            final Field reloadCountField = server.getClass().getDeclaredField("reloadCount");
-            return reloadCountField.getInt(server);
-        }
-        catch (IllegalAccessException | NoSuchFieldException illegalAccessException) {
-            return - 1;
-        }
+        return FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getReloadCount();
     }
 
 }
