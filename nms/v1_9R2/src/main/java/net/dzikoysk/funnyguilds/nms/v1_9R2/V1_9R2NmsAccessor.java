@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.statistics.StatisticsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.packet.V1_9R2PacketAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_9R2.statistics.V1_9R2StatisticsAccessor;
 
 public class V1_9R2NmsAccessor implements NmsAccessor {
     @Override
@@ -20,7 +21,7 @@ public class V1_9R2NmsAccessor implements NmsAccessor {
 
     @Override
     public StatisticsAccessor getStatisticsAccessor() {
-        return null;
+        return new V1_9R2StatisticsAccessor();
     }
 
     @Override
