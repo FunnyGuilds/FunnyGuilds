@@ -36,7 +36,7 @@ public class V1_17R1PlayerList implements PlayerList {
     @Override
     public void send(Player player, String[] playerListCells, String header, String footer, int ping) {
         final List<Packet<?>> packets = Lists.newArrayList();
-        final Collection<PacketPlayOutPlayerInfo.PlayerInfoData> addPlayerList = Lists.newArrayList();
+        final List<PacketPlayOutPlayerInfo.PlayerInfoData> addPlayerList = Lists.newArrayList();
         final List<PacketPlayOutPlayerInfo.PlayerInfoData> updatePlayerList = Lists.newArrayList();
 
         try {

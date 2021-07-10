@@ -8,7 +8,6 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class V1_8R3StatisticsAccessor implements StatisticsAccessor {
-
     @Override
     public double getTpsInLastMinute() {
         return ((CraftServer) Bukkit.getServer()).getServer().recentTps[0];
@@ -19,10 +18,10 @@ public class V1_8R3StatisticsAccessor implements StatisticsAccessor {
         return ((CraftServer) Bukkit.getServer()).reloadCount;
     }
 
+    @Override
     public int getPlayerPing(Player player) {
         Preconditions.checkNotNull(player, "player can't be null!");
 
         return ((CraftPlayer) player).getHandle().ping;
     }
-
 }
