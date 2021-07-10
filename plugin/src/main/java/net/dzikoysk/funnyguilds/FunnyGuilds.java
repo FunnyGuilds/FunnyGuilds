@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.basic.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.basic.user.UserManager;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import net.dzikoysk.funnyguilds.command.CommandsConfiguration;
@@ -21,7 +22,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
-import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
+import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.element.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
@@ -51,6 +52,7 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.v1_10R1.V1_10R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_11R1.V1_11R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_12R1.V1_12R1NmsAccessor;
@@ -301,23 +303,33 @@ public class FunnyGuilds extends JavaPlugin {
             channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(player));
 
             User user = User.get(player);
+            UserCache cache = user.getCache();
 
-            if (user.getCache().getScoreboard() == null) {
+            if (cache.getScoreboard() == null) {
                 if (pluginConfiguration.useSharedScoreboard) {
-                    user.getCache().setScoreboard(player.getScoreboard());
+                    cache.setScoreboard(player.getScoreboard());
                 }
                 else {
-                    user.getCache().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
+                    cache.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
                 }
             }
 
-            user.getCache().getDummy();
+            cache.getDummy();
 
             if (! pluginConfiguration.playerListEnable) {
                 continue;
             }
 
-            AbstractTablist.createTablist(pluginConfiguration.playerList, pluginConfiguration.playerListHeader, pluginConfiguration.playerListFooter, pluginConfiguration.playerListPing, player);
+            IndividualPlayerList individualPlayerList = new IndividualPlayerList(
+                    user,
+                    this.getNmsAccessor().getPlayerListAccessor().createPlayerList(PlayerListConstants.DEFAULT_CELL_COUNT),
+                    this.pluginConfiguration.playerList,
+                    this.pluginConfiguration.playerListHeader, this.pluginConfiguration.playerListFooter,
+                    this.pluginConfiguration.playerListPing,
+                    this.pluginConfiguration.playerListFillCells
+            );
+
+            cache.setPlayerList(individualPlayerList);
         }
 
         for (Guild guild : GuildUtils.getGuilds()) {
