@@ -66,7 +66,7 @@ public class V1_15R1PlayerList implements PlayerList {
 
                 String text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
-                IChatBaseComponent component = CraftChatMessage.fromString(text, false)[0];
+                IChatBaseComponent component = CraftChatMessage.fromStringOrNull(text, false);
 
                 PlayerInfoData playerInfoData = new PacketPlayOutPlayerInfo().new PlayerInfoData(
                         gameProfile,
@@ -96,11 +96,11 @@ public class V1_15R1PlayerList implements PlayerList {
             IChatBaseComponent footerComponent = EMPTY_COMPONENT;
 
             if (! header.isEmpty()) {
-                headerComponent = CraftChatMessage.fromString(header, true)[0];
+                headerComponent = CraftChatMessage.fromStringOrNull(header, true);
             }
 
             if (! footer.isEmpty()) {
-                footerComponent = CraftChatMessage.fromString(footer, true)[0];
+                footerComponent = CraftChatMessage.fromStringOrNull(footer, true);
             }
 
             PacketPlayOutPlayerListHeaderFooter headerFooterPacket = new PacketPlayOutPlayerListHeaderFooter();

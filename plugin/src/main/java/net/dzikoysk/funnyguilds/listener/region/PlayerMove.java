@@ -9,13 +9,12 @@ import net.dzikoysk.funnyguilds.basic.user.UserCache;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.notification.NotificationStyle;
-import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildRegionEnterEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
+import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
-import net.dzikoysk.funnyguilds.util.nms.PacketSender;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -81,8 +80,8 @@ public class PlayerMove implements Listener {
                                     .register("{TAG}", guild.getTag());
                     
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                        PacketSender.sendPacket(player, NotificationUtil.createActionbarNotification(
-                                        formatter.format(messages.notificationActionbarLeaveGuildRegion)));
+                        plugin.getNmsAccessor().getMessageAccessor()
+                                .sendActionBarMessage(formatter.format(messages.notificationActionbarLeaveGuildRegion), player);
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
@@ -98,11 +97,15 @@ public class PlayerMove implements Listener {
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
-                        PacketSender.sendPacket(player, NotificationUtil.createTitleNotification(
-                                        formatter.format(messages.notificationTitleLeaveGuildRegion),
-                                        formatter.format(messages.notificationSubtitleLeaveGuildRegion),
-                                        config.notificationTitleFadeIn, config.notificationTitleStay,
-                                        config.notificationTitleFadeOut));
+                        TitleMessage titleMessage = TitleMessage.builder()
+                                .text(formatter.format(messages.notificationTitleLeaveGuildRegion))
+                                .subText(formatter.format(messages.notificationSubtitleLeaveGuildRegion))
+                                .fadeInDuration(config.notificationTitleFadeIn)
+                                .stayDuration(config.notificationTitleStay)
+                                .fadeOutDuration(config.notificationTitleFadeOut)
+                                .build();
+
+                        plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, player);
                     }
                 }
             }
@@ -130,8 +133,8 @@ public class PlayerMove implements Listener {
                                 .register("{PLAYER}", player.getName());
 
                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                    PacketSender.sendPacket(player, NotificationUtil.createActionbarNotification(
-                                    formatter.format(messages.notificationActionbarEnterGuildRegion)));
+                    plugin.getNmsAccessor().getMessageAccessor()
+                            .sendActionBarMessage(formatter.format(messages.notificationActionbarEnterGuildRegion), player);
                 }
 
                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
@@ -147,11 +150,15 @@ public class PlayerMove implements Listener {
                 }
 
                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
-                    PacketSender.sendPacket(player, NotificationUtil.createTitleNotification(
-                                    formatter.format(messages.notificationTitleEnterGuildRegion),
-                                    formatter.format(messages.notificationSubtitleEnterGuildRegion),
-                                    config.notificationTitleFadeIn, config.notificationTitleStay,
-                                    config.notificationTitleFadeOut));
+                    TitleMessage titleMessage = TitleMessage.builder()
+                            .text(formatter.format(messages.notificationTitleEnterGuildRegion))
+                            .subText(formatter.format(messages.notificationSubtitleEnterGuildRegion))
+                            .fadeInDuration(config.notificationTitleFadeIn)
+                            .stayDuration(config.notificationTitleStay)
+                            .fadeOutDuration(config.notificationTitleFadeOut)
+                            .build();
+
+                    plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, player);
                 }
 
                 if (player.hasPermission("funnyguilds.admin.notification")) {
@@ -178,8 +185,8 @@ public class PlayerMove implements Listener {
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                        PacketSender.sendPacket(member, NotificationUtil.createActionbarNotification(
-                                        formatter.format(messages.notificationActionbarIntruderEnterGuildRegion)));
+                        plugin.getNmsAccessor().getMessageAccessor()
+                                .sendActionBarMessage(formatter.format(messages.notificationActionbarIntruderEnterGuildRegion), member);
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
@@ -195,11 +202,15 @@ public class PlayerMove implements Listener {
                     }
 
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
-                        PacketSender.sendPacket(member, NotificationUtil.createTitleNotification(
-                                        formatter.format(messages.notificationTitleIntruderEnterGuildRegion),
-                                        formatter.format(messages.notificationSubtitleIntruderEnterGuildRegion),
-                                        config.notificationTitleFadeIn, config.notificationTitleStay,
-                                        config.notificationTitleFadeOut));
+                        TitleMessage titleMessage = TitleMessage.builder()
+                                .text(formatter.format(messages.notificationTitleIntruderEnterGuildRegion))
+                                .subText(formatter.format(messages.notificationSubtitleIntruderEnterGuildRegion))
+                                .fadeInDuration(config.notificationTitleFadeIn)
+                                .stayDuration(config.notificationTitleStay)
+                                .fadeOutDuration(config.notificationTitleFadeOut)
+                                .build();
+
+                        plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, member);
                     }
                 }
 

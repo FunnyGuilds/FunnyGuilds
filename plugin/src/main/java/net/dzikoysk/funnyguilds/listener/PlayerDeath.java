@@ -13,17 +13,16 @@ import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.DataModel;
-import net.dzikoysk.funnyguilds.element.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
+import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.MapUtil;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtils;
-import net.dzikoysk.funnyguilds.util.nms.PacketSender;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +40,8 @@ public class PlayerDeath implements Listener {
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Player playerVictim = event.getEntity();
         Player playerAttacker = event.getEntity().getKiller();
 
@@ -88,7 +88,7 @@ public class PlayerDeath implements Listener {
             }
         }
 
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
 
         if (config.rankFarmingProtect) {
             Long attackTimestamp = attackerCache.wasAttackerOf(victim);
@@ -223,7 +223,7 @@ public class PlayerDeath implements Listener {
             }
         }
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         if (config.dataModel == DataModel.MYSQL) {
@@ -268,15 +268,15 @@ public class PlayerDeath implements Listener {
                         : "");
 
         if (config.displayTitleNotificationForKiller) {
-            List<Object> titlePackets = NotificationUtil.createTitleNotification(
-                    killFormatter.format(messages.rankKillTitle),
-                    killFormatter.format(messages.rankKillSubtitle),
-                    config.notificationTitleFadeIn,
-                    config.notificationTitleStay,
-                    config.notificationTitleFadeOut
-            );
+            TitleMessage titleMessage = TitleMessage.builder()
+                    .text(killFormatter.format(messages.rankKillTitle))
+                    .subText(killFormatter.format(messages.rankKillSubtitle))
+                    .fadeInDuration(config.notificationTitleFadeIn)
+                    .stayDuration(config.notificationTitleStay)
+                    .fadeOutDuration(config.notificationTitleFadeOut)
+                    .build();
 
-            PacketSender.sendPacket(playerAttacker, titlePackets);
+            plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, playerAttacker);
         }
 
         String deathMessage = killFormatter.format(messages.rankDeathMessage);
