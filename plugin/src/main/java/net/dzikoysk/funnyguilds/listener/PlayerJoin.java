@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.IndividualPrefix;
 import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
-import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.system.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import org.bukkit.Bukkit;
@@ -53,7 +52,7 @@ public class PlayerJoin implements Listener {
 
         IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                 user,
-                plugin.getNmsAccessor().getPlayerListAccessor().createPlayerList(PlayerListConstants.DEFAULT_CELL_COUNT),
+                plugin.getNmsAccessor().getPlayerListAccessor(),
                 config.playerList,
                 config.playerListHeader, config.playerListFooter,
                 config.playerListPing,

@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
-import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -43,7 +42,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                 }
 
                 IndividualPlayerList playerList = new IndividualPlayerList(user,
-                        funnyGuilds.getNmsAccessor().getPlayerListAccessor().createPlayerList(PlayerListConstants.DEFAULT_CELL_COUNT),
+                        funnyGuilds.getNmsAccessor().getPlayerListAccessor(),
                         config.playerList,
                         config.playerListHeader, config.playerListFooter,
                         config.playerListPing,

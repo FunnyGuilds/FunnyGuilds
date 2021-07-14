@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.hook.MVdWPlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.hook.PlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.hook.PluginHook;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.MapUtil;
@@ -30,13 +31,12 @@ public class IndividualPlayerList {
     private final int cellPing;
 
     public IndividualPlayerList(User user,
-                                PlayerList playerList,
+                                PlayerListAccessor playerListAccessor,
                                 Map<Integer, String> unformattedCells,
                                 String header, String footer,
                                 int cellPing,
                                 boolean fillCells) {
         this.user = user;
-        this.playerList = playerList;
         this.variableParser = new TablistVariablesParser();
 
         this.unformattedCells = unformattedCells;
@@ -57,6 +57,8 @@ public class IndividualPlayerList {
         else {
             this.cellCount = PlayerListConstants.DEFAULT_CELL_COUNT;
         }
+
+        this.playerList = playerListAccessor.createPlayerList(this.cellCount);
 
         DefaultTablistVariables.install(this.variableParser);
     }

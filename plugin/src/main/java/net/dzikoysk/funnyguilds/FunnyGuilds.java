@@ -52,7 +52,6 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
 import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
-import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.v1_10R1.V1_10R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_11R1.V1_11R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_12R1.V1_12R1NmsAccessor;
@@ -322,7 +321,7 @@ public class FunnyGuilds extends JavaPlugin {
 
             IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                     user,
-                    this.getNmsAccessor().getPlayerListAccessor().createPlayerList(PlayerListConstants.DEFAULT_CELL_COUNT),
+                    this.getNmsAccessor().getPlayerListAccessor(),
                     this.pluginConfiguration.playerList,
                     this.pluginConfiguration.playerListHeader, this.pluginConfiguration.playerListFooter,
                     this.pluginConfiguration.playerListPing,
