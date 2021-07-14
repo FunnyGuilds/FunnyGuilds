@@ -4,8 +4,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.element.tablist.AbstractTablist;
 import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
+import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,7 +32,8 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
 
         if (FunnyGuilds.getInstance().getPluginConfiguration().playerListEnable) {
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-            AbstractTablist.wipeCache();
+
+            DefaultTablistVariables.clearFunnyVariables();
 
             for (Player player : Bukkit.getOnlinePlayers()) {
                 User user = funnyGuilds.getUserManager().getUser(player).getOrNull();
