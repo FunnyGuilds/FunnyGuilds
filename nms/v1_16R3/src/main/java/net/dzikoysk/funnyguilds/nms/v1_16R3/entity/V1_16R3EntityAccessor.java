@@ -36,7 +36,7 @@ public class V1_16R3EntityAccessor implements EntityAccessor {
             spawnEntityPacket = new PacketPlayOutSpawnEntityLiving((EntityLiving) entity);
         }
         else {
-            spawnEntityPacket = new PacketPlayOutSpawnEntity(entity, entityType.getTypeId());
+            spawnEntityPacket = new PacketPlayOutSpawnEntity(entity);
         }
 
         return new FakeEntity(entity.getId(), spawnEntityPacket);

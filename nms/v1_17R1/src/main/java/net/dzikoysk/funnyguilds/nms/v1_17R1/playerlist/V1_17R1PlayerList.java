@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
+import net.dzikoysk.funnyguilds.nms.v1_8R3.playerlist.PlayerInfoDataHelper;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
@@ -15,13 +16,12 @@ import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 public class V1_17R1PlayerList implements PlayerList {
-    private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
     private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.a("");
+    private static final PlayerInfoDataHelper PLAYER_INFO_DATA_HELPER = new PlayerInfoDataHelper(PacketPlayOutPlayerInfo.class, EnumGamemode.a);
 
     private final int cellCount;
 
@@ -36,8 +36,8 @@ public class V1_17R1PlayerList implements PlayerList {
     @Override
     public void send(Player player, String[] playerListCells, String header, String footer, int ping) {
         final List<Packet<?>> packets = Lists.newArrayList();
-        final List<PacketPlayOutPlayerInfo.PlayerInfoData> addPlayerList = Lists.newArrayList();
-        final List<PacketPlayOutPlayerInfo.PlayerInfoData> updatePlayerList = Lists.newArrayList();
+        final List<Object> addPlayerList = Lists.newArrayList();
+        final List<Object> updatePlayerList = Lists.newArrayList();
 
         try {
             for (int i = 0; i < this.cellCount; i++) {
@@ -52,10 +52,10 @@ public class V1_17R1PlayerList implements PlayerList {
                 GameProfile gameProfile = this.profileCache[i];
                 IChatBaseComponent component = CraftChatMessage.fromStringOrNull(text, false);
 
-                PacketPlayOutPlayerInfo.PlayerInfoData playerInfoData = new PacketPlayOutPlayerInfo.PlayerInfoData(
+                Object playerInfoData = PLAYER_INFO_DATA_HELPER.createPlayerInfoData(
+                        new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.a),
                         gameProfile,
                         ping,
-                        DEFAULT_GAME_MODE,
                         component
                 );
 
@@ -71,11 +71,11 @@ public class V1_17R1PlayerList implements PlayerList {
             }
 
             PacketPlayOutPlayerInfo addPlayerPacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.a);
-            addPlayerPacket.b().addAll(addPlayerList);
+            addAllWithoutGenericType(addPlayerPacket.b(), addPlayerList);
             packets.add(addPlayerPacket);
 
             PacketPlayOutPlayerInfo updatePlayerPacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.d);
-            updatePlayerPacket.b().addAll(updatePlayerList);
+            addAllWithoutGenericType(updatePlayerPacket.b(), updatePlayerList);
             packets.add(updatePlayerPacket);
 
             IChatBaseComponent headerComponent = EMPTY_COMPONENT;
@@ -99,5 +99,10 @@ public class V1_17R1PlayerList implements PlayerList {
         catch (Exception ex) {
             throw new RuntimeException(String.format("Failed to send PlayerList for player '%s'", player.getName()), ex);
         }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void addAllWithoutGenericType(List list, List objectsToAdd) {
+        list.addAll(objectsToAdd);
     }
 }

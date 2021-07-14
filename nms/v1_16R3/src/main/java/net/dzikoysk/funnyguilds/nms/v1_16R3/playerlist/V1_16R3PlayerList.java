@@ -4,12 +4,12 @@ import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
+import net.dzikoysk.funnyguilds.nms.v1_8R3.playerlist.PlayerInfoDataHelper;
 import net.minecraft.server.v1_16_R3.EnumGamemode;
 import net.minecraft.server.v1_16_R3.IChatBaseComponent;
 import net.minecraft.server.v1_16_R3.Packet;
 import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
-import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerInfo.PlayerInfoData;
 import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerListHeaderFooter;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class V1_16R3PlayerList implements PlayerList {
-    private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.SURVIVAL;
     private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.ChatSerializer.a("");
+    private static final PlayerInfoDataHelper PLAYER_INFO_DATA_HELPER = new PlayerInfoDataHelper(PacketPlayOutPlayerInfo.class, EnumGamemode.SURVIVAL);
 
     private static final Field PLAYER_INFO_DATA_ACCESSOR;
 
@@ -49,8 +49,8 @@ public class V1_16R3PlayerList implements PlayerList {
     @Override
     public void send(Player player, String[] playerListCells, String header, String footer, int ping) {
         final List<Packet<?>> packets = Lists.newArrayList();
-        final List<PlayerInfoData> addPlayerList = Lists.newArrayList();
-        final List<PlayerInfoData> updatePlayerList = Lists.newArrayList();
+        final List<Object> addPlayerList = Lists.newArrayList();
+        final List<Object> updatePlayerList = Lists.newArrayList();
 
         try {
             PacketPlayOutPlayerInfo addPlayerPacket = new PacketPlayOutPlayerInfo(EnumPlayerInfoAction.ADD_PLAYER);
@@ -68,10 +68,10 @@ public class V1_16R3PlayerList implements PlayerList {
                 GameProfile gameProfile = this.profileCache[i];
                 IChatBaseComponent component = CraftChatMessage.fromStringOrNull(text, false);
 
-                PlayerInfoData playerInfoData = new PacketPlayOutPlayerInfo().new PlayerInfoData(
+                Object playerInfoData = PLAYER_INFO_DATA_HELPER.createPlayerInfoData(
+                        addPlayerPacket,
                         gameProfile,
                         ping,
-                        DEFAULT_GAME_MODE,
                         component
                 );
 
