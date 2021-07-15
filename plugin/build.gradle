@@ -70,6 +70,11 @@ shadowJar {
     exclude "org/checkerframework/**"
     exclude "org/intellij/lang/annotations/**"
     exclude "org/jetbrains/annotations/**"
+
+    minimize {
+        exclude(dependency('net.dzikoysk:funnycommands:.*'))
+        exclude(dependency('com.fasterxml.jackson.core:jackson-core:.*'))
+    }
 }
 
 jar {
