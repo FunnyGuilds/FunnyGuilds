@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 dependencies {
     project(":nms").getSubprojects().each {
         implementation it
@@ -34,4 +36,31 @@ dependencies {
 
     shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.5"
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
+}
+
+processResources {
+    filter(ReplaceTokens, tokens: [
+            funnyGuildsVersion: version,
+            funnyGuildsCommit: grgit.head().abbreviatedId
+    ])
+}
+
+shadowJar {
+    archiveFileName = "FunnyGuilds ${project.version} (MC 1.8-1.17).jar"
+
+    relocate "net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands"
+    relocate "org.panda_lang", "net.dzikoysk.funnyguilds.libs.org.panda_lang"
+    relocate "javassist", "net.dzikoysk.funnyguilds.libs.javassist"
+    relocate "com.zaxxer", "net.dzikoysk.funnyguilds.libs.com.zaxxer"
+    relocate("com.google", "net.dzikoysk.funnyguilds.libs.com.google") {
+        exclude "com.google.gson.**"
+    }
+    relocate "org.apache.commons.lang3", "net.dzikoysk.funnyguilds.libs.org.apache.commons.lang3"
+    relocate "org.apache.logging", "net.dzikoysk.funnyguilds.libs.org.apache.logging"
+    relocate "org.slf4j", "net.dzikoysk.funnyguilds.libs.org.slf4j"
+    relocate "eu.okaeri", "net.dzikoysk.funnyguilds.libs.eu.okaeri"
+
+    exclude "org/checkerframework/**"
+    exclude "org/intellij/lang/annotations/**"
+    exclude "org/jetbrains/annotations/**"
 }
