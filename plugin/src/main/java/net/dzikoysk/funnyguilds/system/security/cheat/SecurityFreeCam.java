@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.system.security.cheat;
 
-import com.google.common.collect.Streams;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
@@ -16,6 +15,9 @@ import org.panda_lang.utilities.commons.StringUtils;
 import org.panda_lang.utilities.commons.text.Joiner;
 
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 
@@ -30,9 +32,8 @@ public class SecurityFreeCam {
         BlockIterator blockIterator = new BlockIterator(player.getWorld(), origin, directionToHitPoint, 0, Math.max((int) distance, 1));
         //TODO: compensationSneaking will be removed after add the cursor height check on each client version.
         int compensationSneaking = player.isSneaking() ? 1 : 0;
-        List<Block> blocks = Streams.stream(blockIterator)
+        List<Block> blocks = StreamSupport.stream(Spliterators.spliteratorUnknownSize(blockIterator, Spliterator.NONNULL | Spliterator.IMMUTABLE), false)
                 .filter(block -> !block.isLiquid())
-                .filter(block -> !block.isPassable())
                 .filter(block -> block.getType().isSolid())
                 .filter(block -> block.getType().isOccluding() || block.getType().equals(Material.GLASS))
                 .limit(8)
