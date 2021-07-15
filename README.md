@@ -8,9 +8,12 @@ FunnyGuilds is an amazing, fully customizable RPG plugin that allows you to crea
 Project website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
 <br>
 
+### Supported Minecraft versions
+1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2, 1.16.5, 1.17.1
+
 #### Download
 Get the latest stable version: [FunnyGuilds Tribute 4.9.7 (1.8.8+)](https://github.com/FunnyGuilds/FunnyGuilds/releases) <br>
-Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.9.7+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
+Be among the first to explore future releases of FunnyGuilds: [FunnyGuilds 4.10.0+ Nightly](https://ci.insertt.dev/job/FunnyGuilds) <br>
 
 
 #### Hooks
