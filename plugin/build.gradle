@@ -64,3 +64,8 @@ shadowJar {
     exclude "org/intellij/lang/annotations/**"
     exclude "org/jetbrains/annotations/**"
 }
+
+jar {
+    enabled = false
+    dependsOn 'shadowJar'
+}
