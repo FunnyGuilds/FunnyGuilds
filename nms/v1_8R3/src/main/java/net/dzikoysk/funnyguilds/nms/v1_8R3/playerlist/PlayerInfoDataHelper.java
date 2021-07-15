@@ -26,11 +26,9 @@ public class PlayerInfoDataHelper {
 
     private Class<?> findPlayerInfoDataClass(Class<?> packetPlayOutPlayerInfoClass) {
         for (Class<?> candidate : packetPlayOutPlayerInfoClass.getDeclaredClasses()) {
-            if (candidate.isEnum()) {
-                continue;
+            if (candidate.getSimpleName().equals("PlayerInfoData")) {
+                return candidate;
             }
-
-            return candidate;
         }
 
         throw new IllegalStateException("Can't find PlayerInfoData in PacketPlayOutPlayerInfo");
