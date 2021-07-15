@@ -31,9 +31,9 @@ public class ConcurrencyTask implements Runnable {
     private boolean execute(ConcurrencyRequest request) {
         try {
             request.execute();
-        } catch (Exception exception) {
+        } catch (Throwable throwable) {
             if (request.getExceptionHandler() != null) {
-                request.getExceptionHandler().handleException(exception);
+                request.getExceptionHandler().handleException(throwable);
             }
 
             if (!request.isMuted()) {

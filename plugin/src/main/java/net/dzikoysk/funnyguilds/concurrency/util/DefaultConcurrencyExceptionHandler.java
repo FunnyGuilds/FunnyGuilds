@@ -6,8 +6,8 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyExceptionHandler;
 public class DefaultConcurrencyExceptionHandler implements ConcurrencyExceptionHandler {
 
     @Override
-    public void handleException(Exception exception) {
-        FunnyGuilds.getPluginLogger().error("An error occurred while handling concurrent request", exception);
+    public void handleException(Throwable throwable) {
+        FunnyGuilds.getPluginLogger().error("An error occurred while handling concurrent request", throwable);
     }
 
 }
