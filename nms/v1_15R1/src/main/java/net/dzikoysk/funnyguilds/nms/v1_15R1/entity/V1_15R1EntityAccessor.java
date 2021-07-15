@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.nms.v1_15R1.entity;
 import com.google.common.base.Preconditions;
 import net.dzikoysk.funnyguilds.nms.api.entity.EntityAccessor;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
+import net.dzikoysk.funnyguilds.nms.v1_8R3.entity.ObjectType;
 import net.minecraft.server.v1_15_R1.Entity;
 import net.minecraft.server.v1_15_R1.EntityLiving;
 import net.minecraft.server.v1_15_R1.Packet;
@@ -36,7 +37,7 @@ public class V1_15R1EntityAccessor implements EntityAccessor {
             spawnEntityPacket = new PacketPlayOutSpawnEntityLiving((EntityLiving) entity);
         }
         else {
-            spawnEntityPacket = new PacketPlayOutSpawnEntity(entity, entityType.getTypeId());
+            spawnEntityPacket = new PacketPlayOutSpawnEntity(entity, ObjectType.getIdFor(entityType));
         }
 
         return new FakeEntity(entity.getId(), spawnEntityPacket);
