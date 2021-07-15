@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.nms.v1_12R1.message;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.minecraft.server.v1_12_R1.ChatMessageType;
+import net.minecraft.server.v1_12_R1.IChatBaseComponent.ChatSerializer;
 import net.minecraft.server.v1_12_R1.PacketPlayOutChat;
 import net.minecraft.server.v1_12_R1.PacketPlayOutTitle;
 import net.minecraft.server.v1_12_R1.PacketPlayOutTitle.EnumTitleAction;
@@ -36,7 +37,7 @@ public class V1_12R1MessageAccessor implements MessageAccessor {
 
     @Override
     public void sendActionBarMessage(String text, Player... players) {
-        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(CraftChatMessage.fromString(text, true)[0], ChatMessageType.GAME_INFO);
+        PacketPlayOutChat actionBarPacket = new PacketPlayOutChat(ChatSerializer.a("{\"text\":\"" + text + "\"}"), ChatMessageType.GAME_INFO);
 
         for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(actionBarPacket);
