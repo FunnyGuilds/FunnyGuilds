@@ -15,7 +15,12 @@ dependencies {
 
     // general stuff
     implementation "com.zaxxer:HikariCP:4.0.3"
-    implementation "com.google.guava:guava:30.1.1-jre"
+    implementation("com.google.guava:guava:21.0") {
+        because "WorldEdit defined a constraint that we must use 21.0 and there is no way to ignore it"
+    }
+    implementation("com.google.code.gson:gson:2.8.0") {
+        because "WorldEdit defined a constraint that we must use 2.8.0 and there is no way to ignore it"
+    }
     implementation "org.apache.commons:commons-lang3:3.12.0"
 
     // probably fix for some exception?
@@ -26,7 +31,9 @@ dependencies {
     shadow "org.apache.logging.log4j:log4j-core:2.14.1"
 
     // integrations
-    shadow "me.clip:placeholderapi:2.10.9"
+    shadow("me.clip:placeholderapi:2.10.9") {
+        exclude group: "com.google.code.gson", module: "gson"
+    }
     shadow "me.robin:leaderheads-api:1.0.0"
     shadow "net.milkbowl.vault:VaultAPI:1.7"
     shadow("be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT") {
@@ -34,7 +41,9 @@ dependencies {
     }
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
 
-    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.5"
+    shadow("com.sk89q.worldedit:worldedit-bukkit:7.2.5") {
+        exclude group: "com.google.guava", module: "guava"
+    }
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
 }
 
