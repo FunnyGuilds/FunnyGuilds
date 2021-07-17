@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.panda_lang.utilities.commons.text.Formatter;
+import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 

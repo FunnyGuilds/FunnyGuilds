@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.util;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.panda_lang.utilities.commons.function.Option;
+import panda.std.Option;
 
 import java.util.HashMap;
 import java.util.List;

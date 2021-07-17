@@ -21,7 +21,7 @@ import net.dzikoysk.funnyguilds.event.guild.ally.GuildSendAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
-import org.panda_lang.utilities.commons.text.Formatter;
+import panda.utilities.text.Formatter;
 
 import java.util.List;
 

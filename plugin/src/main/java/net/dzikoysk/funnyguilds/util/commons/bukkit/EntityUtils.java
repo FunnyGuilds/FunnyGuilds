@@ -4,7 +4,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.projectiles.ProjectileSource;
-import org.panda_lang.utilities.commons.function.Option;
+import panda.std.Option;
 
 public final class EntityUtils {
 

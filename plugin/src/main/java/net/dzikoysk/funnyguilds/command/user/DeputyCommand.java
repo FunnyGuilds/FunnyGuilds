@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
 import org.bukkit.entity.Player;
-import org.panda_lang.utilities.commons.function.Option;
+import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 

@@ -21,7 +21,7 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.panda_lang.utilities.commons.text.Formatter;
+import panda.utilities.text.Formatter;
 
 import java.util.List;
 

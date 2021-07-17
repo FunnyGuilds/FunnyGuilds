@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
-import org.panda_lang.utilities.commons.text.Joiner;
+import panda.utilities.text.Joiner;
 
 import java.util.HashMap;
 

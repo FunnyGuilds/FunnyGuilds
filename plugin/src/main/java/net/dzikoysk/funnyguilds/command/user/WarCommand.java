@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
-import org.panda_lang.utilities.commons.text.Formatter;
+import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 

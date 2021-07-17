@@ -6,8 +6,8 @@ dependencies {
     }
 
     // funnyguilds & panda utilities
-    implementation "net.dzikoysk:funnycommands:0.3.11"
-    implementation "org.panda-lang:panda-utilities:0.4.1-alpha"
+    implementation "net.dzikoysk:funnycommands:0.4.0"
+    implementation "org.panda-lang:panda-utilities:0.5.0-alpha"
 
     // okaeri config library
     implementation "eu.okaeri:okaeri-configs-yaml-bukkit:2.7.20"
@@ -56,7 +56,7 @@ shadowJar {
     archiveFileName = "FunnyGuilds ${project.version} (MC 1.8-1.17).jar"
 
     relocate "net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands"
-    relocate "org.panda_lang", "net.dzikoysk.funnyguilds.libs.org.panda_lang"
+    relocate "panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities"
     relocate "javassist", "net.dzikoysk.funnyguilds.libs.javassist"
     relocate "com.zaxxer", "net.dzikoysk.funnyguilds.libs.com.zaxxer"
     relocate("com.google", "net.dzikoysk.funnyguilds.libs.com.google") {

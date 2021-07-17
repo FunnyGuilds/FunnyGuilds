@@ -5,13 +5,13 @@ import net.dzikoysk.funnyguilds.basic.rank.RankManager;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.panda_lang.utilities.commons.function.Option;
+import panda.std.Option;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class UserManager {

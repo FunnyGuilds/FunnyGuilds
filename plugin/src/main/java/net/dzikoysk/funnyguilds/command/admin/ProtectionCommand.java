@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.command.GuildValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
-import org.panda_lang.utilities.commons.text.Formatter;
+import panda.utilities.text.Formatter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

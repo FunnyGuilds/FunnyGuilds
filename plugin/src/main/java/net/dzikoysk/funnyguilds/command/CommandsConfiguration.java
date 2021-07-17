@@ -47,14 +47,14 @@ import net.dzikoysk.funnyguilds.command.user.PvPCommand;
 import net.dzikoysk.funnyguilds.command.user.RankResetCommand;
 import net.dzikoysk.funnyguilds.command.user.RankingCommand;
 import net.dzikoysk.funnyguilds.command.user.SetBaseCommand;
+import net.dzikoysk.funnyguilds.command.user.TntCommand;
 import net.dzikoysk.funnyguilds.command.user.TopCommand;
 import net.dzikoysk.funnyguilds.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.command.user.WarCommand;
-import net.dzikoysk.funnyguilds.command.user.TntCommand;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration.Commands.FunnyCommand;
 import org.bukkit.Server;
-import org.panda_lang.utilities.commons.text.Joiner;
+import panda.utilities.text.Joiner;
 
 import java.util.ArrayList;
 import java.util.HashMap;

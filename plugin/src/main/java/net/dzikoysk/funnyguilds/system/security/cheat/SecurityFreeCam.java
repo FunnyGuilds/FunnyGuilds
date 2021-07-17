@@ -11,8 +11,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-import org.panda_lang.utilities.commons.StringUtils;
-import org.panda_lang.utilities.commons.text.Joiner;
+import panda.utilities.StringUtils;
+import panda.utilities.text.Joiner;
 
 import java.util.List;
 import java.util.Spliterator;

@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
 import org.bukkit.command.CommandSender;
-import org.panda_lang.utilities.commons.function.Option;
+import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
 

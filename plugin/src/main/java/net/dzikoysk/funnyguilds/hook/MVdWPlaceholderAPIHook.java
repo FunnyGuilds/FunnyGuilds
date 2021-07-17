@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables
 import net.dzikoysk.funnyguilds.element.tablist.variable.TablistVariable;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.panda_lang.utilities.commons.StringUtils;
+import panda.utilities.StringUtils;
 
 import java.util.Map.Entry;
 

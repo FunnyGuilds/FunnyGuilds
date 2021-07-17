@@ -10,7 +10,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.panda_lang.utilities.commons.function.Option;
+import panda.std.Option;
 
 import java.util.concurrent.TimeUnit;
 

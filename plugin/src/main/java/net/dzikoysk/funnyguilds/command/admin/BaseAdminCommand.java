@@ -6,9 +6,10 @@ import net.dzikoysk.funnyguilds.command.UserValidation;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
-import org.panda_lang.utilities.commons.text.Formatter;
+import panda.utilities.text.Formatter;
 
-import static net.dzikoysk.funnyguilds.command.DefaultValidation.*;
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
+import static net.dzikoysk.funnyguilds.command.DefaultValidation.whenNull;
 
 public final class BaseAdminCommand {
 

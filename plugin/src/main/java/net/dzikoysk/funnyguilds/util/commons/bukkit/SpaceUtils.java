@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.util.commons.bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.panda_lang.utilities.commons.function.QuadFunction;
+import panda.std.function.QuadFunction;
 
 import java.util.ArrayList;
 import java.util.Collection;
