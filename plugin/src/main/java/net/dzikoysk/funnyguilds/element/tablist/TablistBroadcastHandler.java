@@ -24,7 +24,13 @@ public class TablistBroadcastHandler implements Runnable {
                 continue;
             }
 
-            user.getCache().getPlayerList().send();
+            IndividualPlayerList playerList = user.getCache().getPlayerList();
+
+            if (playerList == null) {
+                continue;
+            }
+
+            playerList.send();
         }
     }
 }
