@@ -671,7 +671,6 @@ public class PluginConfiguration extends OkaeriConfig {
     public double eloExponent = 10.0D;
 
     @DecimalMin("0")
-    @DecimalMax("1")
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest PERCENT!")
     @Comment("Procent rankingu osoby zabitej o jaki zmienia sie rankingi po walce")
     @CustomKey("percent-rank-change")
