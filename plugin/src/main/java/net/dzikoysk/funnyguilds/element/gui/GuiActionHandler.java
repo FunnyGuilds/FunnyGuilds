@@ -4,29 +4,38 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryInteractEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 public class GuiActionHandler implements Listener {
     
     @EventHandler
     public void onClick(final InventoryClickEvent event) {
-        InventoryHolder normalHolder = event.getInventory().getHolder();
-
-        if (!(normalHolder instanceof FunnyHolder)) {
+        Inventory inventory = event.getInventory();
+        if (inventory.getType() != InventoryType.CHEST) {
             return;
         }
 
-        FunnyHolder holder = (FunnyHolder) normalHolder;
+        InventoryHolder inventoryHolder = inventory.getHolder();
+        if (!(inventoryHolder instanceof FunnyHolder)) {
+            return;
+        }
+
+        FunnyHolder funnyHolder = (FunnyHolder) inventoryHolder;
 
         event.setCancelled(true);
-        holder.handleClick(event);
+        funnyHolder.handleClick(event);
     }
 
     @EventHandler
     public void onInteract(final InventoryInteractEvent event) {
-        InventoryHolder normalHolder = event.getInventory().getHolder();
+        Inventory inventory = event.getInventory();
+        if (inventory.getType() != InventoryType.CHEST) {
+            return;
+        }
 
-        if (!(normalHolder instanceof FunnyHolder)) {
+        if (!(inventory.getHolder() instanceof FunnyHolder)) {
             return;
         }
 
