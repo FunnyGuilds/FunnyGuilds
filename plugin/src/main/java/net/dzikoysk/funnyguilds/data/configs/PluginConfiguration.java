@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.*;
 import eu.okaeri.configs.exception.OkaeriException;
+import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
 import eu.okaeri.validator.annotation.*;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.GuildRegex;
@@ -14,7 +15,6 @@ import net.dzikoysk.funnyguilds.element.notification.bossbar.provider.BossBarOpt
 import net.dzikoysk.funnyguilds.util.Cooldown;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import net.dzikoysk.funnyguilds.util.commons.TimeUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.MaterialUtils;
@@ -27,8 +27,10 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -404,13 +406,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Mozliwosc teleportacji do gildii")
     public boolean baseEnable = true;
 
-    @Min(0)
+    @PositiveOrZero
     @Comment("Czas oczekiwania na teleportacje, w sekundach")
-    public int baseDelay = 5;
+    public Duration baseDelay = Duration.ofSeconds(5);
 
-    @Min(0)
+    @PositiveOrZero
     @Comment("Czas oczekiwania na teleportacje, w sekundach, dla graczy posiadajacych uprawnienie funnyguilds.vip.baseTeleportTime")
-    public int baseDelayVip = 3;
+    public Duration baseDelayVip = Duration.ofSeconds(3);
 
     @Comment("Koszt teleportacji do gildii. Jezeli teleportacja ma byc darmowa, wystarczy wpisac: base-items: []")
     @CustomKey("base-items")
@@ -448,9 +450,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Minimalna odleglosc miedzy terenami gildii")
     public int regionMinDistance = 10;
 
-    @Min(1)
+    @Positive
     @Comment("Czas wyswietlania powiadomienia na pasku powiadomien, w sekundach")
-    public int regionNotificationTime = 15;
+    public Duration regionNotificationTime = Duration.ofSeconds(15);
 
     @Min(1)
     @Comment("Co ile moze byc wywolywany pasek powiadomien przez jednego gracza, w sekundach")
@@ -529,17 +531,17 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Ile zyc ma gildia")
     public int warLives = 3;
 
+    @PositiveOrZero
+    @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
     @Comment("Po jakim czasie od zalozenia mozna zaatakowac gildie")
     @CustomKey("war-protection")
-    public String warProtection_ = "24h";
-    @Exclude
-    public long warProtection;
+    public Duration warProtection = Duration.ofHours(24);
 
+    @PositiveOrZero
+    @DurationSpec(fallbackUnit = ChronoUnit.HOURS)
     @Comment("Ile czasu trzeba czekac do nastepnego ataku na gildie")
     @CustomKey("war-wait")
-    public String warWait_ = "24h";
-    @Exclude
-    public long warWait;
+    public Duration warWait = Duration.ofHours(24);
 
     @Comment("Czy gildia podczas okresu ochronnego ma posiadac ochrone przeciw TNT")
     public boolean warTntProtection = true;
@@ -547,25 +549,23 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy zwierzeta na terenie gildii maja byc chronione przed osobami spoza gildii")
     public boolean animalsProtection = false;
 
+    @Positive
+    @DurationSpec(fallbackUnit = ChronoUnit.DAYS)
     @Comment("Jaka waznosc ma gildia po jej zalozeniu")
     @CustomKey("validity-start")
-    public String validityStart_ = "14d";
+    public Duration validityStart = Duration.ofDays(14);
 
-    @Exclude
-    public long validityStart;
-
+    @Positive
+    @DurationSpec(fallbackUnit = ChronoUnit.DAYS)
     @Comment("Ile czasu dodaje przedluzenie gildii")
     @CustomKey("validity-time")
-    public String validityTime_ = "14d";
+    public Duration validityTime = Duration.ofDays(14);
 
-    @Exclude
-    public long validityTime;
-
+    @PositiveOrZero
+    @DurationSpec(fallbackUnit = ChronoUnit.DAYS)
     @Comment("Ile dni przed koncem wygasania mozna przedluzyc gildie. Wpisz 0, jezeli funkcja ma byc wylaczona")
     @CustomKey("validity-when")
-    public String validityWhen_ = "14d";
-    @Exclude
-    public long validityWhen;
+    public Duration validityWhen = Duration.ofDays(14);
 
     @Comment("Koszt przedluzenia gildii")
     @CustomKey("validity-items")
@@ -656,14 +656,14 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public Map<IntegerRange, Integer> eloConstants;
 
-    @DecimalMin("0.00001")
+    @Positive
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @Comment("Dzielnik obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
     @Comment("Dzielnik powinien byc liczba dodatnia, niezerowa")
     @CustomKey("elo-divider")
     public double eloDivider = 400.0D;
 
-    @DecimalMin("0.00001")
+    @Positive
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @Comment("Wykladnik potegi obliczen rankingowych ELO - im mniejszy, tym wieksze zmiany rankingu")
     @Comment("Wykladnik powinien byc liczba dodatnia, niezerowa")
@@ -1382,13 +1382,6 @@ public class PluginConfiguration extends OkaeriConfig {
         this.rankResetItems = loadItemStackList(this.rankResetItems_);
 
         this.firstGuildRewards = loadItemStackList(this.firstGuildRewards_);
-
-        this.warProtection = TimeUtils.parseTime(this.warProtection_);
-        this.warWait = TimeUtils.parseTime(this.warWait_);
-
-        this.validityStart = TimeUtils.parseTime(this.validityStart_);
-        this.validityTime = TimeUtils.parseTime(this.validityTime_);
-        this.validityWhen = TimeUtils.parseTime(this.validityWhen_);
 
         this.validityItems = this.loadItemStackList(this.validityItems_);
 

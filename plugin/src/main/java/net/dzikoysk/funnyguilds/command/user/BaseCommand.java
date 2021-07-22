@@ -16,6 +16,8 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -49,18 +51,18 @@ public final class BaseCommand {
         ItemStack[] items = ItemUtils.toArray(requiredItems);
         player.getInventory().removeItem(items);
 
-        if (config.baseDelay < 1) {
+        if (config.baseDelay.isZero()) {
             player.teleport(guild.getHome());
             player.sendMessage(messages.baseTeleport);
             return;
         }
 
-        int time = player.hasPermission("funnyguilds.vip.baseTeleportTime")
+        Duration time = player.hasPermission("funnyguilds.vip.baseTeleportTime")
                 ? config.baseDelayVip
                 : config.baseDelay;
 
         Location before = player.getLocation();
-        AtomicInteger timeCounter = new AtomicInteger(1);
+        Instant teleportStart = Instant.now();
         UserCache cache = user.getCache();
 
         cache.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
@@ -78,15 +80,15 @@ public final class BaseCommand {
                 return;
             }
 
-            if (timeCounter.getAndIncrement() > time) {
+            if (Duration.between(teleportStart, Instant.now()).compareTo(time) > 0) {
                 cache.getTeleportation().cancel();
                 player.sendMessage(messages.baseTeleport);
                 player.teleport(guild.getHome());
                 cache.setTeleportation(null);
             }
-        }, 0L, 20L));
+        }, 0L, 10L));
 
-        player.sendMessage(messages.baseDontMove.replace("{TIME}", Integer.toString(time)));
+        player.sendMessage(messages.baseDontMove.replace("{TIME}", Long.toString(time.getSeconds())));
     }
 
 }

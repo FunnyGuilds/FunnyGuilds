@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 import org.bukkit.Location;
 
 import java.io.File;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -115,7 +116,7 @@ public class FlatGuild {
         }
 
         if (validity == 0) {
-            validity = System.currentTimeMillis() + configuration.validityStart;
+            validity = Instant.now().plus(configuration.validityStart).toEpochMilli();
         }
 
         if (lives == 0) {
