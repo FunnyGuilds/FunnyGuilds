@@ -41,6 +41,10 @@ subprojects {
         maven {
             url "https://repo.mvdw-software.com/content/groups/public/"
         }
+
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
 
     apply plugin: 'java'
