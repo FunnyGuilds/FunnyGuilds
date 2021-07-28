@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -247,7 +248,7 @@ public class Guild extends AbstractBasic {
 
     public void setValidity(long l) {
         if (l == this.born) {
-            this.validity = System.currentTimeMillis() + FunnyGuilds.getInstance().getPluginConfiguration().validityStart;
+            this.validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart).toEpochMilli();
         }
         else {
             this.validity = l;
@@ -301,7 +302,7 @@ public class Guild extends AbstractBasic {
 
     public boolean isValid() {
         if (this.validity == this.born || this.validity == 0) {
-            this.validity = System.currentTimeMillis() + FunnyGuilds.getInstance().getPluginConfiguration().validityStart;
+            this.validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart).toEpochMilli();
             this.markChanged();
         }
 

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import com.google.common.io.Files;
 import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
@@ -55,7 +56,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 type = PasteType.CONFIG;
 
                 PluginConfiguration config = ConfigManager.create(PluginConfiguration.class, (it) -> {
-                    it.withConfigurer(new YamlBukkitConfigurer());
+                    it.withConfigurer(new YamlBukkitConfigurer(), new SerdesCommons());
                     it.withBindFile(FunnyGuilds.getInstance().getPluginConfigurationFile());
                     it.load();
                 });

@@ -15,6 +15,8 @@ import net.dzikoysk.funnyguilds.util.commons.bukkit.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -32,11 +34,11 @@ public final class ValidityCommand {
         playerOnly = true
     )
     public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
-        if (config.validityWhen != 0) {
+        if (!config.validityWhen.isZero()) {
             long validity = guild.getValidity();
-            long delta = validity - System.currentTimeMillis();
+            Duration delta = Duration.between(Instant.now(), Instant.ofEpochMilli(validity));
 
-            when (delta > config.validityWhen, messages.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta - config.validityWhen)));
+            when (delta.compareTo(config.validityWhen) > 0, messages.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta.minus(config.validityWhen).toMillis())));
         }
 
         List<ItemStack> requiredItems = config.validityItems;
@@ -45,7 +47,7 @@ public final class ValidityCommand {
             return;
         }
         
-        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, config.validityTime))) {
+        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, config.validityTime.toMillis()))) {
             return;
         }
         
@@ -56,7 +58,7 @@ public final class ValidityCommand {
             validity = System.currentTimeMillis();
         }
 
-        validity += config.validityTime;
+        validity += config.validityTime.toMillis();
         guild.setValidity(validity);
         player.sendMessage(messages.validityDone.replace("{DATE}", config.dateFormat.format(new Date(validity))));
     }

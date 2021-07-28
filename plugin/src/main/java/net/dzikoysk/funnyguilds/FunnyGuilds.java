@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.configs.serdes.SimpleObjectTransformer;
+import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.dzikoysk.funnycommands.FunnyCommands;
@@ -141,7 +142,7 @@ public class FunnyGuilds extends JavaPlugin {
                 it.load(true);
             });
             this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, (it) -> {
-                it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true));
+                it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
                 it.withBindFile(this.pluginConfigurationFile);
                 it.saveDefaults();
                 it.load(true);

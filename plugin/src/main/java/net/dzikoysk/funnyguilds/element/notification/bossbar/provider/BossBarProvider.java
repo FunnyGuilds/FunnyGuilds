@@ -5,7 +5,14 @@ import net.dzikoysk.funnyguilds.element.notification.bossbar.provider.v1_8.BossB
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Duration;
+
 public interface BossBarProvider {
+
+    default void sendNotification(String text, @Nullable BossBarOptions options, Duration timeout) {
+        int timeoutSeconds = Math.toIntExact(timeout.getSeconds());
+        this.sendNotification(text, options, (timeoutSeconds > 0) ? timeoutSeconds : 1);
+    }
 
     void sendNotification(String text, @Nullable BossBarOptions options, int timeout);
 

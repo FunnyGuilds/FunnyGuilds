@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
 import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
 
 import java.sql.ResultSet;
+import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -72,7 +73,7 @@ public class DatabaseGuild {
             }
             
             if (validity == 0) {
-                validity = System.currentTimeMillis() + FunnyGuilds.getInstance().getPluginConfiguration().validityStart;
+                validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart).toEpochMilli();
             }
             
             if (lives == 0) {

@@ -12,6 +12,10 @@ import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 public class WarSystem {
 
     private static WarSystem instance;
@@ -54,11 +58,11 @@ public class WarSystem {
         }
         
         if (!guild.canBeAttacked()) {
-            WarUtils.message(player, 2, (guild.getProtection() + config.warWait) - System.currentTimeMillis());
+            WarUtils.message(player, 2, Duration.between(Instant.now(), Instant.ofEpochMilli(guild.getProtection()).plus(config.warWait)).get(ChronoUnit.MILLIS));
             return;
         }
-        
-        guild.setProtection(System.currentTimeMillis() + config.warWait);
+
+        guild.setProtection(Instant.now().plus(config.warWait).toEpochMilli());
         
         if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
             guild.removeLive();

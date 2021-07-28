@@ -34,6 +34,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import panda.utilities.text.Formatter;
 
+import java.time.Instant;
 import java.util.List;
 
 import static net.dzikoysk.funnyguilds.command.DefaultValidation.when;
@@ -150,8 +151,8 @@ public final class CreateCommand {
         guild.setOwner(user);
         guild.setLives(config.warLives);
         guild.setBorn(System.currentTimeMillis());
-        guild.setValidity(System.currentTimeMillis() + config.validityStart);
-        guild.setProtection(System.currentTimeMillis() + config.warProtection);
+        guild.setValidity(Instant.now().plus(config.validityStart).toEpochMilli());
+        guild.setProtection(Instant.now().plus(config.warProtection).toEpochMilli());
         guild.setPvP(config.damageGuild);
         guild.setHome(guildLocation);
 
