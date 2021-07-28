@@ -600,9 +600,9 @@ public class MessageConfiguration extends OkaeriConfig {
     }
 
     @Exclude
-    public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
+    public static final Pattern LEGACY_COLOR_CODE_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
 
-    public static String decolor(String coloredString) {
-        return DECOLOR_PATTERN.matcher(coloredString).replaceAll("&$1");
+    public static boolean containsLegacyColors(String coloredString) {
+        return LEGACY_COLOR_CODE_PATTERN.matcher(coloredString).find();
     }
 }

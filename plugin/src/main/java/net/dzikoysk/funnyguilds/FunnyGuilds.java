@@ -21,6 +21,7 @@ import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.configs.transformer.AdventureTransformer;
 import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.element.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
@@ -71,6 +72,9 @@ import net.dzikoysk.funnyguilds.util.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.util.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.util.nms.Reflections;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -97,6 +101,7 @@ public class FunnyGuilds extends JavaPlugin {
     private DynamicListenerManager dynamicListenerManager;
     private UserManager            userManager;
     private NmsAccessor            nmsAccessor;
+    private Audience               audience;
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
@@ -136,7 +141,7 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, (it) -> {
                 it.withConfigurer(new YamlBukkitConfigurer());
-                it.withSerdesPack(registry -> registry.register(SimpleObjectTransformer.of(String.class, String.class, MessageConfiguration::decolor)));
+                it.withSerdesPack(registry -> registry.register(new AdventureTransformer(MiniMessage.get())));
                 it.withBindFile(this.messageConfigurationFile);
                 it.saveDefaults();
                 it.load(true);
