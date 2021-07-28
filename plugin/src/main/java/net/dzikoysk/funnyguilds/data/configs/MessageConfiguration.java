@@ -3,16 +3,18 @@ package net.dzikoysk.funnyguilds.data.configs;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.Exclude;
-import eu.okaeri.configs.exception.OkaeriException;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
+import eu.okaeri.configs.annotation.Header;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+@Header("Message formatting syntax documentation: https://docs.adventure.kyori.net/minimessage.html#the-components")
 public class MessageConfiguration extends OkaeriConfig {
+    @Exclude
+    private final MiniMessage miniMessage = MiniMessage.get();
 
     @Comment("<------- Global Date Format -------> #")
     public String dateFormat = "dd.MM.yyyy HH:mm:ss";
@@ -31,578 +33,554 @@ public class MessageConfiguration extends OkaeriConfig {
     public String ptopNoValue = "Brak (PTOP-x)";
     public String wgRegionNoValue = "Brak (WG-REGION)";
     public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
-    
+
     @Comment("<------- Permission Messages -------> #")
-    public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";
-    public String blockedWorld = "&cZarzadzanie gildiami jest zablokowane na tym swiecie!";
-    public String playerOnly = "&cKomenda dostepna tylko dla graczy!";
+    public Component permission = this.miniMessage.parse("<red>Nie masz wystarczajacych uprawnien do uzycia tej komendy!");
+    public Component blockedWorld = this.miniMessage.parse("<red>Zarzadzanie gildiami jest zablokowane na tym swiecie!");
+    public Component playerOnly = this.miniMessage.parse("<red>Komenda dostepna tylko dla graczy!");
 
     @Comment("<------- Rank Messages -------> #")
-    public String rankLastVictimV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
-    public String rankLastVictimA = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!";
-    public String rankLastAttackerV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
-    public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
-    public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
-    public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
+    public Component rankLastVictimV = this.miniMessage.parse("<gray>Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!");
+    public Component rankLastVictimA = this.miniMessage.parse("<gray>Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!");
+    public Component rankLastAttackerV = this.miniMessage.parse("<gray>Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!");
+    public Component rankLastAttackerA = this.miniMessage.parse("<gray>Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!");
+    public Component rankIPVictim = this.miniMessage.parse("<gray>Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!");
+    public Component rankIPAttacker = this.miniMessage.parse("<gray>Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!");
     @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
-    public String rankKillTitle = "&cZabiles gracza {VICTIM}";
-    public String rankKillSubtitle = "&7+{+}";
+    public Component rankDeathMessage = this.miniMessage.parse("{ATAG}<aqua>{ATTACKER} <gray>(<green>+{+}<gray>) zabil {VTAG}<aqua>{VICTIM} <gray>(<red>-{-}<gray>) uzywajac <aqua>{WEAPON} {WEAPON-NAME}");
+    public Component rankKillTitle = this.miniMessage.parse("<red>Zabiles gracza {VICTIM}");
+    public Component rankKillSubtitle = this.miniMessage.parse("<gray>+{+}");
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
-    public String rankAssistMessage = "&7Asystowali: {ASSISTS}";
+    public Component rankAssistMessage = this.miniMessage.parse("<gray>Asystowali: {ASSISTS}");
     @Comment("Dostepne zmienne: {PLAYER}, {+}, {SHARE}")
-    public String rankAssistEntry = "&b{PLAYER} &7(&a+{+}&7, {SHARE}% dmg)";
+    public Component rankAssistEntry = this.miniMessage.parse("<aqua>{PLAYER} <gray>(<green>+{+}<gray>, {SHARE}% dmg)");
     @Comment("Znaki oddzielajace kolejne wpisy o asystujacych graczach")
-    public String rankAssistDelimiter = "&8, ";
+    public Component rankAssistDelimiter = this.miniMessage.parse("<dark_gray>, ");
     @Comment("Dostepne zmienne: {LAST-RANK}, {CURRENT-RANK}")
-    public String rankResetMessage = "&7Zresetowales swoj ranking z poziomu &c{LAST-RANK} &7do poziomu &c{CURRENT-RANK}&7.";
+    public Component rankResetMessage = this.miniMessage.parse("<gray>Zresetowales swoj ranking z poziomu <red>{LAST-RANK} <gray>do poziomu <red>{CURRENT-RANK}<gray>.");
 
     @Comment("<------- Ban Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}, {REASON}, {DATE}, {NEWLINE}")
-    public String banMessage = "&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}";
+    public Component banMessage = this.miniMessage.parse("<gray>Zostales zbanowany do <aqua>{DATE}{NEWLINE}{NEWLINE}<gray>za: <aqua>{REASON}");
 
     @Comment("<------- Region Messages -------> #")
-    public String regionOther = "&cTen teren nalezy do innej gildii!";
-    public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
+    public Component regionOther = this.miniMessage.parse("<red>Ten teren nalezy do innej gildii!");
+    public Component regionCenter = this.miniMessage.parse("<red>Nie mozesz zniszczyc srodka swojej gildii!");
     @Comment("Dostepne zmienne: {TIME}")
-    public String regionExplode = "&cBudowanie na terenie gildii zablokowane na czas &4{TIME} sekund&c!";
+    public Component regionExplode = this.miniMessage.parse("<red>Budowanie na terenie gildii zablokowane na czas <dark_red>{TIME} sekund<red>!");
     @Comment("Dostepne zmienne: {TIME}")
-    public String regionExplodeInteract = "&cNie mozna budowac jeszcze przez &4{TIME} sekund&c!";
-    public String regionCommand = "&cTej komendy nie mozna uzyc na terenie innej gildii!";
-    public String regionExplosionHasProtection = "&cEksplozja nie spowodowala zniszczen na terenie gildii, poniewaz jest ona chroniona!";
-    public String regionsDisabled = "&cRegiony gildii sa wylaczone!";
+    public Component regionExplodeInteract = this.miniMessage.parse("<red>Nie mozna budowac jeszcze przez <dark_red>{TIME} sekund<red>!");
+    public Component regionCommand = this.miniMessage.parse("<red>Tej komendy nie mozna uzyc na terenie innej gildii!");
+    public Component regionExplosionHasProtection = this.miniMessage.parse("<red>Eksplozja nie spowodowala zniszczen na terenie gildii, poniewaz jest ona chroniona!");
+    public Component regionsDisabled = this.miniMessage.parse("<red>Regiony gildii sa wylaczone!");
 
     @Comment("<------- ActionBar Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationActionbarIntruderEnterGuildRegion = "&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!";
+    public Component notificationActionbarIntruderEnterGuildRegion = this.miniMessage.parse("<gray>Gracz <red>{PLAYER} <gray>wkroczyl na teren <red>Twojej <gray>gildii!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationActionbarEnterGuildRegion = "&7Wkroczyles na teren gildii &c{TAG}&7!";
+    public Component notificationActionbarEnterGuildRegion = this.miniMessage.parse("<gray>Wkroczyles na teren gildii <red>{TAG}<gray>!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationActionbarLeaveGuildRegion = "&7Opusciles teren gildii &c{TAG}&7!";
+    public Component notificationActionbarLeaveGuildRegion = this.miniMessage.parse("<gray>Opusciles teren gildii <red>{TAG}<gray>!");
 
     @Comment("<------- Bossbar Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationBossbarIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    public Component notificationBossbarIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationBossbarEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    public Component notificationBossbarEnterGuildRegion = notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationBossbarLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    public Component notificationBossbarLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
 
     @Comment("<------- Chat Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationChatIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    public Component notificationChatIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationChatEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    public Component notificationChatEnterGuildRegion = notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationChatLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    public Component notificationChatLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
 
     @Comment("<------- Title Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationTitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    public Component notificationTitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationSubtitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    public Component notificationSubtitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationTitleEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    public Component notificationTitleEnterGuildRegion = notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationSubtitleEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    public Component notificationSubtitleEnterGuildRegion = notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationTitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    public Component notificationTitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationSubtitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    public Component notificationSubtitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
 
     @Comment("<------- Broadcast Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
-    public String broadcastCreate = "&a{PLAYER} &7zalozyl gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
+    public Component broadcastCreate = this.miniMessage.parse("<green>{PLAYER} <gray>zalozyl gildie o nazwie <green>{GUILD} <gray>i tagu <green>{TAG}<gray>!");
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
-    public String broadcastDelete = "&c{PLAYER} &7rozwiazal gildie &c{TAG}&7!";
+    public Component broadcastDelete = this.miniMessage.parse("<red>{PLAYER} <gray>rozwiazal gildie <red>{TAG}<gray>!");
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
-    public String broadcastJoin = "&a{PLAYER} &7dolaczyl do gildii &a{TAG}&7!";
+    public Component broadcastJoin = this.miniMessage.parse("<green>{PLAYER} <gray>dolaczyl do gildii <green>{TAG}<gray>!");
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
-    public String broadcastLeave = "&c{PLAYER} &7opuscil gildie &c{TAG}&7!";
+    public Component broadcastLeave = this.miniMessage.parse("<red>{PLAYER} <gray>opuscil gildie <red>{TAG}<gray>!");
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
-    public String broadcastKick = "&c{PLAYER} &7zostal &cwyrzucony &7z gildii &c{TAG}&7!";
+    public Component broadcastKick = this.miniMessage.parse("<red>{PLAYER} <gray>zostal <red>wyrzucony <gray>z gildii <red>{TAG}<gray>!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}, {REASON}, {TIME}")
-    public String broadcastBan = "&7Gildia &c{TAG}&7 zostala zbanowana za &c{REASON}&7, gratulacje!";
+    public Component broadcastBan = this.miniMessage.parse("<gray>Gildia <red>{TAG}<gray> zostala zbanowana za <red>{REASON}<gray>, gratulacje!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String broadcastUnban = "&7Gildia &a{TAG}&7 zostala &aodbanowana&7!";
+    public Component broadcastUnban = this.miniMessage.parse("<gray>Gildia <green>{TAG}<gray> zostala <green>odbanowana<gray>!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}, {X}, {Y}, {Z}")
-    public String broadcastValidity = "&7Gildia &b{TAG} &7wygasla&b! &7Jej baza znajdowala sie na x: &b{X} &7y: &b{Y} &7z: &b{Z}&7!";
+    public Component broadcastValidity = this.miniMessage.parse("<gray>Gildia <aqua>{TAG} <gray>wygasla<aqua>! <gray>Jej baza znajdowala sie na x: <aqua>{X} <gray>y: <aqua>{Y} <gray>z: <aqua>{Z}<gray>!");
     @Comment("Dostepne zmienne: {WINNER}, {LOSER}")
-    public String broadcastWar = "&7Gildia &4{WINNER}&7 podblila gildie &4{LOSER}&7!!";
+    public Component broadcastWar = this.miniMessage.parse("<gray>Gildia <dark_red>{WINNER}<gray> podblila gildie <dark_red>{LOSER}<gray>!!");
 
     @Comment("<------- Help Messages -------> #")
-    public List<String> helpList = Arrays.asList(
-            "&7---------------------&8[ &aGildie &8]&7---------------------",
-            "&a/zaloz [tag] [nazwa] &8- &7Tworzy gildie",
-            "&a/zapros [gracz] &8- &7Zaprasza gracza do gildii",
-            "&a/dolacz [tag] &8- &7Przyjmuje zaproszenie do gildii",
-            "&a/info [tag] &8- &7Informacje o danej gildii",
-            "&a/baza &8- &7Teleportuje do bazy gildii",
-            "&a/powieksz &8- &7Powieksza teren gildii",
-            "&a/przedluz &8- &7Przedluza waznosc gildii",
-            "&a/lider [gracz] &8- &7Oddaje zalozyciela gildii",
-            "&a/zastepca [gracz] &8- &7Nadaje zastepce gildii",
-            "&a/sojusz [tag] &8- &7Pozwala nawiazac sojusz",
-            "&a/opusc &8- &7Opuszcza gildie",
-            "&a/wyrzuc [gracz] &8- &7Wyrzuca gracza z gildii",
-            "&a/rozwiaz [tag] &8- &7Rozwiazuje sojusz",
-            "&a/usun &8- &7Usuwa gildie",
-            "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii",
-            "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii");
+    public List<Component> helpList = Arrays.asList(
+            this.miniMessage.parse("<gray>---------------------<dark_gray>[ <green>Gildie <dark_gray>]<gray>---------------------"),
+            this.miniMessage.parse("<green>/zaloz [tag] [nazwa] <dark_gray>- <gray>Tworzy gildie"),
+            this.miniMessage.parse("<green>/zapros [gracz] <dark_gray>- <gray>Zaprasza gracza do gildii"),
+            this.miniMessage.parse("<green>/dolacz [tag] <dark_gray>- <gray>Przyjmuje zaproszenie do gildii"),
+            this.miniMessage.parse("<green>/info [tag] <dark_gray>- <gray>Informacje o danej gildii"),
+            this.miniMessage.parse("<green>/baza <dark_gray>- <gray>Teleportuje do bazy gildii"),
+            this.miniMessage.parse("<green>/powieksz <dark_gray>- <gray>Powieksza teren gildii"),
+            this.miniMessage.parse("<green>/przedluz <dark_gray>- <gray>Przedluza waznosc gildii"),
+            this.miniMessage.parse("<green>/lider [gracz] <dark_gray>- <gray>Oddaje zalozyciela gildii"),
+            this.miniMessage.parse("<green>/zastepca [gracz] <dark_gray>- <gray>Nadaje zastepce gildii"),
+            this.miniMessage.parse("<green>/sojusz [tag] <dark_gray>- <gray>Pozwala nawiazac sojusz"),
+            this.miniMessage.parse("<green>/opusc <dark_gray>- <gray>Opuszcza gildie"),
+            this.miniMessage.parse("<green>/wyrzuc [gracz] <dark_gray>- <gray>Wyrzuca gracza z gildii"),
+            this.miniMessage.parse("<green>/rozwiaz [tag] <dark_gray>- <gray>Rozwiazuje sojusz"),
+            this.miniMessage.parse("<green>/usun <dark_gray>- <gray>Usuwa gildie"),
+            this.miniMessage.parse("<green>/przedmioty <dark_gray>- <gray>Pokazuje przedmioty potrzebne do zalozenia gildii"),
+            this.miniMessage.parse("<green>/ucieczka <dark_gray>- <gray>Rozpoczyna ucieczke z terenu innej gildii"));
 
     @Comment("<------- Admin Help Messages -------> #")
-    public List<String> adminHelpList = Arrays.asList(
-            "&a/ga dodaj [tag] [nick] &8- &7Dodaje gracza do gildii",
-            "&a/ga usun [tag] &8- &7Usuwa gildie",
-            "&a/ga wyrzuc [nick] &8- &7Wyrzuca gracza z gildii",
-            "&a/ga tp [tag] &8- &7Teleportuje do bazy gildii",
-            "&a/ga points [nick] [points] &8- &7Ustawia liczbe punktow gracza",
-            "&a/ga kills [nick] [kills] &8- &7Ustawia liczbe zabojstw gracza",
-            "&a/ga deaths [nick] [deaths] &8- &7Ustawia liczbe smierci gracza",
-            "&a/ga ban [tag] [czas] [powod] &8- &7Banuje gildie na okreslony czas",
-            "&a/ga unban [tag] &8- &7Odbanowywuje gildie",
-            "&a/ga zycia [tag] [zycia] &8- &7Ustawia liczbe zyc gildii",
-            "&a/ga przenies [tag] &8- &7Przenosi teren gildii",
-            "&a/ga przedluz [tag] [czas] &8- &7Przedluza waznosc gildii o podany czas",
-            "&a/ga ochrona [tag] [czas] &8- &7Ustawia date wygasniecia ochrony",
-            "&a/ga nazwa [tag] [nazwa] &8- &7Zmienia nazwe gildii",
-            "&a/ga tag [tag] [nowy tag] &8- &7Zmienia tag gildii",
-            "&a/ga spy &8- &7Szpieguje czat gildii",
-            "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii",
-            "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
-            "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii",
-            "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii");
+    public List<Component> adminHelpList = Arrays.asList(
+            this.miniMessage.parse("<green>/ga dodaj [tag] [nick] <dark_gray>- <gray>Dodaje gracza do gildii"),
+            this.miniMessage.parse("<green>/ga usun [tag] <dark_gray>- <gray>Usuwa gildie"),
+            this.miniMessage.parse("<green>/ga wyrzuc [nick] <dark_gray>- <gray>Wyrzuca gracza z gildii"),
+            this.miniMessage.parse("<green>/ga tp [tag] <dark_gray>- <gray>Teleportuje do bazy gildii"),
+            this.miniMessage.parse("<green>/ga points [nick] [points] <dark_gray>- <gray>Ustawia liczbe punktow gracza"),
+            this.miniMessage.parse("<green>/ga kills [nick] [kills] <dark_gray>- <gray>Ustawia liczbe zabojstw gracza"),
+            this.miniMessage.parse("<green>/ga deaths [nick] [deaths] <dark_gray>- <gray>Ustawia liczbe smierci gracza"),
+            this.miniMessage.parse("<green>/ga ban [tag] [czas] [powod] <dark_gray>- <gray>Banuje gildie na okreslony czas"),
+            this.miniMessage.parse("<green>/ga unban [tag] <dark_gray>- <gray>Odbanowywuje gildie"),
+            this.miniMessage.parse("<green>/ga zycia [tag] [zycia] <dark_gray>- <gray>Ustawia liczbe zyc gildii"),
+            this.miniMessage.parse("<green>/ga przenies [tag] <dark_gray>- <gray>Przenosi teren gildii"),
+            this.miniMessage.parse("<green>/ga przedluz [tag] [czas] <dark_gray>- <gray>Przedluza waznosc gildii o podany czas"),
+            this.miniMessage.parse("<green>/ga ochrona [tag] [czas] <dark_gray>- <gray>Ustawia date wygasniecia ochrony"),
+            this.miniMessage.parse("<green>/ga nazwa [tag] [nazwa] <dark_gray>- <gray>Zmienia nazwe gildii"),
+            this.miniMessage.parse("<green>/ga tag [tag] [nowy tag] <dark_gray>- <gray>Zmienia tag gildii"),
+            this.miniMessage.parse("<green>/ga spy <dark_gray>- <gray>Szpieguje czat gildii"),
+            this.miniMessage.parse("<green>/ga enabled <dark_gray>- <gray>Zarzadzanie statusem zakladania gildii"),
+            this.miniMessage.parse("<green>/ga lider [tag] [gracz] <dark_gray>- <gray>Zmienia lidera gildii"),
+            this.miniMessage.parse("<green>/ga zastepca [tag] [gracz] <dark_gray>- <gray>Nadaje zastepce gildii"),
+            this.miniMessage.parse("<green>/ga baza [gracz] <dark_gray>- <gray>Teleportuje gracza do bazy jego gildii"));
 
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
-    public List<String> playerInfoList = Arrays.asList(
-            "&8--------------.-----------------",
-            "&7Gracz: &a{PLAYER}",
-            "&7Gildia: &a{TAG}",
-            "&7Miejsce: &a{RANK} &8(&a{POINTS}&8)",
-            "&7Zabojstwa: &a{KILLS}",
-            "&7Smierci: &a{DEATHS}",
-            "&7Asysty: &a{ASSISTS}",
-            "&7Logouty: &a{LOGOUTS}",
-            "&7KDR: &a{KDR}",
-            "&8-------------.------------------");
+    public List<Component> playerInfoList = Arrays.asList(
+            this.miniMessage.parse("<dark_gray>--------------.-----------------"),
+            this.miniMessage.parse("<gray>Gracz: <green>{PLAYER}"),
+            this.miniMessage.parse("<gray>Gildia: <green>{TAG}"),
+            this.miniMessage.parse("<gray>Miejsce: <green>{RANK} <dark_gray>(<green>{POINTS}<dark_gray>)"),
+            this.miniMessage.parse("<gray>Zabojstwa: <green>{KILLS}"),
+            this.miniMessage.parse("<gray>Smierci: <green>{DEATHS}"),
+            this.miniMessage.parse("<gray>Asysty: <green>{ASSISTS}"),
+            this.miniMessage.parse("<gray>Logouty: <green>{LOGOUTS}"),
+            this.miniMessage.parse("<gray>KDR: <green>{KDR}"),
+            this.miniMessage.parse("<dark_gray>-------------.------------------"));
 
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
-    public List<String> playerRightClickInfo = Arrays.asList(
-            "&8--------------.-----------------",
-            "&7Gracz: &a{PLAYER}",
-            "&7Gildia: &a{TAG}",
-            "&7Miejsce: &a{RANK} &8(&a{POINTS}&8)",
-            "&8-------------.------------------");
+    public List<Component> playerRightClickInfo = Arrays.asList(
+            this.miniMessage.parse("<dark_gray>--------------.-----------------"),
+            this.miniMessage.parse("<gray>Gracz: <green>{PLAYER}"),
+            this.miniMessage.parse("<gray>Gildia: <green>{TAG}"),
+            this.miniMessage.parse("<gray>Miejsce: <green>{RANK} <dark_gray>(<green>{POINTS}<dark_gray>)"),
+            this.miniMessage.parse("<dark_gray>-------------.------------------"));
 
     @Comment("<------- Info Messages -------> #")
-    public String infoTag = "&cPodaj tag gildii!";
-    public String infoExists = "&cGildia o takim tagu nie istnieje!";
+    public Component infoTag = this.miniMessage.parse("<red>Podaj tag gildii!");
+    public Component infoExists = this.miniMessage.parse("<red>Gildia o takim tagu nie istnieje!");
 
     @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}")
-    public List<String> infoList = Arrays.asList(
-            "&8-------------------------------",
-            "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
-            "&7Zalozyciel: &c{OWNER}",
-            "&7Zastepcy: &c{DEPUTIES}",
-            "&7Punkty: &c{POINTS} &8[&c{RANK}&8]",
-            "&7Ochrona: &c{GUILD-PROTECTION}",
-            "&7Zycia: &4{LIVES}",
-            "&7Waznosc: &c{VALIDITY}",
-            "&7Czlonkowie: &7{MEMBERS}",
-            "&7Sojusze: &c{ALLIES}",
-            "&7Wojny: &c{ENEMIES}",
-            "&8-------------------------------");
+    public List<Component> infoList = Arrays.asList(
+            this.miniMessage.parse("<dark_gray>-------------------------------"),
+            this.miniMessage.parse("<gray>Gildia: <red>{GUILD} <dark_gray>[<red>{TAG}<dark_gray>]"),
+            this.miniMessage.parse("<gray>Zalozyciel: <red>{OWNER}"),
+            this.miniMessage.parse("<gray>Zastepcy: <red>{DEPUTIES}"),
+            this.miniMessage.parse("<gray>Punkty: <red>{POINTS} <dark_gray>[<red>{RANK}<dark_gray>]"),
+            this.miniMessage.parse("<gray>Ochrona: <red>{GUILD-PROTECTION}"),
+            this.miniMessage.parse("<gray>Zycia: <dark_red>{LIVES}"),
+            this.miniMessage.parse("<gray>Waznosc: <red>{VALIDITY}"),
+            this.miniMessage.parse("<gray>Czlonkowie: <gray>{MEMBERS})"),
+            this.miniMessage.parse("<gray>Sojusze: <red>{ALLIES}"),
+            this.miniMessage.parse("<gray>Wojny: <red>{ENEMIES}"),
+            this.miniMessage.parse("<dark_gray>-------------------------------"));
 
     @Comment("<------- Top Messages -------> #")
     @Comment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu")
-    public List<String> topList = Arrays.asList(
-            "&8----------{ &cTOP 10 &8}----------",
-            "&71&8. &c{GTOP-1}",
-            "&72&8. &c{GTOP-2}",
-            "&73&8. &c{GTOP-3}",
-            "&74&8. &c{GTOP-4}",
-            "&75&8. &c{GTOP-5}",
-            "&76&8. &c{GTOP-6}",
-            "&77&8. &c{GTOP-7}",
-            "&78&8. &c{GTOP-8}",
-            "&79&8. &c{GTOP-9}",
-            "&710&8. &c{GTOP-10}");
+    public List<Component> topList = Arrays.asList(
+            this.miniMessage.parse("<dark_gray>----------{ <red>TOP 10 <dark_gray>}----------"),
+            this.miniMessage.parse("<gray>1<dark_gray>. <red>{GTOP-1}"),
+            this.miniMessage.parse("<gray>2<dark_gray>. <red>{GTOP-2}"),
+            this.miniMessage.parse("<gray>3<dark_gray>. <red>{GTOP-3}"),
+            this.miniMessage.parse("<gray>4<dark_gray>. <red>{GTOP-4}"),
+            this.miniMessage.parse("<gray>5<dark_gray>. <red>{GTOP-5}"),
+            this.miniMessage.parse("<gray>6<dark_gray>. <red>{GTOP-6}"),
+            this.miniMessage.parse("<gray>7<dark_gray>. <red>{GTOP-7}"),
+            this.miniMessage.parse("<gray>8<dark_gray>. <red>{GTOP-8}"),
+            this.miniMessage.parse("<gray>9<dark_gray>. <red>{GTOP-9}"),
+            this.miniMessage.parse("<gray>10<dark_gray>. <red>{GTOP-10}"));
 
     @Comment("<------- Ranking Messages -------> #")
     @Comment("{PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu")
-    public List<String> rankingList = Arrays.asList(
-            "&8----------{ &cTOP 10 Graczy &8}----------",
-            "&71&8. &c{PTOP-1}",
-            "&72&8. &c{PTOP-2}",
-            "&73&8. &c{PTOP-3}",
-            "&74&8. &c{PTOP-4}",
-            "&75&8. &c{PTOP-5}",
-            "&76&8. &c{PTOP-6}",
-            "&77&8. &c{PTOP-7}",
-            "&78&8. &c{PTOP-8}",
-            "&79&8. &c{PTOP-9}",
-            "&710&8. &c{PTOP-10}");
+    public List<Component> rankingList = Arrays.asList(
+            this.miniMessage.parse("<dark_gray>----------{ <red>TOP 10 Graczy <dark_gray>}----------"),
+            this.miniMessage.parse("<gray>1<dark_gray>. <red>{PTOP-1}"),
+            this.miniMessage.parse("<gray>2<dark_gray>. <red>{PTOP-2}"),
+            this.miniMessage.parse("<gray>3<dark_gray>. <red>{PTOP-3}"),
+            this.miniMessage.parse("<gray>4<dark_gray>. <red>{PTOP-4}"),
+            this.miniMessage.parse("<gray>5<dark_gray>. <red>{PTOP-5}"),
+            this.miniMessage.parse("<gray>6<dark_gray>. <red>{PTOP-6}"),
+            this.miniMessage.parse( "<gray>7<dark_gray>. <red>{PTOP-7}"),
+            this.miniMessage.parse("<gray>8<dark_gray>. <red>{PTOP-8}"),
+            this.miniMessage.parse("<gray>9<dark_gray>. <red>{PTOP-9}"),
+            this.miniMessage.parse("<gray>10<dark_gray>. <red>{PTOP-10}"));
 
     @Comment("<------- General Messages -------> #")
-    public String generalHasGuild = "&cMasz juz gildie!";
-    public String generalNoNameGiven = "&cPodaj nazwe gildii!";
-    public String generalHasNoGuild = "&cNie masz gildii!";
-    public String generalIsNotOwner = "&cNie jestes zalozycielem gildii!";
-    public String generalNoTagGiven = "&cPodaj tag gildii!";
-    public String generalNoNickGiven = "&cPodaj nick gracza!";
-    public String generalUserHasGuild = "&cTen gracz ma juz gildie!";
-    public String generalNoGuildFound = "&cTaka gildia nie istnieje!";
-    public String generalNotPlayedBefore = "&cTen gracz nigdy nie byl na serwerze!";
-    public String generalNotOnline = "&cTen gracz nie jest obecnie na serwerze!";
+    public Component generalHasGuild = this.miniMessage.parse("<red>Masz juz gildie!");
+    public Component generalNoNameGiven = this.miniMessage.parse("<red>Podaj nazwe gildii!");
+    public Component generalHasNoGuild = this.miniMessage.parse("<red>Nie masz gildii!");
+    public Component generalIsNotOwner = this.miniMessage.parse("<red>Nie jestes zalozycielem gildii!");
+    public Component generalNoTagGiven = this.miniMessage.parse("<red>Podaj tag gildii!");
+    public Component generalNoNickGiven = this.miniMessage.parse("<red>Podaj nick gracza!");
+    public Component generalUserHasGuild = this.miniMessage.parse("<red>Ten gracz ma juz gildie!");
+    public Component generalNoGuildFound = this.miniMessage.parse("<red>Taka gildia nie istnieje!");
+    public Component generalNotPlayedBefore = this.miniMessage.parse("<red>Ten gracz nigdy nie byl na serwerze!");
+    public Component generalNotOnline = this.miniMessage.parse("<red>Ten gracz nie jest obecnie na serwerze!");
 
     @Comment("Dostepne zmienne: {TAG}")
-    public String generalGuildNotExists = "&7Gildia o tagu &c{TAG} &7nie istnieje!";
-    public String generalIsNotMember = "&cTen gracz nie jest czlonkiem twojej gildii!";
-    public String generalPlayerHasNoGuild = "&cTen gracz nie ma gildii!";
-    public String generalCommandDisabled = "&cTa komenda jest wylaczona!";
-    public String generalAllyPvpDisabled = "&cPVP pomiedzy sojuszami jest wylaczone w konfiguracji!";
+    public Component generalGuildNotExists = this.miniMessage.parse("<gray>Gildia o tagu <red>{TAG} <gray>nie istnieje!");
+    public Component generalIsNotMember = this.miniMessage.parse("<red>Ten gracz nie jest czlonkiem twojej gildii!");
+    public Component generalPlayerHasNoGuild = this.miniMessage.parse("<red>Ten gracz nie ma gildii!");
+    public Component generalCommandDisabled = this.miniMessage.parse("<red>Ta komenda jest wylaczona!");
+    public Component generalAllyPvpDisabled = this.miniMessage.parse("<red>PVP pomiedzy sojuszami jest wylaczone w konfiguracji!");
 
     @Comment("<------- Escape Messages -------> #")
-    public String escapeDisabled = "&cPrzykro mi, ucieczki sa wylaczone!";
+    public Component escapeDisabled = this.miniMessage.parse("<red>Przykro mi, ucieczki sa wylaczone!");
     @Comment("Dostepne zmienne: {TIME}")
-    public String escapeStartedUser = "&aDobrze, jesli nikt ci nie przeszkodzi - za {TIME} sekund uda ci sie uciec!";
+    public Component escapeStartedUser = this.miniMessage.parse("<green>Dobrze, jesli nikt ci nie przeszkodzi - za {TIME} sekund uda ci sie uciec!");
     @Comment("Dostepne zmienne: {TIME}, {X}, {Y}, {Z}, {PLAYER}")
-    public String escapeStartedOpponents = "&cGracz {PLAYER} probuje uciec z terenu twojej gildii! ({X}  {Y}  {Z})";
-    public String escapeCancelled = "&cUcieczka zostala przerwana!";
-    public String escapeInProgress = "&cUcieczka juz trwa!";
-    public String escapeSuccessfulUser = "&aUdalo ci sie uciec!";
+    public Component escapeStartedOpponents = this.miniMessage.parse("<red>Gracz {PLAYER} probuje uciec z terenu twojej gildii! ({X}  {Y}  {Z})");
+    public Component escapeCancelled = this.miniMessage.parse("<red>Ucieczka zostala przerwana!");
+    public Component escapeInProgress = this.miniMessage.parse("<red>Ucieczka juz trwa!");
+    public Component escapeSuccessfulUser = this.miniMessage.parse("<green>Udalo ci sie uciec!");
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String escapeSuccessfulOpponents = "&cGraczowi {PLAYER} udalo sie uciec z terenu twojej gildii!";
-    public String escapeNoUserGuild = "&cNie masz gildii do ktorej moglbys uciekac!";
-    public String escapeNoNeedToRun = "&cNie znajdujesz sie na terenie zadnej gildii, po co uciekac?";
-    public String escapeOnYourRegion = "&cZnajdujesz sie na terenie wlasnej gildii, dokad chcesz uciekac?";
+    public Component escapeSuccessfulOpponents = this.miniMessage.parse("<red>Graczowi {PLAYER} udalo sie uciec z terenu twojej gildii!");
+    public Component escapeNoUserGuild = this.miniMessage.parse("<red>Nie masz gildii do ktorej moglbys uciekac!");
+    public Component escapeNoNeedToRun = this.miniMessage.parse("<red>Nie znajdujesz sie na terenie zadnej gildii, po co uciekac?");
+    public Component escapeOnYourRegion = this.miniMessage.parse("<red>Znajdujesz sie na terenie wlasnej gildii, dokad chcesz uciekac?");
 
     @Comment("<------- Create Guild Messages -------> #")
     @Comment("Dostepne zmienne: {LENGTH}")
-    public String createTagLength = "&7Tag nie moze byc dluzszy niz &c{LENGTH} litery&7!";
+    public Component createTagLength = this.miniMessage.parse("<gray>Tag nie moze byc dluzszy niz <red>{LENGTH} litery<gray>!");
     @Comment("Dostepne zmienne: {LENGTH}")
-    public String createNameLength = "&cNazwa nie moze byc dluzsza niz &c{LENGTH} litery&7!";
+    public Component createNameLength = this.miniMessage.parse("<red>Nazwa nie moze byc dluzsza niz <red>{LENGTH} litery<gray>!");
     @Comment("Dostepne zmienne: {LENGTH}")
-    public String createTagMinLength = "&7Tag nie moze byc krotszy niz &c{LENGTH} litery&7!";
+    public Component createTagMinLength = this.miniMessage.parse("<gray>Tag nie moze byc krotszy niz <red>{LENGTH} litery<gray>!");
     @Comment("Dostepne zmienne: {LENGTH}")
-    public String createNameMinLength = "&cNazwa nie moze byc krotsza niz &c{LENGTH} litery&7!";
-    public String createOLTag = "&cTag gildii moze zawierac tylko litery!";
-    public String createOLName = "&cNazwa gildii moze zawierac tylko litery!";
-    public String createMore = "&cNazwa gildi nie moze zawierac spacji!";
-    public String createNameExists = "&cJest juz gildia z taka nazwa!";
-    public String createTagExists = "&cJest juz gildia z takim tagiem!";
-    public String restrictedGuildName = "&cPodana nazwa gildii jest niedozwolona.";
-    public String restrictedGuildTag = "&cPodany tag gildii jest niedozwolony.";
+    public Component createNameMinLength = this.miniMessage.parse("<red>Nazwa nie moze byc krotsza niz <red>{LENGTH} litery<gray>!");
+    public Component createOLTag = this.miniMessage.parse("<red>Tag gildii moze zawierac tylko litery!");
+    public Component createOLName = this.miniMessage.parse("<red>Nazwa gildii moze zawierac tylko litery!");
+    public Component createMore = this.miniMessage.parse("<red>Nazwa gildi nie moze zawierac spacji!");
+    public Component createNameExists = this.miniMessage.parse("<red>Jest juz gildia z taka nazwa!");
+    public Component createTagExists = this.miniMessage.parse("<red>Jest juz gildia z takim tagiem!");
+    public Component restrictedGuildName = this.miniMessage.parse("<red>Podana nazwa gildii jest niedozwolona.");
+    public Component restrictedGuildTag = this.miniMessage.parse("<red>Podany tag gildii jest niedozwolony.");
     @Comment("Dostepne zmienne: {DISTANCE}")
-    public String createSpawn = "&7Jestes zbyt blisko spawnu! Minimalna odleglosc to &c{DISTANCE}";
-    public String createIsNear = "&cW poblizu znajduje sie jakas gildia, poszukaj innego miejsca!";
+    public Component createSpawn = this.miniMessage.parse("<gray>Jestes zbyt blisko spawnu! Minimalna odleglosc to <red>{DISTANCE}");
+    public Component createIsNear = this.miniMessage.parse("<red>W poblizu znajduje sie jakas gildia, poszukaj innego miejsca!");
     @Comment("Dostepne zmienne: {POINTS}, {POINTS-FORMAT}, {REQUIRED}, {REQUIRED-FORMAT}")
-    public String createRank = "&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED} &cpunktow.";
+    public Component createRank = this.miniMessage.parse("<red>Aby zalozyc gildie, wymagane jest przynajmniej <gray>{REQUIRED} <red>punktow.");
     @Comment("Dostepne zmienne: {ITEM}, {ITEMS}")
-    public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}&c. Najedz na przedmiot, aby dowiedziec sie wiecej";
+    public Component createItems = this.miniMessage.parse("<red>Nie masz wszystkich przedmiotow! Obecnie brakuje Ci <gray>{ITEM} <red>z <gray>{ITEMS}<red>. Najedz na przedmiot, aby dowiedziec sie wiecej");
     @Comment("Dostepne zmienne: {EXP}")
-    public String createExperience = "&cNie posiadasz wymaganego doswiadczenia do zalozenia gildii: &7{EXP}";
+    public Component createExperience = this.miniMessage.parse("<red>Nie posiadasz wymaganego doswiadczenia do zalozenia gildii: <gray>{EXP}");
     @Comment("Dostepne zmienne: {MONEY}")
-    public String createMoney = "&cNie posiadasz wymaganej ilosci pieniedzy do zalozenia gildii: &7{MONEY}";
+    public Component createMoney = this.miniMessage.parse("<red>Nie posiadasz wymaganej ilosci pieniedzy do zalozenia gildii: <gray>{MONEY}");
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
-    public String createGuild = "&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
-    public String createGuildCouldNotPasteSchematic = "&cWystapil blad podczas tworzenia terenu gildii, zglos sie do administracji.";
+    public Component createGuild = this.miniMessage.parse("<gray>Zalozono gildie o nazwie <green>{GUILD} <gray>i tagu <green>{TAG}<gray>!");
+    public Component createGuildCouldNotPasteSchematic = this.miniMessage.parse("<red>Wystapil blad podczas tworzenia terenu gildii, zglos sie do administracji.");
     @Comment("Dostepne zmienne: {BORDER-MIN-DISTANCE}")
-    public String createNotEnoughDistanceFromBorder = "&cJestes zbyt blisko granicy mapy aby zalozyc gildie! (Minimalna odleglosc: {BORDER-MIN-DISTANCE})";
+    public Component createNotEnoughDistanceFromBorder = this.miniMessage.parse("<red>Jestes zbyt blisko granicy mapy aby zalozyc gildie! (Minimalna odleglosc: {BORDER-MIN-DISTANCE})");
 
     @Comment("<------- Delete Guild Messages -------> #")
-    public String deleteConfirm = "&7Aby potwierdzic usuniecie gildii, wpisz: &c/potwierdz";
-    public String deleteToConfirm = "&cNie masz zadnych dzialan do potwierdzenia!";
-    public String deleteSomeoneIsNear = "&cNie mozesz usunac gildii, ktos jest w poblizu!";
+    public Component deleteConfirm = this.miniMessage.parse("<gray>Aby potwierdzic usuniecie gildii, wpisz: <red>/potwierdz");
+    public Component deleteToConfirm = this.miniMessage.parse("<red>Nie masz zadnych dzialan do potwierdzenia!");
+    public Component deleteSomeoneIsNear = this.miniMessage.parse("<red>Nie mozesz usunac gildii, ktos jest w poblizu!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String deleteSuccessful = "&7Pomyslnie &cusunieto &7gildie!";
+    public Component deleteSuccessful = this.miniMessage.parse("<gray>Pomyslnie <red>usunieto <gray>gildie!");
 
     @Comment("<------- Invite Messages -------> #")
-    public String invitePlayerExists = "&cNie ma takiego gracza na serwerze!";
+    public Component invitePlayerExists = this.miniMessage.parse("<red>Nie ma takiego gracza na serwerze!");
     @Comment("Dostepne zmienne: {AMOUNT}")
-    public String inviteAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe czlonkow w gildii! (&c{AMOUNT}&7)";
-    public String inviteAmountJoin = "&7Ta gildia osiagnela juz &cmaksymalna &7liczbe czlonkow! (&c{AMOUNT}&7)";
-    public String inviteAllyAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe sojuszy miedzygildyjnych! (&c{AMOUNT}&7)";
+    public Component inviteAmount = this.miniMessage.parse("<gray>Osiagnieto juz <red>maksymalna <gray>liczbe czlonkow w gildii! (<red>{AMOUNT}<gray>)");
+    public Component inviteAmountJoin = this.miniMessage.parse("<gray>Ta gildia osiagnela juz <red>maksymalna <gray>liczbe czlonkow! (<red>{AMOUNT}<gray>)");
+    public Component inviteAllyAmount = this.miniMessage.parse("<gray>Osiagnieto juz <red>maksymalna <gray>liczbe sojuszy miedzygildyjnych! (<red>{AMOUNT}<gray>)");
     @Comment("Dostepne zmienne: {AMOUNT}, {GUILD}, {TAG}")
-    public String inviteAllyTargetAmount = "&7Gildia {TAG} posiada juz maksymalna liczbe sojuszy! (&c{AMOUNT}&7)";
-    public String inviteCancelled = "&cCofnieto zaproszenie!";
+    public Component inviteAllyTargetAmount = this.miniMessage.parse("<gray>Gildia {TAG} posiada juz maksymalna liczbe sojuszy! (<red>{AMOUNT}<gray>)");
+    public Component inviteCancelled = this.miniMessage.parse("<red>Cofnieto zaproszenie!");
     @Comment("Dostepne zmienne: {OWNER}, {GUILD}, {TAG}")
-    public String inviteCancelledToInvited = "&7Zaproszenie do gildii &c{GUILD} &7zostalo wycofane!";
+    public Component inviteCancelledToInvited = this.miniMessage.parse("<gray>Zaproszenie do gildii <red>{GUILD} <gray>zostalo wycofane!");
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String inviteToOwner = "&7Gracz &a{PLAYER} &7zostal zaproszony do gildii!";
+    public Component inviteToOwner = this.miniMessage.parse("<gray>Gracz <green>{PLAYER} <gray>zostal zaproszony do gildii!");
     @Comment("Dostepne zmienne: {OWNER}, {GUILD}, {TAG}")
-    public String inviteToInvited = "&aOtrzymano zaproszenie do gildii &7{TAG}&a!";
+    public Component inviteToInvited = this.miniMessage.parse("<green>Otrzymano zaproszenie do gildii <gray>{TAG}<green>!");
 
     @Comment("<------- Join Messages -------> #")
-    public String joinHasNotInvitation = "&cNie masz zaproszenia do gildii!";
-    public String joinHasNotInvitationTo = "&cNie otrzymales zaproszenia do tej gildii!";
-    public String joinHasGuild = "&cMasz juz gildie!";
-    public String joinTagExists = "&cNie ma gildii o takim tagu!";
+    public Component joinHasNotInvitation = this.miniMessage.parse("<red>Nie masz zaproszenia do gildii!");
+    public Component joinHasNotInvitationTo = this.miniMessage.parse("<red>Nie otrzymales zaproszenia do tej gildii!");
+    public Component joinHasGuild = this.miniMessage.parse("<red>Masz juz gildie!");
+    public Component joinTagExists = this.miniMessage.parse("<red>Nie ma gildii o takim tagu!");
     @Comment("Dostepne zmienne: {GUILDS}")
-    public List<String> joinInvitationList = Arrays.asList(
-            "&7Otrzymano zaproszenia od gildii: &a{GUILDS}",
-            "&7Wpisz &a/dolacz [tag] &7aby dolaczyc do wybranej gildii");
+    public List<Component> joinInvitationList = Arrays.asList(
+            this.miniMessage.parse("<gray>Otrzymano zaproszenia od gildii: <green>{GUILDS}"),
+            this.miniMessage.parse("<gray>Wpisz <green>/dolacz [tag] <gray>aby dolaczyc do wybranej gildii"));
 
     @Comment("Dostepne zmienne: {ITEM}, {ITEMS}")
-    public String joinItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
+    public Component joinItems = this.miniMessage.parse("<red>Nie masz wszystkich przedmiotow! Obecnie brakuje Ci <gray>{ITEM} <red>z <gray>{ITEMS}");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String joinToMember = "&aDolaczyles do gildii &7{GUILD}";
+    public Component joinToMember = this.miniMessage.parse("<green>Dolaczyles do gildii <gray>{GUILD}");
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String joinToOwner = "&a{PLAYER} &7dolaczyl do &aTwojej &7gildii!";
+    public Component joinToOwner = this.miniMessage.parse("<green>{PLAYER} <gray>dolaczyl do <green>Twojej <gray>gildii!");
 
     @Comment("<------- Leave Messages -------> #")
-    public String leaveIsOwner = "&cZalozyciel &7nie moze opuscic gildii!";
+    public Component leaveIsOwner = this.miniMessage.parse("<red>Zalozyciel <gray>nie moze opuscic gildii!");
     @Comment("Dostepne zmienne: {GUILDS}, {TAG}")
-    public String leaveToUser = "&7Opusciles gildie &a{GUILD}&7!";
+    public Component leaveToUser = this.miniMessage.parse("<gray>Opusciles gildie <green>{GUILD}<gray>!");
 
     @Comment("<------- Kick Messages -------> #")
-    public String kickOtherGuild = "&cTen gracz nie jest w Twojej gildii!";
-    public String kickOwner = "&cNie mozna wyrzucic zalozyciela!";
+    public Component kickOtherGuild = this.miniMessage.parse("<red>Ten gracz nie jest w Twojej gildii!");
+    public Component kickOwner = this.miniMessage.parse("<red>Nie mozna wyrzucic zalozyciela!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}, {PLAYER}")
-    public String kickToOwner = "&c{PLAYER} &7zostal wyrzucony z gildii!";
+    public Component kickToOwner = this.miniMessage.parse("<red>{PLAYER} <gray>zostal wyrzucony z gildii!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String kickToPlayer = "&cZostales wyrzucony z gildii!";
+    public Component kickToPlayer = this.miniMessage.parse("<red>Zostales wyrzucony z gildii!");
 
     @Comment("<------- Enlarge Messages -------> #")
-    public String enlargeMaxSize = "&cOsiagnieto juz maksymalny rozmiar terenu!";
-    public String enlargeIsNear = "&cW poblizu znajduje sie jakas gildia, nie mozesz powiekszyc terenu!";
+    public Component enlargeMaxSize = this.miniMessage.parse("<red>Osiagnieto juz maksymalny rozmiar terenu!");
+    public Component enlargeIsNear = this.miniMessage.parse("<red>W poblizu znajduje sie jakas gildia, nie mozesz powiekszyc terenu!");
     @Comment("Dostepne zmienne: {ITEM}")
-    public String enlargeItem = "&7Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz &c{ITEM}";
+    public Component enlargeItem = this.miniMessage.parse("<gray>Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz <red>{ITEM}");
     @Comment("Dostepne zmienne: {SIZE}, {LEVEL}")
-    public String enlargeDone = "&7Teren &aTwojej &7gildii zostal powiekszony i jego wielkosc wynosi teraz &a{SIZE} &7(poz.&a{LEVEL}&7)";
+    public Component enlargeDone = this.miniMessage.parse("<gray>Teren <green>Twojej <gray>gildii zostal powiekszony i jego wielkosc wynosi teraz <green>{SIZE} <gray>(poz.<green>{LEVEL}<gray>)");
 
     @Comment("<------- Base Messages -------> #")
-    public String baseTeleportationDisabled = "&cTeleportacja do baz gildyjnych nie jest dostepna";
-    public String baseHasNotRegion = "&cTwoja gildia nie posiada terenu!";
-    public String baseHasNotCenter = "&cTwoja gildia nie posiada srodka regionu!";
-    public String baseIsTeleportation = "&cWlasnie sie teleportujesz!";
+    public Component baseTeleportationDisabled = this.miniMessage.parse("<red>Teleportacja do baz gildyjnych nie jest dostepna");
+    public Component baseHasNotRegion = this.miniMessage.parse("<red>Twoja gildia nie posiada terenu!");
+    public Component baseHasNotCenter = this.miniMessage.parse("<red>Twoja gildia nie posiada srodka regionu!");
+    public Component baseIsTeleportation = this.miniMessage.parse("<red>Wlasnie sie teleportujesz!");
     @Comment("Dostepne zmienne: {ITEM}, {ITEMS}")
-    public String baseItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
-    public String baseDontMove = "&7Nie ruszaj sie przez &c{TIME} &7sekund!";
-    public String baseMove = "&cRuszyles sie, teleportacja przerwana!";
-    public String baseTeleport = "&aTeleportacja&7...";
+    public Component baseItems = this.miniMessage.parse("<red>Nie masz wszystkich przedmiotow! Obecnie brakuje Ci <gray>{ITEM} <red>z <gray>{ITEMS}");
+    public Component baseDontMove = this.miniMessage.parse("<gray>Nie ruszaj sie przez <red>{TIME} <gray>sekund!");
+    public Component baseMove = this.miniMessage.parse("<red>Ruszyles sie, teleportacja przerwana!");
+    public Component baseTeleport = this.miniMessage.parse("<green>Teleportacja<gray>...");
 
     @Comment("<------- War Messages -------> #")
-    public String enemyCorrectUse = "&7Aby rozpoczac wojne z gildia wpisz &c/wojna [tag]";
-    public String enemySame = "&cNie mozesz rozpoczac wojny z wlasna gildia!";
-    public String enemyAlly = "&cNie mozesz rozpoczac wojny z ta gildia poniewaz jestescie sojusznikami!";
-    public String enemyAlready = "&cProwadzisz juz wojne z ta gildia!";
+    public Component enemyCorrectUse = this.miniMessage.parse("<gray>Aby rozpoczac wojne z gildia wpisz <red>/wojna [tag]");
+    public Component enemySame = this.miniMessage.parse("<red>Nie mozesz rozpoczac wojny z wlasna gildia!");
+    public Component enemyAlly = this.miniMessage.parse("<red>Nie mozesz rozpoczac wojny z ta gildia poniewaz jestescie sojusznikami!");
+    public Component enemyAlready = this.miniMessage.parse("<red>Prowadzisz juz wojne z ta gildia!");
     @Comment("Dostepne zmienne: {AMOUNT}")
-    public String enemyMaxAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe wojen miedzygildyjnych! (&c{AMOUNT}&7)";
+    public Component enemyMaxAmount = this.miniMessage.parse("<gray>Osiagnieto juz <red>maksymalna <gray>liczbe wojen miedzygildyjnych! (<red>{AMOUNT}<gray>)");
     @Comment("Dostepne zmienne: {AMOUNT}, {GUILD}, {TAG}")
-    public String enemyMaxTargetAmount = "&7Gildia {TAG} posiada juz maksymalna liczbe wojen! (&c{AMOUNT}&7)";
+    public Component enemyMaxTargetAmount = this.miniMessage.parse("<gray>Gildia {TAG} posiada juz maksymalna liczbe wojen! (<red>{AMOUNT}<gray>)");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String enemyDone = "&7Wypowiedziano gildii &a{GUILD}&7 wojne!";
+    public Component enemyDone = this.miniMessage.parse("<gray>Wypowiedziano gildii <green>{GUILD}<gray> wojne!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String enemyIDone = "&7Gildia &a{GUILD} &7wypowiedziala twojej gildii wojne!";
+    public Component enemyIDone = this.miniMessage.parse("<gray>Gildia <green>{GUILD} <gray>wypowiedziala twojej gildii wojne!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String enemyEnd= "&7Zakonczono wojne z gildia &a{GUILD}&7!";
+    public Component enemyEnd = this.miniMessage.parse("<gray>Zakonczono wojne z gildia <green>{GUILD}<gray>!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String enemyIEnd = "&7Gildia &a{GUILD} &7zakonczyla wojne z twoja gildia!";
+    public Component enemyIEnd = this.miniMessage.parse("<gray>Gildia <green>{GUILD} <gray>zakonczyla wojne z twoja gildia!");
 
     @Comment("<------- Ally Messages -------> #")
-    public String allyHasNotInvitation = "&7Aby zaprosic gildie do sojuszy wpisz &c/sojusz [tag]";
+    public Component allyHasNotInvitation = this.miniMessage.parse("<gray>Aby zaprosic gildie do sojuszy wpisz <red>/sojusz [tag]");
     @Comment("Dostepne zmienne: {GUILDS}")
-    public List<String> allyInvitationList = Arrays.asList(
-            "&7Otrzymano zaproszenia od gildii: &a{GUILDS}",
-            "&7Aby zaakceptowac uzyj &a/sojusz [tag]");
+    public List<Component> allyInvitationList = Arrays.asList(
+            this.miniMessage.parse("<gray>Otrzymano zaproszenia od gildii: <green>{GUILDS})"),
+            this.miniMessage.parse("<gray>Aby zaakceptowac uzyj <green>/sojusz [tag]"));
     @Comment("Dostepne zmienne: {TAG}")
-    public String allyAlly = "&cMasz juz sojusz z ta gildia!";
-    public String allyDoesntExist = "&cNie posiadasz sojuszu z ta gildia!";
-    public String allySame = "&cNie mozesz nawiazac sojuszu z wlasna gildia!";
+    public Component allyAlly = this.miniMessage.parse("<red>Masz juz sojusz z ta gildia!");
+    public Component allyDoesntExist = this.miniMessage.parse("<red>Nie posiadasz sojuszu z ta gildia!");
+    public Component allySame = this.miniMessage.parse("<red>Nie mozesz nawiazac sojuszu z wlasna gildia!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String allyDone = "&7Nawiazano sojusz z gildia &a{GUILD}&7!";
+    public Component allyDone = this.miniMessage.parse("<gray>Nawiazano sojusz z gildia <green>{GUILD}<gray>!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String allyIDone = "&7Gildia &a{GUILD} &7przystapila do sojuszu!";
+    public Component allyIDone = this.miniMessage.parse("<gray>Gildia <green>{GUILD} <gray>przystapila do sojuszu!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String allyReturn = "&7Wycofano zaproszenie do sojuszu dla gildii &c{GUILD}!";
+    public Component allyReturn = this.miniMessage.parse("<gray>Wycofano zaproszenie do sojuszu dla gildii <red>{GUILD}!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String allyIReturn = "&7Gildia &c{GUILD} &7wycofala zaprszenie do sojuszu!";
+    public Component allyIReturn = this.miniMessage.parse("<gray>Gildia <red>{GUILD} <gray>wycofala zaprszenie do sojuszu!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String allyInviteDone = "&7Zaproszono gildie &a{GUILD} &7do sojuszu!";
+    public Component allyInviteDone = this.miniMessage.parse("<gray>Zaproszono gildie <green>{GUILD} <gray>do sojuszu!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String allyToInvited = "&7Otrzymano zaproszenie do sojuszu od gildii &a{GUILD}&7!";
+    public Component allyToInvited = this.miniMessage.parse("<gray>Otrzymano zaproszenie do sojuszu od gildii <green>{GUILD}<gray>!");
 
     @Comment("<------- Break Messages -------> #")
-    public String breakHasNotAllies = "&cTwoja gildia nie posiada sojuszy!";
+    public Component breakHasNotAllies = this.miniMessage.parse("<red>Twoja gildia nie posiada sojuszy!");
     @Comment("Dostepne zmienne: {GUILDS}")
-    public List<String> breakAlliesList = Arrays.asList(
-            "&7Twoja gildia nawiazala sojusz z &a{GUILDS}",
-            "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]");
+    public List<Component> breakAlliesList = Arrays.asList(
+            this.miniMessage.parse("<gray>Twoja gildia nawiazala sojusz z <green>{GUILDS}"),
+            this.miniMessage.parse("<gray>Aby rozwiazac sojusz wpisz <red>/rozwiaz [tag]"));
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String breakAllyExists = "&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7&c{GUILD}&7)!";
+    public Component breakAllyExists = this.miniMessage.parse("<gray>Twoja gildia nie posiada sojuszu z gildia (<red>{TAG}<gray><red>{GUILD}<gray>)!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String breakDone = "&7Rozwiazano sojusz z gildia &c{GUILD}&7!";
+    public Component breakDone = this.miniMessage.parse("<gray>Rozwiazano sojusz z gildia <red>{GUILD}<gray>!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String breakIDone = "&7Gildia &c{GUILD} &7rozwiazala sojusz z Twoja gildia!";
+    public Component breakIDone = this.miniMessage.parse("<gray>Gildia <red>{GUILD} <gray>rozwiazala sojusz z Twoja gildia!");
 
     @Comment("<------- Validity Messages -------> #")
     @Comment("Dostepne zmienne: {TIME}")
-    public String validityWhen = "&7Gildie mozesz przedluzyc dopiero za &c{TIME}&7!";
+    public Component validityWhen = this.miniMessage.parse("<gray>Gildie mozesz przedluzyc dopiero za <red>{TIME}<gray>!");
     @Comment("Dostepne zmienne: {ITEM}")
-    public String validityItems = "&7Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz &c{ITEM}";
+    public Component validityItems = this.miniMessage.parse("<gray>Nie masz wystarczajacej liczby przedmiotow! Potrzebujesz <red>{ITEM}");
     @Comment("Dostepne zmienne: {DATE}")
-    public String validityDone = "&7Waznosc gildii przedluzona do &a{DATE}&7!";
+    public Component validityDone = this.miniMessage.parse("<gray>Waznosc gildii przedluzona do <green>{DATE}<gray>!");
 
     @Comment("<------- War Messages -------> #")
-    public String warDisabled = "&cPodbijanie gildii jest wyłączone.";
-    public String warHasNotGuild = "&cMusisz miec gildie, aby zaatkowac inna!";
-    public String warAlly = "&cNie mozesz zaatakowac sojusznika!";
+    public Component warDisabled = this.miniMessage.parse("<red>Podbijanie gildii jest wyłączone.");
+    public Component warHasNotGuild = this.miniMessage.parse("<red>Musisz miec gildie, aby zaatkowac inna!");
+    public Component warAlly = this.miniMessage.parse("<red>Nie mozesz zaatakowac sojusznika!");
     @Comment("Dostepne zmienne: {TIME}")
-    public String warWait = "&7Atak na gildie mozliwy za &4{TIME}";
+    public Component warWait = this.miniMessage.parse("<gray>Atak na gildie mozliwy za <dark_red>{TIME}");
     @Comment("Dostepne zmienne: {ATTACKED}")
-    public String warAttacker = "&7Twoja gildia pozbawila gildie &4{ATTACKED} &7z &41 zycia&7!";
+    public Component warAttacker = this.miniMessage.parse("<gray>Twoja gildia pozbawila gildie <dark_red>{ATTACKED} <gray>z <dark_red>1 zycia<gray>!");
     @Comment("Dostepne zmienne: {ATTACKER}")
-    public String warAttacked = "&7Twoja gildia stracila &41 zycie &7przez &4{ATTACKER}&7!";
+    public Component warAttacked = this.miniMessage.parse("<gray>Twoja gildia stracila <dark_red>1 zycie <gray>przez <dark_red>{ATTACKER}<gray>!");
     @Comment("Dostepne zmienne: {LOSER}")
-    public String warWin = "&7Twoja gildia &apodbila &7gildie &a{LOSER}&7! Zyskujecie &c1 zycie&7!";
+    public Component warWin = this.miniMessage.parse("<gray>Twoja gildia <green>podbila <gray>gildie <green>{LOSER}<gray>! Zyskujecie <red>1 zycie<gray>!");
     @Comment("Dostepne zmienne: {WINNER}")
-    public String warLose = "&7Twoja gildia &4przegrala &7wojne z gildia &4{WINNER}&7! &4Gildia zostaje zniszona&7!";
+    public Component warLose = this.miniMessage.parse("<gray>Twoja gildia <dark_red>przegrala <gray>wojne z gildia <dark_red>{WINNER}<gray>! <dark_red>Gildia zostaje zniszona<gray>!");
 
     @Comment("<------- Leader Messages -------> #")
-    public String leaderMustBeDifferent = "&cNie mozesz sobie oddac zalozyciela!";
-    public String leaderSet = "&7Ustanowiono nowego &alidera &7gildii!";
-    public String leaderOwner = "&7Zostales nowym &aliderem &7gildii!";
+    public Component leaderMustBeDifferent = this.miniMessage.parse("<red>Nie mozesz sobie oddac zalozyciela!");
+    public Component leaderSet = this.miniMessage.parse("<gray>Ustanowiono nowego <green>lidera <gray>gildii!");
+    public Component leaderOwner = this.miniMessage.parse("<gray>Zostales nowym <green>liderem <gray>gildii!");
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String leaderMembers = "&7{PLAYER} zostal nowym &aliderem &7gildii!";
+    public Component leaderMembers = this.miniMessage.parse("<gray>{PLAYER} zostal nowym <green>liderem <gray>gildii!");
 
     @Comment("<------- TNT Hours Messages -------> #")
-    public String tntInfo = "&7TNT na teranach gildii działa od {PROTECTION_END} do {PROTECTION_START}";
-    public String tntProtectDisable = "&7TNT wybucha o każdej porze.";
-    public String tntNowEnabled = "&aTNT aktualnie jest włączone.";
-    public String tntNowDisabled = "&cTNT aktualnie jest wyłączone.";
+    public Component tntInfo = this.miniMessage.parse("<gray>TNT na teranach gildii działa od {PROTECTION_END} do {PROTECTION_START}");
+    public Component tntProtectDisable = this.miniMessage.parse("<gray>TNT wybucha o każdej porze.");
+    public Component tntNowEnabled = this.miniMessage.parse("<green>TNT aktualnie jest włączone.");
+    public Component tntNowDisabled = this.miniMessage.parse("<red>TNT aktualnie jest wyłączone.");
 
     @Comment("<------- Deputy Messages -------> #")
-    public String deputyMustBeDifferent = "&cNie mozesz mianowac siebie zastepca!";
-    public String deputyRemove = "&7Zdegradowno gracza z funkcji &czastepcy&7!";
-    public String deputyMember = "&7Zdegradowano Cie z funkcji &czastepcy&7!";
-    public String deputySet = "&7Ustanowiono nowego &azastepce &7gildii!";
-    public String deputyOwner = "&7Zostales nowym &azastepca &7gildii!";
+    public Component deputyMustBeDifferent = this.miniMessage.parse("<red>Nie mozesz mianowac siebie zastepca!");
+    public Component deputyRemove = this.miniMessage.parse("<gray>Zdegradowno gracza z funkcji <red>zastepcy<gray>!");
+    public Component deputyMember = this.miniMessage.parse("<gray>Zdegradowano Cie z funkcji <red>zastepcy<gray>!");
+    public Component deputySet = this.miniMessage.parse("<gray>Ustanowiono nowego <green>zastepce <gray>gildii!");
+    public Component deputyOwner = this.miniMessage.parse("<gray>Zostales nowym <green>zastepca <gray>gildii!");
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String deputyMembers = "&7{PLAYER} zostal nowym &azastepca &7gildii!";
+    public Component deputyMembers = this.miniMessage.parse("<gray>{PLAYER} zostal nowym <green>zastepca <gray>gildii!");
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String deputyNoLongerMembers = "&7{PLAYER} juz nie jest &azastepca &7gildii!";
+    public Component deputyNoLongerMembers = this.miniMessage.parse("<gray>{PLAYER} juz nie jest <green>zastepca <gray>gildii!");
 
     @Comment("<------- Setbase Messages -------> #")
-    public String setbaseOutside = "&cNie mozna ustawic domu gildii poza jej terenem!";
-    public String setbaseDone = "&7Przeniesiono &adom &7gildii!";
+    public Component setbaseOutside = this.miniMessage.parse("<red>Nie mozna ustawic domu gildii poza jej terenem!");
+    public Component setbaseDone = this.miniMessage.parse("<gray>Przeniesiono <green>dom <gray>gildii!");
 
     @Comment("<------- PvP Messages -------> #")
-    public String pvpOn = "&cWlaczono pvp w gildii!";
-    public String pvpOff = "&aWylaczono pvp w gildii!";
+    public Component pvpOn = this.miniMessage.parse("<red>Wlaczono pvp w gildii!");
+    public Component pvpOff = this.miniMessage.parse("<green>Wylaczono pvp w gildii!");
     @Comment("Dostepne zmienne: {TAG}")
-    public String pvpAllyOn = "&cWlaczono pvp z sojuszem &7{TAG}!";
-    public String pvpAllyOff = "&cWylaczono pvp z sojuszem &7{TAG}!";
-    
+    public Component pvpAllyOn = this.miniMessage.parse("<red>Wlaczono pvp z sojuszem <gray>{TAG}!");
+    public Component pvpAllyOff = this.miniMessage.parse("<red>Wylaczono pvp z sojuszem <gray>{TAG}!");
+
     @Comment("<------- Admin Messages -------> #")
     @Comment("Dostepne zmienne: {ADMIN}")
-    public String adminGuildBroken = "&cTwoja gildia zostala rozwiazana przez &7{ADMIN}";
-    public String adminGuildOwner = "&cTen gracz jest zalozycielem gildii, nie mozna go wyrzucic!";
-    public String adminNoRegionFound = "&cGildia nie posiada terenu!";
+    public Component adminGuildBroken = this.miniMessage.parse("<red>Twoja gildia zostala rozwiazana przez <gray>{ADMIN}");
+    public Component adminGuildOwner = this.miniMessage.parse("<red>Ten gracz jest zalozycielem gildii, nie mozna go wyrzucic!");
+    public Component adminNoRegionFound = this.miniMessage.parse("<red>Gildia nie posiada terenu!");
 
-    public String adminNoPointsGiven = "&cPodaj liczbe punktow!";
+    public Component adminNoPointsGiven = this.miniMessage.parse("<red>Podaj liczbe punktow!");
     @Comment("Dostepne zmienne: {ERROR}")
-    public String adminErrorInNumber = "&cNieznana jest liczba: {ERROR}";
+    public Component adminErrorInNumber = this.miniMessage.parse("<red>Nieznana jest liczba: {ERROR}");
     @Comment("Dostepne zmienne: {PLAYER}, {POINTS}, {POINTS-FORMAT}")
-    public String adminPointsChanged = "&aUstawiono &7{POINTS} &apunktow dla gracza &7{PLAYER}";
+    public Component adminPointsChanged = this.miniMessage.parse("<green>Ustawiono <gray>{POINTS} <green>punktow dla gracza <gray>{PLAYER}");
 
-    public String adminNoKillsGiven = "&cPodaj liczbe zabojstw!";
+    public Component adminNoKillsGiven = this.miniMessage.parse("<red>Podaj liczbe zabojstw!");
     @Comment("Dostepne zmienne: {PLAYER}, {KILLS}")
-    public String adminKillsChanged = "&aUstawiono &7{KILLS} &azabojstw dla gracza &7{PLAYER}";
+    public Component adminKillsChanged = this.miniMessage.parse("<green>Ustawiono <gray>{KILLS} <green>zabojstw dla gracza <gray>{PLAYER}");
 
-    public String adminNoDeathsGiven = "&cPodaj liczbe zgonow!";
+    public Component adminNoDeathsGiven = this.miniMessage.parse("<red>Podaj liczbe zgonow!");
     @Comment("Dostepne zmienne: {PLAYER}, {DEATHS}")
-    public String adminDeathsChanged = "&aUstawiono &7{DEATHS} &azgonow dla gracza &7{PLAYER}";
+    public Component adminDeathsChanged = this.miniMessage.parse("<green>Ustawiono <gray>{DEATHS} <green>zgonow dla gracza <gray>{PLAYER}");
 
-    public String adminNoBanTimeGiven = "&cPodaj czas na jaki ma byc zbanowana gildia!";
-    public String adminNoReasonGiven = "&cPodaj powod!";
-    public String adminGuildBanned = "&cTa gildia jest juz zbanowana!";
-    public String adminTimeError = "&cPodano nieprawidlowy czas!";
+    public Component adminNoBanTimeGiven = this.miniMessage.parse("<red>Podaj czas na jaki ma byc zbanowana gildia!");
+    public Component adminNoReasonGiven = this.miniMessage.parse("<red>Podaj powod!");
+    public Component adminGuildBanned = this.miniMessage.parse("<red>Ta gildia jest juz zbanowana!");
+    public Component adminTimeError = this.miniMessage.parse("<red>Podano nieprawidlowy czas!");
     @Comment("Dostepne zmienne: {GUILD}, {TIME}")
-    public String adminGuildBan = "&aZbanowano gildie &a{GUILD} &7na okres &a{TIME}&7!";
+    public Component adminGuildBan = this.miniMessage.parse("<green>Zbanowano gildie <green>{GUILD} <gray>na okres <green>{TIME}<gray>!");
 
-    public String adminGuildNotBanned = "&cTa gildia nie jest zbanowana!";
+    public Component adminGuildNotBanned = this.miniMessage.parse("<red>Ta gildia nie jest zbanowana!");
     @Comment("Dostepne zmienne: {GUILD}")
-    public String adminGuildUnban = "&aOdbanowano gildie &7{GUILD}&a!";
+    public Component adminGuildUnban = this.miniMessage.parse("<green>Odbanowano gildie <gray>{GUILD}<green>!");
 
-    public String adminNoLivesGiven = "&cPodaj liczbe zyc!";
+    public Component adminNoLivesGiven = this.miniMessage.parse("<red>Podaj liczbe zyc!");
     @Comment("Dostepne zmienne: {GUILD}, {LIVES}")
-    public String adminLivesChanged = "&aUstawiono &7{LIVES} &azyc dla gildii &7{GUILD}&a!";
-    
+    public Component adminLivesChanged = this.miniMessage.parse("<green>Ustawiono <gray>{LIVES} <green>zyc dla gildii <gray>{GUILD}<green>!");
+
     @Comment("Dostepne zmienne: {GUILD}")
-    public String adminGuildRelocated = "&aPrzeniesiono teren gildii &7{GUILD}&a!";
+    public Component adminGuildRelocated = this.miniMessage.parse("<green>Przeniesiono teren gildii <gray>{GUILD}<green>!");
 
-    public String adminNoValidityTimeGiven = "&cPodaj czas o jaki ma byc przedluzona waznosc gildii!";
+    public Component adminNoValidityTimeGiven = this.miniMessage.parse("<red>Podaj czas o jaki ma byc przedluzona waznosc gildii!");
     @Comment("Dostepne zmienne: {GUILD}, {VALIDITY}")
-    public String adminNewValidity = "&aPrzedluzono waznosc gildii &a{GUILD} &7do &a{VALIDITY}&7!";
+    public Component adminNewValidity = this.miniMessage.parse("<green>Przedluzono waznosc gildii <green>{GUILD} <gray>do <green>{VALIDITY}<gray>!");
 
-    public String adminNoNewNameGiven = "&cPodaj nowa nazwe!";
+    public Component adminNoNewNameGiven = this.miniMessage.parse("<red>Podaj nowa nazwe!");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String adminNameChanged = "&aZmieniono nazwe gildii na &7{GUILD}&a!";
-    public String adminTagChanged = "&aZmieniono tag gildii na &7{TAG}&a!";
+    public Component adminNameChanged = this.miniMessage.parse("<green>Zmieniono nazwe gildii na <gray>{GUILD}<green>!");
+    public Component adminTagChanged = this.miniMessage.parse("<green>Zmieniono tag gildii na <gray>{TAG}<green>!");
 
-    public String adminStopSpy = "&cJuz nie szpiegujesz graczy!";
-    public String adminStartSpy = "&aOd teraz szpiegujesz graczy!";
+    public Component adminStopSpy = this.miniMessage.parse("<red>Juz nie szpiegujesz graczy!");
+    public Component adminStartSpy = this.miniMessage.parse("<green>Od teraz szpiegujesz graczy!");
 
-    public String adminGuildsEnabled = "&aZakladanie gildii jest wlaczone!";
-    public String adminGuildsDisabled = "&cZakladanie gildii jest wylaczone!";
+    public Component adminGuildsEnabled = this.miniMessage.parse("<green>Zakladanie gildii jest wlaczone!");
+    public Component adminGuildsDisabled = this.miniMessage.parse("<red>Zakladanie gildii jest wylaczone!");
 
-    public String adminUserNotMemberOf = "&cTen gracz nie jest czlonkiem tej gildii!";
-    public String adminAlreadyLeader = "&cTen gracz jest juz liderem gildii!";
+    public Component adminUserNotMemberOf = this.miniMessage.parse("<red>Ten gracz nie jest czlonkiem tej gildii!");
+    public Component adminAlreadyLeader = this.miniMessage.parse("<red>Ten gracz jest juz liderem gildii!");
 
-    public String adminNoProtectionDateGive = "&cPodaj date ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)";
-    public String adminInvalidProtectionDate = "&cTo nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss";
-    public String adminProtectionSetSuccessfully = "&aPomyslnie ustawiono ochrone dla gildii &7{TAG} &ado &7{DATE}";
+    public Component adminNoProtectionDateGive = this.miniMessage.parse("<red>Podaj date ochrony dla gildii! (W formacie: yyyy/mm/dd hh:mm:ss)");
+    public Component adminInvalidProtectionDate = this.miniMessage.parse("<red>To nie jest poprawna data! Poprawny format to: yyyy/mm/dd hh:mm:ss");
+    public Component adminProtectionSetSuccessfully = this.miniMessage.parse("<green>Pomyslnie ustawiono ochrone dla gildii <gray>{TAG} <green>do <gray>{DATE}");
 
-    public String adminGuildHasNoHome = "&cGildia gracza nie ma ustawionej bazy!";
+    public Component adminGuildHasNoHome = this.miniMessage.parse("<red>Gildia gracza nie ma ustawionej bazy!");
     @Comment("Dostepne zmienne: {ADMIN}")
-    public String adminTeleportedToBase = "&aAdmin &7{ADMIN} &ateleportowal cie do bazy gildii!";
+    public Component adminTeleportedToBase = this.miniMessage.parse("<green>Admin <gray>{ADMIN} <green>teleportowal cie do bazy gildii!");
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String adminTargetTeleportedToBase = "&aGracz &7{PLAYER} &azostal teleportowany do bazy gildii!";
+    public Component adminTargetTeleportedToBase = this.miniMessage.parse("<green>Gracz <gray>{PLAYER} <green>zostal teleportowany do bazy gildii!");
 
     @Comment("<------- SecuritySystem Messages -------> #")
     @Comment("Przedrostek przed wiadomościami systemu bezpieczeństwa")
-    public String securitySystemPrefix = "&8[&4Security&8] &7";
+    public Component securitySystemPrefix = this.miniMessage.parse("<dark_gray>[<dark_red>Security<dark_gray>] <gray>");
     @Comment("Dostepne zmienne: {PLAYER}, {CHEAT}")
-    public String securitySystemInfo = "&7Gracz &c{PLAYER}&7 może używać &c{CHEAT}&7 lub innego cheata o podobnym dzialaniu!";
+    public Component securitySystemInfo = this.miniMessage.parse("<gray>Gracz <red>{PLAYER}<gray> może używać <red>{CHEAT}<gray> lub innego cheata o podobnym dzialaniu!");
     @Comment("Dostepne zmienne: {NOTE}")
-    public String securitySystemNote = "Notatka: &7{NOTE}";
+    public Component securitySystemNote = this.miniMessage.parse("Notatka: <gray>{NOTE}");
     @Comment("Dostepne zmienne: {DISTANCE}")
-    public String securitySystemReach = "&7Zaatakowal krysztal z odleglosci &c{DISTANCE} &7kratek!";
+    public Component securitySystemReach = this.miniMessage.parse("<gray>Zaatakowal krysztal z odleglosci <red>{DISTANCE} <gray>kratek!");
     @Comment("Dostepne zmienne: {BLOCKS}")
-    public String securitySystemFreeCam = "Zaatakowal krysztal przez bloki: &c{BLOCKS}";
+    public Component securitySystemFreeCam = this.miniMessage.parse("Zaatakowal krysztal przez bloki: <red>{BLOCKS}");
 
     @Comment("<------- System Messages -------> #")
-    public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!";
-
-    @Override
-    public OkaeriConfig load() throws OkaeriException {
-        super.load();
-        try {
-            for (Field field : this.getClass().getDeclaredFields()) {
-                if (field.getType().equals(String.class)) {
-                    field.set(this, ChatUtils.colored((String) field.get(this)));
-                }
-
-                if (field.getType().equals(List.class)) {
-                    List<String> list = (List<String>) field.get(this);
-
-                    for (int i = 0; i < list.size(); i++) {
-                        list.set(i, ChatUtils.colored(list.get(i)));
-                    }
-                }
-            }
-        }
-        catch (Exception ex) {
-            FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
-        }
-        return this;
-    }
+    public Component reloadWarn = this.miniMessage.parse("<red>Działanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!");
 
     @Exclude
     public static final Pattern LEGACY_COLOR_CODE_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
 
-    public static boolean containsLegacyColors(String coloredString) {
-        return LEGACY_COLOR_CODE_PATTERN.matcher(coloredString).find();
+    public static boolean containsLegacyColors(String string) {
+        return LEGACY_COLOR_CODE_PATTERN.matcher(string).find();
     }
 }
