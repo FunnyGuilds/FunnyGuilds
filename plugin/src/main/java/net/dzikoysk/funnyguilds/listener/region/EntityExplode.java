@@ -89,7 +89,6 @@ public class EntityExplode implements Listener {
             Location guildHeartLocation = region.getHeart();
             explodedBlocks.removeIf(block -> block.getLocation().equals(guildHeartLocation));
             blocksInSphere.removeIf(block -> block.getLocation().equals(guildHeartLocation));
-            guild.setBuild(System.currentTimeMillis() + config.regionExplode * 1000L);
 
             for (User user : guild.getMembers()) {
                 Player player = user.getPlayer();

@@ -4,12 +4,14 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Region;
 import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
+import java.time.Instant;
 import java.time.LocalTime;
 import java.util.Iterator;
 
@@ -58,6 +60,17 @@ public class TntProtection implements Listener {
                     affectedBlocks.remove();
                 }
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        Location explosionLocation = event.getLocation();
+        Region region = RegionUtils.getAt(explosionLocation);
+
+        if (region != null) {
+            region.getGuild().setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli());
         }
     }
 
