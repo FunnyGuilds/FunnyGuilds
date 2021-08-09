@@ -46,6 +46,9 @@ dependencies {
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
 
     testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
+    testImplementation 'org.mockito:mockito-core:3.11.2'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.11.2'
+    testImplementation 'org.mockito:mockito-inline:3.11.2'
     testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'

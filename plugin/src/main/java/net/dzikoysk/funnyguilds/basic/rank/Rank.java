@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.basic.rank;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.Basic;
 import net.dzikoysk.funnyguilds.basic.BasicType;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
@@ -20,7 +19,7 @@ public class Rank implements Comparable<Rank> {
     private int assist;
     private int logouts;
 
-    public Rank(Basic basic) {
+    public Rank(Basic basic, int rankStart) {
         this.basic = basic;
         this.type = basic.getType();
         this.identityName = basic.getName();
@@ -30,7 +29,7 @@ public class Rank implements Comparable<Rank> {
         }
         else if (this.type == BasicType.USER) {
             this.user = (User) basic;
-            this.points = FunnyGuilds.getInstance().getPluginConfiguration().rankStart;
+            this.points = rankStart;
         }
     }
 

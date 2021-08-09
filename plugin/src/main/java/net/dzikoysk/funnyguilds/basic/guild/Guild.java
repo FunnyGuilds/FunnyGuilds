@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.basic.user.User;
 import net.dzikoysk.funnyguilds.basic.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
@@ -398,7 +397,7 @@ public class Guild extends AbstractBasic {
             return this.rank;
         }
 
-        this.rank = new Rank(this);
+        this.rank = new Rank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
         RankManager.getInstance().update(this);
         return this.rank;
     }

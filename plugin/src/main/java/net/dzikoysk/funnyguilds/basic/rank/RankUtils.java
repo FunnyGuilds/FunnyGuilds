@@ -3,31 +3,46 @@ package net.dzikoysk.funnyguilds.basic.rank;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.util.IntegerRange;
 import org.apache.commons.lang3.StringUtils;
 
 public class RankUtils {
 
-    public static String parseRank(User source, String rankTop) {
+    public static String parseRank(User targetUser, String rankTop) {
+        return parseRank(
+                FunnyGuilds.getInstance().getPluginConfiguration(),
+                FunnyGuilds.getInstance().getMessageConfiguration(),
+                RankManager.getInstance(),
+                targetUser,
+                rankTop
+        );
+    }
+
+    public static String parseRank(
+        PluginConfiguration config,
+        MessageConfiguration messages,
+        RankManager rankManager,
+        User targetUser,
+        String rankTop
+    ) {
         if (! rankTop.contains("TOP-")) {
             return null;
         }
 
-        int i = getIndex(rankTop);
+        int index = getIndex(rankTop);
 
-        if (i <= 0) {
+        if (index <= 0) {
             FunnyGuilds.getPluginLogger().error("Index in TOP- must be greater or equal to 1!");
             return null;
         }
 
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
         if (rankTop.contains("GTOP")) {
-            Guild guild = RankManager.getInstance().getGuild(i);
+            Guild guild = rankManager.getGuild(index);
 
             if (guild == null) {
-                return StringUtils.replace(rankTop, "{GTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().gtopNoValue);
+                return StringUtils.replace(rankTop, "{GTOP-" + index + '}', messages.gtopNoValue);
             }
 
             int points = guild.getRank().getPoints();
@@ -43,8 +58,8 @@ public class RankUtils {
             if (config.playerListUseRelationshipColors) {
                 guildTag = StringUtils.replace(config.prefixOther, "{TAG}", guild.getTag());
 
-                if (source != null && source.hasGuild()) {
-                    Guild sourceGuild = source.getGuild();
+                if (targetUser != null && targetUser.hasGuild()) {
+                    Guild sourceGuild = targetUser.getGuild();
 
                     if (sourceGuild.getAllies().contains(guild)) {
                         guildTag = StringUtils.replace(config.prefixAllies, "{TAG}", guild.getTag());
@@ -58,14 +73,14 @@ public class RankUtils {
                 }
             }
 
-            return StringUtils.replace(rankTop, "{GTOP-" + i + '}', guildTag + pointsFormat);
+            return StringUtils.replace(rankTop, "{GTOP-" + index + '}', guildTag + pointsFormat);
 
         }
         else if (rankTop.contains("PTOP")) {
-            User user = RankManager.getInstance().getUser(i);
+            User user = rankManager.getUser(index);
 
             if (user == null) {
-                return StringUtils.replace(rankTop, "{PTOP-" + i + '}', FunnyGuilds.getInstance().getMessageConfiguration().ptopNoValue);
+                return StringUtils.replace(rankTop, "{PTOP-" + index + '}', messages.ptopNoValue);
             }
 
             int points = user.getRank().getPoints();
@@ -76,7 +91,7 @@ public class RankUtils {
                 pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
             }
 
-            return StringUtils.replace(rankTop, "{PTOP-" + i + '}', (user.isOnline() ? config.ptopOnline : config.ptopOffline) + user.getName() + pointsFormat);
+            return StringUtils.replace(rankTop, "{PTOP-" + index + '}', (user.isOnline() ? config.ptopOnline : config.ptopOffline) + user.getName() + pointsFormat);
         }
 
         return null;

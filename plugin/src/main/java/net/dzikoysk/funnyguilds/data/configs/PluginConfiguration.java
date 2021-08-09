@@ -1262,8 +1262,12 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Override
     public OkaeriConfig load() throws OkaeriException {
-
         super.load();
+        loadProcessedProperties();
+        return this;
+    }
+
+    public void loadProcessedProperties() {
         this.dateFormat = new SimpleDateFormat(FunnyGuilds.getInstance().getMessageConfiguration().dateFormat);
 
         this.createItems = loadItemStackList(this.items_);
@@ -1429,8 +1433,6 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
-
-        return this;
     }
 
     @Names(strategy = NameStrategy.IDENTITY)

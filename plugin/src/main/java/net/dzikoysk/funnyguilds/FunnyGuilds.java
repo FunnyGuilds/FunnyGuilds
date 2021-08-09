@@ -1,11 +1,6 @@
 package net.dzikoysk.funnyguilds;
 
-import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.exception.OkaeriException;
-import eu.okaeri.configs.serdes.SimpleObjectTransformer;
-import eu.okaeri.configs.serdes.commons.SerdesCommons;
-import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
-import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.basic.guild.Guild;
 import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
@@ -19,6 +14,7 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
+import net.dzikoysk.funnyguilds.data.configs.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
 import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.Database;
@@ -77,7 +73,6 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import panda.utilities.ClassUtils;
-
 import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
@@ -134,19 +129,9 @@ public class FunnyGuilds extends JavaPlugin {
         this.nmsAccessor = this.prepareNmsAccessor();
 
         try {
-            this.messageConfiguration = ConfigManager.create(MessageConfiguration.class, (it) -> {
-                it.withConfigurer(new YamlBukkitConfigurer());
-                it.withSerdesPack(registry -> registry.register(SimpleObjectTransformer.of(String.class, String.class, MessageConfiguration::decolor)));
-                it.withBindFile(this.messageConfigurationFile);
-                it.saveDefaults();
-                it.load(true);
-            });
-            this.pluginConfiguration = ConfigManager.create(PluginConfiguration.class, (it) -> {
-                it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
-                it.withBindFile(this.pluginConfigurationFile);
-                it.saveDefaults();
-                it.load(true);
-            });
+            ConfigurationFactory configurationFactory = new ConfigurationFactory();
+            this.messageConfiguration = configurationFactory.createMessageConfiguration(messageConfigurationFile);
+            this.pluginConfiguration = configurationFactory.createPluginConfiguration(pluginConfigurationFile);
         }
         catch (Exception exception) {
             logger.error("Could not load plugin configuration", exception);

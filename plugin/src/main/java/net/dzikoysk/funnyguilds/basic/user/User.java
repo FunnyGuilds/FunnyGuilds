@@ -35,7 +35,7 @@ public class User extends AbstractBasic {
         this.uuid = uuid;
         this.name = name;
         this.cache = new UserCache(this);
-        this.rank = new Rank(this);
+        this.rank = new Rank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
         this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
         this.bossBarProvider = BossBarProvider.getBossBar(this);
         this.markChanged();
