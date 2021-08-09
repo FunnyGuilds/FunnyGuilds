@@ -44,6 +44,7 @@ subprojects {
     }
 
     apply plugin: 'java'
+    apply plugin: 'groovy'
     apply plugin: 'com.github.johnrengelman.shadow'
 
     sourceCompatibility = JavaVersion.VERSION_1_8

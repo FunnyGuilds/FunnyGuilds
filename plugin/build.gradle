@@ -44,6 +44,11 @@ dependencies {
 
     shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.5"
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
+
+    testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
+    testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 }
 
 processResources {
@@ -81,4 +86,8 @@ shadowJar {
 jar {
     enabled = false
     dependsOn 'shadowJar'
+}
+
+test {
+    useJUnitPlatform()
 }
