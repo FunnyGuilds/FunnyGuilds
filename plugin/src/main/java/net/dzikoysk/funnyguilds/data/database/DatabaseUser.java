@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;

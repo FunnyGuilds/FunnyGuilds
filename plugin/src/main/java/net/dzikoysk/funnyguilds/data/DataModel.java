@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 

@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 
 import java.io.File;
 

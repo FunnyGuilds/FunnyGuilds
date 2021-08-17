@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
-import net.dzikoysk.funnyguilds.util.nms.Reflections;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;

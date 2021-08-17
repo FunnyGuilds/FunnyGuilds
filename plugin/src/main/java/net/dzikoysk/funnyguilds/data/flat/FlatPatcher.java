@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.util.commons.IOUtils;
+import net.dzikoysk.funnyguilds.shared.IOUtils;
 
 import java.io.File;
 

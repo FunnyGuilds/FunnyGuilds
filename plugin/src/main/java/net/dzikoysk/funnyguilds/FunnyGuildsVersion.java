@@ -4,7 +4,7 @@ import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.dzikoysk.funnyguilds.util.commons.IOUtils;
+import net.dzikoysk.funnyguilds.shared.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

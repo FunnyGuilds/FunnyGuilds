@@ -2,13 +2,13 @@ package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.command.user.InfoCommand;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
-import net.dzikoysk.funnyguilds.system.security.SecuritySystem;
-import net.dzikoysk.funnyguilds.util.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
+import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import org.bukkit.entity.Player;
 
 import java.util.Map;

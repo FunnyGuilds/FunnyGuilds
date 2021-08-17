@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.basic.guild.*;
+import net.dzikoysk.funnyguilds.guild.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 

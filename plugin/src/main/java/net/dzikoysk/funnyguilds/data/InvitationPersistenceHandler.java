@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
-import net.dzikoysk.funnyguilds.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 

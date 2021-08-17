@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.prefix;
 
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.element.IndividualPrefix;
+import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 
 public class PrefixUpdateGuildRequest extends DefaultConcurrencyRequest {
 

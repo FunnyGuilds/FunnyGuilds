@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.dummy;
 
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 
 public class DummyUpdateUserRequest extends DefaultConcurrencyRequest {

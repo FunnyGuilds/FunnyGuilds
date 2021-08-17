@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import com.zaxxer.hikari.HikariDataSource;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 
 import java.sql.Connection;
 import java.sql.SQLException;

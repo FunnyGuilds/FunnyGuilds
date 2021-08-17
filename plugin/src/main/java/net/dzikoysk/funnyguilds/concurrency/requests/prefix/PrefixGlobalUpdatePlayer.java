@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.prefix;
 
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.element.IndividualPrefixManager;
+import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import org.bukkit.entity.Player;
 
 public class PrefixGlobalUpdatePlayer extends DefaultConcurrencyRequest {

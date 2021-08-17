@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 
 public class DatabaseFixAlliesRequest extends DefaultConcurrencyRequest {

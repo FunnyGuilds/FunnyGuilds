@@ -2,11 +2,11 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.command.user.PlayerInfoCommand;
-import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.util.Cooldown;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.shared.Cooldown;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

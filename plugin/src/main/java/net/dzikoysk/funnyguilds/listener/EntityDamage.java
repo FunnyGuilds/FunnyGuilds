@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.hook.PluginHook;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.EntityUtils;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;

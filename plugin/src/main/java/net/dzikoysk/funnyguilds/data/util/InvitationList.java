@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.data.util;
 
 import com.google.common.collect.ImmutableList;
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.bukkit.entity.Player;
 

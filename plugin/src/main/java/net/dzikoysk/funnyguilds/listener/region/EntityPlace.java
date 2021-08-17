@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.system.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import org.bukkit.entity.EnderCrystal;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;

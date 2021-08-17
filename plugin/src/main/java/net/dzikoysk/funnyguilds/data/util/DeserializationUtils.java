@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.data.util;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.user.UserBan;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserBan;
 import org.bukkit.Location;
 
 import java.util.Set;

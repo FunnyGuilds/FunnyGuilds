@@ -1,18 +1,18 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.BasicType;
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.user.UserUtils;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
+import net.dzikoysk.funnyguilds.Entity.EntityType;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.YamlWrapper;
-import net.dzikoysk.funnyguilds.util.commons.ChatUtils;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
 
 import java.io.File;
@@ -166,7 +166,7 @@ public class FlatGuild {
             return false;
         }
 
-        File file = flatDataModel.loadCustomFile(BasicType.GUILD, guild.getName());
+        File file = flatDataModel.loadCustomFile(EntityType.GUILD, guild.getName());
         YamlWrapper wrapper = new YamlWrapper(file);
 
         wrapper.set("uuid", guild.getUUID().toString());

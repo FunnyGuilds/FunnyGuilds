@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.BasicType;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
+import net.dzikoysk.funnyguilds.Entity.EntityType;
+import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.util.YamlWrapper;
-import net.dzikoysk.funnyguilds.util.commons.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
 
 import java.io.File;
@@ -51,7 +51,7 @@ public class FlatRegion {
     }
 
     public boolean serialize(FlatDataModel flatDataModel) {
-        File file = flatDataModel.loadCustomFile(BasicType.REGION, region.getName());
+        File file = flatDataModel.loadCustomFile(EntityType.REGION, region.getName());
         YamlWrapper wrapper = new YamlWrapper(file);
 
         wrapper.set("name", region.getName());

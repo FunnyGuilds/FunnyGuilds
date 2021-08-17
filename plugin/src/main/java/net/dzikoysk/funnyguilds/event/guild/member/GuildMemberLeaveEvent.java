@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.event.guild.member;
 
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 
 public class GuildMemberLeaveEvent extends GuildMemberEvent {

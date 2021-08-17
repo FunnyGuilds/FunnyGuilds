@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds
 
-import net.dzikoysk.funnyguilds.data.configs.MessageConfiguration
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration
-import net.dzikoysk.funnyguilds.element.notification.bossbar.provider.BossBarProvider
+import net.dzikoysk.funnyguilds.config.MessageConfiguration
+import net.dzikoysk.funnyguilds.config.PluginConfiguration
+import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock

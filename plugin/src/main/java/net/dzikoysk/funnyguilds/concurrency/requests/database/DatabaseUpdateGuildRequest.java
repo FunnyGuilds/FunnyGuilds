@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;

@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.data.configs.PluginConfiguration;
-import net.dzikoysk.funnyguilds.element.tablist.IndividualPlayerList;
-import net.dzikoysk.funnyguilds.element.tablist.variable.DefaultTablistVariables;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
+import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.rank;
 
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.rank.RankManager;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 
 public class RankUpdateGuildRequest extends DefaultConcurrencyRequest {

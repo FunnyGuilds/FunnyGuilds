@@ -1,19 +1,19 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.basic.BasicType;
-import net.dzikoysk.funnyguilds.basic.guild.Guild;
-import net.dzikoysk.funnyguilds.basic.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.basic.guild.Region;
-import net.dzikoysk.funnyguilds.basic.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.basic.user.User;
-import net.dzikoysk.funnyguilds.basic.user.UserUtils;
+import net.dzikoysk.funnyguilds.Entity.EntityType;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseFixAlliesRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.util.YamlWrapper;
-import net.dzikoysk.funnyguilds.util.commons.IOUtils;
+import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.shared.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -49,7 +49,7 @@ public class FlatDataModel implements DataModel {
         return this.usersFolderFile;
     }
 
-    File loadCustomFile(BasicType type, String name) {
+    File loadCustomFile(EntityType type, String name) {
         switch (type) {
             case GUILD: {
                 File file = new File(this.guildsFolderFile, name + ".yml");

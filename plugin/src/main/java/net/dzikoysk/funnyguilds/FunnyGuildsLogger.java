@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import net.dzikoysk.funnyguilds.util.commons.bukkit.MinecraftServerUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import org.bukkit.Bukkit;
 
 public final class FunnyGuildsLogger {

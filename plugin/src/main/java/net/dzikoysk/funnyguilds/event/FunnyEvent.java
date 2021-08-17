@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.event;
 
-import net.dzikoysk.funnyguilds.basic.user.User;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 
