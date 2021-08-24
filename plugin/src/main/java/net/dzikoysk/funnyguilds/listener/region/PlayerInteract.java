@@ -29,7 +29,8 @@ public class PlayerInteract implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Action eventAction = event.getAction();
         Player player = event.getPlayer();
         Block clicked = event.getClickedBlock();
@@ -70,7 +71,7 @@ public class PlayerInteract implements Listener {
 
             if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 try {
-                    infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[] { guild.getTag() });
+                    infoExecutor.execute(plugin, config, plugin.getMessageConfiguration(), player, new String[] { guild.getTag() });
                 } catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(player::sendMessage);
                 }

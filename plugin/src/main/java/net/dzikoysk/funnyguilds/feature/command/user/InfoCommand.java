@@ -3,10 +3,12 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.rank.Rank;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -19,8 +21,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.Option;
-import panda.utilities.ObjectUtils;
-
 import java.util.Date;
 import java.util.Locale;
 
@@ -35,10 +35,11 @@ public final class InfoCommand {
         completer = "guilds:3",
         acceptsExceeded = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds plugin, PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
+        UserManager userManager = plugin.getUserManager();
         String tag = Option.when(args.length > 0, () -> args[0])
-                .orElse(() -> Option.when(sender instanceof Player, () -> ObjectUtils.cast(Player.class, sender))
-                        .map(User::get)
+                .orElse(() -> Option.when(sender instanceof Player, () -> userManager.getUser(sender.getName()))
+                        .flatMap(userOption -> userOption)
                         .filter(User::hasGuild)
                         .map(User::getGuild)
                         .map(Guild::getTag))
