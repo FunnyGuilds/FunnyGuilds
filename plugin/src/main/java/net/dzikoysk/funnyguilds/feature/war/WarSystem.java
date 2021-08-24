@@ -9,8 +9,10 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -33,8 +35,16 @@ public class WarSystem {
     }
 
     public void attack(Player player, Guild guild) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        User user = User.get(player);
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        UserManager userManager = plugin.getUserManager();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        Option<User> userOp = userManager.getUser(player);
+
+        if (userOp.isEmpty()) {
+            return;
+        }
+
+        User user = userOp.get();
 
         if (!user.hasGuild()) {
             WarUtils.message(player, 0);

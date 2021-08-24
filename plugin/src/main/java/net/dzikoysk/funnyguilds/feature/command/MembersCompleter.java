@@ -5,9 +5,7 @@ import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import panda.std.Option;
+import net.dzikoysk.funnyguilds.user.UserManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +16,7 @@ final class MembersCompleter implements Completer {
 
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
-        return Option.when(context.getCommandSender() instanceof Player, User.get((OfflinePlayer) context.getCommandSender()))
+        return UserManager.getInstance().getUser(context.getCommandSender().getName())
                 .filter(User::hasGuild)
                 .map(User::getGuild)
                 .map(guild -> CommandUtils.collectCompletions(guild.getMembers(), prefix, limit, ArrayList::new, User::getName))

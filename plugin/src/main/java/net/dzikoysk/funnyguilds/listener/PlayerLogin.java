@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,19 +31,16 @@ public class PlayerLogin implements Listener {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
 
-        User user = User.get(event.getPlayer());
+        UserManager.getInstance().getUser(event.getPlayer())
+            .peek(user -> {
+                BanUtils.checkIfBanShouldExpire(user);
 
-        if (user == null) {
-            return;
-        }
+                if (!user.isBanned()) {
+                    return;
+                }
 
-        BanUtils.checkIfBanShouldExpire(user);
-
-        if (!user.isBanned()) {
-            return;
-        }
-        
-        event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user));
+                event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user));
+            });
     }
 
 }

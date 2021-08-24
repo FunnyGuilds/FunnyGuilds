@@ -7,8 +7,11 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.Dummy;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -209,6 +212,23 @@ public class UserCache {
     @Nullable
     public synchronized Scoreboard getScoreboard() {
         return this.scoreboard;
+    }
+
+    public void updateScoreboardIfNull(Player player) {
+        if (this.scoreboard != null) {
+            return;
+        }
+
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        if (config.useSharedScoreboard) {
+            this.setScoreboard(player.getScoreboard());
+            return;
+        }
+
+        ScoreboardManager sbManager = Bukkit.getScoreboardManager();
+        if (sbManager != null) {
+            this.setScoreboard(sbManager.getNewScoreboard());
+        }
     }
 
     @Nullable

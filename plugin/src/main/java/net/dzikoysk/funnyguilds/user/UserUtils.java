@@ -131,17 +131,13 @@ public class UserUtils {
     }
 
     public static Set<User> getUsersFromString(Collection<String> names) {
+        UserManager userManager = UserManager.getInstance();
         Set<User> users = new HashSet<>();
 
         for (String name : names) {
-            User user = User.get(name);
-
-            if (user == null) {
-                FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name);
-                continue;
-            }
-
-            users.add(user);
+            userManager.getUser(name)
+                    .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
+                    .peek(users::add);
         }
         return users;
     }

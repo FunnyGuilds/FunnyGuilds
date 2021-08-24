@@ -5,6 +5,7 @@ import net.dzikoysk.funnycommands.resources.Bind;
 import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.Resources;
@@ -24,7 +25,7 @@ final class UserBind implements Bind {
             throw new IllegalStateException("Cannot use user bind in non-player command");
         }
 
-        return User.get((OfflinePlayer) commandSender);
+        return UserUtils.get(((OfflinePlayer) commandSender).getUniqueId());
     }
 
 }

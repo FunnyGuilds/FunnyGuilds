@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -85,7 +86,7 @@ public class PlayerInteract implements Listener {
                 return;
             }
 
-            User user = User.get(player);
+            User user = UserUtils.get(player.getUniqueId());
             boolean blocked = config.blockedInteract.contains(clicked.getType());
 
             if (guild.getMembers().contains(user)) {

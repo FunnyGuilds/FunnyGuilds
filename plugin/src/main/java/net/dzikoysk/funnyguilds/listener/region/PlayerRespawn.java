@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,7 +22,7 @@ public class PlayerRespawn implements Listener {
     public void onRespawn(final PlayerRespawnEvent event) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         Player player = event.getPlayer();
-        User user = User.get(player);
+        User user = UserUtils.get(player.getUniqueId());
 
         if (! user.hasGuild()) {
             return;

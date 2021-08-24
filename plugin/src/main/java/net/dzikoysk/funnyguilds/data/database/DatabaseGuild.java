@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
@@ -13,6 +14,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import panda.std.Option;
 
 import java.sql.ResultSet;
 import java.time.Instant;
@@ -55,9 +57,16 @@ public class DatabaseGuild {
             if (id != null && !id.isEmpty()) {
                 uuid = UUID.fromString(id);
             }
-            
-            final User owner = User.get(os);
-            
+
+            Option<User> ownerOption = UserManager.getInstance().getUser(os);
+
+            if (ownerOption.isEmpty()) {
+                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) isn't exist");
+                return null;
+            }
+
+            User owner = ownerOption.get();
+
             Set<User> deputies = new HashSet<>();
             if (dp != null && !dp.isEmpty()) {
                 deputies = UserUtils.getUsersFromString(ChatUtils.fromString(dp));

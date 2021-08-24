@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -14,14 +15,28 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import panda.std.Option;
 
 public class EntityDamage implements Listener {
 
+    private final FunnyGuilds funnyGuilds;
+
+    public EntityDamage(FunnyGuilds funnyGuilds) {
+        this.funnyGuilds = funnyGuilds;
+    }
+
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
+        UserManager userManager = funnyGuilds.getUserManager();
         EntityUtils.getAttacker(event.getDamager()).peek(attacker -> {
+            Option<User> attackerUserOp = userManager.getUser(attacker);
+
+            if (attackerUserOp.isEmpty()) {
+                return;
+            }
+
+            User attackerUser = attackerUserOp.get();
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-            User attackerUser = User.get(attacker);
             Entity victim = event.getEntity();
 
             if (config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
@@ -37,7 +52,13 @@ public class EntityDamage implements Listener {
                 return;
             }
 
-            User victimUser = User.get((Player) event.getEntity());
+            Option<User> victimOp = userManager.getUser(victim.getUniqueId());
+
+            if (victimOp.isEmpty()) {
+                return;
+            }
+
+            User victimUser = victimOp.get();
 
             if (victimUser.hasGuild() && attackerUser.hasGuild()) {
                 if (victimUser.getUUID().equals(attackerUser.getUUID())) {

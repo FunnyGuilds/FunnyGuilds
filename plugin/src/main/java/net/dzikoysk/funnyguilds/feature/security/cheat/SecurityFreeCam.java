@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.feature.security.cheat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -47,7 +47,7 @@ public class SecurityFreeCam {
         String message = messages.securitySystemFreeCam;
         message = StringUtils.replace(message, "{BLOCKS}", Joiner.on(", ").join(blocks, b -> MaterialUtils.getMaterialName(b.getType())).toString());
 
-        SecurityUtils.addViolationLevel(User.get(player));
+        SecurityUtils.addViolationLevel(UserUtils.get(player.getUniqueId()));
         SecurityUtils.sendToOperator(player, "FreeCam", message);
     }
 

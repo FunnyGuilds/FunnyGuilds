@@ -6,8 +6,10 @@ import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 import panda.utilities.StringUtils;
 
 import java.util.Map.Entry;
@@ -16,7 +18,8 @@ public final class MVdWPlaceholderAPIHook {
     
     public static void initPlaceholderHook() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
-        
+        UserManager userManager = plugin.getUserManager();
+
         for (Entry<String,TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + variable.getKey(), event -> {
                 OfflinePlayer target = event.getOfflinePlayer();
@@ -25,9 +28,13 @@ public final class MVdWPlaceholderAPIHook {
                     return StringUtils.EMPTY;
                 }
 
-                User user = User.get(target.getUniqueId());
+                Option<User> userOption = userManager.getUser(target.getUniqueId());
 
-                return variable.getValue().get(user);
+                if (userOption.isEmpty()) {
+                    return "none";
+                }
+
+                return variable.getValue().get(userOption.get());
             });
         }
         
@@ -35,7 +42,7 @@ public final class MVdWPlaceholderAPIHook {
         for (int i = 1; i <= 100; i++) {
             final int index = i;
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + index, event -> {
-                User user = User.get(event.getPlayer());
+                User user = userManager.getUser(event.getPlayer()).getOrNull();
                 return RankUtils.parseRank(user, "{GTOP-" + index + "}");
             });
         }

@@ -23,6 +23,7 @@ import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,7 +46,7 @@ public class PlayerDeath implements Listener {
         Player playerVictim = event.getEntity();
         Player playerAttacker = event.getEntity().getKiller();
 
-        User victim = User.get(playerVictim);
+        User victim = UserUtils.get(playerVictim.getUniqueId());
         UserCache victimCache = victim.getCache();
 
         victim.getRank().addDeath();
@@ -73,7 +74,7 @@ public class PlayerDeath implements Listener {
             playerAttacker = lastAttacker.getPlayer();
         }
 
-        User attacker = User.get(playerAttacker);
+        User attacker = UserUtils.get(playerAttacker.getUniqueId());
         UserCache attackerCache = attacker.getCache();
 
         if (victim.equals(attacker)) {
