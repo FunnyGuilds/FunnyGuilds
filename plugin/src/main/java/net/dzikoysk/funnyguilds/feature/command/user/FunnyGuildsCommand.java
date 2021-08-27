@@ -88,7 +88,7 @@ public final class FunnyGuildsCommand {
         Optional<FunnybinRequest> request = FunnybinRequest.of(sender, args);
 
         if (request.isPresent()) {
-            FunnyGuilds.getInstance().getConcurrencyManager().postRequests(request.get());;
+            FunnyGuilds.getInstance().getConcurrencyManager().postRequests(request.get());
             return;
         }
 
