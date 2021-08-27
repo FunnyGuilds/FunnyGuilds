@@ -67,65 +67,6 @@ public class UserUtils {
         return UserManager.getInstance().getUser(uuid).getOrNull();
     }
 
-    /**
-     * Add the user to UserManager.
-     *
-     * @param user User to be appended to UserManager.
-     * @deprecated for removal in the future, in favour of {@link UserManager#addUser(User)}
-     */
-    @Deprecated
-    public static void addUser(User user) {
-        UserManager.getInstance().addUser(user);
-    }
-
-    /**
-     * Remove the user from UserManager.
-     *
-     * @param user User to be removed from UserManager, if present
-     * @deprecated for removal in the future, in favour of {@link UserManager#removeUser(User)}
-     */
-    @Deprecated
-    public static void removeUser(User user) {
-        UserManager.getInstance().removeUser(user);
-    }
-
-    /**
-     * Updates the user's name.
-     *
-     * @param user the user
-     * @param newUsername the new name to be assigned to user
-     * @deprecated for removal in the future, in favour of {@link UserManager#updateUsername(User, String)}
-     */
-    @Deprecated
-    public static void updateUsername(User user, String newUsername) {
-        UserManager.getInstance().updateUsername(user, newUsername);
-    }
-
-    /**
-     * Checks if the player has ever been on the server.
-     *
-     * @param nickname name of player
-     * @return true if the player has played before
-     * @deprecated for removal in the future, in favour of {@link UserManager#playedBefore(String)}
-     */
-    @Deprecated
-    public static boolean playedBefore(String nickname) {
-        return playedBefore(nickname, false);
-    }
-
-    /**
-     * Checks if the player has ever been on the server.
-     *
-     * @param nickname name of player
-     * @param ignoreCase ignore the case of the name
-     * @return true if the player has played before
-     * @deprecated for removal in the future, in favour of {@link UserManager#playedBefore(String, boolean)}
-     */
-    @Deprecated
-    public static boolean playedBefore(String nickname, boolean ignoreCase) {
-        return UserManager.getInstance().playedBefore(nickname, ignoreCase);
-    }
-
     public static Set<String> getNamesOfUsers(Collection<User> users) {
         return users.stream().map(User::getName).collect(Collectors.toSet());
     }
