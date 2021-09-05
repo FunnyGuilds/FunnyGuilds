@@ -115,9 +115,7 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("Wyglad naglowka w liscie graczy.")
     @CustomKey("player-list-header")
-    public String playerListHeader = "&7FunnyGuilds &b4.10.0 Tribute\n" +
-            "&7Strona: &bfunnyguilds.dzikoysk.net\n" +
-            "&7GitHub: &bgithub.com/funnyguilds";
+    public String playerListHeader = "&7FunnyGuilds &b4.10.0 Tribute &8- &bgithub.com/funnyguilds";
 
     @Comment("Wyglad stopki w liscie graczy.")
     @CustomKey("player-list-footer")
@@ -141,9 +139,7 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(54, " &b9. &7{PTOP-9}")
                             .put(55, " &b10. &7{PTOP-10}")
                             .build(),
-                            "&7FunnyGuilds &b4.10.0 Tribute\n" +
-                                    "&7Strona: &bfunnyguilds.dzikoysk.net\n" +
-                                    "&7GitHub: &bgithub.com/funnyguilds", null),
+                            null, null),
 
                     new TablistPage(10, ImmutableMap.<Integer, String>builder()
                             .put(46, " &c1. &7{PTOP-1}")
@@ -156,8 +152,24 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(53, " &c8. &7{PTOP-8}")
                             .put(54, " &c9. &7{PTOP-9}")
                             .put(55, " &c10. &7{PTOP-10}")
-                            .build(), null,
+                            .build(),
+                            "&7FunnyGuilds &d4.10.0 Tribute &8- &dgithub.com/funnyguilds",
                             "&d&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!"),
+
+                    new TablistPage(10, ImmutableMap.<Integer, String>builder()
+                            .put(46, " &e1. &7{PTOP-1}")
+                            .put(47, " &e2. &7{PTOP-2}")
+                            .put(48, " &e3. &7{PTOP-3}")
+                            .put(49, " &e4. &7{PTOP-4}")
+                            .put(50, " &e5. &7{PTOP-5}")
+                            .put(51, " &e6. &7{PTOP-6}")
+                            .put(52, " &e7. &7{PTOP-7}")
+                            .put(53, " &e8. &7{PTOP-8}")
+                            .put(54, " &e9. &7{PTOP-9}")
+                            .put(55, " &e10. &7{PTOP-10}")
+                            .build(),
+                            "&7GitHub: &agithub.com/funnyguilds",
+                            "&a&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!"),
 
                     new TablistPage(10, ImmutableMap.<Integer, String>builder()
                             .put(46, " &a1. &7{PTOP-1}")
@@ -170,9 +182,8 @@ public class TablistConfiguration extends OkaeriConfig {
                             .put(53, " &a8. &7{PTOP-8}")
                             .put(54, " &a9. &7{PTOP-9}")
                             .put(55, " &a10. &7{PTOP-10}")
-                            .build(), "&7FunnyGuilds &a4.10.0 Tribute\n" +
-                            "&7Strona: &afunnyguilds.dzikoysk.net\n" +
-                            "&7GitHub: &agithub.com/funnyguilds",
+                            .build(),
+                            "&7Strona: &6funnyguilds.dzikoysk.net",
                             "&6&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!")
             )
     );
