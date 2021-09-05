@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -29,8 +29,8 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
         funnyGuilds.getDataPersistenceHandler().reloadHandler();
         funnyGuilds.getDynamicListenerManager().reloadAll();
 
-        if (FunnyGuilds.getInstance().getPluginConfiguration().playerListEnable) {
-            PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        if (FunnyGuilds.getInstance().getTablistConfiguration().playerListEnable) {
+            TablistConfiguration tablistConfig = FunnyGuilds.getInstance().getTablistConfiguration();
 
             DefaultTablistVariables.clearFunnyVariables();
 
@@ -43,10 +43,10 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
 
                 IndividualPlayerList playerList = new IndividualPlayerList(user,
                         funnyGuilds.getNmsAccessor().getPlayerListAccessor(),
-                        config.playerList,
-                        config.playerListHeader, config.playerListFooter,
-                        config.playerListPing,
-                        config.playerListFillCells
+                        tablistConfig.playerList,
+                        tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                        tablistConfig.playerListPing,
+                        tablistConfig.playerListFillCells
                 );
 
                 user.getCache().setPlayerList(playerList);

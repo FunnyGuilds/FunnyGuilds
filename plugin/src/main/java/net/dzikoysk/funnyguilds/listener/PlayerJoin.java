@@ -1,21 +1,22 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
-import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -49,14 +50,15 @@ public class PlayerJoin implements Listener {
         user.updateReference(player);
         UserCache cache = user.getCache();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        TablistConfiguration tablistConfig = FunnyGuilds.getInstance().getTablistConfiguration();
 
         IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                 user,
                 plugin.getNmsAccessor().getPlayerListAccessor(),
-                config.playerList,
-                config.playerListHeader, config.playerListFooter,
-                config.playerListPing,
-                config.playerListFillCells
+                tablistConfig.playerList,
+                tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                tablistConfig.playerListPing,
+                tablistConfig.playerListFillCells
         );
 
         cache.setPlayerList(individualPlayerList);

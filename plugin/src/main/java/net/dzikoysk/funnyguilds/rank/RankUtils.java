@@ -1,11 +1,12 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.TablistConfiguration;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
 
 public class RankUtils {
@@ -13,6 +14,7 @@ public class RankUtils {
     public static String parseRank(User targetUser, String rankTop) {
         return parseRank(
                 FunnyGuilds.getInstance().getPluginConfiguration(),
+                FunnyGuilds.getInstance().getTablistConfiguration(),
                 FunnyGuilds.getInstance().getMessageConfiguration(),
                 RankManager.getInstance(),
                 targetUser,
@@ -22,6 +24,7 @@ public class RankUtils {
 
     public static String parseRank(
         PluginConfiguration config,
+        TablistConfiguration tablistConfig,
         MessageConfiguration messages,
         RankManager rankManager,
         User targetUser,
@@ -55,7 +58,7 @@ public class RankUtils {
 
             String guildTag = guild.getTag();
 
-            if (config.playerListUseRelationshipColors) {
+            if (tablistConfig.playerListUseRelationshipColors) {
                 guildTag = StringUtils.replace(config.prefixOther, "{TAG}", guild.getTag());
 
                 if (targetUser != null && targetUser.hasGuild()) {
