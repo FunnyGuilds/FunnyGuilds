@@ -6,6 +6,7 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,16 +34,9 @@ public class UserManager {
     public Set<User> getUsers(Collection<String> names) {
         Set<User> users = new HashSet<>();
 
-        for (String name : names) {
-            Option<User> optional = getUser(name);
-
-            if (!optional.isPresent()) {
-                FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name);
-                continue;
-            }
-
-            users.add(optional.get());
-        }
+        PandaStream.of(names)
+                .flatMap(this::getUser)
+                .forEach(users::add);
 
         return users;
     }

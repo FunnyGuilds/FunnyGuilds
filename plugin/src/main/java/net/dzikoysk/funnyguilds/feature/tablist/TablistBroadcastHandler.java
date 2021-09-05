@@ -1,36 +1,33 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import panda.std.stream.PandaStream;
 
 public class TablistBroadcastHandler implements Runnable {
 
     @Override
     public void run() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
+        UserManager userManager = plugin.getUserManager();
         PluginConfiguration config = plugin.getPluginConfiguration();
 
         if (! config.playerListEnable) {
             return;
         }
 
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            User user = plugin.getUserManager().getUser(player).getOrNull();
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(userManager::getUser)
+                .forEach(user -> {
+                    IndividualPlayerList playerList = user.getCache().getPlayerList();
 
-            if (user == null) {
-                continue;
-            }
+                    if (playerList == null) {
+                        return;
+                    }
 
-            IndividualPlayerList playerList = user.getCache().getPlayerList();
-
-            if (playerList == null) {
-                continue;
-            }
-
-            playerList.send();
-        }
+                    playerList.send();
+                });
     }
 }
