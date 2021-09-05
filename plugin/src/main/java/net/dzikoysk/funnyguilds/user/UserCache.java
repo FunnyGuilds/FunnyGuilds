@@ -13,6 +13,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.Nullable;
+import panda.std.Option;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -252,7 +253,7 @@ public class UserCache {
         return this.enter;
     }
 
-    public IndividualPlayerList getPlayerList() {
-        return this.playerList;
+    public Option<IndividualPlayerList> getPlayerList() {
+        return Option.of(this.playerList);
     }
 }

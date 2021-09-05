@@ -20,14 +20,7 @@ public class TablistBroadcastHandler implements Runnable {
 
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(userManager::getUser)
-                .forEach(user -> {
-                    IndividualPlayerList playerList = user.getCache().getPlayerList();
-
-                    if (playerList == null) {
-                        return;
-                    }
-
-                    playerList.send();
-                });
+                .flatMap(user -> user.getCache().getPlayerList())
+                .forEach(IndividualPlayerList::send);
     }
 }
