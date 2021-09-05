@@ -25,6 +25,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
     public void execute() throws Exception {
         FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
         funnyGuilds.reloadPluginConfiguration();
+        funnyGuilds.reloadTablistConfiguration();
         funnyGuilds.reloadMessageConfiguration();
         funnyGuilds.getDataPersistenceHandler().reloadHandler();
         funnyGuilds.getDynamicListenerManager().reloadAll();

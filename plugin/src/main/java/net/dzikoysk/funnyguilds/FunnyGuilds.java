@@ -61,7 +61,7 @@ public class FunnyGuilds extends JavaPlugin {
     private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile  = new File(this.getDataFolder(), "config.yml");
-    private final File tablistConfigurationFile  = new File(this.getDataFolder(), "tablist.yml");
+    private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
     private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
     private final File pluginDataFolderFile     = new File(this.getDataFolder(), "data");
 
@@ -371,6 +371,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public void reloadPluginConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
+    }
+
+    public void reloadTablistConfiguration() throws OkaeriException {
+        this.tablistConfiguration.load();
     }
 
     public void reloadMessageConfiguration() throws OkaeriException {
