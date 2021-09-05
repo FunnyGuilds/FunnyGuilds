@@ -38,8 +38,8 @@ public final class InfoCommand {
     public void execute(FunnyGuilds plugin, PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
         UserManager userManager = plugin.getUserManager();
         String tag = Option.when(args.length > 0, () -> args[0])
-                .orElse(() -> Option.when(sender instanceof Player, () -> userManager.getUser(sender.getName()))
-                        .flatMap(userOption -> userOption)
+                // lousy code, but no time for a proper solution now
+                .orElse(() -> Option.when(sender instanceof Player, () -> userManager.getUser(sender.getName()).getOrNull())
                         .filter(User::hasGuild)
                         .map(User::getGuild)
                         .map(Guild::getTag))

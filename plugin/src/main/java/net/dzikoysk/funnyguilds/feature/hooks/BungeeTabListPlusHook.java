@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 
 import java.util.Map.Entry;
 
@@ -24,12 +23,9 @@ public final class BungeeTabListPlusHook {
                 
                 @Override
                 public String getReplacement(Player player) {
-                    Option<User> userOption = userManager.getUser(player);
-                    if (userOption.isEmpty()) {
-                        return "";
-                    }
-                    
-                    return variable.getValue().get(userOption.get());
+                    return userManager.getUser(player)
+                            .map(user -> variable.getValue().get(user))
+                            .orElseGet("");
                 }
             });
         }

@@ -48,6 +48,9 @@ public class DatabaseGuild {
             long ban = rs.getLong("ban");
             int lives = rs.getInt("lives");
 
+            FunnyGuilds plugin = FunnyGuilds.getInstance();
+            UserManager userManager = plugin.getUserManager();
+
             if (name == null || tag == null || os == null) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
                 return null;
@@ -58,10 +61,10 @@ public class DatabaseGuild {
                 uuid = UUID.fromString(id);
             }
 
-            Option<User> ownerOption = UserManager.getInstance().getUser(os);
+            Option<User> ownerOption = userManager.getUser(os);
 
             if (ownerOption.isEmpty()) {
-                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) isn't exist");
+                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
                 return null;
             }
 
@@ -82,11 +85,11 @@ public class DatabaseGuild {
             }
             
             if (validity == 0) {
-                validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart).toEpochMilli();
+                validity = Instant.now().plus(plugin.getPluginConfiguration().validityStart).toEpochMilli();
             }
             
             if (lives == 0) {
-                lives = FunnyGuilds.getInstance().getPluginConfiguration().warLives;
+                lives = plugin.getPluginConfiguration().warLives;
             }
 
             final Object[] values = new Object[17];
