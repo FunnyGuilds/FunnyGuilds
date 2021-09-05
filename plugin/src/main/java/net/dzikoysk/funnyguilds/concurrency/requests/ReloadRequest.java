@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.config.TablistConfiguration;
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.user.User;
@@ -46,6 +46,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                         funnyGuilds.getNmsAccessor().getPlayerListAccessor(),
                         tablistConfig.playerList,
                         tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                        tablistConfig.pages,
                         tablistConfig.playerListPing,
                         tablistConfig.playerListFillCells
                 );

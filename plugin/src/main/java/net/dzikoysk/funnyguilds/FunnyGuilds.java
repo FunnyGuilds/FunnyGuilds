@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.TablistConfiguration;
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
@@ -293,6 +293,7 @@ public class FunnyGuilds extends JavaPlugin {
                     this.getNmsAccessor().getPlayerListAccessor(),
                     this.tablistConfiguration.playerList,
                     this.tablistConfiguration.playerListHeader, this.tablistConfiguration.playerListFooter,
+                    this.tablistConfiguration.pages,
                     this.tablistConfiguration.playerListPing,
                     this.tablistConfiguration.playerListFillCells
             );

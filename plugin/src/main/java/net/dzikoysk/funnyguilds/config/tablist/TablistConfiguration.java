@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.config;
+package net.dzikoysk.funnyguilds.config.tablist;
 
 import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
@@ -6,6 +6,9 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.validator.annotation.Min;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class TablistConfiguration extends OkaeriConfig {
@@ -114,11 +117,65 @@ public class TablistConfiguration extends OkaeriConfig {
     @CustomKey("player-list-header")
     public String playerListHeader = "&7FunnyGuilds &b4.10.0 Tribute\n" +
             "&7Strona: &bfunnyguilds.dzikoysk.net\n" +
-            "&7GitHub: &bgithub.com/FunnyGuilds";
+            "&7GitHub: &bgithub.com/funnyguilds";
 
     @Comment("Wyglad stopki w liscie graczy.")
     @CustomKey("player-list-footer")
     public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!";
+
+    @Comment("Wartosc cycles to liczba cykli przez ktore widac dana strone na tabliscie. (1 cykl = 1 wyslanie tablisty, czestotliwosc wysylania tablisty mozna zmienic ustawiajac wartosc playerListUpdateInterval)")
+    @Comment("Sekcje player-list konfiguruje sie w ten sam sposob co zwykla. Ustawia sie w niej wszystkie komorki, ktore maja sie zmieniac (nadpisujac zwykla konfiguracje).")
+    @Comment("Sekcje player-list-header konfiguruje sie w ten sam sposob co zwykla.")
+    @Comment("Sekcje player-list-footer konfiguruje sie w ten sam sposob co zwykla.")
+    public List<TablistPage> pages = new LinkedList<>(
+            Arrays.asList(
+                    new TablistPage(10, ImmutableMap.<Integer, String>builder()
+                            .put(46, " &b1. &7{PTOP-1}")
+                            .put(47, " &b2. &7{PTOP-2}")
+                            .put(48, " &b3. &7{PTOP-3}")
+                            .put(49, " &b4. &7{PTOP-4}")
+                            .put(50, " &b5. &7{PTOP-5}")
+                            .put(51, " &b6. &7{PTOP-6}")
+                            .put(52, " &b7. &7{PTOP-7}")
+                            .put(53, " &b8. &7{PTOP-8}")
+                            .put(54, " &b9. &7{PTOP-9}")
+                            .put(55, " &b10. &7{PTOP-10}")
+                            .build(),
+                            "&7FunnyGuilds &b4.10.0 Tribute\n" +
+                                    "&7Strona: &bfunnyguilds.dzikoysk.net\n" +
+                                    "&7GitHub: &bgithub.com/funnyguilds", null),
+
+                    new TablistPage(10, ImmutableMap.<Integer, String>builder()
+                            .put(46, " &c1. &7{PTOP-1}")
+                            .put(47, " &c2. &7{PTOP-2}")
+                            .put(48, " &c3. &7{PTOP-3}")
+                            .put(49, " &c4. &7{PTOP-4}")
+                            .put(50, " &c5. &7{PTOP-5}")
+                            .put(51, " &c6. &7{PTOP-6}")
+                            .put(52, " &c7. &7{PTOP-7}")
+                            .put(53, " &c8. &7{PTOP-8}")
+                            .put(54, " &c9. &7{PTOP-9}")
+                            .put(55, " &c10. &7{PTOP-10}")
+                            .build(), null,
+                            "&d&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!"),
+
+                    new TablistPage(10, ImmutableMap.<Integer, String>builder()
+                            .put(46, " &a1. &7{PTOP-1}")
+                            .put(47, " &a2. &7{PTOP-2}")
+                            .put(48, " &a3. &7{PTOP-3}")
+                            .put(49, " &a4. &7{PTOP-4}")
+                            .put(50, " &a5. &7{PTOP-5}")
+                            .put(51, " &a6. &7{PTOP-6}")
+                            .put(52, " &a7. &7{PTOP-7}")
+                            .put(53, " &a8. &7{PTOP-8}")
+                            .put(54, " &a9. &7{PTOP-9}")
+                            .put(55, " &a10. &7{PTOP-10}")
+                            .build(), "&7FunnyGuilds &a4.10.0 Tribute\n" +
+                            "&7Strona: &afunnyguilds.dzikoysk.net\n" +
+                            "&7GitHub: &agithub.com/funnyguilds",
+                            "&6&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!")
+            )
+    );
 
     @Min(0)
     @Comment("Liczba pingu pokazana przy kazdej komorce.")

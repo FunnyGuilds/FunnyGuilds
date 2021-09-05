@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.TablistConfiguration;
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

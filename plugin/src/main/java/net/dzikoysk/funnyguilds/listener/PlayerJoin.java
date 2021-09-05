@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUser
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.TablistConfiguration;
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
@@ -57,6 +57,7 @@ public class PlayerJoin implements Listener {
                 plugin.getNmsAccessor().getPlayerListAccessor(),
                 tablistConfig.playerList,
                 tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                tablistConfig.pages,
                 tablistConfig.playerListPing,
                 tablistConfig.playerListFillCells
         );

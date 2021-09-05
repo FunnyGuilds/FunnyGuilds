@@ -5,6 +5,8 @@ import eu.okaeri.configs.serdes.SimpleObjectTransformer;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
+import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 
 import java.io.File;
 
@@ -32,6 +34,7 @@ public final class ConfigurationFactory {
     public TablistConfiguration createTablistConfiguration(File tablistConfigurationFile) {
         return ConfigManager.create(TablistConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
+            it.withSerdesPack(registry -> registry.register(new TablistPageSerializer()));
             it.withBindFile(tablistConfigurationFile);
             it.saveDefaults();
             it.load(true);
