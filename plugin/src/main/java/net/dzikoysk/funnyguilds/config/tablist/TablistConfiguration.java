@@ -2,8 +2,7 @@ package net.dzikoysk.funnyguilds.config.tablist;
 
 import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
-import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.CustomKey;
+import eu.okaeri.configs.annotation.*;
 import eu.okaeri.validator.annotation.Min;
 
 import java.util.Arrays;
@@ -11,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+@Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("Wyglad listy graczy, przedzial slotow - od 1 do 80")
