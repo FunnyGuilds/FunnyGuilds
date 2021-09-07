@@ -2,6 +2,7 @@ plugins {
     id 'idea'
     id 'org.ajoberstar.grgit' version '4.1.0'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'maven-publish'
 }
 
 allprojects {
@@ -49,6 +50,25 @@ subprojects {
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+
+    java {
+        // withJavadocJar()
+        withSourcesJar()
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "panda-repository"
+            url = uri("https://repo.panda-lang.org/releases")
+
+            credentials {
+                username = System.getenv("MAVEN_NAME") as String
+                password = System.getenv("MAVEN_TOKEN") as String
+            }
+        }
+    }
 }
 
 idea {

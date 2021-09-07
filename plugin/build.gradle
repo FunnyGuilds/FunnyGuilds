@@ -1,5 +1,15 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
+publishing {
+    publications {
+        libraries(MavenPublication) {
+            groupId = 'net.dzikoysk'
+            artifactId = 'funnyguilds'
+            from components.java
+        }
+    }
+}
+
 dependencies {
     project(":nms").getSubprojects().each {
         implementation it
