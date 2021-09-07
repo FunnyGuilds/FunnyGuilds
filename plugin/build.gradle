@@ -14,10 +14,10 @@ publishing {
     }
 
     publications {
-        libraries(MavenPublication) {
+        shadow(MavenPublication) { publication ->
             groupId = 'net.dzikoysk'
             artifactId = 'funnyguilds'
-            from components.java
+            project.shadow.component(publication)
         }
     }
 }
@@ -84,6 +84,7 @@ processResources {
 }
 
 shadowJar {
+    classifier = ''
     archiveFileName = "FunnyGuilds ${project.version} (MC 1.8-1.17).jar"
 
     relocate "net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands"
