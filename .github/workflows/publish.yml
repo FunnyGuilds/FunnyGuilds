@@ -16,5 +16,5 @@ jobs:
       - name: Publish with Gradle
         run: ./gradlew build publish
         env:
-          MAVEN_USERNAME: ${{ secrets.MAVEN_NAME }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_TOKEN }}
+          MAVEN_NAME: ${{ secrets.MAVEN_NAME }}
+          MAVEN_TOKEN: ${{ secrets.MAVEN_TOKEN }}
