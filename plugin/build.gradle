@@ -1,27 +1,5 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
-publishing {
-    repositories {
-        maven {
-            name = "panda-repository"
-            url = uri("https://repo.panda-lang.org/releases")
-
-            credentials {
-                username = System.getenv("MAVEN_NAME")
-                password = System.getenv("MAVEN_TOKEN")
-            }
-        }
-    }
-
-    publications {
-        shadow(MavenPublication) { publication ->
-            groupId = 'net.dzikoysk'
-            artifactId = 'funnyguilds'
-            project.shadow.component(publication)
-        }
-    }
-}
-
 dependencies {
     project(":nms").getSubprojects().each {
         implementation it
@@ -84,7 +62,6 @@ processResources {
 }
 
 shadowJar {
-    classifier = ''
     archiveFileName = "FunnyGuilds ${project.version} (MC 1.8-1.17).jar"
 
     relocate "net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands"
