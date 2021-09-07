@@ -29,13 +29,13 @@ public class EntityDamage implements Listener {
     public void onDamage(EntityDamageByEntityEvent event) {
         UserManager userManager = funnyGuilds.getUserManager();
         EntityUtils.getAttacker(event.getDamager()).peek(attacker -> {
-            Option<User> attackerUserOp = userManager.getUser(attacker);
+            Option<User> attackerUserOption = userManager.getUser(attacker);
 
-            if (attackerUserOp.isEmpty()) {
+            if (attackerUserOption.isEmpty()) {
                 return;
             }
 
-            User attackerUser = attackerUserOp.get();
+            User attackerUser = attackerUserOption.get();
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             Entity victim = event.getEntity();
 

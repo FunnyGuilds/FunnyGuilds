@@ -54,11 +54,9 @@ public class EntityInteract implements Listener {
         }
 
         if (config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
-            userManager.getUser(eventCaller).peek(user -> {
-                if (user.hasGuild() && !user.getGuild().canBuild()) {
-                    event.setCancelled(true);
-                }
-            });
+            userManager.getUser(eventCaller)
+                    .filter(user -> user.hasGuild() && !user.getGuild().canBuild())
+                    .peek(user -> event.setCancelled(true));
         }
     }
 
