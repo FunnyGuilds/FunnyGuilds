@@ -57,20 +57,6 @@ subprojects {
     }
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "panda-repository"
-            url = uri("https://repo.panda-lang.org/releases")
-
-            credentials {
-                username = System.getenv("MAVEN_NAME") as String
-                password = System.getenv("MAVEN_TOKEN") as String
-            }
-        }
-    }
-}
-
 idea {
     project {
         jdkName = "16"

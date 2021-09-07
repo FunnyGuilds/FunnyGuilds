@@ -1,6 +1,18 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 publishing {
+    repositories {
+        maven {
+            name = "panda-repository"
+            url = uri("https://repo.panda-lang.org/releases")
+
+            credentials {
+                username = System.getenv("MAVEN_NAME")
+                password = System.getenv("MAVEN_TOKEN")
+            }
+        }
+    }
+
     publications {
         libraries(MavenPublication) {
             groupId = 'net.dzikoysk'
@@ -94,11 +106,6 @@ shadowJar {
         exclude(dependency('net.dzikoysk:funnycommands:.*'))
         exclude(dependency('com.fasterxml.jackson.core:jackson-core:.*'))
     }
-}
-
-jar {
-    enabled = false
-    dependsOn 'shadowJar'
 }
 
 test {
