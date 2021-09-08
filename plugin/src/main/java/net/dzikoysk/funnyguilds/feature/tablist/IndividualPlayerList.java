@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -49,7 +50,7 @@ public class IndividualPlayerList {
         this.user = user;
         this.variableParser = new TablistVariablesParser();
 
-        this.unformattedCells = unformattedCells;
+        this.unformattedCells = new HashMap<>(unformattedCells);
         this.header = header;
         this.footer = footer;
         this.pages = pages;
