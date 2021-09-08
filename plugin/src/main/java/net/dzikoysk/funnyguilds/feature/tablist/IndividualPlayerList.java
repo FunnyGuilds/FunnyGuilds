@@ -112,7 +112,6 @@ public class IndividualPlayerList {
         String preparedHeader = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT];
         String preparedFooter = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1];
 
-
         this.playerList.send(this.user.getPlayer(), preparedCells, preparedHeader, preparedFooter, this.cellPing);
     }
 
