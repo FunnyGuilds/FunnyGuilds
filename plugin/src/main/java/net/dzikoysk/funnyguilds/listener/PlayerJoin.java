@@ -1,6 +1,11 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
@@ -9,15 +14,9 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
-import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.user.UserUtils;
-import org.bukkit.Bukkit;
+import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
+import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -33,18 +32,14 @@ public class PlayerJoin implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        UserManager userManager = plugin.getUserManager();
         Player player = e.getPlayer();
-        User user = User.get(player);
+        User user = userManager.getUser(player).orElseGet(() -> userManager.create(player));
 
-        if (user == null) {
-            user = User.create(player);
-        }
-        else {
-            String playerName = player.getName();
+        String playerName = player.getName();
 
-            if (! user.getName().equals(playerName)) {
-                UserUtils.updateUsername(user, playerName);
-            }
+        if (!user.getName().equals(playerName)) {
+            userManager.updateUsername(user, playerName);
         }
 
         user.updateReference(player);
@@ -63,15 +58,7 @@ public class PlayerJoin implements Listener {
         );
 
         cache.setPlayerList(individualPlayerList);
-
-        if (cache.getScoreboard() == null) {
-            if (config.useSharedScoreboard) {
-                cache.setScoreboard(player.getScoreboard());
-            }
-            else {
-                cache.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-            }
-        }
+        cache.updateScoreboardIfNull(player);
 
         if (cache.getIndividualPrefix() == null && config.guildTagEnabled) {
             IndividualPrefix prefix = new IndividualPrefix(user);

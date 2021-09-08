@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
 
 import java.util.Map.Entry;
@@ -15,18 +16,16 @@ public final class BungeeTabListPlusHook {
 
     public static void initVariableHook() {       
         FunnyGuilds plugin = FunnyGuilds.getInstance();
+        UserManager userManager = plugin.getUserManager();
 
         for (Entry<String,TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
             BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_" + variable.getKey()) {
                 
                 @Override
-                public String getReplacement(Player player) {                  
-                    User user = User.get(player);
-                    if (user == null) {
-                        return "";
-                    }
-                    
-                    return variable.getValue().get(user);
+                public String getReplacement(Player player) {
+                    return userManager.getUser(player)
+                            .map(user -> variable.getValue().get(user))
+                            .orElseGet("");
                 }
             });
         }
@@ -38,7 +37,7 @@ public final class BungeeTabListPlusHook {
 
                 @Override
                 public String getReplacement(Player player) {
-                    User user = User.get(player);
+                    User user = userManager.getUser(player).getOrNull();
                     return RankUtils.parseRank(user, "{GTOP-" + index + "}");
                 }
             });

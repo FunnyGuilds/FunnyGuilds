@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityFreeCam;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityReach;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -24,7 +25,7 @@ public final class SecuritySystem {
 
     public static boolean onHitCrystal(Player player, Guild guild) {
         scan(player, SecurityType.GUILD, guild);
-        return SecurityUtils.isBlocked(User.get(player));
+        return SecurityUtils.isBlocked(UserUtils.get(player.getUniqueId()));
     }
 
     private static void scan(Player player, SecurityType securityType, Object... values) {

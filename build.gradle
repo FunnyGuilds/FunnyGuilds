@@ -2,11 +2,19 @@ plugins {
     id 'idea'
     id 'org.ajoberstar.grgit' version '4.1.0'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'maven-publish'
 }
 
 allprojects {
     group = "net.dzikoysk.funnyguilds"
     version = "4.10.0"
+
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+
+    java {
+        withSourcesJar()
+    }
 }
 
 subprojects {
@@ -14,41 +22,54 @@ subprojects {
         mavenLocal()
         mavenCentral()
 
-        maven {
-            url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
-        }
-
-        maven {
-            url "https://repo.panda-lang.org/"
-        }
-
-        maven {
-            url "https://storehouse.okaeri.eu/repository/maven-public/"
-        }
-
-        maven {
-            url "https://maven.sk89q.com/repo/"
-        }
-
-        maven {
-            url "https://repo.extendedclip.com/content/repositories/placeholderapi/"
-        }
-
-        maven {
-            url "https://nexus.codecrafter47.de/content/repositories/public/"
-        }
-
-        maven {
-            url "https://repo.mvdw-software.com/content/groups/public/"
-        }
+        maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+        maven { url "https://repo.panda-lang.org/" }
+        maven { url "https://storehouse.okaeri.eu/repository/maven-public/" }
+        maven { url "https://maven.sk89q.com/repo/" }
+        maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
+        maven { url "https://nexus.codecrafter47.de/content/repositories/public/" }
+        maven { url "https://repo.mvdw-software.com/content/groups/public/" }
     }
 
-    apply plugin: 'java'
     apply plugin: 'groovy'
     apply plugin: 'com.github.johnrengelman.shadow'
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+
+    publishing {
+        repositories {
+            maven {
+                name = "panda-repository"
+                url = uri("https://repo.panda-lang.org/releases")
+
+                credentials {
+                    username = System.getenv("MAVEN_NAME")
+                    password = System.getenv("MAVEN_TOKEN")
+                }
+            }
+        }
+        publications {
+            libraries(MavenPublication) {
+                from components.java
+
+                // Add external repositories to published artifacts
+                // ~ btw: pls don't touch this
+                pom.withXml {
+                    def repositories = asNode().appendNode('repositories')
+
+                    project.getRepositories().findAll { repo ->
+                        if (repo.getUrl().toString().startsWith('http')) {
+                            def repository = repositories.appendNode('repository')
+                            repository.appendNode('id', repo.getDisplayName())
+                            repository.appendNode('url', repo.getUrl().toString())
+                        }
+                    }
+
+                }
+            }
+        }
+    }
 }
 
 idea {

@@ -2,11 +2,13 @@ package net.dzikoysk.funnyguilds.feature.prefix;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import panda.std.Option;
 
 import java.text.MessageFormat;
 
@@ -56,7 +58,9 @@ public class Dummy {
     }
 
     private void initialize() {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+
+        if (! plugin.getPluginConfiguration().dummyEnable) {
             return;
         }
 
@@ -78,19 +82,21 @@ public class Dummy {
         if (objective == null || ! objective.getName().equals(OBJECTIVE_NAME)) {
             objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            objective.setDisplayName(FunnyGuilds.getInstance().getPluginConfiguration().dummySuffix);
+            objective.setDisplayName(plugin.getPluginConfiguration().dummySuffix);
         }
-        
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            User user = User.get(player);
 
-            if (user == null) {
+        UserManager userManager = plugin.getUserManager();
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            Option<User> userOption = userManager.getUser(player);
+
+            if (userOption.isEmpty()) {
                 FunnyGuilds.getPluginLogger().debug(MessageFormat.format(
                         "Online player named: {0} does not have corresponding user instance while initializing Dummy for user: {1}",
                         player.getName(), this.user.getName()));
                 continue;
             }
 
+            User user = userOption.get();
             objective.getScore(user.getName()).setScore(user.getRank().getPoints());
         }
     }

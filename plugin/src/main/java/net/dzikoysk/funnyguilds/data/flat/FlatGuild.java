@@ -85,7 +85,7 @@ public class FlatGuild {
             uuid = UUID.fromString(id);
         }
 
-        final User owner = User.get(ownerName);
+        final User owner = UserUtils.get(ownerName);
 
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
         if (deputyName != null && !deputyName.isEmpty()) {

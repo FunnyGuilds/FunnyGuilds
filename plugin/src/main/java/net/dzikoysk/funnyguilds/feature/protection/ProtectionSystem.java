@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.Location;
@@ -43,7 +44,7 @@ public final class ProtectionSystem {
             return Option.none();
         }
         
-        User user = User.get(player);
+        User user = UserUtils.get(player.getUniqueId());
 
         if (!guild.getMembers().contains(user)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));

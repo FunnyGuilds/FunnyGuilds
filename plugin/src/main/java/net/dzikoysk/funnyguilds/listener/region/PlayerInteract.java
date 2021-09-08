@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -28,7 +29,8 @@ public class PlayerInteract implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Action eventAction = event.getAction();
         Player player = event.getPlayer();
         Block clicked = event.getClickedBlock();
@@ -69,7 +71,7 @@ public class PlayerInteract implements Listener {
 
             if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 try {
-                    infoExecutor.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[] { guild.getTag() });
+                    infoExecutor.execute(plugin, config, plugin.getMessageConfiguration(), player, new String[] { guild.getTag() });
                 } catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(player::sendMessage);
                 }
@@ -85,7 +87,7 @@ public class PlayerInteract implements Listener {
                 return;
             }
 
-            User user = User.get(player);
+            User user = UserUtils.get(player.getUniqueId());
             boolean blocked = config.blockedInteract.contains(clicked.getType());
 
             if (guild.getMembers().contains(user)) {

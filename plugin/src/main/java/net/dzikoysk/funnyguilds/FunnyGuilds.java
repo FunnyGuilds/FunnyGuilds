@@ -51,6 +51,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import panda.std.Option;
 import panda.utilities.ClassUtils;
 
 import java.io.File;
@@ -171,7 +172,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new GuiActionHandler(), this);
-        pluginManager.registerEvents(new EntityDamage(), this);
+        pluginManager.registerEvents(new EntityDamage(this), this);
         pluginManager.registerEvents(new EntityInteract(), this);
         pluginManager.registerEvents(new PlayerChat(), this);
         pluginManager.registerEvents(new PlayerDeath(), this);
@@ -270,18 +271,16 @@ public class FunnyGuilds extends JavaPlugin {
             final FunnyGuildsChannelHandler channelHandler = nmsAccessor.getPacketAccessor().getOrInstallChannelHandler(player);
             channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(player));
 
-            User user = User.get(player);
-            UserCache cache = user.getCache();
+            Option<User> userOption = userManager.getUser(player);
 
-            if (cache.getScoreboard() == null) {
-                if (pluginConfiguration.useSharedScoreboard) {
-                    cache.setScoreboard(player.getScoreboard());
-                }
-                else {
-                    cache.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-                }
+            if (userOption.isEmpty()) {
+                continue;
             }
 
+            User user = userOption.get();
+            UserCache cache = user.getCache();
+
+            cache.updateScoreboardIfNull(player);
             cache.getDummy();
 
             if (!this.tablistConfiguration.playerListEnable) {

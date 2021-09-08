@@ -6,6 +6,7 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class UserManager {
 
@@ -31,20 +33,9 @@ public class UserManager {
     }
 
     public Set<User> getUsers(Collection<String> names) {
-        Set<User> users = new HashSet<>();
-
-        for (String name : names) {
-            Option<User> optional = getUser(name);
-
-            if (!optional.isPresent()) {
-                FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name);
-                continue;
-            }
-
-            users.add(optional.get());
-        }
-
-        return users;
+        return PandaStream.of(names)
+                .flatMap(this::getUser)
+                .collect(Collectors.toSet());
     }
 
     public Option<User> getUser(String nickname) {
@@ -53,13 +44,9 @@ public class UserManager {
 
     public Option<User> getUser(String nickname, boolean ignoreCase) {
         if (ignoreCase) {
-            for (Map.Entry<String, User> entry : usersByName.entrySet()) {
-                if (entry.getKey().equalsIgnoreCase(nickname)) {
-                    return Option.of(entry.getValue());
-                }
-            }
-
-            return Option.none();
+            return PandaStream.of(usersByName.entrySet())
+                    .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
+                    .map(Map.Entry::getValue);
         }
 
         return Option.of(usersByName.get(nickname));

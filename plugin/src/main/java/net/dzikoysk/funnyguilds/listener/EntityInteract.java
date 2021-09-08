@@ -2,11 +2,11 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -23,8 +23,10 @@ public class EntityInteract implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        UserManager userManager = plugin.getUserManager();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Player eventCaller = event.getPlayer();
         Entity clickedEntity = event.getRightClicked();
 
@@ -46,16 +48,15 @@ public class EntityInteract implements Listener {
                 }
             }
             else {
-                playerExecutor.sendInfoMessage(messages.playerRightClickInfo, User.get(clickedPlayer), eventCaller);
+                userManager.getUser(clickedPlayer)
+                    .peek(user -> playerExecutor.sendInfoMessage(messages.playerRightClickInfo, user, eventCaller));
             }
         }
 
         if (config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
-            User user = User.get(eventCaller);
-
-            if (user.hasGuild() && !user.getGuild().canBuild()) {
-                event.setCancelled(true);
-            }
+            userManager.getUser(eventCaller)
+                    .filter(user -> user.hasGuild() && !user.getGuild().canBuild())
+                    .peek(user -> event.setCancelled(true));
         }
     }
 

@@ -16,19 +16,13 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 @FunnyComponent
 public final class FunnyGuildsCommand {
 
-    private final FunnyGuilds funnyGuilds;
-
-    public FunnyGuildsCommand(final FunnyGuilds funnyGuilds) {
-        this.funnyGuilds = funnyGuilds;
-    }
-
     @FunnyCommand(
         name = "${user.funnyguilds.name}",
         description = "${user.funnyguilds.description}",
         aliases = "${user.funnyguilds.aliases}",
         acceptsExceeded = true
     )
-    public void execute(CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds funnyGuilds, CommandSender sender, String[] args) {
         String parameter = args.length > 0
                 ? args[0].toLowerCase()
                 : "";
@@ -40,7 +34,7 @@ public final class FunnyGuildsCommand {
                 break;
             case "check":
             case "update":
-                this.funnyGuilds.getVersion().isNewAvailable(sender, true);
+                funnyGuilds.getVersion().isNewAvailable(sender, true);
                 break;
             case "save-all":
                 saveAll(sender);
@@ -56,7 +50,7 @@ public final class FunnyGuildsCommand {
                 sender.sendMessage(ChatColor.GRAY + "/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)");
                 break;
             default:
-                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + this.funnyGuilds.getVersion().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
+                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + funnyGuilds.getVersion().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
                 break;
         }
 
@@ -94,7 +88,7 @@ public final class FunnyGuildsCommand {
         Optional<FunnybinRequest> request = FunnybinRequest.of(sender, args);
 
         if (request.isPresent()) {
-            FunnyGuilds.getInstance().getConcurrencyManager().postRequests(request.get());;
+            FunnyGuilds.getInstance().getConcurrencyManager().postRequests(request.get());
             return;
         }
 

@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,7 +48,7 @@ public class PlayerCommand implements Listener {
         }
 
         Guild guild = region.getGuild();
-        User user = User.get(player);
+        User user = UserUtils.get(player.getUniqueId());
 
         if (guild.getMembers().contains(user)) {
             return;
