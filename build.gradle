@@ -65,7 +65,6 @@ subprojects {
                             repository.appendNode('url', repo.getUrl().toString())
                         }
                     }
-
                 }
             }
         }
