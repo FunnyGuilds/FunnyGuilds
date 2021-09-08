@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Pattern;
@@ -35,7 +36,7 @@ public final class PlaceholderAPIHook {
                 return "";
             }
 
-            User user = User.get(player);
+            User user = UserUtils.get(player.getUniqueId());
             if (user == null) {
                 return "";
             }

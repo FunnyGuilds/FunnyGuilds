@@ -1,15 +1,15 @@
 package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import panda.std.stream.PandaStream;
 
 public final class ReloadRequest extends DefaultConcurrencyRequest {
 
@@ -34,23 +34,20 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
 
             DefaultTablistVariables.clearFunnyVariables();
 
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                User user = funnyGuilds.getUserManager().getUser(player).getOrNull();
+            UserManager userManager = funnyGuilds.getUserManager();
+            PandaStream.of(Bukkit.getOnlinePlayers())
+                    .flatMap(userManager::getUser)
+                    .forEach(user -> {
+                        IndividualPlayerList playerList = new IndividualPlayerList(user,
+                                funnyGuilds.getNmsAccessor().getPlayerListAccessor(),
+                                config.playerList,
+                                config.playerListHeader, config.playerListFooter,
+                                config.playerListPing,
+                                config.playerListFillCells
+                        );
 
-                if (user == null) {
-                    continue;
-                }
-
-                IndividualPlayerList playerList = new IndividualPlayerList(user,
-                        funnyGuilds.getNmsAccessor().getPlayerListAccessor(),
-                        config.playerList,
-                        config.playerListHeader, config.playerListFooter,
-                        config.playerListPing,
-                        config.playerListFillCells
-                );
-
-                user.getCache().setPlayerList(playerList);
-            }
+                        user.getCache().setPlayerList(playerList);
+                    });
         }
 
         long endTime = System.currentTimeMillis();

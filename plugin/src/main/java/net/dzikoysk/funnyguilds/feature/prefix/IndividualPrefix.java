@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -23,7 +24,7 @@ public class IndividualPrefix {
             return;
         }
         
-        User user = User.get(player);
+        User user = UserUtils.get(player);
         if (!user.hasGuild()) {
             return;
         }
@@ -123,7 +124,7 @@ public class IndividualPrefix {
             }
         }
 
-        registerSoloTeam(User.get(player));
+        registerSoloTeam(UserUtils.get(player));
     }
 
     protected void removeGuild(Guild guild) {

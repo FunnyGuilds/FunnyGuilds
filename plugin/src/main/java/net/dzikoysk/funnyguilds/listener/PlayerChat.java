@@ -6,6 +6,8 @@ import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,14 +16,23 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import panda.std.Option;
 
 public class PlayerChat implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        UserManager userManager = plugin.getUserManager();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Player player = event.getPlayer();
-        User user = User.get(player);
+        Option<User> userOption = userManager.getUser(player);
+
+        if (userOption.isEmpty()) {
+            return;
+        }
+
+        User user = userOption.get();
 
         if (user.hasGuild()) {
             Guild guild = user.getGuild();
@@ -71,7 +82,7 @@ public class PlayerChat implements Listener {
         String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
 
         for (Player looped : Bukkit.getOnlinePlayers()) {
-            if (User.get(looped).getCache().isSpy()) {
+            if (UserUtils.get(looped.getUniqueId()).getCache().isSpy()) {
                 looped.sendMessage(spyMessage);
             }
         }
@@ -87,7 +98,7 @@ public class PlayerChat implements Listener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
             
             String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
@@ -112,7 +123,7 @@ public class PlayerChat implements Listener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
@@ -141,7 +152,7 @@ public class PlayerChat implements Listener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(User.get(player), config)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);

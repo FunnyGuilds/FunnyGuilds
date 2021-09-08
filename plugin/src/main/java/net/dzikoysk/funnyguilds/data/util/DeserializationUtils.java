@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Location;
 
 import java.util.Set;
@@ -61,7 +62,7 @@ public final class DeserializationUtils {
         UUID playerUniqueId = UUID.fromString((String) values[0]);
         String playerName = (String) values[1];
 
-        User user = User.create(playerUniqueId, playerName);
+        User user = UserManager.getInstance().create(playerUniqueId, playerName);
         
         user.getRank().setPoints((int) values[2]);
         user.getRank().setKills((int) values[3]);

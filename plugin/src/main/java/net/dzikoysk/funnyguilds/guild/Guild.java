@@ -8,6 +8,8 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import panda.std.Option;
+
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
@@ -292,8 +294,13 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean isSomeoneInRegion() {
-        return FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && Bukkit.getOnlinePlayers().stream()
-                .filter(player -> User.get(player).getGuild() != this)
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+
+        return plugin.getPluginConfiguration().regionsEnabled && Bukkit.getOnlinePlayers().stream()
+                .filter(player -> {
+                    Option<User> user = plugin.getUserManager().getUser(player);
+                    return user.isDefined() && user.get().getGuild() != this;
+                })
                 .map(player -> RegionUtils.getAt(player.getLocation()))
                 .anyMatch(region -> region != null && region.getGuild() == this);
     }

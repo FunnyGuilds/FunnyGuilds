@@ -2,11 +2,13 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import panda.std.Option;
 
 public class PlayerQuit implements Listener {
 
@@ -21,23 +23,26 @@ public class PlayerQuit implements Listener {
     }
 
     private void handleQuit(Player player) {
-        User user = User.get(player);
+        Option<User> userOption = UserManager.getInstance().getUser(player);
 
-        if (user != null) {
-            UserCache cache = user.getCache();
-
-            if (cache.isInCombat()) {
-                user.getRank().addLogout();
-            }
-
-            cache.setIndividualPrefix(null);
-            cache.setScoreboard(null);
-            cache.setDummy(null);
-            cache.setPlayerList(null);
-            cache.clearDamage();
-
-            user.getBossBar().removeNotification();
+        if (userOption.isEmpty()) {
+            return;
         }
+
+        User user = userOption.get();
+        UserCache cache = user.getCache();
+
+        if (cache.isInCombat()) {
+            user.getRank().addLogout();
+        }
+
+        cache.setIndividualPrefix(null);
+        cache.setScoreboard(null);
+        cache.setDummy(null);
+        cache.setPlayerList(null);
+        cache.clearDamage();
+
+        user.getBossBar().removeNotification();
     }
 
 }

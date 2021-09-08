@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
@@ -13,6 +14,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import panda.std.Option;
 
 import java.sql.ResultSet;
 import java.time.Instant;
@@ -46,6 +48,9 @@ public class DatabaseGuild {
             long ban = rs.getLong("ban");
             int lives = rs.getInt("lives");
 
+            FunnyGuilds plugin = FunnyGuilds.getInstance();
+            UserManager userManager = plugin.getUserManager();
+
             if (name == null || tag == null || os == null) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
                 return null;
@@ -55,9 +60,16 @@ public class DatabaseGuild {
             if (id != null && !id.isEmpty()) {
                 uuid = UUID.fromString(id);
             }
-            
-            final User owner = User.get(os);
-            
+
+            Option<User> ownerOption = userManager.getUser(os);
+
+            if (ownerOption.isEmpty()) {
+                FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
+                return null;
+            }
+
+            User owner = ownerOption.get();
+
             Set<User> deputies = new HashSet<>();
             if (dp != null && !dp.isEmpty()) {
                 deputies = UserUtils.getUsersFromString(ChatUtils.fromString(dp));
@@ -73,11 +85,11 @@ public class DatabaseGuild {
             }
             
             if (validity == 0) {
-                validity = Instant.now().plus(FunnyGuilds.getInstance().getPluginConfiguration().validityStart).toEpochMilli();
+                validity = Instant.now().plus(plugin.getPluginConfiguration().validityStart).toEpochMilli();
             }
             
             if (lives == 0) {
-                lives = FunnyGuilds.getInstance().getPluginConfiguration().warLives;
+                lives = plugin.getPluginConfiguration().warLives;
             }
 
             final Object[] values = new Object[17];

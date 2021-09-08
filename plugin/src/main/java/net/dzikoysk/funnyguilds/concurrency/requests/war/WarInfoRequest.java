@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
@@ -39,14 +40,16 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
                 return;
             }
 
-            PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+            FunnyGuilds plugin = FunnyGuilds.getInstance();
+            PluginConfiguration config = plugin.getPluginConfiguration();
+            MessageConfiguration messages = plugin.getMessageConfiguration();
 
             if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 return;
             }
 
             try {
-                INFO_EXECUTOR.execute(config, FunnyGuilds.getInstance().getMessageConfiguration(), player, new String[]{ entry.getKey().getTag() });
+                INFO_EXECUTOR.execute(plugin, config, messages, player, new String[]{ entry.getKey().getTag() });
                 return;
             } catch (ValidationException validatorException) {
                 validatorException.getValidationMessage().peek(player::sendMessage);

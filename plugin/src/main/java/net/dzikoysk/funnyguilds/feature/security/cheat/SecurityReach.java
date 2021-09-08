@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.feature.security.cheat;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -38,7 +38,7 @@ public class SecurityReach {
         }
 
         String message = messages.securitySystemReach.replace("{DISTANCE}", FORMAT.format(distance));
-        SecurityUtils.addViolationLevel(User.get(player));
+        SecurityUtils.addViolationLevel(UserUtils.get(player.getUniqueId()));
         SecurityUtils.sendToOperator(player, "Reach", message);
     }
 }
