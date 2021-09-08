@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -25,12 +25,13 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
     public void execute() throws Exception {
         FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
         funnyGuilds.reloadPluginConfiguration();
+        funnyGuilds.reloadTablistConfiguration();
         funnyGuilds.reloadMessageConfiguration();
         funnyGuilds.getDataPersistenceHandler().reloadHandler();
         funnyGuilds.getDynamicListenerManager().reloadAll();
 
-        if (FunnyGuilds.getInstance().getPluginConfiguration().playerListEnable) {
-            PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        if (FunnyGuilds.getInstance().getTablistConfiguration().playerListEnable) {
+            TablistConfiguration tablistConfig = FunnyGuilds.getInstance().getTablistConfiguration();
 
             DefaultTablistVariables.clearFunnyVariables();
 
@@ -40,10 +41,11 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                     .forEach(user -> {
                         IndividualPlayerList playerList = new IndividualPlayerList(user,
                                 funnyGuilds.getNmsAccessor().getPlayerListAccessor(),
-                                config.playerList,
-                                config.playerListHeader, config.playerListFooter,
-                                config.playerListPing,
-                                config.playerListFillCells
+                                tablistConfig.playerList,
+                                tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                                tablistConfig.pages,
+                                tablistConfig.playerListPing,
+                                tablistConfig.playerListFillCells
                         );
 
                         user.getCache().setPlayerList(playerList);

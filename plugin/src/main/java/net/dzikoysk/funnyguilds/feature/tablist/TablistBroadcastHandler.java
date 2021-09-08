@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import org.bukkit.Bukkit;
 import panda.std.stream.PandaStream;
 
@@ -12,9 +12,9 @@ public class TablistBroadcastHandler implements Runnable {
     public void run() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         UserManager userManager = plugin.getUserManager();
-        PluginConfiguration config = plugin.getPluginConfiguration();
+        TablistConfiguration tablistConfig = plugin.getTablistConfiguration();
 
-        if (! config.playerListEnable) {
+        if (!tablistConfig.playerListEnable) {
             return;
         }
 

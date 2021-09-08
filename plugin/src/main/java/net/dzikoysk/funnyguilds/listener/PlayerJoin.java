@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUser
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
@@ -44,14 +45,16 @@ public class PlayerJoin implements Listener {
         user.updateReference(player);
         UserCache cache = user.getCache();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        TablistConfiguration tablistConfig = FunnyGuilds.getInstance().getTablistConfiguration();
 
         IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                 user,
                 plugin.getNmsAccessor().getPlayerListAccessor(),
-                config.playerList,
-                config.playerListHeader, config.playerListFooter,
-                config.playerListPing,
-                config.playerListFillCells
+                tablistConfig.playerList,
+                tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                tablistConfig.pages,
+                tablistConfig.playerListPing,
+                tablistConfig.playerListFillCells
         );
 
         cache.setPlayerList(individualPlayerList);

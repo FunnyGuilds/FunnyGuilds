@@ -126,7 +126,7 @@ public class UserCache {
     public User getLastKiller() {
         Optional<UUID> lastAttackerUniqueId = this.killerCache.asMap().entrySet()
                 .stream()
-                .sorted(Map.Entry.<UUID, Long>comparingByValue().reversed())
+                .sorted(Entry.<UUID, Long>comparingByValue().reversed())
                 .map(Entry::getKey).findFirst();
 
         return lastAttackerUniqueId.map(UserUtils::get).orElse(null);
