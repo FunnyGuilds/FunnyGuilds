@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.telemetry.metrics;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.MultiLineChart;
 import org.bstats.charts.SingleLineChart;
@@ -14,11 +14,14 @@ public class MetricsCollector implements Runnable {
 
     private final FunnyGuilds plugin;
 
+    private final UserManager userManager;
+
     private MCStats mcstats;
     private Metrics bstats;
 
     public MetricsCollector(FunnyGuilds plugin) {
         this.plugin = plugin;
+        this.userManager = plugin.getUserManager();
 
         try {
             mcstats = new MCStats(plugin);
@@ -49,7 +52,7 @@ public class MetricsCollector implements Runnable {
             global.addPlotter(new MCStats.Plotter("Users") {
                 @Override
                 public int getValue() {
-                    return plugin.getUserManager().usersCount();
+                    return userManager.usersCount();
                 }
             });
 
@@ -66,14 +69,14 @@ public class MetricsCollector implements Runnable {
         // bStats
         Metrics bstats = this.bstats;
         if (bstats != null) {
-            bstats.addCustomChart(new SingleLineChart("users", () -> plugin.getUserManager().usersCount()));
+            bstats.addCustomChart(new SingleLineChart("users", userManager::usersCount));
 
             bstats.addCustomChart(new SingleLineChart("guilds", GuildUtils::guildsCount));
 
             bstats.addCustomChart(new MultiLineChart("users_and_guilds", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();
 
-                valueMap.put("users", plugin.getUserManager().usersCount());
+                valueMap.put("users", userManager.usersCount());
                 valueMap.put("guilds", GuildUtils.guildsCount());
 
                 return valueMap;
