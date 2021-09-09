@@ -46,17 +46,17 @@ public class MetricsCollector implements Runnable {
         if (mcstats != null) {
             MCStats.Graph global = mcstats.createGraph("Guilds and Users");
 
-            global.addPlotter(new MCStats.Plotter("Guilds") {
-                @Override
-                public int getValue() {
-                    return GuildUtils.getGuilds().size();
-                }
-            });
-
             global.addPlotter(new MCStats.Plotter("Users") {
                 @Override
                 public int getValue() {
                     return plugin.getUserManager().usersCount();
+                }
+            });
+
+            global.addPlotter(new MCStats.Plotter("Guilds") {
+                @Override
+                public int getValue() {
+                    return GuildUtils.getGuilds().size();
                 }
             });
 
