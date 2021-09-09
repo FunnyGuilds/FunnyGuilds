@@ -5,8 +5,11 @@ import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.MultiLineChart;
+import org.bstats.charts.SingleLineChart;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 public class MetricsCollector implements Runnable {
 
@@ -61,17 +64,21 @@ public class MetricsCollector implements Runnable {
             mcstats.start();
         }
 
-        // bStats - MultilineCharts isn't implemented in bStats yet.
-        /*Metrics bstats = this.bstats;
+        // bStats
+        Metrics bstats = this.bstats;
         if (bstats != null) {
-            bstats.addCustomChart(new MultiLineChart("Guilds and Users") {
-                @Override
-                public HashMap<String, Integer> getValues(HashMap<String, Integer> hashMap) {
-                    hashMap.put("Guilds", GuildUtils.getGuilds().size());
-                    hashMap.put("Users", UserUtils.usersSize());
-                    return hashMap;
-                }
-            });
-        }*/
+            bstats.addCustomChart(new SingleLineChart("users", () -> plugin.getUserManager().usersSize()));
+
+            bstats.addCustomChart(new SingleLineChart("guilds", GuildUtils::guildsSize));
+
+            bstats.addCustomChart(new MultiLineChart("players_and_servers", () -> {
+                Map<String, Integer> valueMap = new HashMap<>();
+
+                valueMap.put("users", plugin.getUserManager().usersSize());
+                valueMap.put("guilds", GuildUtils.guildsSize());
+
+                return valueMap;
+            }));
+        }
     }
 }
