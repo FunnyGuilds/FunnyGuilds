@@ -56,7 +56,7 @@ public class MetricsCollector implements Runnable {
             global.addPlotter(new MCStats.Plotter("Users") {
                 @Override
                 public int getValue() {
-                    return UserUtils.usersSize();
+                    return plugin.getUserManager().usersCount();
                 }
             });
 
@@ -66,15 +66,15 @@ public class MetricsCollector implements Runnable {
         // bStats
         Metrics bstats = this.bstats;
         if (bstats != null) {
-            bstats.addCustomChart(new SingleLineChart("users", () -> plugin.getUserManager().usersSize()));
+            bstats.addCustomChart(new SingleLineChart("users", () -> plugin.getUserManager().usersCount()));
 
-            bstats.addCustomChart(new SingleLineChart("guilds", GuildUtils::guildsSize));
+            bstats.addCustomChart(new SingleLineChart("guilds", GuildUtils::guildsCount));
 
             bstats.addCustomChart(new MultiLineChart("users_and_guilds", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();
 
-                valueMap.put("users", plugin.getUserManager().usersSize());
-                valueMap.put("guilds", GuildUtils.guildsSize());
+                valueMap.put("users", plugin.getUserManager().usersCount());
+                valueMap.put("guilds", GuildUtils.guildsCount());
 
                 return valueMap;
             }));

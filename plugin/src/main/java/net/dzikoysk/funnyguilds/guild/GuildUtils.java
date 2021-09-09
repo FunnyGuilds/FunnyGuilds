@@ -33,7 +33,7 @@ public class GuildUtils {
         return new HashSet<>(GUILDS);
     }
 
-    public static int guildsSize() {
+    public static int guildsCount() {
         return GUILDS.size();
     }
 
