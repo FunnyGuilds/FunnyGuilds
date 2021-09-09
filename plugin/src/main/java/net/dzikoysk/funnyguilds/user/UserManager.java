@@ -137,7 +137,7 @@ public class UserManager {
         return usersByName.containsKey(nickname);
     }
 
-    public int usersCount() {
+    public int userCount() {
         return usersByUuid.size();
     }
 

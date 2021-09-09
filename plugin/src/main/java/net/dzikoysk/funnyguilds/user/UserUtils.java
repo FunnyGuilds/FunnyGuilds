@@ -109,11 +109,11 @@ public class UserUtils {
      * Gets the number of users.
      *
      * @return the number of users
-     * @deprecated for removal in the future, in favour of {@link UserManager#usersCount()}
+     * @deprecated for removal in the future, in favour of {@link UserManager#userCount()}
      */
     @Deprecated
     public static int usersSize() {
-        return UserManager.getInstance().usersCount();
+        return UserManager.getInstance().userCount();
     }
 
     public static boolean validateUsername(String name) {
