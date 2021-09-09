@@ -20,16 +20,14 @@ public class MetricsCollector implements Runnable {
 
         try {
             mcstats = new MCStats(plugin);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.mcstats = null;
             FunnyGuilds.getPluginLogger().error("Could not initialize mcstats", ex);
         }
 
         try {
             this.bstats = new Metrics(plugin, 677);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.bstats = null;
             FunnyGuilds.getPluginLogger().error("Could not initialize bstats", ex);
         }
@@ -41,26 +39,29 @@ public class MetricsCollector implements Runnable {
 
     @Override
     public void run() {
-        // mcstats
+        // MCStats
         MCStats mcstats = this.mcstats;
         if (mcstats != null) {
             MCStats.Graph global = mcstats.createGraph("Guilds and Users");
+
             global.addPlotter(new MCStats.Plotter("Guilds") {
                 @Override
                 public int getValue() {
                     return GuildUtils.getGuilds().size();
                 }
             });
+
             global.addPlotter(new MCStats.Plotter("Users") {
                 @Override
                 public int getValue() {
                     return UserUtils.usersSize();
                 }
             });
+
             mcstats.start();
         }
 
-        // bstats - MultilineCharts isn't implemented in bStats yet.
+        // bStats - MultilineCharts isn't implemented in bStats yet.
         /*Metrics bstats = this.bstats;
         if (bstats != null) {
             bstats.addCustomChart(new MultiLineChart("Guilds and Users") {
