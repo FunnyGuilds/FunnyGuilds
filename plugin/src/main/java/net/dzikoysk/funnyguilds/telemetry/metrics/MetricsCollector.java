@@ -70,7 +70,7 @@ public class MetricsCollector implements Runnable {
 
             bstats.addCustomChart(new SingleLineChart("guilds", GuildUtils::guildsSize));
 
-            bstats.addCustomChart(new MultiLineChart("players_and_servers", () -> {
+            bstats.addCustomChart(new MultiLineChart("users_and_guilds", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();
 
                 valueMap.put("users", plugin.getUserManager().usersSize());
