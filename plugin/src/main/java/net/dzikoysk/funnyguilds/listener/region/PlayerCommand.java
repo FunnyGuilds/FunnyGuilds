@@ -14,6 +14,12 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class PlayerCommand implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerCommand(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onCommand(PlayerCommandPreprocessEvent event) {
         Player player = event.getPlayer();
@@ -30,7 +36,7 @@ public class PlayerCommand implements Listener {
 
         String command = commandElements[0];
 
-        for (String blockedCommand: FunnyGuilds.getInstance().getPluginConfiguration().regionCommands) {
+        for (String blockedCommand : plugin.getPluginConfiguration().regionCommands) {
             if (("/" + blockedCommand).equalsIgnoreCase(command)) {
                 command = null;
                 break;
@@ -55,7 +61,7 @@ public class PlayerCommand implements Listener {
         }
 
         event.setCancelled(true);
-        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionCommand);
+        player.sendMessage(plugin.getMessageConfiguration().regionCommand);
     }
 
 }

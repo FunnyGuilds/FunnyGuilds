@@ -2,14 +2,14 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
+import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
+import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
-import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -25,12 +25,18 @@ import java.util.concurrent.TimeUnit;
 
 public class PlayerInteract implements Listener {
 
+    private final FunnyGuilds plugin;
+
     private final InfoCommand infoExecutor = new InfoCommand();
+
+    public PlayerInteract(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onInteract(PlayerInteractEvent event) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
         PluginConfiguration config = plugin.getPluginConfiguration();
+
         Action eventAction = event.getAction();
         Player player = event.getPlayer();
         Block clicked = event.getClickedBlock();

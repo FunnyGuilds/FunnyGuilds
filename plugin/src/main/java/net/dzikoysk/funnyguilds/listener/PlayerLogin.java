@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
+import net.dzikoysk.funnyguilds.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
@@ -12,6 +12,12 @@ import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 
 public class PlayerLogin implements Listener {
+
+    private final FunnyGuilds plugin;
+
+    public PlayerLogin(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
@@ -32,7 +38,6 @@ public class PlayerLogin implements Listener {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
 
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
         plugin.getUserManager().getUser(event.getPlayer())
             .peek(BanUtils::checkIfBanShouldExpire)
             .filter(User::isBanned)

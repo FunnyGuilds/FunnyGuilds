@@ -1,11 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
@@ -14,9 +9,14 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
-import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -31,9 +31,12 @@ public class PlayerJoin implements Listener {
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
+    public void onJoin(PlayerJoinEvent event) {
         UserManager userManager = plugin.getUserManager();
-        Player player = e.getPlayer();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        TablistConfiguration tablistConfig = plugin.getTablistConfiguration();
+
+        Player player = event.getPlayer();
         User user = userManager.getUser(player).orElseGet(() -> userManager.create(player));
 
         String playerName = player.getName();
@@ -44,8 +47,6 @@ public class PlayerJoin implements Listener {
 
         user.updateReference(player);
         UserCache cache = user.getCache();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        TablistConfiguration tablistConfig = FunnyGuilds.getInstance().getTablistConfiguration();
 
         IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                 user,
@@ -67,7 +68,7 @@ public class PlayerJoin implements Listener {
             cache.setIndividualPrefix(prefix);
         }
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
+        ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
         concurrencyManager.postRequests(
                 new PrefixGlobalUpdatePlayer(player),
                 new DummyGlobalUpdateUserRequest(user),

@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -17,9 +17,15 @@ import java.util.Iterator;
 
 public class TntProtection implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public TntProtection(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onExplode(EntityExplodeEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
 
         if (!config.guildTNTProtectionEnabled && !config.guildTNTProtectionGlobal) {
             return;
@@ -65,7 +71,7 @@ public class TntProtection implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
         Location explosionLocation = event.getLocation();
         Region region = RegionUtils.getAt(explosionLocation);
 

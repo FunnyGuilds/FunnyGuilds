@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
@@ -10,6 +8,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuil
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUserPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
+import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
@@ -19,10 +18,11 @@ import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
@@ -39,9 +39,14 @@ import java.util.Map.Entry;
 
 public class PlayerDeath implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerDeath(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
         PluginConfiguration config = plugin.getPluginConfiguration();
         Player playerVictim = event.getEntity();
         Player playerAttacker = event.getEntity().getKiller();
@@ -306,7 +311,8 @@ public class PlayerDeath implements Listener {
     }
 
     private int[] getEloValues(int victimPoints, int attackerPoints) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+
         int[] rankChanges = new int[2];
 
         int attackerElo = IntegerRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
