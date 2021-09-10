@@ -2,30 +2,37 @@ package net.dzikoysk.funnyguilds.telemetry.metrics;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.dzikoysk.funnyguilds.user.UserManager;
+import org.bstats.bukkit.Metrics;
+import org.bstats.charts.MultiLineChart;
+import org.bstats.charts.SingleLineChart;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class MetricsCollector implements Runnable {
 
     private final FunnyGuilds plugin;
 
+    private final UserManager userManager;
+
     private MCStats mcstats;
-    private BStats bstats;
+    private Metrics bstats;
 
     public MetricsCollector(FunnyGuilds plugin) {
         this.plugin = plugin;
+        this.userManager = plugin.getUserManager();
+
         try {
             mcstats = new MCStats(plugin);
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             this.mcstats = null;
             FunnyGuilds.getPluginLogger().error("Could not initialize mcstats", ex);
         }
+
         try {
-            this.bstats = new BStats(plugin);
-        }
-        catch (Exception ex) {
+            this.bstats = new Metrics(plugin, 677);
+        } catch (Exception ex) {
             this.bstats = null;
             FunnyGuilds.getPluginLogger().error("Could not initialize bstats", ex);
         }
@@ -37,36 +44,43 @@ public class MetricsCollector implements Runnable {
 
     @Override
     public void run() {
-        // mcstats
+        // MCStats
         MCStats mcstats = this.mcstats;
         if (mcstats != null) {
             MCStats.Graph global = mcstats.createGraph("Guilds and Users");
+
+            global.addPlotter(new MCStats.Plotter("Users") {
+                @Override
+                public int getValue() {
+                    return userManager.countUsers();
+                }
+            });
+
             global.addPlotter(new MCStats.Plotter("Guilds") {
                 @Override
                 public int getValue() {
                     return GuildUtils.getGuilds().size();
                 }
             });
-            global.addPlotter(new MCStats.Plotter("Users") {
-                @Override
-                public int getValue() {
-                    return UserUtils.usersSize();
-                }
-            });
+
             mcstats.start();
         }
 
-        // bstats
-        BStats bstats = this.bstats;
+        // bStats
+        Metrics bstats = this.bstats;
         if (bstats != null) {
-            bstats.addCustomChart(new BStats.MultiLineChart("Guilds and Users") {
-                @Override
-                public HashMap<String, Integer> getValues(HashMap<String, Integer> hashMap) {
-                    hashMap.put("Guilds", GuildUtils.getGuilds().size());
-                    hashMap.put("Users", UserUtils.usersSize());
-                    return hashMap;
-                }
-            });
+            bstats.addCustomChart(new SingleLineChart("users", userManager::countUsers));
+
+            bstats.addCustomChart(new SingleLineChart("guilds", GuildUtils::countGuilds));
+
+            bstats.addCustomChart(new MultiLineChart("users_and_guilds", () -> {
+                Map<String, Integer> valueMap = new HashMap<>();
+
+                valueMap.put("users", userManager.countUsers());
+                valueMap.put("guilds", GuildUtils.countGuilds());
+
+                return valueMap;
+            }));
         }
     }
 }

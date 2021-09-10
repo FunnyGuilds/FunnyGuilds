@@ -33,6 +33,10 @@ public class GuildUtils {
         return new HashSet<>(GUILDS);
     }
 
+    public static int countGuilds() {
+        return GUILDS.size();
+    }
+
     public static void deleteGuild(Guild guild) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
