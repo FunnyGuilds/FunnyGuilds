@@ -88,7 +88,7 @@ public class UserRank extends Rank implements Comparable<UserRank> {
     }
 
     public void setLogouts(int logouts) {
-        this.logouts = Math.max(0, assists);
+        this.logouts = Math.max(0, logouts);
         this.entity.markChanged();
     }
 
