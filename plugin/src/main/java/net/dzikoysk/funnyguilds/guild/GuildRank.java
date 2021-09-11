@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.rank.Rank;
 
-public class GuildRank extends Rank {
+public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     private final Guild guild;
 
@@ -83,13 +83,8 @@ public class GuildRank extends Rank {
     }
 
     @Override
-    public int compareTo(Rank rank) {
-        if (!(rank instanceof GuildRank)) {
-            return -1;
-        }
-        GuildRank guildRank = (GuildRank) rank;
-
-        int result = Integer.compare(this.getAveragePoints(), guildRank.getAveragePoints());
+    public int compareTo(GuildRank rank) {
+        int result = Integer.compare(this.getAveragePoints(), rank.getAveragePoints());
 
         if (result == 0) {
             if (getIdentityName() == null) {

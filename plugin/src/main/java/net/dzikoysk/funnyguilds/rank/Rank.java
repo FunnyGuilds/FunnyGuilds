@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
 
-public abstract class Rank implements Comparable<Rank> {
+public abstract class Rank {
 
     protected final MutableEntity entity;
 
@@ -49,25 +49,6 @@ public abstract class Rank implements Comparable<Rank> {
     public abstract int getLogouts();
 
     public abstract float getKDR();
-
-    @Override
-    public int compareTo(Rank rank) {
-        int result = Integer.compare(this.getPoints(), rank.getPoints());
-
-        if (result == 0) {
-            if (getIdentityName() == null) {
-                return -1;
-            }
-
-            if (rank.getIdentityName() == null) {
-                return 1;
-            }
-
-            result = getIdentityName().compareTo(rank.getIdentityName());
-        }
-
-        return result;
-    }
 
     @Override
     public boolean equals(Object o) {

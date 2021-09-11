@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.rank.Rank;
 
 import java.util.function.IntFunction;
 
-public class UserRank extends Rank {
+public class UserRank extends Rank implements Comparable<UserRank> {
 
     private final User user;
 
@@ -103,6 +103,25 @@ public class UserRank extends Rank {
         }
 
         return 1.0F * getKills() / getDeaths();
+    }
+
+    @Override
+    public int compareTo(UserRank rank) {
+        int result = Integer.compare(this.getPoints(), rank.getPoints());
+
+        if (result == 0) {
+            if (getIdentityName() == null) {
+                return -1;
+            }
+
+            if (rank.getIdentityName() == null) {
+                return 1;
+            }
+
+            result = getIdentityName().compareTo(rank.getIdentityName());
+        }
+
+        return result;
     }
 
 }
