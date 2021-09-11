@@ -8,7 +8,7 @@ public abstract class Rank implements Comparable<Rank> {
 
     protected final MutableEntity entity;
 
-    public int position;
+    protected int position;
 
     public Rank(MutableEntity entity) {
         this.entity = entity;

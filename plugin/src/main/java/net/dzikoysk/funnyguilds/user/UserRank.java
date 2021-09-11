@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.rank.Rank;
 
+import java.util.function.IntFunction;
+
 public class UserRank extends Rank {
 
     private final User user;
@@ -33,12 +35,8 @@ public class UserRank extends Rank {
         this.entity.markChanged();
     }
 
-    public void addPoints(int change) {
-        this.setPoints(getPoints() + change);
-    }
-
-    public void removePoints(int change) {
-        this.setPoints(getPoints() - change);
+    public void updatePoints(IntFunction<Integer> update) {
+        this.setPoints(update.apply(this.points));
     }
 
     @Override
@@ -51,12 +49,8 @@ public class UserRank extends Rank {
         this.entity.markChanged();
     }
 
-    public void addKills(int change) {
-        this.setKills(getKills() + change);
-    }
-
-    public void removeKills(int change) {
-        this.setKills(getKills() - change);
+    public void updateKills(IntFunction<Integer> update) {
+        this.setKills(update.apply(this.kills));
     }
 
     @Override
@@ -69,13 +63,10 @@ public class UserRank extends Rank {
         this.entity.markChanged();
     }
 
-    public void addDeaths(int change) {
-        this.setDeaths(getDeaths() + change);
+    public void updateDeaths(IntFunction<Integer> update) {
+        this.setDeaths(update.apply(this.deaths));
     }
 
-    public void removeDeaths(int change) {
-        this.setDeaths(getDeaths() - change);
-    }
 
     @Override
     public int getAssists() {
@@ -87,12 +78,8 @@ public class UserRank extends Rank {
         this.entity.markChanged();
     }
 
-    public void addAssists(int change) {
-        this.setAssists(getAssists() + change);
-    }
-
-    public void removeAssists(int change) {
-        this.setAssists(getAssists() - change);
+    public void updateAssists(IntFunction<Integer> update) {
+        this.setAssists(update.apply(this.assists));
     }
 
     @Override
@@ -105,12 +92,8 @@ public class UserRank extends Rank {
         this.entity.markChanged();
     }
 
-    public void addLogouts(int change) {
-        this.setLogouts(getLogouts() + change);
-    }
-
-    public void removeLogouts(int change) {
-        this.setLogouts(getLogouts() - change);
+    public void updateLogouts(IntFunction<Integer> update) {
+        this.setLogouts(update.apply(this.logouts));
     }
 
     @Override
