@@ -89,7 +89,6 @@ public class GuildRank extends Rank {
     }
 
     /* Compare */
-
     @Override
     public int compareTo(Rank rank) {
         if(!(rank instanceof GuildRank)) {
