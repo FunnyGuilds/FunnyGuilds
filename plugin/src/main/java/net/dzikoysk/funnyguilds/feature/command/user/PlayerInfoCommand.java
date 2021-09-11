@@ -3,12 +3,12 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.rank.Rank;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserRank;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -45,7 +45,7 @@ public final class PlayerInfoCommand {
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        Rank rank = infoUser.getRank();
+        UserRank rank = infoUser.getRank();
 
         for (String messageLine : baseMessage) {
             if (infoUser.hasGuild()) {
