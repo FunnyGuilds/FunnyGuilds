@@ -20,10 +20,16 @@ public class BlockPlace implements Listener {
 
     private static final Vector ANTI_GLITCH_VELOCITY = new Vector(0, 0.4, 0);
 
-    private final PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+    private final FunnyGuilds plugin;
+
+    public BlockPlace(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlace(BlockPlaceEvent event) {
+        PluginConfiguration config = plugin.getPluginConfiguration();
+
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Material type = block.getType();
@@ -42,7 +48,7 @@ public class BlockPlace implements Listener {
         event.setCancelled(true);
 
         // disabled bugged-blocks or blacklisted item
-        if (!this.config.buggedBlocks || this.config.buggedBlocksExclude.contains(type)) {
+        if (!config.buggedBlocks || config.buggedBlocksExclude.contains(type)) {
             return;
         }
 
@@ -74,21 +80,21 @@ public class BlockPlace implements Listener {
         }
 
         // delay, because we cannot do {@link Block#setType(Material)} immediately
-        Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
+        Bukkit.getScheduler().runTask(plugin, () -> {
 
             // fake place for bugged block
             block.setType(type);
 
             // start timer and return the item to the player if specified to do so
-            Bukkit.getScheduler().runTaskLater(FunnyGuilds.getInstance(), () -> {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 event.getBlockReplacedState().update(true);
                 if (!player.isOnline()) {
                     return;
                 }
-                if (this.config.buggedBlockReturn) {
+                if (config.buggedBlockReturn) {
                     player.getInventory().addItem(returnItem);
                 }
-            }, this.config.buggedBlocksTimer);
+            }, config.buggedBlocksTimer);
 
         });
     }

@@ -20,9 +20,31 @@ import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.listener.*;
+import net.dzikoysk.funnyguilds.listener.BlockFlow;
+import net.dzikoysk.funnyguilds.listener.EntityDamage;
+import net.dzikoysk.funnyguilds.listener.EntityInteract;
+import net.dzikoysk.funnyguilds.listener.PlayerChat;
+import net.dzikoysk.funnyguilds.listener.PlayerDeath;
+import net.dzikoysk.funnyguilds.listener.PlayerJoin;
+import net.dzikoysk.funnyguilds.listener.PlayerLogin;
+import net.dzikoysk.funnyguilds.listener.PlayerQuit;
+import net.dzikoysk.funnyguilds.listener.TntProtection;
 import net.dzikoysk.funnyguilds.listener.dynamic.DynamicListenerManager;
-import net.dzikoysk.funnyguilds.listener.region.*;
+import net.dzikoysk.funnyguilds.listener.region.BlockBreak;
+import net.dzikoysk.funnyguilds.listener.region.BlockIgnite;
+import net.dzikoysk.funnyguilds.listener.region.BlockPhysics;
+import net.dzikoysk.funnyguilds.listener.region.BlockPlace;
+import net.dzikoysk.funnyguilds.listener.region.BucketAction;
+import net.dzikoysk.funnyguilds.listener.region.EntityExplode;
+import net.dzikoysk.funnyguilds.listener.region.EntityPlace;
+import net.dzikoysk.funnyguilds.listener.region.EntityProtect;
+import net.dzikoysk.funnyguilds.listener.region.GuildHeartProtectionHandler;
+import net.dzikoysk.funnyguilds.listener.region.HangingBreak;
+import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
+import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
+import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
+import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
+import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
 import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.Reflections;
@@ -173,14 +195,14 @@ public class FunnyGuilds extends JavaPlugin {
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new GuiActionHandler(), this);
         pluginManager.registerEvents(new EntityDamage(this), this);
-        pluginManager.registerEvents(new EntityInteract(), this);
-        pluginManager.registerEvents(new PlayerChat(), this);
-        pluginManager.registerEvents(new PlayerDeath(), this);
+        pluginManager.registerEvents(new EntityInteract(this), this);
+        pluginManager.registerEvents(new PlayerChat(this), this);
+        pluginManager.registerEvents(new PlayerDeath(this), this);
         pluginManager.registerEvents(new PlayerJoin(this), this);
-        pluginManager.registerEvents(new PlayerLogin(), this);
-        pluginManager.registerEvents(new PlayerQuit(), this);
+        pluginManager.registerEvents(new PlayerLogin(this), this);
+        pluginManager.registerEvents(new PlayerQuit(this), this);
         pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
-        pluginManager.registerEvents(new TntProtection(), this);
+        pluginManager.registerEvents(new TntProtection(this), this);
 
         if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
             pluginManager.registerEvents(new BlockFlow(), this);
@@ -194,21 +216,21 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
-                new BlockBreak(),
+                new BlockBreak(this),
                 new BlockIgnite(),
-                new BlockPlace(),
+                new BlockPlace(this),
                 new BucketAction(),
-                new EntityExplode(),
+                new EntityExplode(this),
                 new HangingBreak(),
                 new HangingPlace(),
-                new PlayerCommand(),
-                new PlayerInteract(),
-                new EntityProtect()
+                new PlayerCommand(this),
+                new PlayerInteract(this),
+                new EntityProtect(this)
         );
 
-        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, new PlayerMove());
+        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, new PlayerMove(this));
         this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, new BlockPhysics());
-        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, new PlayerRespawn());
+        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, new PlayerRespawn(this));
         this.dynamicListenerManager.reloadAll();
         this.handleReload();
 

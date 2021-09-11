@@ -39,9 +39,14 @@ import java.util.Map.Entry;
 
 public class PlayerDeath implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerDeath(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
         PluginConfiguration config = plugin.getPluginConfiguration();
         Player playerVictim = event.getEntity();
         Player playerAttacker = event.getEntity().getKiller();
@@ -306,7 +311,8 @@ public class PlayerDeath implements Listener {
     }
 
     private int[] getEloValues(int victimPoints, int attackerPoints) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+
         int[] rankChanges = new int[2];
 
         int attackerElo = IntegerRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);

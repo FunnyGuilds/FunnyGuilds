@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
@@ -19,15 +19,17 @@ import panda.std.Option;
 
 public class EntityDamage implements Listener {
 
-    private final FunnyGuilds funnyGuilds;
+    private final FunnyGuilds plugin;
 
-    public EntityDamage(FunnyGuilds funnyGuilds) {
-        this.funnyGuilds = funnyGuilds;
+    public EntityDamage(FunnyGuilds plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        UserManager userManager = funnyGuilds.getUserManager();
+        UserManager userManager = plugin.getUserManager();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+
         EntityUtils.getAttacker(event.getDamager()).peek(attacker -> {
             Option<User> attackerUserOption = userManager.getUser(attacker);
 
@@ -36,7 +38,6 @@ public class EntityDamage implements Listener {
             }
 
             User attackerUser = attackerUserOption.get();
-            PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             Entity victim = event.getEntity();
 
             if (config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {

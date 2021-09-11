@@ -1,24 +1,24 @@
 package net.dzikoysk.funnyguilds.listener.dynamic;
 
-import java.util.Collection;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.PluginManager;
+
+import java.util.Collection;
+import java.util.function.Supplier;
 
 class DynamicListenerRegistration {
 
-    private final FunnyGuilds funnyGuilds;
+    private final FunnyGuilds plugin;
+
     private final Collection<Listener> listeners;
     private final Supplier<Boolean>  predicate;
     private boolean currentState;
 
-    public DynamicListenerRegistration(FunnyGuilds funnyGuilds, Collection<Listener> listeners, Supplier<Boolean> predicate) {
-        this.funnyGuilds = funnyGuilds;
+    public DynamicListenerRegistration(FunnyGuilds plugin, Collection<Listener> listeners, Supplier<Boolean> predicate) {
+        this.plugin = plugin;
+
         this.listeners = Validate.notNull(listeners, "listener");
         this.predicate = Validate.notNull(predicate, "predicate");
     }
@@ -38,7 +38,7 @@ class DynamicListenerRegistration {
     }
 
     public void forceRegister() {
-        this.listeners.forEach(listener -> funnyGuilds.getServer().getPluginManager().registerEvents(listener, this.funnyGuilds));
+        this.listeners.forEach(listener -> plugin.getServer().getPluginManager().registerEvents(listener, this.plugin));
         this.currentState = true;
     }
 

@@ -2,7 +2,9 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -19,9 +21,16 @@ public class EntityProtect implements Listener {
         IS_NOT_MOB.add(EntityType.PLAYER);
     }
 
+    private final FunnyGuilds plugin;
+
+    public EntityProtect(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+
         Entity entity = event.getEntity();
 
         if (!config.explodeShouldAffectOnlyGuild) {
