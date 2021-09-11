@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
@@ -10,6 +8,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuil
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUserPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
+import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
@@ -19,10 +18,11 @@ import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
@@ -49,7 +49,7 @@ public class PlayerDeath implements Listener {
         User victim = UserUtils.get(playerVictim.getUniqueId());
         UserCache victimCache = victim.getCache();
 
-        victim.getRank().addDeath();
+        victim.getRank().addDeaths(1);
 
         if (playerAttacker == null) {
             if (!config.considerLastAttackerAsKiller) {
@@ -201,14 +201,14 @@ public class PlayerDeath implements Listener {
                     assistEntries.add(assistEntry);
 
                     assistUser.getRank().addPoints(addedPoints);
-                    assistUser.getRank().addAssist();
+                    assistUser.getRank().addAssists(1);
                 }
 
                 double updatedAttackerPoints = attackerEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
                 attackerEvent.setChange((int) Math.round(updatedAttackerPoints));
             }
 
-            attacker.getRank().addKill();
+            attacker.getRank().addKills(1);
             attacker.getRank().addPoints(attackerEvent.getChange());
             attackerCache.registerVictim(victim);
 

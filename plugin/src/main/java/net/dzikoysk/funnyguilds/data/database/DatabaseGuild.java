@@ -2,18 +2,18 @@ package net.dzikoysk.funnyguilds.data.database;
 
 import com.google.common.collect.Sets;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
+import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
+import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
+import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
-import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
-import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
-import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
-import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import panda.std.Option;
 
 import java.sql.ResultSet;
@@ -138,7 +138,7 @@ public class DatabaseGuild {
         statement.set("deputy",   deputies);
         statement.set("allies",   allies);
         statement.set("enemies",  enemies);
-        statement.set("points",   guild.getRank().getPoints());
+        statement.set("points",   guild.getRank().getAveragePoints());
         statement.set("lives",    guild.getLives());
         statement.set("born",     guild.getBorn());
         statement.set("validity", guild.getValidity());
@@ -161,7 +161,7 @@ public class DatabaseGuild {
         SQLTable table = SQLDataModel.tabGuilds;
         SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
 
-        statement.set("points", guild.getRank().getPoints());
+        statement.set("points", guild.getRank().getAveragePoints());
         statement.set("uuid", guild.getUUID().toString());
         statement.executeUpdate();
     }

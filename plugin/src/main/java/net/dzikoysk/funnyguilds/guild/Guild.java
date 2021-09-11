@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
-import net.dzikoysk.funnyguilds.rank.Rank;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -25,7 +24,7 @@ public class Guild extends AbstractMutableEntity {
     private String     name;
     private String     tag;
     private User       owner;
-    private Rank       rank;
+    private GuildRank  rank;
     private Region     region;
     private Location   home;
     private Set<User>  members;
@@ -284,7 +283,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public void setRank(Rank rank) {
+    public void setRank(GuildRank rank) {
         this.rank = rank;
         this.markChanged();
     }
@@ -398,12 +397,12 @@ public class Guild extends AbstractMutableEntity {
         return this.build;
     }
 
-    public Rank getRank() {
+    public GuildRank getRank() {
         if (this.rank != null) {
             return this.rank;
         }
 
-        this.rank = new Rank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
+        this.rank = new GuildRank(this);
         RankManager.getInstance().update(this);
         return this.rank;
     }

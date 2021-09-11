@@ -2,12 +2,12 @@ package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.rank.Rank;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
+import net.dzikoysk.funnyguilds.feature.command.UserValidation;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import panda.std.Option;
 
@@ -30,7 +30,7 @@ public final class DeathsCommand {
 
         User admin = AdminUtils.getAdminUser(sender);
         User user = UserValidation.requireUserByName(args[0]);
-        Rank userRank = user.getRank();
+        UserRank userRank = user.getRank();
         int change = deaths - userRank.getDeaths();
 
         if (!SimpleEventHandler.handle(new DeathsChangeEvent(AdminUtils.getCause(admin), userRank, admin, change))) {

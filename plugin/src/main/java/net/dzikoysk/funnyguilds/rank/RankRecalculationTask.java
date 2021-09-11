@@ -2,10 +2,12 @@ package net.dzikoysk.funnyguilds.rank;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserRank;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 
 import java.util.Collections;
 import java.util.NavigableSet;
@@ -22,10 +24,10 @@ public class RankRecalculationTask implements Runnable {
     }
 
     private void recalculateUsersRank(RankManager manager) {
-        NavigableSet<Rank> usersRank = new TreeSet<>(Collections.reverseOrder());
+        NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
 
         for (User user : UserUtils.getUsers()) {
-            Rank userRank = user.getRank();
+            UserRank userRank = user.getRank();
 
             if (FunnyGuilds.getInstance().getPluginConfiguration().skipPrivilegedPlayersInRankPositions &&
                     PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt")) {
@@ -37,7 +39,7 @@ public class RankRecalculationTask implements Runnable {
 
         int position = 0;
 
-        for (Rank userRank : usersRank) {
+        for (UserRank userRank : usersRank) {
             userRank.setPosition(++position);
         }
 
@@ -45,10 +47,10 @@ public class RankRecalculationTask implements Runnable {
     }
 
     private void recalculateGuildsRank(RankManager manager) {
-        NavigableSet<Rank> guildsRank = new TreeSet<>(Collections.reverseOrder());
+        NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
 
         for (Guild guild : GuildUtils.getGuilds()) {
-            Rank guildRank = guild.getRank();
+            GuildRank guildRank = guild.getRank();
 
             if (guild.getMembers().size() < FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude) {
                 continue;
@@ -59,7 +61,7 @@ public class RankRecalculationTask implements Runnable {
 
         int position = 0;
 
-        for (Rank guildRank : guildsRank) {
+        for (GuildRank guildRank : guildsRank) {
             guildRank.setPosition(++position);
         }
 

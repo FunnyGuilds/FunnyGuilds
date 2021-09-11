@@ -33,7 +33,7 @@ public class PlayerQuit implements Listener {
         UserCache cache = user.getCache();
 
         if (cache.isInCombat()) {
-            user.getRank().addLogout();
+            user.getRank().addLogouts(1);
         }
 
         cache.setIndividualPrefix(null);
