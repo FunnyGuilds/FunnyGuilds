@@ -16,7 +16,6 @@ public class GuildRank extends Rank {
         return guild;
     }
 
-    /* Points */
     @Override
     public int getPoints() {
         return guild.getMembers()
@@ -27,7 +26,6 @@ public class GuildRank extends Rank {
         return calculateAverage(this.getPoints());
     }
 
-    /* Kills */
     @Override
     public int getKills() {
         return guild.getMembers()
@@ -38,7 +36,6 @@ public class GuildRank extends Rank {
         return calculateAverage(this.getKills());
     }
 
-    /* Deaths */
     @Override
     public int getDeaths() {
         return guild.getMembers()
@@ -49,7 +46,6 @@ public class GuildRank extends Rank {
         return calculateAverage(this.getDeaths());
     }
 
-    /* Assists */
     @Override
     public int getAssists() {
         return guild.getMembers()
@@ -60,7 +56,6 @@ public class GuildRank extends Rank {
         return calculateAverage(this.getAssists());
     }
 
-    /* Logouts */
     @Override
     public int getLogouts() {
         return guild.getMembers()
@@ -71,7 +66,6 @@ public class GuildRank extends Rank {
         return calculateAverage(this.getLogouts());
     }
 
-    /* KDR */
     @Override
     public float getKDR() {
         if (getDeaths() == 0) {
@@ -88,7 +82,6 @@ public class GuildRank extends Rank {
         return calculateAverage(kdr);
     }
 
-    /* Compare */
     @Override
     public int compareTo(Rank rank) {
         if (!(rank instanceof GuildRank)) {
@@ -113,9 +106,6 @@ public class GuildRank extends Rank {
         return result;
     }
 
-    /*
-        Utility methods
-     */
     private int calculateAverage(int value) {
         return value / guild.getMembers().size();
     }

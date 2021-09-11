@@ -23,7 +23,6 @@ public class UserRank extends Rank {
         return user;
     }
 
-    /* Points */
     @Override
     public int getPoints() {
         return this.points;
@@ -42,7 +41,6 @@ public class UserRank extends Rank {
         this.setPoints(Math.max(0, getPoints() - change));
     }
 
-    /* Kills */
     @Override
     public int getKills() {
         return this.kills;
@@ -61,7 +59,6 @@ public class UserRank extends Rank {
         this.setKills(Math.max(0, getKills() - change));
     }
 
-    /* Deaths */
     @Override
     public int getDeaths() {
         return this.deaths;
@@ -80,7 +77,6 @@ public class UserRank extends Rank {
         this.setDeaths(Math.max(0, getDeaths() - change));
     }
 
-    /* Assists */
     @Override
     public int getAssists() {
         return this.assists;
@@ -99,7 +95,6 @@ public class UserRank extends Rank {
         this.setAssists(Math.max(0, getAssists() - change));
     }
 
-    /* Logouts */
     @Override
     public int getLogouts() {
         return this.logouts;
@@ -118,7 +113,6 @@ public class UserRank extends Rank {
         this.setLogouts(Math.max(0, getLogouts() - change));
     }
 
-    /* KDR */
     @Override
     public float getKDR() {
         if (getDeaths() == 0) {
