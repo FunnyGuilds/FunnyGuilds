@@ -54,7 +54,7 @@ public class PlayerDeath implements Listener {
         User victim = UserUtils.get(playerVictim.getUniqueId());
         UserCache victimCache = victim.getCache();
 
-        victim.getRank().addDeath();
+        victim.getRank().updateDeaths(currentValue -> currentValue + 1);
 
         if (playerAttacker == null) {
             if (!config.considerLastAttackerAsKiller) {
@@ -64,7 +64,7 @@ public class PlayerDeath implements Listener {
 
             User lastAttacker = victimCache.getLastKiller();
 
-            if (lastAttacker == null || ! lastAttacker.isOnline()) {
+            if (lastAttacker == null || !lastAttacker.isOnline()) {
                 victimCache.clearDamage();
                 return;
             }
@@ -110,8 +110,7 @@ public class PlayerDeath implements Listener {
 
                     return;
                 }
-            }
-            else if (victimTimestamp != null) {
+            } else if (victimTimestamp != null) {
                 if (victimTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
                     playerVictim.sendMessage(messages.rankLastAttackerV);
                     playerAttacker.sendMessage(messages.rankLastAttackerA);
@@ -205,21 +204,21 @@ public class PlayerDeath implements Listener {
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", ChatUtils.getPercent(assistFraction));
                     assistEntries.add(assistEntry);
 
-                    assistUser.getRank().addPoints(addedPoints);
-                    assistUser.getRank().addAssist();
+                    assistUser.getRank().updatePoints(currentValue -> currentValue + addedPoints);
+                    assistUser.getRank().updateAssists(currentValue -> currentValue + 1);
                 }
 
                 double updatedAttackerPoints = attackerEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
                 attackerEvent.setChange((int) Math.round(updatedAttackerPoints));
             }
 
-            attacker.getRank().addKill();
-            attacker.getRank().addPoints(attackerEvent.getChange());
+            attacker.getRank().updateKills(currentValue -> currentValue + 1);
+            attacker.getRank().updatePoints(currentValue -> currentValue + attackerEvent.getChange());
             attackerCache.registerVictim(victim);
 
             victimPointsBeforeChange = victim.getRank().getPoints();
 
-            victim.getRank().removePoints(victimEvent.getChange());
+            victim.getRank().updatePoints(currentValue -> currentValue - victimEvent.getChange());
             victimCache.registerKiller(attacker);
             victimCache.clearDamage();
 
@@ -269,7 +268,7 @@ public class PlayerDeath implements Listener {
                 .register("{ATAG}", attacker.hasGuild()
                         ? StringUtils.replace(config.chatGuild, "{TAG}", attacker.getGuild().getTag())
                         : "")
-                .register("{ASSISTS}", config.assistEnable && ! assistEntries.isEmpty()
+                .register("{ASSISTS}", config.assistEnable && !assistEntries.isEmpty()
                         ? StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))
                         : "");
 
@@ -293,12 +292,10 @@ public class PlayerDeath implements Listener {
                     event.setDeathMessage(null);
                     player.sendMessage(deathMessage);
                 }
-            }
-            else {
+            } else {
                 event.setDeathMessage(deathMessage);
             }
-        }
-        else {
+        } else {
             event.setDeathMessage(null);
 
             for (User fighter : messageReceivers) {
@@ -319,7 +316,7 @@ public class PlayerDeath implements Listener {
         int victimElo = IntegerRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
 
         rankChanges[0] = (int) Math.round(attackerElo * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider)))));
-        rankChanges[1] = (int) Math.round(victimElo * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * - 1);
+        rankChanges[1] = (int) Math.round(victimElo * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * -1);
 
         return rankChanges;
     }

@@ -3,8 +3,10 @@ package net.dzikoysk.funnyguilds.rank;
 import com.google.common.collect.Iterables;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserRank;
 
 import java.util.Collections;
 import java.util.NavigableSet;
@@ -14,8 +16,8 @@ public class RankManager {
 
     private static final RankManager INSTANCE = new RankManager();
 
-    protected NavigableSet<Rank> usersRank = new TreeSet<>(Collections.reverseOrder());
-    protected NavigableSet<Rank> guildsRank = new TreeSet<>(Collections.reverseOrder());
+    protected NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
+    protected NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
 
     private RankManager() {}
 

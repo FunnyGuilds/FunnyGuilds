@@ -48,7 +48,7 @@ public class RankUtils {
                 return StringUtils.replace(rankTop, "{GTOP-" + index + '}', messages.gtopNoValue);
             }
 
-            int points = guild.getRank().getPoints();
+            int points = guild.getRank().getAveragePoints();
             String pointsFormat = config.gtopPoints;
 
             if (!pointsFormat.isEmpty()) {

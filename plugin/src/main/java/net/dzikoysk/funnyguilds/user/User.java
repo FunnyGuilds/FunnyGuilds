@@ -2,20 +2,17 @@ package net.dzikoysk.funnyguilds.user;
 
 import com.google.common.base.Charsets;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.rank.Rank;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
+import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 
@@ -24,7 +21,7 @@ public class User extends AbstractMutableEntity {
     private final UUID                  uuid;
     private       String                name;
     private final UserCache             cache;
-    private final Rank                  rank;
+    private final UserRank              rank;
     private       WeakReference<Player> playerRef;
     private       Guild                 guild;
     private       UserBan               ban;
@@ -34,7 +31,7 @@ public class User extends AbstractMutableEntity {
         this.uuid = uuid;
         this.name = name;
         this.cache = new UserCache(this);
-        this.rank = new Rank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
+        this.rank = new UserRank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
         this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
         this.bossBarProvider = BossBarProvider.getBossBar(this);
         this.markChanged();
@@ -109,7 +106,7 @@ public class User extends AbstractMutableEntity {
         return this.guild;
     }
 
-    public Rank getRank() {
+    public UserRank getRank() {
         return this.rank;
     }
 

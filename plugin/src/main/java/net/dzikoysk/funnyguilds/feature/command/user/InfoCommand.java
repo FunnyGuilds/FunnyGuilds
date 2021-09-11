@@ -4,23 +4,24 @@ import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.rank.Rank;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
-import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.Option;
+
 import java.util.Date;
 import java.util.Locale;
 
@@ -62,9 +63,9 @@ public final class InfoCommand {
             messageLine = StringUtils.replace(messageLine, "{REGION-SIZE}", config.regionsEnabled ? String.valueOf(guild.getRegion().getSize()) : messages.gRegionSizeNoValue);
             messageLine = StringUtils.replace(messageLine, "{GUILD-PROTECTION}", protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now));
 
-            Rank rank = guild.getRank();
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getPoints(), config.pointsFormat));
-            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
+            GuildRank rank = guild.getRank();
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getAveragePoints(), config.pointsFormat));
+            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getAveragePoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));
             messageLine = StringUtils.replace(messageLine, "{ASSISTS}", Integer.toString(rank.getAssists()));

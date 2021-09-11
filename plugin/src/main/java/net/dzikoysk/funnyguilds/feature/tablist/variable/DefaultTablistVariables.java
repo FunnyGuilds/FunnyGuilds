@@ -1,20 +1,20 @@
 package net.dzikoysk.funnyguilds.feature.tablist.variable;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.TimeFormattedVariable;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
-import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -161,7 +161,7 @@ public final class DefaultTablistVariables {
 
         putGuild("g-lives", "G-LIVES", user -> user.getGuild().getLives(), user -> "0");
         putGuild("g-allies", "G-ALLIES", user -> user.getGuild().getAllies().size(), user -> "0");
-        putGuild("g-points", "G-POINTS", user -> user.getGuild().getRank().getPoints(), user -> "0");
+        putGuild("g-points", "G-POINTS", user -> user.getGuild().getRank().getAveragePoints(), user -> "0");
         putGuild("g-kills", "G-KILLS", user -> user.getGuild().getRank().getKills(), user -> "0");
         putGuild("g-deaths", "G-DEATHS", user -> user.getGuild().getRank().getDeaths(), user -> "0");
         putGuild("g-kdr", "G-KDR", user -> String.format(Locale.US, "%.2f", user.getGuild().getRank().getKDR()), user -> "0.00");
@@ -173,8 +173,8 @@ public final class DefaultTablistVariables {
                 user -> messages.gValidityNoValue);
 
         putGuild("g-points-format", "G-POINTS-FORMAT",
-                user -> IntegerRange.inRangeToString(user.getGuild().getRank().getPoints(), config.pointsFormat)
-                        .replace("{POINTS}", String.valueOf(user.getGuild().getRank().getPoints())),
+                user -> IntegerRange.inRangeToString(user.getGuild().getRank().getAveragePoints(), config.pointsFormat)
+                        .replace("{POINTS}", String.valueOf(user.getGuild().getRank().getAveragePoints())),
                 user -> IntegerRange.inRangeToString(0, config.pointsFormat)
                         .replace("{POINTS}", "0"));
 
