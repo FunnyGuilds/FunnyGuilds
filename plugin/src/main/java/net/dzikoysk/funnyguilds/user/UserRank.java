@@ -29,16 +29,16 @@ public class UserRank extends Rank {
     }
 
     public void setPoints(int points) {
-        this.points = points;
+        this.points = Math.max(0, points);
         this.entity.markChanged();
     }
 
     public void addPoints(int change) {
-        this.setPoints(Math.max(0, getPoints() + change));
+        this.setPoints(getPoints() + change);
     }
 
     public void removePoints(int change) {
-        this.setPoints(Math.max(0, getPoints() - change));
+        this.setPoints(getPoints() - change);
     }
 
     @Override
@@ -47,16 +47,16 @@ public class UserRank extends Rank {
     }
 
     public void setKills(int kills) {
-        this.kills = kills;
+        this.kills = Math.max(0, kills);
         this.entity.markChanged();
     }
 
     public void addKills(int change) {
-        this.setKills(Math.max(0, getKills() + change));
+        this.setKills(getKills() + change);
     }
 
     public void removeKills(int change) {
-        this.setKills(Math.max(0, getKills() - change));
+        this.setKills(getKills() - change);
     }
 
     @Override
@@ -65,16 +65,16 @@ public class UserRank extends Rank {
     }
 
     public void setDeaths(int deaths) {
-        this.deaths = deaths;
+        this.deaths = Math.max(0, deaths);
         this.entity.markChanged();
     }
 
     public void addDeaths(int change) {
-        this.setDeaths(Math.max(0, getDeaths() + change));
+        this.setDeaths(getDeaths() + change);
     }
 
     public void removeDeaths(int change) {
-        this.setDeaths(Math.max(0, getDeaths() - change));
+        this.setDeaths(getDeaths() - change);
     }
 
     @Override
@@ -83,16 +83,16 @@ public class UserRank extends Rank {
     }
 
     public void setAssists(int assists) {
-        this.assists = assists;
+        this.assists = Math.max(0, assists);
         this.entity.markChanged();
     }
 
     public void addAssists(int change) {
-        this.setAssists(Math.max(0, getAssists() + change));
+        this.setAssists(getAssists() + change);
     }
 
     public void removeAssists(int change) {
-        this.setAssists(Math.max(0, getAssists() - change));
+        this.setAssists(getAssists() - change);
     }
 
     @Override
@@ -101,16 +101,16 @@ public class UserRank extends Rank {
     }
 
     public void setLogouts(int logouts) {
-        this.logouts = logouts;
+        this.logouts = Math.max(0, assists);
         this.entity.markChanged();
     }
 
     public void addLogouts(int change) {
-        this.setLogouts(Math.max(0, getLogouts() + change));
+        this.setLogouts(getLogouts() + change);
     }
 
     public void removeLogouts(int change) {
-        this.setLogouts(Math.max(0, getLogouts() - change));
+        this.setLogouts(getLogouts() - change);
     }
 
     @Override
