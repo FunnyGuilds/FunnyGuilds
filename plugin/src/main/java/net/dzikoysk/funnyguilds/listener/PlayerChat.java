@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,9 +20,14 @@ import panda.std.Option;
 
 public class PlayerChat implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerChat(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
         UserManager userManager = plugin.getUserManager();
         PluginConfiguration config = plugin.getPluginConfiguration();
         Player player = event.getPlayer();

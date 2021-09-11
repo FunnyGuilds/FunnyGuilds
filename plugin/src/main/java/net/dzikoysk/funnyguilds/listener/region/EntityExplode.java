@@ -1,17 +1,17 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,13 +30,21 @@ import java.util.concurrent.TimeUnit;
 
 public class EntityExplode implements Listener {
 
+    private final FunnyGuilds plugin;
+
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
+
+    public EntityExplode(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void preNormalExplosionHandler(EntityExplodeEvent event) {
+        MessageConfiguration messages = plugin.getMessageConfiguration();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         Map<Material, Double> explosiveMaterials = config.explodeMaterials;
 
         List<Block> blocksInSphere = SpaceUtils.sphereBlocks(
@@ -49,7 +57,6 @@ public class EntityExplode implements Listener {
         );
 
         Entity explosionEntity = event.getEntity();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
         if (config.explodeShouldAffectOnlyGuild) {
             explodedBlocks.removeIf(block -> {
@@ -94,7 +101,7 @@ public class EntityExplode implements Listener {
                 Player player = user.getPlayer();
 
                 if (player != null && ! informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                    player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
+                    player.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
                 }
             }
         }

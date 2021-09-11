@@ -1,20 +1,20 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildRegionEnterEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
-import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
+import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -27,6 +27,12 @@ import panda.utilities.text.Formatter;
 
 public class PlayerMove implements Listener {
 
+    private final FunnyGuilds plugin;
+
+    public PlayerMove(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
         onMove(event);
@@ -34,13 +40,12 @@ public class PlayerMove implements Listener {
     
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
+
         Location from = event.getFrom();
         Location to = event.getTo();
         Player player = event.getPlayer();
-
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        PluginConfiguration config = plugin.getPluginConfiguration();
-        MessageConfiguration messages = plugin.getMessageConfiguration();
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
             if (to == null) {
