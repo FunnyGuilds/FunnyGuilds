@@ -18,8 +18,9 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getPoints() {
-        return guild.getMembers()
-                .stream().mapToInt(user -> user.getRank().getPoints()).sum();
+        return guild.getMembers().stream()
+                .mapToInt(user -> user.getRank().getPoints())
+                .sum();
     }
 
     public int getAveragePoints() {
@@ -28,8 +29,9 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getKills() {
-        return guild.getMembers()
-                .stream().mapToInt(user -> user.getRank().getKills()).sum();
+        return guild.getMembers().stream()
+                .mapToInt(user -> user.getRank().getKills())
+                .sum();
     }
 
     public int getAverageKills() {
@@ -38,8 +40,9 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getDeaths() {
-        return guild.getMembers()
-                .stream().mapToInt(user -> user.getRank().getDeaths()).sum();
+        return guild.getMembers().stream()
+                .mapToInt(user -> user.getRank().getDeaths())
+                .sum();
     }
 
     public int getAverageDeaths() {
@@ -48,8 +51,9 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getAssists() {
-        return guild.getMembers()
-                .stream().mapToInt(user -> user.getRank().getAssists()).sum();
+        return guild.getMembers().stream()
+                .mapToInt(user -> user.getRank().getAssists())
+                .sum();
     }
 
     public int getAverageAssists() {
@@ -58,8 +62,9 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getLogouts() {
-        return guild.getMembers()
-                .stream().mapToInt(user -> user.getRank().getLogouts()).sum();
+        return guild.getMembers().stream()
+                .mapToInt(user -> user.getRank().getLogouts())
+                .sum();
     }
 
     public int getAverageLogouts() {
@@ -68,18 +73,14 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public float getKDR() {
-        if (getDeaths() == 0) {
-            return getKills();
-        }
-
-        return 1.0F * getKills() / getDeaths();
+        return getDeaths() == 0 ? getKills() : 1.0F * getKills() / getDeaths();
     }
 
     public float getAverageKDR() {
-        float kdr = (float) guild.getMembers()
-                .stream().mapToDouble(user -> user.getRank().getKDR()).sum();
-
-        return calculateAverage(kdr);
+        return (float) guild.getMembers().stream()
+                .mapToDouble(user -> user.getRank().getKDR())
+                .average()
+                .orElse(0.0D);
     }
 
     @Override
