@@ -64,8 +64,8 @@ public final class InfoCommand {
             messageLine = StringUtils.replace(messageLine, "{GUILD-PROTECTION}", protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now));
 
             GuildRank rank = guild.getRank();
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getPoints(), config.pointsFormat));
-            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getAveragePoints(), config.pointsFormat));
+            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getAveragePoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));
             messageLine = StringUtils.replace(messageLine, "{ASSISTS}", Integer.toString(rank.getAssists()));
