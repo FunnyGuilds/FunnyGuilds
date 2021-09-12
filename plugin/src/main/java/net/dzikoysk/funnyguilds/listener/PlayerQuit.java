@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.cache.UserCache;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

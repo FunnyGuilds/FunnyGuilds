@@ -1,4 +1,6 @@
-package net.dzikoysk.funnyguilds.user;
+package net.dzikoysk.funnyguilds.user.cache;
+
+import net.dzikoysk.funnyguilds.user.User;
 
 public class DamageCache {
 

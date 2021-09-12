@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.UserValidation;
+import net.dzikoysk.funnyguilds.user.cache.UserCache;
 import org.bukkit.command.CommandSender;
 
 public final class SpyCommand {

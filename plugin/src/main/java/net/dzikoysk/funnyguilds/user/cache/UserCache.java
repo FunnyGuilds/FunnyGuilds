@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.user;
+package net.dzikoysk.funnyguilds.user.cache;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -7,6 +7,8 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.Dummy;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;

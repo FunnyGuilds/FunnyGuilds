@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
+import net.dzikoysk.funnyguilds.user.cache.UserCache;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -20,7 +21,7 @@ public class User extends AbstractMutableEntity {
 
     private final UUID                  uuid;
     private       String                name;
-    private final UserCache             cache;
+    private final UserCache cache;
     private final UserRank              rank;
     private       WeakReference<Player> playerRef;
     private       Guild                 guild;
