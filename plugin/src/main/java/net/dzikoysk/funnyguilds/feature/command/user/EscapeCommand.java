@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.region.Region;
 import net.dzikoysk.funnyguilds.guild.region.RegionUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.world.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.cache.UserCache;
 import org.bukkit.Bukkit;

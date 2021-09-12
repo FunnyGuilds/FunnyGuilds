@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit
 
 import groovy.transform.CompileStatic
+import net.dzikoysk.funnyguilds.shared.bukkit.world.LocationUtils
 import org.bukkit.Location
 import org.junit.jupiter.api.Test
 

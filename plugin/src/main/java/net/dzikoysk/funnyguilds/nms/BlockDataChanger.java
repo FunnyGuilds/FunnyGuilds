@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.nms;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.world.LocationUtils;
 import org.bukkit.block.Block;
 
 import java.lang.reflect.InvocationTargetException;

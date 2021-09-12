@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.item.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;

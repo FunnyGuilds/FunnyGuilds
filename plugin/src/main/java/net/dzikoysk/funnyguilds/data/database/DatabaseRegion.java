@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.guild.region.Region;
-import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.world.LocationUtils;
 import org.bukkit.Location;
 
 import java.sql.ResultSet;

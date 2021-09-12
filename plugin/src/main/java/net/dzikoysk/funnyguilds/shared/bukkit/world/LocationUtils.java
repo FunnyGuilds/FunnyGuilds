@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.shared.bukkit;
+package net.dzikoysk.funnyguilds.shared.bukkit.world;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;

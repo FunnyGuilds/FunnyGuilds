@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.region.Region;
 import net.dzikoysk.funnyguilds.guild.region.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
-import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.world.SpaceUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;

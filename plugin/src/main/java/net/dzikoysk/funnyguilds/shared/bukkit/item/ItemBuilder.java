@@ -1,5 +1,6 @@
-package net.dzikoysk.funnyguilds.shared.bukkit;
+package net.dzikoysk.funnyguilds.shared.bukkit.item;
 
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;

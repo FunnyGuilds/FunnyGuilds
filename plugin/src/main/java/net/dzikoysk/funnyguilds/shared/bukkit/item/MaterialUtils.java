@@ -1,8 +1,9 @@
-package net.dzikoysk.funnyguilds.shared.bukkit;
+package net.dzikoysk.funnyguilds.shared.bukkit.item;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;

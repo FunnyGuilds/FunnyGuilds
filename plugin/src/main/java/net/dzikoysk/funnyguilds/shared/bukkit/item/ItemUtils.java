@@ -1,11 +1,12 @@
-package net.dzikoysk.funnyguilds.shared.bukkit;
+package net.dzikoysk.funnyguilds.shared.bukkit.item;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
