@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -75,7 +74,7 @@ public class UserUtils {
      * Gets the set of users from collection of strings.
      *
      * @return set of users
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUsersFromString(Collection)}
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUsersByNames(Collection)}
      */
     @Deprecated
     public static Set<User> getUsersFromString(Collection<String> names) {

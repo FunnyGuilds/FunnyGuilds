@@ -141,7 +141,7 @@ public class UserManager {
         return usersByUuid.size();
     }
 
-    public Set<User> getUsersFromString(Collection<String> names) {
+    public Set<User> getUsersByNames(Collection<String> names) {
         return PandaStream.of(names)
                 .flatMap(this::getUser)
                 .collect(Collectors.toSet());
