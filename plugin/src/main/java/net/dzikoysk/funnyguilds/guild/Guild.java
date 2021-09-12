@@ -31,7 +31,6 @@ public class Guild extends AbstractMutableEntity {
     private Set<User>  deputies;
     private Set<Guild> allies;
     private Set<Guild> enemies;
-    private Location   enderCrystal;
     private boolean    pvp;
     private long       born;
     private long       validity;
@@ -288,10 +287,6 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public void setEnderCrystal(Location loc) {
-        this.enderCrystal = loc;
-    }
-
     public boolean isSomeoneInRegion() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
 
@@ -408,7 +403,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Location getEnderCrystal() {
-        return this.enderCrystal;
+        return this.region.getCenter().clone().add(0.5D, - 1.0D, 0.5D);
     }
 
     @Override
