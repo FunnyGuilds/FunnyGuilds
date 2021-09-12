@@ -2,19 +2,24 @@ package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologram;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
+import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import panda.std.Option;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Guild extends AbstractMutableEntity {
@@ -129,6 +134,7 @@ public class Guild extends AbstractMutableEntity {
 
     public void delete() {
         GuildUtils.removeGuild(this);
+        this.updateHologram(FunnyHologramManager::deleteHologram);
     }
 
     public boolean canBuild() {
@@ -193,10 +199,13 @@ public class Guild extends AbstractMutableEntity {
         this.region = region;
         this.region.setGuild(this);
 
+        Location center = region.getCenter();
+
         if (this.home == null) {
-            this.home = region.getCenter();
+            this.home = center.clone();
         }
 
+        this.updateHologram(hologram -> hologram.setLocation(center));
         this.markChanged();
     }
 
@@ -402,8 +411,38 @@ public class Guild extends AbstractMutableEntity {
         return this.rank;
     }
 
-    public Location getEnderCrystal() {
-        return this.region.getCenter().clone().add(0.5D, - 1.0D, 0.5D);
+    public Option<Location> getEnderCrystal() {
+        if (this.region == null) {
+            return Option.none();
+        }
+
+        Location center = this.region.getCenter();
+
+        if (center == null) {
+            return Option.none();
+        }
+
+        return Option.of(center.add(0.5D, - 1.0D, 0.5D));
+    }
+
+    public void updateHologram(Consumer<FunnyHologram> hologramConsumer) {
+        this.updateHologram((funnyHologramManager, funnyHologram) -> hologramConsumer.accept(funnyHologram));
+    }
+
+    public void updateHologram(BiConsumer<FunnyHologramManager, FunnyHologram> hologramConsumer) {
+        if (!PluginHook.isPresent(PluginHook.PLUGIN_HOLOGRAPHIC_DISPLAYS)) {
+            return;
+        }
+
+        FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
+        hologramManager.getFunnyHologram(this)
+                .orElse(hologramManager.createHologram(this))
+                .peek(hologram -> hologramConsumer.accept(hologramManager, hologram));
+    }
+
+    public void updateHologramLines() {
+        // TODO: Link configuration
+        this.updateHologram(hologram -> hologram.setLines(Arrays.asList("line1", "line2")));
     }
 
     @Override

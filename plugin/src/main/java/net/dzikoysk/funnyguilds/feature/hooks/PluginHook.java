@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.hooks;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEditHook;
@@ -27,7 +29,7 @@ public final class PluginHook {
 
     public static WorldGuardHook WORLD_GUARD;
     public static WorldEditHook WORLD_EDIT;
-    public static HolographicDisplaysHook HOLOGRAPHIC_DISPLAYS;
+    public static FunnyHologramManager HOLOGRAPHIC_DISPLAYS;
 
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
@@ -104,7 +106,7 @@ public final class PluginHook {
         });
 
         tryInit(PLUGIN_HOLOGRAPHIC_DISPLAYS, () -> {
-            HOLOGRAPHIC_DISPLAYS = new HolographicDisplaysHook(FunnyGuilds.getInstance());
+            HOLOGRAPHIC_DISPLAYS = HolographicDisplaysHook.createAndRunHandler(FunnyGuilds.getInstance());
             return true;
         });
 
