@@ -7,13 +7,18 @@ import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 
 import java.util.Collections;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
 public class RankRecalculationTask implements Runnable {
+
+    private final FunnyGuilds plugin;
+
+    public RankRecalculationTask(FunnyGuilds plugin) {
+        this.plugin = plugin;
+    }
 
     @Override
     public void run() {
@@ -26,7 +31,7 @@ public class RankRecalculationTask implements Runnable {
     private void recalculateUsersRank(RankManager manager) {
         NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
 
-        for (User user : UserUtils.getUsers()) {
+        for (User user : plugin.getUserManager().getUsers()) {
             UserRank userRank = user.getRank();
 
             if (FunnyGuilds.getInstance().getPluginConfiguration().skipPrivilegedPlayersInRankPositions &&
