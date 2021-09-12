@@ -103,7 +103,7 @@ public class Guild extends AbstractMutableEntity {
 
     public void deserializationUpdate() {
         this.owner.setGuild(this);
-        UserUtils.setGuild(this.members, this);
+        this.members.forEach(user -> user.setGuild(this));
     }
 
     public void removeLive() {
