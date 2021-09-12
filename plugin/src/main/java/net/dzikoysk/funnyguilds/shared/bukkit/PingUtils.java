@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 import org.bukkit.entity.Player;
 
-public class PingUtils {
+public final class PingUtils {
 
     private PingUtils() {}
 

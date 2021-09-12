@@ -29,8 +29,7 @@ public class FunnyBox {
             double maxY = (double) bbGetMaxY.invoke(boundingBox);
             double maxZ = (double) bbGetMaxZ.invoke(boundingBox);
             return new FunnyBox(minX, minY, minZ, maxX, maxY, maxZ);
-        }
-        catch (Throwable throwable) {
+        } catch (Throwable throwable) {
             return ofBlock(block);
         }
     }
@@ -54,8 +53,7 @@ public class FunnyBox {
             bbGetMaxX = lookup.findVirtual(boundingBoxClazz, "getMaxX", MethodType.methodType(double.class));
             bbGetMaxY = lookup.findVirtual(boundingBoxClazz, "getMaxY", MethodType.methodType(double.class));
             bbGetMaxZ = lookup.findVirtual(boundingBoxClazz, "getMaxZ", MethodType.methodType(double.class));
-        }
-        catch (Exception ignored) {
+        } catch (Exception ignored) {
             getBoundingBox = null;
         }
     }
@@ -617,6 +615,7 @@ public class FunnyBox {
         public Entity getHitEntity() {
             return this.hitEntity;
         }
+
     }
 
     private void checkFinite(Vector vector) throws IllegalArgumentException {

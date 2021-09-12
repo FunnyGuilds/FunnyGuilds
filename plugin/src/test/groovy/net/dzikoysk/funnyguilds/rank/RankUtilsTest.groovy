@@ -2,8 +2,8 @@ package net.dzikoysk.funnyguilds.rank
 
 import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
-import net.dzikoysk.funnyguilds.config.IntegerRange
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
+import net.dzikoysk.funnyguilds.config.util.IntegerRange
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.user.UserManager
 import org.junit.jupiter.api.Test

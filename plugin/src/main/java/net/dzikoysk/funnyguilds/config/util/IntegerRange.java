@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.config;
+package net.dzikoysk.funnyguilds.config.util;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;

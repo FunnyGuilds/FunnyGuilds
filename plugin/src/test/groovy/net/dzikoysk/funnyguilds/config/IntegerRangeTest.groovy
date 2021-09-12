@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.config
 
 import groovy.transform.CompileStatic
+import net.dzikoysk.funnyguilds.config.util.IntegerRange
 import org.junit.jupiter.api.Test
 
 import static org.junit.jupiter.api.Assertions.assertEquals

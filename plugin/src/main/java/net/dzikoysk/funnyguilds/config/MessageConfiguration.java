@@ -605,4 +605,5 @@ public class MessageConfiguration extends OkaeriConfig {
     public static String decolor(String coloredString) {
         return DECOLOR_PATTERN.matcher(coloredString).replaceAll("&$1");
     }
+
 }
