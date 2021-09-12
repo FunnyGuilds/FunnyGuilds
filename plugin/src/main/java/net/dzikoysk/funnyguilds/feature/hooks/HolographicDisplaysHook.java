@@ -5,6 +5,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Location;
+import panda.std.Option;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,6 +38,10 @@ public final class HolographicDisplaysHook {
         }
 
         hologramHook.hologram.delete();
+    }
+
+    public Option<HologramHook> getHologramHook(Guild guild) {
+        return Option.of(this.holograms.get(guild));
     }
 
     public static class HologramHook {
