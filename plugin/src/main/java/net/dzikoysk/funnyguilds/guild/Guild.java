@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.guild.region.Region;
+import net.dzikoysk.funnyguilds.guild.region.RegionUtils;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -25,7 +27,7 @@ public class Guild extends AbstractMutableEntity {
     private String     tag;
     private User       owner;
     private GuildRank  rank;
-    private Region     region;
+    private Region region;
     private Location   home;
     private Set<User>  members;
     private Set<User>  deputies;

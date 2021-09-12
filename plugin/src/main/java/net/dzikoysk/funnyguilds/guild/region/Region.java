@@ -1,6 +1,7 @@
-package net.dzikoysk.funnyguilds.guild;
+package net.dzikoysk.funnyguilds.guild.region;
 
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
