@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
@@ -69,7 +70,7 @@ public class GuildUtils {
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
         concurrencyManager.postRequests(new PrefixGlobalRemoveGuildRequest(guild));
 
-        UserUtils.removeGuild(guild.getMembers());
+        guild.getMembers().forEach(User::removeGuild);
 
         for (Guild ally : guild.getAllies()) {
             ally.removeAlly(guild);

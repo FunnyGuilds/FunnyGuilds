@@ -141,6 +141,12 @@ public class UserManager {
         return usersByUuid.size();
     }
 
+    public Set<User> getUsersFromString(Collection<String> names) {
+        return PandaStream.of(names)
+                .flatMap(this::getUser)
+                .collect(Collectors.toSet());
+    }
+
     /**
      * Gets the user manager.
      *

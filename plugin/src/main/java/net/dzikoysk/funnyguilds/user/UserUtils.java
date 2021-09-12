@@ -71,6 +71,13 @@ public class UserUtils {
         return users.stream().map(User::getName).collect(Collectors.toSet());
     }
 
+    /**
+     * Gets the set of users from collection of strings.
+     *
+     * @return set of users
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUsersFromString(Collection)}
+     */
+    @Deprecated
     public static Set<User> getUsersFromString(Collection<String> names) {
         UserManager userManager = UserManager.getInstance();
         Set<User> users = new HashSet<>();
@@ -91,29 +98,6 @@ public class UserUtils {
         }
 
         return set;
-    }
-
-    public static void removeGuild(Collection<User> users) {
-        for (User user : users) {
-            user.removeGuild();
-        }
-    }
-
-    public static void setGuild(Collection<User> users, Guild guild) {
-        for (User user : users) {
-            user.setGuild(guild);
-        }
-    }
-
-    /**
-     * Gets the number of users.
-     *
-     * @return the number of users
-     * @deprecated for removal in the future, in favour of {@link UserManager#countUsers()}
-     */
-    @Deprecated
-    public static int usersSize() {
-        return UserManager.getInstance().countUsers();
     }
 
     public static boolean validateUsername(String name) {
