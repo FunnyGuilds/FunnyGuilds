@@ -14,12 +14,14 @@ import java.util.TreeSet;
 
 public class RankManager {
 
-    private static final RankManager INSTANCE = new RankManager();
+    private static RankManager INSTANCE;
 
     protected NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
     protected NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
 
-    private RankManager() {}
+    public RankManager() {
+        INSTANCE = this;
+    }
 
     public static RankManager getInstance() {
         return INSTANCE;

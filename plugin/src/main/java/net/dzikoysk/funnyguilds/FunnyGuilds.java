@@ -60,6 +60,7 @@ import net.dzikoysk.funnyguilds.nms.v1_16R3.V1_16R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_17R1.V1_17R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
+import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
@@ -96,6 +97,7 @@ public class FunnyGuilds extends JavaPlugin {
     private ConcurrencyManager     concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
     private UserManager            userManager;
+    private RankManager            rankManager;
     private NmsAccessor            nmsAccessor;
 
     private volatile BukkitTask guildValidationTask;
@@ -167,6 +169,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.userManager = new UserManager();
+        this.rankManager = new RankManager();
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -385,6 +388,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public UserManager getUserManager() {
         return userManager;
+    }
+
+    public RankManager getRankManager() {
+        return rankManager;
     }
 
     public NmsAccessor getNmsAccessor() {
