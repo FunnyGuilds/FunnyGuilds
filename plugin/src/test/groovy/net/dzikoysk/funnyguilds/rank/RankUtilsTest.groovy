@@ -19,15 +19,18 @@ class RankUtilsTest extends FunnyGuildsSpec {
         def guild = new Guild('OnlyPanda')
         guild.setTag('OP')
 
+        def rankManager = new RankManager();
+
         def user = new UserManager().create(UUID.randomUUID(), 'name')
         guild.addMember(user)
-        RankManager.getInstance().update(guild)
+
+        rankManager.update(guild)
 
         config.gtopPoints = ' {POINTS-FORMAT}'
         config.pointsFormat = [ new IntegerRange(0, Integer.MAX_VALUE): '{POINTS}' ]
 
         // when: the GTOP placeholder is requested to parse
-        def rank = RankUtils.parseRank(config, new TablistConfiguration(), messages, RankManager.getInstance(), user, '{GTOP-1}')
+        def rank = RankUtils.parseRank(config, new TablistConfiguration(), messages, rankManager, user, '{GTOP-1}')
 
         // then: the result should match the configured pattern
         assertEquals 'OP 1000', rank
