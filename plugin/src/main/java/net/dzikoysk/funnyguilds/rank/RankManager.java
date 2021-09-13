@@ -69,4 +69,5 @@ public class RankManager {
     public int guilds() {
         return this.guildsRank.size();
     }
+
 }

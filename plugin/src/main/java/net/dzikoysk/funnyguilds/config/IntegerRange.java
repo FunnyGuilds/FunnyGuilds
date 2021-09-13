@@ -15,16 +15,16 @@ public final class IntegerRange {
 
     private final int minRange;
     private final int maxRange;
-    
+
     public IntegerRange(int minRange, int maxRange) {
         this.minRange = minRange;
         this.maxRange = maxRange;
     }
-    
+
     public int getMinRange() {
         return this.minRange;
     }
-    
+
     public int getMaxRange() {
         return this.maxRange;
     }
@@ -37,7 +37,7 @@ public final class IntegerRange {
                 return Option.of(entry.getValue());
             }
         }
-        
+
         return Option.none();
     }
 
@@ -94,13 +94,13 @@ public final class IntegerRange {
             if (rangeEntry.endsWith(" ")) {
                 valueString += " ";
             }
-            
+
             parsed.put(new IntegerRange(minRange, maxRange), color ? ChatUtils.colored(valueString) : valueString);
         }
 
         return parsed;
     }
-    
+
     public static class MissingFormatException extends RuntimeException {
 
         public MissingFormatException(int value, String rangeType) {
@@ -108,5 +108,5 @@ public final class IntegerRange {
         }
 
     }
-    
+
 }

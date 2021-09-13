@@ -256,4 +256,5 @@ public class UserCache {
     public Option<IndividualPlayerList> getPlayerList() {
         return Option.of(this.playerList);
     }
+
 }

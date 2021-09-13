@@ -23,14 +23,14 @@ public class RankUtils {
     }
 
     public static String parseRank(
-        PluginConfiguration config,
-        TablistConfiguration tablistConfig,
-        MessageConfiguration messages,
-        RankManager rankManager,
-        User targetUser,
-        String rankTop
+            PluginConfiguration config,
+            TablistConfiguration tablistConfig,
+            MessageConfiguration messages,
+            RankManager rankManager,
+            User targetUser,
+            String rankTop
     ) {
-        if (! rankTop.contains("TOP-")) {
+        if (!rankTop.contains("TOP-")) {
             return null;
         }
 
@@ -66,11 +66,9 @@ public class RankUtils {
 
                     if (sourceGuild.getAllies().contains(guild)) {
                         guildTag = StringUtils.replace(config.prefixAllies, "{TAG}", guild.getTag());
-                    }
-                    else if (sourceGuild.getEnemies().contains(guild)) {
+                    } else if (sourceGuild.getEnemies().contains(guild)) {
                         guildTag = StringUtils.replace(config.prefixEnemies, "{TAG}", guild.getTag());
-                    }
-                    else if (sourceGuild.getUUID().equals(guild.getUUID())) {
+                    } else if (sourceGuild.getUUID().equals(guild.getUUID())) {
                         guildTag = StringUtils.replace(config.prefixOur, "{TAG}", guild.getTag());
                     }
                 }
@@ -78,8 +76,7 @@ public class RankUtils {
 
             return StringUtils.replace(rankTop, "{GTOP-" + index + '}', guildTag + pointsFormat);
 
-        }
-        else if (rankTop.contains("PTOP")) {
+        } else if (rankTop.contains("PTOP")) {
             User user = rankManager.getUser(index);
 
             if (user == null) {
@@ -132,13 +129,14 @@ public class RankUtils {
 
         try {
             result = Integer.parseInt(sb.toString());
-        } catch(NumberFormatException e) {
+        } catch (NumberFormatException e) {
             FunnyGuilds.getPluginLogger().parser(rank + " contains an invalid number: " + sb.toString());
         }
 
         return result;
     }
 
-    private RankUtils() { }
+    private RankUtils() {
+    }
 
 }

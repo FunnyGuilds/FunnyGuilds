@@ -72,4 +72,5 @@ public class RankRecalculationTask implements Runnable {
 
         manager.guildsRank = guildsRank;
     }
+
 }

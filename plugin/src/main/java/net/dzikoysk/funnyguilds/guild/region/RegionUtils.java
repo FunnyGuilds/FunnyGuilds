@@ -29,13 +29,13 @@ public final class RegionUtils {
         if (name == null) {
             return null;
         }
-        
+
         for (Region region : REGION_LIST) {
             if (name.equalsIgnoreCase(region.getName())) {
                 return region;
             }
         }
-        
+
         return null;
     }
 
@@ -45,7 +45,7 @@ public final class RegionUtils {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -55,7 +55,7 @@ public final class RegionUtils {
                 return region;
             }
         }
-        
+
         return null;
     }
 
@@ -74,27 +74,27 @@ public final class RegionUtils {
         if (config.enlargeItems != null) {
             size += (config.enlargeItems.size() * config.enlargeSize);
         }
-        
+
         int requiredDistance = (2 * size) + config.regionMinDistance;
 
         for (Region region : REGION_LIST) {
             if (region.getCenter() == null) {
                 continue;
             }
-            
+
             if (region.getCenter().equals(center)) {
                 continue;
             }
-            
+
             if (!center.getWorld().equals(region.getCenter().getWorld())) {
                 continue;
             }
-            
+
             if (LocationUtils.flatDistance(center, region.getCenter()) < requiredDistance) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -111,7 +111,7 @@ public final class RegionUtils {
         if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
             DatabaseRegion.delete(region);
         }
-        
+
         region.delete();
     }
 
@@ -120,13 +120,13 @@ public final class RegionUtils {
         if (lsg == null) {
             return list;
         }
-        
+
         for (Region r : lsg) {
             if (r != null && r.getName() != null) {
                 list.add(r.getName());
             }
         }
-        
+
         return list;
     }
 
