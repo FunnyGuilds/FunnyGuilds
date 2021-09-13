@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.nms;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.region.Region;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

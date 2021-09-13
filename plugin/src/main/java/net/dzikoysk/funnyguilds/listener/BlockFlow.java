@@ -1,8 +1,10 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.guild.*;
-import org.bukkit.event.*;
-import org.bukkit.event.block.*;
+import net.dzikoysk.funnyguilds.guild.region.Region;
+import net.dzikoysk.funnyguilds.guild.region.RegionUtils;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockFromToEvent;
 
 public class BlockFlow implements Listener {
 

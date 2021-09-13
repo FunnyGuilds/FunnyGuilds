@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.feature.validity;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.region.Region;
 import org.bukkit.Bukkit;
 
 public class ValidityUtils {
