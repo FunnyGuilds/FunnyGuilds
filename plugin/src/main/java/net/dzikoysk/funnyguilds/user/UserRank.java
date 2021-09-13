@@ -98,11 +98,9 @@ public class UserRank extends Rank implements Comparable<UserRank> {
 
     @Override
     public float getKDR() {
-        if (getDeaths() == 0) {
-            return getKills();
-        }
-
-        return 1.0F * getKills() / getDeaths();
+        return getDeaths() == 0
+                ? getKills()
+                : 1.0F * getKills() / getDeaths();
     }
 
     @Override

@@ -108,8 +108,4 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
         return value / guild.getMembers().size();
     }
 
-    private float calculateAverage(float value) {
-        return value / guild.getMembers().size();
-    }
-
 }
