@@ -49,11 +49,9 @@ public class EntityDamage implements Listener {
                 return;
             }
 
-            if (!(victim instanceof Player)) {
-                return;
-            }
-
-            Option<User> victimOp = userManager.getUser(victim.getUniqueId());
+            Option<User> victimOp = Option.of(victim)
+                    .is(Player.class)
+                    .flatMap(userManager::getUser);
 
             if (victimOp.isEmpty()) {
                 return;
