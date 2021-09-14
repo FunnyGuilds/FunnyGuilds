@@ -41,7 +41,7 @@ public final class FunnyGuildsVersion {
 
         this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
             String latest = IOUtils.getContent(VERSION_FILE_URL);
-            
+
             if (latest == null) {
                 return;
             }
@@ -72,8 +72,7 @@ public final class FunnyGuildsVersion {
                     if (!commitHash.equals(currentNightlyHash)) {
                         printNewVersionAvailable(sender, latest + "-" + commitHash, true);
                     }
-                }
-                catch (Throwable th) {
+                } catch (Throwable th) {
                     FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
                     FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
                 }
@@ -103,7 +102,7 @@ public final class FunnyGuildsVersion {
         String remainder = StringUtils.replace(this.fullVersion, latest, "").trim();
 
         // hyphen + short commit hash
-        if (remainder.length() != 8 || ! remainder.startsWith("-")) {
+        if (remainder.length() != 8 || !remainder.startsWith("-")) {
             return "";
         }
 
@@ -117,4 +116,5 @@ public final class FunnyGuildsVersion {
     public String getMainVersion() {
         return this.mainVersion;
     }
+
 }
