@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.guild.region;
+package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;

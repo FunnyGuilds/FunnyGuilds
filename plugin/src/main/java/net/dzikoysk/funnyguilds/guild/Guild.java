@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
-import net.dzikoysk.funnyguilds.guild.region.Region;
-import net.dzikoysk.funnyguilds.guild.region.RegionUtils;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;

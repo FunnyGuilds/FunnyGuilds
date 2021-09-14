@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.guild.region.Region;
+import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
