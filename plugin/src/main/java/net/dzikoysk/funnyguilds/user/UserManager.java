@@ -22,10 +22,10 @@ public class UserManager {
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
     @Deprecated
-    private static UserManager instance;
+    private static UserManager INSTANCE;
 
     public UserManager() {
-        instance = this;
+        INSTANCE = this;
     }
 
     public Set<User> getUsers() {
@@ -155,7 +155,7 @@ public class UserManager {
      */
     @Deprecated
     public static UserManager getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
 }

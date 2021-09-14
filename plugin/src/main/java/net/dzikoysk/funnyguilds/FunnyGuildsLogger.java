@@ -1,22 +1,22 @@
 package net.dzikoysk.funnyguilds;
 
+import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
+import org.bukkit.Bukkit;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
-import org.bukkit.Bukkit;
-
 public final class FunnyGuildsLogger {
 
-    private final FunnyGuilds funnyGuilds;
+    private final FunnyGuilds plugin;
     private final Logger rootLogger;
 
-    FunnyGuildsLogger(FunnyGuilds funnyGuilds) {
-        this.funnyGuilds = funnyGuilds;
-        this.rootLogger = funnyGuilds.getLogger();
+    FunnyGuildsLogger(FunnyGuilds plugin) {
+        this.plugin = plugin;
+        this.rootLogger = plugin.getLogger();
     }
 
     public void update(String content) {
@@ -36,7 +36,7 @@ public final class FunnyGuildsLogger {
     }
 
     public void debug(String content) {
-        if (this.funnyGuilds.getPluginConfiguration().debugMode) {
+        if (this.plugin.getPluginConfiguration().debugMode) {
             this.rootLogger.info("[Debug] > " + content);
         }
     }
@@ -68,7 +68,7 @@ public final class FunnyGuildsLogger {
 
         error("");
         error("Server Information:");
-        error("  FunnyGuilds: " + this.funnyGuilds.getVersion().getFullVersion());
+        error("  FunnyGuilds: " + this.plugin.getVersion().getFullVersion());
         error("  Bukkit: " + Bukkit.getBukkitVersion());
         error("  Java: " + System.getProperty("java.version"));
         error("  Thread: " + Thread.currentThread());

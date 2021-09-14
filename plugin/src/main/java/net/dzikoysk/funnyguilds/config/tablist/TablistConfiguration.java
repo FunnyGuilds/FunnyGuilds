@@ -2,7 +2,11 @@ package net.dzikoysk.funnyguilds.config.tablist;
 
 import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
-import eu.okaeri.configs.annotation.*;
+import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.CustomKey;
+import eu.okaeri.configs.annotation.NameModifier;
+import eu.okaeri.configs.annotation.NameStrategy;
+import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.validator.annotation.Min;
 
 import java.util.Arrays;

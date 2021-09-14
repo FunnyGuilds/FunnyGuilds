@@ -49,17 +49,15 @@ public class EntityDamage implements Listener {
                 return;
             }
 
-            if (!(victim instanceof Player)) {
+            Option<User> victimOption = Option.of(victim)
+                    .is(Player.class)
+                    .flatMap(userManager::getUser);
+
+            if (victimOption.isEmpty()) {
                 return;
             }
 
-            Option<User> victimOp = userManager.getUser(victim.getUniqueId());
-
-            if (victimOp.isEmpty()) {
-                return;
-            }
-
-            User victimUser = victimOp.get();
+            User victimUser = victimOption.get();
 
             if (victimUser.hasGuild() && attackerUser.hasGuild()) {
                 if (victimUser.getUUID().equals(attackerUser.getUUID())) {

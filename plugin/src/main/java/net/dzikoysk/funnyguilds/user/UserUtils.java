@@ -4,9 +4,9 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.HashSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -42,7 +42,7 @@ public class UserUtils {
     /**
      * Gets the user.
      *
-     * @param nickname the name of User
+     * @param nickname   the name of User
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String, boolean)}

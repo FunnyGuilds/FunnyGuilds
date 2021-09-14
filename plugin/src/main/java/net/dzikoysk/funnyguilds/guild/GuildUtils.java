@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -11,6 +9,7 @@ import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -51,7 +50,8 @@ public class GuildUtils {
             if (region != null) {
                 if (config.createEntityType != null) {
                     GuildEntityHelper.despawnGuildHeart(guild);
-                } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
+                }
+                else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                     Location centerLocation = region.getCenter().clone();
 
                     Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
@@ -99,7 +99,8 @@ public class GuildUtils {
 
             heart.setType(config.createMaterial.getLeft());
             BlockDataChanger.applyChanges(heart, config.createMaterial.getRight());
-        } else if (config.createEntityType != null) {
+        }
+        else if (config.createEntityType != null) {
             GuildEntityHelper.spawnGuildHeart(guild);
         }
     }

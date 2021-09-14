@@ -1,13 +1,13 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 
 import java.sql.SQLException;
 import java.util.List;

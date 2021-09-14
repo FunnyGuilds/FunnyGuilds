@@ -3,21 +3,22 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.*;
+import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
+import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.whenNull;
 
 @FunnyComponent
 public final class EscapeCommand {

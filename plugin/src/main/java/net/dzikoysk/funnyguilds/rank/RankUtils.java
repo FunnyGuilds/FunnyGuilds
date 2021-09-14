@@ -23,14 +23,14 @@ public class RankUtils {
     }
 
     public static String parseRank(
-        PluginConfiguration config,
-        TablistConfiguration tablistConfig,
-        MessageConfiguration messages,
-        RankManager rankManager,
-        User targetUser,
-        String rankTop
+            PluginConfiguration config,
+            TablistConfiguration tablistConfig,
+            MessageConfiguration messages,
+            RankManager rankManager,
+            User targetUser,
+            String rankTop
     ) {
-        if (! rankTop.contains("TOP-")) {
+        if (!rankTop.contains("TOP-")) {
             return null;
         }
 
@@ -132,13 +132,15 @@ public class RankUtils {
 
         try {
             result = Integer.parseInt(sb.toString());
-        } catch(NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             FunnyGuilds.getPluginLogger().parser(rank + " contains an invalid number: " + sb.toString());
         }
 
         return result;
     }
 
-    private RankUtils() { }
+    private RankUtils() {
+    }
 
 }

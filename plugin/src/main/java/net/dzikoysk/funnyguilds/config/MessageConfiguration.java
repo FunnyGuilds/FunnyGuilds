@@ -31,7 +31,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String ptopNoValue = "Brak (PTOP-x)";
     public String wgRegionNoValue = "Brak (WG-REGION)";
     public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
-    
+
     @Comment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";
     public String blockedWorld = "&cZarzadzanie gildiami jest zablokowane na tym swiecie!";
@@ -396,7 +396,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String enemyIDone = "&7Gildia &a{GUILD} &7wypowiedziala twojej gildii wojne!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String enemyEnd= "&7Zakonczono wojne z gildia &a{GUILD}&7!";
+    public String enemyEnd = "&7Zakonczono wojne z gildia &a{GUILD}&7!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String enemyIEnd = "&7Gildia &a{GUILD} &7zakonczyla wojne z twoja gildia!";
 
@@ -493,7 +493,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {TAG}")
     public String pvpAllyOn = "&cWlaczono pvp z sojuszem &7{TAG}!";
     public String pvpAllyOff = "&cWylaczono pvp z sojuszem &7{TAG}!";
-    
+
     @Comment("<------- Admin Messages -------> #")
     @Comment("Dostepne zmienne: {ADMIN}")
     public String adminGuildBroken = "&cTwoja gildia zostala rozwiazana przez &7{ADMIN}";
@@ -528,7 +528,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String adminNoLivesGiven = "&cPodaj liczbe zyc!";
     @Comment("Dostepne zmienne: {GUILD}, {LIVES}")
     public String adminLivesChanged = "&aUstawiono &7{LIVES} &azyc dla gildii &7{GUILD}&a!";
-    
+
     @Comment("Dostepne zmienne: {GUILD}")
     public String adminGuildRelocated = "&aPrzeniesiono teren gildii &7{GUILD}&a!";
 
@@ -605,4 +605,5 @@ public class MessageConfiguration extends OkaeriConfig {
     public static String decolor(String coloredString) {
         return DECOLOR_PATTERN.matcher(coloredString).replaceAll("&$1");
     }
+
 }
