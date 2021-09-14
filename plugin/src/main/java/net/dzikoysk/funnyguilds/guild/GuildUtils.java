@@ -16,12 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -50,7 +45,8 @@ public class GuildUtils {
             if (region != null) {
                 if (config.createEntityType != null) {
                     GuildEntityHelper.despawnGuildHeart(guild);
-                } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
+                }
+                else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                     Location centerLocation = region.getCenter().clone();
 
                     Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
@@ -82,7 +78,8 @@ public class GuildUtils {
         if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) FunnyGuilds.getInstance().getDataModel());
             dataModel.getGuildFile(guild).delete();
-        } else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
+        }
+        else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
             DatabaseGuild.delete(guild);
         }
 
@@ -97,7 +94,8 @@ public class GuildUtils {
 
             heart.setType(config.createMaterial.getLeft());
             BlockDataChanger.applyChanges(heart, config.createMaterial.getRight());
-        } else if (config.createEntityType != null) {
+        }
+        else if (config.createEntityType != null) {
             GuildEntityHelper.spawnGuildHeart(guild);
         }
     }

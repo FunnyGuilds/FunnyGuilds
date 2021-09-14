@@ -24,7 +24,7 @@ public class Guild extends AbstractMutableEntity {
     private String     tag;
     private User       owner;
     private GuildRank  rank;
-    private Region region;
+    private Region     region;
     private Location   home;
     private Set<User>  members;
     private Set<User>  deputies;

@@ -2,23 +2,10 @@ package net.dzikoysk.funnyguilds.config;
 
 import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
-import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.CustomKey;
-import eu.okaeri.configs.annotation.Exclude;
-import eu.okaeri.configs.annotation.Header;
-import eu.okaeri.configs.annotation.NameModifier;
-import eu.okaeri.configs.annotation.NameStrategy;
-import eu.okaeri.configs.annotation.Names;
-import eu.okaeri.configs.annotation.Variable;
+import eu.okaeri.configs.annotation.*;
 import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
-import eu.okaeri.validator.annotation.DecimalMax;
-import eu.okaeri.validator.annotation.DecimalMin;
-import eu.okaeri.validator.annotation.Min;
-import eu.okaeri.validator.annotation.NotBlank;
-import eu.okaeri.validator.annotation.Pattern;
-import eu.okaeri.validator.annotation.Positive;
-import eu.okaeri.validator.annotation.PositiveOrZero;
+import eu.okaeri.validator.annotation.*;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
@@ -43,16 +30,8 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
@@ -1128,27 +1107,32 @@ public class PluginConfiguration extends OkaeriConfig {
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
                 }
-            } else if (var.contains("VIPITEM-")) {
+            }
+            else if (var.contains("VIPITEM-")) {
                 try {
                     int index = RankUtils.getIndex(var);
 
                     if (index > 0 && index <= createItemsVip.size()) {
                         item = createItemsVip.get(index - 1);
                     }
-                } catch (IndexOutOfBoundsException e) {
+                }
+                catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getPluginLogger().parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
                 }
-            } else if (var.contains("ITEM-")) {
+            }
+            else if (var.contains("ITEM-")) {
                 try {
                     int index = RankUtils.getIndex(var);
 
                     if (index > 0 && index <= createItems.size()) {
                         item = createItems.get(index - 1);
                     }
-                } catch (IndexOutOfBoundsException e) {
+                }
+                catch (IndexOutOfBoundsException e) {
                     FunnyGuilds.getPluginLogger().parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
                 }
-            } else {
+            }
+            else {
                 item = ItemUtils.parseItem(var);
             }
 
@@ -1188,7 +1172,8 @@ public class PluginConfiguration extends OkaeriConfig {
 
         try {
             this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
-        } catch (Exception materialThen) {
+        }
+        catch (Exception materialThen) {
             this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);
         }
 
@@ -1198,7 +1183,8 @@ public class PluginConfiguration extends OkaeriConfig {
 
         if (this.enlargeEnable) {
             this.enlargeItems = this.loadItemStackList(this.enlargeItems_);
-        } else {
+        }
+        else {
             this.enlargeSize = 0;
             this.enlargeItems = null;
         }
@@ -1221,7 +1207,8 @@ public class PluginConfiguration extends OkaeriConfig {
             for (Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
                 try {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
-                } catch (NumberFormatException e) {
+                }
+                catch (NumberFormatException e) {
                     FunnyGuilds.getPluginLogger().parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
                 }
             }
@@ -1320,7 +1307,8 @@ public class PluginConfiguration extends OkaeriConfig {
             if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
                 FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!");
                 this.pasteSchematicOnCreation = false;
-            } else {
+            }
+            else {
                 this.guildSchematicFile = new File(FunnyGuilds.getInstance().getDataFolder(), this.guildSchematicFileName);
 
                 if (!this.guildSchematicFile.exists()) {
@@ -1338,61 +1326,35 @@ public class PluginConfiguration extends OkaeriConfig {
 
         public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
-        @Comment
-        public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
-        @Comment
-        public FunnyCommand create = new FunnyCommand("zaloz");
-        @Comment
-        public FunnyCommand delete = new FunnyCommand("usun");
-        @Comment
-        public FunnyCommand confirm = new FunnyCommand("potwierdz");
-        @Comment
-        public FunnyCommand invite = new FunnyCommand("zapros");
-        @Comment
-        public FunnyCommand join = new FunnyCommand("dolacz");
-        @Comment
-        public FunnyCommand leave = new FunnyCommand("opusc");
-        @Comment
-        public FunnyCommand kick = new FunnyCommand("wyrzuc");
-        @Comment
-        public FunnyCommand base = new FunnyCommand("baza");
-        @Comment
-        public FunnyCommand enlarge = new FunnyCommand("powieksz");
-        @Comment
-        public FunnyCommand ally = new FunnyCommand("sojusz");
-        @Comment
-        public FunnyCommand war = new FunnyCommand("wojna");
-        @Comment
-        public FunnyCommand items = new FunnyCommand("przedmioty");
-        @Comment
-        public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
-        @Comment
-        public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
-        @Comment
-        public FunnyCommand tnt = new FunnyCommand("tnt");
+        @Comment public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
+        @Comment public FunnyCommand create = new FunnyCommand("zaloz");
+        @Comment public FunnyCommand delete = new FunnyCommand("usun");
+        @Comment public FunnyCommand confirm = new FunnyCommand("potwierdz");
+        @Comment public FunnyCommand invite = new FunnyCommand("zapros");
+        @Comment public FunnyCommand join = new FunnyCommand("dolacz");
+        @Comment public FunnyCommand leave = new FunnyCommand("opusc");
+        @Comment public FunnyCommand kick = new FunnyCommand("wyrzuc");
+        @Comment public FunnyCommand base = new FunnyCommand("baza");
+        @Comment public FunnyCommand enlarge = new FunnyCommand("powieksz");
+        @Comment public FunnyCommand ally = new FunnyCommand("sojusz");
+        @Comment public FunnyCommand war = new FunnyCommand("wojna");
+        @Comment public FunnyCommand items = new FunnyCommand("przedmioty");
+        @Comment public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
+        @Comment public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
+        @Comment public FunnyCommand tnt = new FunnyCommand("tnt");
 
         @CustomKey("break")
-        @Comment
-        public FunnyCommand break_ = new FunnyCommand("rozwiaz");
+        @Comment public FunnyCommand break_ = new FunnyCommand("rozwiaz");
 
-        @Comment
-        public FunnyCommand info = new FunnyCommand("info");
-        @Comment
-        public FunnyCommand player = new FunnyCommand("gracz");
-        @Comment
-        public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
-        @Comment
-        public FunnyCommand validity = new FunnyCommand("przedluz");
-        @Comment
-        public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
-        @Comment
-        public FunnyCommand deputy = new FunnyCommand("zastepca");
-        @Comment
-        public FunnyCommand ranking = new FunnyCommand("ranking");
-        @Comment
-        public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
-        @Comment
-        public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
+        @Comment public FunnyCommand info = new FunnyCommand("info");
+        @Comment public FunnyCommand player = new FunnyCommand("gracz");
+        @Comment public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
+        @Comment public FunnyCommand validity = new FunnyCommand("przedluz");
+        @Comment public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
+        @Comment public FunnyCommand deputy = new FunnyCommand("zastepca");
+        @Comment public FunnyCommand ranking = new FunnyCommand("ranking");
+        @Comment public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
+        @Comment public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
 
         @Comment({"", "Komendy administratora"})
         public AdminCommands admin = new AdminCommands();
@@ -1404,8 +1366,7 @@ public class PluginConfiguration extends OkaeriConfig {
             public List<String> aliases;
             public boolean enabled;
 
-            public FunnyCommand() {
-            }
+            public FunnyCommand() {}
 
             public FunnyCommand(String name) {
                 this(name, Collections.emptyList(), true);
