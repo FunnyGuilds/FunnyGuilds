@@ -440,11 +440,6 @@ public class Guild extends AbstractMutableEntity {
                 .peek(hologram -> hologramConsumer.accept(hologramManager, hologram));
     }
 
-    public void updateHologramLines() {
-        // TODO: Link configuration
-        this.updateHologram(hologram -> hologram.setLines(Arrays.asList("line1", "line2")));
-    }
-
     @Override
     public EntityType getType() {
         return EntityType.GUILD;
