@@ -50,35 +50,35 @@ public class Placeholders<T> {
         BiFunction<Collection<String>, String, Object> joinOrDefault = (list, listNoValue) -> list.isEmpty() ? listNoValue : Joiner.on(", ").join(list);
 
         GUILD_ALL = new Placeholders<Guild>()
-                .property("GUILD",               Guild::getName)
-                .property("TAG",                 Guild::getTag)
-                .property("OWNER", guild -> guild.getOwner().getName())
-                .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
-                .property("MEMBERS-ALL", guild -> guild.getMembers().size())
-                .property("MEMBERS", guild -> {
+                .property("GUILD",              Guild::getName)
+                .property("TAG",                Guild::getTag)
+                .property("OWNER",              guild -> guild.getOwner().getName())
+                .property("MEMBERS-ONLINE",     guild -> guild.getOnlineMembers().size())
+                .property("MEMBERS-ALL",        guild -> guild.getMembers().size())
+                .property("MEMBERS",            guild -> {
                     String text = Joiner.on(", ").join(UserUtils.getOnlineNames(guild.getMembers())).toString();
 
                     return ONLINE
                             .toFormatter(ChatColor.getLastColors(text.split("<online>")[0]))
                             .format(text);
                 })
-                .property("DEPUTIES", guild -> joinOrDefault.apply(UserUtils.getNamesOfUsers(guild.getDeputies()), "Brak"))
-                .property("REGION-SIZE", guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
-                .property("GUILD-PROTECTION",    bindGuildProtection)
-                .property("POINTS-FORMAT", guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
-                .property("POINTS", guild -> guild.getRank().getAveragePoints())
-                .property("KILLS", guild -> guild.getRank().getKills())
-                .property("DEATHS", guild -> guild.getRank().getDeaths())
-                .property("ASSISTS", guild -> guild.getRank().getAssists())
-                .property("LOGOUTS", guild -> guild.getRank().getLogouts())
-                .property("KDR", guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
-                .property("VALIDITY", guild -> config.dateFormat.format(new Date(guild.getValidity())))
-                .property("LIVES",               Guild::getLives)
-                .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
-                .property("ALLIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
-                .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
-                .property("ENEMIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
-                .property("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
+                .property("DEPUTIES",           guild -> joinOrDefault.apply(UserUtils.getNamesOfUsers(guild.getDeputies()), "Brak"))
+                .property("REGION-SIZE",        guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
+                .property("GUILD-PROTECTION",   bindGuildProtection)
+                .property("POINTS-FORMAT",      guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
+                .property("POINTS",             guild -> guild.getRank().getAveragePoints())
+                .property("KILLS",              guild -> guild.getRank().getKills())
+                .property("DEATHS",             guild -> guild.getRank().getDeaths())
+                .property("ASSISTS",            guild -> guild.getRank().getAssists())
+                .property("LOGOUTS",            guild -> guild.getRank().getLogouts())
+                .property("KDR",                guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
+                .property("VALIDITY",           guild -> config.dateFormat.format(new Date(guild.getValidity())))
+                .property("LIVES",              Guild::getLives)
+                .property("RANK",               guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
+                .property("ALLIES",             guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
+                .property("ALLIES-TAGS",        guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
+                .property("ENEMIES",            guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
+                .property("ENEMIES-TAGS",       guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
     }
 
     private final Map<String, Function<T, String>> placeholders = new HashMap<>();
