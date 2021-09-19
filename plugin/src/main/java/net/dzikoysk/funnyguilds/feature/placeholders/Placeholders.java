@@ -74,9 +74,7 @@ public class Placeholders<T> {
                 .property("KDR", guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
                 .property("VALIDITY", guild -> config.dateFormat.format(new Date(guild.getValidity())))
                 .property("LIVES",               Guild::getLives)
-                .property("RANK", guild -> guild.getMembers().size() >= config.minMembersToInclude
-                        ? guild.getRank().getPosition()
-                        : messages.minMembersToIncludeNoValue)
+                .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
                 .property("ALLIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
                 .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
                 .property("ENEMIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))

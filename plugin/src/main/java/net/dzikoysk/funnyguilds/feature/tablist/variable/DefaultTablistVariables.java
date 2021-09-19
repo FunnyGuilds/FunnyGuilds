@@ -179,7 +179,7 @@ public final class DefaultTablistVariables {
                         .replace("{POINTS}", "0"));
 
         putGuild("g-position", "G-POSITION",
-                user -> user.getGuild().getMembers().size() >= FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude
+                user -> user.getGuild().isRanked()
                         ? String.valueOf(user.getGuild().getRank().getPosition())
                         : messages.minMembersToIncludeNoValue,
                 user -> messages.minMembersToIncludeNoValue);
