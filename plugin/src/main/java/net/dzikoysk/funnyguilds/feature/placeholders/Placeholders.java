@@ -47,7 +47,7 @@ public class Placeholders<T> {
             return protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now);
         };
 
-        BiFunction<Collection<String>, String, Object> joinOrDefault = (list, defaultValue) -> list.isEmpty() ? defaultValue : Joiner.on(", ").join(list);
+        BiFunction<Collection<String>, String, Object> joinOrDefault = (list, listNoValue) -> list.isEmpty() ? listNoValue : Joiner.on(", ").join(list);
 
         GUILD_ALL = new Placeholders<Guild>()
                 .property("GUILD",               Guild::getName)
