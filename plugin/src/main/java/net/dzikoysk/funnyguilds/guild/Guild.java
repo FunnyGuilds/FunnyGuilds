@@ -316,6 +316,18 @@ public class Guild extends AbstractMutableEntity {
         return this.ban > System.currentTimeMillis();
     }
 
+    public boolean hasDeputies() {
+        return !this.deputies.isEmpty();
+    }
+
+    public boolean hasAllies() {
+        return !this.allies.isEmpty();
+    }
+
+    public boolean hasEnemies() {
+        return !this.enemies.isEmpty();
+    }
+
     public UUID getUUID() {
         return this.uuid;
     }

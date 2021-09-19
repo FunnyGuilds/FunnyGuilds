@@ -12,10 +12,12 @@ import org.bukkit.ChatColor;
 import panda.utilities.text.Formatter;
 import panda.utilities.text.Joiner;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -45,6 +47,8 @@ public class Placeholders<T> {
             return protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now);
         };
 
+        BiFunction<Collection<String>, String, Object> joinOrDefault = (list, defaultValue) -> list.isEmpty() ? defaultValue : Joiner.on(", ").join(list);
+
         GUILD_ALL = new Placeholders<Guild>()
                 .bracket("GUILD",               Guild::getName)
                 .bracket("TAG",                 Guild::getTag)
@@ -58,9 +62,7 @@ public class Placeholders<T> {
                             .toFormatter(ChatColor.getLastColors(text.split("<online>")[0]))
                             .format(text);
                 })
-                .bracket("DEPUTIES",            guild -> guild.getDeputies().isEmpty()
-                        ? "Brak"
-                        : Joiner.on(", ").join(UserUtils.getNamesOfUsers(guild.getDeputies())))
+                .bracket("DEPUTIES",            guild -> joinOrDefault.apply(UserUtils.getNamesOfUsers(guild.getDeputies()), "Brak"))
                 .bracket("REGION-SIZE",         guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
                 .bracket("GUILD-PROTECTION",    bindGuildProtection)
                 .bracket("POINTS-FORMAT",       guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
@@ -75,18 +77,10 @@ public class Placeholders<T> {
                 .bracket("RANK",                guild -> guild.getMembers().size() >= config.minMembersToInclude
                         ? guild.getRank().getPosition()
                         : messages.minMembersToIncludeNoValue)
-                .bracket("ALLIES",              guild -> guild.getAllies().isEmpty()
-                        ? messages.alliesNoValue
-                        : Joiner.on(", ").join(GuildUtils.getNames(guild.getAllies())))
-                .bracket("ALLIES-TAGS",         guild -> guild.getAllies().isEmpty()
-                        ? messages.alliesNoValue
-                        : Joiner.on(", ").join(GuildUtils.getTags(guild.getAllies())))
-                .bracket("ENEMIES",             guild -> guild.getEnemies().isEmpty()
-                        ? messages.enemiesNoValue
-                        : Joiner.on(", ").join(GuildUtils.getNames(guild.getEnemies())))
-                .bracket("ENEMIES-TAGS",        guild -> guild.getEnemies().isEmpty()
-                        ? messages.enemiesNoValue
-                        : Joiner.on(", ").join(GuildUtils.getTags(guild.getEnemies())));
+                .bracket("ALLIES",       guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
+                .bracket("ALLIES-TAGS",  guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
+                .bracket("ENEMIES",      guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
+                .bracket("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
     }
 
     private final Map<String, Function<T, String>> placeholders = new HashMap<>();
