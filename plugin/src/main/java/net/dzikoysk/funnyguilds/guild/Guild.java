@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
@@ -314,6 +315,23 @@ public class Guild extends AbstractMutableEntity {
 
     public boolean isBanned() {
         return this.ban > System.currentTimeMillis();
+    }
+
+    public boolean isRanked() {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        return members.size() >= config.minMembersToInclude;
+    }
+
+    public boolean hasDeputies() {
+        return !this.deputies.isEmpty();
+    }
+
+    public boolean hasAllies() {
+        return !this.allies.isEmpty();
+    }
+
+    public boolean hasEnemies() {
+        return !this.enemies.isEmpty();
     }
 
     public UUID getUUID() {

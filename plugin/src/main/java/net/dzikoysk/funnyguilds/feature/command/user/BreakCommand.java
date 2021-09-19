@@ -36,7 +36,7 @@ public final class BreakCommand {
         playerOnly = true
     )
     public void execute(MessageConfiguration messages, Player player, @IsOwner User user, Guild guild, String[] args) {
-        when (guild.getAllies().isEmpty(), messages.breakHasNotAllies);
+        when (!guild.hasAllies(), messages.breakHasNotAllies);
 
         if (args.length < 1) {
             List<String> list = messages.breakAlliesList;

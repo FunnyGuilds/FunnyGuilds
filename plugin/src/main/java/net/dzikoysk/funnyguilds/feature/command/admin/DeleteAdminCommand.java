@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -33,11 +34,10 @@ public final class DeleteAdminCommand {
         
         GuildUtils.deleteGuild(guild);
 
-        Formatter formatter = new Formatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag())
-                .register("{ADMIN}", sender.getName())
-                .register("{PLAYER}", sender.getName());
+        Formatter formatter = Placeholders.GUILD
+                .property("ADMIN", sender::getName)
+                .property("PLAYER", sender::getName)
+                .toFormatter(guild);
 
         guild.getOwner().sendMessage(formatter.format(messages.adminGuildBroken));
         sender.sendMessage(formatter.format(messages.deleteSuccessful));

@@ -57,7 +57,7 @@ public class RankRecalculationTask implements Runnable {
         for (Guild guild : GuildUtils.getGuilds()) {
             GuildRank guildRank = guild.getRank();
 
-            if (guild.getMembers().size() < plugin.getPluginConfiguration().minMembersToInclude) {
+            if (!guild.isRanked()) {
                 continue;
             }
 

@@ -41,7 +41,7 @@ public class RankManager {
     }
 
     public void update(Guild guild) {
-        if (guild.getMembers().size() < FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude) {
+        if (!guild.isRanked()) {
             return;
         }
 

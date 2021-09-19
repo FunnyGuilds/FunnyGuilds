@@ -49,7 +49,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             }
 
             try {
-                INFO_EXECUTOR.execute(plugin, config, messages, player, new String[]{ entry.getKey().getTag() });
+                INFO_EXECUTOR.execute(plugin, messages, player, new String[]{ entry.getKey().getTag() });
                 return;
             } catch (ValidationException validatorException) {
                 validatorException.getValidationMessage().peek(player::sendMessage);
