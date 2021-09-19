@@ -35,8 +35,8 @@ public final class DeleteAdminCommand {
         GuildUtils.deleteGuild(guild);
 
         Formatter formatter = Placeholders.GUILD
-                .bracket("ADMIN", sender::getName)
-                .bracket("PLAYER", sender::getName)
+                .property("ADMIN", sender::getName)
+                .property("PLAYER", sender::getName)
                 .toFormatter(guild);
 
         guild.getOwner().sendMessage(formatter.format(messages.adminGuildBroken));

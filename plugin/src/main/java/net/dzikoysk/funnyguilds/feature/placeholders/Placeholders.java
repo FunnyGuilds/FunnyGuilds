@@ -33,12 +33,12 @@ public class Placeholders<T> {
         PluginConfiguration config = plugin.getPluginConfiguration();
 
         ONLINE = new Placeholders<String>()
-                .bind("<online>",  () -> ChatColor.GREEN)
-                .bind("</online>", end -> end);
+                .raw("<online>",  () -> ChatColor.GREEN)
+                .raw("</online>", end -> end);
 
         GUILD = new Placeholders<Guild>()
-                .bracket("GUILD", Guild::getName)
-                .bracket("TAG",   Guild::getTag);
+                .property("GUILD", Guild::getName)
+                .property("TAG",   Guild::getTag);
 
         Function<Guild, Object> bindGuildProtection = guild -> {
             long now = System.currentTimeMillis();
@@ -50,37 +50,37 @@ public class Placeholders<T> {
         BiFunction<Collection<String>, String, Object> joinOrDefault = (list, defaultValue) -> list.isEmpty() ? defaultValue : Joiner.on(", ").join(list);
 
         GUILD_ALL = new Placeholders<Guild>()
-                .bracket("GUILD",               Guild::getName)
-                .bracket("TAG",                 Guild::getTag)
-                .bracket("OWNER",               guild -> guild.getOwner().getName())
-                .bracket("MEMBERS-ONLINE",      guild -> guild.getOnlineMembers().size())
-                .bracket("MEMBERS-ALL",         guild -> guild.getMembers().size())
-                .bracket("MEMBERS",             guild -> {
+                .property("GUILD",               Guild::getName)
+                .property("TAG",                 Guild::getTag)
+                .property("OWNER", guild -> guild.getOwner().getName())
+                .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
+                .property("MEMBERS-ALL", guild -> guild.getMembers().size())
+                .property("MEMBERS", guild -> {
                     String text = Joiner.on(", ").join(UserUtils.getOnlineNames(guild.getMembers())).toString();
 
                     return ONLINE
                             .toFormatter(ChatColor.getLastColors(text.split("<online>")[0]))
                             .format(text);
                 })
-                .bracket("DEPUTIES",            guild -> joinOrDefault.apply(UserUtils.getNamesOfUsers(guild.getDeputies()), "Brak"))
-                .bracket("REGION-SIZE",         guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
-                .bracket("GUILD-PROTECTION",    bindGuildProtection)
-                .bracket("POINTS-FORMAT",       guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
-                .bracket("POINTS",              guild -> guild.getRank().getAveragePoints())
-                .bracket("KILLS",               guild -> guild.getRank().getKills())
-                .bracket("DEATHS",              guild -> guild.getRank().getDeaths())
-                .bracket("ASSISTS",             guild -> guild.getRank().getAssists())
-                .bracket("LOGOUTS",             guild -> guild.getRank().getLogouts())
-                .bracket("KDR",                 guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
-                .bracket("VALIDITY",            guild -> config.dateFormat.format(new Date(guild.getValidity())))
-                .bracket("LIVES",               Guild::getLives)
-                .bracket("RANK",                guild -> guild.getMembers().size() >= config.minMembersToInclude
+                .property("DEPUTIES", guild -> joinOrDefault.apply(UserUtils.getNamesOfUsers(guild.getDeputies()), "Brak"))
+                .property("REGION-SIZE", guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
+                .property("GUILD-PROTECTION",    bindGuildProtection)
+                .property("POINTS-FORMAT", guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
+                .property("POINTS", guild -> guild.getRank().getAveragePoints())
+                .property("KILLS", guild -> guild.getRank().getKills())
+                .property("DEATHS", guild -> guild.getRank().getDeaths())
+                .property("ASSISTS", guild -> guild.getRank().getAssists())
+                .property("LOGOUTS", guild -> guild.getRank().getLogouts())
+                .property("KDR", guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
+                .property("VALIDITY", guild -> config.dateFormat.format(new Date(guild.getValidity())))
+                .property("LIVES",               Guild::getLives)
+                .property("RANK", guild -> guild.getMembers().size() >= config.minMembersToInclude
                         ? guild.getRank().getPosition()
                         : messages.minMembersToIncludeNoValue)
-                .bracket("ALLIES",       guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
-                .bracket("ALLIES-TAGS",  guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
-                .bracket("ENEMIES",      guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
-                .bracket("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
+                .property("ALLIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
+                .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
+                .property("ENEMIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
+                .property("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
     }
 
     private final Map<String, Function<T, String>> placeholders = new HashMap<>();
@@ -88,20 +88,20 @@ public class Placeholders<T> {
     public Placeholders() {
     }
 
-    public Placeholders<T> bind(String key, Function<T, Object> bind) {
+    public Placeholders<T> raw(String key, Function<T, Object> bind) {
         return Placeholders.of(placeholders, key, t -> String.valueOf(bind.apply(t)));
     }
 
-    public Placeholders<T> bind(String key, Supplier<Object> bind) {
+    public Placeholders<T> raw(String key, Supplier<Object> bind) {
         return Placeholders.of(placeholders, key, t -> String.valueOf(bind.get()));
     }
 
-    public Placeholders<T> bracket(String key, Function<T, Object> bind) {
-        return bind("{" + key + "}", bind);
+    public Placeholders<T> property(String key, Function<T, Object> bind) {
+        return raw("{" + key + "}", bind);
     }
 
-    public Placeholders<T> bracket(String key, Supplier<Object> bind) {
-        return bind("{" + key + "}", bind);
+    public Placeholders<T> property(String key, Supplier<Object> bind) {
+        return raw("{" + key + "}", bind);
     }
 
     public String format(String text, T data) {
