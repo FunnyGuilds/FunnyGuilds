@@ -22,13 +22,13 @@ subprojects {
         mavenLocal()
         mavenCentral()
 
-        maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
-        maven { url "https://repo.panda-lang.org/" }
-        maven { url "https://storehouse.okaeri.eu/repository/maven-public/" }
-        maven { url "https://maven.sk89q.com/repo/" }
-        maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
-        maven { url "https://nexus.codecrafter47.de/content/repositories/public/" }
-        maven { url "https://repo.mvdw-software.com/content/groups/public/" }
+        maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots" }
+        maven { url "https://repo.panda-lang.org/releases" }
+        maven { url "https://storehouse.okaeri.eu/repository/maven-public" }
+        maven { url "https://maven.sk89q.com/repo" }
+        maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi" }
+        maven { url "https://nexus.codecrafter47.de/content/repositories/public" }
+        maven { url "https://repo.mvdw-software.com/content/groups/public" }
     }
 
     apply plugin: 'groovy'
