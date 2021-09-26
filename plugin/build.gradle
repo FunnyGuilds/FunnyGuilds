@@ -45,7 +45,7 @@ dependencies {
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
 
     shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.5"
-    shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
+    shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.6"
 
     testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
     testImplementation 'org.mockito:mockito-core:3.11.2'
