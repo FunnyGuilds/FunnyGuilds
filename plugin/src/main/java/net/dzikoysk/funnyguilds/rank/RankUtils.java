@@ -16,7 +16,7 @@ public class RankUtils {
                 FunnyGuilds.getInstance().getPluginConfiguration(),
                 FunnyGuilds.getInstance().getTablistConfiguration(),
                 FunnyGuilds.getInstance().getMessageConfiguration(),
-                RankManager.getInstance(),
+                FunnyGuilds.getInstance().getRankManager(),
                 targetUser,
                 rankTop
         );

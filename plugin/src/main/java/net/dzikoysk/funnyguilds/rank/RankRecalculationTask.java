@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.rank;
 
+import java.util.Collections;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
@@ -7,10 +10,6 @@ import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
-
-import java.util.Collections;
-import java.util.NavigableSet;
-import java.util.TreeSet;
 
 public class RankRecalculationTask implements Runnable {
 
@@ -22,10 +21,10 @@ public class RankRecalculationTask implements Runnable {
 
     @Override
     public void run() {
-        RankManager manager = RankManager.getInstance();
+        RankManager rankManager = plugin.getRankManager();
 
-        this.recalculateUsersRank(manager);
-        this.recalculateGuildsRank(manager);
+        this.recalculateUsersRank(rankManager);
+        this.recalculateGuildsRank(rankManager);
     }
 
     private void recalculateUsersRank(RankManager manager) {
