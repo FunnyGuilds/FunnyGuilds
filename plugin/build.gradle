@@ -52,7 +52,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:3.11.2'
     testImplementation 'org.mockito:mockito-inline:3.11.2'
     testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 }
 
