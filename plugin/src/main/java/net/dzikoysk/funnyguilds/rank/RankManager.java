@@ -23,22 +23,6 @@ public class RankManager {
         INSTANCE = this;
     }
 
-    public User getUser(int place) {
-        if (place - 1 < this.usersRank.size()) {
-            return Iterables.get(this.usersRank, place - 1).getUser();
-        }
-
-        return null;
-    }
-
-    public Guild getGuild(int place) {
-        if (place - 1 < this.guildsRank.size()) {
-            return Iterables.get(this.guildsRank, place - 1).getGuild();
-        }
-
-        return null;
-    }
-
     public void update(User user) {
         if (user.getUUID().version() == 2) {
             return;
@@ -58,6 +42,22 @@ public class RankManager {
         }
 
         this.guildsRank.add(guild.getRank());
+    }
+
+    public User getUser(int place) {
+        if (place - 1 < this.usersRank.size()) {
+            return Iterables.get(this.usersRank, place - 1).getUser();
+        }
+
+        return null;
+    }
+
+    public Guild getGuild(int place) {
+        if (place - 1 < this.guildsRank.size()) {
+            return Iterables.get(this.guildsRank, place - 1).getGuild();
+        }
+
+        return null;
     }
 
     public int countUsers() {

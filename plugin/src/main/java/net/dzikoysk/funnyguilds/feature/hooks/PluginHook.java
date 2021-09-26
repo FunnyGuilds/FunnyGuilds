@@ -127,6 +127,6 @@ public final class PluginHook {
         return HOOK_LIST.contains(plugin);
     }
 
-    private PluginHook() { }
+    private PluginHook() {}
 
 }
