@@ -11,7 +11,7 @@ dependencies {
     implementation "org.panda-lang:panda-utilities:0.5.0-alpha"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.1.0"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.3.5"
     implementation "eu.okaeri:okaeri-configs-serdes-commons:3.1.0"
     implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.1.0"
 
