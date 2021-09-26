@@ -1,17 +1,16 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class PointsCommand {
@@ -21,7 +20,7 @@ public final class PointsCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
+    public void execute(FunnyGuilds plugin, MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoNickGiven);
         when (args.length < 2, messages.adminNoPointsGiven);
 
@@ -42,14 +41,14 @@ public final class PointsCommand {
         if (!SimpleEventHandler.handle(new PointsChangeEvent(AdminUtils.getCause(admin), userRank, admin, change))) {
             return;
         }
-        
+
         user.getRank().setPoints(points);
-        RankManager.getInstance().update(user);
+        plugin.getRankManager().update(user);
 
         String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
         message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
         message = message.replace("{POINTS}", String.valueOf(points));
-        
+
         sender.sendMessage(message);
     }
 

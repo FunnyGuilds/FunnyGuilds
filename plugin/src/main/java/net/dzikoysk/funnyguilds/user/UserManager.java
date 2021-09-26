@@ -8,7 +8,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -82,7 +81,7 @@ public class UserManager {
         User user = new User(uuid, name);
 
         addUser(user);
-        RankManager.getInstance().update(user);
+        FunnyGuilds.getInstance().getRankManager().update(user);
 
         return user;
     }
@@ -92,7 +91,7 @@ public class UserManager {
 
         User user = new User(player);
         addUser(user);
-        RankManager.getInstance().update(user);
+        FunnyGuilds.getInstance().getRankManager().update(user);
 
         return user;
     }

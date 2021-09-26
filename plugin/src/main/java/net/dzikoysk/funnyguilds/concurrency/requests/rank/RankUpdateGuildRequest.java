@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.rank;
 
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.rank.RankManager;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
+import net.dzikoysk.funnyguilds.guild.Guild;
 
 public class RankUpdateGuildRequest extends DefaultConcurrencyRequest {
 
@@ -14,7 +14,7 @@ public class RankUpdateGuildRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        RankManager.getInstance().update(guild);
+        FunnyGuilds.getInstance().getRankManager().update(guild);
     }
 
 }
