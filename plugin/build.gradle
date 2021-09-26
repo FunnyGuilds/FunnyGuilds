@@ -39,7 +39,7 @@ dependencies {
     }
     shadow "me.robin:leaderheads-api:1.0.0"
     shadow "net.milkbowl.vault:VaultAPI:1.7"
-    shadow("be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT") {
+    shadow("be.maximvdw:MVdWPlaceholderAPI:3.1.1-SNAPSHOT") {
         exclude group: "org.spigotmc", module: "spigot"
     }
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
