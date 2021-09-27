@@ -3,18 +3,15 @@ package net.dzikoysk.funnyguilds.feature.hooks;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.rank.RankUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.entity.Player;
 
-import java.util.regex.Pattern;
-
 public final class PlaceholderAPIHook {
 
-    private static final Pattern PLACEHOLDER_PATTERN = Pattern.compile("[%]([^%]+)[%]");
     private static final String FUNNYGUILDS_VERSION = FunnyGuilds.getInstance().getDescription().getVersion();
 
     public static void initPlaceholderHook() {
@@ -23,7 +20,7 @@ public final class PlaceholderAPIHook {
     }
 
     public static String replacePlaceholders(Player user, String base) {
-        return PlaceholderAPI.setPlaceholders(user, base, PLACEHOLDER_PATTERN);
+        return PlaceholderAPI.setPlaceholders(user, base);
     }
 
     private PlaceholderAPIHook() {}
@@ -60,7 +57,7 @@ public final class PlaceholderAPIHook {
         }
 
         @Override
-        public String getPlugin() {
+        public String getRequiredPlugin() {
             return "FunnyGuilds";
         }
 
