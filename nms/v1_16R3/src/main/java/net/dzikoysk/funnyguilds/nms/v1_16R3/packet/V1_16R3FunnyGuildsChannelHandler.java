@@ -2,12 +2,11 @@ package net.dzikoysk.funnyguilds.nms.v1_16R3.packet;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import java.lang.reflect.Field;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
 import net.minecraft.server.v1_16_R3.EnumHand;
 import net.minecraft.server.v1_16_R3.PacketPlayInUseEntity;
-
-import java.lang.reflect.Field;
 
 public class V1_16R3FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsChannelHandler {
     private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
@@ -19,7 +18,8 @@ public class V1_16R3FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapt
             ENTITY_ID = PacketPlayInUseEntity.class.getDeclaredField("a");
             ENTITY_ID.setAccessible(true);
 
-        } catch (final NoSuchFieldException e) {
+        }
+        catch (final NoSuchFieldException e) {
             throw new RuntimeException("Failed to initialise V1_16R3FunnyGuildsChannelHandler", e);
         }
     }
@@ -34,7 +34,8 @@ public class V1_16R3FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapt
             final PacketPlayInUseEntity.EnumEntityUseAction action = packetPlayInUseEntity.b();
             if (action == PacketPlayInUseEntity.EnumEntityUseAction.ATTACK) {
                 this.packetCallbacksRegistry.handleAttackEntity(entityId, true);
-            } else if (action == PacketPlayInUseEntity.EnumEntityUseAction.INTERACT_AT) {
+            }
+            else if (action == PacketPlayInUseEntity.EnumEntityUseAction.INTERACT_AT) {
                 final boolean isMainHand = packetPlayInUseEntity.c() == EnumHand.MAIN_HAND;
                 this.packetCallbacksRegistry.handleRightClickEntity(entityId, isMainHand);
             }

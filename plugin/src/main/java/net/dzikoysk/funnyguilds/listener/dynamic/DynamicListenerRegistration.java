@@ -1,19 +1,18 @@
 package net.dzikoysk.funnyguilds.listener.dynamic;
 
+import java.util.Collection;
+import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-
-import java.util.Collection;
-import java.util.function.Supplier;
 
 class DynamicListenerRegistration {
 
     private final FunnyGuilds plugin;
 
     private final Collection<Listener> listeners;
-    private final Supplier<Boolean>  predicate;
+    private final Supplier<Boolean> predicate;
     private boolean currentState;
 
     public DynamicListenerRegistration(FunnyGuilds plugin, Collection<Listener> listeners, Supplier<Boolean> predicate) {
@@ -32,7 +31,8 @@ class DynamicListenerRegistration {
 
         if (requiredState) {
             this.forceRegister();
-        } else {
+        }
+        else {
             this.forceUnregister();
         }
     }

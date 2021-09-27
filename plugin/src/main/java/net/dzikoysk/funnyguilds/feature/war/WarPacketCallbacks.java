@@ -20,7 +20,7 @@ public class WarPacketCallbacks implements PacketCallbacks {
 
     @Override
     public void handleAttackEntity(int entityId, boolean isMainHand) {
-        if (! isMainHand) {
+        if (!isMainHand) {
             return;
         }
 

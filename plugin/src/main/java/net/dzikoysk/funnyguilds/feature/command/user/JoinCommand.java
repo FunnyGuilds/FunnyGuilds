@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
@@ -19,26 +20,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import panda.utilities.text.Formatter;
 
-import java.util.List;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class JoinCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.join.name}",
-        description = "${user.join.description}",
-        aliases = "${user.join.aliases}",
-        permission = "funnyguilds.join",
-        completer = "guilds:3",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.join.name}",
+            description = "${user.join.description}",
+            aliases = "${user.join.aliases}",
+            permission = "funnyguilds.join",
+            completer = "guilds:3",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, User user, String[] args) {
-        when (user.hasGuild(), messages.joinHasGuild);
+        when(user.hasGuild(), messages.joinHasGuild);
 
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(player);
-        when (invitations.size() == 0, messages.joinHasNotInvitation);
+        when(invitations.size() == 0, messages.joinHasNotInvitation);
 
         if (args.length < 1) {
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(player), false);
@@ -46,12 +46,12 @@ public final class JoinCommand extends AbstractFunnyCommand {
             for (String msg : messages.joinInvitationList) {
                 player.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
-            
+
             return;
         }
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (!InvitationList.hasInvitationFrom(player, this.guildManager.findByTag(guild.getTag()).getOrNull()), messages.joinHasNotInvitationTo);
+        when(!InvitationList.hasInvitationFrom(player, this.guildManager.findByTag(guild.getTag()).getOrNull()), messages.joinHasNotInvitationTo);
 
         List<ItemStack> requiredItems = config.joinItems;
 
@@ -59,7 +59,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
             return;
         }
 
-        when (guild.getMembers().size() >= config.maxMembersInGuild, messages.inviteAmountJoin.replace("{AMOUNT}", Integer.toString(config.maxMembersInGuild)));
+        when(guild.getMembers().size() >= config.maxMembersInGuild, messages.inviteAmountJoin.replace("{AMOUNT}", Integer.toString(config.maxMembersInGuild)));
 
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {
             return;

@@ -1,5 +1,12 @@
 package net.dzikoysk.funnyguilds.feature.tablist.variable;
 
+import java.time.format.TextStyle;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -19,14 +26,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import java.time.format.TextStyle;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 public final class DefaultTablistVariables {
 
@@ -61,7 +60,8 @@ public final class DefaultTablistVariables {
         parser.add(new SimpleTablistVariable("TPS", user -> {
             try {
                 return MinecraftServerUtils.getFormattedTPS();
-            } catch (IntegerRange.MissingFormatException missingFormatException) {
+            }
+            catch (IntegerRange.MissingFormatException missingFormatException) {
                 return "0";
             }
         }));

@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
+import net.dzikoysk.funnyguilds.user.User;
 
 public class DatabaseUpdateUserPointsRequest extends DefaultConcurrencyRequest {
 

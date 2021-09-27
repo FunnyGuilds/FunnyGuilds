@@ -4,15 +4,6 @@ import com.google.common.io.Files;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.telemetry.FunnyTelemetry;
-import net.dzikoysk.funnyguilds.telemetry.FunnybinResponse;
-import net.dzikoysk.funnyguilds.telemetry.PasteType;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -23,6 +14,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.telemetry.FunnyTelemetry;
+import net.dzikoysk.funnyguilds.telemetry.FunnybinResponse;
+import net.dzikoysk.funnyguilds.telemetry.PasteType;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 
 public final class FunnybinRequest extends DefaultConcurrencyRequest {
 

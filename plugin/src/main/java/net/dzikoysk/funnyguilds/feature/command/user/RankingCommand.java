@@ -10,11 +10,11 @@ import org.bukkit.command.CommandSender;
 public final class RankingCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.ranking.name}",
-        description = "${user.ranking.description}",
-        aliases = "${user.ranking.aliases}",
-        permission = "funnyguilds.ranking",
-        acceptsExceeded = true
+            name = "${user.ranking.name}",
+            description = "${user.ranking.description}",
+            aliases = "${user.ranking.aliases}",
+            permission = "funnyguilds.ranking",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
         for (String messageLine : messages.rankingList) {

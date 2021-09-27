@@ -16,24 +16,24 @@ public class PlayerLogin extends AbstractFunnyListener {
         if (Bukkit.hasWhitelist()) {
             return;
         }
-        
+
         String name = event.getPlayer().getName();
         if (name.length() < 2) {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick jest za krotki!"));
         }
-        
+
         if (name.length() > 16) {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick jest za dlugi!"));
         }
-        
+
         if (!name.matches(GuildRegex.LETTERS_DIGITS_UNDERSCORE.getPattern())) {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
 
         this.userManager.findByPlayer(event.getPlayer())
-            .peek(BanUtils::checkIfBanShouldExpire)
-            .filter(User::isBanned)
-            .peek(user -> event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user)));
+                .peek(BanUtils::checkIfBanShouldExpire)
+                .filter(User::isBanned)
+                .peek(user -> event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user)));
     }
 
 }

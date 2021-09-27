@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.List;
 
 public interface FunnyHologram {
 

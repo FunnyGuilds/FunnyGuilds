@@ -5,10 +5,9 @@ import eu.okaeri.configs.serdes.SimpleObjectTransformer;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
+import java.io.File;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
-
-import java.io.File;
 
 public final class ConfigurationFactory {
 

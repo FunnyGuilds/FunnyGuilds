@@ -19,20 +19,20 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class BanCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.ban.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.ban.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.adminNoBanTimeGiven);
-        when (args.length < 3, messages.adminNoReasonGiven);
+        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 2, messages.adminNoBanTimeGiven);
+        when(args.length < 3, messages.adminNoReasonGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (guild.isBanned(), messages.adminGuildBanned);
+        when(guild.isBanned(), messages.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
-        when (time < 1, messages.adminTimeError);
+        when(time < 1, messages.adminTimeError);
 
         StringBuilder reasonBuilder = new StringBuilder();
 
@@ -40,7 +40,7 @@ public final class BanCommand extends AbstractFunnyCommand {
             reasonBuilder.append(args[index]);
             reasonBuilder.append(" ");
         }
-        
+
         String reason = reasonBuilder.toString();
         User admin = AdminUtils.getAdminUser(sender);
 

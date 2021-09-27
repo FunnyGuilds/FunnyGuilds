@@ -1,15 +1,14 @@
 package net.dzikoysk.funnyguilds.nms;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public final class PacketSender {
 
@@ -58,11 +57,12 @@ public final class PacketSender {
         try {
             final Object handle = getHandle.invoke(target);
             final Object connection = playerConnection.get(handle);
-            
+
             for (Object packet : packets) {
                 sendPacket.invoke(connection, packet);
             }
-        } catch (IllegalAccessException | InvocationTargetException exception) {
+        }
+        catch (IllegalAccessException | InvocationTargetException exception) {
             FunnyGuilds.getPluginLogger().error("Failed to send packets", exception);
         }
     }

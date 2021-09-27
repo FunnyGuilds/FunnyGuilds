@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
-import net.dzikoysk.funnyguilds.user.User;
+import java.io.File;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
-
-import java.io.File;
+import net.dzikoysk.funnyguilds.user.User;
 
 public class FlatUser {
 
@@ -45,7 +44,7 @@ public class FlatUser {
         values[6] = logouts;
         values[7] = ban;
         values[8] = reason;
-        
+
         return DeserializationUtils.deserializeUser(values);
     }
 
@@ -56,7 +55,7 @@ public class FlatUser {
         }
 
         YamlWrapper wrapper = new YamlWrapper(file);
-        
+
         wrapper.set("uuid", user.getUUID().toString());
         wrapper.set("name", user.getName());
         wrapper.set("points", user.getRank().getPoints());

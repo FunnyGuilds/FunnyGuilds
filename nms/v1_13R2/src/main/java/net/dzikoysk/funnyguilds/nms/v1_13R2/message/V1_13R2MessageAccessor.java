@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.nms.v1_13R2.message;
 
+import java.util.Collection;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.minecraft.server.v1_13_R2.ChatMessageType;
@@ -9,8 +10,6 @@ import net.minecraft.server.v1_13_R2.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R2.util.CraftChatMessage;
 import org.bukkit.entity.Player;
-
-import java.util.Collection;
 
 public class V1_13R2MessageAccessor implements MessageAccessor {
     @Override

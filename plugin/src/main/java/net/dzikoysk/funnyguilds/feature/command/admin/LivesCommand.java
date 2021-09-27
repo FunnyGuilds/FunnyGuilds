@@ -14,20 +14,21 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class LivesCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.lives.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.lives.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.adminNoLivesGiven);
+        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 2, messages.adminNoLivesGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         int lives;
         try {
             lives = Integer.parseInt(args[1]);
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }
@@ -36,7 +37,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(new GuildLivesChangeEvent(AdminUtils.getCause(admin), admin, guild, lives))) {
             return;
         }
-        
+
         guild.setLives(lives);
         sender.sendMessage(messages.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives)));
     }

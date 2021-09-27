@@ -17,7 +17,8 @@ public final class MapUtil {
 
         if (descending) {
             stream = stream.sorted(Entry.comparingByKey(Collections.reverseOrder()));
-        } else {
+        }
+        else {
             stream = stream.sorted(Entry.comparingByKey());
         }
 
@@ -33,7 +34,8 @@ public final class MapUtil {
 
         if (descending) {
             stream = stream.sorted(Entry.comparingByValue(Collections.reverseOrder()));
-        } else {
+        }
+        else {
             stream = stream.sorted(Entry.comparingByValue());
         }
 

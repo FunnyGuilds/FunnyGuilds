@@ -8,7 +8,7 @@ public class GuildBanEvent extends GuildEvent {
 
     private final long time;
     private final String reason;
-    
+
     private static final HandlerList handlers = new HandlerList();
 
     @Override
@@ -19,10 +19,10 @@ public class GuildBanEvent extends GuildEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildBanEvent(EventCause eventCause, User doer, Guild guild, long time, String reason) {
         super(eventCause, doer, guild);
-        
+
         this.time = time;
         this.reason = reason;
     }
@@ -39,5 +39,5 @@ public class GuildBanEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild ban has been cancelled by the server!";
     }
-    
+
 }

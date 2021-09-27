@@ -17,10 +17,10 @@ public class GuildLivesChangeEvent extends GuildEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildLivesChangeEvent(EventCause eventCause, User doer, Guild guild, int newLives) {
         super(eventCause, doer, guild);
-        
+
         this.newLives = newLives;
     }
 
@@ -32,5 +32,5 @@ public class GuildLivesChangeEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild lives change has been cancelled by the server!";
     }
-    
+
 }

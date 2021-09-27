@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.data;
 
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
@@ -9,10 +12,6 @@ import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Set;
-
 public interface DataModel {
 
     void load() throws SQLException;
@@ -20,7 +19,7 @@ public interface DataModel {
     void save(boolean ignoreNotChanged);
 
     default void validateLoadedData() {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             return;
         }
 

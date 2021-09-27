@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
@@ -11,9 +13,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import org.bukkit.entity.Player;
-
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class WarInfoRequest extends DefaultConcurrencyRequest {
 
@@ -56,9 +55,10 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             }
 
             try {
-                infoExecutor.execute(player, new String[]{ entry.getKey().getTag() });
+                infoExecutor.execute(player, new String[] {entry.getKey().getTag()});
                 return;
-            } catch (ValidationException validatorException) {
+            }
+            catch (ValidationException validatorException) {
                 validatorException.getValidationMessage().peek(player::sendMessage);
             }
         }

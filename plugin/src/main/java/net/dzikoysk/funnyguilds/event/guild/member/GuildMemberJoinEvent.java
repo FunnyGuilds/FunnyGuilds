@@ -16,7 +16,7 @@ public class GuildMemberJoinEvent extends GuildMemberEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildMemberJoinEvent(EventCause eventCause, User doer, Guild guild, User member) {
         super(eventCause, doer, guild, member);
     }
@@ -25,5 +25,5 @@ public class GuildMemberJoinEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Member join has been cancelled by the server!";
     }
-    
+
 }

@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.user;
 
+import java.lang.ref.WeakReference;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
@@ -9,9 +11,6 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-
-import java.lang.ref.WeakReference;
-import java.util.UUID;
 
 public class User extends AbstractMutableEntity {
 

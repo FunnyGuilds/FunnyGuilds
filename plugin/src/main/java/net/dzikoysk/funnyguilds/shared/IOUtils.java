@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.shared;
 
 import com.google.common.base.Throwables;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
@@ -11,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class IOUtils {
 
@@ -22,7 +21,8 @@ public final class IOUtils {
                 file.getParentFile().mkdirs();
                 if (b) {
                     file.createNewFile();
-                } else {
+                }
+                else {
                     file.mkdir();
                 }
             }
@@ -30,7 +30,7 @@ public final class IOUtils {
                 FunnyGuilds.getPluginLogger().error("Could not initialize file: " + file.getAbsolutePath(), ex);
             }
         }
-        
+
         return file;
     }
 
@@ -40,20 +40,21 @@ public final class IOUtils {
 
         try {
             URLConnection con = new URL(s).openConnection();
-            
+
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
             in = con.getInputStream();
-            
+
             String encoding = con.getContentEncoding();
             encoding = encoding == null ? "UTF-8" : encoding;
-            
+
             body = IOUtils.toString(in, encoding);
             in.close();
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().update("Connection to the update server (" + s + ") failed!");
             FunnyGuilds.getPluginLogger().update("Reason: " + Throwables.getStackTraceAsString(ex));
-        } finally {
+        }
+        finally {
             close(in);
         }
 
@@ -62,20 +63,22 @@ public final class IOUtils {
 
     public static File getFile(String s, boolean folder) {
         File file = new File(s);
-        
+
         try {
             if (!file.exists()) {
                 if (folder) {
                     file.mkdirs();
-                } else {
+                }
+                else {
                     file.getParentFile().mkdirs();
                     file.createNewFile();
                 }
             }
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("The file could not be created!", exception);
         }
-        
+
         return file;
     }
 
@@ -83,17 +86,18 @@ public final class IOUtils {
         if (!f.exists()) {
             return;
         }
-        
+
         if (f.isDirectory()) {
             for (File c : f.listFiles()) {
                 delete(c);
             }
         }
-        
+
         if (!f.delete()) {
             try {
                 throw new FileNotFoundException("Failed to delete file: " + f);
-            } catch (FileNotFoundException exception) {
+            }
+            catch (FileNotFoundException exception) {
                 FunnyGuilds.getPluginLogger().error("The file could not be deleted!", exception);
             }
         }
@@ -103,11 +107,11 @@ public final class IOUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         byte[] buf = new byte[8192];
         int len;
-        
+
         while ((len = in.read(buf)) != -1) {
             baos.write(buf, 0, len);
         }
-        
+
         return baos.toString(encoding);
     }
 
@@ -118,7 +122,8 @@ public final class IOUtils {
 
         try {
             closeable.close();
-        } catch (IOException exception) {
+        }
+        catch (IOException exception) {
             FunnyGuilds.getPluginLogger().error("Could not close IO", exception);
         }
     }

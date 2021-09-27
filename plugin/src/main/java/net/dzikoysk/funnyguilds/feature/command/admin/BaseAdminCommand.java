@@ -14,19 +14,19 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.whenNul
 public final class BaseAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.base.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.base.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
-        
+        when(args.length < 1, messages.generalNoNickGiven);
+
         User userToTeleport = UserValidation.requireUserByName(args[0]);
-        when (!userToTeleport.isOnline(), messages.generalNotOnline);
-        when (!userToTeleport.hasGuild(), messages.generalPlayerHasNoGuild);
-        
+        when(!userToTeleport.isOnline(), messages.generalNotOnline);
+        when(!userToTeleport.hasGuild(), messages.generalPlayerHasNoGuild);
+
         Location guildHome = userToTeleport.getGuild().getHome();
-        whenNull (guildHome, messages.adminGuildHasNoHome);
+        whenNull(guildHome, messages.adminGuildHasNoHome);
 
         Formatter formatter = new Formatter()
                 .register("{ADMIN}", sender.getName())

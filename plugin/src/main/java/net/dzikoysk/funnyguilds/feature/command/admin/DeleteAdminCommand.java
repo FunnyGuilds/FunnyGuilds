@@ -18,12 +18,12 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class DeleteAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.delete.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.delete.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 1, messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -31,7 +31,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(new GuildDeleteEvent(AdminUtils.getCause(admin), admin, guild))) {
             return;
         }
-        
+
         GuildUtils.deleteGuild(guild);
 
         Formatter formatter = Placeholders.GUILD

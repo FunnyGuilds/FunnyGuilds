@@ -16,7 +16,7 @@ public class GuildUnbanEvent extends GuildEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildUnbanEvent(EventCause eventCause, User doer, Guild guild) {
         super(eventCause, doer, guild);
     }

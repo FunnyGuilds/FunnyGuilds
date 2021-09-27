@@ -2,9 +2,8 @@ package net.dzikoysk.funnyguilds.nms.v1_8R3.packet;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelPipeline;
-import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
-
 import java.util.function.Supplier;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 
 import static net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessorConstants.FUNNY_GUILDS_HANDLER_ID;
 

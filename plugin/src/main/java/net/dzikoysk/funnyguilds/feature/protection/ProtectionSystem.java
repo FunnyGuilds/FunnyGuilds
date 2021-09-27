@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.protection;
 
+import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -14,8 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 
-import java.util.concurrent.TimeUnit;
-
 public final class ProtectionSystem {
 
     public enum ProtectionType {
@@ -28,23 +27,23 @@ public final class ProtectionSystem {
         if (player == null || location == null) {
             return Option.none();
         }
-        
+
         if (player.hasPermission("funnyguilds.admin.build")) {
             return Option.none();
         }
-        
+
         Region region = RegionUtils.getAt(location);
 
         if (region == null) {
             return Option.none();
         }
-        
+
         Guild guild = region.getGuild();
 
         if (guild == null || guild.getName() == null) {
             return Option.none();
         }
-        
+
         User user = UserUtils.get(player.getUniqueId());
 
         if (!guild.getMembers().contains(user)) {
@@ -75,7 +74,7 @@ public final class ProtectionSystem {
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
         player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract
-                .replace("{TIME}",Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis())))
+                .replace("{TIME}", Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis())))
         );
     }
 

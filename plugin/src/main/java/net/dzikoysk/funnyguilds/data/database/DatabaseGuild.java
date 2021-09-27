@@ -1,6 +1,11 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import com.google.common.collect.Sets;
+import java.sql.ResultSet;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
@@ -15,12 +20,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import panda.std.Option;
-
-import java.sql.ResultSet;
-import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 
 public class DatabaseGuild {
 
@@ -83,17 +82,17 @@ public class DatabaseGuild {
             if (born == 0) {
                 born = System.currentTimeMillis();
             }
-            
+
             if (validity == 0) {
                 validity = Instant.now().plus(plugin.getPluginConfiguration().validityStart).toEpochMilli();
             }
-            
+
             if (lives == 0) {
                 lives = plugin.getPluginConfiguration().warLives;
             }
 
             final Object[] values = new Object[17];
-            
+
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
@@ -116,7 +115,7 @@ public class DatabaseGuild {
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", ex);
         }
-        
+
         return null;
     }
 
@@ -127,25 +126,25 @@ public class DatabaseGuild {
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
         SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
 
-        statement.set("uuid",     guild.getUUID().toString());
-        statement.set("name",     guild.getName());
-        statement.set("tag",      guild.getTag());
-        statement.set("owner",    guild.getOwner().getName());
-        statement.set("home",     LocationUtils.toString(guild.getHome()));
-        statement.set("region",   RegionUtils.toString(guild.getRegion()));
+        statement.set("uuid", guild.getUUID().toString());
+        statement.set("name", guild.getName());
+        statement.set("tag", guild.getTag());
+        statement.set("owner", guild.getOwner().getName());
+        statement.set("home", LocationUtils.toString(guild.getHome()));
+        statement.set("region", RegionUtils.toString(guild.getRegion()));
         statement.set("regions", "#abandoned");
-        statement.set("members",  members);
-        statement.set("deputy",   deputies);
-        statement.set("allies",   allies);
-        statement.set("enemies",  enemies);
-        statement.set("points",   guild.getRank().getAveragePoints());
-        statement.set("lives",    guild.getLives());
-        statement.set("born",     guild.getBorn());
+        statement.set("members", members);
+        statement.set("deputy", deputies);
+        statement.set("allies", allies);
+        statement.set("enemies", enemies);
+        statement.set("points", guild.getRank().getAveragePoints());
+        statement.set("lives", guild.getLives());
+        statement.set("born", guild.getBorn());
         statement.set("validity", guild.getValidity());
         statement.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
-        statement.set("ban",      guild.getBan());
-        statement.set("pvp",      guild.getPvP());
-        statement.set("info",     "");
+        statement.set("ban", guild.getBan());
+        statement.set("pvp", guild.getPvP());
+        statement.set("info", "");
 
         statement.executeUpdate();
     }
@@ -166,6 +165,7 @@ public class DatabaseGuild {
         statement.executeUpdate();
     }
 
-    private DatabaseGuild() {}
+    private DatabaseGuild() {
+    }
 
 }

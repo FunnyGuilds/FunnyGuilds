@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public final class ItemBuilder {
 
@@ -42,7 +41,7 @@ public final class ItemBuilder {
     public ItemBuilder setName(String name, boolean color) {
         this.itemMeta.setDisplayName(color ? ChatUtils.colored(name) : name);
         this.refreshMeta();
-        
+
         return this;
     }
 
@@ -51,10 +50,10 @@ public final class ItemBuilder {
         for (String str : lore) {
             formatted.add(ChatUtils.colored(str));
         }
-        
+
         this.itemMeta.setLore(formatted);
         this.refreshMeta();
-        
+
         return this;
     }
 
@@ -65,21 +64,21 @@ public final class ItemBuilder {
     public ItemBuilder addEnchant(Enchantment enchant, int level) {
         this.itemMeta.addEnchant(enchant, level, true);
         this.refreshMeta();
-        
+
         return this;
     }
 
     public ItemBuilder setFlag(ItemFlag flag) {
         this.itemMeta.addItemFlags(flag);
         this.refreshMeta();
-        
+
         return this;
     }
-    
+
     public ItemStack getItem() {
         return this.itemStack;
     }
-    
+
     public ItemMeta getMeta() {
         return this.itemMeta;
     }

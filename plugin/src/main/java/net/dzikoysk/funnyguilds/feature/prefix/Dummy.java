@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.prefix;
 
+import java.text.MessageFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -9,8 +10,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import panda.std.Option;
-
-import java.text.MessageFormat;
 
 public class Dummy {
 
@@ -23,7 +22,7 @@ public class Dummy {
     }
 
     public void updateScore(User user) {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
+        if (!FunnyGuilds.getInstance().getPluginConfiguration().dummyEnable) {
             return;
         }
 
@@ -56,7 +55,7 @@ public class Dummy {
     private void initialize() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
 
-        if (! plugin.getPluginConfiguration().dummyEnable) {
+        if (!plugin.getPluginConfiguration().dummyEnable) {
             return;
         }
 
@@ -76,7 +75,7 @@ public class Dummy {
         Scoreboard scoreboard = scoreboardOption.get();
         Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
 
-        if (objective == null || ! objective.getName().equals(OBJECTIVE_NAME)) {
+        if (objective == null || !objective.getName().equals(OBJECTIVE_NAME)) {
             objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
             objective.setDisplayName(plugin.getPluginConfiguration().dummySuffix);

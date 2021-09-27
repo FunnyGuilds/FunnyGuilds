@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.concurrency;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 import java.util.concurrent.atomic.AtomicInteger;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public class ConcurrencyTask implements Runnable {
 
@@ -31,7 +30,8 @@ public class ConcurrencyTask implements Runnable {
     private boolean execute(ConcurrencyRequest request) {
         try {
             request.execute();
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable throwable) {
             if (request.getExceptionHandler() != null) {
                 request.getExceptionHandler().handleException(throwable);
             }

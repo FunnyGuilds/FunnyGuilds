@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
-import panda.utilities.text.Joiner;
-
 import java.util.HashMap;
+import panda.utilities.text.Joiner;
 
 public class SQLBasicUtils {
 
@@ -117,7 +116,7 @@ public class SQLBasicUtils {
         sb.append(index == 0 ? " FIRST" : " AFTER " + table.getSqlElements().get(index - 1).getKeyGraveAccent());
         sb.append(";");
 
-        return new SQLNamedStatement(sb.toString(),  new HashMap<>());
+        return new SQLNamedStatement(sb.toString(), new HashMap<>());
     }
 
 }

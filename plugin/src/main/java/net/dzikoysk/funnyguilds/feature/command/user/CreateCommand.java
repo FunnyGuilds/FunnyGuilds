@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.time.Instant;
+import java.util.List;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
@@ -33,8 +35,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import panda.utilities.text.Formatter;
 
-import java.time.Instant;
-import java.util.List;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -43,21 +43,21 @@ public final class CreateCommand extends AbstractFunnyCommand {
     private static final int SKY_LIMIT = 256;
 
     @FunnyCommand(
-        name = "${user.create.name}",
-        description = "${user.create.description}",
-        aliases = "${user.create.aliases}",
-        permission = "funnyguilds.create",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.create.name}",
+            description = "${user.create.description}",
+            aliases = "${user.create.aliases}",
+            permission = "funnyguilds.create",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, User user, String[] args) {
-        when (!config.guildsEnabled, messages.adminGuildsDisabled);
-        when (LocationUtils.checkWorld(player), messages.blockedWorld);
-        when (user.hasGuild(), messages.generalHasGuild);
+        when(!config.guildsEnabled, messages.adminGuildsDisabled);
+        when(LocationUtils.checkWorld(player), messages.blockedWorld);
+        when(user.hasGuild(), messages.generalHasGuild);
 
         if (args.length != 2) {
-            when (args.length == 0, messages.generalNoTagGiven);
-            when (args.length == 1, messages.generalNoNameGiven);
+            when(args.length == 0, messages.generalNoTagGiven);
+            when(args.length == 1, messages.generalNoNameGiven);
 
             throw new ValidationException(messages.createMore);
         }
@@ -67,24 +67,24 @@ public final class CreateCommand extends AbstractFunnyCommand {
         if (!config.guildTagKeepCase) {
             tag = config.guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
         }
-        
+
         String name = args[1];
         Location guildLocation = player.getLocation().getBlock().getLocation();
 
-        when (tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
-        when (tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
-        when (name.length() > config.createNameLength, messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
-        when (name.length() < config.createNameMinLength, messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
-        when (!tag.matches(config.tagRegex.getPattern()), messages.createOLTag);
-        when (!name.matches(config.nameRegex.getPattern()), messages.createOLName);
-        when (guildManager.nameExists(name), messages.createNameExists);
-        when (guildManager.tagExists(tag), messages.createTagExists);
-        when (config.regionsEnabled && RegionUtils.isIn(guildLocation), messages.createIsNear);
-        when (config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
+        when(tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
+        when(tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
+        when(name.length() > config.createNameLength, messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
+        when(name.length() < config.createNameMinLength, messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
+        when(!tag.matches(config.tagRegex.getPattern()), messages.createOLTag);
+        when(!name.matches(config.nameRegex.getPattern()), messages.createOLName);
+        when(guildManager.nameExists(name), messages.createNameExists);
+        when(guildManager.tagExists(tag), messages.createTagExists);
+        when(config.regionsEnabled && RegionUtils.isIn(guildLocation), messages.createIsNear);
+        when(config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
 
         if (config.checkForRestrictedGuildNames) {
-            when (!GuildUtils.validateName(config, name), messages.restrictedGuildName);
-            when (!GuildUtils.validateTag(config, tag), messages.restrictedGuildTag);
+            when(!GuildUtils.validateName(config, name), messages.restrictedGuildName);
+            when(!GuildUtils.validateTag(config, tag), messages.restrictedGuildTag);
         }
 
         HeartConfiguration heart = config.heart;
@@ -97,14 +97,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
             if (heart.createEntityType != null && guildLocation.getBlockY() < (SKY_LIMIT - 2)) {
                 guildLocation.setY(guildLocation.getBlockY() + 2);
             }
-    
+
             int distance = config.regionSize + config.createDistance;
-    
+
             if (config.enlargeItems != null) {
                 distance += config.enlargeItems.size() * config.enlargeSize;
             }
-    
-            when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation), messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
+
+            when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation), messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
         }
 
         if (config.rankCreateEnable) {
@@ -113,12 +113,12 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             if (points < requiredRank) {
                 String msg = messages.createRank;
-                
+
                 msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", IntegerRange.inRangeToString(requiredRank, config.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
                 msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
                 msg = StringUtils.replace(msg, "{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
                 msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
-                
+
                 player.sendMessage(msg);
                 return;
             }
@@ -142,7 +142,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             return;
         }
 
-        if (! ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
 
@@ -190,10 +190,10 @@ public final class CreateCommand extends AbstractFunnyCommand {
         if (VaultHook.isEconomyHooked()) {
             VaultHook.withdrawFromPlayerBank(player, requiredMoney);
         }
-        
+
         if (config.regionsEnabled) {
             if (heart.pasteSchematicOnCreation) {
-                if (! PluginHook.WORLD_EDIT.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
+                if (!PluginHook.WORLD_EDIT.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
                     player.sendMessage(messages.createGuildCouldNotPasteSchematic);
                 }
             }
@@ -209,12 +209,12 @@ public final class CreateCommand extends AbstractFunnyCommand {
                         locationInSphere.getBlock().setType(Material.OBSIDIAN);
                     }
                 }
-                
+
                 if (config.eventPhysics) {
                     guildLocation.clone().subtract(0.0D, 2.0D, 0.0D).getBlock().setType(Material.OBSIDIAN);
                 }
             }
-            
+
             this.guildManager.spawnHeart(guild);
             player.teleport(guildLocation);
         }

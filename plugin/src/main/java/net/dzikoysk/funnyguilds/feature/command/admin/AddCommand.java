@@ -18,18 +18,18 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class AddCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.add.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${admin.add.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (!guildManager.tagExists(args[0]), messages.generalNoGuildFound);
-        when (args.length < 2, messages.generalNoNickGiven);
-        
+        when(args.length < 1, messages.generalNoTagGiven);
+        when(!guildManager.tagExists(args[0]), messages.generalNoGuildFound);
+        when(args.length < 2, messages.generalNoNickGiven);
+
         User userToAdd = UserValidation.requireUserByName(args[1]);
-        when (userToAdd.hasGuild(), messages.generalUserHasGuild);
+        when(userToAdd.hasGuild(), messages.generalUserHasGuild);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -37,7 +37,7 @@ public final class AddCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(AdminUtils.getCause(admin), admin, guild, userToAdd))) {
             return;
         }
-        
+
         guild.addMember(userToAdd);
         userToAdd.setGuild(guild);
         this.concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(userToAdd.getName()));

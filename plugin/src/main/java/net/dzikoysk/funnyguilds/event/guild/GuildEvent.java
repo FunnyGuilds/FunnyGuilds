@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.event.guild;
 
+import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import org.bukkit.Bukkit;
 
 public abstract class GuildEvent extends FunnyEvent {
@@ -10,7 +10,7 @@ public abstract class GuildEvent extends FunnyEvent {
     private final Guild guild;
 
     public GuildEvent(EventCause eventCause, User doer, Guild guild) {
-        super(eventCause, doer, ! Bukkit.isPrimaryThread());
+        super(eventCause, doer, !Bukkit.isPrimaryThread());
 
         this.guild = guild;
     }
@@ -24,5 +24,5 @@ public abstract class GuildEvent extends FunnyEvent {
     public Guild getGuild() {
         return this.guild;
     }
-    
+
 }

@@ -7,9 +7,9 @@ import org.bukkit.command.CommandSender;
 public final class MainCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.main.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.main.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
         for (String line : messages.adminHelpList) {

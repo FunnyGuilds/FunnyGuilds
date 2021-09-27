@@ -13,7 +13,8 @@ public final class SafeUtils {
     public static <T> T safeInit(SafeInitializer<T> initializer) {
         try {
             return initializer.initialize();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             reportUnsafe(e);
             return null;
         }

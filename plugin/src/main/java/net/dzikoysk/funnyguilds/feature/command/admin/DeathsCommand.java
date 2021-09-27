@@ -16,13 +16,13 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class DeathsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.deaths.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.deaths.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
-        when (args.length < 2, messages.adminNoDeathsGiven);
+        when(args.length < 1, messages.generalNoNickGiven);
+        when(args.length < 2, messages.adminNoDeathsGiven);
 
         int deaths = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
             throw new ValidationException(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
@@ -36,7 +36,7 @@ public final class DeathsCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(new DeathsChangeEvent(AdminUtils.getCause(admin), userRank, admin, change))) {
             return;
         }
-        
+
         userRank.setDeaths(deaths);
         sender.sendMessage(messages.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(deaths)));
     }

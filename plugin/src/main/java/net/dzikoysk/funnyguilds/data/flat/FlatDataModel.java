@@ -1,5 +1,10 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
@@ -15,12 +20,6 @@ import net.dzikoysk.funnyguilds.shared.IOUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 
 public class FlatDataModel implements DataModel {
 
@@ -144,9 +143,11 @@ public class FlatDataModel implements DataModel {
                 if (UserUtils.validateUsername(filenameWithoutExtension)) {
                     file = migrateUser(file);
 
-                    if (file == null)
+                    if (file == null) {
                         continue;
-                } else {
+                    }
+                }
+                else {
                     FunnyGuilds.getPluginLogger().warning("Skipping loading of user file '" + file.getName() + "'. Name is invalid.");
                     continue;
                 }
@@ -188,7 +189,8 @@ public class FlatDataModel implements DataModel {
 
         try {
             return Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException("Could not move file '" + source + "' to '" + target + "'.", e.getCause());
         }
     }

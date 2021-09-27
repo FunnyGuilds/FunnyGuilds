@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.shared;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 import java.util.Stack;
 import java.util.concurrent.TimeUnit;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class TimeUtils {
 
@@ -46,7 +45,8 @@ public final class TimeUtils {
                                 time += i * 1000L;
                                 break;
                         }
-                    } catch (NumberFormatException e) {
+                    }
+                    catch (NumberFormatException e) {
                         FunnyGuilds.getPluginLogger().parser("Unknown number: " + value.toString());
                         return time;
                     }
@@ -95,26 +95,29 @@ public final class TimeUtils {
 
             if (days == 1) {
                 sb.append(" dzien ");
-            } else {
+            }
+            else {
                 sb.append(" dni ");
             }
         }
-        
+
         if (hours > 0) {
             sb.append(hours);
-            
+
             long last = hours % 10;
             long lastTwo = hours % 100;
 
             if (hours == 1) {
                 sb.append(" godzine ");
-            } else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
+            }
+            else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
                 sb.append(" godziny ");
-            } else {
+            }
+            else {
                 sb.append(" godzin ");
             }
         }
-        
+
         if (minutes > 0) {
             sb.append(minutes);
 
@@ -123,13 +126,15 @@ public final class TimeUtils {
 
             if (minutes == 1) {
                 sb.append(" minute ");
-            } else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
+            }
+            else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
                 sb.append(" minuty ");
-            } else {
+            }
+            else {
                 sb.append(" minut ");
             }
         }
-        
+
         if (seconds > 0) {
             sb.append(seconds);
 
@@ -138,9 +143,11 @@ public final class TimeUtils {
 
             if (seconds == 1) {
                 sb.append(" sekunde ");
-            } else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
+            }
+            else if (last < 5 && (lastTwo < 11 || lastTwo > 14)) {
                 sb.append(" sekundy ");
-            } else {
+            }
+            else {
                 sb.append(" sekund ");
             }
         }

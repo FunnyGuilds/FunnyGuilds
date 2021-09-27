@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import java.util.HashSet;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class EntityProtect extends AbstractFunnyListener {
 

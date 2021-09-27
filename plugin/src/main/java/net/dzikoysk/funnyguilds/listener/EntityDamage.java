@@ -64,7 +64,7 @@ public class EntityDamage extends AbstractFunnyListener {
                         return;
                     }
 
-                    if (! (attackerUser.getGuild().getPvP(victimUser.getGuild()) && victimUser.getGuild().getPvP(attackerUser.getGuild()))) {
+                    if (!(attackerUser.getGuild().getPvP(victimUser.getGuild()) && victimUser.getGuild().getPvP(attackerUser.getGuild()))) {
                         event.setCancelled(true);
                         return;
                     }
@@ -86,5 +86,5 @@ public class EntityDamage extends AbstractFunnyListener {
             victimUser.getCache().addDamage(attackerUser, event.getDamage(), System.currentTimeMillis());
         });
     }
-    
+
 }

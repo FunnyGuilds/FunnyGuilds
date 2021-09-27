@@ -48,7 +48,7 @@ public class TitleMessage {
         private int stayDuration = -1;
         private int fadeOutDuration = -1;
 
-        private Builder() { }
+        private Builder() {}
 
         private Builder(String text, String subText, int fadeInDuration, int stayDuration, int fadeOutDuration) {
             this.text = text;

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.telemetry;
 
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -8,8 +9,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
-
-import com.google.gson.Gson;
 import net.dzikoysk.funnyguilds.shared.IOUtils;
 
 /**
@@ -19,10 +18,10 @@ public class FunnyTelemetry {
 
     private FunnyTelemetry() {}
 
-    private static final Gson   gson                 = new Gson();
-    public static final  String URL                  = "https://funnytelemetry.dzikoysk.net";
-    public static final  String FUNNYBIN_POST        = URL + "/funnybin/api/post";
-    public static final  String FUNNYBIN_POST_BUNDLE = URL + "/funnybin/api/bundle/post";
+    private static final Gson gson = new Gson();
+    public static final String URL = "https://funnytelemetry.dzikoysk.net";
+    public static final String FUNNYBIN_POST = URL + "/funnybin/api/post";
+    public static final String FUNNYBIN_POST_BUNDLE = URL + "/funnybin/api/bundle/post";
 
     public static FunnybinResponse postToFunnybin(String paste, PasteType pasteType, String tag) throws IOException {
         return sendPost(FUNNYBIN_POST + "?type=" + pasteType + "&tag=" + encodeUTF8(tag), paste, FunnybinResponse.class);
@@ -63,13 +62,17 @@ public class FunnyTelemetry {
     }
 
     private static String encodeUTF8(String str) throws UnsupportedEncodingException {
-        if (str == null) return "";
+        if (str == null) {
+            return "";
+        }
         return URLEncoder.encode(str, "UTF-8");
     }
 
     private static String createQueryElement(String key, String value) throws UnsupportedEncodingException {
         String result = encodeUTF8(key);
-        if (value != null) result += "=" + encodeUTF8(value);
+        if (value != null) {
+            result += "=" + encodeUTF8(value);
+        }
         return result;
     }
 

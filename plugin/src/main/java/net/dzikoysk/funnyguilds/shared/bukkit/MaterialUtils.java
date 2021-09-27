@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
@@ -9,9 +11,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public final class MaterialUtils {
 
@@ -83,7 +82,7 @@ public final class MaterialUtils {
         return StringUtils.replaceChars(material.toString().toLowerCase(), '_', ' ');
     }
 
-    public static String getItemCustomName(ItemStack itemStack){
+    public static String getItemCustomName(ItemStack itemStack) {
         if (itemStack == null) {
             return "";
         }

@@ -13,5 +13,5 @@ public class HangingPlace extends AbstractFunnyListener {
                 .peek(result -> event.setCancelled(true))
                 .peek(ProtectionSystem::defaultResponse);
     }
-    
+
 }

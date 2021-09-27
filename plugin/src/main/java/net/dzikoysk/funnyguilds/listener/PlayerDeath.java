@@ -1,5 +1,10 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildPointsRequest;
@@ -26,12 +31,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
 import panda.utilities.text.Formatter;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -79,7 +78,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         Option<User> attackerOption = this.userManager.findByPlayer(playerAttacker);
-        if(attackerOption.isEmpty()) {
+        if (attackerOption.isEmpty()) {
             return;
         }
         User attacker = attackerOption.get();
@@ -111,7 +110,8 @@ public class PlayerDeath extends AbstractFunnyListener {
 
                     return;
                 }
-            } else if (victimTimestamp != null) {
+            }
+            else if (victimTimestamp != null) {
                 if (victimTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
                     playerVictim.sendMessage(messages.rankLastAttackerV);
                     playerAttacker.sendMessage(messages.rankLastAttackerA);
@@ -276,10 +276,12 @@ public class PlayerDeath extends AbstractFunnyListener {
                     event.setDeathMessage(null);
                     player.sendMessage(deathMessage);
                 }
-            } else {
+            }
+            else {
                 event.setDeathMessage(deathMessage);
             }
-        } else {
+        }
+        else {
             event.setDeathMessage(null);
 
             for (User fighter : messageReceivers) {

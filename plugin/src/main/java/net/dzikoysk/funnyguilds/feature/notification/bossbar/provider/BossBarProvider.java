@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.notification.bossbar.provider;
 
-import net.dzikoysk.funnyguilds.user.User;
+import java.time.Duration;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.v1_8.BossBarProviderImpl;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.user.User;
 import org.jetbrains.annotations.Nullable;
-
-import java.time.Duration;
 
 public interface BossBarProvider {
 

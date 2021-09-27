@@ -60,7 +60,8 @@ public enum NotePitch {
 
         try {
             s = Sound.valueOf("NOTE_PIANO");
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             s = Sound.valueOf("BLOCK_NOTE_HARP");
         }
 

@@ -1,15 +1,14 @@
 package net.dzikoysk.funnyguilds.config;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import org.apache.commons.lang3.StringUtils;
-import panda.std.Option;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import org.apache.commons.lang3.StringUtils;
+import panda.std.Option;
 
 public final class IntegerRange {
 
@@ -77,14 +76,16 @@ public final class IntegerRange {
 
             try {
                 minRange = minRangeValue.equals("-*") ? Integer.MIN_VALUE : Integer.parseInt(minRangeValue);
-            } catch (NumberFormatException numberFormatException) {
+            }
+            catch (NumberFormatException numberFormatException) {
                 FunnyGuilds.getPluginLogger().parser("\"" + minRangeValue + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
                 continue;
             }
 
             try {
                 maxRange = maxRangeValue.equals("*") ? Integer.MAX_VALUE : Integer.parseInt(maxRangeValue);
-            } catch (NumberFormatException numberFormatException) {
+            }
+            catch (NumberFormatException numberFormatException) {
                 FunnyGuilds.getPluginLogger().parser("\"" + maxRangeValue + "\" of integer range String \"" + rangeEntry + "\" is not a valid integer!");
                 continue;
             }

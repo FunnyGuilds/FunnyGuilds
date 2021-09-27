@@ -24,16 +24,16 @@ public final class NameCommand extends AbstractFunnyCommand {
     @Inject public DataModel dataModel;
 
     @FunnyCommand(
-        name = "${admin.name.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.name.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.adminNoNewNameGiven);
+        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 2, messages.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (guildManager.nameExists(args[1]), messages.createNameExists);
+        when(guildManager.nameExists(args[1]), messages.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -53,7 +53,7 @@ public final class NameCommand extends AbstractFunnyCommand {
             if (this.dataModel instanceof SQLDataModel) {
                 DatabaseRegion.delete(region);
             }
-            
+
             region.setName(args[1]);
         }
 
@@ -65,7 +65,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         if (this.dataModel instanceof SQLDataModel) {
             DatabaseGuild.delete(guild);
         }
-        
+
         guild.setName(args[1]);
         sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
 

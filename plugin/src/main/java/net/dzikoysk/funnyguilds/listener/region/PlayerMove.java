@@ -28,7 +28,7 @@ public class PlayerMove extends AbstractFunnyListener {
     public void onTeleport(PlayerTeleportEvent event) {
         onMove(event);
     }
-    
+
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
         Location from = event.getFrom();
@@ -45,14 +45,14 @@ public class PlayerMove extends AbstractFunnyListener {
             }
 
             Option<User> userOption = this.userManager.findByPlayer(player);
-            if(userOption.isEmpty()) {
+            if (userOption.isEmpty()) {
                 return;
             }
             User user = userOption.get();
 
             UserCache cache = user.getCache();
             Region region = RegionUtils.getAt(to);
-            
+
             if (region == null && user.getCache().getEnter()) {
                 cache.setEnter(false);
                 region = RegionUtils.getAt(from);
@@ -60,7 +60,7 @@ public class PlayerMove extends AbstractFunnyListener {
                 if (region != null) {
                     Guild guild = region.getGuild();
 
-                    if (! SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
+                    if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
                         event.setCancelled(true);
                         return;
                     }
@@ -70,9 +70,9 @@ public class PlayerMove extends AbstractFunnyListener {
                     }
 
                     Formatter formatter = new Formatter()
-                                    .register("{GUILD}", guild.getName())
-                                    .register("{TAG}", guild.getTag());
-                    
+                            .register("{GUILD}", guild.getName())
+                            .register("{TAG}", guild.getTag());
+
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
                         this.plugin.getNmsAccessor().getMessageAccessor()
                                 .sendActionBarMessage(formatter.format(messages.notificationActionbarLeaveGuildRegion), player);
@@ -110,7 +110,7 @@ public class PlayerMove extends AbstractFunnyListener {
                     return;
                 }
 
-                if (! SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {
+                if (!SimpleEventHandler.handle(new GuildRegionEnterEvent(EventCause.USER, user, guild))) {
                     event.setCancelled(true);
                     return;
                 }
@@ -122,9 +122,9 @@ public class PlayerMove extends AbstractFunnyListener {
                 }
 
                 Formatter formatter = new Formatter()
-                                .register("{GUILD}", guild.getName())
-                                .register("{TAG}", guild.getTag())
-                                .register("{PLAYER}", player.getName());
+                        .register("{GUILD}", guild.getName())
+                        .register("{TAG}", guild.getTag())
+                        .register("{PLAYER}", player.getName());
 
                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
                     plugin.getNmsAccessor().getMessageAccessor()

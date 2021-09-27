@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.concurrency;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public class ConcurrencyManager {
 

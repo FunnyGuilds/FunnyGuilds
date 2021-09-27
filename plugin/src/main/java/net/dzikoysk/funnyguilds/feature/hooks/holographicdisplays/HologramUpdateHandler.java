@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 
 
+import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
@@ -14,8 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Formatter;
-
-import java.util.List;
 
 public class HologramUpdateHandler implements Runnable {
 

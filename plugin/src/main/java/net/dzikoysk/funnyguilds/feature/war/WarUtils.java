@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.war;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
@@ -14,7 +14,7 @@ public final class WarUtils {
     public static void message(Player player, int i, Object... values) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         String message = null;
-        
+
         switch (i) {
             case 0:
                 message = messages.warHasNotGuild;
@@ -30,15 +30,17 @@ public final class WarUtils {
                 message = messages.warAttacker;
                 message = StringUtils.replace(message, "{ATTACKED}", ((Guild) values[0]).getTag());
                 break;
-            case 4: 
+            case 4:
                 message = messages.warAttacked;
                 message = StringUtils.replace(message, "{ATTACKER}", ((Guild) values[0]).getTag());
                 break;
             case 5:
                 message = messages.warDisabled;
                 break;
+            default:
+                throw new IllegalArgumentException("Unknown magic number " + i);
         }
-        
+
         player.sendMessage(message);
     }
 

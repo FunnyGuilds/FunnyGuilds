@@ -27,7 +27,7 @@ public class SQLElement {
     }
 
     public String getType() {
-        return size != - 1 ? type.getName() + "(" + size + ")" : type.getName();
+        return size != -1 ? type.getName() + "(" + size + ")" : type.getName();
     }
 
     public SQLType getSQLType() {

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.nms.v1_8R3.playerlist;
 
 import com.mojang.authlib.GameProfile;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -19,7 +18,8 @@ public class PlayerInfoDataHelper {
     public Object createPlayerInfoData(Object packetPlayOutPlayerInfo, GameProfile gameProfile, int ping, Object displayName) {
         try {
             return this.playerInfoDataConstructor.newInstance(packetPlayOutPlayerInfo, gameProfile, ping, gameMode, displayName);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        }
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException("Failed to create PlayerInfoData instance", e);
         }
     }

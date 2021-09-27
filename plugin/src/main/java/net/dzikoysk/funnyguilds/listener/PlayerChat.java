@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -14,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import panda.std.Option;
-
-import javax.annotation.Nullable;
 
 public class PlayerChat extends AbstractFunnyListener {
 
@@ -53,7 +52,8 @@ public class PlayerChat extends AbstractFunnyListener {
         if (user.hasGuild()) {
             format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild, "{TAG}", user.getGuild().getTag()));
             format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition, "{POS}", getPositionString(user, config)));
-        } else {
+        }
+        else {
             format = StringUtils.replace(format, "{TAG}", "");
             format = StringUtils.replace(format, "{POS}", "");
         }

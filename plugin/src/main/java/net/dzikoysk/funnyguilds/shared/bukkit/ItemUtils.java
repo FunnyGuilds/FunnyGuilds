@@ -1,11 +1,17 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -18,20 +24,13 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 public final class ItemUtils {
 
     private static Method BY_IN_GAME_NAME_ENCHANT;
     private static Method CREATE_NAMESPACED_KEY;
 
     static {
-        if (! Reflections.USE_PRE_12_METHODS) {
+        if (!Reflections.USE_PRE_12_METHODS) {
             Class<?> namespacedKeyClass = Reflections.getBukkitClass("NamespacedKey");
 
             BY_IN_GAME_NAME_ENCHANT = Reflections.getMethod(Enchantment.class, "getByKey");
@@ -185,7 +184,7 @@ public final class ItemUtils {
 
             }
             else if (attributeName.equalsIgnoreCase("armorcolor")) {
-                if (! (item.getMeta() instanceof LeatherArmorMeta)) {
+                if (!(item.getMeta() instanceof LeatherArmorMeta)) {
                     FunnyGuilds.getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[index]);
                     continue;
                 }

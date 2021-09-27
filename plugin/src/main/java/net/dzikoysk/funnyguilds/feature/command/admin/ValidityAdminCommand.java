@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import java.util.Date;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
@@ -10,22 +11,21 @@ import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
-import java.util.Date;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class ValidityAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.validity.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.validity.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.adminNoValidityTimeGiven);
+        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 2, messages.adminNoValidityTimeGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (guild.isBanned(), messages.adminGuildBanned);
+        when(guild.isBanned(), messages.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
         if (time < 1) {

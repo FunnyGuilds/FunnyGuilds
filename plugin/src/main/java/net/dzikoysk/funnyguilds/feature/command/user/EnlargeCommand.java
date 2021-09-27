@@ -20,29 +20,29 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class EnlargeCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.enlarge.name}",
-        description = "${user.enlarge.description}",
-        aliases = "${user.enlarge.aliases}",
-        permission = "funnyguilds.enlarge",
-        playerOnly = true
+            name = "${user.enlarge.name}",
+            description = "${user.enlarge.description}",
+            aliases = "${user.enlarge.aliases}",
+            permission = "funnyguilds.enlarge",
+            playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
-        when (!config.regionsEnabled, messages.regionsDisabled);
+        when(!config.regionsEnabled, messages.regionsDisabled);
 
         Region region = guild.getRegion();
-        when (region == null, messages.regionsDisabled);
+        when(region == null, messages.regionsDisabled);
 
         int enlarge = region.getEnlarge();
-        when (enlarge > config.enlargeItems.size() - 1, messages.enlargeMaxSize);
+        when(enlarge > config.enlargeItems.size() - 1, messages.enlargeMaxSize);
 
         ItemStack need = config.enlargeItems.get(enlarge);
-        when (!player.getInventory().containsAtLeast(need, need.getAmount()), messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
-        when (RegionUtils.isNear(region.getCenter()), messages.enlargeIsNear);
+        when(!player.getInventory().containsAtLeast(need, need.getAmount()), messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
+        when(RegionUtils.isNear(region.getCenter()), messages.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, user.getGuild()))) {
             return;
         }
-        
+
         player.getInventory().removeItem(need);
         region.setEnlarge(++enlarge);
         region.setSize(region.getSize() + config.enlargeSize);

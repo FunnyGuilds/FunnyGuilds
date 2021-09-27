@@ -16,7 +16,7 @@ public class GuildMemberDeputyEvent extends GuildMemberEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildMemberDeputyEvent(EventCause eventCause, User doer, Guild guild, User member) {
         super(eventCause, doer, guild, member);
     }
@@ -25,5 +25,5 @@ public class GuildMemberDeputyEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Deputy change has been cancelled by the server!";
     }
-    
+
 }

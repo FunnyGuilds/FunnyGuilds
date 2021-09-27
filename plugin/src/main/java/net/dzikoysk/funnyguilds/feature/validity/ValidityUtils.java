@@ -33,7 +33,7 @@ public class ValidityUtils {
                     .replace("{Y}", "Brak informacji")
                     .replace("{Z}", "Brak informacji");
         }
-        
+
         Bukkit.broadcastMessage(message);
     }
 

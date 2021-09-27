@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.security.cheat;
 
+import java.text.DecimalFormat;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -9,8 +10,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-
-import java.text.DecimalFormat;
 
 public class SecurityReach {
 

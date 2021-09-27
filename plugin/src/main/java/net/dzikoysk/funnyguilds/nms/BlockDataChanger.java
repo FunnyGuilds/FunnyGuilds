@@ -1,27 +1,26 @@
 package net.dzikoysk.funnyguilds.nms;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.block.Block;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class BlockDataChanger {
 
     private static Class<?> craftBlockClass;
     private static Method setDataMethod;
-    
+
     static {
         craftBlockClass = Reflections.getCraftBukkitClass("block.CraftBlock");
         setDataMethod = Reflections.getMethod(craftBlockClass, "setData", byte.class);
     }
-    
+
     public static void applyChanges(Block targetBlock, byte newData) {
         if (!Reflections.USE_PRE_13_METHODS) {
             return;
         }
-        
+
         try {
             setDataMethod.invoke(targetBlock, newData);
         }
@@ -30,6 +29,7 @@ public class BlockDataChanger {
         }
     }
 
-    private BlockDataChanger() {}
-    
+    private BlockDataChanger() {
+    }
+
 }

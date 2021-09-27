@@ -22,21 +22,21 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class KickCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.kick.name}",
-        description = "${user.kick.description}",
-        aliases = "${user.kick.aliases}",
-        permission = "funnyguilds.kick",
-        completer = "members:3",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.kick.name}",
+            description = "${user.kick.description}",
+            aliases = "${user.kick.aliases}",
+            permission = "funnyguilds.kick",
+            completer = "members:3",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
+        when(args.length < 1, messages.generalNoNickGiven);
 
         User formerUser = UserValidation.requireUserByName(args[0]);
-        when (!formerUser.hasGuild(), messages.generalPlayerHasNoGuild);
-        when (!guild.equals(formerUser.getGuild()), messages.kickOtherGuild);
-        when (formerUser.isOwner(), messages.kickOwner);
+        when(!formerUser.hasGuild(), messages.generalPlayerHasNoGuild);
+        when(!guild.equals(formerUser.getGuild()), messages.kickOtherGuild);
+        when(formerUser.isOwner(), messages.kickOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
             return;

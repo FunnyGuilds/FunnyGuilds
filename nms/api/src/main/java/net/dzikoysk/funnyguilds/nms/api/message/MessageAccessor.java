@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.nms.api.message;
 
-import org.bukkit.entity.Player;
-
 import java.util.Collection;
+import org.bukkit.entity.Player;
 
 public interface MessageAccessor {
     void sendTitleMessage(TitleMessage titleMessage, Player... players);

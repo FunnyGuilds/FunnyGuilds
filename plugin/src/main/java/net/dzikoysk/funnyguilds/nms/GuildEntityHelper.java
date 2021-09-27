@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.nms;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
@@ -8,9 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import panda.std.Option;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class GuildEntityHelper {
 

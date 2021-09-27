@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
+import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.IOUtils;
-
-import java.io.File;
 
 public class FlatPatcher {
 

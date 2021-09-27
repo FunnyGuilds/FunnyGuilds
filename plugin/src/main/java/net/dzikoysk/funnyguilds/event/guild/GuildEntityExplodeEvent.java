@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.event.guild;
 
+import java.util.List;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import org.bukkit.block.Block;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
 
 public class GuildEntityExplodeEvent extends FunnyEvent {
     private static final HandlerList HANDLER_LIST = new HandlerList();
@@ -26,7 +25,9 @@ public class GuildEntityExplodeEvent extends FunnyEvent {
         return "[FunnyGuilds] Region entity explode has been cancelled by the server!";
     }
 
-    public static HandlerList getHandlerList() { return HANDLER_LIST; }
+    public static HandlerList getHandlerList() {
+        return HANDLER_LIST;
+    }
 
     @Override
     public @NotNull HandlerList getHandlers() {

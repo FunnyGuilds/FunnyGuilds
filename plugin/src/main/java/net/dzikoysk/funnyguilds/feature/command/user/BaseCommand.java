@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -14,27 +18,23 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Collections;
-import java.util.List;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class BaseCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.base.name}",
-        aliases = "${user.base.aliases}",
-        description = "${user.base.description}",
-        permission = "funnyguilds.base",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.base.name}",
+            aliases = "${user.base.aliases}",
+            description = "${user.base.description}",
+            permission = "funnyguilds.base",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @IsMember User user, Guild guild) {
-        when (!config.regionsEnabled, messages.regionsDisabled);
-        when (!config.baseEnable, messages.baseTeleportationDisabled);
-        when (user.getCache().getTeleportation() != null, messages.baseIsTeleportation);
+        when(!config.regionsEnabled, messages.regionsDisabled);
+        when(!config.baseEnable, messages.baseTeleportationDisabled);
+        when(user.getCache().getTeleportation() != null, messages.baseIsTeleportation);
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.base")
                 ? Collections.emptyList()
@@ -67,7 +67,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
                 cache.setTeleportation(null);
                 return;
             }
-            
+
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
                 player.sendMessage(messages.baseMove);

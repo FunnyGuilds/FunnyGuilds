@@ -1,20 +1,19 @@
 package net.dzikoysk.funnyguilds.nms;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.shared.SafeUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.Entity;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.SafeUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 
 public final class Reflections {
-    
+
     public static final String SERVER_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
     public static final boolean USE_PRE_13_METHODS = Integer.parseInt(SERVER_VERSION.split("_")[1]) < 13;
     public static final boolean USE_PRE_12_METHODS = Integer.parseInt(SERVER_VERSION.split("_")[1]) < 12;
@@ -47,7 +46,7 @@ public final class Reflections {
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not retrieve class", ex);
-            
+
             CLASS_CACHE.put(className, INVALID_CLASS);
         }
         return c;
@@ -60,7 +59,7 @@ public final class Reflections {
     public static Class<?> getCraftBukkitClass(String name) {
         return getClass("org.bukkit.craftbukkit." + SERVER_VERSION + "." + name);
     }
-    
+
     public static Class<?> getBukkitClass(String name) {
         return getClass("org.bukkit." + name);
     }
@@ -71,7 +70,7 @@ public final class Reflections {
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not get entity handle", ex);
-            
+
             return null;
         }
     }
@@ -82,7 +81,7 @@ public final class Reflections {
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not get world handle", ex);
-            
+
             return null;
         }
     }
@@ -106,7 +105,7 @@ public final class Reflections {
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not retrieve field", ex);
-            
+
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }
 
@@ -136,12 +135,13 @@ public final class Reflections {
                 field.setAccessible(true);
 
                 output = new FieldAccessor<T>() {
-                    
+
                     @Override
                     public T get(Object target) {
                         try {
                             return (T) field.get(target);
-                        } catch (IllegalAccessException e) {
+                        }
+                        catch (IllegalAccessException e) {
                             throw new RuntimeException("Cannot access reflection.", e);
                         }
                     }
@@ -150,7 +150,8 @@ public final class Reflections {
                     public void set(Object target, Object value) {
                         try {
                             field.set(target, value);
-                        } catch (IllegalAccessException e) {
+                        }
+                        catch (IllegalAccessException e) {
                             throw new RuntimeException("Cannot access reflection.", e);
                         }
                     }
@@ -180,7 +181,7 @@ public final class Reflections {
 
     public static Field getPrivateField(Class<?> cl, String fieldName) {
         String cacheKey = constructFieldCacheKey(cl, fieldName);
-        
+
         Field c = FIELD_CACHE.get(cacheKey);
         if (c != null) {
             return c != INVALID_FIELD ? c : null;
@@ -193,7 +194,7 @@ public final class Reflections {
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not retrieve field", ex);
-            
+
             FIELD_CACHE.put(cacheKey, INVALID_FIELD);
         }
 
@@ -265,7 +266,9 @@ public final class Reflections {
 
     private static class InvalidMarker {
         public Void invalidFieldMarker;
-        public void invalidMethodMaker() {}
+
+        public void invalidMethodMaker() {
+        }
     }
 
     private Reflections() {}

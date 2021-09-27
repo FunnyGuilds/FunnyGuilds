@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.nms.v1_16R3.message;
 
+import java.util.Collection;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.minecraft.server.v1_16_R3.ChatMessageType;
@@ -9,9 +11,6 @@ import net.minecraft.server.v1_16_R3.PacketPlayOutTitle.EnumTitleAction;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_16_R3.util.CraftChatMessage;
 import org.bukkit.entity.Player;
-
-import java.util.Collection;
-import java.util.UUID;
 
 public class V1_16R3MessageAccessor implements MessageAccessor {
     private static final UUID SENDER_ALWAYS_DISPLAY = new UUID(0L, 0L);

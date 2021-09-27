@@ -11,8 +11,8 @@ import org.bukkit.scheduler.BukkitTask;
 
 public final class DefaultBossBarProvider implements BossBarProvider {
 
-    private final    User       user;
-    private final    BossBar    bossBar;
+    private final User user;
+    private final BossBar bossBar;
     private volatile BukkitTask hideBossBarTask;
 
     public DefaultBossBarProvider(User user) {
@@ -34,7 +34,7 @@ public final class DefaultBossBarProvider implements BossBarProvider {
         options.getFlags().forEach(this.bossBar::addFlag);
         this.bossBar.setVisible(true);
 
-        if (! this.bossBar.getPlayers().contains(player)) {
+        if (!this.bossBar.getPlayers().contains(player)) {
             this.bossBar.addPlayer(player);
         }
 

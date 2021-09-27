@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public final class LocationUtils {
 

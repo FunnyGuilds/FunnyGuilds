@@ -21,20 +21,20 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class LeaveCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.leave.name}",
-        description = "${user.leave.description}",
-        aliases = "${user.leave.aliases}",
-        permission = "funnyguilds.leave",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.leave.name}",
+            description = "${user.leave.description}",
+            aliases = "${user.leave.aliases}",
+            permission = "funnyguilds.leave",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @IsMember User user, Guild guild) {
-        when (user.isOwner(), messages.leaveIsOwner);
+        when(user.isOwner(), messages.leaveIsOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, user, guild, user))) {
             return;
         }
-        
+
         guild.removeMember(user);
         user.removeGuild();
 

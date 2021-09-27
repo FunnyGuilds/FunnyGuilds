@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.event.rank;
 
+import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.rank.Rank;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.event.FunnyEvent;
 
 public abstract class RankEvent extends FunnyEvent {
 

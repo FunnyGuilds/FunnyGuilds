@@ -1,21 +1,20 @@
 package net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.v1_8;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationUtil;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
 import net.dzikoysk.funnyguilds.nms.PacketSender;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class BossBarProviderImpl implements BossBarProvider {
 
@@ -80,11 +79,11 @@ public class BossBarProviderImpl implements BossBarProvider {
         ENTITY_WITHER_MOT_Z = Reflections.getField(ENTITY_CLASS, "motZ");
     }
 
-    private final    User          user;
-    private volatile BukkitTask    bossBarHandleTask;
-    private          Object        witherInstance;
-    private final    AtomicInteger currentSecond;
-    private          int           witherId;
+    private final User user;
+    private volatile BukkitTask bossBarHandleTask;
+    private Object witherInstance;
+    private final AtomicInteger currentSecond;
+    private int witherId;
 
     public BossBarProviderImpl(User user) {
         this.user = user;
@@ -105,7 +104,7 @@ public class BossBarProviderImpl implements BossBarProvider {
             this.currentSecond.set(0);
         }
 
-        this.createBossBar(player, text,timeout);
+        this.createBossBar(player, text, timeout);
     }
 
     @Override
@@ -181,7 +180,7 @@ public class BossBarProviderImpl implements BossBarProvider {
 
     private void removeBossBar(Player player) {
         try {
-            Object destroyPacket = PACKET_PLAY_OUT_ENTITY_DESTROY_CONSTRUCTOR.newInstance(new int[]{ this.witherId });
+            Object destroyPacket = PACKET_PLAY_OUT_ENTITY_DESTROY_CONSTRUCTOR.newInstance(new int[] {this.witherId});
             PacketSender.sendPacket(player, destroyPacket);
             this.currentSecond.set(0);
         }

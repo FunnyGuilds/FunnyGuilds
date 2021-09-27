@@ -21,8 +21,8 @@ public final class FunnyTabHook {
         logger.info("!!!     FUNNYGUILDS BEDZIE      !!!");
         logger.info("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        
+
         Bukkit.getPluginManager().disablePlugin(FunnyGuilds.getInstance());
     }
-    
+
 }

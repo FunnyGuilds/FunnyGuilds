@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.feature.notification;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.nms.Reflections;
-import org.apache.commons.lang3.StringUtils;
-
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.nms.Reflections;
+import org.apache.commons.lang3.StringUtils;
 
 public final class NotificationUtil {
 
@@ -32,6 +31,5 @@ public final class NotificationUtil {
         }
     }
 
-    private NotificationUtil() {
-    }
+    private NotificationUtil() {}
 }

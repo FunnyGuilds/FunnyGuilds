@@ -20,12 +20,12 @@ import panda.utilities.text.Formatter;
 public final class InfoCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.info.name}",
-        description = "${user.info.description}",
-        aliases = "${user.info.aliases}",
-        permission = "funnyguilds.info",
-        completer = "guilds:3",
-        acceptsExceeded = true
+            name = "${user.info.name}",
+            description = "${user.info.description}",
+            aliases = "${user.info.aliases}",
+            permission = "funnyguilds.info",
+            completer = "guilds:3",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         UserManager userManager = this.userManager;

@@ -1,16 +1,15 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.Iterables;
+import java.util.Collections;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
-
-import java.util.Collections;
-import java.util.NavigableSet;
-import java.util.TreeSet;
 
 public class RankManager {
 

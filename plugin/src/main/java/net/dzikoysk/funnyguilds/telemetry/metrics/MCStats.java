@@ -1,12 +1,5 @@
 package net.dzikoysk.funnyguilds.telemetry.metrics;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitTask;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -26,10 +19,16 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitTask;
 
 public class MCStats {
 
-    private final static int REVISION = 7;
+    private static final int REVISION = 7;
     private static final String BASE_URL = "http://report.mcstats.org";
     private static final String REPORT_URL = "/plugin/%s";
     private static final int PING_INTERVAL = 10;
@@ -74,7 +73,8 @@ public class MCStats {
 
         try (GZIPOutputStream gzos = new GZIPOutputStream(baos)) {
             gzos.write(input.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException exception) {
+        }
+        catch (IOException exception) {
             FunnyGuilds.getPluginLogger().error("MCStats error", exception);
         }
 
@@ -89,7 +89,8 @@ public class MCStats {
                 Double.parseDouble(value);
                 isValueNumeric = true;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e) {
             FunnyGuilds.getPluginLogger().debug("[MCStats] Value isn't numeric.");
         }
 
@@ -102,7 +103,8 @@ public class MCStats {
 
         if (isValueNumeric) {
             json.append(value);
-        } else {
+        }
+        else {
             json.append(escapeJSON(value));
         }
     }
@@ -136,7 +138,8 @@ public class MCStats {
                     if (chr < ' ') {
                         String t = "000" + Integer.toHexString(chr);
                         builder.append("\\u").append(t.substring(t.length() - 4));
-                    } else {
+                    }
+                    else {
                         builder.append(chr);
                     }
                     break;
@@ -214,7 +217,8 @@ public class MCStats {
                         // After the first post we set firstPost to false
                         // Each post thereafter will be a ping
                         firstPost = false;
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         if (debug) {
                             Bukkit.getLogger().log(Level.INFO, "[Metrics] " + e.getMessage());
                         }
@@ -352,7 +356,8 @@ public class MCStats {
         // It does not reroute POST requests so we need to go around it
         if (isMineshafterPresent()) {
             connection = url.openConnection(Proxy.NO_PROXY);
-        } else {
+        }
+        else {
             connection = url.openConnection();
         }
 
@@ -390,12 +395,14 @@ public class MCStats {
         if (response == null || response.startsWith("ERR") || response.startsWith("7")) {
             if (response == null) {
                 response = "null";
-            } else if (response.startsWith("7")) {
+            }
+            else if (response.startsWith("7")) {
                 response = response.substring(response.startsWith("7,") ? 2 : 1);
             }
 
             throw new IOException(response);
-        } else {
+        }
+        else {
             // Is this the first update this hour?
             if (response.equals("1") || response.contains("This is your first update this hour")) {
                 synchronized (graphs) {
@@ -415,7 +422,8 @@ public class MCStats {
             try {
                 // Reload the metrics file
                 configuration.load(getConfigFile());
-            } catch (IOException | InvalidConfigurationException ex) {
+            }
+            catch (IOException | InvalidConfigurationException ex) {
                 if (debug) {
                     Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
                 }
@@ -441,7 +449,8 @@ public class MCStats {
         try {
             Class.forName("mineshafter.MineServer");
             return true;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             return false;
         }
     }
@@ -491,7 +500,7 @@ public class MCStats {
 
     }
 
-    public static abstract class Plotter {
+    public abstract static class Plotter {
 
         private final String name;
 

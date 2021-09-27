@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
@@ -19,11 +23,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class EntityExplode extends AbstractFunnyListener {
 
@@ -52,7 +51,7 @@ public class EntityExplode extends AbstractFunnyListener {
             return height < config.tntProtection.explode.minHeight || height > config.tntProtection.explode.maxHeight;
         });
 
-         blocksInSphere.removeIf(block -> {
+        blocksInSphere.removeIf(block -> {
             int height = block.getLocation().getBlockY();
 
             return height < config.tntProtection.explode.minHeight || height > config.tntProtection.explode.maxHeight;
@@ -77,7 +76,7 @@ public class EntityExplode extends AbstractFunnyListener {
         if (region != null) {
             Guild guild = region.getGuild();
 
-            if (config.warTntProtection && ! guild.canBeAttacked()) {
+            if (config.warTntProtection && !guild.canBeAttacked()) {
                 event.setCancelled(true);
 
                 if (explosionEntity instanceof TNTPrimed) {
@@ -100,7 +99,7 @@ public class EntityExplode extends AbstractFunnyListener {
             for (User user : guild.getMembers()) {
                 Player player = user.getPlayer();
 
-                if (player != null && ! informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                if (player != null && !informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                     player.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
                 }
             }
@@ -109,10 +108,10 @@ public class EntityExplode extends AbstractFunnyListener {
         if (config.warTntProtection) {
             boolean anyRemoved = explodedBlocks.removeIf(block -> {
                 Region regionAtExplosion = RegionUtils.getAt(block.getLocation());
-                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && ! regionAtExplosion.getGuild().canBeAttacked();
+                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && !regionAtExplosion.getGuild().canBeAttacked();
             }) || blocksInSphere.removeIf(block -> {
                 Region regionAtExplosion = RegionUtils.getAt(block.getLocation());
-                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && ! regionAtExplosion.getGuild().canBeAttacked();
+                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && !regionAtExplosion.getGuild().canBeAttacked();
             });
 
             if (anyRemoved) {
@@ -140,7 +139,7 @@ public class EntityExplode extends AbstractFunnyListener {
             Double explodeChance = explosiveMaterials.get(material);
 
             if (explodeChance == null) {
-                if (! config.allMaterialsAreExplosive) {
+                if (!config.allMaterialsAreExplosive) {
                     continue;
                 }
 
@@ -158,7 +157,7 @@ public class EntityExplode extends AbstractFunnyListener {
         }
 
         additionalExplodedBlocks.stream()
-                .filter(block -> ! explodedBlocks.contains(block))
+                .filter(block -> !explodedBlocks.contains(block))
                 .forEach(explodedBlocks::add);
     }
 }

@@ -1,13 +1,12 @@
 package net.dzikoysk.funnyguilds.data.database;
 
+import java.sql.ResultSet;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
-import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
-
-import java.sql.ResultSet;
+import net.dzikoysk.funnyguilds.user.User;
 
 public class DatabaseUser {
 
@@ -72,5 +71,6 @@ public class DatabaseUser {
         statement.executeUpdate();
     }
 
-    private DatabaseUser() {}
+    private DatabaseUser() {
+    }
 }

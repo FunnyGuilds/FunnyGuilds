@@ -21,16 +21,16 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class ConfirmCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.confirm.name}",
-        description = "${user.confirm.description}",
-        aliases = "${user.confirm.aliases}",
-        permission = "funnyguilds.delete",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.confirm.name}",
+            description = "${user.confirm.description}",
+            aliases = "${user.confirm.aliases}",
+            permission = "funnyguilds.delete",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild) {
-        when (config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messages.deleteSomeoneIsNear);
-        when (!ConfirmationList.contains(user.getUUID()), messages.deleteToConfirm);
+        when(config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messages.deleteSomeoneIsNear);
+        when(!ConfirmationList.contains(user.getUUID()), messages.deleteToConfirm);
 
         ConfirmationList.remove(user.getUUID());
 

@@ -1,5 +1,12 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -18,14 +25,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
-
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class GuildManager {
 
@@ -132,7 +131,8 @@ public class GuildManager {
             if (region != null) {
                 if (this.pluginConfiguration.heart.createEntityType != null) {
                     GuildEntityHelper.despawnGuildHeart(guild);
-                } else if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
+                }
+                else if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
                     Location centerLocation = region.getCenter().clone();
 
                     Bukkit.getScheduler().runTask(this.plugin, () -> {
@@ -163,7 +163,8 @@ public class GuildManager {
         if (this.plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) this.plugin.getDataModel());
             dataModel.getGuildFile(guild).delete();
-        } else if (this.plugin.getDataModel() instanceof SQLDataModel) {
+        }
+        else if (this.plugin.getDataModel() instanceof SQLDataModel) {
             DatabaseGuild.delete(guild);
         }
 
@@ -185,7 +186,8 @@ public class GuildManager {
 
             heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
             BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
-        } else if (this.pluginConfiguration.heart.createEntityType != null) {
+        }
+        else if (this.pluginConfiguration.heart.createEntityType != null) {
             GuildEntityHelper.spawnGuildHeart(guild);
         }
     }

@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.hooks;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BooleanSupplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.EmptyHologramManagerImpl;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
@@ -12,21 +15,17 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Bukkit;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
-
 public final class PluginHook {
 
-    public static final String PLUGIN_FUNNYTAB             = "FunnyTab";
-    public static final String PLUGIN_WORLDGUARD           = "WorldGuard";
-    public static final String PLUGIN_WORLDEDIT            = "WorldEdit";
-    public static final String PLUGIN_VAULT                = "Vault";
-    public static final String PLUGIN_PLACEHOLDERAPI       = "PlaceholderAPI";
-    public static final String PLUGIN_BUNGEETABLISTPLUS    = "BungeeTabListPlus";
-    public static final String PLUGIN_MVDWPLACEHOLDERAPI   = "MVdWPlaceholderAPI";
+    public static final String PLUGIN_FUNNYTAB = "FunnyTab";
+    public static final String PLUGIN_WORLDGUARD = "WorldGuard";
+    public static final String PLUGIN_WORLDEDIT = "WorldEdit";
+    public static final String PLUGIN_VAULT = "Vault";
+    public static final String PLUGIN_PLACEHOLDERAPI = "PlaceholderAPI";
+    public static final String PLUGIN_BUNGEETABLISTPLUS = "BungeeTabListPlus";
+    public static final String PLUGIN_MVDWPLACEHOLDERAPI = "MVdWPlaceholderAPI";
     public static final String PLUGIN_HOLOGRAPHIC_DISPLAYS = "HolographicDisplays";
-    public static final String PLUGIN_LEADERHEADS          = "LeaderHeads";
+    public static final String PLUGIN_LEADERHEADS = "LeaderHeads";
 
     public static WorldGuardHook WORLD_GUARD;
     public static WorldEditHook WORLD_EDIT;
@@ -119,7 +118,7 @@ public final class PluginHook {
 
     public static void tryInit(final String plugin, final BooleanSupplier init, final boolean notifyIfMissing) {
         if (Bukkit.getPluginManager().getPlugin(plugin) != null) {
-            if (! init.getAsBoolean()) {
+            if (!init.getAsBoolean()) {
                 return;
             }
 

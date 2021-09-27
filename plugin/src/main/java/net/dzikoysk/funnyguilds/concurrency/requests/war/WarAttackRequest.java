@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
-import net.dzikoysk.funnyguilds.guild.Guild;
+import java.util.Map;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import org.bukkit.entity.Player;
-
-import java.util.Map;
 
 public class WarAttackRequest extends DefaultConcurrencyRequest {
 
