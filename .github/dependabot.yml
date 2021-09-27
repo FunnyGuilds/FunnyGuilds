@@ -7,3 +7,10 @@ updates:
     time: "04:00"
     timezone: "Europe/Warsaw"
   open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.google.guava:guava
+    versions:
+    - "> 21.0"
+  - dependency-name: com.google.code.gson:gson
+    versions:
+    - "> 2.8.0"
