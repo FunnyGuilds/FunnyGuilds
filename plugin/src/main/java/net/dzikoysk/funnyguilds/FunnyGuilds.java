@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds;
 
 import eu.okaeri.configs.exception.OkaeriException;
+import java.io.File;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -68,7 +69,6 @@ import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -76,8 +76,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import panda.std.Option;
 import panda.utilities.ClassUtils;
-
-import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -91,13 +89,15 @@ public class FunnyGuilds extends JavaPlugin {
 
     private FunnyGuildsVersion     version;
     private FunnyCommands          funnyCommands;
+
     private PluginConfiguration    pluginConfiguration;
     private TablistConfiguration   tablistConfiguration;
     private MessageConfiguration   messageConfiguration;
+
     private ConcurrencyManager     concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
-    private UserManager            userManager;
     private RankManager            rankManager;
+    private UserManager            userManager;
     private NmsAccessor            nmsAccessor;
 
     private volatile BukkitTask guildValidationTask;
@@ -168,8 +168,8 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        this.userManager = new UserManager();
-        this.rankManager = new RankManager();
+        this.rankManager = new RankManager(this);
+        this.userManager = new UserManager(this);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -263,7 +263,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
-        for (User user : UserUtils.getUsers()) {
+        for (User user : userManager.getUsers()) {
             user.getBossBar().removeNotification();
         }
 
@@ -386,12 +386,12 @@ public class FunnyGuilds extends JavaPlugin {
         return this.dynamicListenerManager;
     }
 
-    public UserManager getUserManager() {
-        return userManager;
-    }
-
     public RankManager getRankManager() {
         return rankManager;
+    }
+
+    public UserManager getUserManager() {
+        return userManager;
     }
 
     public NmsAccessor getNmsAccessor() {

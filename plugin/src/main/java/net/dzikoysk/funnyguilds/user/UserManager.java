@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.rank.RankManager;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -16,13 +17,21 @@ import panda.std.stream.PandaStream;
 
 public class UserManager {
 
+    private final FunnyGuilds plugin;
+
+    private final RankManager rankManager;
+
     private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
     @Deprecated
     private static UserManager INSTANCE;
 
-    public UserManager() {
+    public UserManager(FunnyGuilds plugin) {
+        this.plugin = plugin;
+
+        this.rankManager = plugin.getRankManager();
+
         INSTANCE = this;
     }
 
@@ -81,7 +90,7 @@ public class UserManager {
         User user = new User(uuid, name);
 
         addUser(user);
-        FunnyGuilds.getInstance().getRankManager().update(user);
+        this.rankManager.update(user);
 
         return user;
     }
@@ -91,7 +100,7 @@ public class UserManager {
 
         User user = new User(player);
         addUser(user);
-        FunnyGuilds.getInstance().getRankManager().update(user);
+        this.rankManager.update(user);
 
         return user;
     }
