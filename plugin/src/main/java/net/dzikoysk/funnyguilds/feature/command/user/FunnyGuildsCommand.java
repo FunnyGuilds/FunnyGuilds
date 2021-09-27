@@ -5,9 +5,12 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.requests.FunnybinRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.ReloadRequest;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.panda_lang.utilities.inject.annotations.Inject;
 
 import java.util.Optional;
 
@@ -16,13 +19,18 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 @FunnyComponent
 public final class FunnyGuildsCommand {
 
+    @Inject FunnyGuilds plugin;
+
+    @Inject PluginConfiguration pluginConfiguration;
+    @Inject MessageConfiguration messageConfiguration;
+
     @FunnyCommand(
         name = "${user.funnyguilds.name}",
         description = "${user.funnyguilds.description}",
         aliases = "${user.funnyguilds.aliases}",
         acceptsExceeded = true
     )
-    public void execute(FunnyGuilds funnyGuilds, CommandSender sender, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         String parameter = args.length > 0
                 ? args[0].toLowerCase()
                 : "";
@@ -34,7 +42,7 @@ public final class FunnyGuildsCommand {
                 break;
             case "check":
             case "update":
-                funnyGuilds.getVersion().isNewAvailable(sender, true);
+                plugin.getVersion().isNewAvailable(sender, true);
                 break;
             case "save-all":
                 saveAll(sender);
@@ -50,21 +58,21 @@ public final class FunnyGuildsCommand {
                 sender.sendMessage(ChatColor.GRAY + "/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)");
                 break;
             default:
-                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + funnyGuilds.getVersion().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
+                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + plugin.getVersion().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
                 break;
         }
 
     }
 
     private void reload(CommandSender sender) {
-        when (!sender.hasPermission("funnyguilds.reload"), FunnyGuilds.getInstance().getMessageConfiguration().permission);
+        when (!sender.hasPermission("funnyguilds.reload"), this.messageConfiguration.permission);
 
         sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
-        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(new ReloadRequest(sender));
+        this.plugin.getConcurrencyManager().postRequests(new ReloadRequest(sender));
     }
 
     private void saveAll(CommandSender sender) {
-        when (!sender.hasPermission("funnyguilds.admin"), FunnyGuilds.getInstance().getMessageConfiguration().permission);
+        when (!sender.hasPermission("funnyguilds.admin"), this.messageConfiguration.permission);
 
         sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
         long currentTime = System.currentTimeMillis();
@@ -73,7 +81,7 @@ public final class FunnyGuildsCommand {
 
         try {
             dataModel.save(false);
-            FunnyGuilds.getInstance().getInvitationPersistenceHandler().saveInvitations();
+            this.plugin.getInvitationPersistenceHandler().saveInvitations();
         }
         catch (Exception e) {
             FunnyGuilds.getPluginLogger().error("An error occurred while saving plugin data!", e);
@@ -84,11 +92,11 @@ public final class FunnyGuildsCommand {
     }
 
     private void post(CommandSender sender, String[] args) {
-        when (!sender.hasPermission("funnyguilds.admin"), FunnyGuilds.getInstance().getMessageConfiguration().permission);
+        when (!sender.hasPermission("funnyguilds.admin"), this.messageConfiguration.permission);
         Optional<FunnybinRequest> request = FunnybinRequest.of(sender, args);
 
         if (request.isPresent()) {
-            FunnyGuilds.getInstance().getConcurrencyManager().postRequests(request.get());
+            this.plugin.getConcurrencyManager().postRequests(request.get());
             return;
         }
 
