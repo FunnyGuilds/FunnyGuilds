@@ -11,8 +11,8 @@ dependencies {
     implementation "org.panda-lang:panda-utilities:0.5.0-alpha"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.1.0"
-    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.1.0"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.3.5"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.3.5"
     implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.1.0"
 
     // general stuff
@@ -39,7 +39,7 @@ dependencies {
     }
     shadow "me.robin:leaderheads-api:1.0.0"
     shadow "net.milkbowl.vault:VaultAPI:1.7"
-    shadow("be.maximvdw:MVdWPlaceholderAPI:2.5.2-SNAPSHOT") {
+    shadow("be.maximvdw:MVdWPlaceholderAPI:3.1.1-SNAPSHOT") {
         exclude group: "org.spigotmc", module: "spigot"
     }
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
@@ -52,8 +52,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-junit-jupiter:3.11.2'
     testImplementation 'org.mockito:mockito-inline:3.11.2'
     testImplementation 'org.codehaus.groovy:groovy-all:3.0.8'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 processResources {

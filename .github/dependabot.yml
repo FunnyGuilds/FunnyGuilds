@@ -1,8 +1,9 @@
 version: 2
 updates:
-- package-ecosystem: maven
+- package-ecosystem: gradle
   directory: "/"
   schedule:
     interval: daily
     time: "04:00"
+    timezone: "Europe/Warsaw"
   open-pull-requests-limit: 10
