@@ -1,14 +1,5 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
-import net.dzikoysk.funnyguilds.rank.RankManager;
-import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import panda.std.Option;
-
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
@@ -16,6 +7,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import panda.std.Option;
 
 public class Guild extends AbstractMutableEntity {
 
@@ -144,7 +142,7 @@ public class Guild extends AbstractMutableEntity {
 
     public void updateRank() {
         this.getRank();
-        RankManager.getInstance().update(this);
+        FunnyGuilds.getInstance().getRankManager().update(this);
     }
 
     public boolean canBeAttacked() {
@@ -420,7 +418,7 @@ public class Guild extends AbstractMutableEntity {
         }
 
         this.rank = new GuildRank(this);
-        RankManager.getInstance().update(this);
+        FunnyGuilds.getInstance().getRankManager().update(this);
         return this.rank;
     }
 

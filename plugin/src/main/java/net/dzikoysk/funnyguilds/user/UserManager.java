@@ -1,13 +1,5 @@
 package net.dzikoysk.funnyguilds.user;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.rank.RankManager;
-import org.apache.commons.lang3.Validate;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -15,6 +7,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.apache.commons.lang3.Validate;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class UserManager {
 
@@ -68,6 +66,12 @@ public class UserManager {
         return getUser(offline.getName());
     }
 
+    public Set<User> getUsersByNames(Collection<String> names) {
+        return PandaStream.of(names)
+                .flatMap(this::getUser)
+                .collect(Collectors.toSet());
+    }
+
     public User create(UUID uuid, String name) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
@@ -77,7 +81,7 @@ public class UserManager {
         User user = new User(uuid, name);
 
         addUser(user);
-        RankManager.getInstance().update(user);
+        FunnyGuilds.getInstance().getRankManager().update(user);
 
         return user;
     }
@@ -87,7 +91,7 @@ public class UserManager {
 
         User user = new User(player);
         addUser(user);
-        RankManager.getInstance().update(user);
+        FunnyGuilds.getInstance().getRankManager().update(user);
 
         return user;
     }
@@ -138,13 +142,7 @@ public class UserManager {
     }
 
     public int countUsers() {
-        return usersByUuid.size();
-    }
-
-    public Set<User> getUsersByNames(Collection<String> names) {
-        return PandaStream.of(names)
-                .flatMap(this::getUser)
-                .collect(Collectors.toSet());
+        return this.usersByUuid.size();
     }
 
     /**

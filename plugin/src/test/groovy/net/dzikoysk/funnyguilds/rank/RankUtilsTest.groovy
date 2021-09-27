@@ -19,8 +19,6 @@ class RankUtilsTest extends FunnyGuildsSpec {
         def guild = new Guild('OnlyPanda')
         guild.setTag('OP')
 
-        def rankManager = new RankManager();
-
         def user = new UserManager().create(UUID.randomUUID(), 'name')
         guild.addMember(user)
 

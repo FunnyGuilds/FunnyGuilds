@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.hooks;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BooleanSupplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit7Hook;
@@ -8,10 +11,6 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Bukkit;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.BooleanSupplier;
 
 public final class PluginHook {
 
@@ -128,7 +127,6 @@ public final class PluginHook {
         return HOOK_LIST.contains(plugin);
     }
 
-    private PluginHook() {
-    }
+    private PluginHook() {}
 
 }
