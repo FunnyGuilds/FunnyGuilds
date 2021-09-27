@@ -23,6 +23,7 @@ subprojects {
         mavenCentral()
 
         maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://repo.panda-lang.org/releases" }
         maven { url "https://storehouse.okaeri.eu/repository/maven-public" }
         maven { url "https://maven.sk89q.com/repo" }
