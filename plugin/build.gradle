@@ -17,7 +17,7 @@ dependencies {
 
     // general stuff
     implementation "com.zaxxer:HikariCP:4.0.3"
-    implementation("com.google.guava:guava:21.0") {
+    implementation("com.google.guava:guava:22.0") {
         because "WorldEdit defined a constraint that we must use 21.0 and there is no way to ignore it"
     }
     implementation("com.google.code.gson:gson:2.8.0") {
