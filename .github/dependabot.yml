@@ -4,10 +4,11 @@ updates:
   directory: "/"
   schedule:
     interval: daily
-    time: "04:00"
+    time: "00:00"
     timezone: "Europe/Warsaw"
   open-pull-requests-limit: 10
   ignore:
+  - dependency-name: org.spigotmc:spigot
   - dependency-name: com.google.guava:guava
     versions:
     - "> 21.0"
