@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import org.bukkit.command.CommandSender;
 import panda.utilities.StringUtils;
@@ -21,23 +19,23 @@ public final class TntCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.tnt",
         acceptsExceeded = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender) {
-        when (!config.guildTNTProtectionEnabled, messages.tntProtectDisable);
+    public void execute(CommandSender sender) {
+        when (!pluginConfiguration.guildTNTProtectionEnabled, messageConfiguration.tntProtectDisable);
 
         LocalTime now = LocalTime.now();
-        LocalTime start = config.guildTNTProtectionStartTime;
-        LocalTime end = config.guildTNTProtectionEndTime;
-        String message = messages.tntInfo;
+        LocalTime start = pluginConfiguration.guildTNTProtectionStartTime;
+        LocalTime end = pluginConfiguration.guildTNTProtectionEndTime;
+        String message = messageConfiguration.tntInfo;
 
-        boolean isWithinTimeframe = config.guildTNTProtectionPassingMidnight
+        boolean isWithinTimeframe = pluginConfiguration.guildTNTProtectionPassingMidnight
                 ? now.isAfter(start) || now.isBefore(end)
                 : now.isAfter(start) && now.isBefore(end);
 
-        message = StringUtils.replace(message, "{PROTECTION_START}", config.guildTNTProtectionStartTime_);
-        message = StringUtils.replace(message, "{PROTECTION_END}", config.guildTNTProtectionEndTime_);
+        message = StringUtils.replace(message, "{PROTECTION_START}", pluginConfiguration.guildTNTProtectionStartTime_);
+        message = StringUtils.replace(message, "{PROTECTION_END}", pluginConfiguration.guildTNTProtectionEndTime_);
 
         sender.sendMessage(message);
-        sender.sendMessage(isWithinTimeframe ? messages.tntNowDisabled : messages.tntNowEnabled);
+        sender.sendMessage(isWithinTimeframe ? messageConfiguration.tntNowDisabled : messageConfiguration.tntNowEnabled);
     }
 
 }

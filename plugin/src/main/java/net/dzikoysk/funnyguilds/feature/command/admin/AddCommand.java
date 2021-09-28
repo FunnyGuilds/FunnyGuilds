@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -25,13 +24,13 @@ public final class AddCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (!GuildUtils.tagExists(args[0]), messages.generalNoGuildFound);
-        when (args.length < 2, messages.generalNoNickGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (!GuildUtils.tagExists(args[0]), this.messageConfiguration.generalNoGuildFound);
+        when (args.length < 2, this.messageConfiguration.generalNoNickGiven);
         
         User userToAdd = UserValidation.requireUserByName(args[1]);
-        when (userToAdd.hasGuild(), messages.generalUserHasGuild);
+        when (userToAdd.hasGuild(), this.messageConfiguration.generalUserHasGuild);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -49,9 +48,9 @@ public final class AddCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", userToAdd.getName());
 
-        userToAdd.sendMessage(formatter.format(messages.joinToMember));
-        guild.getOwner().sendMessage(formatter.format(messages.joinToOwner));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
+        userToAdd.sendMessage(formatter.format(this.messageConfiguration.joinToMember));
+        guild.getOwner().sendMessage(formatter.format(this.messageConfiguration.joinToOwner));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastJoin));
     }
 
 }

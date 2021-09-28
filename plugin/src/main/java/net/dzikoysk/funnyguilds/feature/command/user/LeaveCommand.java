@@ -4,7 +4,6 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaveEvent;
@@ -29,8 +28,8 @@ public final class LeaveCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @IsMember User user, Guild guild) {
-        when (user.isOwner(), messages.leaveIsOwner);
+    public void execute(Player player, @IsMember User user, Guild guild) {
+        when (user.isOwner(), messageConfiguration.leaveIsOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, user, guild, user))) {
             return;
@@ -46,8 +45,8 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        player.sendMessage(formatter.format(messages.leaveToUser));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastLeave));
+        player.sendMessage(formatter.format(messageConfiguration.leaveToUser));
+        Bukkit.broadcastMessage(formatter.format(messageConfiguration.broadcastLeave));
     }
 
 }

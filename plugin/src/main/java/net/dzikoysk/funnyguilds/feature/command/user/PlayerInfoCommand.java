@@ -3,8 +3,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
@@ -28,17 +26,17 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         completer = "online-players:3",
         acceptsExceeded = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length == 0 && !(sender instanceof Player), messages.playerOnly);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length == 0 && !(sender instanceof Player), messageConfiguration.playerOnly);
         
         String name = args.length == 0
                 ? sender.getName()
                 : args[0];
 
-        User user = UserUtils.get(name, config.playerLookupIgnorecase);
-        when (user == null, messages.generalNotPlayedBefore);
+        User user = UserUtils.get(name, pluginConfiguration.playerLookupIgnorecase);
+        when (user == null, messageConfiguration.generalNotPlayedBefore);
 
-        sendInfoMessage(messages.playerInfoList, user, sender);
+        sendInfoMessage(messageConfiguration.playerInfoList, user, sender);
     }
     
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {

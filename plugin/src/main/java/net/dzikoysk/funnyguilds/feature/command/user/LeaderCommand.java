@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaderEvent;
@@ -27,12 +26,12 @@ public final class LeaderCommand extends AbstractFunnyCommand  {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @IsOwner User owner, Guild guild, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
+    public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
+        when (args.length < 1, messageConfiguration.generalNoNickGiven);
 
         User leaderUser = UserValidation.requireUserByName(args[0]);
-        when (owner.equals(leaderUser), messages.leaderMustBeDifferent);
-        when (!guild.getMembers().contains(leaderUser), messages.generalIsNotMember);
+        when (owner.equals(leaderUser), messageConfiguration.leaderMustBeDifferent);
+        when (!guild.getMembers().contains(leaderUser), messageConfiguration.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(EventCause.USER, owner, guild, leaderUser))) {
             return;
@@ -40,10 +39,10 @@ public final class LeaderCommand extends AbstractFunnyCommand  {
         
         Player leaderPlayer = leaderUser.getPlayer();
         guild.setOwner(leaderUser);
-        player.sendMessage(messages.leaderSet);
+        player.sendMessage(messageConfiguration.leaderSet);
 
         if (leaderPlayer != null) {
-            leaderPlayer.sendMessage(messages.leaderOwner);
+            leaderPlayer.sendMessage(messageConfiguration.leaderOwner);
         }
     }
 

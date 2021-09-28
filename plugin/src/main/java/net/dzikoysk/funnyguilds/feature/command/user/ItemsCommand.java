@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -28,13 +27,13 @@ public final class ItemsCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, Player player) {
-        List<ItemStack> guiItems = config.guiItems;
-        String title = config.guiItemsTitle;
+    public void execute(Player player) {
+        List<ItemStack> guiItems = pluginConfiguration.guiItems;
+        String title = pluginConfiguration.guiItemsTitle;
 
-        if (!config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
-            guiItems = config.guiItemsVip;
-            title = config.guiItemsVipTitle;
+        if (!pluginConfiguration.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
+            guiItems = pluginConfiguration.guiItemsVip;
+            title = pluginConfiguration.guiItemsVipTitle;
         }
 
         GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
@@ -42,7 +41,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
         for (ItemStack item : guiItems) {
             item = item.clone();
 
-            if (config.addLoreLines && (config.createItems.contains(item) || config.createItemsVip.contains(item))) {
+            if (pluginConfiguration.addLoreLines && (pluginConfiguration.createItems.contains(item) || pluginConfiguration.createItemsVip.contains(item))) {
                 ItemMeta meta = item.getItemMeta();
 
                 if (meta == null) {
@@ -57,10 +56,10 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 List<String> lore = meta.getLore();
 
                 if (lore == null) {
-                    lore = new ArrayList<>(config.guiItemsLore.size());
+                    lore = new ArrayList<>(pluginConfiguration.guiItemsLore.size());
                 }
 
-                for (String line : config.guiItemsLore) {
+                for (String line : pluginConfiguration.guiItemsLore) {
                     line = StringUtils.replace(line, "{REQ-AMOUNT}", Integer.toString(requiredAmount));
                     line = StringUtils.replace(line, "{PINV-AMOUNT}", Integer.toString(inventoryAmount));
                     line = StringUtils.replace(line, "{PINV-PERCENT}", ChatUtils.getPercent(inventoryAmount, requiredAmount));
@@ -72,8 +71,8 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                     lore.add(line);
                 }
 
-                if (!Objects.equals(config.guiItemsName, "")) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName, null, item));
+                if (!Objects.equals(pluginConfiguration.guiItemsName, "")) {
+                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(pluginConfiguration.guiItemsName, null, item));
                 }
 
                 meta.setLore(lore);

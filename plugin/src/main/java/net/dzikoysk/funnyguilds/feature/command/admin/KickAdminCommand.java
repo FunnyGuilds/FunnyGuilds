@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.feature.command.admin;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -24,12 +23,12 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
 
         User user = UserValidation.requireUserByName(args[0]);
-        when (!user.hasGuild(), messages.generalPlayerHasNoGuild);
-        when (user.isOwner(), messages.adminGuildOwner);
+        when (!user.hasGuild(), this.messageConfiguration.generalPlayerHasNoGuild);
+        when (user.isOwner(), this.messageConfiguration.adminGuildOwner);
 
         Guild guild = user.getGuild();
         User admin = AdminUtils.getAdminUser(sender);
@@ -51,11 +50,11 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
 
         if (player != null) {
             this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
-            player.sendMessage(formatter.format(messages.kickToPlayer));
+            player.sendMessage(formatter.format(this.messageConfiguration.kickToPlayer));
         }
 
-        sender.sendMessage(formatter.format(messages.kickToOwner));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
+        sender.sendMessage(formatter.format(this.messageConfiguration.kickToOwner));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastKick));
     }
 
 }

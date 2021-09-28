@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -30,9 +28,9 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user, Guild guild) {
-        when (config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messages.deleteSomeoneIsNear);
-        when (!ConfirmationList.contains(user.getUUID()), messages.deleteToConfirm);
+    public void execute(Player player, @IsOwner User user, Guild guild) {
+        when (pluginConfiguration.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messageConfiguration.deleteSomeoneIsNear);
+        when (!ConfirmationList.contains(user.getUUID()), messageConfiguration.deleteToConfirm);
 
         ConfirmationList.remove(user.getUUID());
 
@@ -47,8 +45,8 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(formatter.format(messages.deleteSuccessful));
-        Bukkit.getServer().broadcastMessage(formatter.format(messages.broadcastDelete));
+        player.sendMessage(formatter.format(messageConfiguration.deleteSuccessful));
+        Bukkit.getServer().broadcastMessage(formatter.format(messageConfiguration.broadcastDelete));
     }
 
 }

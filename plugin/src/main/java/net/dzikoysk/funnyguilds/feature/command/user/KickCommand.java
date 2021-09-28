@@ -4,7 +4,6 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
@@ -31,13 +30,13 @@ public final class KickCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @CanManage User user, Guild guild, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
+    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
+        when (args.length < 1, messageConfiguration.generalNoNickGiven);
 
         User formerUser = UserValidation.requireUserByName(args[0]);
-        when (!formerUser.hasGuild(), messages.generalPlayerHasNoGuild);
-        when (!guild.equals(formerUser.getGuild()), messages.kickOtherGuild);
-        when (formerUser.isOwner(), messages.kickOwner);
+        when (!formerUser.hasGuild(), messageConfiguration.generalPlayerHasNoGuild);
+        when (!guild.equals(formerUser.getGuild()), messageConfiguration.kickOtherGuild);
+        when (formerUser.isOwner(), messageConfiguration.kickOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
             return;
@@ -57,13 +56,13 @@ public final class KickCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        player.sendMessage(formatter.format(messages.kickToOwner));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
+        player.sendMessage(formatter.format(messageConfiguration.kickToOwner));
+        Bukkit.broadcastMessage(formatter.format(messageConfiguration.broadcastKick));
 
         Player formerPlayer = formerUser.getPlayer();
 
         if (formerPlayer != null) {
-            formerPlayer.sendMessage(formatter.format(messages.kickToPlayer));
+            formerPlayer.sendMessage(formatter.format(messageConfiguration.kickToPlayer));
         }
     }
 

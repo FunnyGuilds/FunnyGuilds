@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
@@ -33,21 +31,21 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
-        if (!config.validityWhen.isZero()) {
+    public void execute(Player player, @CanManage User user, Guild guild) {
+        if (!pluginConfiguration.validityWhen.isZero()) {
             long validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), Instant.ofEpochMilli(validity));
 
-            when (delta.compareTo(config.validityWhen) > 0, messages.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta.minus(config.validityWhen).toMillis())));
+            when (delta.compareTo(pluginConfiguration.validityWhen) > 0, messageConfiguration.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta.minus(pluginConfiguration.validityWhen).toMillis())));
         }
 
-        List<ItemStack> requiredItems = config.validityItems;
+        List<ItemStack> requiredItems = pluginConfiguration.validityItems;
 
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
         
-        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, config.validityTime.toMillis()))) {
+        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, pluginConfiguration.validityTime.toMillis()))) {
             return;
         }
         
@@ -58,9 +56,9 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             validity = System.currentTimeMillis();
         }
 
-        validity += config.validityTime.toMillis();
+        validity += pluginConfiguration.validityTime.toMillis();
         guild.setValidity(validity);
-        player.sendMessage(messages.validityDone.replace("{DATE}", config.dateFormat.format(new Date(validity))));
+        player.sendMessage(messageConfiguration.validityDone.replace("{DATE}", pluginConfiguration.dateFormat.format(new Date(validity))));
     }
 
 }

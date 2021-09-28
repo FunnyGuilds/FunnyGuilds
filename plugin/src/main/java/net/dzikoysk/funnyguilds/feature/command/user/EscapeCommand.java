@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -30,30 +28,30 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
-        when (!config.regionsEnabled, messages.regionsDisabled);
-        when (!config.escapeEnable || !config.baseEnable, messages.escapeDisabled);
-        when (user.getCache().getTeleportation() != null, messages.escapeInProgress);
+    public void execute(Player player, User user) {
+        when (!pluginConfiguration.regionsEnabled, messageConfiguration.regionsDisabled);
+        when (!pluginConfiguration.escapeEnable || !pluginConfiguration.baseEnable, messageConfiguration.escapeDisabled);
+        when (user.getCache().getTeleportation() != null, messageConfiguration.escapeInProgress);
 
         Location playerLocation = player.getLocation();
         Region region = RegionUtils.getAt(playerLocation);
-        whenNull (region, messages.escapeNoNeedToRun);
+        whenNull (region, messageConfiguration.escapeNoNeedToRun);
 
         int time = this.pluginConfiguration.escapeDelay;
 
         if (!user.hasGuild()) {
-            when (!config.escapeSpawn, messages.escapeNoUserGuild);
+            when (!pluginConfiguration.escapeSpawn, messageConfiguration.escapeNoUserGuild);
             scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {});
             return;
         }
         
         Guild guild = user.getGuild();
-        when (guild.equals(region.getGuild()), messages.escapeOnYourRegion);
+        when (guild.equals(region.getGuild()), messageConfiguration.escapeOnYourRegion);
 
         if (time >= 1) {
-            player.sendMessage(messages.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
+            player.sendMessage(messageConfiguration.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
 
-            String msg = messages.escapeStartedOpponents.replace("{TIME}", Integer.toString(time)).replace("{PLAYER}", player.getName())
+            String msg = messageConfiguration.escapeStartedOpponents.replace("{TIME}", Integer.toString(time)).replace("{PLAYER}", player.getName())
                     .replace("{X}", Integer.toString(playerLocation.getBlockX())).replace("{Y}", Integer.toString(playerLocation.getBlockY()))
                     .replace("{Z}", Integer.toString(playerLocation.getBlockZ()));
 
@@ -64,7 +62,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         
         scheduleTeleportation(player, user, guild.getHome(), time, () -> {
             for (User member : region.getGuild().getOnlineMembers()) {
-                member.getPlayer().sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName()));
+                member.getPlayer().sendMessage(messageConfiguration.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName()));
             }
         });
     }

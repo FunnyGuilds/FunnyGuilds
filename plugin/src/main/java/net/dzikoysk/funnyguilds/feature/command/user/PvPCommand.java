@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
@@ -25,21 +23,21 @@ public final class PvPCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild, String[] args) {
+    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
         if (args.length > 0) {
-            when (!config.damageAlly, messages.generalAllyPvpDisabled);
+            when (!pluginConfiguration.damageAlly, messageConfiguration.generalAllyPvpDisabled);
 
             Guild targetAlliedGuild = GuildValidation.requireGuildByTag(args[0]);
             Formatter guildTagFormatter = new Formatter().register("{TAG}", targetAlliedGuild.getTag());
-            when (!guild.getAllies().contains(targetAlliedGuild), guildTagFormatter.format(messages.allyDoesntExist));
+            when (!guild.getAllies().contains(targetAlliedGuild), guildTagFormatter.format(messageConfiguration.allyDoesntExist));
 
             guild.setPvP(targetAlliedGuild, ! guild.getPvP(targetAlliedGuild));
-            player.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messages.pvpAllyOn : messages.pvpAllyOff));
+            player.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messageConfiguration.pvpAllyOn : messageConfiguration.pvpAllyOff));
             return;
         }
 
         guild.setPvP(!guild.getPvP());
-        player.sendMessage(guild.getPvP() ? messages.pvpOn : messages.pvpOff);
+        player.sendMessage(guild.getPvP() ? messageConfiguration.pvpOn : messageConfiguration.pvpOff);
     }
 
 }

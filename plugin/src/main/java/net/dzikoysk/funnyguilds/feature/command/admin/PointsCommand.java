@@ -1,10 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -22,15 +19,15 @@ public final class PointsCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(FunnyGuilds plugin, MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
-        when (args.length < 2, messages.adminNoPointsGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoNickGiven);
+        when (args.length < 2, this.messageConfiguration.adminNoPointsGiven);
 
         int points;
         try {
             points = Integer.parseInt(args[1]);
         } catch (NumberFormatException numberFormatException) {
-            sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
+            sender.sendMessage(this.messageConfiguration.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }
 
@@ -45,10 +42,10 @@ public final class PointsCommand extends AbstractFunnyCommand {
         }
 
         user.getRank().setPoints(points);
-        plugin.getRankManager().update(user);
+        this.rankManager.update(user);
 
-        String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
-        message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
+        String message = this.messageConfiguration.adminPointsChanged.replace("{PLAYER}", user.getName());
+        message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, this.pluginConfiguration.pointsFormat));
         message = message.replace("{POINTS}", String.valueOf(points));
 
         sender.sendMessage(message);

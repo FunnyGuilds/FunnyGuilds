@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildBanEvent;
 import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
@@ -24,16 +23,16 @@ public final class BanCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.adminNoBanTimeGiven);
-        when (args.length < 3, messages.adminNoReasonGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 2, this.messageConfiguration.adminNoBanTimeGiven);
+        when (args.length < 3, this.messageConfiguration.adminNoReasonGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (guild.isBanned(), messages.adminGuildBanned);
+        when (guild.isBanned(), this.messageConfiguration.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
-        when (time < 1, messages.adminTimeError);
+        when (time < 1, this.messageConfiguration.adminTimeError);
 
         StringBuilder reasonBuilder = new StringBuilder();
 
@@ -57,8 +56,8 @@ public final class BanCommand extends AbstractFunnyCommand {
                 .register("{TIME}", args[1])
                 .register("{REASON}", ChatUtils.colored(reason));
 
-        sender.sendMessage(formatter.format(messages.adminGuildBan));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastBan));
+        sender.sendMessage(formatter.format(this.messageConfiguration.adminGuildBan));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastBan));
     }
 
 }

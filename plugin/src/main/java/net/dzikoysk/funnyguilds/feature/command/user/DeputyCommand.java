@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
@@ -28,12 +27,12 @@ public final class DeputyCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, Player player, @IsOwner User owner, Guild guild, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
+    public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
+        when (args.length < 1, messageConfiguration.generalNoNickGiven);
 
         User deputyUser = UserValidation.requireUserByName(args[0]);
-        when (owner.equals(deputyUser), messages.deputyMustBeDifferent);
-        when (!guild.getMembers().contains(deputyUser), messages.generalIsNotMember);
+        when (owner.equals(deputyUser), messageConfiguration.deputyMustBeDifferent);
+        when (!guild.getMembers().contains(deputyUser), messageConfiguration.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
             return;
@@ -43,14 +42,14 @@ public final class DeputyCommand extends AbstractFunnyCommand {
 
         if (deputyUser.isDeputy()) {
             guild.removeDeputy(deputyUser);
-            player.sendMessage(messages.deputyRemove);
-            deputyPlayer.peek(value -> value.sendMessage(messages.deputyMember));
+            player.sendMessage(messageConfiguration.deputyRemove);
+            deputyPlayer.peek(value -> value.sendMessage(messageConfiguration.deputyMember));
             return;
         }
 
         guild.addDeputy(deputyUser);
-        player.sendMessage(messages.deputySet);
-        deputyPlayer.peek(value -> value.sendMessage(messages.deputyOwner));
+        player.sendMessage(messageConfiguration.deputySet);
+        deputyPlayer.peek(value -> value.sendMessage(messageConfiguration.deputyOwner));
     }
 
 }

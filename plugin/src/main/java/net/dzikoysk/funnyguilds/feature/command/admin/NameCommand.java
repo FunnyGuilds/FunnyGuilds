@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
@@ -31,12 +29,12 @@ public final class NameCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.adminNoNewNameGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 2, this.messageConfiguration.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (GuildUtils.nameExists(args[1]), messages.createNameExists);
+        when (GuildUtils.nameExists(args[1]), this.messageConfiguration.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -45,7 +43,7 @@ public final class NameCommand extends AbstractFunnyCommand {
             return;
         }
 
-        if (config.regionsEnabled) {
+        if (this.pluginConfiguration.regionsEnabled) {
             Region region = guild.getRegion();
 
             if (this.dataModel instanceof FlatDataModel) {
@@ -70,7 +68,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         }
         
         guild.setName(args[1]);
-        sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
+        sender.sendMessage(this.messageConfiguration.adminNameChanged.replace("{GUILD}", guild.getName()));
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }

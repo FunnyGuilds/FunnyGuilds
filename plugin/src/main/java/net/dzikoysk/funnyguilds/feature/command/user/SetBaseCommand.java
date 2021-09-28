@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildBaseChangeEvent;
@@ -31,12 +29,12 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
-        when (!config.regionsEnabled, messages.regionsDisabled);
+    public void execute(Player player, @CanManage User user, Guild guild) {
+        when (!pluginConfiguration.regionsEnabled, messageConfiguration.regionsDisabled);
 
         Region region = RegionUtils.get(guild.getName());
         Location location = player.getLocation();
-        when (!region.isIn(location), messages.setbaseOutside);
+        when (!region.isIn(location), messageConfiguration.setbaseOutside);
 
         if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, user, guild, location))) {
             return;
@@ -54,7 +52,7 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             }
         }
 
-        player.sendMessage(messages.setbaseDone);
+        player.sendMessage(messageConfiguration.setbaseDone);
     }
 
 }

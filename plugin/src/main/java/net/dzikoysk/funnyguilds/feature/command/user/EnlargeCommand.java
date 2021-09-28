@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEnlargeEvent;
@@ -28,18 +26,18 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.enlarge",
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
-        when (!config.regionsEnabled, messages.regionsDisabled);
+    public void execute(Player player, @CanManage User user, Guild guild) {
+        when (!pluginConfiguration.regionsEnabled, messageConfiguration.regionsDisabled);
 
         Region region = guild.getRegion();
-        when (region == null, messages.regionsDisabled);
+        when (region == null, messageConfiguration.regionsDisabled);
 
         int enlarge = region.getEnlarge();
-        when (enlarge > config.enlargeItems.size() - 1, messages.enlargeMaxSize);
+        when (enlarge > pluginConfiguration.enlargeItems.size() - 1, messageConfiguration.enlargeMaxSize);
 
-        ItemStack need = config.enlargeItems.get(enlarge);
-        when (!player.getInventory().containsAtLeast(need, need.getAmount()), messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
-        when (RegionUtils.isNear(region.getCenter()), messages.enlargeIsNear);
+        ItemStack need = pluginConfiguration.enlargeItems.get(enlarge);
+        when (!player.getInventory().containsAtLeast(need, need.getAmount()), messageConfiguration.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
+        when (RegionUtils.isNear(region.getCenter()), messageConfiguration.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, user.getGuild()))) {
             return;
@@ -47,9 +45,9 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         
         player.getInventory().removeItem(need);
         region.setEnlarge(++enlarge);
-        region.setSize(region.getSize() + config.enlargeSize);
+        region.setSize(region.getSize() + pluginConfiguration.enlargeSize);
 
-        guild.broadcast(messages.enlargeDone
+        guild.broadcast(messageConfiguration.enlargeDone
                 .replace("{SIZE}", Integer.toString(region.getSize()))
                 .replace("{LEVEL}", Integer.toString(region.getEnlarge())));
     }

@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
@@ -26,12 +24,12 @@ public final class DeleteCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsOwner User user, Guild guild) {
-        when (config.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messages.deleteSomeoneIsNear);
+    public void execute(Player player, @IsOwner User user, Guild guild) {
+        when (pluginConfiguration.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), messageConfiguration.deleteSomeoneIsNear);
         ConfirmationList.add(user.getUUID());
 
-        when (config.commands.confirm.enabled, messages.deleteConfirm);
-        CONFIRM_EXECUTOR.execute(config, messages, player, user, guild);
+        when (pluginConfiguration.commands.confirm.enabled, messageConfiguration.deleteConfirm);
+        CONFIRM_EXECUTOR.execute(player, user, guild);
     }
 
 }

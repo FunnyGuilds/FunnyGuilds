@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.user.UserCache;
@@ -15,16 +14,16 @@ public final class SpyCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender) {
+    public void execute(CommandSender sender) {
         UserCache cache = UserValidation.requireUserByName(sender.getName()).getCache();
 
         if (cache.isSpy()) {
             cache.setSpy(false);
-            sender.sendMessage(messages.adminStopSpy);
+            sender.sendMessage(this.messageConfiguration.adminStopSpy);
         }
         else {
             cache.setSpy(true);
-            sender.sendMessage(messages.adminStartSpy);
+            sender.sendMessage(this.messageConfiguration.adminStartSpy);
         }
     }
 

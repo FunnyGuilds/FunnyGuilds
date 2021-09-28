@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -23,8 +22,8 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -40,9 +39,9 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
                 .property("PLAYER", sender::getName)
                 .toFormatter(guild);
 
-        guild.getOwner().sendMessage(formatter.format(messages.adminGuildBroken));
-        sender.sendMessage(formatter.format(messages.deleteSuccessful));
-        Bukkit.getServer().broadcastMessage(formatter.format(messages.broadcastDelete));
+        guild.getOwner().sendMessage(formatter.format(this.messageConfiguration.adminGuildBroken));
+        sender.sendMessage(formatter.format(this.messageConfiguration.deleteSuccessful));
+        Bukkit.getServer().broadcastMessage(formatter.format(this.messageConfiguration.broadcastDelete));
     }
 
 }

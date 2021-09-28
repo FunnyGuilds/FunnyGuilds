@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import org.bukkit.command.CommandSender;
 
@@ -12,8 +11,8 @@ public final class MainCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender) {
-        for (String line : messages.adminHelpList) {
+    public void execute(CommandSender sender) {
+        for (String line : this.messageConfiguration.adminHelpList) {
             sender.sendMessage(line);
         }
     }

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -23,9 +22,9 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 3, messages.adminNoProtectionDateGive);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 3, this.messageConfiguration.adminNoProtectionDateGive);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
@@ -35,7 +34,7 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
         try {
             protectionDate = PROTECTION_DATE_FORMAT.parse(protectionDateAsString);
         } catch (ParseException e) {
-            sender.sendMessage(messages.adminInvalidProtectionDate);
+            sender.sendMessage(this.messageConfiguration.adminInvalidProtectionDate);
             return;
         }
 
@@ -46,6 +45,6 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
                 .register("{DATE}", protectionDateAsString);
 
 
-        sender.sendMessage(formatter.format(messages.adminProtectionSetSuccessfully));
+        sender.sendMessage(formatter.format(this.messageConfiguration.adminProtectionSetSuccessfully));
     }
 }

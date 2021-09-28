@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -30,9 +28,9 @@ public final class InviteCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
-        when (guild.getMembers().size() >= config.maxMembersInGuild, messages.inviteAmount.replace("{AMOUNT}", Integer.toString(config.maxMembersInGuild)));
+    public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
+        when (args.length < 1, messageConfiguration.generalNoNickGiven);
+        when (guild.getMembers().size() >= pluginConfiguration.maxMembersInGuild, messageConfiguration.inviteAmount.replace("{AMOUNT}", Integer.toString(pluginConfiguration.maxMembersInGuild)));
 
         User invitedUser = UserValidation.requireUserByName(args[0]);
         Player invitedPlayer = invitedUser.getPlayer();
@@ -43,21 +41,21 @@ public final class InviteCommand extends AbstractFunnyCommand {
             }
             
             InvitationList.expireInvitation(guild, invitedUser);
-            player.sendMessage(messages.inviteCancelled);
-            when (invitedPlayer != null, messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+            player.sendMessage(messageConfiguration.inviteCancelled);
+            when (invitedPlayer != null, messageConfiguration.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             return;
         }
 
-        when (invitedPlayer == null, messages.invitePlayerExists);
-        when (invitedUser.hasGuild(), messages.generalUserHasGuild);
+        when (invitedPlayer == null, messageConfiguration.invitePlayerExists);
+        when (invitedUser.hasGuild(), messageConfiguration.generalUserHasGuild);
 
         if (!SimpleEventHandler.handle(new GuildMemberInviteEvent(EventCause.USER, user, guild, invitedUser))) {
             return;
         }
         
         InvitationList.createInvitation(guild, invitedPlayer);
-        player.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
-        invitedPlayer.sendMessage(messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        player.sendMessage(messageConfiguration.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
+        invitedPlayer.sendMessage(messageConfiguration.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 
 }

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaderEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -20,15 +19,15 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.generalNoNickGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 2, this.messageConfiguration.generalNoNickGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User user = UserValidation.requireUserByName(args[1]);
 
-        when (!guild.getMembers().contains(user), messages.adminUserNotMemberOf);
-        when (guild.getOwner().equals(user), messages.adminAlreadyLeader);
+        when (!guild.getMembers().contains(user), this.messageConfiguration.adminUserNotMemberOf);
+        when (guild.getOwner().equals(user), this.messageConfiguration.adminAlreadyLeader);
         
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(AdminUtils.getCause(admin), admin, guild, user))) {
@@ -36,11 +35,11 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
         }
         
         guild.setOwner(user);
-        sender.sendMessage(messages.leaderSet);
+        sender.sendMessage(this.messageConfiguration.leaderSet);
 
-        user.sendMessage(messages.leaderOwner);
+        user.sendMessage(this.messageConfiguration.leaderOwner);
 
-        String message = messages.leaderMembers.replace("{PLAYER}", user.getName());
+        String message = this.messageConfiguration.leaderMembers.replace("{PLAYER}", user.getName());
 
         for (User member : guild.getOnlineMembers()) {
             member.getPlayer().sendMessage(message);

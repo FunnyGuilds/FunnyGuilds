@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -22,16 +20,16 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.adminNoValidityTimeGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 2, this.messageConfiguration.adminNoValidityTimeGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (guild.isBanned(), messages.adminGuildBanned);
+        when (guild.isBanned(), this.messageConfiguration.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
         if (time < 1) {
-            sender.sendMessage(messages.adminTimeError);
+            sender.sendMessage(this.messageConfiguration.adminTimeError);
             return;
         }
 
@@ -48,8 +46,8 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         validity += time;
         guild.setValidity(validity);
 
-        String date = config.dateFormat.format(new Date(validity));
-        sender.sendMessage(messages.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", date));
+        String date = this.pluginConfiguration.dateFormat.format(new Date(validity));
+        sender.sendMessage(this.messageConfiguration.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", date));
     }
 
 }

@@ -1,8 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -33,27 +31,27 @@ public final class MoveCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, PluginConfiguration config, Player player, String[] args) {
-        when (!config.regionsEnabled, messages.regionsDisabled);
-        when (args.length < 1, messages.generalNoTagGiven);
+    public void execute(Player player, String[] args) {
+        when (!this.pluginConfiguration.regionsEnabled, this.messageConfiguration.regionsDisabled);
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         Location location = player.getLocation();
 
-        if (config.createCenterY != 0) {
-            location.setY(config.createCenterY);
+        if (this.pluginConfiguration.createCenterY != 0) {
+            location.setY(this.pluginConfiguration.createCenterY);
         }
 
-        int distance = config.regionSize + config.createDistance;
+        int distance = this.pluginConfiguration.regionSize + this.pluginConfiguration.createDistance;
 
-        if (config.enlargeItems != null) {
-            distance = config.enlargeItems.size() * config.enlargeSize + distance;
+        if (this.pluginConfiguration.enlargeItems != null) {
+            distance = this.pluginConfiguration.enlargeItems.size() * this.pluginConfiguration.enlargeSize + distance;
         }
 
         when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
-        when (RegionUtils.isNear(location), messages.createIsNear);
+                this.messageConfiguration.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
+        when (RegionUtils.isNear(location), this.messageConfiguration.createIsNear);
 
         User admin = AdminUtils.getAdminUser(player);
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
@@ -63,11 +61,11 @@ public final class MoveCommand extends AbstractFunnyCommand {
         Region region = guild.getRegion();
 
         if (region == null) {
-            region = new Region(guild, location, config.regionSize);
+            region = new Region(guild, location, this.pluginConfiguration.regionSize);
         } else {
-            if (config.createEntityType != null) {
+            if (this.pluginConfiguration.createEntityType != null) {
                 GuildEntityHelper.despawnGuildHeart(guild);
-            } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
+            } else if (this.pluginConfiguration.createMaterial != null && this.pluginConfiguration.createMaterial.getLeft() != Material.AIR) {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                 
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
@@ -80,7 +78,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             region.setCenter(location);
         }
         
-        if (config.createCenterSphere) {
+        if (this.pluginConfiguration.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);
 
             for (Location locationInSphere : sphere) {
@@ -91,7 +89,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         GuildUtils.spawnHeart(guild);
-        player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
+        player.sendMessage(this.messageConfiguration.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
 
 }

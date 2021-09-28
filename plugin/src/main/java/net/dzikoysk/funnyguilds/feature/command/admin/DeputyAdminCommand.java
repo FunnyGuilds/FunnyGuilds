@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberDeputyEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -21,14 +20,14 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (args.length < 2, messages.generalNoNickGiven);
+        when (args.length < 2, this.messageConfiguration.generalNoNickGiven);
         
         User userToMove = UserValidation.requireUserByName(args[1]);
-        when (!guild.getMembers().contains(userToMove), messages.adminUserNotMemberOf);
+        when (!guild.getMembers().contains(userToMove), this.messageConfiguration.adminUserNotMemberOf);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -40,10 +39,10 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
 
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
-            sender.sendMessage(messages.deputyRemove);
-            userToMove.sendMessage(messages.deputyMember);
+            sender.sendMessage(this.messageConfiguration.deputyRemove);
+            userToMove.sendMessage(this.messageConfiguration.deputyMember);
 
-            String message = formatter.format(messages.deputyNoLongerMembers);
+            String message = formatter.format(this.messageConfiguration.deputyNoLongerMembers);
 
             for (User member : guild.getOnlineMembers()) {
                 member.getPlayer().sendMessage(message);
@@ -53,10 +52,10 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         }
 
         guild.addDeputy(userToMove);
-        sender.sendMessage(messages.deputySet);
-        userToMove.sendMessage(messages.deputyOwner);
+        sender.sendMessage(this.messageConfiguration.deputySet);
+        userToMove.sendMessage(this.messageConfiguration.deputyOwner);
 
-        String message = formatter.format(messages.deputyMembers);
+        String message = formatter.format(this.messageConfiguration.deputyMembers);
 
         for (User member : guild.getOnlineMembers()) {
             member.getPlayer().sendMessage(message);

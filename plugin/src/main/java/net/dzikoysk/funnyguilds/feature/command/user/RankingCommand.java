@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
 import org.bukkit.command.CommandSender;
@@ -17,8 +16,8 @@ public final class RankingCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.ranking",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender) {
-        for (String messageLine : messages.rankingList) {
+    public void execute(CommandSender sender) {
+        for (String messageLine : messageConfiguration.rankingList) {
             String parsedRank = RankUtils.parseRank(null, messageLine);
             sender.sendMessage(parsedRank == null ? messageLine : parsedRank);
         }

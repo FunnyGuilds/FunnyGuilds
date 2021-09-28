@@ -8,8 +8,6 @@ import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuild
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
@@ -51,71 +49,71 @@ public final class CreateCommand extends AbstractFunnyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user, String[] args) {
-        when (!config.guildsEnabled, messages.adminGuildsDisabled);
-        when (LocationUtils.checkWorld(player), messages.blockedWorld);
-        when (user.hasGuild(), messages.generalHasGuild);
+    public void execute(Player player, User user, String[] args) {
+        when (!pluginConfiguration.guildsEnabled, messageConfiguration.adminGuildsDisabled);
+        when (LocationUtils.checkWorld(player), messageConfiguration.blockedWorld);
+        when (user.hasGuild(), messageConfiguration.generalHasGuild);
 
         if (args.length != 2) {
-            when (args.length == 0, messages.generalNoTagGiven);
-            when (args.length == 1, messages.generalNoNameGiven);
+            when (args.length == 0, messageConfiguration.generalNoTagGiven);
+            when (args.length == 1, messageConfiguration.generalNoNameGiven);
 
-            throw new ValidationException(messages.createMore);
+            throw new ValidationException(messageConfiguration.createMore);
         }
 
         String tag = args[0];
 
-        if (!config.guildTagKeepCase) {
-            tag = config.guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
+        if (!pluginConfiguration.guildTagKeepCase) {
+            tag = pluginConfiguration.guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
         }
         
         String name = args[1];
         Location guildLocation = player.getLocation().getBlock().getLocation();
 
-        when (tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
-        when (tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
-        when (name.length() > config.createNameLength, messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
-        when (name.length() < config.createNameMinLength, messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
-        when (!tag.matches(config.tagRegex.getPattern()), messages.createOLTag);
-        when (!name.matches(config.nameRegex.getPattern()), messages.createOLName);
-        when (GuildUtils.nameExists(name), messages.createNameExists);
-        when (GuildUtils.tagExists(tag), messages.createTagExists);
-        when (config.regionsEnabled && RegionUtils.isIn(guildLocation), messages.createIsNear);
-        when (config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
+        when (tag.length() > pluginConfiguration.createTagLength, messageConfiguration.createTagLength.replace("{LENGTH}", Integer.toString(pluginConfiguration.createTagLength)));
+        when (tag.length() < pluginConfiguration.createTagMinLength, messageConfiguration.createTagMinLength.replace("{LENGTH}", Integer.toString(pluginConfiguration.createTagMinLength)));
+        when (name.length() > pluginConfiguration.createNameLength, messageConfiguration.createNameLength.replace("{LENGTH}", Integer.toString(pluginConfiguration.createNameLength)));
+        when (name.length() < pluginConfiguration.createNameMinLength, messageConfiguration.createNameMinLength.replace("{LENGTH}", Integer.toString(pluginConfiguration.createNameMinLength)));
+        when (!tag.matches(pluginConfiguration.tagRegex.getPattern()), messageConfiguration.createOLTag);
+        when (!name.matches(pluginConfiguration.nameRegex.getPattern()), messageConfiguration.createOLName);
+        when (GuildUtils.nameExists(name), messageConfiguration.createNameExists);
+        when (GuildUtils.tagExists(tag), messageConfiguration.createTagExists);
+        when (pluginConfiguration.regionsEnabled && RegionUtils.isIn(guildLocation), messageConfiguration.createIsNear);
+        when (pluginConfiguration.regionsEnabled && RegionUtils.isNear(guildLocation), messageConfiguration.createIsNear);
 
-        if (config.checkForRestrictedGuildNames) {
-            when (!GuildUtils.isNameValid(name), messages.restrictedGuildName);
-            when (!GuildUtils.isTagValid(tag), messages.restrictedGuildTag);
+        if (pluginConfiguration.checkForRestrictedGuildNames) {
+            when (!GuildUtils.isNameValid(name), messageConfiguration.restrictedGuildName);
+            when (!GuildUtils.isTagValid(tag), messageConfiguration.restrictedGuildTag);
         }
 
-        if (config.regionsEnabled) {
-            if (config.createCenterY != 0) {
-                guildLocation.setY(config.createCenterY);
+        if (pluginConfiguration.regionsEnabled) {
+            if (pluginConfiguration.createCenterY != 0) {
+                guildLocation.setY(pluginConfiguration.createCenterY);
             }
 
-            if (config.createEntityType != null && guildLocation.getBlockY() < (SKY_LIMIT - 2)) {
+            if (pluginConfiguration.createEntityType != null && guildLocation.getBlockY() < (SKY_LIMIT - 2)) {
                 guildLocation.setY(guildLocation.getBlockY() + 2);
             }
     
-            int distance = config.regionSize + config.createDistance;
+            int distance = pluginConfiguration.regionSize + pluginConfiguration.createDistance;
     
-            if (config.enlargeItems != null) {
-                distance += config.enlargeItems.size() * config.enlargeSize;
+            if (pluginConfiguration.enlargeItems != null) {
+                distance += pluginConfiguration.enlargeItems.size() * pluginConfiguration.enlargeSize;
             }
     
-            when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation), messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
+            when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation), messageConfiguration.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
         }
 
-        if (config.rankCreateEnable) {
-            int requiredRank = player.hasPermission("funnyguilds.vip.rank") ? config.rankCreateVip : config.rankCreate;
+        if (pluginConfiguration.rankCreateEnable) {
+            int requiredRank = player.hasPermission("funnyguilds.vip.rank") ? pluginConfiguration.rankCreateVip : pluginConfiguration.rankCreate;
             int points = user.getRank().getPoints();
 
             if (points < requiredRank) {
-                String msg = messages.createRank;
+                String msg = messageConfiguration.createRank;
                 
-                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", IntegerRange.inRangeToString(requiredRank, config.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
+                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", IntegerRange.inRangeToString(requiredRank, pluginConfiguration.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
                 msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
-                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
+                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", IntegerRange.inRangeToString(points, pluginConfiguration.pointsFormat));
                 msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
                 
                 player.sendMessage(msg);
@@ -123,19 +121,19 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
         }
 
-        List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items") ? config.createItemsVip : config.createItems;
-        int requiredExperience = player.hasPermission("funnyguilds.vip.items") ? config.requiredExperienceVip : config.requiredExperience;
-        double requiredMoney = player.hasPermission("funnyguilds.vip.items") ? config.requiredMoneyVip : config.requiredMoney;
+        List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items") ? pluginConfiguration.createItemsVip : pluginConfiguration.createItems;
+        int requiredExperience = player.hasPermission("funnyguilds.vip.items") ? pluginConfiguration.requiredExperienceVip : pluginConfiguration.requiredExperience;
+        double requiredMoney = player.hasPermission("funnyguilds.vip.items") ? pluginConfiguration.requiredMoneyVip : pluginConfiguration.requiredMoney;
 
         if (player.getTotalExperience() < requiredExperience) {
-            String msg = messages.createExperience;
+            String msg = messageConfiguration.createExperience;
             msg = StringUtils.replace(msg, "{EXP}", String.valueOf(requiredExperience));
             player.sendMessage(msg);
             return;
         }
 
         if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
-            String notEnoughMoneyMessage = messages.createMoney;
+            String notEnoughMoneyMessage = messageConfiguration.createMoney;
             notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
             player.sendMessage(notEnoughMoneyMessage);
             return;
@@ -148,25 +146,25 @@ public final class CreateCommand extends AbstractFunnyCommand {
         Guild guild = new Guild(name);
         guild.setTag(tag);
         guild.setOwner(user);
-        guild.setLives(config.warLives);
+        guild.setLives(pluginConfiguration.warLives);
         guild.setBorn(System.currentTimeMillis());
-        guild.setValidity(Instant.now().plus(config.validityStart).toEpochMilli());
-        guild.setProtection(Instant.now().plus(config.warProtection).toEpochMilli());
-        guild.setPvP(config.damageGuild);
+        guild.setValidity(Instant.now().plus(pluginConfiguration.validityStart).toEpochMilli());
+        guild.setProtection(Instant.now().plus(pluginConfiguration.warProtection).toEpochMilli());
+        guild.setPvP(pluginConfiguration.damageGuild);
         guild.setHome(guildLocation);
 
-        if (config.regionsEnabled) {
-            Region region = new Region(guild, guildLocation, config.regionSize);
+        if (pluginConfiguration.regionsEnabled) {
+            Region region = new Region(guild, guildLocation, pluginConfiguration.regionSize);
 
             WorldBorder border = player.getWorld().getWorldBorder();
             double radius = border.getSize() / 2;
-            FunnyBox bbox = FunnyBox.of(border.getCenter().toVector(), radius - config.createMinDistanceFromBorder, 256, radius - config.createMinDistanceFromBorder);
+            FunnyBox bbox = FunnyBox.of(border.getCenter().toVector(), radius - pluginConfiguration.createMinDistanceFromBorder, 256, radius - pluginConfiguration.createMinDistanceFromBorder);
             FunnyBox gbox = FunnyBox.of(region.getFirstCorner(), region.getSecondCorner());
 
             // border box does not contain guild box
             if (!bbox.contains(gbox)) {
-                String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
-                notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
+                String notEnoughDistanceMessage = messageConfiguration.createNotEnoughDistanceFromBorder;
+                notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(pluginConfiguration.createMinDistanceFromBorder));
                 player.sendMessage(notEnoughDistanceMessage);
                 return;
             }
@@ -185,13 +183,13 @@ public final class CreateCommand extends AbstractFunnyCommand {
             VaultHook.withdrawFromPlayerBank(player, requiredMoney);
         }
         
-        if (config.regionsEnabled) {
-            if (config.pasteSchematicOnCreation) {
-                if (! PluginHook.WORLD_EDIT.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir)) {
-                    player.sendMessage(messages.createGuildCouldNotPasteSchematic);
+        if (pluginConfiguration.regionsEnabled) {
+            if (pluginConfiguration.pasteSchematicOnCreation) {
+                if (! PluginHook.WORLD_EDIT.pasteSchematic(pluginConfiguration.guildSchematicFile, guildLocation, pluginConfiguration.pasteSchematicWithAir)) {
+                    player.sendMessage(messageConfiguration.createGuildCouldNotPasteSchematic);
                 }
             }
-            else if (config.createCenterSphere) {
+            else if (pluginConfiguration.createCenterSphere) {
                 for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
                     if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
                         locationInSphere.getBlock().setType(Material.AIR);
@@ -204,7 +202,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                     }
                 }
                 
-                if (config.eventPhysics) {
+                if (pluginConfiguration.eventPhysics) {
                     guildLocation.clone().subtract(0.0D, 2.0D, 0.0D).getBlock().setType(Material.OBSIDIAN);
                 }
             }
@@ -216,7 +214,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         user.setGuild(guild);
         GuildUtils.addGuild(guild);
 
-        if (config.regionsEnabled) {
+        if (pluginConfiguration.regionsEnabled) {
             RegionUtils.addRegion(guild.getRegion());
         }
 
@@ -232,14 +230,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .register("{TAG}", tag)
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(formatter.format(messages.createGuild));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastCreate));
+        player.sendMessage(formatter.format(messageConfiguration.createGuild));
+        Bukkit.broadcastMessage(formatter.format(messageConfiguration.broadcastCreate));
 
-        if (!config.giveRewardsForFirstGuild) {
+        if (!pluginConfiguration.giveRewardsForFirstGuild) {
             return;
         }
 
-        for (ItemStack item : config.firstGuildRewards) {
+        for (ItemStack item : pluginConfiguration.firstGuildRewards) {
             if (player.getInventory().firstEmpty() == -1) {
                 player.getWorld().dropItemNaturally(player.getLocation(), item);
                 continue;

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreTagChangeEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildTagChangeEvent;
@@ -21,13 +20,13 @@ public final class TagCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 2, messages.generalNoTagGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 2, this.messageConfiguration.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         String tag = args[1];
-        when (GuildUtils.tagExists(tag), messages.createTagExists);
+        when (GuildUtils.tagExists(tag), this.messageConfiguration.createTagExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -38,7 +37,7 @@ public final class TagCommand extends AbstractFunnyCommand {
 
         guild.setTag(tag);
 
-        sender.sendMessage(messages.adminTagChanged
+        sender.sendMessage(this.messageConfiguration.adminTagChanged
                 .replace("{OLD_TAG}", oldTag)
                 .replace("{TAG}", guild.getTag()));
 

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.user.User;
@@ -19,23 +18,23 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoNickGiven);
         
         User userToTeleport = UserValidation.requireUserByName(args[0]);
-        when (!userToTeleport.isOnline(), messages.generalNotOnline);
-        when (!userToTeleport.hasGuild(), messages.generalPlayerHasNoGuild);
+        when (!userToTeleport.isOnline(), this.messageConfiguration.generalNotOnline);
+        when (!userToTeleport.hasGuild(), this.messageConfiguration.generalPlayerHasNoGuild);
         
         Location guildHome = userToTeleport.getGuild().getHome();
-        whenNull (guildHome, messages.adminGuildHasNoHome);
+        whenNull (guildHome, this.messageConfiguration.adminGuildHasNoHome);
 
         Formatter formatter = new Formatter()
                 .register("{ADMIN}", sender.getName())
                 .register("{PLAYER}", userToTeleport.getName());
 
         userToTeleport.getPlayer().teleport(guildHome);
-        userToTeleport.sendMessage(formatter.format(messages.adminTeleportedToBase));
-        sender.sendMessage(formatter.format(messages.adminTargetTeleportedToBase));
+        userToTeleport.sendMessage(formatter.format(this.messageConfiguration.adminTeleportedToBase));
+        sender.sendMessage(formatter.format(this.messageConfiguration.adminTargetTeleportedToBase));
     }
 
 }

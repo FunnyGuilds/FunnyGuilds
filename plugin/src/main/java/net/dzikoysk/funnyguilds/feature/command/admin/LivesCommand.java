@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -19,9 +18,9 @@ public final class LivesCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
-        when (args.length < 2, messages.adminNoLivesGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 2, this.messageConfiguration.adminNoLivesGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
@@ -29,7 +28,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
         try {
             lives = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
+            sender.sendMessage(this.messageConfiguration.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }
 
@@ -39,7 +38,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
         }
         
         guild.setLives(lives);
-        sender.sendMessage(messages.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives)));
+        sender.sendMessage(this.messageConfiguration.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives)));
     }
 
 }

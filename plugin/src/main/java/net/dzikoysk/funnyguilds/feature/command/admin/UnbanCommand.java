@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildUnbanEvent;
 import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
@@ -22,11 +21,11 @@ public final class UnbanCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (!guild.isBanned(), messages.adminGuildNotBanned);
+        when (!guild.isBanned(), this.messageConfiguration.adminGuildNotBanned);
         
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildUnbanEvent(AdminUtils.getCause(admin), admin, guild))) {
@@ -40,8 +39,8 @@ public final class UnbanCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getName())
                 .register("{ADMIN}", sender.getName());
 
-        sender.sendMessage(formatter.format(messages.adminGuildUnban));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastUnban));
+        sender.sendMessage(formatter.format(this.messageConfiguration.adminGuildUnban));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastUnban));
     }
 
 }

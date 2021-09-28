@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -21,12 +20,12 @@ public final class DeathsCommand extends AbstractFunnyCommand {
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
-        when (args.length < 2, messages.adminNoDeathsGiven);
+    public void execute(CommandSender sender, String[] args) {
+        when (args.length < 1, this.messageConfiguration.generalNoNickGiven);
+        when (args.length < 2, this.messageConfiguration.adminNoDeathsGiven);
 
         int deaths = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            throw new ValidationException(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
+            throw new ValidationException(this.messageConfiguration.adminErrorInNumber.replace("{ERROR}", args[1]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);
@@ -39,7 +38,7 @@ public final class DeathsCommand extends AbstractFunnyCommand {
         }
         
         userRank.setDeaths(deaths);
-        sender.sendMessage(messages.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(deaths)));
+        sender.sendMessage(this.messageConfiguration.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(deaths)));
     }
 
 }
