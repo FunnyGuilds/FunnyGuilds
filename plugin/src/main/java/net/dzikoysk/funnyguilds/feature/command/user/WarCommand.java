@@ -29,22 +29,22 @@ public final class WarCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
-        when (args.length < 1, messageConfiguration.enemyCorrectUse);
+        when (args.length < 1, this.messageConfiguration.enemyCorrectUse);
 
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
-        when (guild.equals(enemyGuild), messageConfiguration.enemySame);
-        when (guild.getAllies().contains(enemyGuild), messageConfiguration.enemyAlly);
-        when (guild.getEnemies().contains(enemyGuild), messageConfiguration.enemyAlready);
-        when (guild.getEnemies().size() >= pluginConfiguration.maxEnemiesBetweenGuilds, () -> messageConfiguration.enemyMaxAmount.replace("{AMOUNT}", Integer.toString(pluginConfiguration.maxEnemiesBetweenGuilds)));
+        when (guild.equals(enemyGuild), this.messageConfiguration.enemySame);
+        when (guild.getAllies().contains(enemyGuild), this.messageConfiguration.enemyAlly);
+        when (guild.getEnemies().contains(enemyGuild), this.messageConfiguration.enemyAlready);
+        when (guild.getEnemies().size() >= this.pluginConfiguration.maxEnemiesBetweenGuilds, () -> this.messageConfiguration.enemyMaxAmount.replace("{AMOUNT}", Integer.toString(this.pluginConfiguration.maxEnemiesBetweenGuilds)));
 
-        if (enemyGuild.getEnemies().size() >= pluginConfiguration.maxEnemiesBetweenGuilds) {
+        if (enemyGuild.getEnemies().size() >= this.pluginConfiguration.maxEnemiesBetweenGuilds) {
             Formatter formatter = new Formatter()
                     .register("{GUILD}", enemyGuild.getName())
                     .register("{TAG}", enemyGuild.getTag())
-                    .register("{AMOUNT}", pluginConfiguration.maxEnemiesBetweenGuilds);
+                    .register("{AMOUNT}", this.pluginConfiguration.maxEnemiesBetweenGuilds);
 
-            player.sendMessage(formatter.format(messageConfiguration.enemyMaxTargetAmount));
+            player.sendMessage(formatter.format(this.messageConfiguration.enemyMaxTargetAmount));
             return;
         }
 
@@ -52,13 +52,13 @@ public final class WarCommand extends AbstractFunnyCommand {
 
         guild.addEnemy(enemyGuild);
 
-        String allyDoneMessage = messageConfiguration.enemyDone;
+        String allyDoneMessage = this.messageConfiguration.enemyDone;
         allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", enemyGuild.getName());
         allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", enemyGuild.getTag());
         player.sendMessage(allyDoneMessage);
 
         if (enemyOwner != null) {
-            String allyIDoneMessage = messageConfiguration.enemyIDone;
+            String allyIDoneMessage = this.messageConfiguration.enemyIDone;
             allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
             allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
             enemyOwner.sendMessage(allyIDoneMessage);

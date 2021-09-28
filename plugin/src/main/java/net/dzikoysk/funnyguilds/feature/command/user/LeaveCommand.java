@@ -29,7 +29,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @IsMember User user, Guild guild) {
-        when (user.isOwner(), messageConfiguration.leaveIsOwner);
+        when (user.isOwner(), this.messageConfiguration.leaveIsOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, user, guild, user))) {
             return;
@@ -45,8 +45,8 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        player.sendMessage(formatter.format(messageConfiguration.leaveToUser));
-        Bukkit.broadcastMessage(formatter.format(messageConfiguration.broadcastLeave));
+        player.sendMessage(formatter.format(this.messageConfiguration.leaveToUser));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastLeave));
     }
 
 }

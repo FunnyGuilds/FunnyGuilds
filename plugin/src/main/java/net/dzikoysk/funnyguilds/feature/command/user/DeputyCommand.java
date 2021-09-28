@@ -28,11 +28,11 @@ public final class DeputyCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
-        when (args.length < 1, messageConfiguration.generalNoNickGiven);
+        when (args.length < 1, this.messageConfiguration.generalNoNickGiven);
 
         User deputyUser = UserValidation.requireUserByName(args[0]);
-        when (owner.equals(deputyUser), messageConfiguration.deputyMustBeDifferent);
-        when (!guild.getMembers().contains(deputyUser), messageConfiguration.generalIsNotMember);
+        when (owner.equals(deputyUser), this.messageConfiguration.deputyMustBeDifferent);
+        when (!guild.getMembers().contains(deputyUser), this.messageConfiguration.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
             return;
@@ -42,14 +42,14 @@ public final class DeputyCommand extends AbstractFunnyCommand {
 
         if (deputyUser.isDeputy()) {
             guild.removeDeputy(deputyUser);
-            player.sendMessage(messageConfiguration.deputyRemove);
-            deputyPlayer.peek(value -> value.sendMessage(messageConfiguration.deputyMember));
+            player.sendMessage(this.messageConfiguration.deputyRemove);
+            deputyPlayer.peek(value -> value.sendMessage(this.messageConfiguration.deputyMember));
             return;
         }
 
         guild.addDeputy(deputyUser);
-        player.sendMessage(messageConfiguration.deputySet);
-        deputyPlayer.peek(value -> value.sendMessage(messageConfiguration.deputyOwner));
+        player.sendMessage(this.messageConfiguration.deputySet);
+        deputyPlayer.peek(value -> value.sendMessage(this.messageConfiguration.deputyOwner));
     }
 
 }

@@ -34,12 +34,12 @@ public final class InfoCommand extends AbstractFunnyCommand {
                         .filter(User::hasGuild)
                         .map(User::getGuild)
                         .map(Guild::getTag))
-                .orThrow(() -> new ValidationException(messageConfiguration.infoTag));
+                .orThrow(() -> new ValidationException(this.messageConfiguration.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
         Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
 
-        for (String messageLine : messageConfiguration.infoList) {
+        for (String messageLine : this.messageConfiguration.infoList) {
             sender.sendMessage(formatter.format(messageLine));
         }
     }

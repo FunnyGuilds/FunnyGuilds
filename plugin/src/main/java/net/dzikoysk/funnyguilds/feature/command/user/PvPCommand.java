@@ -25,19 +25,19 @@ public final class PvPCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
         if (args.length > 0) {
-            when (!pluginConfiguration.damageAlly, messageConfiguration.generalAllyPvpDisabled);
+            when (!this.pluginConfiguration.damageAlly, this.messageConfiguration.generalAllyPvpDisabled);
 
             Guild targetAlliedGuild = GuildValidation.requireGuildByTag(args[0]);
             Formatter guildTagFormatter = new Formatter().register("{TAG}", targetAlliedGuild.getTag());
-            when (!guild.getAllies().contains(targetAlliedGuild), guildTagFormatter.format(messageConfiguration.allyDoesntExist));
+            when (!guild.getAllies().contains(targetAlliedGuild), guildTagFormatter.format(this.messageConfiguration.allyDoesntExist));
 
             guild.setPvP(targetAlliedGuild, ! guild.getPvP(targetAlliedGuild));
-            player.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messageConfiguration.pvpAllyOn : messageConfiguration.pvpAllyOff));
+            player.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? this.messageConfiguration.pvpAllyOn : this.messageConfiguration.pvpAllyOff));
             return;
         }
 
         guild.setPvP(!guild.getPvP());
-        player.sendMessage(guild.getPvP() ? messageConfiguration.pvpOn : messageConfiguration.pvpOff);
+        player.sendMessage(guild.getPvP() ? this.messageConfiguration.pvpOn : this.messageConfiguration.pvpOff);
     }
 
 }

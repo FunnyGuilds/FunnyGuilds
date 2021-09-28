@@ -27,17 +27,17 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
-        when (!pluginConfiguration.regionsEnabled, messageConfiguration.regionsDisabled);
+        when (!this.pluginConfiguration.regionsEnabled, this.messageConfiguration.regionsDisabled);
 
         Region region = guild.getRegion();
-        when (region == null, messageConfiguration.regionsDisabled);
+        when (region == null, this.messageConfiguration.regionsDisabled);
 
         int enlarge = region.getEnlarge();
-        when (enlarge > pluginConfiguration.enlargeItems.size() - 1, messageConfiguration.enlargeMaxSize);
+        when (enlarge > this.pluginConfiguration.enlargeItems.size() - 1, this.messageConfiguration.enlargeMaxSize);
 
-        ItemStack need = pluginConfiguration.enlargeItems.get(enlarge);
-        when (!player.getInventory().containsAtLeast(need, need.getAmount()), messageConfiguration.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
-        when (RegionUtils.isNear(region.getCenter()), messageConfiguration.enlargeIsNear);
+        ItemStack need = this.pluginConfiguration.enlargeItems.get(enlarge);
+        when (!player.getInventory().containsAtLeast(need, need.getAmount()), this.messageConfiguration.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
+        when (RegionUtils.isNear(region.getCenter()), this.messageConfiguration.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, user.getGuild()))) {
             return;
@@ -45,9 +45,9 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         
         player.getInventory().removeItem(need);
         region.setEnlarge(++enlarge);
-        region.setSize(region.getSize() + pluginConfiguration.enlargeSize);
+        region.setSize(region.getSize() + this.pluginConfiguration.enlargeSize);
 
-        guild.broadcast(messageConfiguration.enlargeDone
+        guild.broadcast(this.messageConfiguration.enlargeDone
                 .replace("{SIZE}", Integer.toString(region.getSize()))
                 .replace("{LEVEL}", Integer.toString(region.getEnlarge())));
     }

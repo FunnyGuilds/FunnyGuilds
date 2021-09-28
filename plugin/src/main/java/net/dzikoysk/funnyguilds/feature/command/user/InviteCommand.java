@@ -29,8 +29,8 @@ public final class InviteCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
-        when (args.length < 1, messageConfiguration.generalNoNickGiven);
-        when (guild.getMembers().size() >= pluginConfiguration.maxMembersInGuild, messageConfiguration.inviteAmount.replace("{AMOUNT}", Integer.toString(pluginConfiguration.maxMembersInGuild)));
+        when (args.length < 1, this.messageConfiguration.generalNoNickGiven);
+        when (guild.getMembers().size() >= this.pluginConfiguration.maxMembersInGuild, this.messageConfiguration.inviteAmount.replace("{AMOUNT}", Integer.toString(this.pluginConfiguration.maxMembersInGuild)));
 
         User invitedUser = UserValidation.requireUserByName(args[0]);
         Player invitedPlayer = invitedUser.getPlayer();
@@ -41,21 +41,21 @@ public final class InviteCommand extends AbstractFunnyCommand {
             }
             
             InvitationList.expireInvitation(guild, invitedUser);
-            player.sendMessage(messageConfiguration.inviteCancelled);
-            when (invitedPlayer != null, messageConfiguration.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+            player.sendMessage(this.messageConfiguration.inviteCancelled);
+            when (invitedPlayer != null, this.messageConfiguration.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             return;
         }
 
-        when (invitedPlayer == null, messageConfiguration.invitePlayerExists);
-        when (invitedUser.hasGuild(), messageConfiguration.generalUserHasGuild);
+        when (invitedPlayer == null, this.messageConfiguration.invitePlayerExists);
+        when (invitedUser.hasGuild(), this.messageConfiguration.generalUserHasGuild);
 
         if (!SimpleEventHandler.handle(new GuildMemberInviteEvent(EventCause.USER, user, guild, invitedUser))) {
             return;
         }
         
         InvitationList.createInvitation(guild, invitedPlayer);
-        player.sendMessage(messageConfiguration.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
-        invitedPlayer.sendMessage(messageConfiguration.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        player.sendMessage(this.messageConfiguration.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
+        invitedPlayer.sendMessage(this.messageConfiguration.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 
 }

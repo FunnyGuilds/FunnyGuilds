@@ -27,16 +27,16 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length == 0 && !(sender instanceof Player), messageConfiguration.playerOnly);
+        when (args.length == 0 && !(sender instanceof Player), this.messageConfiguration.playerOnly);
         
         String name = args.length == 0
                 ? sender.getName()
                 : args[0];
 
-        User user = UserUtils.get(name, pluginConfiguration.playerLookupIgnorecase);
-        when (user == null, messageConfiguration.generalNotPlayedBefore);
+        User user = UserUtils.get(name, this.pluginConfiguration.playerLookupIgnorecase);
+        when (user == null, this.messageConfiguration.generalNotPlayedBefore);
 
-        sendInfoMessage(messageConfiguration.playerInfoList, user, sender);
+        sendInfoMessage(this.messageConfiguration.playerInfoList, user, sender);
     }
     
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
