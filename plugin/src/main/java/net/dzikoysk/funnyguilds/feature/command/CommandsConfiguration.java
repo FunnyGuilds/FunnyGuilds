@@ -64,7 +64,7 @@ import java.util.function.Function;
 
 public final class CommandsConfiguration {
 
-    public FunnyCommands createFunnyCommands(Server server, FunnyGuilds plugin) {
+    public FunnyCommands createFunnyCommands(Server server, FunnyGuilds plugin) throws Throwable {
         PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
         PluginConfiguration.Commands commands = pluginConfiguration.commands;
 
@@ -132,7 +132,7 @@ public final class CommandsConfiguration {
                 .bind(new GuildBind())
                 .type(new PlayerType(server))
                 .completer(new GuildsCompleter())
-                .completer(new MembersCompleter())
+                .completer(plugin.getInjector().newInstanceWithFields(MembersCompleter.class))
                 .validator(new MemberValidator())
                 .validator(new ManageValidator())
                 .validator(new OwnerValidator())

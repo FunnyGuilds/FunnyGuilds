@@ -7,13 +7,15 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class PointsCommand {
+public final class PointsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.points.name}",

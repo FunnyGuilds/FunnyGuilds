@@ -5,6 +5,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
@@ -13,7 +14,7 @@ import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class DeathsCommand {
+public final class DeathsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.deaths.name}",

@@ -9,12 +9,15 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.panda_lang.utilities.inject.annotations.Inject;
 
 import java.util.Optional;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class FunnyGuildsCommand extends AbstractFunnyCommand {
+
+    @Inject public DataModel dataModel;
 
     @FunnyCommand(
         name = "${user.funnyguilds.name}",
@@ -69,7 +72,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
         long currentTime = System.currentTimeMillis();
 
-        DataModel dataModel = FunnyGuilds.getInstance().getDataModel();
+        DataModel dataModel = this.dataModel;
 
         try {
             dataModel.save(false);

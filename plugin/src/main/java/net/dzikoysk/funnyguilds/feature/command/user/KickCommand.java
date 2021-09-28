@@ -2,18 +2,17 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.feature.command.CanManage;
-import net.dzikoysk.funnyguilds.feature.command.UserValidation;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.feature.command.CanManage;
+import net.dzikoysk.funnyguilds.feature.command.UserValidation;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
@@ -21,7 +20,7 @@ import panda.utilities.text.Formatter;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class KickCommand {
+public final class KickCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.kick.name}",
@@ -43,9 +42,8 @@ public final class KickCommand {
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
             return;
         }
-        
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(formerUser.getName()));
+
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(formerUser.getName()));
 
         guild.removeMember(formerUser);
         formerUser.removeGuild();

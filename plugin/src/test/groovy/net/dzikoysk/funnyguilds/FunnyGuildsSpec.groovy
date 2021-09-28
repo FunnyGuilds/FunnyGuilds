@@ -26,7 +26,7 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected PluginConfiguration config = new PluginConfiguration()
     protected MessageConfiguration messages = new MessageConfiguration()
 
-    protected RankManager rankManager = new RankManager(funnyGuilds);
+    protected RankManager rankManager = new RankManager(config);
 
     @BeforeEach
     void prepareFunnyGuilds() {

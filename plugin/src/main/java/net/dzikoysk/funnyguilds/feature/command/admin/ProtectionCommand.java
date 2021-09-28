@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import panda.utilities.text.Formatter;
@@ -11,10 +12,9 @@ import panda.utilities.text.Formatter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class ProtectionCommand {
+public final class ProtectionCommand extends AbstractFunnyCommand {
 
     private static final SimpleDateFormat PROTECTION_DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 

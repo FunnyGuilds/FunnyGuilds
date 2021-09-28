@@ -1,19 +1,20 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreTagChangeEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildTagChangeEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class TagCommand {
+public final class TagCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.tag.name}",

@@ -4,12 +4,13 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
 @FunnyComponent
-public final class TopCommand {
+public final class TopCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.top.name}",

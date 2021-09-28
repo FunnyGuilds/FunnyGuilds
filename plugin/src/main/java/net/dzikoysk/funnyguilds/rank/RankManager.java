@@ -15,8 +15,6 @@ import java.util.TreeSet;
 
 public class RankManager {
 
-    private final FunnyGuilds plugin;
-
     private final PluginConfiguration pluginConfiguration;
 
     protected NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
@@ -25,10 +23,8 @@ public class RankManager {
     @Deprecated
     private static RankManager INSTANCE;
 
-    public RankManager(FunnyGuilds plugin) {
-        this.plugin = plugin;
-
-        this.pluginConfiguration = plugin.getPluginConfiguration();
+    public RankManager(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
 
         INSTANCE = this;
     }

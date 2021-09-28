@@ -82,7 +82,7 @@ import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
-    private static FunnyGuilds funnyguilds;
+    private static FunnyGuilds plugin;
     private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
@@ -103,22 +103,22 @@ public class FunnyGuilds extends JavaPlugin {
     private UserManager userManager;
     private NmsAccessor nmsAccessor;
 
+    private DataModel dataModel;
+    private DataPersistenceHandler dataPersistenceHandler;
+    private InvitationPersistenceHandler invitationPersistenceHandler;
+
     private Injector injector;
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
     private volatile BukkitTask rankRecalculationTask;
 
-    private DataModel dataModel;
-    private DataPersistenceHandler dataPersistenceHandler;
-    private InvitationPersistenceHandler invitationPersistenceHandler;
-
     private boolean isDisabling;
     private boolean forceDisabling;
 
     @Override
     public void onLoad() {
-        funnyguilds = this;
+        plugin = this;
         logger = new FunnyGuildsLogger(this);
         this.version = new FunnyGuildsVersion(this);
 
@@ -134,7 +134,7 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        if (! this.getDataFolder().exists()) {
+        if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
 
@@ -146,8 +146,8 @@ public class FunnyGuilds extends JavaPlugin {
             this.pluginConfiguration = configurationFactory.createPluginConfiguration(pluginConfigurationFile);
             this.tablistConfiguration = configurationFactory.createTablistConfiguration(tablistConfigurationFile);
         }
-        catch (Exception exception) {
-            logger.error("Could not load plugin configuration", exception);
+        catch (Exception ex) {
+            logger.error("Could not load plugin configuration", ex);
             shutdown("Critical error has been encountered!");
             return;
         }
@@ -164,14 +164,14 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        funnyguilds = this;
+        plugin = this;
 
         if (this.forceDisabling) {
             return;
         }
 
-        this.rankManager = new RankManager(this);
-        this.userManager = new UserManager(this);
+        this.rankManager = new RankManager(this.pluginConfiguration);
+        this.userManager = new UserManager(this.rankManager);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -192,12 +192,14 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.injector = DependencyInjection.createInjector(resources -> {
             resources.on(FunnyGuilds.class).assignInstance(this);
+            resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.getPluginConfiguration());
             resources.on(MessageConfiguration.class).assignInstance(this.getMessageConfiguration());
             resources.on(TablistConfiguration.class).assignInstance(this.getTablistConfiguration());
+            resources.on(ConcurrencyManager.class).assignInstance(this.getConcurrencyManager());
             resources.on(RankManager.class).assignInstance(this.getRankManager());
             resources.on(UserManager.class).assignInstance(this.getUserManager());
-            resources.on(ConcurrencyManager.class).assignInstance(this.getConcurrencyManager());
+            resources.on(DataModel.class).assignInstance(this.getDataModel());
         });
 
         MetricsCollector collector = new MetricsCollector(this);
@@ -207,8 +209,14 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
-        CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
-        this.funnyCommands = commandsConfiguration.createFunnyCommands(getServer(), this);
+        try {
+            CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
+            this.funnyCommands = commandsConfiguration.createFunnyCommands(getServer(), this);
+        } catch (Throwable ex) {
+            logger.error("Could not register commands", ex);
+            shutdown("Critical error has been encountered!");
+            return;
+        }
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new GuiActionHandler(), this);
@@ -291,7 +299,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         Database.getInstance().shutdown();
 
-        funnyguilds = null;
+        plugin = null;
     }
 
     public void shutdown(String content) {
@@ -428,7 +436,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static FunnyGuilds getInstance() {
-        return funnyguilds;
+        return plugin;
     }
 
     public static FunnyGuildsLogger getPluginLogger() {

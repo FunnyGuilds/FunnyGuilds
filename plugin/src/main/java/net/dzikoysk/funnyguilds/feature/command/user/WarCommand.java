@@ -2,16 +2,16 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
-import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
+import net.dzikoysk.funnyguilds.feature.command.IsOwner;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
@@ -19,7 +19,7 @@ import panda.utilities.text.Formatter;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class WarCommand {
+public final class WarCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
             name = "${user.war.name}",
@@ -76,7 +76,7 @@ public final class WarCommand {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
         }
 
-        FunnyGuilds.getInstance().getConcurrencyManager().postTask(taskBuilder.build());
+        this.concurrencyManager.postTask(taskBuilder.build());
     }
 
 }

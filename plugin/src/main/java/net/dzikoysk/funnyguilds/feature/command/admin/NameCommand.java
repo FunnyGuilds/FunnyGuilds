@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
@@ -11,16 +11,20 @@ import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreRenameEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
+import org.panda_lang.utilities.inject.annotations.Inject;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class NameCommand {
+public final class NameCommand extends AbstractFunnyCommand {
+
+    @Inject public DataModel dataModel;
 
     @FunnyCommand(
         name = "${admin.name.name}",
@@ -44,24 +48,24 @@ public final class NameCommand {
         if (config.regionsEnabled) {
             Region region = guild.getRegion();
 
-            if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-                FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+            if (this.dataModel instanceof FlatDataModel) {
+                FlatDataModel dataModel = (FlatDataModel) this.dataModel;
                 dataModel.getRegionFile(region).delete();
             }
 
-            if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
+            if (this.dataModel instanceof SQLDataModel) {
                 DatabaseRegion.delete(region);
             }
             
             region.setName(args[1]);
         }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
+        if (this.dataModel instanceof FlatDataModel) {
+            FlatDataModel dataModel = (FlatDataModel) this.dataModel;
             dataModel.getGuildFile(guild).delete();
         }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
+        if (this.dataModel instanceof SQLDataModel) {
             DatabaseGuild.delete(guild);
         }
         

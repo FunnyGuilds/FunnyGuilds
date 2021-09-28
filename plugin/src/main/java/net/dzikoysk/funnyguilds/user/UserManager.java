@@ -1,12 +1,5 @@
 package net.dzikoysk.funnyguilds.user;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import org.apache.commons.lang3.Validate;
@@ -15,9 +8,15 @@ import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
-public class UserManager {
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
-    private final FunnyGuilds plugin;
+public class UserManager {
 
     private final RankManager rankManager;
 
@@ -27,10 +26,8 @@ public class UserManager {
     @Deprecated
     private static UserManager INSTANCE;
 
-    public UserManager(FunnyGuilds plugin) {
-        this.plugin = plugin;
-
-        this.rankManager = plugin.getRankManager();
+    public UserManager(RankManager rankManager) {
+        this.rankManager = rankManager;
 
         INSTANCE = this;
     }

@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
@@ -23,10 +23,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import java.util.List;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class MoveCommand {
+public final class MoveCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.move.name}",
@@ -71,7 +70,7 @@ public final class MoveCommand {
             } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                 
-                Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
                     if (block.getLocation().getBlockY() > 1) {
                         block.setType(Material.AIR);
                     }

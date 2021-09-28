@@ -5,6 +5,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -16,7 +17,7 @@ import panda.std.Option;
 import panda.utilities.text.Formatter;
 
 @FunnyComponent
-public final class InfoCommand {
+public final class InfoCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.info.name}",

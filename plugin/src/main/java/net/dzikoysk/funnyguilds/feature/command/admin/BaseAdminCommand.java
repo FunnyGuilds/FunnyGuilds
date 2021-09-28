@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.feature.command.UserValidation;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import panda.utilities.text.Formatter;
@@ -11,7 +12,7 @@ import panda.utilities.text.Formatter;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.whenNull;
 
-public final class BaseAdminCommand {
+public final class BaseAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.base.name}",

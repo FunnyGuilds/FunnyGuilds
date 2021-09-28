@@ -4,15 +4,15 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import org.bukkit.command.CommandSender;
 import panda.utilities.StringUtils;
 
 import java.time.LocalTime;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class TntCommand {
+public final class TntCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.tnt.name}",
