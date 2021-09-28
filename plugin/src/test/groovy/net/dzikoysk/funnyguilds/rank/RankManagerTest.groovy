@@ -15,6 +15,7 @@ class RankManagerTest extends FunnyGuildsSpec {
     @Test
     void 'should correctly update the guilds and users ranking'() {
         def userManager = new UserManager()
+        def rankManager = new RankManager()
 
         def guild1 = new Guild("test1")
         def guild2 = new Guild("test2")

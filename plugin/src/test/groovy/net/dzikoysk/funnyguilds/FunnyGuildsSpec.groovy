@@ -32,7 +32,7 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected PluginConfiguration config = new PluginConfiguration()
     protected MessageConfiguration messages = new MessageConfiguration()
 
-    protected RankManager rankManager = new RankManager()
+    protected RankManager globalRankManager = new RankManager()
 
     @BeforeAll
     static void openMockedFunnyGuilds() {
@@ -44,7 +44,7 @@ class FunnyGuildsSpec extends BukkitSpec {
     void prepareFunnyGuilds() {
         lenient().when(funnyGuilds.getPluginConfiguration()).thenReturn(config)
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
-        lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
+        lenient().when(funnyGuilds.getRankManager()).thenReturn(globalRankManager)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)
         mockedBossBarProvider.when(() -> BossBarProvider.getBossBar(any(User.class))).thenReturn(null)
