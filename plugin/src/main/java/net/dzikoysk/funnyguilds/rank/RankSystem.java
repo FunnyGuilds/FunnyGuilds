@@ -53,9 +53,7 @@ public class RankSystem {
 
     public interface RankingAlgorithm extends BiFunction<Integer, Integer, RankResult> {}
 
-    public static RankSystem create() {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
+    public static RankSystem create(PluginConfiguration config) {
         ImmutableMap<Type, RankingAlgorithm> build = new ImmutableMap.Builder<Type, RankingAlgorithm>()
                 .put(Type.ELO, (attackerPoints, victimPoints) -> {
                     int attackerElo = IntegerRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);

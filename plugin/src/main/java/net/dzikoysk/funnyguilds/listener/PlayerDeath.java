@@ -41,10 +41,11 @@ import java.util.Map.Entry;
 public class PlayerDeath implements Listener {
 
     private final FunnyGuilds plugin;
-    private final RankSystem rankSystem = RankSystem.create();
+    private final RankSystem rankSystem;
 
     public PlayerDeath(FunnyGuilds plugin) {
         this.plugin = plugin;
+        this.rankSystem = RankSystem.create(plugin.getPluginConfiguration());
     }
 
     @EventHandler
