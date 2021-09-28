@@ -15,7 +15,6 @@ class RankManagerTest extends FunnyGuildsSpec {
     @Test
     void 'should correctly update the guilds and users ranking'() {
         def userManager = new UserManager()
-        def manager = new RankManager()
 
         def guild1 = new Guild("test1")
         def guild2 = new Guild("test2")
@@ -30,28 +29,28 @@ class RankManagerTest extends FunnyGuildsSpec {
         guild2.addMember(user2)
         user2.rank.points = 100
 
-        manager.update(guild1)
-        manager.update(guild2)
-        manager.update(user1)
-        manager.update(user2)
+        rankManager.update(guild1)
+        rankManager.update(guild2)
+        rankManager.update(user1)
+        rankManager.update(user2)
 
-        assertEquals guild1, manager.getGuild(1)
-        assertEquals guild2, manager.getGuild(2)
-        assertEquals user1, manager.getUser(1)
-        assertEquals user2, manager.getUser(2)
+        assertEquals guild1, rankManager.getGuild(1)
+        assertEquals guild2, rankManager.getGuild(2)
+        assertEquals user1, rankManager.getUser(1)
+        assertEquals user2, rankManager.getUser(2)
 
         user1.rank.points = 100
         user2.rank.points = 101
 
-        manager.update(guild1)
-        manager.update(guild2)
-        manager.update(user1)
-        manager.update(user2)
+        rankManager.update(guild1)
+        rankManager.update(guild2)
+        rankManager.update(user1)
+        rankManager.update(user2)
 
-        assertEquals guild2, manager.getGuild(1)
-        assertEquals guild1, manager.getGuild(2)
-        assertEquals user2, manager.getUser(1)
-        assertEquals user1, manager.getUser(2)
+        assertEquals guild2, rankManager.getGuild(1)
+        assertEquals guild1, rankManager.getGuild(2)
+        assertEquals user2, rankManager.getUser(1)
+        assertEquals user1, rankManager.getUser(2)
     }
 
 }
