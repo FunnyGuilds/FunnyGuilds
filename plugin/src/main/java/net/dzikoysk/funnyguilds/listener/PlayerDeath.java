@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
+import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
@@ -40,9 +41,11 @@ import java.util.Map.Entry;
 public class PlayerDeath implements Listener {
 
     private final FunnyGuilds plugin;
+    private final RankSystem rankSystem;
 
     public PlayerDeath(FunnyGuilds plugin) {
         this.plugin = plugin;
+        this.rankSystem = RankSystem.create(plugin.getPluginConfiguration());
     }
 
     @EventHandler
@@ -141,24 +144,10 @@ public class PlayerDeath implements Listener {
         int victimPoints = victim.getRank().getPoints();
         int attackerPoints = attacker.getRank().getPoints();
 
-        switch (config.rankSystem) {
-            case PERCENT:
-                double value = victim.getRank().getPoints() * (config.percentRankChange / 100.0);
-                rankChanges[0] = (int) value;
-                rankChanges[1] = (int) value;
-                break;
-            case STATIC:
-                rankChanges[0] = config.staticAttackerChange;
-                rankChanges[1] = config.staticVictimChange;
-                break;
-            case ELO:
-            default:
-                rankChanges = getEloValues(victimPoints, attackerPoints);
-                break;
-        }
+        RankSystem.RankResult result = rankSystem.calculate(config.rankSystem, attackerPoints, victimPoints);
 
-        RankChangeEvent attackerEvent = new PointsChangeEvent(EventCause.USER, attacker.getRank(), attacker, rankChanges[0]);
-        RankChangeEvent victimEvent = new PointsChangeEvent(EventCause.USER, victim.getRank(), attacker, rankChanges[1]);
+        RankChangeEvent attackerEvent = new PointsChangeEvent(EventCause.USER, attacker.getRank(), attacker, result.getAttackerPoints());
+        RankChangeEvent victimEvent = new PointsChangeEvent(EventCause.USER, victim.getRank(), attacker, result.getVictimPoints());
 
         List<String> assistEntries = new ArrayList<>();
         List<User> messageReceivers = new ArrayList<>();

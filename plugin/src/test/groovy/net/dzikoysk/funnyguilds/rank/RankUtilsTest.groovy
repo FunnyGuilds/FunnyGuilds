@@ -16,6 +16,7 @@ class RankUtilsTest extends FunnyGuildsSpec {
     @Test
     void 'should parse rank with guild name'() {
         // given: a guild on top of the ranking
+        def rankManager = new RankManager(config)
         def guild = new Guild('OnlyPanda')
         guild.setTag('OP')
 
