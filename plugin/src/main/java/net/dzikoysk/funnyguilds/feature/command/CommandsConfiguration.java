@@ -1,10 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -60,6 +55,12 @@ import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
 import org.bukkit.Server;
 import panda.utilities.text.Joiner;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 
 public final class CommandsConfiguration {
 
@@ -126,8 +127,7 @@ public final class CommandsConfiguration {
                 .registerDefaultComponents()
                 .placeholders(userCommands.placeholders)
                 .placeholders(adminCommands.placeholders)
-                .injector(plugin.getInjector().fork(resources -> {
-                }))
+                .injector(plugin.getInjector().fork(resources -> {}))
                 .bind(new UserBind())
                 .bind(new GuildBind())
                 .type(new PlayerType(server))

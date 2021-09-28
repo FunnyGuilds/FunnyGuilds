@@ -5,24 +5,16 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.requests.FunnybinRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.ReloadRequest;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.panda_lang.utilities.inject.annotations.Inject;
 
 import java.util.Optional;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class FunnyGuildsCommand {
-
-    @Inject FunnyGuilds plugin;
-
-    @Inject PluginConfiguration pluginConfiguration;
-    @Inject MessageConfiguration messageConfiguration;
+public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.funnyguilds.name}",
