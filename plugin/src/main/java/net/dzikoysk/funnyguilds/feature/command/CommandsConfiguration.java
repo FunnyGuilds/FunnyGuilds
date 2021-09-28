@@ -64,12 +64,11 @@ import java.util.function.Function;
 
 public final class CommandsConfiguration {
 
-    public FunnyCommands createFunnyCommands(Server server, FunnyGuilds plugin) throws Throwable {
-        PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
-        PluginConfiguration.Commands commands = pluginConfiguration.commands;
+    public FunnyCommands createFunnyCommands(Server server, FunnyGuilds plugin) {
+        PluginConfiguration.Commands commands = plugin.getPluginConfiguration().commands;
 
         FunnyCommand enlargeCommand = commands.enlarge;
-        enlargeCommand.enabled = enlargeCommand.enabled && pluginConfiguration.enlargeEnable;
+        enlargeCommand.enabled = enlargeCommand.enabled && plugin.getPluginConfiguration().enlargeEnable;
 
         CommandComponents userCommands = new CommandComponents("user")
                 .command("ally", commands.ally, AllyCommand.class)
@@ -128,17 +127,17 @@ public final class CommandsConfiguration {
                 .placeholders(userCommands.placeholders)
                 .placeholders(adminCommands.placeholders)
                 .injector(plugin.getInjector().fork(resources -> {}))
-                .bind(new UserBind())
-                .bind(new GuildBind())
+                .bind(new UserBind(plugin.getUserManager()))
+                .bind(new GuildBind(plugin.getUserManager()))
                 .type(new PlayerType(server))
                 .completer(new GuildsCompleter())
-                .completer(plugin.getInjector().newInstanceWithFields(MembersCompleter.class))
-                .validator(new MemberValidator())
-                .validator(new ManageValidator())
-                .validator(new OwnerValidator())
+                .completer(new MembersCompleter(plugin.getUserManager()))
+                .validator(new MemberValidator(plugin.getMessageConfiguration()))
+                .validator(new ManageValidator(plugin.getMessageConfiguration()))
+                .validator(new OwnerValidator(plugin.getMessageConfiguration()))
                 .commands(userCommands.commands)
                 .commands(adminCommands.commands)
-                .exceptionHandler(new FunnyGuildsExceptionHandler(plugin))
+                .exceptionHandler(new FunnyGuildsExceptionHandler(FunnyGuilds.getPluginLogger()))
                 .install();
     }
 

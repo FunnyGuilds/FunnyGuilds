@@ -6,7 +6,6 @@ import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import org.panda_lang.utilities.inject.annotations.Inject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,7 +14,11 @@ import java.util.List;
 @FunnyComponent
 final class MembersCompleter implements Completer {
 
-    @Inject public UserManager userManager;
+    private final UserManager userManager;
+
+    MembersCompleter(UserManager userManager) {
+        this.userManager = userManager;
+    }
 
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {

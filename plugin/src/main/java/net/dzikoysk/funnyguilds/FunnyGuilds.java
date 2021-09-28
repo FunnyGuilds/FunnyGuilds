@@ -69,6 +69,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -191,6 +192,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.startHandler();
 
         this.injector = DependencyInjection.createInjector(resources -> {
+            resources.on(Server.class).assignInstance(this.getServer());
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.getPluginConfiguration());
@@ -211,7 +213,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
-            this.funnyCommands = commandsConfiguration.createFunnyCommands(getServer(), this);
+            this.funnyCommands = commandsConfiguration.createFunnyCommands(this.getServer(), this);
         } catch (Throwable ex) {
             logger.error("Could not register commands", ex);
             shutdown("Critical error has been encountered!");

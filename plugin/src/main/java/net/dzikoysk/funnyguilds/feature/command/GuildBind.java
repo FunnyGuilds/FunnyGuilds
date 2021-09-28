@@ -7,17 +7,22 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.panda_lang.utilities.inject.Resources;
 
 @FunnyComponent
 final class GuildBind implements Bind {
 
-    private static final UserBind USER_BIND = new UserBind();
+    private final UserBind userBind;
+
+    GuildBind(UserManager userManager) {
+        this.userBind = new UserBind(userManager);
+    }
 
     @Override
     public void accept(Resources injectorResources) {
         injectorResources.on(Guild.class).assignHandler((property, annotation, args) -> {
-            User user = USER_BIND.fetchUser(CommandUtils.getContext(args));
+            User user = this.userBind.fetchUser(CommandUtils.getContext(args));
 
             if (!user.hasGuild()) {
                 throw new ValidationException(FunnyGuilds.getInstance().getMessageConfiguration().generalHasNoGuild);
