@@ -1,24 +1,27 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 
 public class RankSystem {
 
-    private ImmutableMap<RankType, BiFunction<Integer, Integer, RankResult>> map;
+    private final Map<Type, RankingAlgorithm> map;
 
-    private RankSystem() {
+    private RankSystem(Map<Type, RankingAlgorithm> map) {
+        this.map = map;
     }
 
-    public RankResult calculate(RankType type, Integer attackerPoints, Integer victimPoints) {
+    public RankResult calculate(Type type, int attackerPoints, int victimPoints) {
         return map.get(type).apply(attackerPoints, victimPoints);
     }
 
-    public enum RankType {
+    public enum Type {
         ELO,
         PERCENT,
         STATIC,
@@ -26,34 +29,35 @@ public class RankSystem {
 
     public static class RankResult {
 
-        private final Integer attackerPoints;
-        private final Integer victimPoints;
+        private final int attackerPoints;
+        private final int victimPoints;
 
-        public RankResult(Integer attackerPoints, Integer victimPoints) {
+        public RankResult(int attackerPoints, int victimPoints) {
             this.attackerPoints = attackerPoints;
             this.victimPoints = victimPoints;
         }
 
-        public RankResult(Integer samePoints) {
+        public RankResult(int samePoints) {
             this.attackerPoints = samePoints;
             this.victimPoints = samePoints;
         }
 
-        public Integer getAttackerPoints() {
+        public int getAttackerPoints() {
             return attackerPoints;
         }
 
-        public Integer getVictimPoints() {
+        public int getVictimPoints() {
             return victimPoints;
         }
     }
 
+    public interface RankingAlgorithm extends BiFunction<Integer, Integer, RankResult> {}
+
     public static RankSystem create() {
-        RankSystem rankSystem = new RankSystem();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        rankSystem.map = new ImmutableMap.Builder<RankType, BiFunction<Integer, Integer, RankResult>>()
-                .put(RankType.ELO, (attackerPoints, victimPoints) -> {
+        ImmutableMap<Type, RankingAlgorithm> build = new ImmutableMap.Builder<Type, RankingAlgorithm>()
+                .put(Type.ELO, (attackerPoints, victimPoints) -> {
                     int attackerElo = IntegerRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
                     int victimElo = IntegerRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
 
@@ -65,11 +69,11 @@ public class RankSystem {
 
                     return new RankResult(attackerElo, victimElo);
                 })
-                .put(RankType.PERCENT, (attackerPoints, victimPoints) -> new RankResult((int) (victimPoints * (config.percentRankChange / 100.0))))
-                .put(RankType.STATIC, (attackerPoints, victimPoints) -> new RankResult(config.staticAttackerChange, config.staticVictimChange))
+                .put(Type.PERCENT, (attackerPoints, victimPoints) -> new RankResult((int) (victimPoints * (config.percentRankChange / 100.0))))
+                .put(Type.STATIC, (attackerPoints, victimPoints) -> new RankResult(config.staticAttackerChange, config.staticVictimChange))
                 .build();
 
-        return rankSystem;
+        return new RankSystem(Maps.newEnumMap(build));
     }
 
 }

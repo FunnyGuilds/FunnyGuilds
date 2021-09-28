@@ -653,7 +653,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("PERCENT - system, ktory obu graczom zabiera procent rankingu osoby zabitej")
     @Comment("STATIC - system, ktory zawsze zabiera iles rankingu zabijajacemu i iles zabitemu")
     @CustomKey("rank-system")
-    public RankSystem.RankType rankSystem = RankSystem.RankType.ELO;
+    public RankSystem.Type rankSystem = RankSystem.Type.ELO;
 
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
     @Comment(
@@ -1222,7 +1222,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(s, false));
         }
 
-        if (this.rankSystem == RankSystem.RankType.ELO) {
+        if (this.rankSystem == RankSystem.Type.ELO) {
             Map<IntegerRange, Integer> parsedData = new HashMap<>();
 
             for (Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {

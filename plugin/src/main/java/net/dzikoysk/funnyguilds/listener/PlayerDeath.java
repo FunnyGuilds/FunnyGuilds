@@ -41,6 +41,7 @@ import java.util.Map.Entry;
 public class PlayerDeath implements Listener {
 
     private final FunnyGuilds plugin;
+    private final RankSystem rankSystem = RankSystem.create();
 
     public PlayerDeath(FunnyGuilds plugin) {
         this.plugin = plugin;
@@ -142,7 +143,6 @@ public class PlayerDeath implements Listener {
         int victimPoints = victim.getRank().getPoints();
         int attackerPoints = attacker.getRank().getPoints();
 
-        RankSystem rankSystem = RankSystem.create();
         RankSystem.RankResult result = rankSystem.calculate(config.rankSystem, attackerPoints, victimPoints);
 
         RankChangeEvent attackerEvent = new PointsChangeEvent(EventCause.USER, attacker.getRank(), attacker, result.getAttackerPoints());
