@@ -6,7 +6,7 @@ dependencies {
     }
 
     // funnyguilds & panda utilities
-    implementation "net.dzikoysk:funnycommands:0.4.0"
+    implementation "net.dzikoysk:funnycommands:0.4.2"
     implementation "org.panda-lang:expressible:1.0.16"
     implementation "org.panda-lang:panda-utilities:0.5.0-alpha"
 
