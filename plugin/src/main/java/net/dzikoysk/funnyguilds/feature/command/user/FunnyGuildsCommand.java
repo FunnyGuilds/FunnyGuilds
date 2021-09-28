@@ -63,7 +63,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
         when (!sender.hasPermission("funnyguilds.reload"), this.messageConfig.permission);
 
         sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
-        this.plugin.getConcurrencyManager().postRequests(new ReloadRequest(sender));
+        this.plugin.getConcurrencyManager().postRequests(new ReloadRequest(this.plugin, sender));
     }
 
     private void saveAll(CommandSender sender) {
