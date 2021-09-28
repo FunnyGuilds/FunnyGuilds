@@ -18,9 +18,9 @@ public abstract class AbstractFunnyCommand {
     @Inject public FunnyGuilds plugin;
     @Inject public FunnyGuildsLogger logger;
 
-    @Inject public PluginConfiguration pluginConfiguration;
-    @Inject public MessageConfiguration messageConfiguration;
-    @Inject public TablistConfiguration tablistConfiguration;
+    @Inject public PluginConfiguration pluginConfig;
+    @Inject public MessageConfiguration messageConfig;
+    @Inject public TablistConfiguration tablistConfig;
 
     @Inject public ConcurrencyManager concurrencyManager;
 

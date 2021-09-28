@@ -22,10 +22,10 @@ public final class UnbanCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (!guild.isBanned(), this.messageConfiguration.adminGuildNotBanned);
+        when (!guild.isBanned(), this.messageConfig.adminGuildNotBanned);
         
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildUnbanEvent(AdminUtils.getCause(admin), admin, guild))) {
@@ -39,8 +39,8 @@ public final class UnbanCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getName())
                 .register("{ADMIN}", sender.getName());
 
-        sender.sendMessage(formatter.format(this.messageConfiguration.adminGuildUnban));
-        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastUnban));
+        sender.sendMessage(formatter.format(this.messageConfig.adminGuildUnban));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfig.broadcastUnban));
     }
 
 }

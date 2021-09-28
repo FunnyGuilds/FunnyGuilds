@@ -27,16 +27,16 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length == 0 && !(sender instanceof Player), this.messageConfiguration.playerOnly);
+        when (args.length == 0 && !(sender instanceof Player), this.messageConfig.playerOnly);
         
         String name = args.length == 0
                 ? sender.getName()
                 : args[0];
 
-        User user = UserUtils.get(name, this.pluginConfiguration.playerLookupIgnorecase);
-        when (user == null, this.messageConfiguration.generalNotPlayedBefore);
+        User user = UserUtils.get(name, this.pluginConfig.playerLookupIgnorecase);
+        when (user == null, this.messageConfig.generalNotPlayedBefore);
 
-        sendInfoMessage(this.messageConfiguration.playerInfoList, user, sender);
+        sendInfoMessage(this.messageConfig.playerInfoList, user, sender);
     }
     
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
@@ -48,12 +48,12 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                 messageLine = StringUtils.replace(messageLine, "{TAG}", infoUser.getGuild().getTag());
             }
             else {
-                messageLine = StringUtils.replace(messageLine, "{GUILD}", this.messageConfiguration.gNameNoValue);
-                messageLine = StringUtils.replace(messageLine, "{TAG}", this.messageConfiguration.gTagNoValue);
+                messageLine = StringUtils.replace(messageLine, "{GUILD}", this.messageConfig.gNameNoValue);
+                messageLine = StringUtils.replace(messageLine, "{TAG}", this.messageConfig.gTagNoValue);
             }
 
             messageLine = StringUtils.replace(messageLine, "{PLAYER}", infoUser.getName());
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getPoints(), this.pluginConfiguration.pointsFormat));
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getPoints(), this.pluginConfig.pointsFormat));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));

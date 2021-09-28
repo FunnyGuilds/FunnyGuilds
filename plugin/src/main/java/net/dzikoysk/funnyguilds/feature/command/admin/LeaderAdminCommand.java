@@ -20,14 +20,14 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
-        when (args.length < 2, this.messageConfiguration.generalNoNickGiven);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
+        when (args.length < 2, this.messageConfig.generalNoNickGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User user = UserValidation.requireUserByName(args[1]);
 
-        when (!guild.getMembers().contains(user), this.messageConfiguration.adminUserNotMemberOf);
-        when (guild.getOwner().equals(user), this.messageConfiguration.adminAlreadyLeader);
+        when (!guild.getMembers().contains(user), this.messageConfig.adminUserNotMemberOf);
+        when (guild.getOwner().equals(user), this.messageConfig.adminAlreadyLeader);
         
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(AdminUtils.getCause(admin), admin, guild, user))) {
@@ -35,11 +35,11 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
         }
         
         guild.setOwner(user);
-        sender.sendMessage(this.messageConfiguration.leaderSet);
+        sender.sendMessage(this.messageConfig.leaderSet);
 
-        user.sendMessage(this.messageConfiguration.leaderOwner);
+        user.sendMessage(this.messageConfig.leaderOwner);
 
-        String message = this.messageConfiguration.leaderMembers.replace("{PLAYER}", user.getName());
+        String message = this.messageConfig.leaderMembers.replace("{PLAYER}", user.getName());
 
         for (User member : guild.getOnlineMembers()) {
             member.getPlayer().sendMessage(message);

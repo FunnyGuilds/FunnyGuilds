@@ -24,11 +24,11 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
 
         User user = UserValidation.requireUserByName(args[0]);
-        when (!user.hasGuild(), this.messageConfiguration.generalPlayerHasNoGuild);
-        when (user.isOwner(), this.messageConfiguration.adminGuildOwner);
+        when (!user.hasGuild(), this.messageConfig.generalPlayerHasNoGuild);
+        when (user.isOwner(), this.messageConfig.adminGuildOwner);
 
         Guild guild = user.getGuild();
         User admin = AdminUtils.getAdminUser(sender);
@@ -50,11 +50,11 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
 
         if (player != null) {
             this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
-            player.sendMessage(formatter.format(this.messageConfiguration.kickToPlayer));
+            player.sendMessage(formatter.format(this.messageConfig.kickToPlayer));
         }
 
-        sender.sendMessage(formatter.format(this.messageConfiguration.kickToOwner));
-        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastKick));
+        sender.sendMessage(formatter.format(this.messageConfig.kickToOwner));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfig.broadcastKick));
     }
 
 }

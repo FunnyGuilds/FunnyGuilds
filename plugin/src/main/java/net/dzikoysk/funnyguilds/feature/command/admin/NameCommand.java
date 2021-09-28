@@ -30,11 +30,11 @@ public final class NameCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
-        when (args.length < 2, this.messageConfiguration.adminNoNewNameGiven);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
+        when (args.length < 2, this.messageConfig.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (GuildUtils.nameExists(args[1]), this.messageConfiguration.createNameExists);
+        when (GuildUtils.nameExists(args[1]), this.messageConfig.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -43,7 +43,7 @@ public final class NameCommand extends AbstractFunnyCommand {
             return;
         }
 
-        if (this.pluginConfiguration.regionsEnabled) {
+        if (this.pluginConfig.regionsEnabled) {
             Region region = guild.getRegion();
 
             if (this.dataModel instanceof FlatDataModel) {
@@ -68,7 +68,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         }
         
         guild.setName(args[1]);
-        sender.sendMessage(this.messageConfiguration.adminNameChanged.replace("{GUILD}", guild.getName()));
+        sender.sendMessage(this.messageConfig.adminNameChanged.replace("{GUILD}", guild.getName()));
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }

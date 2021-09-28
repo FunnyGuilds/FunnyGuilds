@@ -32,13 +32,13 @@ public final class BaseCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @IsMember User user, Guild guild) {
-        when (!this.pluginConfiguration.regionsEnabled, this.messageConfiguration.regionsDisabled);
-        when (!this.pluginConfiguration.baseEnable, this.messageConfiguration.baseTeleportationDisabled);
-        when (user.getCache().getTeleportation() != null, this.messageConfiguration.baseIsTeleportation);
+        when (!this.pluginConfig.regionsEnabled, this.messageConfig.regionsDisabled);
+        when (!this.pluginConfig.baseEnable, this.messageConfig.baseTeleportationDisabled);
+        when (user.getCache().getTeleportation() != null, this.messageConfig.baseIsTeleportation);
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.base")
                 ? Collections.emptyList()
-                : this.pluginConfiguration.baseItems;
+                : this.pluginConfig.baseItems;
 
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
@@ -47,15 +47,15 @@ public final class BaseCommand extends AbstractFunnyCommand {
         ItemStack[] items = ItemUtils.toArray(requiredItems);
         player.getInventory().removeItem(items);
 
-        if (this.pluginConfiguration.baseDelay.isZero()) {
+        if (this.pluginConfig.baseDelay.isZero()) {
             player.teleport(guild.getHome());
-            player.sendMessage(this.messageConfiguration.baseTeleport);
+            player.sendMessage(this.messageConfig.baseTeleport);
             return;
         }
 
         Duration time = player.hasPermission("funnyguilds.vip.baseTeleportTime")
-                ? this.pluginConfiguration.baseDelayVip
-                : this.pluginConfiguration.baseDelay;
+                ? this.pluginConfig.baseDelayVip
+                : this.pluginConfig.baseDelay;
 
         Location before = player.getLocation();
         Instant teleportStart = Instant.now();
@@ -70,7 +70,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
             
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                player.sendMessage(this.messageConfiguration.baseMove);
+                player.sendMessage(this.messageConfig.baseMove);
                 cache.setTeleportation(null);
                 player.getInventory().addItem(items);
                 return;
@@ -78,13 +78,13 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
             if (Duration.between(teleportStart, Instant.now()).compareTo(time) > 0) {
                 cache.getTeleportation().cancel();
-                player.sendMessage(this.messageConfiguration.baseTeleport);
+                player.sendMessage(this.messageConfig.baseTeleport);
                 player.teleport(guild.getHome());
                 cache.setTeleportation(null);
             }
         }, 0L, 10L));
 
-        player.sendMessage(this.messageConfiguration.baseDontMove.replace("{TIME}", Long.toString(time.getSeconds())));
+        player.sendMessage(this.messageConfig.baseDontMove.replace("{TIME}", Long.toString(time.getSeconds())));
     }
 
 }

@@ -23,17 +23,17 @@ public final class RankResetCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, User user) {
-        List<ItemStack> requiredItems = this.pluginConfiguration.rankResetItems;
+        List<ItemStack> requiredItems = this.pluginConfig.rankResetItems;
 
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
 
         int lastRank = user.getRank().getPoints();
-        user.getRank().setPoints(this.pluginConfiguration.rankStart);
+        user.getRank().setPoints(this.pluginConfig.rankStart);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
-        String resetMessage = this.messageConfiguration.rankResetMessage;
+        String resetMessage = this.messageConfig.rankResetMessage;
         resetMessage = StringUtils.replace(resetMessage, "{LAST-RANK}", String.valueOf(lastRank));
         resetMessage = StringUtils.replace(resetMessage, "{CURRENT-RANK}", String.valueOf(user.getRank().getPoints()));
 

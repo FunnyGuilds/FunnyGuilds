@@ -36,15 +36,15 @@ public final class JoinCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, User user, String[] args) {
-        when (user.hasGuild(), this.messageConfiguration.joinHasGuild);
+        when (user.hasGuild(), this.messageConfig.joinHasGuild);
 
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(player);
-        when (invitations.size() == 0, this.messageConfiguration.joinHasNotInvitation);
+        when (invitations.size() == 0, this.messageConfig.joinHasNotInvitation);
 
         if (args.length < 1) {
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(player), false);
 
-            for (String msg : this.messageConfiguration.joinInvitationList) {
+            for (String msg : this.messageConfig.joinInvitationList) {
                 player.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
             
@@ -52,15 +52,15 @@ public final class JoinCommand extends AbstractFunnyCommand {
         }
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (!InvitationList.hasInvitationFrom(player, GuildUtils.getByTag(guild.getTag())), this.messageConfiguration.joinHasNotInvitationTo);
+        when (!InvitationList.hasInvitationFrom(player, GuildUtils.getByTag(guild.getTag())), this.messageConfig.joinHasNotInvitationTo);
 
-        List<ItemStack> requiredItems = this.pluginConfiguration.joinItems;
+        List<ItemStack> requiredItems = this.pluginConfig.joinItems;
 
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
 
-        when (guild.getMembers().size() >= this.pluginConfiguration.maxMembersInGuild, this.messageConfiguration.inviteAmountJoin.replace("{AMOUNT}", Integer.toString(this.pluginConfiguration.maxMembersInGuild)));
+        when (guild.getMembers().size() >= this.pluginConfig.maxMembersInGuild, this.messageConfig.inviteAmountJoin.replace("{AMOUNT}", Integer.toString(this.pluginConfig.maxMembersInGuild)));
 
         if (!SimpleEventHandler.handle(new GuildMemberAcceptInviteEvent(EventCause.USER, user, guild, user))) {
             return;
@@ -83,13 +83,13 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(formatter.format(this.messageConfiguration.joinToMember));
-        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastJoin));
+        player.sendMessage(formatter.format(this.messageConfig.joinToMember));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfig.broadcastJoin));
 
         Player owner = guild.getOwner().getPlayer();
 
         if (owner != null) {
-            owner.sendMessage(formatter.format(this.messageConfiguration.joinToOwner));
+            owner.sendMessage(formatter.format(this.messageConfig.joinToOwner));
         }
     }
 

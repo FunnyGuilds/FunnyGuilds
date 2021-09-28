@@ -40,10 +40,10 @@ public final class AllyCommand extends AbstractFunnyCommand {
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            when (invitations.size() == 0, this.messageConfiguration.allyHasNotInvitation);
+            when (invitations.size() == 0, this.messageConfig.allyHasNotInvitation);
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
-            for (String msg : this.messageConfiguration.allyInvitationList) {
+            for (String msg : this.messageConfig.allyInvitationList) {
                 player.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
 
@@ -53,34 +53,34 @@ public final class AllyCommand extends AbstractFunnyCommand {
         Guild invitedGuild = GuildValidation.requireGuildByTag(args[0]);
         Player invitedOwner = invitedGuild.getOwner().getPlayer();
 
-        when (guild.equals(invitedGuild), this.messageConfiguration.allySame);
-        when (guild.getAllies().contains(invitedGuild), this.messageConfiguration.allyAlly);
+        when (guild.equals(invitedGuild), this.messageConfig.allySame);
+        when (guild.getAllies().contains(invitedGuild), this.messageConfig.allyAlly);
 
         if (guild.getEnemies().contains(invitedGuild)) {
             guild.removeEnemy(invitedGuild);
 
-            String allyDoneMessage = this.messageConfiguration.enemyEnd;
+            String allyDoneMessage = this.messageConfig.enemyEnd;
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
             player.sendMessage(allyDoneMessage);
 
             if (invitedOwner != null) {
-                String allyIDoneMessage = this.messageConfiguration.enemyIEnd;
+                String allyIDoneMessage = this.messageConfig.enemyIEnd;
                 allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
                 allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
                 invitedOwner.sendMessage(allyIDoneMessage);
             }
         }
 
-        when (guild.getAllies().size() >= this.pluginConfiguration.maxAlliesBetweenGuilds, () -> this.messageConfiguration.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(this.pluginConfiguration.maxAlliesBetweenGuilds)));
+        when (guild.getAllies().size() >= this.pluginConfig.maxAlliesBetweenGuilds, () -> this.messageConfig.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(this.pluginConfig.maxAlliesBetweenGuilds)));
 
-        if (invitedGuild.getAllies().size() >= this.pluginConfiguration.maxAlliesBetweenGuilds) {
+        if (invitedGuild.getAllies().size() >= this.pluginConfig.maxAlliesBetweenGuilds) {
             Formatter formatter = new Formatter()
                     .register("{GUILD}", invitedGuild.getName())
                     .register("{TAG}", invitedGuild.getTag())
-                    .register("{AMOUNT}", this.pluginConfiguration.maxAlliesBetweenGuilds);
+                    .register("{AMOUNT}", this.pluginConfig.maxAlliesBetweenGuilds);
 
-            player.sendMessage(formatter.format(this.messageConfiguration.inviteAllyTargetAmount));
+            player.sendMessage(formatter.format(this.messageConfig.inviteAllyTargetAmount));
             return;
         }
 
@@ -95,13 +95,13 @@ public final class AllyCommand extends AbstractFunnyCommand {
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
 
-            String allyDoneMessage = this.messageConfiguration.allyDone;
+            String allyDoneMessage = this.messageConfig.allyDone;
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
             player.sendMessage(allyDoneMessage);
 
             if (invitedOwner != null) {
-                String allyIDoneMessage = this.messageConfiguration.allyIDone;
+                String allyIDoneMessage = this.messageConfig.allyIDone;
                 allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
                 allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
                 invitedOwner.sendMessage(allyIDoneMessage);
@@ -128,14 +128,14 @@ public final class AllyCommand extends AbstractFunnyCommand {
 
             InvitationList.expireInvitation(guild, invitedGuild);
 
-            String allyReturnMessage = this.messageConfiguration.allyReturn;
+            String allyReturnMessage = this.messageConfig.allyReturn;
             allyReturnMessage = StringUtils.replace(allyReturnMessage, "{GUILD}", invitedGuild.getName());
             allyReturnMessage = StringUtils.replace(allyReturnMessage, "{TAG}", invitedGuild.getTag());
             player.sendMessage(allyReturnMessage);
 
 
             if (invitedOwner != null) {
-                String allyIReturnMessage = this.messageConfiguration.allyIReturn;
+                String allyIReturnMessage = this.messageConfig.allyIReturn;
                 allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{GUILD}", guild.getName());
                 allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{TAG}", guild.getTag());
                 invitedOwner.sendMessage(allyIReturnMessage);
@@ -150,13 +150,13 @@ public final class AllyCommand extends AbstractFunnyCommand {
 
         InvitationList.createInvitation(guild, invitedGuild);
 
-        String allyInviteDoneMessage = this.messageConfiguration.allyInviteDone;
+        String allyInviteDoneMessage = this.messageConfig.allyInviteDone;
         allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{GUILD}", invitedGuild.getName());
         allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{TAG}", invitedGuild.getTag());
         player.sendMessage(allyInviteDoneMessage);
 
         if (invitedOwner != null) {
-            String allyToInvitedMessage = this.messageConfiguration.allyToInvited;
+            String allyToInvitedMessage = this.messageConfig.allyToInvited;
             allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{GUILD}", guild.getName());
             allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{TAG}", guild.getTag());
             invitedOwner.sendMessage(allyToInvitedMessage);

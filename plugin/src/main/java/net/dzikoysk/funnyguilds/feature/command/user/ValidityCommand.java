@@ -32,20 +32,20 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
-        if (!this.pluginConfiguration.validityWhen.isZero()) {
+        if (!this.pluginConfig.validityWhen.isZero()) {
             long validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), Instant.ofEpochMilli(validity));
 
-            when (delta.compareTo(this.pluginConfiguration.validityWhen) > 0, this.messageConfiguration.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta.minus(this.pluginConfiguration.validityWhen).toMillis())));
+            when (delta.compareTo(this.pluginConfig.validityWhen) > 0, this.messageConfig.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta.minus(this.pluginConfig.validityWhen).toMillis())));
         }
 
-        List<ItemStack> requiredItems = this.pluginConfiguration.validityItems;
+        List<ItemStack> requiredItems = this.pluginConfig.validityItems;
 
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
             return;
         }
         
-        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, this.pluginConfiguration.validityTime.toMillis()))) {
+        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, this.pluginConfig.validityTime.toMillis()))) {
             return;
         }
         
@@ -56,9 +56,9 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             validity = System.currentTimeMillis();
         }
 
-        validity += this.pluginConfiguration.validityTime.toMillis();
+        validity += this.pluginConfig.validityTime.toMillis();
         guild.setValidity(validity);
-        player.sendMessage(this.messageConfiguration.validityDone.replace("{DATE}", this.pluginConfiguration.dateFormat.format(new Date(validity))));
+        player.sendMessage(this.messageConfig.validityDone.replace("{DATE}", this.pluginConfig.dateFormat.format(new Date(validity))));
     }
 
 }

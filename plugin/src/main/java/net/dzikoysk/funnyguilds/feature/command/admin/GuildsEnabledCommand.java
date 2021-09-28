@@ -12,8 +12,8 @@ public final class GuildsEnabledCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        this.pluginConfiguration.guildsEnabled = !this.pluginConfiguration.guildsEnabled;
-        sender.sendMessage(this.pluginConfiguration.guildsEnabled ? this.messageConfiguration.adminGuildsEnabled : this.messageConfiguration.adminGuildsDisabled);
+        this.pluginConfig.guildsEnabled = !this.pluginConfig.guildsEnabled;
+        sender.sendMessage(this.pluginConfig.guildsEnabled ? this.messageConfig.adminGuildsEnabled : this.messageConfig.adminGuildsDisabled);
     }
 
 }

@@ -25,12 +25,12 @@ public final class AddCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
-        when (!GuildUtils.tagExists(args[0]), this.messageConfiguration.generalNoGuildFound);
-        when (args.length < 2, this.messageConfiguration.generalNoNickGiven);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
+        when (!GuildUtils.tagExists(args[0]), this.messageConfig.generalNoGuildFound);
+        when (args.length < 2, this.messageConfig.generalNoNickGiven);
         
         User userToAdd = UserValidation.requireUserByName(args[1]);
-        when (userToAdd.hasGuild(), this.messageConfiguration.generalUserHasGuild);
+        when (userToAdd.hasGuild(), this.messageConfig.generalUserHasGuild);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -48,9 +48,9 @@ public final class AddCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", userToAdd.getName());
 
-        userToAdd.sendMessage(formatter.format(this.messageConfiguration.joinToMember));
-        guild.getOwner().sendMessage(formatter.format(this.messageConfiguration.joinToOwner));
-        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastJoin));
+        userToAdd.sendMessage(formatter.format(this.messageConfig.joinToMember));
+        guild.getOwner().sendMessage(formatter.format(this.messageConfig.joinToOwner));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfig.broadcastJoin));
     }
 
 }

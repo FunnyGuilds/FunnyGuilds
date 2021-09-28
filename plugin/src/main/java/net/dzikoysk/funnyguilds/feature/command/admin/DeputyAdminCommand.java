@@ -21,13 +21,13 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (args.length < 2, this.messageConfiguration.generalNoNickGiven);
+        when (args.length < 2, this.messageConfig.generalNoNickGiven);
         
         User userToMove = UserValidation.requireUserByName(args[1]);
-        when (!guild.getMembers().contains(userToMove), this.messageConfiguration.adminUserNotMemberOf);
+        when (!guild.getMembers().contains(userToMove), this.messageConfig.adminUserNotMemberOf);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -39,10 +39,10 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
 
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
-            sender.sendMessage(this.messageConfiguration.deputyRemove);
-            userToMove.sendMessage(this.messageConfiguration.deputyMember);
+            sender.sendMessage(this.messageConfig.deputyRemove);
+            userToMove.sendMessage(this.messageConfig.deputyMember);
 
-            String message = formatter.format(this.messageConfiguration.deputyNoLongerMembers);
+            String message = formatter.format(this.messageConfig.deputyNoLongerMembers);
 
             for (User member : guild.getOnlineMembers()) {
                 member.getPlayer().sendMessage(message);
@@ -52,10 +52,10 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         }
 
         guild.addDeputy(userToMove);
-        sender.sendMessage(this.messageConfiguration.deputySet);
-        userToMove.sendMessage(this.messageConfiguration.deputyOwner);
+        sender.sendMessage(this.messageConfig.deputySet);
+        userToMove.sendMessage(this.messageConfig.deputyOwner);
 
-        String message = formatter.format(this.messageConfiguration.deputyMembers);
+        String message = formatter.format(this.messageConfig.deputyMembers);
 
         for (User member : guild.getOnlineMembers()) {
             member.getPlayer().sendMessage(message);

@@ -23,8 +23,8 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
-        when (args.length < 3, this.messageConfiguration.adminNoProtectionDateGive);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
+        when (args.length < 3, this.messageConfig.adminNoProtectionDateGive);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
@@ -34,7 +34,7 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
         try {
             protectionDate = PROTECTION_DATE_FORMAT.parse(protectionDateAsString);
         } catch (ParseException e) {
-            sender.sendMessage(this.messageConfiguration.adminInvalidProtectionDate);
+            sender.sendMessage(this.messageConfig.adminInvalidProtectionDate);
             return;
         }
 
@@ -45,6 +45,6 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
                 .register("{DATE}", protectionDateAsString);
 
 
-        sender.sendMessage(formatter.format(this.messageConfiguration.adminProtectionSetSuccessfully));
+        sender.sendMessage(formatter.format(this.messageConfig.adminProtectionSetSuccessfully));
     }
 }

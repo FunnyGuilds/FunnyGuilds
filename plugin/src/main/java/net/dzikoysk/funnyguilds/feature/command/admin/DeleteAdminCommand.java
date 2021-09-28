@@ -23,7 +23,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -39,9 +39,9 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
                 .property("PLAYER", sender::getName)
                 .toFormatter(guild);
 
-        guild.getOwner().sendMessage(formatter.format(this.messageConfiguration.adminGuildBroken));
-        sender.sendMessage(formatter.format(this.messageConfiguration.deleteSuccessful));
-        Bukkit.getServer().broadcastMessage(formatter.format(this.messageConfiguration.broadcastDelete));
+        guild.getOwner().sendMessage(formatter.format(this.messageConfig.adminGuildBroken));
+        sender.sendMessage(formatter.format(this.messageConfig.deleteSuccessful));
+        Bukkit.getServer().broadcastMessage(formatter.format(this.messageConfig.broadcastDelete));
     }
 
 }

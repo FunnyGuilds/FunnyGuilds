@@ -24,15 +24,15 @@ public final class BanCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoTagGiven);
-        when (args.length < 2, this.messageConfiguration.adminNoBanTimeGiven);
-        when (args.length < 3, this.messageConfiguration.adminNoReasonGiven);
+        when (args.length < 1, this.messageConfig.generalNoTagGiven);
+        when (args.length < 2, this.messageConfig.adminNoBanTimeGiven);
+        when (args.length < 3, this.messageConfig.adminNoReasonGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (guild.isBanned(), this.messageConfiguration.adminGuildBanned);
+        when (guild.isBanned(), this.messageConfig.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
-        when (time < 1, this.messageConfiguration.adminTimeError);
+        when (time < 1, this.messageConfig.adminTimeError);
 
         StringBuilder reasonBuilder = new StringBuilder();
 
@@ -56,8 +56,8 @@ public final class BanCommand extends AbstractFunnyCommand {
                 .register("{TIME}", args[1])
                 .register("{REASON}", ChatUtils.colored(reason));
 
-        sender.sendMessage(formatter.format(this.messageConfiguration.adminGuildBan));
-        Bukkit.broadcastMessage(formatter.format(this.messageConfiguration.broadcastBan));
+        sender.sendMessage(formatter.format(this.messageConfig.adminGuildBan));
+        Bukkit.broadcastMessage(formatter.format(this.messageConfig.broadcastBan));
     }
 
 }

@@ -25,10 +25,10 @@ public final class DeleteCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild) {
-        when (this.pluginConfiguration.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), this.messageConfiguration.deleteSomeoneIsNear);
+        when (this.pluginConfig.guildDeleteCancelIfSomeoneIsOnRegion && guild.isSomeoneInRegion(), this.messageConfig.deleteSomeoneIsNear);
         ConfirmationList.add(user.getUUID());
 
-        when (this.pluginConfiguration.commands.confirm.enabled, this.messageConfiguration.deleteConfirm);
+        when (this.pluginConfig.commands.confirm.enabled, this.messageConfig.deleteConfirm);
         CONFIRM_EXECUTOR.execute(player, user, guild);
     }
 

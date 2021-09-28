@@ -21,12 +21,12 @@ public final class TagCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 2, this.messageConfiguration.generalNoTagGiven);
+        when (args.length < 2, this.messageConfig.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         String tag = args[1];
-        when (GuildUtils.tagExists(tag), this.messageConfiguration.createTagExists);
+        when (GuildUtils.tagExists(tag), this.messageConfig.createTagExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -37,7 +37,7 @@ public final class TagCommand extends AbstractFunnyCommand {
 
         guild.setTag(tag);
 
-        sender.sendMessage(this.messageConfiguration.adminTagChanged
+        sender.sendMessage(this.messageConfig.adminTagChanged
                 .replace("{OLD_TAG}", oldTag)
                 .replace("{TAG}", guild.getTag()));
 

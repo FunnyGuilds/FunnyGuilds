@@ -19,14 +19,14 @@ public final class KillsCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfiguration.generalNoNickGiven);
-        when (args.length < 2, this.messageConfiguration.adminNoKillsGiven);
+        when (args.length < 1, this.messageConfig.generalNoNickGiven);
+        when (args.length < 2, this.messageConfig.adminNoKillsGiven);
 
         int kills;
         try {
             kills = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
-            sender.sendMessage(this.messageConfiguration.adminErrorInNumber.replace("{ERROR}", args[1]));
+            sender.sendMessage(this.messageConfig.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }
 
@@ -40,7 +40,7 @@ public final class KillsCommand extends AbstractFunnyCommand {
         }
 
         user.getRank().setKills(kills);
-        sender.sendMessage(this.messageConfiguration.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(kills)));
+        sender.sendMessage(this.messageConfig.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(kills)));
     }
 
 }
