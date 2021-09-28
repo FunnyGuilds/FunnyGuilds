@@ -214,7 +214,7 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
             this.funnyCommands = commandsConfiguration.createFunnyCommands(this.getServer(), this);
-        } catch (Throwable ex) {
+        } catch (Exception ex) {
             logger.error("Could not register commands", ex);
             shutdown("Critical error has been encountered!");
             return;
