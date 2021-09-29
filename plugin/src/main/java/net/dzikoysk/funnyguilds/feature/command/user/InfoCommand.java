@@ -40,14 +40,13 @@ public final class InfoCommand {
                 .orThrow(() -> new ValidationException(messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
-        Placeholders<Pair<String, Guild>> membersColorContext = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT;
         Formatter formatter = Placeholders.GUILD_ALL
                 .toFormatter(guild);
 
         for (String messageLine : messages.infoList) {
             messageLine = formatter.format(messageLine);
             String lastColor = ChatColor.getLastColors(messageLine.split("<online>")[0]);
-            messageLine = membersColorContext.format(messageLine, Pair.of(lastColor, guild));
+            messageLine = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT.format(messageLine, Pair.of(lastColor, guild));
 
             sender.sendMessage(messageLine);
         }

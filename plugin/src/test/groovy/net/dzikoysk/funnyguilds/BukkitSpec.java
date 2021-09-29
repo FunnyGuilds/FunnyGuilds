@@ -12,14 +12,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
 @CompileStatic
 @ExtendWith(MockitoExtension.class)
 class BukkitSpec {
 
-    private static MockedStatic<Bukkit> mockedBukkit;
+    protected static MockedStatic<Bukkit> mockedBukkit;
 
     @BeforeAll
     static void openMockedBukkit() {
@@ -27,16 +26,8 @@ class BukkitSpec {
     }
 
     @BeforeEach
-    void prepareBukkit() {
-        Player player = mock(Player.class);
-
-        mockedBukkit.when(() -> Bukkit.getPlayer(any(UUID.class))).thenAnswer(invocation -> {
-            if (invocation.getArguments()[0].equals(UUID.nameUUIDFromBytes("online".getBytes()))) {
-                return player;
-            }
-
-            return null;
-        });
+    protected void prepareBukkit() {
+        mockedBukkit.when(() -> Bukkit.getPlayer(any(UUID.class))).thenReturn(null);
     }
 
     @AfterAll

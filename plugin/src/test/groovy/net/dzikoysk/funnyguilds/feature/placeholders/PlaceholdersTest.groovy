@@ -4,14 +4,33 @@ import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.user.UserManager
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.entity.Player
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import panda.std.Pair
 
 import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.mockito.ArgumentMatchers.any
+import static org.mockito.Mockito.mock
 
 @CompileStatic
 class PlaceholdersTest extends FunnyGuildsSpec {
+
+    @Override
+    @BeforeEach
+    void prepareBukkit() {
+        Player player = mock(Player.class);
+
+        mockedBukkit.when(() -> Bukkit.getPlayer(any(UUID.class))).thenAnswer(invocation -> {
+            if (UUID.nameUUIDFromBytes("online".getBytes()).equals(invocation.getArguments()[0])) {
+                return player
+            }
+
+            return null
+        })
+    }
 
     @Test
     void 'test ONLINE placeholder' () {
