@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.config.IntegerRange
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.Guild
-import net.dzikoysk.funnyguilds.user.UserManager
 import org.junit.jupiter.api.Test
 
 import static org.junit.jupiter.api.Assertions.assertEquals
@@ -16,11 +15,10 @@ class RankUtilsTest extends FunnyGuildsSpec {
     @Test
     void 'should parse rank with guild name'() {
         // given: a guild on top of the ranking
-        def rankManager = new RankManager(config)
         def guild = new Guild('OnlyPanda')
         guild.setTag('OP')
 
-        def user = new UserManager(rankManager).create(UUID.randomUUID(), 'name')
+        def user = userManager.create(UUID.randomUUID(), 'name')
         guild.addMember(user)
 
         rankManager.update(guild)

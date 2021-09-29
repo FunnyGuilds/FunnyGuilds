@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mockStatic;
 @ExtendWith(MockitoExtension.class)
 class BukkitSpec {
 
-    private static MockedStatic<Bukkit> mockedBukkit;
+    protected static MockedStatic<Bukkit> mockedBukkit;
 
     @BeforeAll
     static void openMockedBukkit() {
@@ -25,7 +25,7 @@ class BukkitSpec {
     }
 
     @BeforeEach
-    void prepareBukkit() {
+    protected void prepareBukkit() {
         mockedBukkit.when(() -> Bukkit.getPlayer(any(UUID.class))).thenReturn(null);
     }
 

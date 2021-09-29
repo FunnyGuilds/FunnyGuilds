@@ -66,13 +66,13 @@ public abstract class Rank {
             return false;
         }
 
-        return rank.getIdentityName().equals(this.getIdentityName());
+        return this.getIdentityName().equals(rank.getIdentityName());
     }
 
     @Override
     public int hashCode() {
-        int result = getType().hashCode();
-        result = 31 * result + getIdentityName().hashCode();
+        int result = this.getType().hashCode();
+        result = 31 * result + this.getIdentityName().hashCode();
         return result;
     }
 
