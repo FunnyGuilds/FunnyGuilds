@@ -49,7 +49,6 @@ public class RankManager {
         }
 
         this.guildsRank.removeIf(guildRank -> guildRank.getIdentityName().equals(guild.getRank().getIdentityName()));
-
         this.guildsRank.add(guild.getRank());
     }
 
