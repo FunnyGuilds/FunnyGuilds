@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.guild.GuildRank
+import net.dzikoysk.funnyguilds.guild.GuildUtils
 import org.junit.jupiter.api.Test
 
 import static org.junit.jupiter.api.Assertions.assertEquals
@@ -13,6 +14,8 @@ class RankManagerTest extends FunnyGuildsSpec {
 
     @Test
     void 'should correctly update the guilds and users ranking'() {
+        def rankRecalculationTask = new RankRecalculationTask(funnyGuilds);
+
         def guild1 = new Guild("OnlyPanda1")
         def guild2 = new Guild("OnlyPanda2")
         def guild3 = new Guild("OnlyPanda3")
@@ -32,12 +35,11 @@ class RankManagerTest extends FunnyGuildsSpec {
         guild3.addMember(user3)
         user3.rank.points = 100
 
-        rankManager.update(guild1)
-        rankManager.update(guild2)
-        rankManager.update(guild3)
-        rankManager.update(user1)
-        rankManager.update(user2)
-        rankManager.update(user3)
+        GuildUtils.addGuild(guild1)
+        GuildUtils.addGuild(guild2)
+        GuildUtils.addGuild(guild3)
+
+        rankRecalculationTask.run()
 
         assertEquals guild1, rankManager.getGuild(1)
         assertEquals guild2, rankManager.getGuild(2)
@@ -50,12 +52,7 @@ class RankManagerTest extends FunnyGuildsSpec {
         user2.rank.points = 150
         user3.rank.points = 200
 
-        rankManager.update(guild1)
-        rankManager.update(guild2)
-        rankManager.update(guild3)
-        rankManager.update(user1)
-        rankManager.update(user2)
-        rankManager.update(user3)
+        rankRecalculationTask.run()
 
         assertEquals guild3, rankManager.getGuild(1)
         assertEquals guild2, rankManager.getGuild(2)
