@@ -4,9 +4,7 @@ import net.dzikoysk.funnyguilds.rank.Rank;
 
 import java.util.function.IntFunction;
 
-public class UserRank extends Rank implements Comparable<UserRank> {
-
-    private final User user;
+public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
     private int points;
     private int kills;
@@ -17,12 +15,11 @@ public class UserRank extends Rank implements Comparable<UserRank> {
     public UserRank(User user, int rankStart) {
         super(user);
 
-        this.user = user;
         this.points = rankStart;
     }
 
     public User getUser() {
-        return user;
+        return entity;
     }
 
     @Override

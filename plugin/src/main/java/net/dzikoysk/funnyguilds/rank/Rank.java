@@ -3,12 +3,12 @@ package net.dzikoysk.funnyguilds.rank;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
 
-public abstract class Rank {
+public abstract class Rank<T extends MutableEntity> {
 
-    protected final MutableEntity entity;
+    protected final T entity;
     protected int position;
 
-    public Rank(MutableEntity entity) {
+    public Rank(T entity) {
         this.entity = entity;
     }
 
@@ -76,7 +76,7 @@ public abstract class Rank {
 
     @Override
     public String toString() {
-        return Integer.toString(getPoints());
+        return Integer.toString(this.getPoints());
     }
 
 }

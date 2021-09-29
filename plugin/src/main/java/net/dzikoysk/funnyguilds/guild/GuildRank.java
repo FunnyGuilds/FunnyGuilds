@@ -2,23 +2,19 @@ package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.rank.Rank;
 
-public class GuildRank extends Rank implements Comparable<GuildRank> {
-
-    private final Guild guild;
+public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     public GuildRank(Guild guild) {
         super(guild);
-
-        this.guild = guild;
     }
 
     public Guild getGuild() {
-        return guild;
+        return entity;
     }
 
     @Override
     public int getPoints() {
-        return guild.getMembers().stream()
+        return this.entity.getMembers().stream()
                 .mapToInt(user -> user.getRank().getPoints())
                 .sum();
     }
@@ -29,7 +25,7 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getKills() {
-        return guild.getMembers().stream()
+        return this.entity.getMembers().stream()
                 .mapToInt(user -> user.getRank().getKills())
                 .sum();
     }
@@ -40,7 +36,7 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getDeaths() {
-        return guild.getMembers().stream()
+        return this.entity.getMembers().stream()
                 .mapToInt(user -> user.getRank().getDeaths())
                 .sum();
     }
@@ -51,7 +47,7 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getAssists() {
-        return guild.getMembers().stream()
+        return this.entity.getMembers().stream()
                 .mapToInt(user -> user.getRank().getAssists())
                 .sum();
     }
@@ -62,7 +58,7 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
 
     @Override
     public int getLogouts() {
-        return guild.getMembers().stream()
+        return this.entity.getMembers().stream()
                 .mapToInt(user -> user.getRank().getLogouts())
                 .sum();
     }
@@ -79,7 +75,7 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
     }
 
     public float getAverageKDR() {
-        return (float) guild.getMembers().stream()
+        return (float) this.entity.getMembers().stream()
                 .mapToDouble(user -> user.getRank().getKDR())
                 .average()
                 .orElse(0.0D);
@@ -105,7 +101,12 @@ public class GuildRank extends Rank implements Comparable<GuildRank> {
     }
 
     private int calculateAverage(int value) {
-        return value / guild.getMembers().size();
+        return value / this.entity.getMembers().size();
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(this.getAveragePoints());
     }
 
 }

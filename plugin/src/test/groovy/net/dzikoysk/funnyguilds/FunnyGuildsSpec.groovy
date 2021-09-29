@@ -64,16 +64,6 @@ class FunnyGuildsSpec extends BukkitSpec {
         config.eloConstants = parsedData
     }
 
-    @BeforeEach
-    void prepareRankManager() {
-        this.rankManager = new RankManager(config);
-    }
-
-    @BeforeEach
-    void prepareUserManager() {
-        this.userManager = new UserManager(rankManager)
-    }
-
     @AfterAll
     static void closeMockedFunnyGuilds() {
         mockedFunnyGuilds.close()

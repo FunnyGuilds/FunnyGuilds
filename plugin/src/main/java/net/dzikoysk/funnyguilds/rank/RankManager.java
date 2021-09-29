@@ -39,6 +39,7 @@ public class RankManager {
             return;
         }
 
+        this.usersRank.removeIf(userRank -> userRank.getIdentityName().equals(user.getRank().getIdentityName()));
         this.usersRank.add(user.getRank());
     }
 
@@ -46,6 +47,8 @@ public class RankManager {
         if (!guild.isRanked()) {
             return;
         }
+
+        this.guildsRank.removeIf(guildRank -> guildRank.getIdentityName().equals(guild.getRank().getIdentityName()));
 
         this.guildsRank.add(guild.getRank());
     }

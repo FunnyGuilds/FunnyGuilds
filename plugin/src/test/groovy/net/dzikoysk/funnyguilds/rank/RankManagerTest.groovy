@@ -13,9 +13,9 @@ class RankManagerTest extends FunnyGuildsSpec {
 
     @Test
     void 'should correctly update the guilds and users ranking'() {
-        def guild1 = new Guild("test1")
-        def guild2 = new Guild("test2")
-        def guild3 = new Guild("test3")
+        def guild1 = new Guild("OnlyPanda1")
+        def guild2 = new Guild("OnlyPanda2")
+        def guild3 = new Guild("OnlyPanda3")
         def user1 = userManager.create(UUID.randomUUID(), "user1")
         def user2 = userManager.create(UUID.randomUUID(), "user2")
         def user3 = userManager.create(UUID.randomUUID(), "user3")
@@ -39,9 +39,6 @@ class RankManagerTest extends FunnyGuildsSpec {
         rankManager.update(user2)
         rankManager.update(user3)
 
-        System.out.println("UsersRank: " + rankManager.getUsersRank())
-        System.out.println("GuildsRank: " + rankManager.getGuildsRank())
-
         assertEquals guild1, rankManager.getGuild(1)
         assertEquals guild2, rankManager.getGuild(2)
         assertEquals guild3, rankManager.getGuild(3)
@@ -59,9 +56,6 @@ class RankManagerTest extends FunnyGuildsSpec {
         rankManager.update(user1)
         rankManager.update(user2)
         rankManager.update(user3)
-
-        System.out.println("UsersRank: " + rankManager.getUsersRank())
-        System.out.println("GuildsRank: " + rankManager.getGuildsRank())
 
         assertEquals guild3, rankManager.getGuild(1)
         assertEquals guild2, rankManager.getGuild(2)
