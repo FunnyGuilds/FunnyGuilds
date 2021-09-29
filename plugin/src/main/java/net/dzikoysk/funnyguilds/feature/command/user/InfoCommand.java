@@ -10,9 +10,11 @@ import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.Option;
+import panda.std.Pair;
 import panda.utilities.text.Formatter;
 
 @FunnyComponent
@@ -38,10 +40,16 @@ public final class InfoCommand {
                 .orThrow(() -> new ValidationException(messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
-        Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
+        Placeholders<Pair<String, Guild>> membersColorContext = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT;
+        Formatter formatter = Placeholders.GUILD_ALL
+                .toFormatter(guild);
 
         for (String messageLine : messages.infoList) {
-            sender.sendMessage(formatter.format(messageLine));
+            messageLine = formatter.format(messageLine);
+            String lastColor = ChatColor.getLastColors(messageLine.split("<online>")[0]);
+            messageLine = membersColorContext.format(messageLine, Pair.of(lastColor, guild));
+
+            sender.sendMessage(messageLine);
         }
     }
 
