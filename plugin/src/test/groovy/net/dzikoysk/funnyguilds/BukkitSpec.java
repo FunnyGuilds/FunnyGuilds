@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds;
 
 import groovy.transform.CompileStatic;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +18,7 @@ import static org.mockito.Mockito.mockStatic;
 @ExtendWith(MockitoExtension.class)
 class BukkitSpec {
 
-    private static MockedStatic<Bukkit> mockedBukkit;
+    protected static MockedStatic<Bukkit> mockedBukkit;
 
     @BeforeAll
     static void openMockedBukkit() {
@@ -25,7 +26,7 @@ class BukkitSpec {
     }
 
     @BeforeEach
-    void prepareBukkit() {
+    protected void prepareBukkit() {
         mockedBukkit.when(() -> Bukkit.getPlayer(any(UUID.class))).thenReturn(null);
     }
 

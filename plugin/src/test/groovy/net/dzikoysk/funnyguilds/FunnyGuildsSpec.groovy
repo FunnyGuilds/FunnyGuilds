@@ -23,8 +23,8 @@ import static org.mockito.Mockito.mockStatic
 @ExtendWith(MockitoExtension.class)
 class FunnyGuildsSpec extends BukkitSpec {
 
-    private static MockedStatic<FunnyGuilds> mockedFunnyGuilds
-    private static MockedStatic<BossBarProvider> mockedBossBarProvider
+    protected static MockedStatic<FunnyGuilds> mockedFunnyGuilds
+    protected static MockedStatic<BossBarProvider> mockedBossBarProvider
 
     @Mock
     public FunnyGuilds funnyGuilds

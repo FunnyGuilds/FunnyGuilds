@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.ChatColor;
+import panda.std.Pair;
 import panda.utilities.text.Formatter;
 import panda.utilities.text.Joiner;
 
@@ -26,6 +27,7 @@ public class Placeholders<T> {
     public static final Placeholders<String> ONLINE;
     public static final Placeholders<Guild> GUILD;
     public static final Placeholders<Guild> GUILD_ALL;
+    public static final Placeholders<Pair<String, Guild>> GUILD_MEMBERS_COLOR_CONTEXT;
 
     static {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
@@ -55,13 +57,6 @@ public class Placeholders<T> {
                 .property("OWNER",              guild -> guild.getOwner().getName())
                 .property("MEMBERS-ONLINE",     guild -> guild.getOnlineMembers().size())
                 .property("MEMBERS-ALL",        guild -> guild.getMembers().size())
-                .property("MEMBERS",            guild -> {
-                    String text = Joiner.on(", ").join(UserUtils.getOnlineNames(guild.getMembers())).toString();
-
-                    return ONLINE
-                            .toFormatter(ChatColor.getLastColors(text.split("<online>")[0]))
-                            .format(text);
-                })
                 .property("DEPUTIES",           guild -> joinOrDefault.apply(UserUtils.getNamesOfUsers(guild.getDeputies()), "Brak"))
                 .property("REGION-SIZE",        guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
                 .property("GUILD-PROTECTION",   bindGuildProtection)
@@ -79,6 +74,15 @@ public class Placeholders<T> {
                 .property("ALLIES-TAGS",        guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
                 .property("ENEMIES",            guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
                 .property("ENEMIES-TAGS",       guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
+
+        GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>>()
+                .property("MEMBERS",            pair -> {
+                    String text = Joiner.on(", ").join(UserUtils.getOnlineNames(pair.getSecond().getMembers())).toString();
+
+                    return !text.contains("<online>")
+                            ? text
+                            : ONLINE.toFormatter(pair.getFirst()).format(text);
+                });
     }
 
     private final Map<String, Function<T, String>> placeholders = new HashMap<>();
