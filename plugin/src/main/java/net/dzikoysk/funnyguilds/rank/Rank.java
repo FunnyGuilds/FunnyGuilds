@@ -1,13 +1,11 @@
 package net.dzikoysk.funnyguilds.rank;
 
-import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
 
 public abstract class Rank {
 
     protected final MutableEntity entity;
-
     protected int position;
 
     public Rank(MutableEntity entity) {
@@ -15,10 +13,6 @@ public abstract class Rank {
     }
 
     public MutableEntity getEntity() {
-        return this.entity;
-    }
-
-    public Entity getBasic() {
         return this.entity;
     }
 
@@ -54,6 +48,10 @@ public abstract class Rank {
     public boolean equals(Object o) {
         if (o == null) {
             return false;
+        }
+
+        if (o == this) {
+            return true;
         }
 
         if (o.getClass() != this.getClass()) {
