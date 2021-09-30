@@ -27,17 +27,17 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
-        when (!this.pluginConfig.regionsEnabled, this.messageConfig.regionsDisabled);
+        when (!config.regionsEnabled, this.messages.regionsDisabled);
 
         Region region = guild.getRegion();
-        when (region == null, this.messageConfig.regionsDisabled);
+        when (region == null, this.messages.regionsDisabled);
 
         int enlarge = region.getEnlarge();
-        when (enlarge > this.pluginConfig.enlargeItems.size() - 1, this.messageConfig.enlargeMaxSize);
+        when (enlarge > config.enlargeItems.size() - 1, this.messages.enlargeMaxSize);
 
-        ItemStack need = this.pluginConfig.enlargeItems.get(enlarge);
-        when (!player.getInventory().containsAtLeast(need, need.getAmount()), this.messageConfig.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
-        when (RegionUtils.isNear(region.getCenter()), this.messageConfig.enlargeIsNear);
+        ItemStack need = config.enlargeItems.get(enlarge);
+        when (!player.getInventory().containsAtLeast(need, need.getAmount()), this.messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
+        when (RegionUtils.isNear(region.getCenter()), this.messages.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, user.getGuild()))) {
             return;
@@ -45,9 +45,9 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         
         player.getInventory().removeItem(need);
         region.setEnlarge(++enlarge);
-        region.setSize(region.getSize() + this.pluginConfig.enlargeSize);
+        region.setSize(region.getSize() + config.enlargeSize);
 
-        guild.broadcast(this.messageConfig.enlargeDone
+        guild.broadcast(this.messages.enlargeDone
                 .replace("{SIZE}", Integer.toString(region.getSize()))
                 .replace("{LEVEL}", Integer.toString(region.getEnlarge())));
     }

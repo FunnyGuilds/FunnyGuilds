@@ -20,14 +20,14 @@ public final class PointsCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfig.generalNoNickGiven);
-        when (args.length < 2, this.messageConfig.adminNoPointsGiven);
+        when (args.length < 1, messages.generalNoNickGiven);
+        when (args.length < 2, messages.adminNoPointsGiven);
 
         int points;
         try {
             points = Integer.parseInt(args[1]);
         } catch (NumberFormatException numberFormatException) {
-            sender.sendMessage(this.messageConfig.adminErrorInNumber.replace("{ERROR}", args[1]));
+            sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }
 
@@ -43,8 +43,8 @@ public final class PointsCommand extends AbstractFunnyCommand {
 
         user.getRank().setPoints(points);
 
-        String message = this.messageConfig.adminPointsChanged.replace("{PLAYER}", user.getName());
-        message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, this.pluginConfig.pointsFormat));
+        String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
+        message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
         message = message.replace("{POINTS}", String.valueOf(points));
 
         sender.sendMessage(message);

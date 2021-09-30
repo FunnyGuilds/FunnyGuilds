@@ -32,26 +32,26 @@ public final class MoveCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, String[] args) {
-        when (!this.pluginConfig.regionsEnabled, this.messageConfig.regionsDisabled);
-        when (args.length < 1, this.messageConfig.generalNoTagGiven);
+        when (!config.regionsEnabled, messages.regionsDisabled);
+        when (args.length < 1, messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         Location location = player.getLocation();
 
-        if (this.pluginConfig.createCenterY != 0) {
-            location.setY(this.pluginConfig.createCenterY);
+        if (config.createCenterY != 0) {
+            location.setY(config.createCenterY);
         }
 
-        int distance = this.pluginConfig.regionSize + this.pluginConfig.createDistance;
+        int distance = config.regionSize + config.createDistance;
 
-        if (this.pluginConfig.enlargeItems != null) {
-            distance = this.pluginConfig.enlargeItems.size() * this.pluginConfig.enlargeSize + distance;
+        if (config.enlargeItems != null) {
+            distance = config.enlargeItems.size() * config.enlargeSize + distance;
         }
 
         when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                this.messageConfig.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
-        when (RegionUtils.isNear(location), this.messageConfig.createIsNear);
+                messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
+        when (RegionUtils.isNear(location), messages.createIsNear);
 
         User admin = AdminUtils.getAdminUser(player);
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
@@ -61,11 +61,11 @@ public final class MoveCommand extends AbstractFunnyCommand {
         Region region = guild.getRegion();
 
         if (region == null) {
-            region = new Region(guild, location, this.pluginConfig.regionSize);
+            region = new Region(guild, location, config.regionSize);
         } else {
-            if (this.pluginConfig.createEntityType != null) {
+            if (config.createEntityType != null) {
                 GuildEntityHelper.despawnGuildHeart(guild);
-            } else if (this.pluginConfig.createMaterial != null && this.pluginConfig.createMaterial.getLeft() != Material.AIR) {
+            } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                 
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
@@ -78,7 +78,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             region.setCenter(location);
         }
         
-        if (this.pluginConfig.createCenterSphere) {
+        if (config.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);
 
             for (Location locationInSphere : sphere) {
@@ -89,7 +89,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         GuildUtils.spawnHeart(guild);
-        player.sendMessage(this.messageConfig.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
+        player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
 
 }

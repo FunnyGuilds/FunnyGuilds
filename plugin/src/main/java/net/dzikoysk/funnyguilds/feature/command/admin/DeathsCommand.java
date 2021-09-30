@@ -21,11 +21,11 @@ public final class DeathsCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, this.messageConfig.generalNoNickGiven);
-        when (args.length < 2, this.messageConfig.adminNoDeathsGiven);
+        when (args.length < 1, messages.generalNoNickGiven);
+        when (args.length < 2, messages.adminNoDeathsGiven);
 
         int deaths = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            throw new ValidationException(this.messageConfig.adminErrorInNumber.replace("{ERROR}", args[1]));
+            throw new ValidationException(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);
@@ -38,7 +38,7 @@ public final class DeathsCommand extends AbstractFunnyCommand {
         }
         
         userRank.setDeaths(deaths);
-        sender.sendMessage(this.messageConfig.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(deaths)));
+        sender.sendMessage(messages.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(deaths)));
     }
 
 }

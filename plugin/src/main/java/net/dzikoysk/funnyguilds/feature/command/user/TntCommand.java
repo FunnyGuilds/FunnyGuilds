@@ -20,22 +20,22 @@ public final class TntCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        when (!this.pluginConfig.guildTNTProtectionEnabled, this.messageConfig.tntProtectDisable);
+        when (!config.guildTNTProtectionEnabled, this.messages.tntProtectDisable);
 
         LocalTime now = LocalTime.now();
-        LocalTime start = this.pluginConfig.guildTNTProtectionStartTime;
-        LocalTime end = this.pluginConfig.guildTNTProtectionEndTime;
-        String message = this.messageConfig.tntInfo;
+        LocalTime start = config.guildTNTProtectionStartTime;
+        LocalTime end = config.guildTNTProtectionEndTime;
+        String message = this.messages.tntInfo;
 
-        boolean isWithinTimeframe = this.pluginConfig.guildTNTProtectionPassingMidnight
+        boolean isWithinTimeframe = config.guildTNTProtectionPassingMidnight
                 ? now.isAfter(start) || now.isBefore(end)
                 : now.isAfter(start) && now.isBefore(end);
 
-        message = StringUtils.replace(message, "{PROTECTION_START}", this.pluginConfig.guildTNTProtectionStartTime_);
-        message = StringUtils.replace(message, "{PROTECTION_END}", this.pluginConfig.guildTNTProtectionEndTime_);
+        message = StringUtils.replace(message, "{PROTECTION_START}", config.guildTNTProtectionStartTime_);
+        message = StringUtils.replace(message, "{PROTECTION_END}", config.guildTNTProtectionEndTime_);
 
         sender.sendMessage(message);
-        sender.sendMessage(isWithinTimeframe ? this.messageConfig.tntNowDisabled : this.messageConfig.tntNowEnabled);
+        sender.sendMessage(isWithinTimeframe ? this.messages.tntNowDisabled : this.messages.tntNowEnabled);
     }
 
 }

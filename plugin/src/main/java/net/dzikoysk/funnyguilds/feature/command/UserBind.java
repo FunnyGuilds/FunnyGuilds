@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.Resources;
-import panda.std.Option;
 
 @FunnyComponent
 final class UserBind implements Bind {
@@ -32,12 +31,7 @@ final class UserBind implements Bind {
             throw new IllegalStateException("Cannot use user bind in non-player command");
         }
 
-        Option<User> userOption = this.userManager.getUser(((OfflinePlayer) commandSender).getUniqueId());
-        if(userOption.isEmpty()) {
-            return null;
-        }
-
-        return userOption.get();
+        return this.userManager.getUser(((OfflinePlayer) commandSender).getUniqueId()).getOrNull();
     }
 
 }

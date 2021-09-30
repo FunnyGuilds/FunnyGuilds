@@ -28,12 +28,12 @@ public final class ItemsCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player) {
-        List<ItemStack> guiItems = this.pluginConfig.guiItems;
-        String title = this.pluginConfig.guiItemsTitle;
+        List<ItemStack> guiItems = config.guiItems;
+        String title = config.guiItemsTitle;
 
-        if (!this.pluginConfig.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
-            guiItems = this.pluginConfig.guiItemsVip;
-            title = this.pluginConfig.guiItemsVipTitle;
+        if (!config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
+            guiItems = config.guiItemsVip;
+            title = config.guiItemsVipTitle;
         }
 
         GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
@@ -41,7 +41,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
         for (ItemStack item : guiItems) {
             item = item.clone();
 
-            if (this.pluginConfig.addLoreLines && (this.pluginConfig.createItems.contains(item) || this.pluginConfig.createItemsVip.contains(item))) {
+            if (config.addLoreLines && (config.createItems.contains(item) || config.createItemsVip.contains(item))) {
                 ItemMeta meta = item.getItemMeta();
 
                 if (meta == null) {
@@ -56,10 +56,10 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 List<String> lore = meta.getLore();
 
                 if (lore == null) {
-                    lore = new ArrayList<>(this.pluginConfig.guiItemsLore.size());
+                    lore = new ArrayList<>(config.guiItemsLore.size());
                 }
 
-                for (String line : this.pluginConfig.guiItemsLore) {
+                for (String line : config.guiItemsLore) {
                     line = StringUtils.replace(line, "{REQ-AMOUNT}", Integer.toString(requiredAmount));
                     line = StringUtils.replace(line, "{PINV-AMOUNT}", Integer.toString(inventoryAmount));
                     line = StringUtils.replace(line, "{PINV-PERCENT}", ChatUtils.getPercent(inventoryAmount, requiredAmount));
@@ -71,8 +71,8 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                     lore.add(line);
                 }
 
-                if (!Objects.equals(this.pluginConfig.guiItemsName, "")) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(this.pluginConfig.guiItemsName, null, item));
+                if (!Objects.equals(config.guiItemsName, "")) {
+                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName, null, item));
                 }
 
                 meta.setLore(lore);

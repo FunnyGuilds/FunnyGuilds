@@ -60,14 +60,14 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     }
 
     private void reload(CommandSender sender) {
-        when (!sender.hasPermission("funnyguilds.reload"), this.messageConfig.permission);
+        when (!sender.hasPermission("funnyguilds.reload"), this.messages.permission);
 
         sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
         this.plugin.getConcurrencyManager().postRequests(new ReloadRequest(this.plugin, sender));
     }
 
     private void saveAll(CommandSender sender) {
-        when (!sender.hasPermission("funnyguilds.admin"), this.messageConfig.permission);
+        when (!sender.hasPermission("funnyguilds.admin"), this.messages.permission);
 
         sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
         long currentTime = System.currentTimeMillis();
@@ -87,7 +87,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     }
 
     private void post(CommandSender sender, String[] args) {
-        when (!sender.hasPermission("funnyguilds.admin"), this.messageConfig.permission);
+        when (!sender.hasPermission("funnyguilds.admin"), this.messages.permission);
         Optional<FunnybinRequest> request = FunnybinRequest.of(sender, args);
 
         if (request.isPresent()) {

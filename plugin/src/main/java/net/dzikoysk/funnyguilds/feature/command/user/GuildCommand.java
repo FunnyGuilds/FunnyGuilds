@@ -16,7 +16,7 @@ public final class GuildCommand extends AbstractFunnyCommand  {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        this.messageConfig.helpList.forEach(sender::sendMessage);
+        this.messages.helpList.forEach(sender::sendMessage);
     }
 
 }
