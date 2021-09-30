@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
@@ -34,7 +33,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         when (args.length < 2, messages.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (GuildUtils.nameExists(args[1]), messages.createNameExists);
+        when (guildManager.guildNameExists(args[1]), messages.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 

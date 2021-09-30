@@ -105,12 +105,12 @@ public class GuildUtils {
 
     @Deprecated
     public static boolean nameExists(String name) {
-        return FunnyGuilds.getInstance().getGuildManager().guildExistsByName(name);
+        return FunnyGuilds.getInstance().getGuildManager().guildNameExists(name);
     }
 
     @Deprecated
     public static boolean tagExists(String tag) {
-        return FunnyGuilds.getInstance().getGuildManager().guildExistsByTag(tag);
+        return FunnyGuilds.getInstance().getGuildManager().guildTagExists(tag);
     }
 
     @Deprecated

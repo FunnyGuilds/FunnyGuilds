@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildTagChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
@@ -26,7 +25,7 @@ public final class TagCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         String tag = args[1];
-        when (GuildUtils.tagExists(tag), messages.createTagExists);
+        when (guildManager.guildTagExists(tag), messages.createTagExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 

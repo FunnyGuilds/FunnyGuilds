@@ -109,11 +109,11 @@ public class GuildManager {
         guildsMap.remove(guild.getUUID());
     }
 
-    public boolean guildExistsByName(String name) {
+    public boolean guildNameExists(String name) {
         return !this.getGuildByName(name).isEmpty();
     }
 
-    public boolean guildExistsByTag(String tag) {
+    public boolean guildTagExists(String tag) {
         return !this.getGuildByTag(tag).isEmpty();
     }
 
