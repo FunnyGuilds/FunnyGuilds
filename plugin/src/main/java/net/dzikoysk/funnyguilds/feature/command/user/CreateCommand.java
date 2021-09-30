@@ -219,7 +219,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         this.concurrencyManager.postRequests(
-                new RankUpdateGuildRequest(guild),
+                new RankUpdateGuildRequest(this.rankManager),
                 new PrefixGlobalAddGuildRequest(guild),
                 new PrefixGlobalAddPlayerRequest(user.getName()),
                 new DatabaseUpdateGuildRequest(guild)

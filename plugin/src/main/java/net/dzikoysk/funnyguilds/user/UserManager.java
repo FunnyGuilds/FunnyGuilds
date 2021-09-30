@@ -85,9 +85,9 @@ public class UserManager {
         Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
 
         User user = new User(uuid, name);
-
         addUser(user);
-        this.rankManager.update(user);
+
+        this.rankManager.recalculateUsersRank(this);
 
         return user;
     }
@@ -97,7 +97,8 @@ public class UserManager {
 
         User user = new User(player);
         addUser(user);
-        this.rankManager.update(user);
+
+        this.rankManager.recalculateUsersRank(this);
 
         return user;
     }

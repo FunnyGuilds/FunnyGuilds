@@ -5,8 +5,10 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRank;
 
 import java.util.Collections;
@@ -29,17 +31,49 @@ public class RankManager {
         INSTANCE = this;
     }
 
-    public void update(User user) {
-        if (user.getUUID().version() == 2) {
-            return;
+    public void recalculateUsersRank(UserManager userManager) {
+        NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
+
+        for (User user : userManager.getUsers()) {
+            UserRank userRank = user.getRank();
+
+            if (this.pluginConfiguration.skipPrivilegedPlayersInRankPositions &&
+                    PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt")) {
+                continue;
+            }
+
+            usersRank.add(userRank);
         }
 
-        if (this.pluginConfiguration.skipPrivilegedPlayersInRankPositions &&
-                PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt")) {
-            return;
+        int position = 0;
+
+        for (UserRank userRank : usersRank) {
+            userRank.setPosition(++position);
         }
 
-        this.usersRank.add(user.getRank());
+        this.usersRank = usersRank;
+    }
+
+    public void recalculateGuildsRank() {
+        NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
+
+        for (Guild guild : GuildUtils.getGuilds()) {
+            GuildRank guildRank = guild.getRank();
+
+            if (!guild.isRanked()) {
+                continue;
+            }
+
+            guildsRank.add(guildRank);
+        }
+
+        int position = 0;
+
+        for (GuildRank guildRank : guildsRank) {
+            guildRank.setPosition(++position);
+        }
+
+        this.guildsRank = guildsRank;
     }
 
     public void update(Guild guild) {

@@ -195,13 +195,13 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(Server.class).assignInstance(this.getServer());
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
-            resources.on(PluginConfiguration.class).assignInstance(this.getPluginConfiguration());
-            resources.on(MessageConfiguration.class).assignInstance(this.getMessageConfiguration());
-            resources.on(TablistConfiguration.class).assignInstance(this.getTablistConfiguration());
-            resources.on(ConcurrencyManager.class).assignInstance(this.getConcurrencyManager());
-            resources.on(RankManager.class).assignInstance(this.getRankManager());
-            resources.on(UserManager.class).assignInstance(this.getUserManager());
-            resources.on(DataModel.class).assignInstance(this.getDataModel());
+            resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
+            resources.on(MessageConfiguration.class).assignInstance(this.messageConfiguration);
+            resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
+            resources.on(ConcurrencyManager.class).assignInstance(this.concurrencyManager);
+            resources.on(RankManager.class).assignInstance(this.rankManager);
+            resources.on(UserManager.class).assignInstance(this.userManager);
+            resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
         MetricsCollector collector = new MetricsCollector(this);
@@ -209,7 +209,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this.rankManager, this.userManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
             CommandsConfiguration commandsConfiguration = new CommandsConfiguration();

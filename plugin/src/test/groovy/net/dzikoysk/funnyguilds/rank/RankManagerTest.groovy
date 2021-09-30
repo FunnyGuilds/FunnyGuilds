@@ -14,8 +14,6 @@ class RankManagerTest extends FunnyGuildsSpec {
 
     @Test
     void 'should correctly update the guilds and users ranking'() {
-        def rankRecalculationTask = new RankRecalculationTask(funnyGuilds);
-
         def guild1 = new Guild("OnlyPanda1")
         def guild2 = new Guild("OnlyPanda2")
         def guild3 = new Guild("OnlyPanda3")
@@ -39,7 +37,8 @@ class RankManagerTest extends FunnyGuildsSpec {
         GuildUtils.addGuild(guild2)
         GuildUtils.addGuild(guild3)
 
-        rankRecalculationTask.run()
+        rankManager.recalculateUsersRank(userManager)
+        rankManager.recalculateGuildsRank()
 
         assertEquals guild1, rankManager.getGuild(1)
         assertEquals guild2, rankManager.getGuild(2)
@@ -52,7 +51,8 @@ class RankManagerTest extends FunnyGuildsSpec {
         user2.rank.points = 150
         user3.rank.points = 200
 
-        rankRecalculationTask.run()
+        rankManager.recalculateUsersRank(userManager)
+        rankManager.recalculateGuildsRank()
 
         assertEquals guild3, rankManager.getGuild(1)
         assertEquals guild2, rankManager.getGuild(2)

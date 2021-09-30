@@ -1,20 +1,22 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.rank;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.rank.RankManager;
+import net.dzikoysk.funnyguilds.user.UserManager;
 
 public class RankUpdateUserRequest extends DefaultConcurrencyRequest {
 
-    private final User user;
+    private final RankManager rankManager;
+    private final UserManager userManager;
 
-    public RankUpdateUserRequest(User user) {
-        this.user = user;
+    public RankUpdateUserRequest(RankManager rankManager, UserManager userManager) {
+        this.rankManager = rankManager;
+        this.userManager = userManager;
     }
 
     @Override
     public void execute() throws Exception {
-        FunnyGuilds.getInstance().getRankManager().update(user);
+        this.rankManager.recalculateUsersRank(this.userManager);
     }
 
 }
