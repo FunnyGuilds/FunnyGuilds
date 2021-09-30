@@ -19,8 +19,8 @@ public class RankManager {
 
     private final PluginConfiguration pluginConfiguration;
 
-    protected NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
-    protected NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
+    private NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
+    private NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
 
     @Deprecated
     private static RankManager INSTANCE;
