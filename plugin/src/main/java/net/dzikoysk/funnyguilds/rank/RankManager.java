@@ -1,17 +1,20 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.Iterables;
-import java.util.Collections;
-import java.util.NavigableSet;
-import java.util.TreeSet;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
-import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 
+import java.util.Collections;
+import java.util.NavigableSet;
+import java.util.TreeSet;
+
 public class RankManager {
+
+    private final PluginConfiguration pluginConfiguration;
 
     protected NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
     protected NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
@@ -19,29 +22,10 @@ public class RankManager {
     @Deprecated
     private static RankManager INSTANCE;
 
-    public RankManager() {
+    public RankManager(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
+
         INSTANCE = this;
-    }
-
-    public void update(User user) {
-        if (user.getUUID().version() == 2) {
-            return;
-        }
-
-        if (FunnyGuilds.getInstance().getPluginConfiguration().skipPrivilegedPlayersInRankPositions &&
-                PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt")) {
-            return;
-        }
-
-        this.usersRank.add(user.getRank());
-    }
-
-    public void update(Guild guild) {
-        if (!guild.isRanked()) {
-            return;
-        }
-
-        this.guildsRank.add(guild.getRank());
     }
 
     public User getUser(int place) {

@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.data.MutableEntity
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.guild.GuildRank
 import net.dzikoysk.funnyguilds.user.User
-import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRank
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Test
@@ -14,7 +13,6 @@ final class RankTest extends FunnyGuildsSpec {
 
     @Test
     void 'user should implement proper equals & hashcode'() {
-        UserManager userManager = new UserManager()
         User user1 = userManager.create(UUID.nameUUIDFromBytes("user1".getBytes()), "user1")
         User user2 = userManager.create(UUID.nameUUIDFromBytes("user2".getBytes()), "user2")
 

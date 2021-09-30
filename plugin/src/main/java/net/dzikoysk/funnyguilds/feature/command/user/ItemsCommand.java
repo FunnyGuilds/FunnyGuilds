@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 @FunnyComponent
-public final class ItemsCommand {
+public final class ItemsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.items.name}",
@@ -27,7 +27,7 @@ public final class ItemsCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, Player player) {
+    public void execute(Player player) {
         List<ItemStack> guiItems = config.guiItems;
         String title = config.guiItemsTitle;
 

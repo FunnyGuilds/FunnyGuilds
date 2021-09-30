@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
 import net.dzikoysk.funnyguilds.rank.RankManager
 import net.dzikoysk.funnyguilds.user.User
+import net.dzikoysk.funnyguilds.user.UserManager
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -32,7 +33,8 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected PluginConfiguration config = new PluginConfiguration()
     protected MessageConfiguration messages = new MessageConfiguration()
 
-    protected RankManager globalRankManager = new RankManager()
+    protected RankManager rankManager = new RankManager(config)
+    protected UserManager userManager = new UserManager()
 
     @BeforeAll
     static void openMockedFunnyGuilds() {
@@ -44,7 +46,9 @@ class FunnyGuildsSpec extends BukkitSpec {
     void prepareFunnyGuilds() {
         lenient().when(funnyGuilds.getPluginConfiguration()).thenReturn(config)
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
-        lenient().when(funnyGuilds.getRankManager()).thenReturn(globalRankManager)
+
+        lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
+        lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)
         mockedBossBarProvider.when(() -> BossBarProvider.getBossBar(any(User.class))).thenReturn(null)

@@ -48,7 +48,7 @@ public class EntityInteract implements Listener {
 
             if (config.infoPlayerCommand) {
                 try {
-                    playerExecutor.execute(config, messages, eventCaller, new String[]{clickedPlayer.getName()});
+                    playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
                 } catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(eventCaller::sendMessage);
                 }

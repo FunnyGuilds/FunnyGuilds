@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 

@@ -1,16 +1,14 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.feature.command.UserValidation;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemovePlayerRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.feature.command.UserValidation;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -18,14 +16,14 @@ import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class KickAdminCommand {
+public final class KickAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.kick.name}",
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
 
         User user = UserValidation.requireUserByName(args[0]);
@@ -39,8 +37,7 @@ public final class KickAdminCommand {
             return;
         }
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
 
         Player player = user.getPlayer();
         guild.removeMember(user);
@@ -52,7 +49,7 @@ public final class KickAdminCommand {
                 .register("{PLAYER}", user.getName());
 
         if (player != null) {
-            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
+            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
             player.sendMessage(formatter.format(messages.kickToPlayer));
         }
 

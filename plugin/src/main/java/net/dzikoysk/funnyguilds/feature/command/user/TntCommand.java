@@ -2,17 +2,15 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import org.bukkit.command.CommandSender;
 import panda.utilities.StringUtils;
 
 import java.time.LocalTime;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class TntCommand {
+public final class TntCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.tnt.name}",
@@ -21,7 +19,7 @@ public final class TntCommand {
         permission = "funnyguilds.tnt",
         acceptsExceeded = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, CommandSender sender) {
+    public void execute(CommandSender sender) {
         when (!config.guildTNTProtectionEnabled, messages.tntProtectDisable);
 
         LocalTime now = LocalTime.now();

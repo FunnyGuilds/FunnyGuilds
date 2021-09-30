@@ -3,8 +3,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -18,7 +17,7 @@ import panda.std.Pair;
 import panda.utilities.text.Formatter;
 
 @FunnyComponent
-public final class InfoCommand {
+public final class InfoCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.info.name}",
@@ -28,8 +27,8 @@ public final class InfoCommand {
         completer = "guilds:3",
         acceptsExceeded = true
     )
-    public void execute(FunnyGuilds plugin, MessageConfiguration messages, CommandSender sender, String[] args) {
-        UserManager userManager = plugin.getUserManager();
+    public void execute(CommandSender sender, String[] args) {
+        UserManager userManager = this.userManager;
         String tag = Option.when(args.length > 0, () -> args[0])
                 .orElse(Option.of(sender)
                         .is(Player.class)

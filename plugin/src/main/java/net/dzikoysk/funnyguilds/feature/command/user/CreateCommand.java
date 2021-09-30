@@ -3,17 +3,14 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -36,11 +33,10 @@ import panda.utilities.text.Formatter;
 
 import java.time.Instant;
 import java.util.List;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class CreateCommand {
+public final class CreateCommand extends AbstractFunnyCommand {
 
     private static final int SKY_LIMIT = 256;
 
@@ -52,7 +48,7 @@ public final class CreateCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user, String[] args) {
+    public void execute(Player player, User user, String[] args) {
         when (!config.guildsEnabled, messages.adminGuildsDisabled);
         when (LocationUtils.checkWorld(player), messages.blockedWorld);
         when (user.hasGuild(), messages.generalHasGuild);
@@ -221,8 +217,7 @@ public final class CreateCommand {
             RegionUtils.addRegion(guild.getRegion());
         }
 
-        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(
-                new RankUpdateGuildRequest(guild),
+        this.concurrencyManager.postRequests(
                 new PrefixGlobalAddGuildRequest(guild),
                 new PrefixGlobalAddPlayerRequest(user.getName()),
                 new DatabaseUpdateGuildRequest(guild)

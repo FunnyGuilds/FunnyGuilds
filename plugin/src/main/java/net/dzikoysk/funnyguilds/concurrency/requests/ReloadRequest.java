@@ -13,34 +13,36 @@ import panda.std.stream.PandaStream;
 
 public final class ReloadRequest extends DefaultConcurrencyRequest {
 
+    private final FunnyGuilds plugin;
+
     private final CommandSender sender;
     private final long startTime;
 
-    public ReloadRequest(CommandSender sender) {
+    public ReloadRequest(FunnyGuilds plugin, CommandSender sender) {
+        this.plugin = plugin;
         this.sender = sender;
         this.startTime = System.currentTimeMillis();
     }
 
     @Override
     public void execute() throws Exception {
-        FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
-        funnyGuilds.reloadPluginConfiguration();
-        funnyGuilds.reloadTablistConfiguration();
-        funnyGuilds.reloadMessageConfiguration();
-        funnyGuilds.getDataPersistenceHandler().reloadHandler();
-        funnyGuilds.getDynamicListenerManager().reloadAll();
+        this.plugin.reloadPluginConfiguration();
+        this.plugin.reloadTablistConfiguration();
+        this.plugin.reloadMessageConfiguration();
+        this.plugin.getDataPersistenceHandler().reloadHandler();
+        this.plugin.getDynamicListenerManager().reloadAll();
 
-        if (FunnyGuilds.getInstance().getTablistConfiguration().playerListEnable) {
-            TablistConfiguration tablistConfig = FunnyGuilds.getInstance().getTablistConfiguration();
+        if (this.plugin.getTablistConfiguration().playerListEnable) {
+            TablistConfiguration tablistConfig = this.plugin.getTablistConfiguration();
+            UserManager userManager = this.plugin.getUserManager();
 
             DefaultTablistVariables.clearFunnyVariables();
 
-            UserManager userManager = funnyGuilds.getUserManager();
             PandaStream.of(Bukkit.getOnlinePlayers())
                     .flatMap(userManager::getUser)
                     .forEach(user -> {
                         IndividualPlayerList playerList = new IndividualPlayerList(user,
-                                funnyGuilds.getNmsAccessor().getPlayerListAccessor(),
+                                plugin.getNmsAccessor().getPlayerListAccessor(),
                                 tablistConfig.playerList,
                                 tablistConfig.playerListHeader, tablistConfig.playerListFooter,
                                 tablistConfig.pages,

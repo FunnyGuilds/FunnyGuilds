@@ -1,26 +1,25 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
+
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class PointsCommand {
+public final class PointsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.points.name}",
         permission = "funnyguilds.admin",
         acceptsExceeded = true
     )
-    public void execute(FunnyGuilds plugin, MessageConfiguration messages, PluginConfiguration config, CommandSender sender, String[] args) {
+    public void execute(CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoNickGiven);
         when (args.length < 2, messages.adminNoPointsGiven);
 
@@ -43,7 +42,6 @@ public final class PointsCommand {
         }
 
         user.getRank().setPoints(points);
-        plugin.getRankManager().update(user);
 
         String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
         message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));

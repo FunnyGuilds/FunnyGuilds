@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.command.CommandSender;
 
-public final class SpyCommand {
+public final class SpyCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.spy.name}",
@@ -14,7 +14,7 @@ public final class SpyCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, CommandSender sender) {
+    public void execute(CommandSender sender) {
         UserCache cache = UserValidation.requireUserByName(sender.getName()).getCache();
 
         if (cache.isSpy()) {

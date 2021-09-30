@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUserPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -18,12 +17,14 @@ import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
+import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
@@ -41,10 +42,18 @@ import java.util.Map.Entry;
 public class PlayerDeath implements Listener {
 
     private final FunnyGuilds plugin;
+
+    private final RankManager rankManager;
+    private final UserManager userManager;
+
     private final RankSystem rankSystem;
 
     public PlayerDeath(FunnyGuilds plugin) {
         this.plugin = plugin;
+
+        this.rankManager = plugin.getRankManager();
+        this.userManager = plugin.getUserManager();
+
         this.rankSystem = RankSystem.create(plugin.getPluginConfiguration());
     }
 
@@ -236,8 +245,6 @@ public class PlayerDeath implements Listener {
         concurrencyManager.postTask(taskBuilder
                 .delegate(new DummyGlobalUpdateUserRequest(victim))
                 .delegate(new DummyGlobalUpdateUserRequest(attacker))
-                .delegate(new RankUpdateUserRequest(victim))
-                .delegate(new RankUpdateUserRequest(attacker))
                 .build());
 
         Formatter killFormatter = new Formatter()
