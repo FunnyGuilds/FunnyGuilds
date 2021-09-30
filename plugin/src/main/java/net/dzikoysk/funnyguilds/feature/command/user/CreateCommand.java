@@ -81,8 +81,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
         when (config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
 
         if (config.checkForRestrictedGuildNames) {
-            when (!GuildUtils.isNameValid(name), messages.restrictedGuildName);
-            when (!GuildUtils.isTagValid(tag), messages.restrictedGuildTag);
+            when (!GuildUtils.validateName(name), messages.restrictedGuildName);
+            when (!GuildUtils.validateTag(tag), messages.restrictedGuildTag);
         }
 
         if (config.regionsEnabled) {
@@ -142,8 +142,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Guild guild = new Guild(name);
-        guild.setTag(tag);
+        Guild guild = this.guildManager.create(name, tag);
         guild.setOwner(user);
         guild.setLives(config.warLives);
         guild.setBorn(System.currentTimeMillis());

@@ -190,12 +190,12 @@ public class GuildUtils {
         GUILDS.remove(guild);
     }
 
-    public static boolean isNameValid(String guildName) {
+    public static boolean validateName(String guildName) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         return config.whitelist == config.restrictedGuildNames.stream().anyMatch(name -> name.equalsIgnoreCase(guildName));
     }
 
-    public static boolean isTagValid(String guildTag) {
+    public static boolean validateTag(String guildTag) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         return config.whitelist == config.restrictedGuildTags.stream().anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
     }

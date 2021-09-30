@@ -22,40 +22,47 @@ public class Guild extends AbstractMutableEntity {
 
     private String name;
     private String tag;
-    private User owner;
+
     private GuildRank rank;
+    private int lives;
+
     private Region region;
     private Location home;
-    private Set<User> members;
-    private Set<User> deputies;
-    private Set<Guild> allies;
-    private Set<Guild> enemies;
     private Location enderCrystal;
-    private boolean pvp;
+
+    private User owner;
+    private Set<User> members = ConcurrentHashMap.newKeySet();
+    private Set<User> deputies  = ConcurrentHashMap.newKeySet();
+    private Set<Guild> allies  = ConcurrentHashMap.newKeySet();
+    private Set<Guild> enemies  = ConcurrentHashMap.newKeySet();
+    private Set<UUID> alliedFFGuilds  = ConcurrentHashMap.newKeySet();
+
     private long born;
     private long validity;
     private Date validityDate;
     private long protection;
-    private long ban;
-    private int lives;
     private long build;
-    private Set<UUID> alliedFFGuilds;
+    private long ban;
+
+    private boolean pvp;
 
     private Guild(UUID uuid) {
         this.uuid = uuid;
 
         this.rank = new GuildRank(this);
+
         this.born = System.currentTimeMillis();
-        this.members = ConcurrentHashMap.newKeySet();
-        this.deputies = ConcurrentHashMap.newKeySet();
-        this.allies = ConcurrentHashMap.newKeySet();
-        this.enemies = ConcurrentHashMap.newKeySet();
-        this.alliedFFGuilds = ConcurrentHashMap.newKeySet();
     }
 
-    public Guild(String name) {
+    Guild(String name) {
         this(UUID.randomUUID());
         this.name = name;
+    }
+
+    Guild(String name, String tag) {
+        this(UUID.randomUUID());
+        this.name = name;
+        this.tag = tag;
     }
 
     public void broadcast(String message) {

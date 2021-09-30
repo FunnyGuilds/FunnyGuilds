@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.rank
 
 import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
-import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.guild.GuildUtils
 import org.junit.jupiter.api.Test
 
@@ -18,9 +17,9 @@ class RankManagerTest extends FunnyGuildsSpec {
         def user1 = userManager.create(UUID.randomUUID(), "user1")
         def user2 = userManager.create(UUID.randomUUID(), "user2")
         def user3 = userManager.create(UUID.randomUUID(), "user3")
-        def guild1 = new Guild("OnlyPanda1")
-        def guild2 = new Guild("OnlyPanda2")
-        def guild3 = new Guild("OnlyPanda3")
+        def guild1 = guildManager.create("OnlyPanda1")
+        def guild2 = guildManager.create("OnlyPanda2")
+        def guild3 = guildManager.create("OnlyPanda3")
 
         user1.rank.points = 200
         user2.rank.points = 150

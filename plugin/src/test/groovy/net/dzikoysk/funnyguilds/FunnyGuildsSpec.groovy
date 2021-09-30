@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.config.IntegerRange
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
+import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.rank.RankManager
 import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
@@ -35,6 +36,7 @@ class FunnyGuildsSpec extends BukkitSpec {
 
     protected RankManager rankManager = new RankManager(config)
     protected UserManager userManager = new UserManager()
+    protected GuildManager guildManager = new GuildManager();
 
     @BeforeAll
     static void openMockedFunnyGuilds() {

@@ -28,7 +28,7 @@ public class UserManager {
     }
 
     public Set<User> getUsers() {
-        return new HashSet<>(usersByUuid.values());
+        return new HashSet<>(this.usersByUuid.values());
     }
 
     public Set<User> getUsers(Collection<String> names) {
