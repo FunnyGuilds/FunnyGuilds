@@ -33,10 +33,10 @@ public final class BreakCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
-        when (!guild.hasAllies(), this.messages.breakHasNotAllies);
+        when (!guild.hasAllies(), messages.breakHasNotAllies);
 
         if (args.length < 1) {
-            List<String> list = this.messages.breakAlliesList;
+            List<String> list = messages.breakAlliesList;
             String iss = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
             
             for (String msg : list) {
@@ -47,7 +47,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
         }
 
         Guild oppositeGuild = GuildValidation.requireGuildByTag(args[0]);
-        when (!guild.getAllies().contains(oppositeGuild), () -> this.messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
+        when (!guild.getAllies().contains(oppositeGuild), () -> messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
 
         if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
             return;
@@ -56,7 +56,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
         Player owner = oppositeGuild.getOwner().getPlayer();
 
         if (owner != null) {
-            owner.sendMessage(this.messages.breakIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+            owner.sendMessage(messages.breakIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
         }
 
         guild.removeAlly(oppositeGuild);
@@ -75,7 +75,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
         ConcurrencyTask task = taskBuilder.build();
         this.concurrencyManager.postTask(task);
 
-        player.sendMessage(this.messages.breakDone.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", oppositeGuild.getTag()));
+        player.sendMessage(messages.breakDone.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", oppositeGuild.getTag()));
     }
 
 }

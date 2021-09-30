@@ -36,13 +36,13 @@ public final class InfoCommand extends AbstractFunnyCommand {
                         .filter(User::hasGuild)
                         .map(User::getGuild)
                         .map(Guild::getTag))
-                .orThrow(() -> new ValidationException(this.messages.infoTag));
+                .orThrow(() -> new ValidationException(messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
         Formatter formatter = Placeholders.GUILD_ALL
                 .toFormatter(guild);
 
-        for (String messageLine : this.messages.infoList) {
+        for (String messageLine : messages.infoList) {
             messageLine = formatter.format(messageLine);
             String lastColor = ChatColor.getLastColors(messageLine.split("<online>")[0]);
             messageLine = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT.format(messageLine, Pair.of(lastColor, guild));

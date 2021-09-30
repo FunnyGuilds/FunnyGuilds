@@ -33,7 +33,7 @@ public final class RankResetCommand extends AbstractFunnyCommand {
         user.getRank().setPoints(config.rankStart);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
-        String resetMessage = this.messages.rankResetMessage;
+        String resetMessage = messages.rankResetMessage;
         resetMessage = StringUtils.replace(resetMessage, "{LAST-RANK}", String.valueOf(lastRank));
         resetMessage = StringUtils.replace(resetMessage, "{CURRENT-RANK}", String.valueOf(user.getRank().getPoints()));
 

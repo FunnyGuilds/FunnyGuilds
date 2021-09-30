@@ -29,14 +29,14 @@ public final class WarCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
-        when (args.length < 1, this.messages.enemyCorrectUse);
+        when (args.length < 1, messages.enemyCorrectUse);
 
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
-        when (guild.equals(enemyGuild), this.messages.enemySame);
-        when (guild.getAllies().contains(enemyGuild), this.messages.enemyAlly);
-        when (guild.getEnemies().contains(enemyGuild), this.messages.enemyAlready);
-        when (guild.getEnemies().size() >= config.maxEnemiesBetweenGuilds, () -> this.messages.enemyMaxAmount.replace("{AMOUNT}", Integer.toString(config.maxEnemiesBetweenGuilds)));
+        when (guild.equals(enemyGuild), messages.enemySame);
+        when (guild.getAllies().contains(enemyGuild), messages.enemyAlly);
+        when (guild.getEnemies().contains(enemyGuild), messages.enemyAlready);
+        when (guild.getEnemies().size() >= config.maxEnemiesBetweenGuilds, () -> messages.enemyMaxAmount.replace("{AMOUNT}", Integer.toString(config.maxEnemiesBetweenGuilds)));
 
         if (enemyGuild.getEnemies().size() >= config.maxEnemiesBetweenGuilds) {
             Formatter formatter = new Formatter()
@@ -44,7 +44,7 @@ public final class WarCommand extends AbstractFunnyCommand {
                     .register("{TAG}", enemyGuild.getTag())
                     .register("{AMOUNT}", config.maxEnemiesBetweenGuilds);
 
-            player.sendMessage(formatter.format(this.messages.enemyMaxTargetAmount));
+            player.sendMessage(formatter.format(messages.enemyMaxTargetAmount));
             return;
         }
 
@@ -52,13 +52,13 @@ public final class WarCommand extends AbstractFunnyCommand {
 
         guild.addEnemy(enemyGuild);
 
-        String allyDoneMessage = this.messages.enemyDone;
+        String allyDoneMessage = messages.enemyDone;
         allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", enemyGuild.getName());
         allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", enemyGuild.getTag());
         player.sendMessage(allyDoneMessage);
 
         if (enemyOwner != null) {
-            String allyIDoneMessage = this.messages.enemyIDone;
+            String allyIDoneMessage = messages.enemyIDone;
             allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
             allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
             enemyOwner.sendMessage(allyIDoneMessage);

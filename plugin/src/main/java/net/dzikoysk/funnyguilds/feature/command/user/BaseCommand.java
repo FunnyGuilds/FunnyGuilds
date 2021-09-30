@@ -32,9 +32,9 @@ public final class BaseCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @IsMember User user, Guild guild) {
-        when (!config.regionsEnabled, this.messages.regionsDisabled);
-        when (!config.baseEnable, this.messages.baseTeleportationDisabled);
-        when (user.getCache().getTeleportation() != null, this.messages.baseIsTeleportation);
+        when (!config.regionsEnabled, messages.regionsDisabled);
+        when (!config.baseEnable, messages.baseTeleportationDisabled);
+        when (user.getCache().getTeleportation() != null, messages.baseIsTeleportation);
 
         List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.base")
                 ? Collections.emptyList()
@@ -49,7 +49,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
         if (config.baseDelay.isZero()) {
             player.teleport(guild.getHome());
-            player.sendMessage(this.messages.baseTeleport);
+            player.sendMessage(messages.baseTeleport);
             return;
         }
 
@@ -70,7 +70,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
             
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                player.sendMessage(this.messages.baseMove);
+                player.sendMessage(messages.baseMove);
                 cache.setTeleportation(null);
                 player.getInventory().addItem(items);
                 return;
@@ -78,13 +78,13 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
             if (Duration.between(teleportStart, Instant.now()).compareTo(time) > 0) {
                 cache.getTeleportation().cancel();
-                player.sendMessage(this.messages.baseTeleport);
+                player.sendMessage(messages.baseTeleport);
                 player.teleport(guild.getHome());
                 cache.setTeleportation(null);
             }
         }, 0L, 10L));
 
-        player.sendMessage(this.messages.baseDontMove.replace("{TIME}", Long.toString(time.getSeconds())));
+        player.sendMessage(messages.baseDontMove.replace("{TIME}", Long.toString(time.getSeconds())));
     }
 
 }

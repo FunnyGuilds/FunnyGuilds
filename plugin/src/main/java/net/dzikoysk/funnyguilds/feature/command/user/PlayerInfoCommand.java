@@ -27,16 +27,16 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length == 0 && !(sender instanceof Player), this.messages.playerOnly);
+        when (args.length == 0 && !(sender instanceof Player), messages.playerOnly);
         
         String name = args.length == 0
                 ? sender.getName()
                 : args[0];
 
         User user = UserUtils.get(name, config.playerLookupIgnorecase);
-        when (user == null, this.messages.generalNotPlayedBefore);
+        when (user == null, messages.generalNotPlayedBefore);
 
-        sendInfoMessage(this.messages.playerInfoList, user, sender);
+        sendInfoMessage(messages.playerInfoList, user, sender);
     }
     
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
@@ -48,8 +48,8 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                 messageLine = StringUtils.replace(messageLine, "{TAG}", infoUser.getGuild().getTag());
             }
             else {
-                messageLine = StringUtils.replace(messageLine, "{GUILD}", this.messages.gNameNoValue);
-                messageLine = StringUtils.replace(messageLine, "{TAG}", this.messages.gTagNoValue);
+                messageLine = StringUtils.replace(messageLine, "{GUILD}", messages.gNameNoValue);
+                messageLine = StringUtils.replace(messageLine, "{TAG}", messages.gTagNoValue);
             }
 
             messageLine = StringUtils.replace(messageLine, "{PLAYER}", infoUser.getName());

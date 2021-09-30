@@ -30,11 +30,11 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
-        when (!config.regionsEnabled, this.messages.regionsDisabled);
+        when (!config.regionsEnabled, messages.regionsDisabled);
 
         Region region = RegionUtils.get(guild.getName());
         Location location = player.getLocation();
-        when (!region.isIn(location), this.messages.setbaseOutside);
+        when (!region.isIn(location), messages.setbaseOutside);
 
         if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, user, guild, location))) {
             return;
@@ -52,7 +52,7 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             }
         }
 
-        player.sendMessage(this.messages.setbaseDone);
+        player.sendMessage(messages.setbaseDone);
     }
 
 }

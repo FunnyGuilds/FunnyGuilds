@@ -20,12 +20,12 @@ public final class TntCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        when (!config.guildTNTProtectionEnabled, this.messages.tntProtectDisable);
+        when (!config.guildTNTProtectionEnabled, messages.tntProtectDisable);
 
         LocalTime now = LocalTime.now();
         LocalTime start = config.guildTNTProtectionStartTime;
         LocalTime end = config.guildTNTProtectionEndTime;
-        String message = this.messages.tntInfo;
+        String message = messages.tntInfo;
 
         boolean isWithinTimeframe = config.guildTNTProtectionPassingMidnight
                 ? now.isAfter(start) || now.isBefore(end)
@@ -35,7 +35,7 @@ public final class TntCommand extends AbstractFunnyCommand {
         message = StringUtils.replace(message, "{PROTECTION_END}", config.guildTNTProtectionEndTime_);
 
         sender.sendMessage(message);
-        sender.sendMessage(isWithinTimeframe ? this.messages.tntNowDisabled : this.messages.tntNowEnabled);
+        sender.sendMessage(isWithinTimeframe ? messages.tntNowDisabled : messages.tntNowEnabled);
     }
 
 }

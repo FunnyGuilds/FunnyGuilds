@@ -36,7 +36,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             long validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), Instant.ofEpochMilli(validity));
 
-            when (delta.compareTo(config.validityWhen) > 0, this.messages.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta.minus(config.validityWhen).toMillis())));
+            when (delta.compareTo(config.validityWhen) > 0, messages.validityWhen.replace("{TIME}", TimeUtils.getDurationBreakdown(delta.minus(config.validityWhen).toMillis())));
         }
 
         List<ItemStack> requiredItems = config.validityItems;
@@ -58,7 +58,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
 
         validity += config.validityTime.toMillis();
         guild.setValidity(validity);
-        player.sendMessage(this.messages.validityDone.replace("{DATE}", config.dateFormat.format(new Date(validity))));
+        player.sendMessage(messages.validityDone.replace("{DATE}", config.dateFormat.format(new Date(validity))));
     }
 
 }

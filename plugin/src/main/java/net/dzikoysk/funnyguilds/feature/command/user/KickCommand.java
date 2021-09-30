@@ -31,12 +31,12 @@ public final class KickCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
-        when (args.length < 1, this.messages.generalNoNickGiven);
+        when (args.length < 1, messages.generalNoNickGiven);
 
         User formerUser = UserValidation.requireUserByName(args[0]);
-        when (!formerUser.hasGuild(), this.messages.generalPlayerHasNoGuild);
-        when (!guild.equals(formerUser.getGuild()), this.messages.kickOtherGuild);
-        when (formerUser.isOwner(), this.messages.kickOwner);
+        when (!formerUser.hasGuild(), messages.generalPlayerHasNoGuild);
+        when (!guild.equals(formerUser.getGuild()), messages.kickOtherGuild);
+        when (formerUser.isOwner(), messages.kickOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
             return;
@@ -56,13 +56,13 @@ public final class KickCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        player.sendMessage(formatter.format(this.messages.kickToOwner));
-        Bukkit.broadcastMessage(formatter.format(this.messages.broadcastKick));
+        player.sendMessage(formatter.format(messages.kickToOwner));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
 
         Player formerPlayer = formerUser.getPlayer();
 
         if (formerPlayer != null) {
-            formerPlayer.sendMessage(formatter.format(this.messages.kickToPlayer));
+            formerPlayer.sendMessage(formatter.format(messages.kickToPlayer));
         }
     }
 

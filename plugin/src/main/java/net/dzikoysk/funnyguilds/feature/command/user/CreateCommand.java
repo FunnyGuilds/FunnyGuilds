@@ -49,15 +49,15 @@ public final class CreateCommand extends AbstractFunnyCommand {
         playerOnly = true
     )
     public void execute(Player player, User user, String[] args) {
-        when (!config.guildsEnabled, this.messages.adminGuildsDisabled);
-        when (LocationUtils.checkWorld(player), this.messages.blockedWorld);
-        when (user.hasGuild(), this.messages.generalHasGuild);
+        when (!config.guildsEnabled, messages.adminGuildsDisabled);
+        when (LocationUtils.checkWorld(player), messages.blockedWorld);
+        when (user.hasGuild(), messages.generalHasGuild);
 
         if (args.length != 2) {
-            when (args.length == 0, this.messages.generalNoTagGiven);
-            when (args.length == 1, this.messages.generalNoNameGiven);
+            when (args.length == 0, messages.generalNoTagGiven);
+            when (args.length == 1, messages.generalNoNameGiven);
 
-            throw new ValidationException(this.messages.createMore);
+            throw new ValidationException(messages.createMore);
         }
 
         String tag = args[0];
@@ -69,20 +69,20 @@ public final class CreateCommand extends AbstractFunnyCommand {
         String name = args[1];
         Location guildLocation = player.getLocation().getBlock().getLocation();
 
-        when (tag.length() > config.createTagLength, this.messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
-        when (tag.length() < config.createTagMinLength, this.messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
-        when (name.length() > config.createNameLength, this.messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
-        when (name.length() < config.createNameMinLength, this.messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
-        when (!tag.matches(config.tagRegex.getPattern()), this.messages.createOLTag);
-        when (!name.matches(config.nameRegex.getPattern()), this.messages.createOLName);
-        when (GuildUtils.nameExists(name), this.messages.createNameExists);
-        when (GuildUtils.tagExists(tag), this.messages.createTagExists);
-        when (config.regionsEnabled && RegionUtils.isIn(guildLocation), this.messages.createIsNear);
-        when (config.regionsEnabled && RegionUtils.isNear(guildLocation), this.messages.createIsNear);
+        when (tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
+        when (tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
+        when (name.length() > config.createNameLength, messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
+        when (name.length() < config.createNameMinLength, messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
+        when (!tag.matches(config.tagRegex.getPattern()), messages.createOLTag);
+        when (!name.matches(config.nameRegex.getPattern()), messages.createOLName);
+        when (GuildUtils.nameExists(name), messages.createNameExists);
+        when (GuildUtils.tagExists(tag), messages.createTagExists);
+        when (config.regionsEnabled && RegionUtils.isIn(guildLocation), messages.createIsNear);
+        when (config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
 
         if (config.checkForRestrictedGuildNames) {
-            when (!GuildUtils.isNameValid(name), this.messages.restrictedGuildName);
-            when (!GuildUtils.isTagValid(tag), this.messages.restrictedGuildTag);
+            when (!GuildUtils.isNameValid(name), messages.restrictedGuildName);
+            when (!GuildUtils.isTagValid(tag), messages.restrictedGuildTag);
         }
 
         if (config.regionsEnabled) {
@@ -100,7 +100,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 distance += config.enlargeItems.size() * config.enlargeSize;
             }
     
-            when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation), this.messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
+            when (distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation), messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
         }
 
         if (config.rankCreateEnable) {
@@ -108,7 +108,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             int points = user.getRank().getPoints();
 
             if (points < requiredRank) {
-                String msg = this.messages.createRank;
+                String msg = messages.createRank;
                 
                 msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", IntegerRange.inRangeToString(requiredRank, config.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
                 msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
@@ -125,14 +125,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
         double requiredMoney = player.hasPermission("funnyguilds.vip.items") ? config.requiredMoneyVip : config.requiredMoney;
 
         if (player.getTotalExperience() < requiredExperience) {
-            String msg = this.messages.createExperience;
+            String msg = messages.createExperience;
             msg = StringUtils.replace(msg, "{EXP}", String.valueOf(requiredExperience));
             player.sendMessage(msg);
             return;
         }
 
         if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
-            String notEnoughMoneyMessage = this.messages.createMoney;
+            String notEnoughMoneyMessage = messages.createMoney;
             notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
             player.sendMessage(notEnoughMoneyMessage);
             return;
@@ -162,7 +162,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             // border box does not contain guild box
             if (!bbox.contains(gbox)) {
-                String notEnoughDistanceMessage = this.messages.createNotEnoughDistanceFromBorder;
+                String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
                 notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
                 player.sendMessage(notEnoughDistanceMessage);
                 return;
@@ -185,7 +185,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         if (config.regionsEnabled) {
             if (config.pasteSchematicOnCreation) {
                 if (! PluginHook.WORLD_EDIT.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir)) {
-                    player.sendMessage(this.messages.createGuildCouldNotPasteSchematic);
+                    player.sendMessage(messages.createGuildCouldNotPasteSchematic);
                 }
             }
             else if (config.createCenterSphere) {
@@ -228,8 +228,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .register("{TAG}", tag)
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(formatter.format(this.messages.createGuild));
-        Bukkit.broadcastMessage(formatter.format(this.messages.broadcastCreate));
+        player.sendMessage(formatter.format(messages.createGuild));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastCreate));
 
         if (!config.giveRewardsForFirstGuild) {
             return;
