@@ -34,7 +34,7 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected MessageConfiguration messages = new MessageConfiguration()
 
     protected RankManager rankManager = new RankManager(config)
-    protected UserManager userManager = new UserManager(rankManager)
+    protected UserManager userManager = new UserManager()
 
     @BeforeAll
     static void openMockedFunnyGuilds() {

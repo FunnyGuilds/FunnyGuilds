@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
-import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
@@ -77,8 +76,7 @@ public class PlayerJoin implements Listener {
         ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
         concurrencyManager.postRequests(
                 new PrefixGlobalUpdatePlayer(player),
-                new DummyGlobalUpdateUserRequest(user),
-                new RankUpdateUserRequest(this.rankManager, this.userManager)
+                new DummyGlobalUpdateUserRequest(user)
         );
 
         final FunnyGuildsChannelHandler channelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallChannelHandler(player);

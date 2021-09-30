@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.user;
 
 import com.google.common.base.Charsets;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -47,9 +46,6 @@ public class User extends AbstractMutableEntity {
     public void removeGuild() {
         this.guild = null;
         this.markChanged();
-
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        plugin.getConcurrencyManager().postRequests(new RankUpdateUserRequest(plugin.getRankManager(), plugin.getUserManager()));
     }
 
     public boolean hasGuild() {

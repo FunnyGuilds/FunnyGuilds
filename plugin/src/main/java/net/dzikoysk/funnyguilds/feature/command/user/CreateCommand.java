@@ -6,7 +6,6 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
-import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -219,7 +218,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         this.concurrencyManager.postRequests(
-                new RankUpdateGuildRequest(this.rankManager),
                 new PrefixGlobalAddGuildRequest(guild),
                 new PrefixGlobalAddPlayerRequest(user.getName()),
                 new DatabaseUpdateGuildRequest(guild)

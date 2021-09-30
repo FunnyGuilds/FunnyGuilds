@@ -147,8 +147,8 @@ public class FunnyGuilds extends JavaPlugin {
             this.pluginConfiguration = configurationFactory.createPluginConfiguration(pluginConfigurationFile);
             this.tablistConfiguration = configurationFactory.createTablistConfiguration(tablistConfigurationFile);
         }
-        catch (Exception ex) {
-            logger.error("Could not load plugin configuration", ex);
+        catch (Exception exception) {
+            logger.error("Could not load plugin configuration", exception);
             shutdown("Critical error has been encountered!");
             return;
         }
@@ -172,7 +172,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.rankManager = new RankManager(this.pluginConfiguration);
-        this.userManager = new UserManager(this.rankManager);
+        this.userManager = new UserManager();
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -209,13 +209,13 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this.rankManager, this.userManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
             CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
             this.funnyCommands = commandsConfiguration.createFunnyCommands(this.getServer(), this);
-        } catch (Exception ex) {
-            logger.error("Could not register commands", ex);
+        } catch (Exception exception) {
+            logger.error("Could not register commands", exception);
             shutdown("Critical error has been encountered!");
             return;
         }
@@ -352,8 +352,6 @@ public class FunnyGuilds extends JavaPlugin {
             if (this.pluginConfiguration.createEntityType != null) {
                 GuildEntityHelper.spawnGuildHeart(guild);
             }
-
-            guild.updateRank();
         }
     }
 

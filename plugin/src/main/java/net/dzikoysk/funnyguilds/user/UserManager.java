@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -18,17 +17,13 @@ import java.util.stream.Collectors;
 
 public class UserManager {
 
-    private final RankManager rankManager;
-
     private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
     @Deprecated
     private static UserManager INSTANCE;
 
-    public UserManager(RankManager rankManager) {
-        this.rankManager = rankManager;
-
+    public UserManager() {
         INSTANCE = this;
     }
 
@@ -87,8 +82,6 @@ public class UserManager {
         User user = new User(uuid, name);
         addUser(user);
 
-        this.rankManager.recalculateUsersRank(this);
-
         return user;
     }
 
@@ -97,8 +90,6 @@ public class UserManager {
 
         User user = new User(player);
         addUser(user);
-
-        this.rankManager.recalculateUsersRank(this);
 
         return user;
     }

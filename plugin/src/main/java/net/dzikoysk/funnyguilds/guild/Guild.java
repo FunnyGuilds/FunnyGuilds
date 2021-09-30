@@ -1,12 +1,5 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
@@ -15,34 +8,43 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import panda.std.Option;
 
+import java.time.Instant;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
 public class Guild extends AbstractMutableEntity {
 
     private final UUID uuid;
 
-    private String     name;
-    private String     tag;
-    private User       owner;
-    private GuildRank  rank;
-    private Region     region;
-    private Location   home;
-    private Set<User>  members;
-    private Set<User>  deputies;
+    private String name;
+    private String tag;
+    private User owner;
+    private GuildRank rank;
+    private Region region;
+    private Location home;
+    private Set<User> members;
+    private Set<User> deputies;
     private Set<Guild> allies;
     private Set<Guild> enemies;
-    private Location   enderCrystal;
-    private boolean    pvp;
-    private long       born;
-    private long       validity;
-    private Date       validityDate;
-    private long       protection;
-    private long       ban;
-    private int        lives;
-    private long       build;
-    private Set<UUID>  alliedFFGuilds;
+    private Location enderCrystal;
+    private boolean pvp;
+    private long born;
+    private long validity;
+    private Date validityDate;
+    private long protection;
+    private long ban;
+    private int lives;
+    private long build;
+    private Set<UUID> alliedFFGuilds;
 
     private Guild(UUID uuid) {
         this.uuid = uuid;
 
+        this.rank = new GuildRank(this);
         this.born = System.currentTimeMillis();
         this.members = ConcurrentHashMap.newKeySet();
         this.deputies = ConcurrentHashMap.newKeySet();
@@ -77,7 +79,6 @@ public class Guild extends AbstractMutableEntity {
         }
 
         this.members.add(user);
-        this.updateRank();
         this.markChanged();
     }
 
@@ -112,7 +113,6 @@ public class Guild extends AbstractMutableEntity {
     public void removeMember(User user) {
         this.deputies.remove(user);
         this.members.remove(user);
-        this.updateRank();
         this.markChanged();
     }
 
@@ -138,11 +138,6 @@ public class Guild extends AbstractMutableEntity {
         this.build = 0;
         this.markChanged();
         return true;
-    }
-
-    public void updateRank() {
-        this.getRank();
-        FunnyGuilds.getInstance().getRankManager().update(this);
     }
 
     public boolean canBeAttacked() {
@@ -206,7 +201,6 @@ public class Guild extends AbstractMutableEntity {
 
     public void setMembers(Set<User> members) {
         this.members = Collections.synchronizedSet(members);
-        this.updateRank();
         this.markChanged();
     }
 
@@ -278,11 +272,6 @@ public class Guild extends AbstractMutableEntity {
 
     public void setBuild(long time) {
         this.build = time;
-        this.markChanged();
-    }
-
-    public void setRank(GuildRank rank) {
-        this.rank = rank;
         this.markChanged();
     }
 
@@ -413,12 +402,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public GuildRank getRank() {
-        if (this.rank != null) {
-            return this.rank;
-        }
-
-        this.rank = new GuildRank(this);
-        FunnyGuilds.getInstance().getRankManager().update(this);
         return this.rank;
     }
 

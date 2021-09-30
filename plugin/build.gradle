@@ -95,4 +95,6 @@ shadowJar {
 
 test {
     useJUnitPlatform()
+    forkEvery = 1
+    maxParallelForks = 4
 }

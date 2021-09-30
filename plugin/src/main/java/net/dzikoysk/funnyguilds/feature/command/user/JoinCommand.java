@@ -71,7 +71,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(EventCause.USER, user, guild, user))) {
             return;
         }
-        
+
         guild.addMember(user);
         user.setGuild(guild);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));

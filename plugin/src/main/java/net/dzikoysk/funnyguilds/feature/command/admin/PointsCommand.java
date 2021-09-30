@@ -42,7 +42,6 @@ public final class PointsCommand extends AbstractFunnyCommand {
         }
 
         user.getRank().setPoints(points);
-        this.rankManager.recalculateUsersRank(this.userManager);
 
         String message = this.messageConfig.adminPointsChanged.replace("{PLAYER}", user.getName());
         message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, this.pluginConfig.pointsFormat));
