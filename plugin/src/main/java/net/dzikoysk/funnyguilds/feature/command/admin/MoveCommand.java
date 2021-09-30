@@ -88,7 +88,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             }
         }
 
-        GuildUtils.spawnHeart(guild);
+        GuildUtils.spawnHeart(config, guild);
         player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
 

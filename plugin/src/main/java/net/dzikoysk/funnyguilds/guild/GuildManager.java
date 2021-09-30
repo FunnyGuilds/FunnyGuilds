@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import org.apache.commons.lang3.Validate;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
@@ -14,7 +15,13 @@ import java.util.stream.Collectors;
 
 public class GuildManager {
 
+    private final PluginConfiguration pluginConfiguration;
+
     private final Map<UUID, Guild> guildsMap = new ConcurrentHashMap<>();
+
+    public GuildManager(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
+    }
 
     public Set<Guild> getGuilds() {
         return new HashSet<>(this.guildsMap.values());
@@ -71,7 +78,7 @@ public class GuildManager {
     public Guild create(String name) {
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
-        Validate.isTrue(GuildUtils.validateName(name), "name is not valid!");
+        Validate.isTrue(GuildUtils.validateName(pluginConfiguration, name), "name is not valid!");
 
         Guild guild = new Guild(name);
         addGuild(guild);
@@ -82,7 +89,7 @@ public class GuildManager {
     public Guild create(String name, String tag) {
         Validate.notNull(tag, "tag can't be null!");
         Validate.notBlank(tag, "tag can't be blank!");
-        Validate.isTrue(GuildUtils.validateTag(tag), "tag is not valid!");
+        Validate.isTrue(GuildUtils.validateTag(pluginConfiguration, tag), "tag is not valid!");
 
         Guild guild = create(name);
         guild.setTag(tag);
@@ -100,6 +107,14 @@ public class GuildManager {
         Validate.notNull(guild, "user can't be null!");
 
         guildsMap.remove(guild.getUUID());
+    }
+
+    public boolean guildExistsByName(String name) {
+        return !this.getGuildByName(name).isEmpty();
+    }
+
+    public boolean guildExistsByTag(String tag) {
+        return !this.getGuildByTag(tag).isEmpty();
     }
 
     public int countGuilds() {

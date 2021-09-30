@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.telemetry.metrics;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bstats.bukkit.Metrics;
@@ -15,6 +16,7 @@ public class MetricsCollector implements Runnable {
     private final FunnyGuilds plugin;
 
     private final UserManager userManager;
+    private final GuildManager guildManager;
 
     private MCStats mcstats;
     private Metrics bstats;
@@ -22,6 +24,7 @@ public class MetricsCollector implements Runnable {
     public MetricsCollector(FunnyGuilds plugin) {
         this.plugin = plugin;
         this.userManager = plugin.getUserManager();
+        this.guildManager = plugin.getGuildManager();
 
         try {
             mcstats = new MCStats(plugin);
@@ -59,7 +62,7 @@ public class MetricsCollector implements Runnable {
             global.addPlotter(new MCStats.Plotter("Guilds") {
                 @Override
                 public int getValue() {
-                    return GuildUtils.getGuilds().size();
+                    return guildManager.countGuilds();
                 }
             });
 
@@ -77,7 +80,7 @@ public class MetricsCollector implements Runnable {
                 Map<String, Integer> valueMap = new HashMap<>();
 
                 valueMap.put("users", userManager.countUsers());
-                valueMap.put("guilds", GuildUtils.countGuilds());
+                valueMap.put("guilds", guildManager.countGuilds());
 
                 return valueMap;
             }));

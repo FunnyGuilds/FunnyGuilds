@@ -36,7 +36,7 @@ class FunnyGuildsSpec extends BukkitSpec {
 
     protected RankManager rankManager = new RankManager(config)
     protected UserManager userManager = new UserManager()
-    protected GuildManager guildManager = new GuildManager();
+    protected GuildManager guildManager = new GuildManager(config);
 
     @BeforeAll
     static void openMockedFunnyGuilds() {

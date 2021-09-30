@@ -81,8 +81,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
         when (config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
 
         if (config.checkForRestrictedGuildNames) {
-            when (!GuildUtils.validateName(name), messages.restrictedGuildName);
-            when (!GuildUtils.validateTag(tag), messages.restrictedGuildTag);
+            when (!GuildUtils.validateName(config, name), messages.restrictedGuildName);
+            when (!GuildUtils.validateTag(config, tag), messages.restrictedGuildTag);
         }
 
         if (config.regionsEnabled) {
@@ -205,7 +205,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 }
             }
             
-            GuildUtils.spawnHeart(guild);
+            GuildUtils.spawnHeart(config, guild);
             player.teleport(guildLocation);
         }
 
