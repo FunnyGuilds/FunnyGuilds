@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.guild;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologram;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
 import net.dzikoysk.funnyguilds.user.User;
@@ -11,7 +12,6 @@ import org.bukkit.Location;
 import panda.std.Option;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class Guild extends AbstractMutableEntity {
     private String name;
     private String tag;
     private User owner;
-    private GuildRank rank;
+    private final GuildRank rank;
     private Region region;
     private Location home;
     private Set<User> members;
@@ -43,7 +43,7 @@ public class Guild extends AbstractMutableEntity {
     private long ban;
     private int lives;
     private long build;
-    private Set<UUID> alliedFFGuilds;
+    private final Set<UUID> alliedFFGuilds;
 
     private Guild(UUID uuid) {
         this.uuid = uuid;
