@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
+import panda.std.Option;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -151,11 +152,12 @@ public class SQLDataModel implements DataModel {
         ResultSet result = SQLBasicUtils.getSelect(SQLDataModel.tabGuilds, "tag", "allies", "enemies").executeQuery();
 
         while (result.next()) {
-            Guild guild = GuildUtils.getByTag(result.getString("tag"));
-
-            if (guild == null) {
+            Option<Guild> guildOption = FunnyGuilds.getInstance().getGuildManager().getGuildByTag(result.getString("tag"));
+            if (guildOption.isEmpty()) {
                 continue;
             }
+
+            Guild guild = guildOption.get();
 
             String alliesList = result.getString("allies");
             String enemiesList = result.getString("enemies");

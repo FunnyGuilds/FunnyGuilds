@@ -85,7 +85,6 @@ public class GuildUtils {
             DatabaseGuild.delete(guild);
         }
 
-        guild.delete();
         FunnyGuilds.getInstance().getGuildManager().removeGuild(guild);
     }
 

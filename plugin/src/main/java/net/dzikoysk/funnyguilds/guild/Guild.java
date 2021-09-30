@@ -133,10 +133,6 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public void delete() {
-        GuildUtils.removeGuild(this);
-    }
-
     public boolean canBuild() {
         if (this.build > System.currentTimeMillis()) {
             return false;
@@ -449,6 +445,7 @@ public class Guild extends AbstractMutableEntity {
         return this.name;
     }
 
+    @Deprecated
     public static Guild getOrCreate(UUID uuid) {
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getUUID().equals(uuid)) {
@@ -462,6 +459,7 @@ public class Guild extends AbstractMutableEntity {
         return newGuild;
     }
 
+    @Deprecated
     public static Guild getOrCreate(String name) {
         for (Guild guild : GuildUtils.getGuilds()) {
             if (guild.getName().equalsIgnoreCase(name)) {

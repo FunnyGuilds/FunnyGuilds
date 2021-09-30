@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.telemetry.metrics;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.MultiLineChart;
@@ -74,7 +73,7 @@ public class MetricsCollector implements Runnable {
         if (bstats != null) {
             bstats.addCustomChart(new SingleLineChart("users", userManager::countUsers));
 
-            bstats.addCustomChart(new SingleLineChart("guilds", GuildUtils::countGuilds));
+            bstats.addCustomChart(new SingleLineChart("guilds", guildManager::countGuilds));
 
             bstats.addCustomChart(new MultiLineChart("users_and_guilds", () -> {
                 Map<String, Integer> valueMap = new HashMap<>();

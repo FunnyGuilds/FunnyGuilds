@@ -210,7 +210,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         user.setGuild(guild);
-        GuildUtils.addGuild(guild);
 
         if (config.regionsEnabled) {
             RegionUtils.addRegion(guild.getRegion());

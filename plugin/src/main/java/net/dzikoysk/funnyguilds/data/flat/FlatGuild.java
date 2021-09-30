@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
+import panda.std.Option;
 
 import java.io.File;
 import java.time.Instant;
@@ -213,10 +214,10 @@ public class FlatGuild {
         }
 
         for (String guildName : guilds) {
-            Guild guild = GuildUtils.getByName(guildName);
+            Option<Guild> guildOption = FunnyGuilds.getInstance().getGuildManager().getGuildByName(guildName);
 
-            if (guild != null) {
-                set.add(guild);
+            if (guildOption.isDefined()) {
+                set.add(guildOption.get());
             }
         }
 
