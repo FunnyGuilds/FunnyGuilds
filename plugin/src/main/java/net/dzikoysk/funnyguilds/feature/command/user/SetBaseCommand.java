@@ -2,11 +2,10 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildBaseChangeEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -20,7 +19,7 @@ import org.bukkit.entity.Player;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class SetBaseCommand {
+public final class SetBaseCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.set-base.name}",
@@ -30,7 +29,7 @@ public final class SetBaseCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
+    public void execute(Player player, @CanManage User user, Guild guild) {
         when (!config.regionsEnabled, messages.regionsDisabled);
 
         Region region = RegionUtils.get(guild.getName());

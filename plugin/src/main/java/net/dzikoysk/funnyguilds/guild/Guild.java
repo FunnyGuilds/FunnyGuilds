@@ -2,10 +2,9 @@ package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologram;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,29 +25,30 @@ public class Guild extends AbstractMutableEntity {
 
     private final UUID uuid;
 
-    private String     name;
-    private String     tag;
-    private User       owner;
-    private GuildRank  rank;
-    private Region     region;
-    private Location   home;
-    private Set<User>  members;
-    private Set<User>  deputies;
+    private String name;
+    private String tag;
+    private User owner;
+    private GuildRank rank;
+    private Region region;
+    private Location home;
+    private Set<User> members;
+    private Set<User> deputies;
     private Set<Guild> allies;
     private Set<Guild> enemies;
-    private boolean    pvp;
-    private long       born;
-    private long       validity;
-    private Date       validityDate;
-    private long       protection;
-    private long       ban;
-    private int        lives;
-    private long       build;
-    private Set<UUID>  alliedFFGuilds;
+    private boolean pvp;
+    private long born;
+    private long validity;
+    private Date validityDate;
+    private long protection;
+    private long ban;
+    private int lives;
+    private long build;
+    private Set<UUID> alliedFFGuilds;
 
     private Guild(UUID uuid) {
         this.uuid = uuid;
 
+        this.rank = new GuildRank(this);
         this.born = System.currentTimeMillis();
         this.members = ConcurrentHashMap.newKeySet();
         this.deputies = ConcurrentHashMap.newKeySet();
@@ -83,7 +83,6 @@ public class Guild extends AbstractMutableEntity {
         }
 
         this.members.add(user);
-        this.updateRank();
         this.markChanged();
     }
 
@@ -118,7 +117,6 @@ public class Guild extends AbstractMutableEntity {
     public void removeMember(User user) {
         this.deputies.remove(user);
         this.members.remove(user);
-        this.updateRank();
         this.markChanged();
     }
 
@@ -145,11 +143,6 @@ public class Guild extends AbstractMutableEntity {
         this.build = 0;
         this.markChanged();
         return true;
-    }
-
-    public void updateRank() {
-        this.getRank();
-        RankManager.getInstance().update(this);
     }
 
     public boolean canBeAttacked() {
@@ -216,7 +209,6 @@ public class Guild extends AbstractMutableEntity {
 
     public void setMembers(Set<User> members) {
         this.members = Collections.synchronizedSet(members);
-        this.updateRank();
         this.markChanged();
     }
 
@@ -291,11 +283,6 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public void setRank(GuildRank rank) {
-        this.rank = rank;
-        this.markChanged();
-    }
-
     public boolean isSomeoneInRegion() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
 
@@ -319,6 +306,23 @@ public class Guild extends AbstractMutableEntity {
 
     public boolean isBanned() {
         return this.ban > System.currentTimeMillis();
+    }
+
+    public boolean isRanked() {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        return members.size() >= config.minMembersToInclude;
+    }
+
+    public boolean hasDeputies() {
+        return !this.deputies.isEmpty();
+    }
+
+    public boolean hasAllies() {
+        return !this.allies.isEmpty();
+    }
+
+    public boolean hasEnemies() {
+        return !this.enemies.isEmpty();
     }
 
     public UUID getUUID() {
@@ -402,12 +406,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public GuildRank getRank() {
-        if (this.rank != null) {
-            return this.rank;
-        }
-
-        this.rank = new GuildRank(this);
-        RankManager.getInstance().update(this);
         return this.rank;
     }
 

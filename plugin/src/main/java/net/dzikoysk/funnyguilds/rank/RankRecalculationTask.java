@@ -1,11 +1,12 @@
 package net.dzikoysk.funnyguilds.rank;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRank;
 
 import java.util.Collections;
@@ -14,27 +15,30 @@ import java.util.TreeSet;
 
 public class RankRecalculationTask implements Runnable {
 
-    private final FunnyGuilds plugin;
+    private final PluginConfiguration pluginConfiguration;
 
-    public RankRecalculationTask(FunnyGuilds plugin) {
-        this.plugin = plugin;
+    private final RankManager rankManager;
+    private final UserManager userManager;
+
+    public RankRecalculationTask(PluginConfiguration pluginConfiguration, RankManager rankManager, UserManager userManager) {
+        this.pluginConfiguration = pluginConfiguration;
+        this.rankManager = rankManager;
+        this.userManager = userManager;
     }
 
     @Override
     public void run() {
-        RankManager manager = RankManager.getInstance();
-
-        this.recalculateUsersRank(manager);
-        this.recalculateGuildsRank(manager);
+        this.recalculateUsersRank(this.rankManager);
+        this.recalculateGuildsRank(this.rankManager);
     }
 
-    private void recalculateUsersRank(RankManager manager) {
+    private void recalculateUsersRank(RankManager rankManager) {
         NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
 
-        for (User user : plugin.getUserManager().getUsers()) {
+        for (User user : userManager.getUsers()) {
             UserRank userRank = user.getRank();
 
-            if (plugin.getPluginConfiguration().skipPrivilegedPlayersInRankPositions &&
+            if (this.pluginConfiguration.skipPrivilegedPlayersInRankPositions &&
                     PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt")) {
                 continue;
             }
@@ -48,16 +52,16 @@ public class RankRecalculationTask implements Runnable {
             userRank.setPosition(++position);
         }
 
-        manager.usersRank = usersRank;
+        rankManager.usersRank = usersRank;
     }
 
-    private void recalculateGuildsRank(RankManager manager) {
+    public void recalculateGuildsRank(RankManager rankManager) {
         NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
 
         for (Guild guild : GuildUtils.getGuilds()) {
             GuildRank guildRank = guild.getRank();
 
-            if (guild.getMembers().size() < plugin.getPluginConfiguration().minMembersToInclude) {
+            if (!guild.isRanked()) {
                 continue;
             }
 
@@ -70,7 +74,7 @@ public class RankRecalculationTask implements Runnable {
             guildRank.setPosition(++position);
         }
 
-        manager.guildsRank = guildsRank;
+        rankManager.guildsRank = guildsRank;
     }
 
 }

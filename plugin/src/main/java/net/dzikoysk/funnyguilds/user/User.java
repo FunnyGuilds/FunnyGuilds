@@ -2,8 +2,6 @@ package net.dzikoysk.funnyguilds.user;
 
 import com.google.common.base.Charsets;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -18,14 +16,14 @@ import java.util.UUID;
 
 public class User extends AbstractMutableEntity {
 
-    private final UUID                  uuid;
-    private       String                name;
-    private final UserCache             cache;
-    private final UserRank              rank;
-    private       WeakReference<Player> playerRef;
-    private       Guild                 guild;
-    private       UserBan               ban;
-    private final BossBarProvider       bossBarProvider;
+    private final UUID uuid;
+    private String name;
+    private final UserCache cache;
+    private final UserRank rank;
+    private WeakReference<Player> playerRef;
+    private Guild guild;
+    private UserBan ban;
+    private final BossBarProvider bossBarProvider;
 
     User(UUID uuid, String name) {
         this.uuid = uuid;
@@ -48,9 +46,6 @@ public class User extends AbstractMutableEntity {
     public void removeGuild() {
         this.guild = null;
         this.markChanged();
-
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new RankUpdateUserRequest(this));
     }
 
     public boolean hasGuild() {
@@ -71,7 +66,7 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean isOwner() {
-        if (! hasGuild()) {
+        if (!hasGuild()) {
             return false;
         }
 
@@ -79,7 +74,7 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean isDeputy() {
-        if (! hasGuild()) {
+        if (!hasGuild()) {
             return false;
         }
 
@@ -115,7 +110,7 @@ public class User extends AbstractMutableEntity {
     }
 
     public Player getPlayer() {
-        if (! isOnline()) {
+        if (!isOnline()) {
             return null;
         }
 

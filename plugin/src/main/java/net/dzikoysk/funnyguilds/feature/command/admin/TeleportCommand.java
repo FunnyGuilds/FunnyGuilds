@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
-public final class TeleportCommand {
+public final class TeleportCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${admin.teleport.name}",
@@ -18,7 +17,7 @@ public final class TeleportCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(MessageConfiguration messages, PluginConfiguration config, Player player, String[] args) {
+    public void execute(Player player, String[] args) {
         when (!config.regionsEnabled, messages.regionsDisabled);
         when (args.length < 1, messages.generalNoTagGiven);
 

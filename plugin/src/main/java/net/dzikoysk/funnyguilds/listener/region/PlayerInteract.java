@@ -77,7 +77,7 @@ public class PlayerInteract implements Listener {
 
             if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 try {
-                    infoExecutor.execute(plugin, config, plugin.getMessageConfiguration(), player, new String[] { guild.getTag() });
+                    infoExecutor.execute(player, new String[] { guild.getTag() });
                 } catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(player::sendMessage);
                 }

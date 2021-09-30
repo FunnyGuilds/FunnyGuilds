@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
-import net.dzikoysk.funnyguilds.concurrency.requests.rank.RankUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
@@ -14,6 +13,7 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
+import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -26,13 +26,18 @@ public class PlayerJoin implements Listener {
 
     private final FunnyGuilds plugin;
 
+    private final RankManager rankManager;
+    private final UserManager userManager;
+
     public PlayerJoin(FunnyGuilds plugin) {
         this.plugin = plugin;
+
+        this.rankManager = plugin.getRankManager();
+        this.userManager = plugin.getUserManager();
     }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        UserManager userManager = plugin.getUserManager();
         PluginConfiguration config = plugin.getPluginConfiguration();
         TablistConfiguration tablistConfig = plugin.getTablistConfiguration();
 
@@ -71,8 +76,7 @@ public class PlayerJoin implements Listener {
         ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
         concurrencyManager.postRequests(
                 new PrefixGlobalUpdatePlayer(player),
-                new DummyGlobalUpdateUserRequest(user),
-                new RankUpdateUserRequest(user)
+                new DummyGlobalUpdateUserRequest(user)
         );
 
         final FunnyGuildsChannelHandler channelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallChannelHandler(player);

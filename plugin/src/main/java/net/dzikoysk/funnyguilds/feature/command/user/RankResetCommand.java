@@ -2,10 +2,9 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 @FunnyComponent
-public final class RankResetCommand {
+public final class RankResetCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.rank-reset.name}",
@@ -23,7 +22,7 @@ public final class RankResetCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
+    public void execute(Player player, User user) {
         List<ItemStack> requiredItems = config.rankResetItems;
 
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {

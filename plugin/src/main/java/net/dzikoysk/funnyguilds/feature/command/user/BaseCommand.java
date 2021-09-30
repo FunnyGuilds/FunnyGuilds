@@ -2,15 +2,13 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsMember;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -20,11 +18,10 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class BaseCommand {
+public final class BaseCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.base.name}",
@@ -34,7 +31,7 @@ public final class BaseCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @IsMember User user, Guild guild) {
+    public void execute(Player player, @IsMember User user, Guild guild) {
         when (!config.regionsEnabled, messages.regionsDisabled);
         when (!config.baseEnable, messages.baseTeleportationDisabled);
         when (user.getCache().getTeleportation() != null, messages.baseIsTeleportation);
@@ -64,7 +61,7 @@ public final class BaseCommand {
         Instant teleportStart = Instant.now();
         UserCache cache = user.getCache();
 
-        cache.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
+        cache.setTeleportation(Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
             if (!player.isOnline()) {
                 cache.getTeleportation().cancel();
                 cache.setTeleportation(null);

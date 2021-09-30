@@ -2,9 +2,9 @@ package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.Iterables;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
-import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 
@@ -14,62 +14,53 @@ import java.util.TreeSet;
 
 public class RankManager {
 
-    private static RankManager INSTANCE;
+    private final PluginConfiguration pluginConfiguration;
 
     protected NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
     protected NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
 
-    public RankManager() {
+    @Deprecated
+    private static RankManager INSTANCE;
+
+    public RankManager(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
+
         INSTANCE = this;
     }
 
-    public static RankManager getInstance() {
-        return INSTANCE;
-    }
-
-    public void update(User user) {
-        if (user.getUUID().version() == 2) {
-            return;
-        }
-
-        if (FunnyGuilds.getInstance().getPluginConfiguration().skipPrivilegedPlayersInRankPositions &&
-                PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt")) {
-            return;
-        }
-
-        this.usersRank.add(user.getRank());
-    }
-
-    public void update(Guild guild) {
-        if (guild.getMembers().size() < FunnyGuilds.getInstance().getPluginConfiguration().minMembersToInclude) {
-            return;
-        }
-
-        this.guildsRank.add(guild.getRank());
-    }
-
-    public User getUser(int i) {
-        if (i - 1 < this.usersRank.size()) {
-            return Iterables.get(this.usersRank, i - 1).getUser();
+    public User getUser(int place) {
+        if (place - 1 < this.usersRank.size()) {
+            return Iterables.get(this.usersRank, place - 1).getUser();
         }
 
         return null;
     }
 
-    public Guild getGuild(int i) {
-        if (i - 1 < this.guildsRank.size()) {
-            return Iterables.get(this.guildsRank, i - 1).getGuild();
+    public Guild getGuild(int place) {
+        if (place - 1 < this.guildsRank.size()) {
+            return Iterables.get(this.guildsRank, place - 1).getGuild();
         }
 
         return null;
     }
 
-    public int users() {
+    public int countUsers() {
         return this.usersRank.size();
     }
 
-    public int guilds() {
+    public int countGuilds() {
         return this.guildsRank.size();
+    }
+
+    /**
+     * Gets the rank manager.
+     *
+     * @return the rank manager
+     * @deprecated for removal in the future, in favour of {@link FunnyGuilds#getRankManager()}
+     */
+    @Deprecated
+    public static RankManager getInstance() {
+        return INSTANCE;
     }
 
 }

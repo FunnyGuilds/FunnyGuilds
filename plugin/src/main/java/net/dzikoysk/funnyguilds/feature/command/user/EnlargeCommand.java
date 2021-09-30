@@ -2,11 +2,10 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEnlargeEvent;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -18,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class EnlargeCommand {
+public final class EnlargeCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.enlarge.name}",
@@ -27,7 +26,7 @@ public final class EnlargeCommand {
         permission = "funnyguilds.enlarge",
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, @CanManage User user, Guild guild) {
+    public void execute(Player player, @CanManage User user, Guild guild) {
         when (!config.regionsEnabled, messages.regionsDisabled);
 
         Region region = guild.getRegion();

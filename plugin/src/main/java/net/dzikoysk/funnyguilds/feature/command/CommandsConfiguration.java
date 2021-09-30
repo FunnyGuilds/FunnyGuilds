@@ -3,6 +3,8 @@ package net.dzikoysk.funnyguilds.feature.command;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration.Commands.FunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BaseAdminCommand;
@@ -51,8 +53,6 @@ import net.dzikoysk.funnyguilds.feature.command.user.TntCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.TopCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration.Commands.FunnyCommand;
 import org.bukkit.Server;
 import panda.utilities.text.Joiner;
 
@@ -64,83 +64,80 @@ import java.util.function.Function;
 
 public final class CommandsConfiguration {
 
-    public FunnyCommands createFunnyCommands(Server server, FunnyGuilds funnyGuilds) {
-        PluginConfiguration configuration = funnyGuilds.getPluginConfiguration();
-        PluginConfiguration.Commands commands = configuration.commands;
+    public FunnyCommands createFunnyCommands(Server server, FunnyGuilds plugin) {
+        PluginConfiguration.Commands commands = plugin.getPluginConfiguration().commands;
 
         FunnyCommand enlargeCommand = commands.enlarge;
-        enlargeCommand.enabled = enlargeCommand.enabled && configuration.enlargeEnable;
+        enlargeCommand.enabled = enlargeCommand.enabled && plugin.getPluginConfiguration().enlargeEnable;
 
         CommandComponents userCommands = new CommandComponents("user")
-                .command("ally", commands.ally, new AllyCommand())
-                .command("base", commands.base, new BaseCommand())
-                .command("break", commands.break_, new BreakCommand())
-                .command("confirm", commands.confirm, new ConfirmCommand())
-                .command("create", commands.create, new CreateCommand())
-                .command("delete", commands.delete, new DeleteCommand())
-                .command("deputy", commands.deputy, new DeputyCommand())
-                .command("enlarge", enlargeCommand, new EnlargeCommand())
-                .command("escape", commands.escape, new EscapeCommand())
-                .command("funnyguilds", commands.funnyguilds, new FunnyGuildsCommand())
-                .command("guild", commands.guild, new GuildCommand())
-                .command("info", commands.info, new InfoCommand())
-                .command("invite", commands.invite, new InviteCommand())
-                .command("items", commands.items, new ItemsCommand())
-                .command("join", commands.join, new JoinCommand())
-                .command("kick", commands.kick, new KickCommand())
-                .command("leader", commands.leader, new LeaderCommand())
-                .command("leave", commands.leave, new LeaveCommand())
-                .command("player", commands.player, new PlayerInfoCommand())
-                .command("pvp", commands.pvp, new PvPCommand())
-                .command("ranking", commands.ranking, new RankingCommand())
-                .command("rank-reset", commands.rankReset, new RankResetCommand())
-                .command("set-base", commands.setbase, new SetBaseCommand())
-                .command("top", commands.top, new TopCommand())
-                .command("validity", commands.validity, new ValidityCommand())
-                .command("war", commands.war, new WarCommand())
-                .command("tnt", commands.tnt, new TntCommand());
+                .command("ally", commands.ally, AllyCommand.class)
+                .command("base", commands.base, BaseCommand.class)
+                .command("break", commands.break_, BreakCommand.class)
+                .command("confirm", commands.confirm, ConfirmCommand.class)
+                .command("create", commands.create, CreateCommand.class)
+                .command("delete", commands.delete, DeleteCommand.class)
+                .command("deputy", commands.deputy, DeputyCommand.class)
+                .command("enlarge", enlargeCommand, EnlargeCommand.class)
+                .command("escape", commands.escape, EscapeCommand.class)
+                .command("funnyguilds", commands.funnyguilds, FunnyGuildsCommand.class)
+                .command("guild", commands.guild, GuildCommand.class)
+                .command("info", commands.info, InfoCommand.class)
+                .command("invite", commands.invite, InviteCommand.class)
+                .command("items", commands.items, ItemsCommand.class)
+                .command("join", commands.join, JoinCommand.class)
+                .command("kick", commands.kick, KickCommand.class)
+                .command("leader", commands.leader, LeaderCommand.class)
+                .command("leave", commands.leave, LeaveCommand.class)
+                .command("player", commands.player, PlayerInfoCommand.class)
+                .command("pvp", commands.pvp, PvPCommand.class)
+                .command("ranking", commands.ranking, RankingCommand.class)
+                .command("rank-reset", commands.rankReset, RankResetCommand.class)
+                .command("set-base", commands.setbase, SetBaseCommand.class)
+                .command("top", commands.top, TopCommand.class)
+                .command("validity", commands.validity, ValidityCommand.class)
+                .command("war", commands.war, WarCommand.class)
+                .command("tnt", commands.tnt, TntCommand.class);
 
         CommandComponents adminCommands = new CommandComponents("admin")
-                .command("add", commands.admin.add, new AddCommand())
-                .command("base", commands.admin.base, new BaseAdminCommand())
-                .command("ban", commands.admin.ban, new BanCommand())
-                .command("deaths", commands.admin.deaths, new DeathsCommand())
-                .command("delete", commands.admin.delete, new DeleteAdminCommand())
-                .command("deputy", commands.admin.deputy, new DeputyAdminCommand())
-                .command("guilds-enabled", commands.admin.enabled, new GuildsEnabledCommand())
-                .command("kick", commands.admin.kick, new KickAdminCommand())
-                .command("kills", commands.admin.kills, new KillsCommand())
-                .command("leader", commands.admin.leader, new LeaderAdminCommand())
-                .command("lives", commands.admin.lives, new LivesCommand())
-                .command("main", commands.admin.main, new MainCommand())
-                .command("move", commands.admin.move, new MoveCommand())
-                .command("name", commands.admin.name, new NameCommand())
-                .command("points", commands.admin.points, new PointsCommand())
-                .command("protection", commands.admin.protection, new ProtectionCommand())
-                .command("spy", commands.admin.spy, new SpyCommand())
-                .command("tag", commands.admin.tag, new TagCommand())
-                .command("teleport", commands.admin.teleport, new TeleportCommand())
-                .command("unban", commands.admin.unban, new UnbanCommand())
-                .command("validity", commands.admin.validity, new ValidityAdminCommand());
+                .command("add", commands.admin.add, AddCommand.class)
+                .command("base", commands.admin.base, BaseAdminCommand.class)
+                .command("ban", commands.admin.ban, BanCommand.class)
+                .command("deaths", commands.admin.deaths, DeathsCommand.class)
+                .command("delete", commands.admin.delete, DeleteAdminCommand.class)
+                .command("deputy", commands.admin.deputy, DeputyAdminCommand.class)
+                .command("guilds-enabled", commands.admin.enabled, GuildsEnabledCommand.class)
+                .command("kick", commands.admin.kick, KickAdminCommand.class)
+                .command("kills", commands.admin.kills, KillsCommand.class)
+                .command("leader", commands.admin.leader, LeaderAdminCommand.class)
+                .command("lives", commands.admin.lives, LivesCommand.class)
+                .command("main", commands.admin.main, MainCommand.class)
+                .command("move", commands.admin.move, MoveCommand.class)
+                .command("name", commands.admin.name, NameCommand.class)
+                .command("points", commands.admin.points, PointsCommand.class)
+                .command("protection", commands.admin.protection, ProtectionCommand.class)
+                .command("spy", commands.admin.spy, SpyCommand.class)
+                .command("tag", commands.admin.tag, TagCommand.class)
+                .command("teleport", commands.admin.teleport, TeleportCommand.class)
+                .command("unban", commands.admin.unban, UnbanCommand.class)
+                .command("validity", commands.admin.validity, ValidityAdminCommand.class);
 
-        return FunnyCommands.configuration(() -> funnyGuilds)
+        return FunnyCommands.configuration(() -> plugin)
                 .registerDefaultComponents()
                 .placeholders(userCommands.placeholders)
                 .placeholders(adminCommands.placeholders)
-                .bind(new PluginBind())
-                .bind(new SettingsBind())
-                .bind(new MessagesBind())
-                .bind(new UserBind())
-                .bind(new GuildBind())
+                .injector(plugin.getInjector().fork(resources -> {}))
+                .bind(new UserBind(plugin.getUserManager()))
+                .bind(new GuildBind(plugin.getUserManager()))
                 .type(new PlayerType(server))
                 .completer(new GuildsCompleter())
-                .completer(new MembersCompleter())
-                .validator(new MemberValidator())
-                .validator(new ManageValidator())
-                .validator(new OwnerValidator())
-                .registerComponents(userCommands.commands)
-                .registerComponents(adminCommands.commands)
-                .exceptionHandler(new FunnyGuildsExceptionHandler(funnyGuilds))
+                .completer(new MembersCompleter(plugin.getUserManager()))
+                .validator(new MemberValidator(plugin.getMessageConfiguration()))
+                .validator(new ManageValidator(plugin.getMessageConfiguration()))
+                .validator(new OwnerValidator(plugin.getMessageConfiguration()))
+                .commands(userCommands.commands)
+                .commands(adminCommands.commands)
+                .exceptionHandler(new FunnyGuildsExceptionHandler(FunnyGuilds.getPluginLogger()))
                 .install();
     }
 
@@ -148,13 +145,13 @@ public final class CommandsConfiguration {
 
         private final String group;
         private final Map<String, Function<String, String>> placeholders = new HashMap<>();
-        private final List<Object> commands = new ArrayList<>();
+        private final List<Class<?>> commands = new ArrayList<>();
 
         private CommandComponents(String group) {
             this.group = group;
         }
 
-        private CommandComponents command(String name, FunnyCommand configuration, Object command) {
+        private CommandComponents command(String name, FunnyCommand configuration, Class<?> command) {
             if (configuration.enabled) {
                 this.placeholders.put(group + "." + name + ".name", key -> configuration.name);
                 this.placeholders.put(group + "." + name + ".aliases", key -> Joiner.on(", ").join(configuration.aliases).toString());
@@ -165,7 +162,7 @@ public final class CommandsConfiguration {
             return this;
         }
 
-        private CommandComponents command(String name, String alias, Object command) {
+        private CommandComponents command(String name, String alias, Class<?> command) {
             this.placeholders.put(group + "." + name + ".name", key -> alias);
             this.commands.add(command);
             return this;

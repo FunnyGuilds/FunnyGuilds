@@ -5,13 +5,19 @@ import net.dzikoysk.funnycommands.resources.Bind;
 import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.Resources;
 
 @FunnyComponent
 final class UserBind implements Bind {
+
+    private final UserManager userManager;
+
+    UserBind(UserManager userManager) {
+        this.userManager = userManager;
+    }
 
     @Override
     public void accept(Resources injectorResources) {
@@ -25,7 +31,7 @@ final class UserBind implements Bind {
             throw new IllegalStateException("Cannot use user bind in non-player command");
         }
 
-        return UserUtils.get(((OfflinePlayer) commandSender).getUniqueId());
+        return this.userManager.getUser(((OfflinePlayer) commandSender).getUniqueId()).getOrNull();
     }
 
 }

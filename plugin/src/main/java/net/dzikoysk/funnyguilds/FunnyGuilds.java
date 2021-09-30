@@ -68,12 +68,14 @@ import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
+import org.panda_lang.utilities.inject.DependencyInjection;
+import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.utilities.ClassUtils;
 
@@ -81,39 +83,43 @@ import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
-    private static FunnyGuilds       funnyguilds;
+    private static FunnyGuilds plugin;
     private static FunnyGuildsLogger logger;
 
-    private final File pluginConfigurationFile  = new File(this.getDataFolder(), "config.yml");
+    private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
     private final File messageConfigurationFile = new File(this.getDataFolder(), "messages.yml");
-    private final File pluginDataFolderFile     = new File(this.getDataFolder(), "data");
+    private final File pluginDataFolderFile = new File(this.getDataFolder(), "data");
 
-    private FunnyGuildsVersion     version;
-    private FunnyCommands          funnyCommands;
-    private PluginConfiguration    pluginConfiguration;
-    private TablistConfiguration   tablistConfiguration;
-    private MessageConfiguration   messageConfiguration;
-    private ConcurrencyManager     concurrencyManager;
+    private FunnyGuildsVersion version;
+    private FunnyCommands funnyCommands;
+
+    private PluginConfiguration pluginConfiguration;
+    private TablistConfiguration tablistConfiguration;
+    private MessageConfiguration messageConfiguration;
+
+    private ConcurrencyManager concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
-    private UserManager            userManager;
-    private RankManager            rankManager;
-    private NmsAccessor            nmsAccessor;
+    private RankManager rankManager;
+    private UserManager userManager;
+    private NmsAccessor nmsAccessor;
+
+    private DataModel dataModel;
+    private DataPersistenceHandler dataPersistenceHandler;
+    private InvitationPersistenceHandler invitationPersistenceHandler;
+
+    private Injector injector;
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
     private volatile BukkitTask rankRecalculationTask;
-
-    private DataModel                    dataModel;
-    private DataPersistenceHandler       dataPersistenceHandler;
-    private InvitationPersistenceHandler invitationPersistenceHandler;
 
     private boolean isDisabling;
     private boolean forceDisabling;
 
     @Override
     public void onLoad() {
-        funnyguilds = this;
+        plugin = this;
         logger = new FunnyGuildsLogger(this);
         this.version = new FunnyGuildsVersion(this);
 
@@ -129,7 +135,7 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        if (! this.getDataFolder().exists()) {
+        if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
 
@@ -153,23 +159,20 @@ public class FunnyGuilds extends JavaPlugin {
         this.concurrencyManager = new ConcurrencyManager(this, pluginConfiguration.concurrencyThreads);
         this.concurrencyManager.printStatus();
 
-        CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
-        this.funnyCommands = commandsConfiguration.createFunnyCommands(getServer(), this);
-
         this.dynamicListenerManager = new DynamicListenerManager(this);
         PluginHook.earlyInit();
     }
 
     @Override
     public void onEnable() {
-        funnyguilds = this;
+        plugin = this;
 
         if (this.forceDisabling) {
             return;
         }
 
+        this.rankManager = new RankManager(this.pluginConfiguration);
         this.userManager = new UserManager();
-        this.rankManager = new RankManager();
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -188,12 +191,34 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.loadInvitations();
         this.invitationPersistenceHandler.startHandler();
 
+        this.injector = DependencyInjection.createInjector(resources -> {
+            resources.on(Server.class).assignInstance(this.getServer());
+            resources.on(FunnyGuilds.class).assignInstance(this);
+            resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
+            resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
+            resources.on(MessageConfiguration.class).assignInstance(this.messageConfiguration);
+            resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
+            resources.on(ConcurrencyManager.class).assignInstance(this.concurrencyManager);
+            resources.on(RankManager.class).assignInstance(this.rankManager);
+            resources.on(UserManager.class).assignInstance(this.userManager);
+            resources.on(DataModel.class).assignInstance(this.dataModel);
+        });
+
         MetricsCollector collector = new MetricsCollector(this);
         collector.start();
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
+
+        try {
+            CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
+            this.funnyCommands = commandsConfiguration.createFunnyCommands(this.getServer(), this);
+        } catch (Exception exception) {
+            logger.error("Could not register commands", exception);
+            shutdown("Critical error has been encountered!");
+            return;
+        }
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new GuiActionHandler(), this);
@@ -263,9 +288,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
-        for (User user : UserUtils.getUsers()) {
-            user.getBossBar().removeNotification();
-        }
+        this.userManager.getUsers().forEach(user -> user.getBossBar().removeNotification());
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
@@ -278,7 +301,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         Database.getInstance().shutdown();
 
-        funnyguilds = null;
+        plugin = null;
     }
 
     public void shutdown(String content) {
@@ -329,8 +352,6 @@ public class FunnyGuilds extends JavaPlugin {
             if (this.pluginConfiguration.createEntityType != null) {
                 GuildEntityHelper.spawnGuildHeart(guild);
             }
-
-            guild.updateRank();
         }
     }
 
@@ -386,16 +407,20 @@ public class FunnyGuilds extends JavaPlugin {
         return this.dynamicListenerManager;
     }
 
-    public UserManager getUserManager() {
-        return userManager;
-    }
-
     public RankManager getRankManager() {
         return rankManager;
     }
 
+    public UserManager getUserManager() {
+        return userManager;
+    }
+
     public NmsAccessor getNmsAccessor() {
         return this.nmsAccessor;
+    }
+
+    public Injector getInjector() {
+        return injector;
     }
 
     public void reloadPluginConfiguration() throws OkaeriException {
@@ -411,7 +436,7 @@ public class FunnyGuilds extends JavaPlugin {
     }
 
     public static FunnyGuilds getInstance() {
-        return funnyguilds;
+        return plugin;
     }
 
     public static FunnyGuildsLogger getPluginLogger() {

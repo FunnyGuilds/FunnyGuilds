@@ -14,9 +14,15 @@ import java.util.List;
 @FunnyComponent
 final class MembersCompleter implements Completer {
 
+    private final UserManager userManager;
+
+    MembersCompleter(UserManager userManager) {
+        this.userManager = userManager;
+    }
+
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
-        return UserManager.getInstance().getUser(context.getCommandSender().getName())
+        return this.userManager.getUser(context.getCommandSender().getName())
                 .filter(User::hasGuild)
                 .map(User::getGuild)
                 .map(guild -> CommandUtils.collectCompletions(guild.getMembers(), prefix, limit, ArrayList::new, User::getName))

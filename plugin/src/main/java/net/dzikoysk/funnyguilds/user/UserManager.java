@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -68,6 +67,12 @@ public class UserManager {
         return getUser(offline.getName());
     }
 
+    public Set<User> getUsersByNames(Collection<String> names) {
+        return PandaStream.of(names)
+                .flatMap(this::getUser)
+                .collect(Collectors.toSet());
+    }
+
     public User create(UUID uuid, String name) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
@@ -75,9 +80,7 @@ public class UserManager {
         Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
 
         User user = new User(uuid, name);
-
         addUser(user);
-        RankManager.getInstance().update(user);
 
         return user;
     }
@@ -87,7 +90,6 @@ public class UserManager {
 
         User user = new User(player);
         addUser(user);
-        RankManager.getInstance().update(user);
 
         return user;
     }
@@ -138,13 +140,7 @@ public class UserManager {
     }
 
     public int countUsers() {
-        return usersByUuid.size();
-    }
-
-    public Set<User> getUsersByNames(Collection<String> names) {
-        return PandaStream.of(names)
-                .flatMap(this::getUser)
-                .collect(Collectors.toSet());
+        return this.usersByUuid.size();
     }
 
     /**

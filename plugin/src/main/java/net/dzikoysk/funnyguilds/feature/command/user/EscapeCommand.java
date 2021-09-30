@@ -2,9 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
@@ -16,12 +14,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.whenNull;
 
 @FunnyComponent
-public final class EscapeCommand {
+public final class EscapeCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
         name = "${user.escape.name}",
@@ -31,7 +28,7 @@ public final class EscapeCommand {
         acceptsExceeded = true,
         playerOnly = true
     )
-    public void execute(PluginConfiguration config, MessageConfiguration messages, Player player, User user) {
+    public void execute(Player player, User user) {
         when (!config.regionsEnabled, messages.regionsDisabled);
         when (!config.escapeEnable || !config.baseEnable, messages.escapeDisabled);
         when (user.getCache().getTeleportation() != null, messages.escapeInProgress);
@@ -40,7 +37,7 @@ public final class EscapeCommand {
         Region region = RegionUtils.getAt(playerLocation);
         whenNull (region, messages.escapeNoNeedToRun);
 
-        int time = FunnyGuilds.getInstance().getPluginConfiguration().escapeDelay;
+        int time = config.escapeDelay;
 
         if (!user.hasGuild()) {
             when (!config.escapeSpawn, messages.escapeNoUserGuild);
@@ -71,12 +68,11 @@ public final class EscapeCommand {
     }
 
     private void scheduleTeleportation(Player player, User user, Location destination, int time, Runnable onSuccess) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         Location before = player.getLocation();
         AtomicInteger timeCounter = new AtomicInteger(0);
         UserCache cache = user.getCache();
 
-        cache.setTeleportation(Bukkit.getScheduler().runTaskTimer(FunnyGuilds.getInstance(), () -> {
+        cache.setTeleportation(Bukkit.getScheduler().runTaskTimer(this.plugin, () -> {
             if (!player.isOnline()) {
                 cache.getTeleportation().cancel();
                 cache.setTeleportation(null);
