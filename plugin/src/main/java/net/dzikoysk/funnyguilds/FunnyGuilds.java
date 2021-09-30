@@ -213,7 +213,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager, this.guildManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
             CommandsConfiguration commandsConfiguration = new CommandsConfiguration();

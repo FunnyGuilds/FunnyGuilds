@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -52,7 +51,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         }
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (!InvitationList.hasInvitationFrom(player, GuildUtils.getByTag(guild.getTag())), messages.joinHasNotInvitationTo);
+        when (!InvitationList.hasInvitationFrom(player, this.guildManager.getGuildByTag(guild.getTag()).getOrNull()), messages.joinHasNotInvitationTo);
 
         List<ItemStack> requiredItems = config.joinItems;
 
