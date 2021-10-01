@@ -14,7 +14,6 @@ import java.util.List;
 public class HologramConfiguration extends OkaeriConfig {
 
     @Comment("Czy ta sekcja ma być włączona?")
-    @CustomKey("enabled")
     public boolean enabled = true;
 
     @Comment("Co ile tick'ów ma być aktualizowany hologram? (20 tick = 1 sekunda)")
@@ -23,7 +22,6 @@ public class HologramConfiguration extends OkaeriConfig {
 
     @Comment("Item ozdobny nad hologramem.")
     @Comment("Jeśli ustawiony na AIR to opcja jest wyłączona.")
-    @CustomKey("item")
     public Material item = Material.AIR;
 
     @Comment("Tekst wyświetlany przez hologram")
