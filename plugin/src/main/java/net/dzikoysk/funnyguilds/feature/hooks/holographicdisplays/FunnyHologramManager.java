@@ -7,9 +7,9 @@ public interface FunnyHologramManager {
 
     Option<FunnyHologram> createHologram(Guild guild);
 
-    void deleteHologram(Guild guild);
+    Option<FunnyHologram> deleteHologram(Guild guild);
 
-    void deleteHologram(FunnyHologram hologram);
+    Option<Guild> deleteHologram(FunnyHologram hologram);
 
     Option<FunnyHologram> getFunnyHologram(Guild guild);
 

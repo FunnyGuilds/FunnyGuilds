@@ -38,23 +38,18 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
     }
 
     @Override
-    public void deleteHologram(Guild guild) {
-        FunnyHologramImpl hologramHook = holograms.remove(guild);
-
-        if (hologramHook == null) {
-            return;
-        }
-
-        hologramHook.delete();
+    public Option<FunnyHologram> deleteHologram(Guild guild) {
+        return Option.of(holograms.remove(guild))
+                .peek(FunnyHologramImpl::delete)
+                .is(FunnyHologram.class);
     }
 
     @Override
-    public void deleteHologram(FunnyHologram hologram) {
-        PandaStream.of(holograms.entrySet())
+    public Option<Guild> deleteHologram(FunnyHologram hologram) {
+        return PandaStream.of(holograms.entrySet())
                 .find(entry -> entry.getValue().equals(hologram))
                 .map(Map.Entry::getKey)
-                .map(holograms::remove)
-                .peek(FunnyHologramImpl::delete);
+                .peek(guild -> Option.of(holograms.remove(guild)).peek(FunnyHologramImpl::delete));
     }
 
     @Override
