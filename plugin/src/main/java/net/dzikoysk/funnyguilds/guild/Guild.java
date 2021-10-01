@@ -415,7 +415,7 @@ public class Guild extends AbstractMutableEntity {
         return this.rank;
     }
 
-    public Option<Location> getEnderCrystal() {
+    public Option<Location> getCenter() {
         if (this.region == null) {
             return Option.none();
         }
@@ -426,7 +426,11 @@ public class Guild extends AbstractMutableEntity {
             return Option.none();
         }
 
-        return Option.of(center.clone().add(0.5D, - 1.0D, 0.5D));
+        return Option.of(center.clone());
+    }
+
+    public Option<Location> getEnderCrystal() {
+        return this.getCenter().map(location -> location.add(0.5D, - 1.0D, 0.5D));
     }
 
     public void updateHologram(Consumer<FunnyHologram> hologramConsumer) {

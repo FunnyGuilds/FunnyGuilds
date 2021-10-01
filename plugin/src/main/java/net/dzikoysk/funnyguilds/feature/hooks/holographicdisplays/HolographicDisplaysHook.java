@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.subcomponents.HologramConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -16,26 +15,23 @@ import java.util.Map;
 public final class HolographicDisplaysHook implements FunnyHologramManager {
 
     private final FunnyGuilds plugin;
+    private final HologramConfiguration hologramConfig;
     private final Map<Guild, FunnyHologramImpl> holograms = Collections.synchronizedMap(new HashMap<>());
 
     private HolographicDisplaysHook(FunnyGuilds plugin) {
         this.plugin = plugin;
+        this.hologramConfig = plugin.getPluginConfiguration().heartConfig.hologram;
     }
 
     @Override
     public Option<FunnyHologram> createHologram(Guild guild) {
         this.deleteHologram(guild);
 
-        //TODO: Zrobić to ładniej
-        HologramConfiguration hologramConfig = plugin.getPluginConfiguration().heartConfig.hologram;
-        Location center = guild.getRegion().getCenter();
-        Location hologramLoc = center.clone().add(hologramConfig.locationCorrection.toLocation(center.getWorld()));
-
-        return guild.getEnderCrystal()
-                .map(location -> HologramsAPI.createHologram(plugin, hologramLoc))
+        return guild.getCenter()
+                .map(location -> location.add(hologramConfig.locationCorrection.toLocation(location.getWorld())))
+                .map(location -> HologramsAPI.createHologram(plugin, location))
                 .map(FunnyHologramImpl::new)
                 .peek(hologram -> holograms.put(guild, hologram))
-                .peek(funnyHologram -> funnyHologram.setLocation(hologramLoc))
                 .is(FunnyHologram.class);
     }
 
@@ -48,7 +44,6 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
         }
 
         hologramHook.delete();
-        throw new IllegalArgumentException();
     }
 
     @Override
@@ -58,7 +53,6 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
                 .map(Map.Entry::getKey)
                 .map(holograms::remove)
                 .peek(FunnyHologramImpl::delete);
-        throw new IllegalArgumentException();
     }
 
     @Override
