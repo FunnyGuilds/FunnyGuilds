@@ -2,8 +2,10 @@ package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.subcomponents.HologramConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -16,7 +18,7 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
     private final FunnyGuilds plugin;
     private final Map<Guild, FunnyHologramImpl> holograms = Collections.synchronizedMap(new HashMap<>());
 
-    HolographicDisplaysHook(FunnyGuilds plugin) {
+    private HolographicDisplaysHook(FunnyGuilds plugin) {
         this.plugin = plugin;
     }
 
@@ -24,11 +26,17 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
     public Option<FunnyHologram> createHologram(Guild guild) {
         this.deleteHologram(guild);
 
+        //TODO: Zrobić to ładniej
+        HologramConfiguration hologramConfig = plugin.getPluginConfiguration().heartConfig.hologram;
+        Location center = guild.getRegion().getCenter();
+        Location hologramLoc = center.clone().add(hologramConfig.locationCorrection.toLocation(center.getWorld()));
+
         return guild.getEnderCrystal()
-                .map(location -> HologramsAPI.createHologram(plugin, location))
+                .map(location -> HologramsAPI.createHologram(plugin, hologramLoc))
                 .map(FunnyHologramImpl::new)
                 .peek(hologram -> holograms.put(guild, hologram))
-                .map(funnyHologram -> funnyHologram); // TODO: panda-utilities update
+                .peek(funnyHologram -> funnyHologram.setLocation(hologramLoc))
+                .is(FunnyHologram.class);
     }
 
     @Override
@@ -40,6 +48,7 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
         }
 
         hologramHook.delete();
+        throw new IllegalArgumentException();
     }
 
     @Override
@@ -49,6 +58,7 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
                 .map(Map.Entry::getKey)
                 .map(holograms::remove)
                 .peek(FunnyHologramImpl::delete);
+        throw new IllegalArgumentException();
     }
 
     @Override
@@ -57,9 +67,10 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
     }
 
     public static HolographicDisplaysHook createAndRunHandler(FunnyGuilds plugin) {
+        HologramConfiguration hologramConfig = plugin.getPluginConfiguration().heartConfig.hologram;
         HolographicDisplaysHook holographicDisplaysHook = new HolographicDisplaysHook(plugin);
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new HologramUpdateHandler(), 400L, 200L);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new HologramUpdateHandler(plugin), 100L, hologramConfig.updateInterval);
 
         return holographicDisplaysHook;
     }

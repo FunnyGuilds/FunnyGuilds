@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.subcomponents.HologramConfiguration;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
@@ -185,7 +186,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setRegion(Region region) {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+
+        if (! config.regionsEnabled) {
             return;
         }
 
@@ -198,7 +201,10 @@ public class Guild extends AbstractMutableEntity {
             this.home = center.clone();
         }
 
-        this.updateHologram(hologram -> hologram.setLocation(center));
+        HologramConfiguration hologramConfig = config.heartConfig.hologram;
+        Location hologramLoc = center.clone().add(hologramConfig.locationCorrection.toLocation(center.getWorld()));
+
+        this.updateHologram(hologram -> hologram.setLocation(hologramLoc));
         this.markChanged();
     }
 
@@ -420,7 +426,7 @@ public class Guild extends AbstractMutableEntity {
             return Option.none();
         }
 
-        return Option.of(center.add(0.5D, - 1.0D, 0.5D));
+        return Option.of(center.clone().add(0.5D, - 1.0D, 0.5D));
     }
 
     public void updateHologram(Consumer<FunnyHologram> hologramConsumer) {
@@ -434,7 +440,7 @@ public class Guild extends AbstractMutableEntity {
 
         FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
         hologramManager.getFunnyHologram(this)
-                .orElse(hologramManager.createHologram(this))
+                .orElse(() -> hologramManager.createHologram(this))
                 .peek(hologram -> hologramConsumer.accept(hologramManager, hologram));
     }
 

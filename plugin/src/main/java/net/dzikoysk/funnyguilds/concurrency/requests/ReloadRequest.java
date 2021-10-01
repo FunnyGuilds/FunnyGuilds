@@ -26,9 +26,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        this.plugin.reloadPluginConfiguration();
-        this.plugin.reloadTablistConfiguration();
-        this.plugin.reloadMessageConfiguration();
+        this.plugin.reloadConfiguration();
         this.plugin.getDataPersistenceHandler().reloadHandler();
         this.plugin.getDynamicListenerManager().reloadAll();
 

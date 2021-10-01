@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
+import net.dzikoysk.funnyguilds.config.subcomponents.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -35,12 +36,12 @@ public final class MoveCommand extends AbstractFunnyCommand {
         when (!config.regionsEnabled, messages.regionsDisabled);
         when (args.length < 1, messages.generalNoTagGiven);
 
+        HeartConfiguration heart = config.heartConfig;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-
         Location location = player.getLocation();
 
-        if (config.createCenterY != 0) {
-            location.setY(config.createCenterY);
+        if (heart.createCenterY != 0) {
+            location.setY(heart.createCenterY);
         }
 
         int distance = config.regionSize + config.createDistance;
@@ -63,9 +64,9 @@ public final class MoveCommand extends AbstractFunnyCommand {
         if (region == null) {
             region = new Region(guild, location, config.regionSize);
         } else {
-            if (config.createEntityType != null) {
+            if (heart.createEntityType != null) {
                 GuildEntityHelper.despawnGuildHeart(guild);
-            } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
+            } else if (heart.createMaterial != null && heart.createMaterial.getLeft() != Material.AIR) {
                 Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
                 
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
@@ -78,7 +79,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             region.setCenter(location);
         }
         
-        if (config.createCenterSphere) {
+        if (heart.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);
 
             for (Location locationInSphere : sphere) {

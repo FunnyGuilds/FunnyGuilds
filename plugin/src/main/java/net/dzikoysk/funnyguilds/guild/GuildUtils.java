@@ -48,10 +48,10 @@ public class GuildUtils {
             Region region = guild.getRegion();
 
             if (region != null) {
-                if (config.createEntityType != null) {
+                if (config.heartConfig.createEntityType != null) {
                     GuildEntityHelper.despawnGuildHeart(guild);
                 }
-                else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
+                else if (config.heartConfig.createMaterial != null && config.heartConfig.createMaterial.getLeft() != Material.AIR) {
                     Location centerLocation = region.getCenter().clone();
 
                     Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
@@ -94,13 +94,13 @@ public class GuildUtils {
     public static void spawnHeart(Guild guild) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
+        if (config.heartConfig.createMaterial != null && config.heartConfig.createMaterial.getLeft() != Material.AIR) {
             Block heart = guild.getRegion().getCenter().getBlock().getRelative(BlockFace.DOWN);
 
-            heart.setType(config.createMaterial.getLeft());
-            BlockDataChanger.applyChanges(heart, config.createMaterial.getRight());
+            heart.setType(config.heartConfig.createMaterial.getLeft());
+            BlockDataChanger.applyChanges(heart, config.heartConfig.createMaterial.getRight());
         }
-        else if (config.createEntityType != null) {
+        else if (config.heartConfig.createEntityType != null) {
             GuildEntityHelper.spawnGuildHeart(guild);
         }
     }
