@@ -19,15 +19,17 @@ import java.util.List;
 public class HologramUpdateHandler implements Runnable {
 
     private final FunnyGuilds plugin;
-    private final HologramConfiguration hologramConfig;
+    private final PluginConfiguration config;
 
     public HologramUpdateHandler(FunnyGuilds plugin) {
         this.plugin = plugin;
-        this.hologramConfig = plugin.getPluginConfiguration().heartConfig.hologram;
+        this.config = plugin.getPluginConfiguration();
     }
 
     @Override
     public void run() {
+        HologramConfiguration hologramConfig = config.heartConfig.hologram;
+
         if (!hologramConfig.enabled) {
             return;
         }

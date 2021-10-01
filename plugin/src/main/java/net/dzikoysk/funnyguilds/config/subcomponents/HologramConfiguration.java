@@ -39,6 +39,6 @@ public class HologramConfiguration extends OkaeriConfig {
 
     @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji.")
     @CustomKey("location-correction")
-    public LocationConfiguration locationCorrection = new LocationConfiguration(0.5, 8.0, 0.5);
+    public LocationConfiguration locationCorrection = new LocationConfiguration(0.5, 2.5, 0.5);
 
 }
