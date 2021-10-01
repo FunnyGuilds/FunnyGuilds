@@ -46,7 +46,7 @@ public class GuildManager {
     public Option<Guild> getGuildByName(String name, boolean ignoreCase) {
         return PandaStream.of(guildsMap.entrySet())
                 .find(entry -> {
-                    if(ignoreCase) {
+                    if (ignoreCase) {
                         return entry.getValue().getName().equalsIgnoreCase(name);
                     } else {
                         return entry.getValue().getName().equals(name);
@@ -62,7 +62,7 @@ public class GuildManager {
     public Option<Guild> getGuildByTag(String tag, boolean ignoreCase) {
         return PandaStream.of(guildsMap.entrySet())
                 .find(entry -> {
-                    if(ignoreCase) {
+                    if (ignoreCase) {
                         return entry.getValue().getTag().equalsIgnoreCase(tag);
                     } else {
                         return entry.getValue().getTag().equals(tag);

@@ -16,6 +16,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -81,22 +82,27 @@ public class GuildUtils {
         if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) FunnyGuilds.getInstance().getDataModel());
             dataModel.getGuildFile(guild).delete();
-        } else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
+        }
+        else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
             DatabaseGuild.delete(guild);
         }
 
         FunnyGuilds.getInstance().getGuildManager().removeGuild(guild);
     }
 
+    @Nullable
     @Deprecated
     public static Guild getByName(String name) {
         return FunnyGuilds.getInstance().getGuildManager().getGuildByName(name).getOrNull();
     }
 
+    @Nullable
+    @Deprecated
     public static Guild getByUUID(UUID uuid) {
         return FunnyGuilds.getInstance().getGuildManager().getGuild(uuid).getOrNull();
     }
 
+    @Nullable
     @Deprecated
     public static Guild getByTag(String tag) {
         return FunnyGuilds.getInstance().getGuildManager().getGuildByTag(tag).getOrNull();
