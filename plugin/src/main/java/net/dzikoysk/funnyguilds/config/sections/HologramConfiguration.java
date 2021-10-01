@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.config.subcomponents;
+package net.dzikoysk.funnyguilds.config.sections;
 
 import com.google.common.collect.ImmutableList;
 import eu.okaeri.configs.OkaeriConfig;

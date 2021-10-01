@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.subcomponents.HologramConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import org.bukkit.Bukkit;

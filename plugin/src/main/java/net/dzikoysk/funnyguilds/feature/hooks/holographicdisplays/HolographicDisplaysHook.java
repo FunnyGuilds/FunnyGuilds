@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.subcomponents.HologramConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Bukkit;
 import panda.std.Option;

@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.config.subcomponents;
+package net.dzikoysk.funnyguilds.config.sections;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
