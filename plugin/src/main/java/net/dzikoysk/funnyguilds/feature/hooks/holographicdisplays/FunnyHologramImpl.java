@@ -15,8 +15,9 @@ class FunnyHologramImpl implements FunnyHologram {
     }
 
     @Override
-    public void setLocation(Location location) {
+    public FunnyHologram setLocation(Location location) {
         this.hologram.teleport(location.clone());
+        return this;
     }
 
     @Override
@@ -25,25 +26,29 @@ class FunnyHologramImpl implements FunnyHologram {
     }
 
     @Override
-    public void setLines(List<String> lines) {
+    public FunnyHologram setLines(List<String> lines) {
         this.hologram.clearLines();
         lines.forEach(this.hologram::appendTextLine);
+        return this;
     }
 
     @Override
-    public void addLines(List<String> lines) {
+    public FunnyHologram addLines(List<String> lines) {
         lines.forEach(this.hologram::appendTextLine);
+        return this;
     }
 
     @Override
-    public void setIconItem(ItemStack item) {
+    public FunnyHologram setIconItem(ItemStack item) {
         hologram.clearLines();
         hologram.appendItemLine(item);
+        return this;
     }
 
     @Override
-    public void addIconItem(ItemStack item) {
+    public FunnyHologram addIconItem(ItemStack item) {
         hologram.appendItemLine(item);
+        return this;
     }
 
     void delete() {

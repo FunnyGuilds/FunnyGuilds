@@ -7,16 +7,16 @@ import java.util.List;
 
 public interface FunnyHologram {
 
-    void setLocation(Location location);
+    FunnyHologram setLocation(Location location);
 
     void clearHologram();
 
-    void setLines(List<String> lines);
+    FunnyHologram setLines(List<String> lines);
 
-    void addLines(List<String> lines);
+    FunnyHologram addLines(List<String> lines);
 
-    void setIconItem(ItemStack item);
+    FunnyHologram setIconItem(ItemStack item);
 
-    void addIconItem(ItemStack item);
+    FunnyHologram addIconItem(ItemStack item);
 
 }
