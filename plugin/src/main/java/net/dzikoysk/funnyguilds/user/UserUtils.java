@@ -27,7 +27,7 @@ public final class UserUtils {
     }
 
     /**
-     * Gets the set of users from collection of strings.
+     * Gets the set of users from collection of names.
      *
      * @return set of users
      * @deprecated for removal in the future, in favour of {@link UserManager#findByNames(Collection)}
@@ -43,6 +43,19 @@ public final class UserUtils {
                     .peek(users::add);
         }
         return users;
+    }
+
+    /**
+     * Gets the user.
+     *
+     * @param uuid the universally unique identifier of User
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByUuid(UUID)}
+     */
+    @Nullable
+    @Deprecated
+    public static User get(UUID uuid) {
+        return UserManager.getInstance().findByUuid(uuid).getOrNull();
     }
 
     /**
@@ -70,19 +83,6 @@ public final class UserUtils {
     @Deprecated
     public static User get(String nickname, boolean ignoreCase) {
         return UserManager.getInstance().findByName(nickname, ignoreCase).getOrNull();
-    }
-
-    /**
-     * Gets the user.
-     *
-     * @param uuid the universally unique identifier of User
-     * @return the user
-     * @deprecated for removal in the future, in favour of {@link UserManager#findByUuid(UUID)}
-     */
-    @Nullable
-    @Deprecated
-    public static User get(UUID uuid) {
-        return UserManager.getInstance().findByUuid(uuid).getOrNull();
     }
 
     public static Set<String> getNamesOfUsers(Collection<User> users) {

@@ -31,24 +31,52 @@ public class UserManager {
         return this.usersByUuid.size();
     }
 
+    /**
+     * Gets the copied set of users.
+     *
+     * @return set of users
+     */
     public Set<User> getUsers() {
         return new HashSet<>(this.usersByUuid.values());
     }
 
+    /**
+     * Gets the set of users from collection of names.
+     *
+     * @return set of users
+     */
     public Set<User> findByNames(Collection<String> names) {
         return PandaStream.of(names)
                 .flatMap(this::findByName)
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param uuid the universally unique identifier of User
+     * @return the user
+     */
     public Option<User> findByUuid(UUID uuid) {
         return Option.of(usersByUuid.get(uuid));
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param nickname the name of User
+     * @return the user
+     */
     public Option<User> findByName(String nickname) {
         return findByName(nickname, false);
     }
 
+    /**
+     * Gets the user.
+     *
+     * @param nickname the name of User
+     * @return the user
+     */
     public Option<User> findByName(String nickname, boolean ignoreCase) {
         if (ignoreCase) {
             return PandaStream.of(usersByName.entrySet())
