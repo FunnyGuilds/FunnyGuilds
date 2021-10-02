@@ -1,9 +1,17 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
+import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -20,12 +28,16 @@ import java.util.stream.Collectors;
 
 public class GuildManager {
 
+    private final FunnyGuilds plugin;
+
     private final PluginConfiguration pluginConfiguration;
 
     private final Map<UUID, Guild> guildsMap = new ConcurrentHashMap<>();
 
-    public GuildManager(PluginConfiguration pluginConfiguration) {
-        this.pluginConfiguration = pluginConfiguration;
+    public GuildManager(FunnyGuilds plugin) {
+        this.plugin = plugin;
+
+        this.pluginConfiguration = plugin.getPluginConfiguration();
     }
 
     public int countGuilds() {
@@ -116,6 +128,56 @@ public class GuildManager {
         Validate.notNull(guild, "user can't be null!");
 
         guildsMap.remove(guild.getUUID());
+    }
+
+    public void deleteGuild(Guild guild) {
+        if (guild == null) {
+            return;
+        }
+
+        if (this.pluginConfiguration.regionsEnabled) {
+            Region region = guild.getRegion();
+
+            if (region != null) {
+                if (this.pluginConfiguration.createEntityType != null) {
+                    GuildEntityHelper.despawnGuildHeart(guild);
+                } else if (this.pluginConfiguration.createMaterial != null && this.pluginConfiguration.createMaterial.getLeft() != Material.AIR) {
+                    Location centerLocation = region.getCenter().clone();
+
+                    Bukkit.getScheduler().runTask(this.plugin, () -> {
+                        Block block = centerLocation.getBlock().getRelative(BlockFace.DOWN);
+
+                        if (block.getLocation().getBlockY() > 1) {
+                            block.setType(Material.AIR);
+                        }
+                    });
+                }
+            }
+
+            RegionUtils.delete(guild.getRegion());
+        }
+
+        this.plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(guild));
+
+        guild.getMembers().forEach(User::removeGuild);
+
+        for (Guild ally : guild.getAllies()) {
+            ally.removeAlly(guild);
+        }
+
+        for (Guild globalGuild : getGuilds()) {
+            globalGuild.removeEnemy(guild);
+        }
+
+        if (this.plugin.getDataModel() instanceof FlatDataModel) {
+            FlatDataModel dataModel = ((FlatDataModel) this.plugin.getDataModel());
+            dataModel.getGuildFile(guild).delete();
+        }
+        else if (this.plugin.getDataModel() instanceof SQLDataModel) {
+            DatabaseGuild.delete(guild);
+        }
+
+        removeGuild(guild);
     }
 
     public boolean guildNameExists(String name) {

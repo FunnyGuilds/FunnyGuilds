@@ -1,19 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
-import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -38,60 +26,6 @@ public final class GuildUtils {
     @Deprecated
     public static Set<Guild> getGuilds(Collection<String> names) {
         return FunnyGuilds.getInstance().getGuildManager().getGuildsByNames(names);
-    }
-
-    @Deprecated
-    public static void deleteGuild(Guild guild) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (guild == null) {
-            return;
-        }
-
-        if (config.regionsEnabled) {
-            Region region = guild.getRegion();
-
-            if (region != null) {
-                if (config.createEntityType != null) {
-                    GuildEntityHelper.despawnGuildHeart(guild);
-                } else if (config.createMaterial != null && config.createMaterial.getLeft() != Material.AIR) {
-                    Location centerLocation = region.getCenter().clone();
-
-                    Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
-                        Block block = centerLocation.getBlock().getRelative(BlockFace.DOWN);
-
-                        if (block.getLocation().getBlockY() > 1) {
-                            block.setType(Material.AIR);
-                        }
-                    });
-                }
-            }
-
-            RegionUtils.delete(guild.getRegion());
-        }
-
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalRemoveGuildRequest(guild));
-
-        guild.getMembers().forEach(User::removeGuild);
-
-        for (Guild ally : guild.getAllies()) {
-            ally.removeAlly(guild);
-        }
-
-        for (Guild globalGuild : GuildUtils.getGuilds()) {
-            globalGuild.removeEnemy(guild);
-        }
-
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = ((FlatDataModel) FunnyGuilds.getInstance().getDataModel());
-            dataModel.getGuildFile(guild).delete();
-        }
-        else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            DatabaseGuild.delete(guild);
-        }
-
-        FunnyGuilds.getInstance().getGuildManager().removeGuild(guild);
     }
 
     @Nullable
@@ -130,6 +64,11 @@ public final class GuildUtils {
     @Deprecated
     public static void removeGuild(Guild guild) {
         FunnyGuilds.getInstance().getGuildManager().removeGuild(guild);
+    }
+
+    @Deprecated
+    public static void deleteGuild(Guild guild) {
+        FunnyGuilds.getInstance().getGuildManager().deleteGuild(guild);
     }
 
     public static Set<String> getNames(Collection<Guild> guilds) {

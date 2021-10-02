@@ -20,7 +20,6 @@ import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
@@ -175,7 +174,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.rankManager = new RankManager(this.pluginConfiguration);
         this.userManager = new UserManager();
-        this.guildManager = new GuildManager(pluginConfiguration);
+        this.guildManager = new GuildManager(this);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -352,7 +351,7 @@ public class FunnyGuilds extends JavaPlugin {
             cache.setPlayerList(individualPlayerList);
         }
 
-        for (Guild guild : GuildUtils.getGuilds()) {
+        for (Guild guild : this.guildManager.getGuilds()) {
             if (this.pluginConfiguration.createEntityType != null) {
                 GuildEntityHelper.spawnGuildHeart(guild);
             }
