@@ -34,9 +34,9 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected PluginConfiguration config = new PluginConfiguration()
     protected MessageConfiguration messages = new MessageConfiguration()
 
-    protected RankManager rankManager = new RankManager(config)
-    protected UserManager userManager = new UserManager()
-    protected GuildManager guildManager = new GuildManager(funnyGuilds);
+    protected RankManager rankManager
+    protected UserManager userManager
+    protected GuildManager guildManager
 
     @BeforeAll
     static void openMockedFunnyGuilds() {
@@ -48,6 +48,10 @@ class FunnyGuildsSpec extends BukkitSpec {
     void prepareFunnyGuilds() {
         lenient().when(funnyGuilds.getPluginConfiguration()).thenReturn(config)
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
+
+        rankManager = new RankManager(config)
+        userManager = new UserManager()
+        guildManager = new GuildManager(funnyGuilds);
 
         lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
