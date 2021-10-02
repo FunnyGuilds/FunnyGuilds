@@ -42,6 +42,7 @@ public final class UserUtils {
                     .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
                     .peek(users::add);
         }
+        
         return users;
     }
 
