@@ -18,10 +18,10 @@ public class User extends AbstractMutableEntity {
     private final UUID uuid;
     private String name;
 
-    private WeakReference<Player> playerRef;
-
     private final UserCache cache;
     private final UserRank rank;
+
+    private WeakReference<Player> playerRef;
 
     private Guild guild;
     private UserBan ban;
@@ -32,10 +32,10 @@ public class User extends AbstractMutableEntity {
         this.uuid = uuid;
         this.name = name;
 
-        this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
-
         this.cache = new UserCache(this);
         this.rank = new UserRank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
+
+        this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
 
         this.bossBarProvider = BossBarProvider.getBossBar(this);
 
