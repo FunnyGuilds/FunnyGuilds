@@ -10,7 +10,7 @@ public final class GuildValidation {
     private GuildValidation() {}
 
     public static Guild requireGuildByTag(String tag) {
-        return FunnyGuilds.getInstance().getGuildManager().getGuildByTag(tag).orThrow(() -> {
+        return FunnyGuilds.getInstance().getGuildManager().findByTag(tag).orThrow(() -> {
             throw new ValidationException(StringUtils.replace(FunnyGuilds.getInstance().getMessageConfiguration().generalGuildNotExists, "{TAG}", tag));
         });
     }

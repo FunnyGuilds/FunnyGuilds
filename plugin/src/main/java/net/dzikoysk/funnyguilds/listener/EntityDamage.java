@@ -31,7 +31,7 @@ public class EntityDamage implements Listener {
         PluginConfiguration config = plugin.getPluginConfiguration();
 
         EntityUtils.getAttacker(event.getDamager()).peek(attacker -> {
-            Option<User> attackerUserOption = userManager.getUser(attacker);
+            Option<User> attackerUserOption = userManager.findByPlayer(attacker);
 
             if (attackerUserOption.isEmpty()) {
                 return;
@@ -51,7 +51,7 @@ public class EntityDamage implements Listener {
 
             Option<User> victimOption = Option.of(victim)
                     .is(Player.class)
-                    .flatMap(userManager::getUser);
+                    .flatMap(userManager::findByPlayer);
 
             if (victimOption.isEmpty()) {
                 return;

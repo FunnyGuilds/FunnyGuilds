@@ -54,13 +54,13 @@ public class EntityInteract implements Listener {
                 }
             }
             else {
-                userManager.getUser(clickedPlayer)
+                userManager.findByPlayer(clickedPlayer)
                     .peek(user -> playerExecutor.sendInfoMessage(messages.playerRightClickInfo, user, eventCaller));
             }
         }
 
         if (config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
-            userManager.getUser(eventCaller)
+            userManager.findByPlayer(eventCaller)
                     .filter(user -> user.hasGuild() && !user.getGuild().canBuild())
                     .peek(user -> event.setCancelled(true));
         }

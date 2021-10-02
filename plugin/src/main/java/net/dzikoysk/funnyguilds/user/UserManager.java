@@ -37,15 +37,19 @@ public class UserManager {
 
     public Set<User> findByNames(Collection<String> names) {
         return PandaStream.of(names)
-                .flatMap(this::getUser)
+                .flatMap(this::findByName)
                 .collect(Collectors.toSet());
     }
 
-    public Option<User> getUser(String nickname) {
-        return getUser(nickname, false);
+    public Option<User> findByUuid(UUID uuid) {
+        return Option.of(usersByUuid.get(uuid));
     }
 
-    public Option<User> getUser(String nickname, boolean ignoreCase) {
+    public Option<User> findByName(String nickname) {
+        return findByName(nickname, false);
+    }
+
+    public Option<User> findByName(String nickname, boolean ignoreCase) {
         if (ignoreCase) {
             return PandaStream.of(usersByName.entrySet())
                     .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
@@ -55,20 +59,16 @@ public class UserManager {
         return Option.of(usersByName.get(nickname));
     }
 
-    public Option<User> getUser(UUID uuid) {
-        return Option.of(usersByUuid.get(uuid));
-    }
-
-    public Option<User> getUser(Player player) {
+    public Option<User> findByPlayer(Player player) {
         if (player.getUniqueId().version() == 2) {
             return Option.of(new User(player));
         }
 
-        return getUser(player.getUniqueId());
+        return findByUuid(player.getUniqueId());
     }
 
-    public Option<User> getUser(OfflinePlayer offline) {
-        return getUser(offline.getName());
+    public Option<User> findByPlayer(OfflinePlayer offline) {
+        return findByName(offline.getName());
     }
 
     public User create(UUID uuid, String name) {

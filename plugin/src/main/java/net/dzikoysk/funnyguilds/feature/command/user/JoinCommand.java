@@ -51,7 +51,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         }
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (!InvitationList.hasInvitationFrom(player, this.guildManager.getGuildByTag(guild.getTag()).getOrNull()), messages.joinHasNotInvitationTo);
+        when (!InvitationList.hasInvitationFrom(player, this.guildManager.findByTag(guild.getTag()).getOrNull()), messages.joinHasNotInvitationTo);
 
         List<ItemStack> requiredItems = config.joinItems;
 

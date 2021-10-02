@@ -42,7 +42,7 @@ public class PlayerJoin implements Listener {
         TablistConfiguration tablistConfig = plugin.getTablistConfiguration();
 
         Player player = event.getPlayer();
-        User user = userManager.getUser(player).orElseGet(() -> userManager.create(player));
+        User user = userManager.findByPlayer(player).orElseGet(() -> userManager.create(player));
 
         String playerName = player.getName();
 

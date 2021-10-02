@@ -154,7 +154,7 @@ public class SQLDataModel implements DataModel {
         ResultSet result = SQLBasicUtils.getSelect(SQLDataModel.tabGuilds, "tag", "allies", "enemies").executeQuery();
 
         while (result.next()) {
-            Option<Guild> guildOption = guildManager.getGuildByTag(result.getString("tag"));
+            Option<Guild> guildOption = guildManager.findByTag(result.getString("tag"));
             if (guildOption.isEmpty()) {
                 continue;
             }

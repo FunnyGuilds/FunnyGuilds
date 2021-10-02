@@ -322,7 +322,7 @@ public class FunnyGuilds extends JavaPlugin {
             final FunnyGuildsChannelHandler channelHandler = nmsAccessor.getPacketAccessor().getOrInstallChannelHandler(player);
             channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(player));
 
-            Option<User> userOption = userManager.getUser(player);
+            Option<User> userOption = userManager.findByPlayer(player);
 
             if (userOption.isEmpty()) {
                 continue;

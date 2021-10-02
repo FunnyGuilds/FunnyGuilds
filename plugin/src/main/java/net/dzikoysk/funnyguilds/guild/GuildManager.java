@@ -50,21 +50,21 @@ public class GuildManager {
 
     public Set<Guild> findByNames(Collection<String> names) {
         return PandaStream.of(names)
-                .flatMap(this::getGuildByName)
+                .flatMap(this::findByName)
                 .collect(Collectors.toSet());
     }
 
     public Set<Guild> findByTags(Collection<String> tags) {
         return PandaStream.of(tags)
-                .flatMap(this::getGuildByTag)
+                .flatMap(this::findByTag)
                 .collect(Collectors.toSet());
     }
 
-    public Option<Guild> getGuild(UUID uuid) {
+    public Option<Guild> findByUuid(UUID uuid) {
         return Option.of(guildsMap.get(uuid));
     }
 
-    public Option<Guild> getGuildByName(String name, boolean ignoreCase) {
+    public Option<Guild> findByName(String name, boolean ignoreCase) {
         return PandaStream.of(guildsMap.entrySet())
                 .find(entry -> {
                     if (ignoreCase) {
@@ -76,11 +76,11 @@ public class GuildManager {
                 .map(Map.Entry::getValue);
     }
 
-    public Option<Guild> getGuildByName(String name) {
-        return this.getGuildByName(name, false);
+    public Option<Guild> findByName(String name) {
+        return this.findByName(name, false);
     }
 
-    public Option<Guild> getGuildByTag(String tag, boolean ignoreCase) {
+    public Option<Guild> findByTag(String tag, boolean ignoreCase) {
         return PandaStream.of(guildsMap.entrySet())
                 .find(entry -> {
                     if (ignoreCase) {
@@ -92,8 +92,8 @@ public class GuildManager {
                 .map(Map.Entry::getValue);
     }
 
-    public Option<Guild> getGuildByTag(String tag) {
-        return this.getGuildByTag(tag, false);
+    public Option<Guild> findByTag(String tag) {
+        return this.findByTag(tag, false);
     }
 
     public Guild create(String name) {
@@ -181,11 +181,11 @@ public class GuildManager {
     }
 
     public boolean nameExists(String name) {
-        return !this.getGuildByName(name).isEmpty();
+        return !this.findByName(name).isEmpty();
     }
 
     public boolean tagExists(String tag) {
-        return !this.getGuildByTag(tag).isEmpty();
+        return !this.findByTag(tag).isEmpty();
     }
 
     public void spawnHeart(Guild guild) {

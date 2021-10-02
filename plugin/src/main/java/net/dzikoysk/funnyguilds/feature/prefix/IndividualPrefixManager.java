@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.prefix;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
@@ -29,7 +29,7 @@ public class IndividualPrefixManager {
         UserManager userManager = plugin.getUserManager();
         PluginConfiguration config = plugin.getPluginConfiguration();
 
-        Option<User> userOption = userManager.getUser(player);
+        Option<User> userOption = userManager.findByPlayer(player);
 
         if (userOption.isEmpty()) {
             return;

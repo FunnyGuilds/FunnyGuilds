@@ -45,12 +45,12 @@ public final class GuildUtils {
      *
      * @param uuid the uuid of Guild
      * @return the guild
-     * @deprecated for removal in the future, in favour of {@link GuildManager#getGuild(UUID)}
+     * @deprecated for removal in the future, in favour of {@link GuildManager#findByUuid(UUID)}
      */
     @Nullable
     @Deprecated
     public static Guild getByUUID(UUID uuid) {
-        return FunnyGuilds.getInstance().getGuildManager().getGuild(uuid).getOrNull();
+        return FunnyGuilds.getInstance().getGuildManager().findByUuid(uuid).getOrNull();
     }
 
     /**
@@ -58,12 +58,12 @@ public final class GuildUtils {
      *
      * @param name the name of Guild
      * @return the guild
-     * @deprecated for removal in the future, in favour of {@link GuildManager#getGuildByName(String)}
+     * @deprecated for removal in the future, in favour of {@link GuildManager#findByName(String)}
      */
     @Nullable
     @Deprecated
     public static Guild getByName(String name) {
-        return FunnyGuilds.getInstance().getGuildManager().getGuildByName(name).getOrNull();
+        return FunnyGuilds.getInstance().getGuildManager().findByName(name).getOrNull();
     }
 
     /**
@@ -71,12 +71,12 @@ public final class GuildUtils {
      *
      * @param tag the name of Guild
      * @return the guild
-     * @deprecated for removal in the future, in favour of {@link GuildManager#getGuildByTag(String)}
+     * @deprecated for removal in the future, in favour of {@link GuildManager#findByTag(String)}
      */
     @Nullable
     @Deprecated
     public static Guild getByTag(String tag) {
-        return FunnyGuilds.getInstance().getGuildManager().getGuildByTag(tag).getOrNull();
+        return FunnyGuilds.getInstance().getGuildManager().findByTag(tag).getOrNull();
     }
 
     /**

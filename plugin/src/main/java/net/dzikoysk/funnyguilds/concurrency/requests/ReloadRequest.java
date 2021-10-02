@@ -39,7 +39,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
             DefaultTablistVariables.clearFunnyVariables();
 
             PandaStream.of(Bukkit.getOnlinePlayers())
-                    .flatMap(userManager::getUser)
+                    .flatMap(userManager::findByPlayer)
                     .forEach(user -> {
                         IndividualPlayerList playerList = new IndividualPlayerList(user,
                                 plugin.getNmsAccessor().getPlayerListAccessor(),

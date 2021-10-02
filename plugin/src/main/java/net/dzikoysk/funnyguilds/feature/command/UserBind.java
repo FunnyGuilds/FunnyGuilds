@@ -31,7 +31,7 @@ final class UserBind implements Bind {
             throw new IllegalStateException("Cannot use user bind in non-player command");
         }
 
-        return this.userManager.getUser(((OfflinePlayer) commandSender).getUniqueId()).getOrNull();
+        return this.userManager.findByUuid(((OfflinePlayer) commandSender).getUniqueId()).getOrNull();
     }
 
 }

@@ -203,7 +203,7 @@ public final class InvitationList {
 
         @Nullable
         private Guild wrapFrom() {
-            return FunnyGuilds.getInstance().getGuildManager().getGuild(from).getOrNull();
+            return FunnyGuilds.getInstance().getGuildManager().findByUuid(from).getOrNull();
         }
 
         @Override

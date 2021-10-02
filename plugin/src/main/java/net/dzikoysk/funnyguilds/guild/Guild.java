@@ -287,7 +287,7 @@ public class Guild extends AbstractMutableEntity {
 
         return plugin.getPluginConfiguration().regionsEnabled && Bukkit.getOnlinePlayers().stream()
                 .filter(player -> {
-                    Option<User> user = plugin.getUserManager().getUser(player);
+                    Option<User> user = plugin.getUserManager().findByPlayer(player);
                     return user.isDefined() && user.get().getGuild() != this;
                 })
                 .map(player -> RegionUtils.getAt(player.getLocation()))

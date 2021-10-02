@@ -31,7 +31,7 @@ public class PlayerChat implements Listener {
         UserManager userManager = plugin.getUserManager();
         PluginConfiguration config = plugin.getPluginConfiguration();
         Player player = event.getPlayer();
-        Option<User> userOption = userManager.getUser(player);
+        Option<User> userOption = userManager.findByPlayer(player);
 
         if (userOption.isEmpty()) {
             return;

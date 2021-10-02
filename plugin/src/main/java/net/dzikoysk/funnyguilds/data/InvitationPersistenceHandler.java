@@ -86,7 +86,7 @@ public class InvitationPersistenceHandler {
         YamlWrapper pc = new YamlWrapper(this.invitationsFile);
 
         for (String key : pc.getKeys(false)) {
-            Option<Guild> guildOption = this.guildManager.getGuild(UUID.fromString(key));
+            Option<Guild> guildOption = this.guildManager.findByUuid(UUID.fromString(key));
             if (guildOption.isEmpty()) {
                 continue;
             }
@@ -97,7 +97,7 @@ public class InvitationPersistenceHandler {
             List<String> playerInvitations = pc.getStringList(key + ".players");
 
             for (String ally : allyInvitations) {
-                Option<Guild> allyGuildOption = this.guildManager.getGuild(UUID.fromString(ally));
+                Option<Guild> allyGuildOption = this.guildManager.findByUuid(UUID.fromString(ally));
 
                 allyGuildOption.peek(allyGuild -> InvitationList.createInvitation(guild, allyGuild));
             }

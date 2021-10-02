@@ -38,7 +38,7 @@ public final class UserUtils {
         Set<User> users = new HashSet<>();
 
         for (String name : names) {
-            userManager.getUser(name)
+            userManager.findByName(name)
                     .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
                     .peek(users::add);
         }
@@ -50,7 +50,7 @@ public final class UserUtils {
      *
      * @param nickname the name of User
      * @return the user
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String)}
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String)}
      */
     @Nullable
     @Deprecated
@@ -64,12 +64,12 @@ public final class UserUtils {
      * @param nickname   the name of User
      * @param ignoreCase ignore the case of the nickname
      * @return the user
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String, boolean)}
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String, boolean)}
      */
     @Nullable
     @Deprecated
     public static User get(String nickname, boolean ignoreCase) {
-        return UserManager.getInstance().getUser(nickname, ignoreCase).getOrNull();
+        return UserManager.getInstance().findByName(nickname, ignoreCase).getOrNull();
     }
 
     /**
@@ -77,12 +77,12 @@ public final class UserUtils {
      *
      * @param uuid the universally unique identifier of User
      * @return the user
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(UUID)}
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByUuid(UUID)}
      */
     @Nullable
     @Deprecated
     public static User get(UUID uuid) {
-        return UserManager.getInstance().getUser(uuid).getOrNull();
+        return UserManager.getInstance().findByUuid(uuid).getOrNull();
     }
 
     public static Set<String> getNamesOfUsers(Collection<User> users) {

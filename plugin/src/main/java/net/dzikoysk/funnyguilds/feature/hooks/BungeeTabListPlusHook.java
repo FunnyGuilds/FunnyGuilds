@@ -3,10 +3,10 @@ package net.dzikoysk.funnyguilds.feature.hooks;
 import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
 import codecrafter47.bungeetablistplus.api.bukkit.Variable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.rank.RankUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
 
@@ -23,7 +23,7 @@ public final class BungeeTabListPlusHook {
                 
                 @Override
                 public String getReplacement(Player player) {
-                    return userManager.getUser(player)
+                    return userManager.findByPlayer(player)
                             .map(user -> variable.getValue().get(user))
                             .orElseGet("");
                 }
@@ -37,7 +37,7 @@ public final class BungeeTabListPlusHook {
 
                 @Override
                 public String getReplacement(Player player) {
-                    User user = userManager.getUser(player).getOrNull();
+                    User user = userManager.findByPlayer(player).getOrNull();
                     return RankUtils.parseRank(user, "{GTOP-" + index + "}");
                 }
             });
