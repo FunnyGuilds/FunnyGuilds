@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.config.IntegerRange
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
+import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.rank.RankManager
 import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
@@ -33,8 +34,9 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected PluginConfiguration config = new PluginConfiguration()
     protected MessageConfiguration messages = new MessageConfiguration()
 
-    protected RankManager rankManager = new RankManager(config)
-    protected UserManager userManager = new UserManager()
+    protected RankManager rankManager
+    protected UserManager userManager
+    protected GuildManager guildManager
 
     @BeforeAll
     static void openMockedFunnyGuilds() {
@@ -47,8 +49,13 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getPluginConfiguration()).thenReturn(config)
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
 
+        rankManager = new RankManager(config)
+        userManager = new UserManager()
+        guildManager = new GuildManager(funnyGuilds);
+
         lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
+        lenient().when(funnyGuilds.getGuildManager()).thenReturn(guildManager)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)
         mockedBossBarProvider.when(() -> BossBarProvider.getBossBar(any(User.class))).thenReturn(null)

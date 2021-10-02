@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
@@ -17,7 +18,6 @@ import org.bukkit.Location;
 
 import java.io.File;
 import java.time.Instant;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -107,9 +107,10 @@ public class FlatGuild {
             memberNames.add(ownerName);
         }
 
-        Set<User> members = UserUtils.getUsersFromString(memberNames);
-        Set<Guild> allies = loadGuilds(allyNames);
-        Set<Guild> enemies = loadGuilds(enemyNames);
+        GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
+        Set<User> members = FunnyGuilds.getInstance().getUserManager().findByNames(memberNames);
+        Set<Guild> allies = guildManager.findByNames(allyNames);
+        Set<Guild> enemies = guildManager.findByNames(enemyNames);
 
         if (born == 0) {
             born = System.currentTimeMillis();
@@ -203,24 +204,6 @@ public class FlatGuild {
         }
 
         return null;
-    }
-
-    private static Set<Guild> loadGuilds(Collection<String> guilds) {
-        Set<Guild> set = new HashSet<>();
-
-        if (guilds == null) {
-            return set;
-        }
-
-        for (String guildName : guilds) {
-            Guild guild = GuildUtils.getByName(guildName);
-
-            if (guild != null) {
-                set.add(guild);
-            }
-        }
-
-        return set;
     }
 
 }

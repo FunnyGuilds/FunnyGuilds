@@ -75,14 +75,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
         when (name.length() < config.createNameMinLength, messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
         when (!tag.matches(config.tagRegex.getPattern()), messages.createOLTag);
         when (!name.matches(config.nameRegex.getPattern()), messages.createOLName);
-        when (GuildUtils.nameExists(name), messages.createNameExists);
-        when (GuildUtils.tagExists(tag), messages.createTagExists);
+        when (guildManager.nameExists(name), messages.createNameExists);
+        when (guildManager.tagExists(tag), messages.createTagExists);
         when (config.regionsEnabled && RegionUtils.isIn(guildLocation), messages.createIsNear);
         when (config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
 
         if (config.checkForRestrictedGuildNames) {
-            when (!GuildUtils.isNameValid(name), messages.restrictedGuildName);
-            when (!GuildUtils.isTagValid(tag), messages.restrictedGuildTag);
+            when (!GuildUtils.validateName(config, name), messages.restrictedGuildName);
+            when (!GuildUtils.validateTag(config, tag), messages.restrictedGuildTag);
         }
 
         if (config.regionsEnabled) {
@@ -142,8 +142,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Guild guild = new Guild(name);
-        guild.setTag(tag);
+        Guild guild = this.guildManager.create(name, tag);
         guild.setOwner(user);
         guild.setLives(config.warLives);
         guild.setBorn(System.currentTimeMillis());
@@ -206,12 +205,11 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 }
             }
             
-            GuildUtils.spawnHeart(guild);
+            this.guildManager.spawnHeart(guild);
             player.teleport(guildLocation);
         }
 
         user.setGuild(guild);
-        GuildUtils.addGuild(guild);
 
         if (config.regionsEnabled) {
             RegionUtils.addRegion(guild.getRegion());

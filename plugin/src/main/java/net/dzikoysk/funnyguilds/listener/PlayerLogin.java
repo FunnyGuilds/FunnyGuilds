@@ -38,7 +38,7 @@ public class PlayerLogin implements Listener {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
 
-        plugin.getUserManager().getUser(event.getPlayer())
+        plugin.getUserManager().findByPlayer(event.getPlayer())
             .peek(BanUtils::checkIfBanShouldExpire)
             .filter(User::isBanned)
             .peek(user -> event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user)));

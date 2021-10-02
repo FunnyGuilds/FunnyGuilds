@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildMoveEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
@@ -88,7 +87,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             }
         }
 
-        GuildUtils.spawnHeart(guild);
+        this.guildManager.spawnHeart(guild);
         player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
 

@@ -29,7 +29,7 @@ public class PlayerQuit implements Listener {
     }
 
     private void handleQuit(Player player) {
-        Option<User> userOption = plugin.getUserManager().getUser(player);
+        Option<User> userOption = plugin.getUserManager().findByPlayer(player);
 
         if (userOption.isEmpty()) {
             return;
