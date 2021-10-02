@@ -99,9 +99,7 @@ public class InvitationPersistenceHandler {
             for (String ally : allyInvitations) {
                 Option<Guild> allyGuildOption = this.guildManager.getGuild(UUID.fromString(ally));
 
-                if (allyGuildOption.isDefined()) {
-                    InvitationList.createInvitation(guild, allyGuildOption.get());
-                }
+                allyGuildOption.peek(allyGuild -> InvitationList.createInvitation(guild, allyGuild));
             }
 
             for (String player : playerInvitations) {

@@ -48,13 +48,13 @@ public class GuildManager {
         return new HashSet<>(this.guildsMap.values());
     }
 
-    public Set<Guild> getGuildsByNames(Collection<String> names) {
+    public Set<Guild> findByNames(Collection<String> names) {
         return PandaStream.of(names)
                 .flatMap(this::getGuildByName)
                 .collect(Collectors.toSet());
     }
 
-    public Set<Guild> getGuildsByTags(Collection<String> tags) {
+    public Set<Guild> findByTags(Collection<String> tags) {
         return PandaStream.of(tags)
                 .flatMap(this::getGuildByTag)
                 .collect(Collectors.toSet());
@@ -180,11 +180,11 @@ public class GuildManager {
         removeGuild(guild);
     }
 
-    public boolean guildNameExists(String name) {
+    public boolean nameExists(String name) {
         return !this.getGuildByName(name).isEmpty();
     }
 
-    public boolean guildTagExists(String tag) {
+    public boolean tagExists(String tag) {
         return !this.getGuildByTag(tag).isEmpty();
     }
 

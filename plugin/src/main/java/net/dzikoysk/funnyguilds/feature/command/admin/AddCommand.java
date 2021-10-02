@@ -25,7 +25,7 @@ public final class AddCommand extends AbstractFunnyCommand {
     )
     public void execute(CommandSender sender, String[] args) {
         when (args.length < 1, messages.generalNoTagGiven);
-        when (!guildManager.guildTagExists(args[0]), messages.generalNoGuildFound);
+        when (!guildManager.tagExists(args[0]), messages.generalNoGuildFound);
         when (args.length < 2, messages.generalNoNickGiven);
         
         User userToAdd = UserValidation.requireUserByName(args[1]);

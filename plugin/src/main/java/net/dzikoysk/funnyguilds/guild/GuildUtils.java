@@ -18,42 +18,89 @@ public final class GuildUtils {
         return FunnyGuilds.getInstance().getGuildManager().countGuilds();
     }
 
+    /**
+     * Gets the copied set of guilds.
+     *
+     * @return set of guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#getGuilds()}
+     */
     @Deprecated
     public static Set<Guild> getGuilds() {
         return FunnyGuilds.getInstance().getGuildManager().getGuilds();
     }
 
+    /**
+     * Gets the set of guilds from collection of strings.
+     *
+     * @return set of guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#findByNames(Collection)}
+     */
     @Deprecated
     public static Set<Guild> getGuilds(Collection<String> names) {
-        return FunnyGuilds.getInstance().getGuildManager().getGuildsByNames(names);
+        return FunnyGuilds.getInstance().getGuildManager().findByNames(names);
     }
 
-    @Nullable
-    @Deprecated
-    public static Guild getByName(String name) {
-        return FunnyGuilds.getInstance().getGuildManager().getGuildByName(name).getOrNull();
-    }
-
+    /**
+     * Gets the guild.
+     *
+     * @param uuid the uuid of Guild
+     * @return the guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#getGuild(UUID)}
+     */
     @Nullable
     @Deprecated
     public static Guild getByUUID(UUID uuid) {
         return FunnyGuilds.getInstance().getGuildManager().getGuild(uuid).getOrNull();
     }
 
+    /**
+     * Gets the guild.
+     *
+     * @param name the name of Guild
+     * @return the guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#getGuildByName(String)}
+     */
+    @Nullable
+    @Deprecated
+    public static Guild getByName(String name) {
+        return FunnyGuilds.getInstance().getGuildManager().getGuildByName(name).getOrNull();
+    }
+
+    /**
+     * Gets the guild.
+     *
+     * @param tag the name of Guild
+     * @return the guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#getGuildByTag(String)}
+     */
     @Nullable
     @Deprecated
     public static Guild getByTag(String tag) {
         return FunnyGuilds.getInstance().getGuildManager().getGuildByTag(tag).getOrNull();
     }
 
+    /**
+     * Check if guild name is taken.
+     *
+     * @param name the name to check
+     * @return the result
+     * @deprecated for removal in the future, in favour of {@link GuildManager#nameExists(String)}
+     */
     @Deprecated
     public static boolean nameExists(String name) {
-        return FunnyGuilds.getInstance().getGuildManager().guildNameExists(name);
+        return FunnyGuilds.getInstance().getGuildManager().nameExists(name);
     }
 
+    /**
+     * Check if guild tag is taken.
+     *
+     * @param tag the tag to check
+     * @return the result
+     * @deprecated for removal in the future, in favour of {@link GuildManager#nameExists(String)}
+     */
     @Deprecated
     public static boolean tagExists(String tag) {
-        return FunnyGuilds.getInstance().getGuildManager().guildTagExists(tag);
+        return FunnyGuilds.getInstance().getGuildManager().tagExists(tag);
     }
 
     @Deprecated

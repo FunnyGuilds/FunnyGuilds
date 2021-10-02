@@ -30,7 +30,7 @@ public final class UserUtils {
      * Gets the set of users from collection of strings.
      *
      * @return set of users
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUsersByNames(Collection)}
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByNames(Collection)}
      */
     @Deprecated
     public static Set<User> getUsersFromString(Collection<String> names) {
@@ -44,7 +44,6 @@ public final class UserUtils {
         }
         return users;
     }
-
 
     /**
      * Gets the user.

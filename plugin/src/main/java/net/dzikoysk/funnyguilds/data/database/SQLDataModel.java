@@ -165,11 +165,11 @@ public class SQLDataModel implements DataModel {
             String enemiesList = result.getString("enemies");
 
             if (alliesList != null && !alliesList.equals("")) {
-                guild.setAllies(guildManager.getGuildsByNames(ChatUtils.fromString(alliesList)));
+                guild.setAllies(guildManager.findByNames(ChatUtils.fromString(alliesList)));
             }
 
             if (enemiesList != null && !enemiesList.equals("")) {
-                guild.setEnemies(guildManager.getGuildsByNames(ChatUtils.fromString(enemiesList)));
+                guild.setEnemies(guildManager.findByNames(ChatUtils.fromString(enemiesList)));
             }
         }
 

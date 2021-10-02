@@ -25,7 +25,7 @@ public final class TagCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         String tag = args[1];
-        when (guildManager.guildTagExists(tag), messages.createTagExists);
+        when (guildManager.tagExists(tag), messages.createTagExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 

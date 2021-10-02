@@ -35,7 +35,7 @@ public class UserManager {
         return new HashSet<>(this.usersByUuid.values());
     }
 
-    public Set<User> getUsersByNames(Collection<String> names) {
+    public Set<User> findByNames(Collection<String> names) {
         return PandaStream.of(names)
                 .flatMap(this::getUser)
                 .collect(Collectors.toSet());

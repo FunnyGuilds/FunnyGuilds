@@ -108,9 +108,9 @@ public class FlatGuild {
         }
 
         GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
-        Set<User> members = FunnyGuilds.getInstance().getUserManager().getUsersByNames(memberNames);
-        Set<Guild> allies = guildManager.getGuildsByNames(allyNames);
-        Set<Guild> enemies = guildManager.getGuildsByNames(enemyNames);
+        Set<User> members = FunnyGuilds.getInstance().getUserManager().findByNames(memberNames);
+        Set<Guild> allies = guildManager.findByNames(allyNames);
+        Set<Guild> enemies = guildManager.findByNames(enemyNames);
 
         if (born == 0) {
             born = System.currentTimeMillis();

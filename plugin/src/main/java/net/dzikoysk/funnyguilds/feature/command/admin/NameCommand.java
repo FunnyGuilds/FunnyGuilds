@@ -33,7 +33,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         when (args.length < 2, messages.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (guildManager.guildNameExists(args[1]), messages.createNameExists);
+        when (guildManager.nameExists(args[1]), messages.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
