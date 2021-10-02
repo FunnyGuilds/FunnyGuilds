@@ -5,7 +5,7 @@ import panda.std.Option;
 
 public interface FunnyHologramManager {
 
-    Option<FunnyHologram> createHologram(Guild guild);
+    Option<FunnyHologram> getOrCreateHologram(Guild guild);
 
     Option<FunnyHologram> deleteHologram(Guild guild);
 

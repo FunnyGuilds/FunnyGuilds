@@ -4,6 +4,7 @@ package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
+import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import org.bukkit.Bukkit;
@@ -26,11 +27,15 @@ public class HologramUpdateLocationHandler implements Runnable {
             return;
         }
 
-        for (Guild guild : GuildUtils.getGuilds()) {
-            Bukkit.getScheduler().runTask(plugin, () -> guild.updateHologram(hologram -> guild.getCenter()
-                    .map(location -> location.add(hologramConfig.locationCorrection.toLocation(location.getWorld())))
-                    .peek(hologram::setLocation)));
-        }
+        FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
+
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            for (Guild guild : GuildUtils.getGuilds()) {
+                HologramsUtils.calculateLocation(guild)
+                        .peek(location -> hologramManager.getFunnyHologram(guild)
+                                .peek(hologram -> hologram.setLocation(location)));
+            }
+        });
     }
 
 }

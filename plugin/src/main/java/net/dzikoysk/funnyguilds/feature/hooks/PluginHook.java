@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.EmptyHologramManagerImpl;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
@@ -28,7 +29,7 @@ public final class PluginHook {
 
     public static WorldGuardHook WORLD_GUARD;
     public static WorldEditHook WORLD_EDIT;
-    public static FunnyHologramManager HOLOGRAPHIC_DISPLAYS;
+    public static FunnyHologramManager HOLOGRAPHIC_DISPLAYS = new EmptyHologramManagerImpl();
 
     private static final List<String> HOOK_LIST = new ArrayList<>();
 

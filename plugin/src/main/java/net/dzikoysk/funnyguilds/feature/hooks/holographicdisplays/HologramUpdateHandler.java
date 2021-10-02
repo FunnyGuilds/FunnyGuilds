@@ -4,6 +4,7 @@ package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
+import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
@@ -35,10 +36,11 @@ public class HologramUpdateHandler implements Runnable {
         }
 
         ItemStack item = new ItemStack(hologramConfig.item);
+        FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
 
         double index = 0.0D;
         for (Guild guild : GuildUtils.getGuilds()) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> guild.updateHologram(hologram -> {
+            Bukkit.getScheduler().runTaskLater(plugin, () -> hologramManager.getOrCreateHologram(guild).peek(hologram -> {
                 Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
                 List<String> lines = PandaStream.of(hologramConfig.displayedLines)
                         .map(formatter::format)

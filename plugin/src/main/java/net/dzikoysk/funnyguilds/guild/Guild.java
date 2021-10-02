@@ -1,12 +1,8 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologram;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -18,8 +14,6 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class Guild extends AbstractMutableEntity {
@@ -131,11 +125,6 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public void delete() {
-        GuildUtils.removeGuild(this);
-        this.updateHologram(FunnyHologramManager::deleteHologram);
-    }
-
     public boolean canBuild() {
         if (this.build > System.currentTimeMillis()) {
             return false;
@@ -201,10 +190,6 @@ public class Guild extends AbstractMutableEntity {
             this.home = center.clone();
         }
 
-        HologramConfiguration hologramConfig = config.heartConfig.hologram;
-        Location hologramLoc = center.clone().add(hologramConfig.locationCorrection.toLocation(center.getWorld()));
-
-        this.updateHologram(hologram -> hologram.setLocation(hologramLoc));
         this.markChanged();
     }
 
@@ -423,21 +408,6 @@ public class Guild extends AbstractMutableEntity {
 
     public Option<Location> getEnderCrystal() {
         return this.getCenter().map(location -> location.add(0.5D, - 1.0D, 0.5D));
-    }
-
-    public void updateHologram(Consumer<FunnyHologram> hologramConsumer) {
-        this.updateHologram((funnyHologramManager, funnyHologram) -> hologramConsumer.accept(funnyHologram));
-    }
-
-    public void updateHologram(BiConsumer<FunnyHologramManager, FunnyHologram> hologramConsumer) {
-        if (!PluginHook.isPresent(PluginHook.PLUGIN_HOLOGRAPHIC_DISPLAYS)) {
-            return;
-        }
-
-        FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
-        hologramManager.getFunnyHologram(this)
-                .orElse(() -> hologramManager.createHologram(this))
-                .peek(hologram -> hologramConsumer.accept(hologramManager, hologram));
     }
 
     @Override

@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
+import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
@@ -88,7 +89,8 @@ public class GuildUtils {
             DatabaseGuild.delete(guild);
         }
 
-        guild.delete();
+        PluginHook.HOLOGRAPHIC_DISPLAYS.deleteHologram(guild);
+        GuildUtils.removeGuild(guild);
     }
 
     public static void spawnHeart(Guild guild) {

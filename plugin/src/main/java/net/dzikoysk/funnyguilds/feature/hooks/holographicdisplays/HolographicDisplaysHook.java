@@ -25,16 +25,13 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
     }
 
     @Override
-    public Option<FunnyHologram> createHologram(Guild guild) {
-        this.deleteHologram(guild);
+    public Option<FunnyHologram> getOrCreateHologram(Guild guild) {
 
-        HologramConfiguration hologramConfig = config.heartConfig.hologram;
-        return guild.getCenter()
-                .map(location -> location.add(hologramConfig.locationCorrection.toLocation(location.getWorld())))
-                .map(location -> HologramsAPI.createHologram(plugin, location))
-                .map(FunnyHologramImpl::new)
-                .peek(hologram -> holograms.put(guild, hologram))
-                .is(FunnyHologram.class);
+        return this.getFunnyHologram(guild).orElse(() -> HologramsUtils.calculateLocation(guild)
+                        .map(loc -> HologramsAPI.createHologram(plugin, loc))
+                        .map(FunnyHologramImpl::new)
+                        .peek(hologram -> holograms.put(guild, hologram))
+                        .is(FunnyHologram.class));
     }
 
     @Override
