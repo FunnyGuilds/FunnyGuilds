@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLType;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -139,6 +139,8 @@ public class SQLDataModel implements DataModel {
     }
 
     public void loadGuilds() throws SQLException {
+        GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
+
         ResultSet resultAll = SQLBasicUtils.getSelectAll(SQLDataModel.tabGuilds).executeQuery();
 
         while (resultAll.next()) {
@@ -152,7 +154,7 @@ public class SQLDataModel implements DataModel {
         ResultSet result = SQLBasicUtils.getSelect(SQLDataModel.tabGuilds, "tag", "allies", "enemies").executeQuery();
 
         while (result.next()) {
-            Option<Guild> guildOption = FunnyGuilds.getInstance().getGuildManager().getGuildByTag(result.getString("tag"));
+            Option<Guild> guildOption = guildManager.getGuildByTag(result.getString("tag"));
             if (guildOption.isEmpty()) {
                 continue;
             }
@@ -163,28 +165,28 @@ public class SQLDataModel implements DataModel {
             String enemiesList = result.getString("enemies");
 
             if (alliesList != null && !alliesList.equals("")) {
-                guild.setAllies(GuildUtils.getGuilds(ChatUtils.fromString(alliesList)));
+                guild.setAllies(guildManager.getGuildsByNames(ChatUtils.fromString(alliesList)));
             }
 
             if (enemiesList != null && !enemiesList.equals("")) {
-                guild.setEnemies(GuildUtils.getGuilds(ChatUtils.fromString(enemiesList)));
+                guild.setEnemies(guildManager.getGuildsByNames(ChatUtils.fromString(enemiesList)));
             }
         }
 
-        for (Guild guild : GuildUtils.getGuilds()) {
+        for (Guild guild : guildManager.getGuilds()) {
             if (guild.getOwner() != null) {
                 continue;
             }
 
-            GuildUtils.deleteGuild(guild);
+            guildManager.deleteGuild(guild);
         }
 
-        FunnyGuilds.getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
+        FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }
 
     @Override
     public void save(boolean ignoreNotChanged) {
-        for (User user : UserUtils.getUsers()) {
+        for (User user : FunnyGuilds.getInstance().getUserManager().getUsers()) {
             if (ignoreNotChanged && !user.wasChanged()) {
                 continue;
             }
@@ -192,7 +194,7 @@ public class SQLDataModel implements DataModel {
             DatabaseUser.save(user);
         }
 
-        for (Guild guild : GuildUtils.getGuilds()) {
+        for (Guild guild : FunnyGuilds.getInstance().getGuildManager().getGuilds()) {
             if (ignoreNotChanged && !guild.wasChanged()) {
                 continue;
             }
