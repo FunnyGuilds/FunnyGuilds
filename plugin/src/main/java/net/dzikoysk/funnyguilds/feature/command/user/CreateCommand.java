@@ -205,7 +205,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 }
             }
             
-            GuildUtils.spawnHeart(config, guild);
+            this.guildManager.spawnHeart(guild);
             player.teleport(guildLocation);
         }
 

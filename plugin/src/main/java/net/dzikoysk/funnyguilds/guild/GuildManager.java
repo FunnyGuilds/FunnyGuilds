@@ -1,7 +1,12 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
+import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import org.apache.commons.lang3.Validate;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -21,6 +26,10 @@ public class GuildManager {
 
     public GuildManager(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
+    }
+
+    public int countGuilds() {
+        return this.guildsMap.entrySet().size();
     }
 
     public Set<Guild> getGuilds() {
@@ -117,8 +126,15 @@ public class GuildManager {
         return !this.getGuildByTag(tag).isEmpty();
     }
 
-    public int countGuilds() {
-        return this.guildsMap.entrySet().size();
+    public void spawnHeart(Guild guild) {
+        if (this.pluginConfiguration.createMaterial != null && this.pluginConfiguration.createMaterial.getLeft() != Material.AIR) {
+            Block heart = guild.getRegion().getCenter().getBlock().getRelative(BlockFace.DOWN);
+
+            heart.setType(this.pluginConfiguration.createMaterial.getLeft());
+            BlockDataChanger.applyChanges(heart, this.pluginConfiguration.createMaterial.getRight());
+        } else if (this.pluginConfiguration.createEntityType != null) {
+            GuildEntityHelper.spawnGuildHeart(guild);
+        }
     }
 
 }

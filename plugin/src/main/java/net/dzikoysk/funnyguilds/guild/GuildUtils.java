@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
@@ -24,7 +23,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class GuildUtils {
+public final class GuildUtils {
+
+    @Deprecated
+    public static int countGuilds() {
+        return FunnyGuilds.getInstance().getGuildManager().countGuilds();
+    }
 
     @Deprecated
     public static Set<Guild> getGuilds() {
@@ -32,8 +36,8 @@ public class GuildUtils {
     }
 
     @Deprecated
-    public static int countGuilds() {
-        return FunnyGuilds.getInstance().getGuildManager().countGuilds();
+    public static Set<Guild> getGuilds(Collection<String> names) {
+        return FunnyGuilds.getInstance().getGuildManager().getGuildsByNames(names);
     }
 
     @Deprecated
@@ -119,11 +123,6 @@ public class GuildUtils {
     }
 
     @Deprecated
-    public static Set<Guild> getGuilds(Collection<String> names) {
-        return FunnyGuilds.getInstance().getGuildManager().getGuildsByNames(names);
-    }
-
-    @Deprecated
     public static void addGuild(Guild guild) {
         FunnyGuilds.getInstance().getGuildManager().addGuild(guild);
     }
@@ -145,17 +144,6 @@ public class GuildUtils {
                 .filter(Objects::nonNull)
                 .map(Guild::getTag)
                 .collect(Collectors.toList());
-    }
-
-    public static void spawnHeart(PluginConfiguration pluginConfiguration, Guild guild) {
-        if (pluginConfiguration.createMaterial != null && pluginConfiguration.createMaterial.getLeft() != Material.AIR) {
-            Block heart = guild.getRegion().getCenter().getBlock().getRelative(BlockFace.DOWN);
-
-            heart.setType(pluginConfiguration.createMaterial.getLeft());
-            BlockDataChanger.applyChanges(heart, pluginConfiguration.createMaterial.getRight());
-        } else if (pluginConfiguration.createEntityType != null) {
-            GuildEntityHelper.spawnGuildHeart(guild);
-        }
     }
 
     public static boolean validateName(PluginConfiguration pluginConfiguration, String guildName) {

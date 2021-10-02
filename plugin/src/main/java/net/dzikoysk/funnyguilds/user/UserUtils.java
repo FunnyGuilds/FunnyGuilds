@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class UserUtils {
+public final class UserUtils {
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
     private final static Pattern UUID_PATTERN = Pattern.compile("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$");
@@ -25,6 +25,26 @@ public class UserUtils {
     public static Set<User> getUsers() {
         return UserManager.getInstance().getUsers();
     }
+
+    /**
+     * Gets the set of users from collection of strings.
+     *
+     * @return set of users
+     * @deprecated for removal in the future, in favour of {@link UserManager#getUsersByNames(Collection)}
+     */
+    @Deprecated
+    public static Set<User> getUsersFromString(Collection<String> names) {
+        UserManager userManager = UserManager.getInstance();
+        Set<User> users = new HashSet<>();
+
+        for (String name : names) {
+            userManager.getUser(name)
+                    .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
+                    .peek(users::add);
+        }
+        return users;
+    }
+
 
     /**
      * Gets the user.
@@ -68,25 +88,6 @@ public class UserUtils {
 
     public static Set<String> getNamesOfUsers(Collection<User> users) {
         return users.stream().map(User::getName).collect(Collectors.toSet());
-    }
-
-    /**
-     * Gets the set of users from collection of strings.
-     *
-     * @return set of users
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUsersByNames(Collection)}
-     */
-    @Deprecated
-    public static Set<User> getUsersFromString(Collection<String> names) {
-        UserManager userManager = UserManager.getInstance();
-        Set<User> users = new HashSet<>();
-
-        for (String name : names) {
-            userManager.getUser(name)
-                    .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
-                    .peek(users::add);
-        }
-        return users;
     }
 
     public static Set<String> getOnlineNames(Collection<User> users) {

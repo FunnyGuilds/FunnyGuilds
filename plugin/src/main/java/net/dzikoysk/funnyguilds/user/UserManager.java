@@ -27,6 +27,10 @@ public class UserManager {
         INSTANCE = this;
     }
 
+    public int countUsers() {
+        return this.usersByUuid.size();
+    }
+
     public Set<User> getUsers() {
         return new HashSet<>(this.usersByUuid.values());
     }
@@ -131,10 +135,6 @@ public class UserManager {
         }
 
         return usersByName.containsKey(nickname);
-    }
-
-    public int countUsers() {
-        return this.usersByUuid.size();
     }
 
     /**
