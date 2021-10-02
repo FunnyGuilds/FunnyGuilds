@@ -49,7 +49,8 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
         return PandaStream.of(holograms.entrySet())
                 .find(entry -> entry.getValue().equals(hologram))
                 .map(Map.Entry::getKey)
-                .peek(guild -> Option.of(holograms.remove(guild)).peek(FunnyHologramImpl::delete));
+                .peek(guild -> Option.of(holograms.remove(guild))
+                        .peek(FunnyHologramImpl::delete));
     }
 
     @Override

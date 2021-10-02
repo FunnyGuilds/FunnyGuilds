@@ -416,17 +416,9 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Option<Location> getCenter() {
-        if (this.region == null) {
-            return Option.none();
-        }
-
-        Location center = this.region.getCenter();
-
-        if (center == null) {
-            return Option.none();
-        }
-
-        return Option.of(center.clone());
+        return Option.of(this.region)
+                .map(Region::getCenter)
+                .map(Location::clone);
     }
 
     public Option<Location> getEnderCrystal() {
