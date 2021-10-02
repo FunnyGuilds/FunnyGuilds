@@ -1,14 +1,12 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
-import panda.std.Option;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +17,6 @@ public class InvitationPersistenceHandler {
 
     private final FunnyGuilds plugin;
 
-    private final PluginConfiguration pluginConfiguration;
     private final GuildManager guildManager;
 
     private final File invitationsFile;
@@ -28,7 +25,6 @@ public class InvitationPersistenceHandler {
     public InvitationPersistenceHandler(FunnyGuilds plugin) {
         this.plugin = plugin;
 
-        this.pluginConfiguration = plugin.getPluginConfiguration();
         this.guildManager = plugin.getGuildManager();
 
         this.invitationsFile = new File(plugin.getPluginDataFolder(), "invitations.yml");
@@ -86,25 +82,19 @@ public class InvitationPersistenceHandler {
         YamlWrapper pc = new YamlWrapper(this.invitationsFile);
 
         for (String key : pc.getKeys(false)) {
-            Option<Guild> guildOption = this.guildManager.findByUuid(UUID.fromString(key));
-            if (guildOption.isEmpty()) {
-                continue;
-            }
+            this.guildManager.findByUuid(UUID.fromString(key)).peek(guild -> {
+                List<String> allyInvitations = pc.getStringList(key + ".guilds");
+                List<String> playerInvitations = pc.getStringList(key + ".players");
 
-            Guild guild = guildOption.get();
+                for (String ally : allyInvitations) {
+                    this.guildManager.findByUuid(UUID.fromString(ally))
+                            .peek(allyGuild -> InvitationList.createInvitation(guild, allyGuild));
+                }
 
-            List<String> allyInvitations = pc.getStringList(key + ".guilds");
-            List<String> playerInvitations = pc.getStringList(key + ".players");
-
-            for (String ally : allyInvitations) {
-                Option<Guild> allyGuildOption = this.guildManager.findByUuid(UUID.fromString(ally));
-
-                allyGuildOption.peek(allyGuild -> InvitationList.createInvitation(guild, allyGuild));
-            }
-
-            for (String player : playerInvitations) {
-                InvitationList.createInvitation(guild, UUID.fromString(player));
-            }
+                for (String player : playerInvitations) {
+                    InvitationList.createInvitation(guild, UUID.fromString(player));
+                }
+            });
         }
     }
 
