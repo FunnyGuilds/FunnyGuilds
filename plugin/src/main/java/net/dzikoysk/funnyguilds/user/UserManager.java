@@ -31,7 +31,7 @@ public class UserManager {
         return new HashSet<>(this.usersByUuid.values());
     }
 
-    public Set<User> getUsers(Collection<String> names) {
+    public Set<User> getUsersByNames(Collection<String> names) {
         return PandaStream.of(names)
                 .flatMap(this::getUser)
                 .collect(Collectors.toSet());
@@ -65,12 +65,6 @@ public class UserManager {
 
     public Option<User> getUser(OfflinePlayer offline) {
         return getUser(offline.getName());
-    }
-
-    public Set<User> getUsersByNames(Collection<String> names) {
-        return PandaStream.of(names)
-                .flatMap(this::getUser)
-                .collect(Collectors.toSet());
     }
 
     public User create(UUID uuid, String name) {
