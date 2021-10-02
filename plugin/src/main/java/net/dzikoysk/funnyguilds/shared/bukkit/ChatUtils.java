@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import org.bukkit.ChatColor;
+import panda.utilities.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,14 @@ public final class ChatUtils {
         }
         
         return colored;
+    }
+
+    public static String getLastColorBefore(String text, String before) {
+        if (!text.contains(before)) {
+            return StringUtils.EMPTY;
+        }
+
+        return ChatColor.getLastColors(text.split(before)[0]);
     }
 
     public static String toString(Collection<String> list, boolean send) {

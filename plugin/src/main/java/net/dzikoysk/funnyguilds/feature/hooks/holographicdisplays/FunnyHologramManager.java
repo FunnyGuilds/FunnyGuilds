@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 
 import net.dzikoysk.funnyguilds.guild.Guild;
+import org.bukkit.Location;
 import panda.std.Option;
 
 public interface FunnyHologramManager {
@@ -12,5 +13,7 @@ public interface FunnyHologramManager {
     Option<Guild> deleteHologram(FunnyHologram hologram);
 
     Option<FunnyHologram> getFunnyHologram(Guild guild);
+
+    Option<Location> getCorrectedLocation(Guild guild);
 
 }

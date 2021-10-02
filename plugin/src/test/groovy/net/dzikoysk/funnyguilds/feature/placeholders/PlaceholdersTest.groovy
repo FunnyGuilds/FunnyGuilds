@@ -3,8 +3,8 @@ package net.dzikoysk.funnyguilds.feature.placeholders
 import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -34,8 +34,7 @@ class PlaceholdersTest extends FunnyGuildsSpec {
     @Test
     void 'test ONLINE placeholder' () {
         def text = "§7offline - <online>online</online> - offline - <online>online</online> - offline"
-        def formatter = Placeholders.ONLINE.toFormatter(ChatColor.getLastColors(text.split("<online>")[0]))
-
+        def formatter = Placeholders.ONLINE.toFormatter(ChatUtils.getLastColorBefore(text, "<online>"))
 
         text = formatter.format text
 

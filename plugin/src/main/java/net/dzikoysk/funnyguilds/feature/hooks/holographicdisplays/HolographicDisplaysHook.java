@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -26,9 +27,8 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
 
     @Override
     public Option<FunnyHologram> getOrCreateHologram(Guild guild) {
-
-        return this.getFunnyHologram(guild).orElse(() -> HologramsUtils.calculateLocation(guild)
-                        .map(loc -> HologramsAPI.createHologram(plugin, loc))
+        return this.getFunnyHologram(guild).orElse(() -> this.getCorrectedLocation(guild)
+                        .map(location -> HologramsAPI.createHologram(plugin, location))
                         .map(FunnyHologramImpl::new)
                         .peek(hologram -> holograms.put(guild, hologram))
                         .is(FunnyHologram.class));
@@ -53,6 +53,14 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
     @Override
     public Option<FunnyHologram> getFunnyHologram(Guild guild) {
         return Option.of(this.holograms.get(guild));
+    }
+
+    @Override
+    public Option<Location> getCorrectedLocation(Guild guild) {
+        HologramConfiguration hologram = config.heartConfig.hologram;
+
+        return guild.getCenter()
+                .map(location -> location.add(hologram.locationCorrection.toLocation(location.getWorld())));
     }
 
     public static HolographicDisplaysHook createAndRunHandler(FunnyGuilds plugin) {

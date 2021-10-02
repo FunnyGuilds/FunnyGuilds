@@ -31,7 +31,7 @@ public class HologramUpdateLocationHandler implements Runnable {
 
         Bukkit.getScheduler().runTask(plugin, () -> {
             for (Guild guild : GuildUtils.getGuilds()) {
-                HologramsUtils.calculateLocation(guild)
+                hologramManager.getCorrectedLocation(guild)
                         .peek(location -> hologramManager.getFunnyHologram(guild)
                                 .peek(hologram -> hologram.setLocation(location)));
             }

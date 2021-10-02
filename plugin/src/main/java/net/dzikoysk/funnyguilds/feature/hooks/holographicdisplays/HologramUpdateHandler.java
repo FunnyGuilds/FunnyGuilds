@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import panda.std.Pair;
 import panda.std.stream.PandaStream;
 import panda.utilities.text.Formatter;
 
@@ -45,7 +46,8 @@ public class HologramUpdateHandler implements Runnable {
                 List<String> lines = PandaStream.of(hologramConfig.displayedLines)
                         .map(formatter::format)
                         .map(ChatUtils::colored)
-                        .map(ChatUtils::colored)
+                        .map(line -> Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+                                .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "<online>"), guild)))
                         .toList();
 
                 hologram.clearHologram();
