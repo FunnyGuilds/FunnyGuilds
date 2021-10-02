@@ -66,13 +66,9 @@ public class GuildManager {
 
     public Option<Guild> findByName(String name, boolean ignoreCase) {
         return PandaStream.of(guildsMap.entrySet())
-                .find(entry -> {
-                    if (ignoreCase) {
-                        return entry.getValue().getName().equalsIgnoreCase(name);
-                    } else {
-                        return entry.getValue().getName().equals(name);
-                    }
-                })
+                .find(entry -> ignoreCase
+                        ? entry.getValue().getName().equalsIgnoreCase(name)
+                        : entry.getValue().getName().equals(name))
                 .map(Map.Entry::getValue);
     }
 
@@ -82,13 +78,9 @@ public class GuildManager {
 
     public Option<Guild> findByTag(String tag, boolean ignoreCase) {
         return PandaStream.of(guildsMap.entrySet())
-                .find(entry -> {
-                    if (ignoreCase) {
-                        return entry.getValue().getTag().equalsIgnoreCase(tag);
-                    } else {
-                        return entry.getValue().getTag().equals(tag);
-                    }
-                })
+                .find(entry -> ignoreCase
+                        ? entry.getValue().getTag().equalsIgnoreCase(tag)
+                        : entry.getValue().getTag().equals(tag))
                 .map(Map.Entry::getValue);
     }
 
@@ -120,13 +112,11 @@ public class GuildManager {
 
     public void addGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
-
         guildsMap.put(guild.getUUID(), guild);
     }
 
     public void removeGuild(Guild guild) {
         Validate.notNull(guild, "user can't be null!");
-
         guildsMap.remove(guild.getUUID());
     }
 
@@ -172,8 +162,7 @@ public class GuildManager {
         if (this.plugin.getDataModel() instanceof FlatDataModel) {
             FlatDataModel dataModel = ((FlatDataModel) this.plugin.getDataModel());
             dataModel.getGuildFile(guild).delete();
-        }
-        else if (this.plugin.getDataModel() instanceof SQLDataModel) {
+        } else if (this.plugin.getDataModel() instanceof SQLDataModel) {
             DatabaseGuild.delete(guild);
         }
 
