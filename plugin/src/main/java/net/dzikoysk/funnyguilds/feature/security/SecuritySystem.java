@@ -1,13 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.security;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityFreeCam;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityReach;
-import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.config.sections;
 import com.google.common.collect.ImmutableList;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;

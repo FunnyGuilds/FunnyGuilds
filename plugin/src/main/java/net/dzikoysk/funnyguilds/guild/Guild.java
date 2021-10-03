@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

@@ -1,15 +1,14 @@
 package net.dzikoysk.funnyguilds.feature.prefix;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
-import panda.std.Option;
 
 import java.util.Set;
 
