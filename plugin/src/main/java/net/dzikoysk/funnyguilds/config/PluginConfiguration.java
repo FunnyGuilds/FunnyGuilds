@@ -439,7 +439,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
 
-    @CustomKey("tnt-protection")
     public TntProtectionConfiguration tntProtection = new TntProtectionConfiguration();
 
     @Min(0)
