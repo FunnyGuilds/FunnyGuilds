@@ -30,6 +30,7 @@ subprojects {
         maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi" }
         maven { url "https://nexus.codecrafter47.de/content/repositories/public" }
         maven { url "https://repo.mvdw-software.com/content/groups/public" }
+        maven { url "https://repo.codemc.io/repository/maven-public" }
     }
 
     apply plugin: 'groovy'

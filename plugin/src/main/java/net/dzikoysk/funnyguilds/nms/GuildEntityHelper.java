@@ -3,11 +3,11 @@ package net.dzikoysk.funnyguilds.nms;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,24 +32,16 @@ public final class GuildEntityHelper {
             FunnyGuilds plugin = FunnyGuilds.getInstance();
             FakeEntity guildHeartEntity;
 
-            if (! ENTITY_MAP.containsKey(guild)) {
-                Region region = guild.getRegion();
+            if (!ENTITY_MAP.containsKey(guild)) {
+                Option<Location> locationOption = guild.getEnderCrystal();
 
-                if (region == null) {
+                if (locationOption.isEmpty()) {
                     return;
                 }
-
-                Location center = region.getCenter();
-
-                if (center == null) {
-                    return;
-                }
-
-                Location spawnLocation = center.clone().add(0.5D, - 1.0D, 0.5D);
 
                 guildHeartEntity = plugin.getNmsAccessor()
                         .getEntityAccessor()
-                        .createFakeEntity(plugin.getPluginConfiguration().createEntityType, spawnLocation);
+                        .createFakeEntity(plugin.getPluginConfiguration().heartConfig.createEntityType, locationOption.get());
 
                 ENTITY_MAP.put(guild, guildHeartEntity);
             }

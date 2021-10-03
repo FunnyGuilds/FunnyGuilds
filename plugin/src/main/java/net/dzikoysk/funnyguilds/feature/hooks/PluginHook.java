@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.EmptyHologramManagerImpl;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEditHook;
@@ -14,17 +17,19 @@ import org.bukkit.Bukkit;
 
 public final class PluginHook {
 
-    public static final String PLUGIN_FUNNYTAB           = "FunnyTab";
-    public static final String PLUGIN_WORLDGUARD         = "WorldGuard";
-    public static final String PLUGIN_WORLDEDIT          = "WorldEdit";
-    public static final String PLUGIN_VAULT              = "Vault";
-    public static final String PLUGIN_PLACEHOLDERAPI     = "PlaceholderAPI";
-    public static final String PLUGIN_BUNGEETABLISTPLUS  = "BungeeTabListPlus";
-    public static final String PLUGIN_MVDWPLACEHOLDERAPI = "MVdWPlaceholderAPI";
-    public static final String PLUGIN_LEADERHEADS        = "LeaderHeads";
+    public static final String PLUGIN_FUNNYTAB             = "FunnyTab";
+    public static final String PLUGIN_WORLDGUARD           = "WorldGuard";
+    public static final String PLUGIN_WORLDEDIT            = "WorldEdit";
+    public static final String PLUGIN_VAULT                = "Vault";
+    public static final String PLUGIN_PLACEHOLDERAPI       = "PlaceholderAPI";
+    public static final String PLUGIN_BUNGEETABLISTPLUS    = "BungeeTabListPlus";
+    public static final String PLUGIN_MVDWPLACEHOLDERAPI   = "MVdWPlaceholderAPI";
+    public static final String PLUGIN_HOLOGRAPHIC_DISPLAYS = "HolographicDisplays";
+    public static final String PLUGIN_LEADERHEADS          = "LeaderHeads";
 
     public static WorldGuardHook WORLD_GUARD;
     public static WorldEditHook WORLD_EDIT;
+    public static FunnyHologramManager HOLOGRAPHIC_DISPLAYS = new EmptyHologramManagerImpl();
 
     private static final List<String> HOOK_LIST = new ArrayList<>();
 
@@ -97,6 +102,11 @@ public final class PluginHook {
 
         tryInit(PLUGIN_PLACEHOLDERAPI, () -> {
             PlaceholderAPIHook.initPlaceholderHook();
+            return true;
+        });
+
+        tryInit(PLUGIN_HOLOGRAPHIC_DISPLAYS, () -> {
+            HOLOGRAPHIC_DISPLAYS = HolographicDisplaysHook.createAndRunHandler(FunnyGuilds.getInstance());
             return true;
         });
 

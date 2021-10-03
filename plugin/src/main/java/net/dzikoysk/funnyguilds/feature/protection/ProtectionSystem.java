@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.protection;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
@@ -55,7 +56,8 @@ public final class ProtectionSystem {
         }
 
         if (location.equals(region.getHeart())) {
-            Pair<Material, Byte> heartMaterial = FunnyGuilds.getInstance().getPluginConfiguration().createMaterial;
+            PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+            Pair<Material, Byte> heartMaterial = config.heartConfig.createMaterial;
             return Option.when(heartMaterial != null && heartMaterial.getLeft() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
