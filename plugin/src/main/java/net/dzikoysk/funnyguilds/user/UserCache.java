@@ -210,9 +210,8 @@ public class UserCache {
         return damageCache.getLastTime() + config.lastAttackerAsKillerConsiderationTimeout_ >= System.currentTimeMillis();
     }
 
-    @Nullable
-    public synchronized Scoreboard getScoreboard() {
-        return this.scoreboard;
+    public synchronized Option<Scoreboard> getScoreboard() {
+        return Option.of(this.scoreboard);
     }
 
     public void updateScoreboardIfNull(Player player) {
