@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.config;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.exception.OkaeriException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -468,14 +467,10 @@ public class MessageConfiguration extends OkaeriConfig {
     public String leaderMembers = "&7{PLAYER} zostal nowym &aliderem &7gildii!";
 
     @Comment("<------- TNT Hours Messages -------> #")
-    @CustomKey("tntInfo") //TODO Get rid of this in future, backwards compatibility is weakness
-    public String tntHourInfo = "&7TNT na teranach gildii działa od {PROTECTION_END} do {PROTECTION_START}";
+    public String tntInfo = "&7TNT na teranach gildii działa od {PROTECTION_END} do {PROTECTION_START}";
     public String tntProtectDisable = "&7TNT wybucha o każdej porze.";
     public String tntNowEnabled = "&aTNT aktualnie jest włączone.";
     public String tntNowDisabled = "&cTNT aktualnie jest wyłączone.";
-
-    @Comment("<------- TNT Height Messages -------> #")
-    public String tntHeightInfo = "&7TNT na teranach gildii działa od {PROTECTION_MIN_HEIGHT} do {PROTECTION_MAX_HEIGHT}";
 
     @Comment("<------- Deputy Messages -------> #")
     public String deputyMustBeDifferent = "&cNie mozesz mianowac siebie zastepca!";
