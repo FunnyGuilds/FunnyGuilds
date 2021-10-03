@@ -42,4 +42,34 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
     }
 
+    public Build build = new Build();
+
+    @Names(strategy = NameStrategy.IDENTITY)
+    public static class Build extends OkaeriConfig {
+
+        @Comment("Minimalna wysokosc od ktorej mozna stawiac TNT.")
+        @CustomKey("min-height")
+        public int minHeight = 0;
+
+        @Comment("Maksymalna wysokosc do ktorej mozna stawiac TNT.")
+        @CustomKey("max-height")
+        public int maxHeight = 255;
+
+    }
+
+    public Explode explode = new Explode();
+
+    @Names(strategy = NameStrategy.IDENTITY)
+    public static class Explode extends OkaeriConfig {
+
+        @Comment("Minimalna wysokosc od ktorej TNT wybucha.")
+        @CustomKey("min-height")
+        public int minHeight = 0;
+
+        @Comment("Maksymalna wysokosc do ktorej TNT wybucha.")
+        @CustomKey("max-height")
+        public int maxHeight = 255;
+
+    }
+
 }
