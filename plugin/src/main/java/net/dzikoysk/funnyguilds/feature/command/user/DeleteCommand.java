@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.util.ConfirmationList;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
@@ -14,7 +15,11 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 @FunnyComponent
 public final class DeleteCommand extends AbstractFunnyCommand {
 
-    private static final ConfirmCommand CONFIRM_EXECUTOR = new ConfirmCommand();
+    private final ConfirmCommand confirmExecutor;
+
+    public DeleteCommand(FunnyGuilds plugin) throws Throwable {
+        this.confirmExecutor = plugin.getInjector().newInstanceWithFields(ConfirmCommand.class);
+    }
 
     @FunnyCommand(
         name = "${user.delete.name}",
@@ -29,7 +34,7 @@ public final class DeleteCommand extends AbstractFunnyCommand {
         ConfirmationList.add(user.getUUID());
 
         when (config.commands.confirm.enabled, messages.deleteConfirm);
-        CONFIRM_EXECUTOR.execute(player, user, guild);
+        confirmExecutor.execute(player, user, guild);
     }
 
 }
