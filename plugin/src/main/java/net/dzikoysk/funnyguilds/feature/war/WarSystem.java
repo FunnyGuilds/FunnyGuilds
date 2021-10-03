@@ -68,7 +68,7 @@ public class WarSystem {
         }
         
         if (!guild.canBeAttacked()) {
-            WarUtils.message(player, 2, Duration.between(Instant.now(), Instant.ofEpochMilli(guild.getProtection()).plus(config.warWait)).get(ChronoUnit.MILLIS));
+            WarUtils.message(player, 2, Duration.between(Instant.now(), Instant.ofEpochMilli(guild.getProtection())).get(ChronoUnit.MILLIS));
             return;
         }
 
