@@ -37,7 +37,7 @@ public class BlockPlace implements Listener {
         Material type = block.getType();
         Location blockLocation = block.getLocation();
 
-        if(type == Material.TNT) {
+        if (type == Material.TNT) {
             if (blockLocation.getBlockY() < config.tntProtection.build.minHeight) {
                 event.setCancelled(true);
             }
