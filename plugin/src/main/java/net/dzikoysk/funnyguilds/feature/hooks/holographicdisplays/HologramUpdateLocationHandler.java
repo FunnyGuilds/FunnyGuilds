@@ -21,7 +21,7 @@ public class HologramUpdateLocationHandler implements Runnable {
 
     @Override
     public void run() {
-        HologramConfiguration hologramConfig = config.heartConfig.hologram;
+        HologramConfiguration hologramConfig = config.heart.hologram;
 
         if (!hologramConfig.enabled) {
             return;

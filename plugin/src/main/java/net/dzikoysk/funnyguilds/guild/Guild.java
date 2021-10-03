@@ -28,7 +28,6 @@ public class Guild extends AbstractMutableEntity {
 
     private Region region;
     private Location home;
-    private Location enderCrystal;
 
     private User owner;
     private Set<User> members = ConcurrentHashMap.newKeySet();
