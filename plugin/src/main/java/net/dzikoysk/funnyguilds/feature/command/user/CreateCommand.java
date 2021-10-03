@@ -7,12 +7,14 @@ import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuil
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -85,12 +87,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
             when (!GuildUtils.validateTag(config, tag), messages.restrictedGuildTag);
         }
 
+        HeartConfiguration heart = config.heartConfig;
+
         if (config.regionsEnabled) {
-            if (config.createCenterY != 0) {
-                guildLocation.setY(config.createCenterY);
+            if (heart.createCenterY != 0) {
+                guildLocation.setY(heart.createCenterY);
             }
 
-            if (config.createEntityType != null && guildLocation.getBlockY() < (SKY_LIMIT - 2)) {
+            if (heart.createEntityType != null && guildLocation.getBlockY() < (SKY_LIMIT - 2)) {
                 guildLocation.setY(guildLocation.getBlockY() + 2);
             }
     
@@ -168,6 +172,12 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
 
             guild.setRegion(region);
+
+            FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
+
+            hologramManager.getCorrectedLocation(guild)
+                    .peek(location -> hologramManager.getOrCreateHologram(guild)
+                            .peek(hologram -> hologram.setLocation(location)));
         }
 
         if (!SimpleEventHandler.handle(new GuildPreCreateEvent(EventCause.USER, user, guild))) {
@@ -182,12 +192,12 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
         
         if (config.regionsEnabled) {
-            if (config.pasteSchematicOnCreation) {
-                if (! PluginHook.WORLD_EDIT.pasteSchematic(config.guildSchematicFile, guildLocation, config.pasteSchematicWithAir)) {
+            if (heart.pasteSchematicOnCreation) {
+                if (! PluginHook.WORLD_EDIT.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
                     player.sendMessage(messages.createGuildCouldNotPasteSchematic);
                 }
             }
-            else if (config.createCenterSphere) {
+            else if (heart.createCenterSphere) {
                 for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
                     if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
                         locationInSphere.getBlock().setType(Material.AIR);
