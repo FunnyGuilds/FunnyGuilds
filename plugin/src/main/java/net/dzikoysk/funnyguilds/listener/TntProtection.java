@@ -27,15 +27,15 @@ public class TntProtection implements Listener {
     public void onExplode(EntityExplodeEvent event) {
         PluginConfiguration config = plugin.getPluginConfiguration();
 
-        if (!config.guildTNTProtectionEnabled && !config.guildTNTProtectionGlobal) {
+        if (!config.tntProtection.time.enabled && !config.tntProtection.time.enabledGlobal) {
             return;
         }
 
         LocalTime now = LocalTime.now();
-        LocalTime start = config.guildTNTProtectionStartTime;
-        LocalTime end = config.guildTNTProtectionEndTime;
+        LocalTime start = config.tntProtection.time.startTime;
+        LocalTime end = config.tntProtection.time.endTime;
 
-        boolean isWithinTimeframe = config.guildTNTProtectionPassingMidnight
+        boolean isWithinTimeframe = config.tntProtection.time.passingMidnight
                 ? now.isAfter(start) || now.isBefore(end)
                 : now.isAfter(start) && now.isBefore(end);
 
@@ -43,12 +43,12 @@ public class TntProtection implements Listener {
             return;
         }
 
-        if (config.guildTNTProtectionGlobal) {
+        if (config.tntProtection.time.enabledGlobal) {
             event.setCancelled(true);
             return;
         }
 
-        if (config.guildTNTProtectionEnabled) {
+        if (config.tntProtection.time.enabled) {
             Region region = RegionUtils.getAt(event.getLocation());
 
             if (region != null) {

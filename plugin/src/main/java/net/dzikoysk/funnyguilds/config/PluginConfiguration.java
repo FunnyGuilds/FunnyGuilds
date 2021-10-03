@@ -20,6 +20,7 @@ import eu.okaeri.validator.annotation.Pattern;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
 import net.dzikoysk.funnyguilds.guild.GuildRegex;
@@ -477,29 +478,8 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
 
-    @Comment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
-    @CustomKey("guild-tnt-protection-enabled")
-    public boolean guildTNTProtectionEnabled = false;
-
-    @Comment("Czy wlaczyc ochrone przed TNT na całym serwerze w podanych godzinach")
-    @CustomKey("guild-tnt-protection-global")
-    public boolean guildTNTProtectionGlobal = false;
-
-    @Comment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
-    @Comment("Godzina w formacie HH:mm")
-    @CustomKey("guild-tnt-protection-start-time")
-    public String guildTNTProtectionStartTime_ = "22:00";
-    @Exclude
-    public LocalTime guildTNTProtectionStartTime;
-
-    @Comment("Do której godziny ma dzialac ochrona przed TNT w gildii")
-    @Comment("Godzina w formacie HH:mm")
-    @CustomKey("guild-tnt-protection-end-time")
-    public String guildTNTProtectionEndTime_ = "06:00";
-    @Exclude
-    public LocalTime guildTNTProtectionEndTime;
-    @Exclude
-    public boolean guildTNTProtectionPassingMidnight;
+    @CustomKey("tnt-protection")
+    public TntProtectionConfiguration tntProtection = new TntProtectionConfiguration();
 
     @Min(0)
     @Comment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
@@ -1265,9 +1245,9 @@ public class PluginConfiguration extends OkaeriConfig {
 
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        this.guildTNTProtectionStartTime = LocalTime.parse(guildTNTProtectionStartTime_, timeFormatter);
-        this.guildTNTProtectionEndTime = LocalTime.parse(guildTNTProtectionEndTime_, timeFormatter);
-        this.guildTNTProtectionPassingMidnight = this.guildTNTProtectionStartTime.isAfter(this.guildTNTProtectionEndTime);
+        this.tntProtection.time.startTime = LocalTime.parse(tntProtection.time.startTime_, timeFormatter);
+        this.tntProtection.time.endTime = LocalTime.parse(tntProtection.time.endTime_, timeFormatter);
+        this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.isAfter(this.tntProtection.time.endTime);
         this.translatedMaterials = new HashMap<>();
 
         for (String materialName : translatedMaterials_.keySet()) {
