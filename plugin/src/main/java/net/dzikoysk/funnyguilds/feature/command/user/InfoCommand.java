@@ -7,9 +7,9 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.Option;
@@ -44,8 +44,8 @@ public final class InfoCommand extends AbstractFunnyCommand {
 
         for (String messageLine : messages.infoList) {
             messageLine = formatter.format(messageLine);
-            String lastColor = ChatColor.getLastColors(messageLine.split("<online>")[0]);
-            messageLine = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT.format(messageLine, Pair.of(lastColor, guild));
+            messageLine = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+                    .format(messageLine, Pair.of(ChatUtils.getLastColorBefore(messageLine, "<online>"), guild));
 
             sender.sendMessage(messageLine);
         }

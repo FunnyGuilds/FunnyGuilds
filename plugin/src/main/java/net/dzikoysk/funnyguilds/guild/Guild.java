@@ -50,7 +50,6 @@ public class Guild extends AbstractMutableEntity {
         this.uuid = uuid;
 
         this.rank = new GuildRank(this);
-
         this.born = System.currentTimeMillis();
     }
 
@@ -183,15 +182,19 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setRegion(Region region) {
-        if (! FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+
+        if (! config.regionsEnabled) {
             return;
         }
 
         this.region = region;
         this.region.setGuild(this);
 
+        Location center = region.getCenter();
+
         if (this.home == null) {
-            this.home = region.getCenter();
+            this.home = center.clone();
         }
 
         this.markChanged();
@@ -276,10 +279,6 @@ public class Guild extends AbstractMutableEntity {
     public void setBuild(long time) {
         this.build = time;
         this.markChanged();
-    }
-
-    public void setEnderCrystal(Location loc) {
-        this.enderCrystal = loc;
     }
 
     public boolean isSomeoneInRegion() {
@@ -408,8 +407,14 @@ public class Guild extends AbstractMutableEntity {
         return this.rank;
     }
 
-    public Location getEnderCrystal() {
-        return this.enderCrystal;
+    public Option<Location> getCenter() {
+        return Option.of(this.region)
+                .map(Region::getCenter)
+                .map(Location::clone);
+    }
+
+    public Option<Location> getEnderCrystal() {
+        return this.getCenter().map(location -> location.add(0.5D, - 1.0D, 0.5D));
     }
 
     @Override

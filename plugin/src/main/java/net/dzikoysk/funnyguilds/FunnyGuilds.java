@@ -352,7 +352,7 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         for (Guild guild : this.guildManager.getGuilds()) {
-            if (this.pluginConfiguration.createEntityType != null) {
+            if (this.pluginConfiguration.heartConfig.createEntityType != null) {
                 GuildEntityHelper.spawnGuildHeart(guild);
             }
         }
@@ -430,15 +430,9 @@ public class FunnyGuilds extends JavaPlugin {
         return injector;
     }
 
-    public void reloadPluginConfiguration() throws OkaeriException {
+    public void reloadConfiguration() throws OkaeriException {
         this.pluginConfiguration.load();
-    }
-
-    public void reloadTablistConfiguration() throws OkaeriException {
         this.tablistConfiguration.load();
-    }
-
-    public void reloadMessageConfiguration() throws OkaeriException {
         this.messageConfiguration.load();
     }
 

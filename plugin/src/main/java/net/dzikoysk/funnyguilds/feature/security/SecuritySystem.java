@@ -1,13 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.security;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityFreeCam;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityReach;
-import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -63,7 +63,7 @@ public final class SecuritySystem {
             Vector origin = (player.isSneaking() && !Reflections.USE_PRE_9_METHODS)
                     ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
                     : eye.toVector();
-            FunnyBox funnyBox = "ender_crystal".equalsIgnoreCase(config.createType)
+            FunnyBox funnyBox = "ender_crystal".equalsIgnoreCase(config.heartConfig.createType)
                     ? new FunnyBox(x - 1.0, y - 1.0 ,z - 1.0, x + 1.0, y + 1.0 ,z + 1.0)
                     : FunnyBox.of(player.getWorld().getBlockAt(center));
 
