@@ -39,22 +39,18 @@ public class Dummy {
             return;
         }
 
-        Scoreboard scoreboard = this.user.getCache().getScoreboard();
+        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
 
-        if (scoreboard == null) {
-            FunnyGuilds.getPluginLogger().debug(
-                    "We're trying to update Dummy score but scoreboard hasn't been initialized yet" +
-                            "(maybe player left the game while updating?)");
+        if (scoreboardOption.isEmpty()) {
+            FunnyGuilds.getPluginLogger().debug("We're trying to update Dummy score but scoreboard hasn't been initialized yet" + "(maybe player left the game while updating?)");
             return;
         }
 
-        Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
-
-        if (objective == null || ! objective.getName().equals(OBJECTIVE_NAME)) {
-            this.initialize();
-        } else {
-            objective.getScore(user.getName()).setScore(user.getRank().getPoints());
-        }
+        scoreboardOption
+                .map(scoreboard -> scoreboard.getObjective(OBJECTIVE_NAME))
+                .filter(objective -> objective.getName().equals(OBJECTIVE_NAME))
+                .peek(objective -> objective.getScore(user.getName()).setScore(user.getRank().getPoints()))
+                .onEmpty(this::initialize);
     }
 
     private void initialize() {
@@ -68,15 +64,16 @@ public class Dummy {
             return;
         }
 
-        Scoreboard scoreboard = this.user.getCache().getScoreboard();
+        Option<Scoreboard> scoreboardOption = this.user.getCache().getScoreboard();
 
-        if (scoreboard == null) {
+        if (scoreboardOption.isEmpty()) {
             FunnyGuilds.getPluginLogger().debug(
                     "We're trying to initialize Dummy, but we haven't initialized scoreboard yet " +
                             "(maybe player left the game while initializing?)");
             return;
         }
 
+        Scoreboard scoreboard = scoreboardOption.get();
         Objective objective = scoreboard.getObjective(OBJECTIVE_NAME);
 
         if (objective == null || ! objective.getName().equals(OBJECTIVE_NAME)) {

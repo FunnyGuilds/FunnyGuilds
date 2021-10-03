@@ -77,7 +77,7 @@ public class PlayerMove implements Listener {
                         return;
                     }
 
-                    if (config.heartConfig.createEntityType != null) {
+                    if (config.heart.createEntityType != null) {
                         Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> GuildEntityHelper.despawnGuildHeart(guild, player), 40L);
                     }
 
@@ -129,7 +129,7 @@ public class PlayerMove implements Listener {
 
                 cache.setEnter(true);
 
-                if (config.heartConfig.createEntityType != null) {
+                if (config.heart.createEntityType != null) {
                     Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> GuildEntityHelper.spawnGuildHeart(guild, player), 40L);
                 }
 

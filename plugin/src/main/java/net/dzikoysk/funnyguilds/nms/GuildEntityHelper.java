@@ -41,7 +41,7 @@ public final class GuildEntityHelper {
 
                 guildHeartEntity = plugin.getNmsAccessor()
                         .getEntityAccessor()
-                        .createFakeEntity(plugin.getPluginConfiguration().heartConfig.createEntityType, locationOption.get());
+                        .createFakeEntity(plugin.getPluginConfiguration().heart.createEntityType, locationOption.get());
 
                 ENTITY_MAP.put(guild, guildHeartEntity);
             }

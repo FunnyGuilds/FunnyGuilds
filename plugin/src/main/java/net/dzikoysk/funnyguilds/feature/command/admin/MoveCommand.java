@@ -35,7 +35,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         when (!config.regionsEnabled, messages.regionsDisabled);
         when (args.length < 1, messages.generalNoTagGiven);
 
-        HeartConfiguration heart = config.heartConfig;
+        HeartConfiguration heart = config.heart;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         Location location = player.getLocation();
 

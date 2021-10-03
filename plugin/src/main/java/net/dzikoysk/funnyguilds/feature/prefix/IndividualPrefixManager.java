@@ -37,9 +37,14 @@ public class IndividualPrefixManager {
 
         User user = userOption.get();
         UserCache cache = user.getCache();
-        Scoreboard cachedScoreboard = cache.getScoreboard();
 
-        if (cachedScoreboard == null) {
+        cache.getScoreboard().peek(scoreboard -> {
+            try {
+                player.setScoreboard(scoreboard);
+            } catch (IllegalStateException e) {
+                FunnyGuilds.getPluginLogger().warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
+            }
+        }).onEmpty(() -> {
             FunnyGuilds.getPluginLogger().debug(
                     "We're trying to update player scoreboard, but cached scoreboard is null (server has been reloaded?)");
 
@@ -64,15 +69,7 @@ public class IndividualPrefixManager {
 
                 cache.getDummy().updateScore(user);
             });
-
-            return;
-        }
-
-        try {
-            player.setScoreboard(cachedScoreboard);
-        } catch (IllegalStateException e) {
-            FunnyGuilds.getPluginLogger().warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
-        }
+        });
     }
 
     public static void addGuild(Guild to) {

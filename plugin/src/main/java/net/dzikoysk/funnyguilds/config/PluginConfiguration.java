@@ -302,7 +302,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Konfiguracja serca")
     @CustomKey("heart-configuration")
-    public HeartConfiguration heartConfig = new HeartConfiguration();
+    public HeartConfiguration heart = new HeartConfiguration();
 
     @Comment("Typy blokow, z ktorymi osoba spoza gildii NIE moze prowadzic interakcji na terenie innej gildii")
     @CustomKey("blocked-interact")
@@ -1131,7 +1131,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Override
     public OkaeriConfig load() throws OkaeriException {
         super.load();
-        heartConfig.loadProcessedProperties();
+        heart.loadProcessedProperties();
         this.loadProcessedProperties();
         return this;
     }
@@ -1153,7 +1153,7 @@ public class PluginConfiguration extends OkaeriConfig {
         this.guiItemsName = ChatUtils.colored(this.guiItemsName_);
         this.guiItemsLore = ChatUtils.colored(this.guiItemsLore_);
 
-        if (this.heartConfig.createMaterial != null && MaterialUtils.hasGravity(this.heartConfig.createMaterial.getLeft())) {
+        if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getLeft())) {
             this.eventPhysics = true;
         }
 

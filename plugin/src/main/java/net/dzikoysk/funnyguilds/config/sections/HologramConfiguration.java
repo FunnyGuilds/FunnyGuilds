@@ -4,13 +4,14 @@ import com.google.common.collect.ImmutableList;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
+import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import org.bukkit.Material;
 
 import java.util.List;
 
-@Names(strategy = NameStrategy.IDENTITY)
+@Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HologramConfiguration extends OkaeriConfig {
 
     @Comment("Czy ta sekcja ma być włączona?")
@@ -34,7 +35,6 @@ public class HologramConfiguration extends OkaeriConfig {
             .add("&7~ Created by &bFunnyGuilds Team &7~")
             .add("&7&m-------------------")
             .build();
-
     @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji.")
     public LocationConfiguration locationCorrection = new LocationConfiguration(0.5, 2.5, 0.5);
 
