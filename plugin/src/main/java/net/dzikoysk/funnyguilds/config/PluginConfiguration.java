@@ -1320,6 +1320,7 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment({"", "Komendy administratora"})
         public AdminCommands admin = new AdminCommands();
 
+        @Names(strategy = NameStrategy.IDENTITY)
         public static class FunnyCommand extends OkaeriConfig {
 
             public String name;
@@ -1344,6 +1345,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
         }
 
+        @Names(strategy = NameStrategy.IDENTITY)
         public static class AdminCommands extends OkaeriConfig {
 
             public String main = "ga";
