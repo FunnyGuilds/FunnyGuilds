@@ -3,13 +3,14 @@ package net.dzikoysk.funnyguilds.config.sections;
 import com.google.common.collect.ImmutableList;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import org.bukkit.Material;
 
 import java.util.List;
 
-@Names(strategy = NameStrategy.IDENTITY)
+@Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HologramConfiguration extends OkaeriConfig {
 
     @Comment("Czy ta sekcja ma być włączona?")

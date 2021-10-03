@@ -4,6 +4,9 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Exclude;
+import eu.okaeri.configs.annotation.NameModifier;
+import eu.okaeri.configs.annotation.NameStrategy;
+import eu.okaeri.configs.annotation.Names;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -12,6 +15,7 @@ import org.bukkit.entity.EntityType;
 
 import java.io.File;
 
+@Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HeartConfiguration extends OkaeriConfig {
 
     @Comment("Blok lub entity, ktore jest sercem gildii")
@@ -35,7 +39,6 @@ public class HeartConfiguration extends OkaeriConfig {
     public int createCenterY = 60;
 
     @Comment("Konfiguracja hologramu nad sercem gildii.")
-    @CustomKey("hologram")
     public HologramConfiguration hologram = new HologramConfiguration();
 
     @Comment("Czy ma sie tworzyc kula z obsydianu dookola centrum gildii")
