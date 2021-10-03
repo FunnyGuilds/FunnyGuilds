@@ -25,7 +25,7 @@ public final class TntCommand extends AbstractFunnyCommand {
         LocalTime now = LocalTime.now();
         LocalTime start = config.tntProtection.time.startTime;
         LocalTime end = config.tntProtection.time.endTime;
-        String message = messages.tntInfo;
+        String message = messages.tntHourInfo;
 
         boolean isWithinTimeframe = config.tntProtection.time.passingMidnight
                 ? now.isAfter(start) || now.isBefore(end)

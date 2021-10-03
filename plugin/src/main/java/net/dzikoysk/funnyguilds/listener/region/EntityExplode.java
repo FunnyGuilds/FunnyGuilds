@@ -58,6 +58,18 @@ public class EntityExplode implements Listener {
 
         Entity explosionEntity = event.getEntity();
 
+        explodedBlocks.removeIf(block -> {
+            int height = block.getLocation().getBlockY();
+
+            return height < config.tntProtection.explode.minHeight || height > config.tntProtection.explode.maxHeight;
+        });
+
+         blocksInSphere.removeIf(block -> {
+            int height = block.getLocation().getBlockY();
+
+            return height < config.tntProtection.explode.minHeight || height > config.tntProtection.explode.maxHeight;
+        });
+
         if (config.explodeShouldAffectOnlyGuild) {
             explodedBlocks.removeIf(block -> {
                 Region region = RegionUtils.getAt(block.getLocation());

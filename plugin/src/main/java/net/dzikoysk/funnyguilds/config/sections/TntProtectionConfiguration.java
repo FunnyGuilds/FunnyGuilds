@@ -24,14 +24,14 @@ public class TntProtectionConfiguration extends OkaeriConfig {
         @CustomKey("enabled-global")
         public boolean enabledGlobal = false;
 
-        @Comment("O której godzinie ma sie zaczac ochrona przed TNT w gildii")
+        @Comment("O ktorej godzinie ma sie zaczac ochrona przed TNT w gildii")
         @Comment("Godzina w formacie HH:mm")
         @CustomKey("start-time")
         public String startTime_ = "22:00";
         @Exclude
         public LocalTime startTime;
 
-        @Comment("Do której godziny ma dzialac ochrona przed TNT w gildii")
+        @Comment("Do ktorej godziny ma dzialac ochrona przed TNT w gildii")
         @Comment("Godzina w formacie HH:mm")
         @CustomKey("end-time")
         public String endTime_ = "06:00";

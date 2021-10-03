@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.nms.Reflections;
@@ -29,11 +30,22 @@ public class BlockPlace implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlace(BlockPlaceEvent event) {
         PluginConfiguration config = plugin.getPluginConfiguration();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
 
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Material type = block.getType();
         Location blockLocation = block.getLocation();
+
+        if(type == Material.TNT) {
+            if (blockLocation.getBlockY() < config.tntProtection.build.minHeight) {
+                event.setCancelled(true);
+            }
+
+            if (blockLocation.getBlockY() > config.tntProtection.build.maxHeight) {
+                event.setCancelled(true);
+            }
+        }
 
         boolean isProtected = ProtectionSystem.isProtected(player, blockLocation, true)
                 .peek(ProtectionSystem::defaultResponse)
