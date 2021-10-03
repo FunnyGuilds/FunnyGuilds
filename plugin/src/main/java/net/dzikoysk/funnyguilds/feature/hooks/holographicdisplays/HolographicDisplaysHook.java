@@ -10,15 +10,14 @@ import org.bukkit.Location;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class HolographicDisplaysHook implements FunnyHologramManager {
 
     private final FunnyGuilds plugin;
     private final PluginConfiguration config;
-    private final Map<Guild, FunnyHologramImpl> holograms = Collections.synchronizedMap(new HashMap<>());
+    private final Map<Guild, FunnyHologramImpl> holograms = new ConcurrentHashMap<>();
 
     private HolographicDisplaysHook(FunnyGuilds plugin) {
         this.plugin = plugin;

@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -17,6 +16,7 @@ import panda.std.stream.PandaStream;
 import panda.utilities.text.Formatter;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class HologramUpdateHandler implements Runnable {
 
@@ -38,18 +38,16 @@ public class HologramUpdateHandler implements Runnable {
 
         ItemStack item = new ItemStack(hologramConfig.item);
         FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
+        for (Guild guild : plugin.getGuildManager().getGuilds()) {
+            Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
+            List<String> lines = PandaStream.of(hologramConfig.displayedLines)
+                    .map(formatter::format)
+                    .map(ChatUtils::colored)
+                    .map(line -> Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+                            .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "<online>"), guild)))
+                    .toList();
 
-        double index = 0.0D;
-        for (Guild guild : GuildUtils.getGuilds()) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> hologramManager.getOrCreateHologram(guild).peek(hologram -> {
-                Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
-                List<String> lines = PandaStream.of(hologramConfig.displayedLines)
-                        .map(formatter::format)
-                        .map(ChatUtils::colored)
-                        .map(line -> Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
-                                .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "<online>"), guild)))
-                        .toList();
-
+            Bukkit.getScheduler().runTask(plugin, () -> hologramManager.getOrCreateHologram(guild).peek(hologram -> {
                 hologram.clearHologram();
 
                 if (hologramConfig.item != Material.AIR) {
@@ -57,10 +55,7 @@ public class HologramUpdateHandler implements Runnable {
                 }
 
                 hologram.addLines(lines);
-            }), (long) index);
-
-            index += 0.5D;
+            }));
         }
     }
-
 }
