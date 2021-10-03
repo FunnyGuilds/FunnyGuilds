@@ -14,7 +14,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 
-import java.time.Duration;
 import java.time.Instant;
 
 public class WarSystem {
@@ -67,7 +66,7 @@ public class WarSystem {
         }
         
         if (!guild.canBeAttacked()) {
-            WarUtils.message(player, 2, Duration.between(Instant.now(), Instant.ofEpochMilli(guild.getProtection())).toMillis());
+            WarUtils.message(player, 2, guild.getProtection() - System.currentTimeMillis());
             return;
         }
 
