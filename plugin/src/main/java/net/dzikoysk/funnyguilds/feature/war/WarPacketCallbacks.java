@@ -15,7 +15,7 @@ public class WarPacketCallbacks implements PacketCallbacks {
 
     @Override
     public void handleRightClickEntity(int entityId, boolean isMainHand) {
-        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(new WarInfoRequest(this.player, entityId));
+        FunnyGuilds.getInstance().getConcurrencyManager().postRequests(new WarInfoRequest(FunnyGuilds.getInstance(), this.player, entityId));
     }
 
     @Override

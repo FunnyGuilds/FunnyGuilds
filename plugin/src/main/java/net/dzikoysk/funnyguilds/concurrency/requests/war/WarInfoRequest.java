@@ -17,12 +17,19 @@ import java.util.concurrent.TimeUnit;
 
 public class WarInfoRequest extends DefaultConcurrencyRequest {
 
-    private static final InfoCommand INFO_EXECUTOR = new InfoCommand();
+    private InfoCommand infoExecutor;
 
     private final Player player;
     private final int entityId;
 
-    public WarInfoRequest(final Player player, final int entityId) {
+    public WarInfoRequest(FunnyGuilds plugin, Player player, int entityId) {
+        try {
+            this.infoExecutor = plugin.getInjector().newInstanceWithFields(InfoCommand.class);
+        }
+        catch (Throwable throwable) {
+            FunnyGuilds.getPluginLogger().error("An error occurred while creating war info request", throwable);
+        }
+
         this.player = player;
         this.entityId = entityId;
     }
@@ -49,7 +56,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             }
 
             try {
-                INFO_EXECUTOR.execute(player, new String[]{ entry.getKey().getTag() });
+                infoExecutor.execute(player, new String[]{ entry.getKey().getTag() });
                 return;
             } catch (ValidationException validatorException) {
                 validatorException.getValidationMessage().peek(player::sendMessage);
