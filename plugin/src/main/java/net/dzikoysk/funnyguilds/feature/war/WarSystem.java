@@ -16,7 +16,6 @@ import panda.std.Option;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 public class WarSystem {
 
@@ -68,7 +67,7 @@ public class WarSystem {
         }
         
         if (!guild.canBeAttacked()) {
-            WarUtils.message(player, 2, Duration.between(Instant.now(), Instant.ofEpochMilli(guild.getProtection())).get(ChronoUnit.MILLIS));
+            WarUtils.message(player, 2, Duration.between(Instant.now(), Instant.ofEpochMilli(guild.getProtection())).toMillis());
             return;
         }
 
