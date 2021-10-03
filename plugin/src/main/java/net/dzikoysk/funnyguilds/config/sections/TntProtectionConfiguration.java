@@ -13,9 +13,9 @@ import java.time.LocalTime;
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TntProtectionConfiguration extends OkaeriConfig {
 
-    public Time time = new Time();
+    public TimeConfig time = new TimeConfig();
 
-    public static class Time extends OkaeriConfig {
+    public static class TimeConfig extends OkaeriConfig {
 
         @Comment("Czy wlaczyc ochrone przed TNT w gildiach w podanych godzinach")
         public boolean enabled = false;
@@ -41,9 +41,9 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
     }
 
-    public Build build = new Build();
+    public BuildConfig build = new BuildConfig();
 
-    public static class Build extends OkaeriConfig {
+    public static class BuildConfig extends OkaeriConfig {
 
         @Comment("Minimalna wysokosc od ktorej mozna stawiac TNT.")
         public int minHeight = 0;
@@ -53,9 +53,9 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
     }
 
-    public Explode explode = new Explode();
+    public ExplodeConfig explode = new ExplodeConfig();
 
-    public static class Explode extends OkaeriConfig {
+    public static class ExplodeConfig extends OkaeriConfig {
 
         @Comment("Minimalna wysokosc od ktorej TNT wybucha.")
         public int minHeight = 0;
