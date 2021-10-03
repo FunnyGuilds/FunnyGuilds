@@ -10,7 +10,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class UserUtils {
+public final class UserUtils {
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
     private final static Pattern UUID_PATTERN = Pattern.compile("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$");
@@ -27,11 +27,44 @@ public class UserUtils {
     }
 
     /**
+     * Gets the set of users from collection of names.
+     *
+     * @return set of users
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByNames(Collection)}
+     */
+    @Deprecated
+    public static Set<User> getUsersFromString(Collection<String> names) {
+        UserManager userManager = UserManager.getInstance();
+        Set<User> users = new HashSet<>();
+
+        for (String name : names) {
+            userManager.findByName(name)
+                    .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
+                    .peek(users::add);
+        }
+        
+        return users;
+    }
+
+    /**
+     * Gets the user.
+     *
+     * @param uuid the universally unique identifier of User
+     * @return the user
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByUuid(UUID)}
+     */
+    @Nullable
+    @Deprecated
+    public static User get(UUID uuid) {
+        return UserManager.getInstance().findByUuid(uuid).getOrNull();
+    }
+
+    /**
      * Gets the user.
      *
      * @param nickname the name of User
      * @return the user
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String)}
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String)}
      */
     @Nullable
     @Deprecated
@@ -45,48 +78,16 @@ public class UserUtils {
      * @param nickname   the name of User
      * @param ignoreCase ignore the case of the nickname
      * @return the user
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(String, boolean)}
+     * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String, boolean)}
      */
     @Nullable
     @Deprecated
     public static User get(String nickname, boolean ignoreCase) {
-        return UserManager.getInstance().getUser(nickname, ignoreCase).getOrNull();
-    }
-
-    /**
-     * Gets the user.
-     *
-     * @param uuid the universally unique identifier of User
-     * @return the user
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUser(UUID)}
-     */
-    @Nullable
-    @Deprecated
-    public static User get(UUID uuid) {
-        return UserManager.getInstance().getUser(uuid).getOrNull();
+        return UserManager.getInstance().findByName(nickname, ignoreCase).getOrNull();
     }
 
     public static Set<String> getNamesOfUsers(Collection<User> users) {
         return users.stream().map(User::getName).collect(Collectors.toSet());
-    }
-
-    /**
-     * Gets the set of users from collection of strings.
-     *
-     * @return set of users
-     * @deprecated for removal in the future, in favour of {@link UserManager#getUsersByNames(Collection)}
-     */
-    @Deprecated
-    public static Set<User> getUsersFromString(Collection<String> names) {
-        UserManager userManager = UserManager.getInstance();
-        Set<User> users = new HashSet<>();
-
-        for (String name : names) {
-            userManager.getUser(name)
-                    .onEmpty(() -> FunnyGuilds.getPluginLogger().warning("Corrupted user: " + name))
-                    .peek(users::add);
-        }
-        return users;
     }
 
     public static Set<String> getOnlineNames(Collection<User> users) {

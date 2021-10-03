@@ -18,7 +18,7 @@ public final class TopCommand extends AbstractFunnyCommand {
         acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        User user = this.userManager.getUser(sender.getName()).getOrNull();
+        User user = this.userManager.findByName(sender.getName()).getOrNull();
 
         for (String messageLine : messages.topList) {
             String parsedRank = RankUtils.parseRank(user, messageLine);

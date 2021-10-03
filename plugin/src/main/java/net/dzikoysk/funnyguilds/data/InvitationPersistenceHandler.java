@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.data;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -15,23 +15,29 @@ import java.util.UUID;
 
 public class InvitationPersistenceHandler {
 
-    private final    FunnyGuilds funnyGuilds;
-    private final    File        invitationsFile;
-    private volatile BukkitTask  invitationPersistenceHandlerTask;
+    private final FunnyGuilds plugin;
 
-    public InvitationPersistenceHandler(FunnyGuilds funnyGuilds) {
-        this.funnyGuilds = funnyGuilds;
-        this.invitationsFile = new File(funnyGuilds.getPluginDataFolder(), "invitations.yml");
+    private final GuildManager guildManager;
+
+    private final File invitationsFile;
+    private volatile BukkitTask invitationPersistenceHandlerTask;
+
+    public InvitationPersistenceHandler(FunnyGuilds plugin) {
+        this.plugin = plugin;
+
+        this.guildManager = plugin.getGuildManager();
+
+        this.invitationsFile = new File(plugin.getPluginDataFolder(), "invitations.yml");
     }
 
     public void startHandler() {
-        long interval = this.funnyGuilds.getPluginConfiguration().dataInterval * 60L * 20L;
+        long interval = this.plugin.getPluginConfiguration().dataInterval * 60L * 20L;
 
         if (this.invitationPersistenceHandlerTask != null) {
             this.invitationPersistenceHandlerTask.cancel();
         }
 
-        this.invitationPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(funnyGuilds, this::saveInvitations, interval, interval);
+        this.invitationPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, this::saveInvitations, interval, interval);
     }
 
     public void stopHandler() {
@@ -47,7 +53,7 @@ public class InvitationPersistenceHandler {
         this.invitationsFile.delete();
         YamlWrapper wrapper = new YamlWrapper(this.invitationsFile);
 
-        for (Guild guild : GuildUtils.getGuilds()) {
+        for (Guild guild : this.guildManager.getGuilds()) {
             List<InvitationList.Invitation> invitationList = InvitationList.getInvitationsFrom(guild);
 
             for (InvitationList.Invitation invitation : invitationList) {
@@ -56,8 +62,7 @@ public class InvitationPersistenceHandler {
 
                 if (invitation.isToGuild()) {
                     playerInvitations.add(invitation.getFor().toString());
-                }
-                else if (invitation.isToAlly()) {
+                } else if (invitation.isToAlly()) {
                     allyInvitations.add(invitation.getFor().toString());
                 }
 
@@ -70,31 +75,26 @@ public class InvitationPersistenceHandler {
     }
 
     public void loadInvitations() {
-        if (! this.invitationsFile.exists()) {
+        if (!this.invitationsFile.exists()) {
             return;
         }
 
         YamlWrapper pc = new YamlWrapper(this.invitationsFile);
 
         for (String key : pc.getKeys(false)) {
-            Guild guild = GuildUtils.getByUUID(UUID.fromString(key));
-
-            if (guild != null) {
+            this.guildManager.findByUuid(UUID.fromString(key)).peek(guild -> {
                 List<String> allyInvitations = pc.getStringList(key + ".guilds");
                 List<String> playerInvitations = pc.getStringList(key + ".players");
 
                 for (String ally : allyInvitations) {
-                    Guild allyGuild = GuildUtils.getByUUID(UUID.fromString(ally));
-
-                    if (allyGuild != null) {
-                        InvitationList.createInvitation(guild, allyGuild);
-                    }
+                    this.guildManager.findByUuid(UUID.fromString(ally))
+                            .peek(allyGuild -> InvitationList.createInvitation(guild, allyGuild));
                 }
 
                 for (String player : playerInvitations) {
                     InvitationList.createInvitation(guild, UUID.fromString(player));
                 }
-            }
+            });
         }
     }
 

@@ -1,160 +1,121 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
-import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalRemoveGuildRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
-import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
-import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
-public class GuildUtils {
+public final class GuildUtils {
 
-    private static final Set<Guild> GUILDS = ConcurrentHashMap.newKeySet();
-
-    public static Set<Guild> getGuilds() {
-        return new HashSet<>(GUILDS);
-    }
-
+    @Deprecated
     public static int countGuilds() {
-        return GUILDS.size();
+        return FunnyGuilds.getInstance().getGuildManager().countGuilds();
     }
 
-    public static void deleteGuild(Guild guild) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (guild == null) {
-            return;
-        }
-
-        if (config.regionsEnabled) {
-            Region region = guild.getRegion();
-
-            if (region != null) {
-                if (config.heartConfig.createEntityType != null) {
-                    GuildEntityHelper.despawnGuildHeart(guild);
-                }
-                else if (config.heartConfig.createMaterial != null && config.heartConfig.createMaterial.getLeft() != Material.AIR) {
-                    Location centerLocation = region.getCenter().clone();
-
-                    Bukkit.getScheduler().runTask(FunnyGuilds.getInstance(), () -> {
-                        Block block = centerLocation.getBlock().getRelative(BlockFace.DOWN);
-
-                        if (block.getLocation().getBlockY() > 1) {
-                            block.setType(Material.AIR);
-                        }
-                    });
-                }
-            }
-
-            RegionUtils.delete(guild.getRegion());
-        }
-
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalRemoveGuildRequest(guild));
-
-        guild.getMembers().forEach(User::removeGuild);
-
-        for (Guild ally : guild.getAllies()) {
-            ally.removeAlly(guild);
-        }
-
-        for (Guild globalGuild : GuildUtils.getGuilds()) {
-            globalGuild.removeEnemy(guild);
-        }
-
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = ((FlatDataModel) FunnyGuilds.getInstance().getDataModel());
-            dataModel.getGuildFile(guild).delete();
-        }
-        else if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            DatabaseGuild.delete(guild);
-        }
-
-        PluginHook.HOLOGRAPHIC_DISPLAYS.deleteHologram(guild);
-        GuildUtils.removeGuild(guild);
+    /**
+     * Gets the copied set of guilds.
+     *
+     * @return set of guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#getGuilds()}
+     */
+    @Deprecated
+    public static Set<Guild> getGuilds() {
+        return FunnyGuilds.getInstance().getGuildManager().getGuilds();
     }
 
-    public static void spawnHeart(Guild guild) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (config.heartConfig.createMaterial != null && config.heartConfig.createMaterial.getLeft() != Material.AIR) {
-            Block heart = guild.getRegion().getCenter().getBlock().getRelative(BlockFace.DOWN);
-
-            heart.setType(config.heartConfig.createMaterial.getLeft());
-            BlockDataChanger.applyChanges(heart, config.heartConfig.createMaterial.getRight());
-        }
-        else if (config.heartConfig.createEntityType != null) {
-            GuildEntityHelper.spawnGuildHeart(guild);
-        }
+    /**
+     * Gets the set of guilds from collection of strings.
+     *
+     * @return set of guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#findByNames(Collection)}
+     */
+    @Deprecated
+    public static Set<Guild> getGuilds(Collection<String> names) {
+        return FunnyGuilds.getInstance().getGuildManager().findByNames(names);
     }
 
-    public static Guild getByName(String name) {
-        for (Guild guild : GUILDS) {
-            if (guild.getName() != null && guild.getName().equalsIgnoreCase(name)) {
-                return guild;
-            }
-        }
-
-        return null;
-    }
-
+    /**
+     * Gets the guild.
+     *
+     * @param uuid the uuid of Guild
+     * @return the guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#findByUuid(UUID)}
+     */
+    @Nullable
+    @Deprecated
     public static Guild getByUUID(UUID uuid) {
-        for (Guild guild : GUILDS) {
-            if (guild.getUUID().equals(uuid)) {
-                return guild;
-            }
-        }
-
-        return null;
+        return FunnyGuilds.getInstance().getGuildManager().findByUuid(uuid).getOrNull();
     }
 
+    /**
+     * Gets the guild.
+     *
+     * @param name the name of Guild
+     * @return the guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#findByName(String)}
+     */
+    @Nullable
+    @Deprecated
+    public static Guild getByName(String name) {
+        return FunnyGuilds.getInstance().getGuildManager().findByName(name).getOrNull();
+    }
+
+    /**
+     * Gets the guild.
+     *
+     * @param tag the name of Guild
+     * @return the guild
+     * @deprecated for removal in the future, in favour of {@link GuildManager#findByTag(String)}
+     */
+    @Nullable
+    @Deprecated
     public static Guild getByTag(String tag) {
-        for (Guild guild : GUILDS) {
-            if (guild.getTag() != null && guild.getTag().equalsIgnoreCase(tag.toLowerCase())) {
-                return guild;
-            }
-        }
-
-        return null;
+        return FunnyGuilds.getInstance().getGuildManager().findByTag(tag).getOrNull();
     }
 
+    /**
+     * Check if guild name is taken.
+     *
+     * @param name the name to check
+     * @return the result
+     * @deprecated for removal in the future, in favour of {@link GuildManager#nameExists(String)}
+     */
+    @Deprecated
     public static boolean nameExists(String name) {
-        for (Guild guild : GUILDS) {
-            if (guild.getName() != null && guild.getName().equalsIgnoreCase(name)) {
-                return true;
-            }
-        }
-
-        return false;
+        return FunnyGuilds.getInstance().getGuildManager().nameExists(name);
     }
 
+    /**
+     * Check if guild tag is taken.
+     *
+     * @param tag the tag to check
+     * @return the result
+     * @deprecated for removal in the future, in favour of {@link GuildManager#nameExists(String)}
+     */
+    @Deprecated
     public static boolean tagExists(String tag) {
-        for (Guild guild : GUILDS) {
-            if (guild.getTag() != null && guild.getTag().equalsIgnoreCase(tag)) {
-                return true;
-            }
-        }
+        return FunnyGuilds.getInstance().getGuildManager().tagExists(tag);
+    }
 
-        return false;
+    @Deprecated
+    public static void addGuild(Guild guild) {
+        FunnyGuilds.getInstance().getGuildManager().addGuild(guild);
+    }
+
+    @Deprecated
+    public static void removeGuild(Guild guild) {
+        FunnyGuilds.getInstance().getGuildManager().removeGuild(guild);
+    }
+
+    @Deprecated
+    public static void deleteGuild(Guild guild) {
+        FunnyGuilds.getInstance().getGuildManager().deleteGuild(guild);
     }
 
     public static Set<String> getNames(Collection<Guild> guilds) {
@@ -171,35 +132,14 @@ public class GuildUtils {
                 .collect(Collectors.toList());
     }
 
-    public static Set<Guild> getGuilds(Collection<String> names) {
-        return names.stream()
-                .map(GuildUtils::getByName)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+    public static boolean validateName(PluginConfiguration pluginConfiguration, String guildName) {
+        return pluginConfiguration.whitelist == pluginConfiguration.restrictedGuildNames.stream()
+                .anyMatch(name -> name.equalsIgnoreCase(guildName));
     }
 
-    public static synchronized void addGuild(Guild guild) {
-        if (guild == null) {
-            return;
-        }
-
-        if (getByName(guild.getName()) == null) {
-            GUILDS.add(guild);
-        }
-    }
-
-    public static synchronized void removeGuild(Guild guild) {
-        GUILDS.remove(guild);
-    }
-
-    public static boolean isNameValid(String guildName) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        return config.whitelist == config.restrictedGuildNames.stream().anyMatch(name -> name.equalsIgnoreCase(guildName));
-    }
-
-    public static boolean isTagValid(String guildTag) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        return config.whitelist == config.restrictedGuildTags.stream().anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
+    public static boolean validateTag(PluginConfiguration pluginConfiguration, String guildTag) {
+        return pluginConfiguration.whitelist == pluginConfiguration.restrictedGuildTags.stream()
+                .anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
     }
 
     private GuildUtils() {}

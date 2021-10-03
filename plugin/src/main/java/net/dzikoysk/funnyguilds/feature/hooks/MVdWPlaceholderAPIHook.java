@@ -2,14 +2,13 @@ package net.dzikoysk.funnyguilds.feature.hooks;
 
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.rank.RankUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 import panda.utilities.StringUtils;
 
 import java.util.Map.Entry;
@@ -28,7 +27,7 @@ public final class MVdWPlaceholderAPIHook {
                     return StringUtils.EMPTY;
                 }
 
-                return userManager.getUser(target.getUniqueId())
+                return userManager.findByUuid(target.getUniqueId())
                         .map(user -> variable.getValue().get(user))
                         .orElseGet("none");
             });
@@ -38,7 +37,7 @@ public final class MVdWPlaceholderAPIHook {
         for (int i = 1; i <= 100; i++) {
             final int index = i;
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + index, event -> {
-                User user = userManager.getUser(event.getPlayer()).getOrNull();
+                User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
                 return RankUtils.parseRank(user, "{GTOP-" + index + "}");
             });
         }

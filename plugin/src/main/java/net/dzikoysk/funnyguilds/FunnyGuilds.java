@@ -19,7 +19,7 @@ import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
@@ -102,6 +102,7 @@ public class FunnyGuilds extends JavaPlugin {
     private DynamicListenerManager dynamicListenerManager;
     private RankManager rankManager;
     private UserManager userManager;
+    private GuildManager guildManager;
     private NmsAccessor nmsAccessor;
 
     private DataModel dataModel;
@@ -173,6 +174,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.rankManager = new RankManager(this.pluginConfiguration);
         this.userManager = new UserManager();
+        this.guildManager = new GuildManager(this);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -201,6 +203,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(ConcurrencyManager.class).assignInstance(this.concurrencyManager);
             resources.on(RankManager.class).assignInstance(this.rankManager);
             resources.on(UserManager.class).assignInstance(this.userManager);
+            resources.on(GuildManager.class).assignInstance(this.guildManager);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
@@ -209,7 +212,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager, this.guildManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
             CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
@@ -319,7 +322,7 @@ public class FunnyGuilds extends JavaPlugin {
             final FunnyGuildsChannelHandler channelHandler = nmsAccessor.getPacketAccessor().getOrInstallChannelHandler(player);
             channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(player));
 
-            Option<User> userOption = userManager.getUser(player);
+            Option<User> userOption = userManager.findByPlayer(player);
 
             if (userOption.isEmpty()) {
                 continue;
@@ -348,7 +351,7 @@ public class FunnyGuilds extends JavaPlugin {
             cache.setPlayerList(individualPlayerList);
         }
 
-        for (Guild guild : GuildUtils.getGuilds()) {
+        for (Guild guild : this.guildManager.getGuilds()) {
             if (this.pluginConfiguration.heartConfig.createEntityType != null) {
                 GuildEntityHelper.spawnGuildHeart(guild);
             }
@@ -413,6 +416,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public UserManager getUserManager() {
         return userManager;
+    }
+
+    public GuildManager getGuildManager() {
+        return guildManager;
     }
 
     public NmsAccessor getNmsAccessor() {

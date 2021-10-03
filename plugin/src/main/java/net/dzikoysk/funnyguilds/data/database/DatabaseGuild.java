@@ -61,7 +61,7 @@ public class DatabaseGuild {
                 uuid = UUID.fromString(id);
             }
 
-            Option<User> ownerOption = userManager.getUser(os);
+            Option<User> ownerOption = userManager.findByName(os);
 
             if (ownerOption.isEmpty()) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");

@@ -87,7 +87,7 @@ public class Dummy {
 
         UserManager userManager = plugin.getUserManager();
         for (Player player : Bukkit.getOnlinePlayers()) {
-            Option<User> userOption = userManager.getUser(player);
+            Option<User> userOption = userManager.findByPlayer(player);
 
             if (userOption.isEmpty()) {
                 FunnyGuilds.getPluginLogger().debug(MessageFormat.format(

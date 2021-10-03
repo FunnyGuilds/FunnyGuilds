@@ -32,7 +32,7 @@ public final class InfoCommand extends AbstractFunnyCommand {
         String tag = Option.when(args.length > 0, () -> args[0])
                 .orElse(Option.of(sender)
                         .is(Player.class)
-                        .flatMap(userManager::getUser)
+                        .flatMap(userManager::findByPlayer)
                         .filter(User::hasGuild)
                         .map(User::getGuild)
                         .map(Guild::getTag))
