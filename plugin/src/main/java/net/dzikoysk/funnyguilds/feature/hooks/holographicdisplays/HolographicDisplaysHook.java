@@ -56,14 +56,14 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
 
     @Override
     public Option<Location> getCorrectedLocation(Guild guild) {
-        HologramConfiguration hologram = config.heartConfig.hologram;
+        HologramConfiguration hologram = config.heart.hologram;
 
         return guild.getCenter()
                 .map(location -> location.add(hologram.locationCorrection.toLocation(location.getWorld())));
     }
 
     public static HolographicDisplaysHook createAndRunHandler(FunnyGuilds plugin) {
-        HologramConfiguration hologramConfig = plugin.getPluginConfiguration().heartConfig.hologram;
+        HologramConfiguration hologramConfig = plugin.getPluginConfiguration().heart.hologram;
         HolographicDisplaysHook holographicDisplaysHook = new HolographicDisplaysHook(plugin);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new HologramUpdateHandler(plugin), 100L, hologramConfig.updateInterval);

@@ -16,7 +16,6 @@ import panda.std.stream.PandaStream;
 import panda.utilities.text.Formatter;
 
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class HologramUpdateHandler implements Runnable {
 
@@ -30,7 +29,7 @@ public class HologramUpdateHandler implements Runnable {
 
     @Override
     public void run() {
-        HologramConfiguration hologramConfig = config.heartConfig.hologram;
+        HologramConfiguration hologramConfig = config.heart.hologram;
 
         if (!hologramConfig.enabled) {
             return;

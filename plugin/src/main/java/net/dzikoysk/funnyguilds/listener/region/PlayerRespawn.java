@@ -42,7 +42,7 @@ public class PlayerRespawn implements Listener {
 
         event.setRespawnLocation(home);
 
-        if (config.heartConfig.createEntityType == null) {
+        if (config.heart.createEntityType == null) {
             return;
         }
 

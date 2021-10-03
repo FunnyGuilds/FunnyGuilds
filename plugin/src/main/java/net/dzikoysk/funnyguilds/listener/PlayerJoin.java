@@ -90,7 +90,7 @@ public class PlayerJoin implements Listener {
                 return;
             }
 
-            if (config.heartConfig.createEntityType != null) {
+            if (config.heart.createEntityType != null) {
                 GuildEntityHelper.spawnGuildHeart(region.getGuild(), player);
             }
         }, 30L);

@@ -87,7 +87,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             when (!GuildUtils.validateTag(config, tag), messages.restrictedGuildTag);
         }
 
-        HeartConfiguration heart = config.heartConfig;
+        HeartConfiguration heart = config.heart;
 
         if (config.regionsEnabled) {
             if (heart.createCenterY != 0) {

@@ -57,7 +57,7 @@ public class GuildHeartProtectionHandler implements Listener {
     }
 
     public static boolean isGuildHeart(Block block) {
-        Pair<Material, Byte> md = FunnyGuilds.getInstance().getPluginConfiguration().heartConfig.createMaterial;
+        Pair<Material, Byte> md = FunnyGuilds.getInstance().getPluginConfiguration().heart.createMaterial;
         if (md == null || block.getType() != md.getLeft()) {
             return false;
         }
