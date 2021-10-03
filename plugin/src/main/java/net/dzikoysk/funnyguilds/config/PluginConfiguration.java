@@ -1282,7 +1282,6 @@ public class PluginConfiguration extends OkaeriConfig {
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }
 
-    @Names(strategy = NameStrategy.IDENTITY)
     public static class Commands extends OkaeriConfig {
 
         public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
@@ -1320,7 +1319,6 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment({"", "Komendy administratora"})
         public AdminCommands admin = new AdminCommands();
 
-        @Names(strategy = NameStrategy.IDENTITY)
         public static class FunnyCommand extends OkaeriConfig {
 
             public String name;
@@ -1345,7 +1343,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
         }
 
-        @Names(strategy = NameStrategy.IDENTITY)
         public static class AdminCommands extends OkaeriConfig {
 
             public String main = "ga";
@@ -1379,7 +1376,6 @@ public class PluginConfiguration extends OkaeriConfig {
         MYSQL
     }
 
-    @Names(strategy = NameStrategy.IDENTITY)
     public static class MySQL extends OkaeriConfig {
 
         @Variable("FG_MYSQL_HOSTNAME")
@@ -1394,16 +1390,22 @@ public class PluginConfiguration extends OkaeriConfig {
         public String password;
 
         @Variable("FG_MYSQL_POOL_SIZE")
+        @CustomKey("pool-size")
         public int poolSize;
         @Variable("FG_MYSQL_CONNECTION_TIMEOUT")
+        @CustomKey("connection-timeout")
         public int connectionTimeout;
         @Variable("FG_MYSQL_USE_SSL")
+        @CustomKey("use-SSL")
         public boolean useSSL;
 
         @Variable("FG_MYSQL_USERS_TABLE_NAME")
+        @CustomKey("users-table-name")
         public String usersTableName;
+        @CustomKey("guilds-table-name")
         @Variable("FG_MYSQL_GUILDS_TABLE_NAME")
         public String guildsTableName;
+        @CustomKey("regions-table-name")
         @Variable("FG_MYSQL_REGIONS_TABLE_NAME")
         public String regionsTableName;
 
