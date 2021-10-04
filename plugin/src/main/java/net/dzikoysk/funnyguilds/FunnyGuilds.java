@@ -267,7 +267,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.dynamicListenerManager.reloadAll();
         }
         catch (Throwable throwable) {
-            logger.error("Could not register events", throwable);
+            logger.error("Could not register listeners", throwable);
             shutdown("Critical error has been encountered!");
             return;
         }
