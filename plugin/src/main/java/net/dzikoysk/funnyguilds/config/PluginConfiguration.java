@@ -103,7 +103,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest się jej czlonkiem.")
     @Comment("Zostaw puste, aby wylaczyc.")
     @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
-    public Set<Material> regionBlocksAllowedForNonGuildMembers = Collections.emptySet();
+    @CustomKey("placing-blocks-bypass-on-region")
+    public Set<String> placingBlocksBypassOnRegion_ = Collections.emptySet();
+
+    @Exclude
+    public Set<Material> placingBlocksBypassOnRegion;
 
     @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
     @Comment("Dziala tylko jesli regiony sa wlaczone")
@@ -1147,6 +1151,12 @@ public class PluginConfiguration extends OkaeriConfig {
         else {
             this.enlargeSize = 0;
             this.enlargeItems = null;
+        }
+
+        this.placingBlocksBypassOnRegion = new HashSet<>();
+
+        for(String s : this.placingBlocksBypassOnRegion_) {
+            this.placingBlocksBypassOnRegion.add(MaterialUtils.parseMaterial(s, false));
         }
 
         this.blockedInteract = new HashSet<>();
