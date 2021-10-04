@@ -49,15 +49,15 @@ public class BlockPlace implements Listener {
             }
         }
 
-        if(config.placingBlocksBypassOnRegion.contains(type)) {
-            return;
-        }
-
         boolean isProtected = ProtectionSystem.isProtected(player, blockLocation, true)
                 .peek(ProtectionSystem::defaultResponse)
                 .isPresent();
 
         if (!isProtected) {
+            return;
+        }
+
+        if(config.placingBlocksBypassOnRegion.contains(type)) {
             return;
         }
 
