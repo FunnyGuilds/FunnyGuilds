@@ -100,6 +100,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
     public boolean regionsEnabled = true;
 
+    @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest się jej czlonkiem.")
+    @Comment("Zostaw puste, aby wylaczyc.")
+    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
+    public Set<Material> regionBlocksAllowedForNonGuildMembers = Collections.emptySet();
+
     @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
     @Comment("Dziala tylko jesli regiony sa wlaczone")
     @CustomKey("water-and-lava-flow-only-for-regions")
