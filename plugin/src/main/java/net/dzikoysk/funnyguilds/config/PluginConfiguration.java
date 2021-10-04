@@ -1155,20 +1155,20 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.placingBlocksBypassOnRegion = new HashSet<>();
 
-        for(String s : this.placingBlocksBypassOnRegion_) {
-            this.placingBlocksBypassOnRegion.add(MaterialUtils.parseMaterial(s, false));
+        for(String stringMaterial : this.placingBlocksBypassOnRegion_) {
+            this.placingBlocksBypassOnRegion.add(MaterialUtils.parseMaterial(stringMaterial, false));
         }
 
         this.blockedInteract = new HashSet<>();
 
-        for (String s : this._blockedInteract) {
-            this.blockedInteract.add(MaterialUtils.parseMaterial(s, false));
+        for (String stringMaterial : this._blockedInteract) {
+            this.blockedInteract.add(MaterialUtils.parseMaterial(stringMaterial, false));
         }
 
         this.buggedBlocksExclude = new HashSet<>();
 
-        for (String s : this.buggedBlocksExclude_) {
-            this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(s, false));
+        for (String stringMaterial : this.buggedBlocksExclude_) {
+            this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(stringMaterial, false));
         }
 
         if (this.rankSystem == RankSystem.Type.ELO) {
