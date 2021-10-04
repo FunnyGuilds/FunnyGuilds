@@ -128,7 +128,7 @@ public final class CommandsConfiguration {
                 .placeholders(adminCommands.placeholders)
                 .injector(plugin.getInjector().fork(resources -> {}))
                 .bind(new UserBind(plugin.getUserManager()))
-                .bind(new GuildBind(plugin.getUserManager()))
+                .bind(new GuildBind(plugin.getMessageConfiguration(), plugin.getUserManager()))
                 .type(new PlayerType(server))
                 .completer(new GuildsCompleter())
                 .completer(new MembersCompleter(plugin.getUserManager()))

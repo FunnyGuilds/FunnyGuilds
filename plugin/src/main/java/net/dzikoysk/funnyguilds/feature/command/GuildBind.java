@@ -4,7 +4,7 @@ import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Bind;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -13,9 +13,11 @@ import org.panda_lang.utilities.inject.Resources;
 @FunnyComponent
 final class GuildBind implements Bind {
 
+    private final MessageConfiguration messageConfiguration;
     private final UserBind userBind;
 
-    GuildBind(UserManager userManager) {
+    GuildBind(MessageConfiguration messageConfiguration, UserManager userManager) {
+        this.messageConfiguration = messageConfiguration;
         this.userBind = new UserBind(userManager);
     }
 
@@ -25,7 +27,7 @@ final class GuildBind implements Bind {
             User user = this.userBind.fetchUser(CommandUtils.getContext(args));
 
             if (!user.hasGuild()) {
-                throw new ValidationException(FunnyGuilds.getInstance().getMessageConfiguration().generalHasNoGuild);
+                throw new ValidationException(this.messageConfiguration.generalHasNoGuild);
             }
 
             return user.getGuild();

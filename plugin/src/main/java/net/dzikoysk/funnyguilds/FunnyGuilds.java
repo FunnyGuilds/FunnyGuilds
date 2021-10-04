@@ -204,6 +204,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(RankManager.class).assignInstance(this.rankManager);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
+            resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 

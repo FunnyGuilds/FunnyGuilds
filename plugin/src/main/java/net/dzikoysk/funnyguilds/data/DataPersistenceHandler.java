@@ -7,22 +7,22 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class DataPersistenceHandler {
 
-    private final    FunnyGuilds funnyGuilds;
-    private volatile BukkitTask  dataPersistenceHandlerTask;
+    private final FunnyGuilds plugin;
+    private volatile BukkitTask dataPersistenceHandlerTask;
 
-    public DataPersistenceHandler(FunnyGuilds funnyGuilds) {
-        this.funnyGuilds = funnyGuilds;
+    public DataPersistenceHandler(FunnyGuilds plugin) {
+        this.plugin = plugin;
     }
 
     public void startHandler() {
-        long interval = this.funnyGuilds.getPluginConfiguration().dataInterval * 60L * 20L;
+        long interval = this.plugin.getPluginConfiguration().dataInterval * 60L * 20L;
 
         if (this.dataPersistenceHandlerTask != null) {
             this.dataPersistenceHandlerTask.cancel();
         }
 
-        this.dataPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.funnyGuilds,
-                () -> this.funnyGuilds.getConcurrencyManager().postRequests(new DataSaveRequest(false)), interval, interval);
+        this.dataPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin,
+                () -> this.plugin.getConcurrencyManager().postRequests(new DataSaveRequest(this.plugin.getDataModel(), false)), interval, interval);
     }
 
     public void stopHandler() {
