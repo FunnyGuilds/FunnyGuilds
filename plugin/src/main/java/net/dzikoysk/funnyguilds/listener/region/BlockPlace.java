@@ -57,7 +57,7 @@ public class BlockPlace implements Listener {
             return;
         }
 
-        if(config.placingBlocksBypassOnRegion.contains(type)) {
+        if (config.placingBlocksBypassOnRegion.contains(type)) {
             return;
         }
 

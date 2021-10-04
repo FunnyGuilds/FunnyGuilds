@@ -1154,7 +1154,7 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         this.placingBlocksBypassOnRegion = new HashSet<>();
-        for(String stringMaterial : this.placingBlocksBypassOnRegion_) {
+        for (String stringMaterial : this.placingBlocksBypassOnRegion_) {
             this.placingBlocksBypassOnRegion.add(MaterialUtils.parseMaterial(stringMaterial, false));
         }
 
