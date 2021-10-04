@@ -40,12 +40,10 @@ public class BlockPlace implements Listener {
         if (type == Material.TNT) {
             if (blockLocation.getBlockY() < config.tntProtection.build.minHeight) {
                 event.setCancelled(true);
-                return;
             }
 
             if (blockLocation.getBlockY() > config.tntProtection.build.maxHeight) {
                 event.setCancelled(true);
-                return;
             }
         }
 
