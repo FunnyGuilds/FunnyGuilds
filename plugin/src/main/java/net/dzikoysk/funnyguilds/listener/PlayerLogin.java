@@ -30,7 +30,7 @@ public class PlayerLogin extends AbstractFunnyListener {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick zawiera niedozwolone znaki!"));
         }
 
-        plugin.getUserManager().findByPlayer(event.getPlayer())
+        this.userManager.findByPlayer(event.getPlayer())
             .peek(BanUtils::checkIfBanShouldExpire)
             .filter(User::isBanned)
             .peek(user -> event.disallow(Result.KICK_BANNED, BanUtils.getBanMessage(user)));

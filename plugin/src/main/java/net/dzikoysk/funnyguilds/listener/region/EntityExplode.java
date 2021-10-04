@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
@@ -33,9 +31,6 @@ public class EntityExplode extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void preNormalExplosionHandler(EntityExplodeEvent event) {
-        MessageConfiguration messages = plugin.getMessageConfiguration();
-        PluginConfiguration config = plugin.getPluginConfiguration();
-
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
         Map<Material, Double> explosiveMaterials = config.explodeMaterials;
@@ -157,7 +152,7 @@ public class EntityExplode extends AbstractFunnyListener {
             }
         }
 
-        if (! SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, additionalExplodedBlocks))) {
+        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, additionalExplodedBlocks))) {
             event.setCancelled(true);
             return;
         }

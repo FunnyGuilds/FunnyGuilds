@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildRegionEnterEvent;
@@ -15,13 +13,13 @@ import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import panda.std.Option;
 import panda.utilities.text.Formatter;
 
 public class PlayerMove extends AbstractFunnyListener {
@@ -33,14 +31,11 @@ public class PlayerMove extends AbstractFunnyListener {
     
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
-        MessageConfiguration messages = plugin.getMessageConfiguration();
-
         Location from = event.getFrom();
         Location to = event.getTo();
         Player player = event.getPlayer();
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             if (to == null) {
                 return;
             }
@@ -49,11 +44,11 @@ public class PlayerMove extends AbstractFunnyListener {
                 return;
             }
 
-            User user = UserUtils.get(player.getUniqueId());
-
-            if (user == null) {
+            Option<User> userOption = this.userManager.findByPlayer(player);
+            if(userOption.isEmpty()) {
                 return;
             }
+            User user = userOption.get();
 
             UserCache cache = user.getCache();
             Region region = RegionUtils.getAt(to);
@@ -71,7 +66,7 @@ public class PlayerMove extends AbstractFunnyListener {
                     }
 
                     if (config.heart.createEntityType != null) {
-                        Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> GuildEntityHelper.despawnGuildHeart(guild, player), 40L);
+                        Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> GuildEntityHelper.despawnGuildHeart(guild, player), 40L);
                     }
 
                     Formatter formatter = new Formatter()
@@ -79,7 +74,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                     .register("{TAG}", guild.getTag());
                     
                     if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                        plugin.getNmsAccessor().getMessageAccessor()
+                        this.plugin.getNmsAccessor().getMessageAccessor()
                                 .sendActionBarMessage(formatter.format(messages.notificationActionbarLeaveGuildRegion), player);
                     }
 
@@ -123,7 +118,7 @@ public class PlayerMove extends AbstractFunnyListener {
                 cache.setEnter(true);
 
                 if (config.heart.createEntityType != null) {
-                    Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> GuildEntityHelper.spawnGuildHeart(guild, player), 40L);
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> GuildEntityHelper.spawnGuildHeart(guild, player), 40L);
                 }
 
                 Formatter formatter = new Formatter()
@@ -209,7 +204,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 .fadeOutDuration(config.notificationTitleFadeOut)
                                 .build();
 
-                        plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, member);
+                        this.plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, member);
                     }
                 }
 

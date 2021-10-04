@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.Reflections;
@@ -22,9 +20,6 @@ public class BlockPlace extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlace(BlockPlaceEvent event) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
-        MessageConfiguration messages = plugin.getMessageConfiguration();
-
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Material type = block.getType();
@@ -85,13 +80,13 @@ public class BlockPlace extends AbstractFunnyListener {
         }
 
         // delay, because we cannot do {@link Block#setType(Material)} immediately
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        Bukkit.getScheduler().runTask(this.plugin, () -> {
 
             // fake place for bugged block
             block.setType(type);
 
             // start timer and return the item to the player if specified to do so
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
                 event.getBlockReplacedState().update(true);
                 if (!player.isOnline()) {
                     return;

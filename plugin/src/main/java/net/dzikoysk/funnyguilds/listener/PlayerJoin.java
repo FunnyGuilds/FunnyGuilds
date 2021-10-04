@@ -1,10 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
@@ -22,16 +19,13 @@ public class PlayerJoin extends AbstractFunnyListener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
-        TablistConfiguration tablistConfig = plugin.getTablistConfiguration();
-
         Player player = event.getPlayer();
-        User user = userManager.findByPlayer(player).orElseGet(() -> userManager.create(player));
+        User user = this.userManager.findByPlayer(player).orElseGet(() -> userManager.create(player));
 
         String playerName = player.getName();
 
         if (!user.getName().equals(playerName)) {
-            userManager.updateUsername(user, playerName);
+            this.userManager.updateUsername(user, playerName);
         }
 
         user.updateReference(player);
@@ -57,8 +51,7 @@ public class PlayerJoin extends AbstractFunnyListener {
             cache.setIndividualPrefix(prefix);
         }
 
-        ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
-        concurrencyManager.postRequests(
+        this.concurrencyManager.postRequests(
                 new PrefixGlobalUpdatePlayer(player),
                 new DummyGlobalUpdateUserRequest(user)
         );

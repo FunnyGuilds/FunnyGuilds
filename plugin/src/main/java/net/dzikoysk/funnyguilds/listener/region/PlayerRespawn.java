@@ -1,29 +1,32 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import panda.std.Option;
 
 public class PlayerRespawn extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(final PlayerRespawnEvent event) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
         Player player = event.getPlayer();
-        User user = UserUtils.get(player.getUniqueId());
 
-        if (! user.hasGuild()) {
+        Option<User> userOption = this.userManager.findByPlayer(player);
+        if(userOption.isEmpty()) {
+            return;
+        }
+        User user = userOption.get();
+
+        if (!user.hasGuild()) {
             return;
         }
 
@@ -39,7 +42,7 @@ public class PlayerRespawn extends AbstractFunnyListener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin,  () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin,  () -> {
             Region guildRegion = RegionUtils.getAt(home);
 
             if (guildRegion == null) {

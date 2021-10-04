@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
@@ -20,7 +20,7 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
     @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
-            if (isGuildHeart(block)) {
+            if (isGuildHeart(this.config, block)) {
                 event.setCancelled(true);
             }
         }
@@ -29,7 +29,7 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
-            if (isGuildHeart(block)) {
+            if (isGuildHeart(this.config, block)) {
                 event.setCancelled(true);
             }
         }
@@ -37,27 +37,27 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
-        if (isGuildHeart(event.getBlock())) {
+        if (isGuildHeart(this.config, event.getBlock())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockFade(BlockFadeEvent event) {
-        if (isGuildHeart(event.getBlock())) {
+        if (isGuildHeart(this.config, event.getBlock())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
-        if (isGuildHeart(event.getBlock())) {
+        if (isGuildHeart(this.config, event.getBlock())) {
             event.setCancelled(true);
         }
     }
 
-    public static boolean isGuildHeart(Block block) {
-        Pair<Material, Byte> md = FunnyGuilds.getInstance().getPluginConfiguration().heart.createMaterial;
+    public static boolean isGuildHeart(PluginConfiguration config, Block block) {
+        Pair<Material, Byte> md = config.heart.createMaterial;
         if (md == null || block.getType() != md.getLeft()) {
             return false;
         }

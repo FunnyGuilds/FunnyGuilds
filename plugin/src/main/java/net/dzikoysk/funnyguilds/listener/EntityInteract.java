@@ -1,11 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
-import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -16,15 +14,15 @@ import java.util.concurrent.TimeUnit;
 
 public class EntityInteract extends AbstractFunnyListener {
 
-    private final PlayerInfoCommand playerExecutor = new PlayerInfoCommand();
+    private final PlayerInfoCommand playerExecutor;
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
+
+    public EntityInteract(FunnyGuilds plugin) throws Throwable {
+        this.playerExecutor = plugin.getInjector().newInstanceWithFields(PlayerInfoCommand.class);
+    }
 
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {
-        UserManager userManager = plugin.getUserManager();
-        MessageConfiguration messages = plugin.getMessageConfiguration();
-        PluginConfiguration config = plugin.getPluginConfiguration();
-
         Player eventCaller = event.getPlayer();
         Entity clickedEntity = event.getRightClicked();
 
@@ -41,18 +39,19 @@ public class EntityInteract extends AbstractFunnyListener {
             if (config.infoPlayerCommand) {
                 try {
                     playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
-                } catch (ValidationException validatorException) {
+                }
+                catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(eventCaller::sendMessage);
                 }
             }
             else {
-                userManager.findByPlayer(clickedPlayer)
+                this.userManager.findByPlayer(clickedPlayer)
                     .peek(user -> playerExecutor.sendInfoMessage(messages.playerRightClickInfo, user, eventCaller));
             }
         }
 
         if (config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
-            userManager.findByPlayer(eventCaller)
+            this.userManager.findByPlayer(eventCaller)
                     .filter(user -> user.hasGuild() && !user.getGuild().canBuild())
                     .peek(user -> event.setCancelled(true));
         }

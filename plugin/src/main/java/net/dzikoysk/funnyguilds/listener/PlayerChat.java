@@ -4,9 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
@@ -21,22 +19,19 @@ public class PlayerChat extends AbstractFunnyListener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {
-        UserManager userManager = plugin.getUserManager();
-        PluginConfiguration config = plugin.getPluginConfiguration();
         Player player = event.getPlayer();
-        Option<User> userOption = userManager.findByPlayer(player);
 
+        Option<User> userOption = userManager.findByPlayer(player);
         if (userOption.isEmpty()) {
             return;
         }
-
         User user = userOption.get();
 
         if (user.hasGuild()) {
             Guild guild = user.getGuild();
             String message = event.getMessage();
 
-            if (sendGuildMessage(event, message, config, player, guild)) {
+            if (sendGuildMessage(event, message, player, guild)) {
                 if (config.logGuildChat) {
                     FunnyGuilds.getPluginLogger().info("[Guild Chat] " + message);
                 }
@@ -64,7 +59,7 @@ public class PlayerChat extends AbstractFunnyListener {
         event.setFormat(format);
     }
 
-    private boolean sendGuildMessage(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
+    private boolean sendGuildMessage(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
         if (sendMessageToAllGuilds(event, message, config, player, guild)) {
             return true;
         }
@@ -80,9 +75,11 @@ public class PlayerChat extends AbstractFunnyListener {
         String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
 
         for (Player looped : Bukkit.getOnlinePlayers()) {
-            if (UserUtils.get(looped.getUniqueId()).getCache().isSpy()) {
-                looped.sendMessage(spyMessage);
-            }
+            this.userManager.findByPlayer(looped).peek(user -> {
+                if (user.getCache().isSpy()) {
+                    looped.sendMessage(spyMessage);
+                }
+            });
         }
     }
 
@@ -150,14 +147,14 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
+                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(this.userManager.findByPlayer(player).getOrNull(), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
 
             this.spy(player, subMessage);
 
-            for (Guild globalGuild : GuildUtils.getGuilds()) {
+            for (Guild globalGuild : this.guildManager.getGuilds()) {
                 this.sendMessageToGuild(globalGuild, player, resultMessage);
             }
             
@@ -187,6 +184,10 @@ public class PlayerChat extends AbstractFunnyListener {
     }
 
     private String getPositionString(User user, PluginConfiguration config) {
+        if(user == null) {
+            return "";
+        }
+
         if (user.isOwner()) {
             return config.chatPositionLeader;
         }

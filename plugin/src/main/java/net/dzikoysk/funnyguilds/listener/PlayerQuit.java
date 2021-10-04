@@ -21,7 +21,7 @@ public class PlayerQuit extends AbstractFunnyListener {
     }
 
     private void handleQuit(Player player) {
-        Option<User> userOption = plugin.getUserManager().findByPlayer(player);
+        Option<User> userOption = this.userManager.findByPlayer(player);
 
         if (userOption.isEmpty()) {
             return;

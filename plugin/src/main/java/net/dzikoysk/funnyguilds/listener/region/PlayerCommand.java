@@ -4,8 +4,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -29,7 +27,7 @@ public class PlayerCommand extends AbstractFunnyListener {
 
         String command = commandElements[0];
 
-        for (String blockedCommand : plugin.getPluginConfiguration().regionCommands) {
+        for (String blockedCommand : config.regionCommands) {
             if (("/" + blockedCommand).equalsIgnoreCase(command)) {
                 command = null;
                 break;
@@ -47,14 +45,15 @@ public class PlayerCommand extends AbstractFunnyListener {
         }
 
         Guild guild = region.getGuild();
-        User user = UserUtils.get(player.getUniqueId());
 
-        if (guild.getMembers().contains(user)) {
-            return;
-        }
+        this.userManager.findByPlayer(player).peek(user -> {
+            if (guild.getMembers().contains(user)) {
+                return;
+            }
 
-        event.setCancelled(true);
-        player.sendMessage(plugin.getMessageConfiguration().regionCommand);
+            event.setCancelled(true);
+            player.sendMessage(messages.regionCommand);
+        });
     }
 
 }

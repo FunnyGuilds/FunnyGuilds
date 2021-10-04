@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -22,8 +21,6 @@ public class EntityProtect extends AbstractFunnyListener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
-
         Entity entity = event.getEntity();
 
         if (!config.explodeShouldAffectOnlyGuild) {
