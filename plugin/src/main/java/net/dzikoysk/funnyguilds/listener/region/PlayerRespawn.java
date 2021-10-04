@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -13,16 +13,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
-public class PlayerRespawn implements Listener {
-
-    private final FunnyGuilds plugin;
-
-    public PlayerRespawn(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
+public class PlayerRespawn extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onRespawn(final PlayerRespawnEvent event) {

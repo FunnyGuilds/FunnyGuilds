@@ -1,22 +1,14 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import panda.std.Option;
 
-public class PlayerQuit implements Listener {
-
-    private final FunnyGuilds plugin;
-
-    public PlayerQuit(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
+public class PlayerQuit extends AbstractFunnyListener {
 
     @EventHandler
     public void onKick(PlayerKickEvent event) {

@@ -14,17 +14,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import panda.std.Option;
 
-public class PlayerChat implements Listener {
-
-    private final FunnyGuilds plugin;
-
-    public PlayerChat(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
+public class PlayerChat extends AbstractFunnyListener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
     public void onChat(AsyncPlayerChatEvent event) {

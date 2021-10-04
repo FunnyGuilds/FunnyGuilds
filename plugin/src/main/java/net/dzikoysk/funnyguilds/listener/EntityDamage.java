@@ -1,37 +1,24 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import panda.std.Option;
 
-public class EntityDamage implements Listener {
-
-    private final FunnyGuilds plugin;
-
-    public EntityDamage(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
+public class EntityDamage extends AbstractFunnyListener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        UserManager userManager = plugin.getUserManager();
-        PluginConfiguration config = plugin.getPluginConfiguration();
-
         EntityUtils.getAttacker(event.getDamager()).peek(attacker -> {
-            Option<User> attackerUserOption = userManager.findByPlayer(attacker);
+            Option<User> attackerUserOption = this.userManager.findByPlayer(attacker);
 
             if (attackerUserOption.isEmpty()) {
                 return;
@@ -51,7 +38,7 @@ public class EntityDamage implements Listener {
 
             Option<User> victimOption = Option.of(victim)
                     .is(Player.class)
-                    .flatMap(userManager::findByPlayer);
+                    .flatMap(this.userManager::findByPlayer);
 
             if (victimOption.isEmpty()) {
                 return;

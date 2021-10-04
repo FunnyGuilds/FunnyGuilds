@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnycommands.resources.ValidationException;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
@@ -10,22 +9,15 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.concurrent.TimeUnit;
 
-public class EntityInteract implements Listener {
-
-    private final FunnyGuilds plugin;
+public class EntityInteract extends AbstractFunnyListener {
 
     private final PlayerInfoCommand playerExecutor = new PlayerInfoCommand();
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
-
-    public EntityInteract(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
 
     @EventHandler
     public void onInteract(PlayerInteractEntityEvent event) {

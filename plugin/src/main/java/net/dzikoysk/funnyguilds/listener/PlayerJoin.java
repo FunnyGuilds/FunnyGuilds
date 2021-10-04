@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePlayer;
@@ -13,28 +12,13 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-public class PlayerJoin implements Listener {
-
-    private final FunnyGuilds plugin;
-
-    private final RankManager rankManager;
-    private final UserManager userManager;
-
-    public PlayerJoin(FunnyGuilds plugin) {
-        this.plugin = plugin;
-
-        this.rankManager = plugin.getRankManager();
-        this.userManager = plugin.getUserManager();
-    }
+public class PlayerJoin extends AbstractFunnyListener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {

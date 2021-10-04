@@ -1,30 +1,23 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class EntityProtect implements Listener {
+public class EntityProtect extends AbstractFunnyListener {
 
     private static final Set<EntityType> IS_NOT_MOB = new HashSet<>();
 
     static {
         IS_NOT_MOB.add(EntityType.ARMOR_STAND);
         IS_NOT_MOB.add(EntityType.PLAYER);
-    }
-
-    private final FunnyGuilds plugin;
-
-    public EntityProtect(FunnyGuilds plugin) {
-        this.plugin = plugin;
     }
 
     @EventHandler

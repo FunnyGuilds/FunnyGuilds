@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Material;
@@ -17,20 +18,17 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.concurrent.TimeUnit;
 
-public class PlayerInteract implements Listener {
+public class PlayerInteract extends AbstractFunnyListener {
 
-    private final FunnyGuilds plugin;
+    private final InfoCommand infoExecutor;
 
-    private final InfoCommand infoExecutor = new InfoCommand();
-
-    public PlayerInteract(FunnyGuilds plugin) {
-        this.plugin = plugin;
+    public PlayerInteract(FunnyGuilds plugin) throws Throwable {
+        this.infoExecutor = plugin.getInjector().newInstanceWithFields(InfoCommand.class);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
