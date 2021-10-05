@@ -55,6 +55,10 @@ public class BlockPlace implements Listener {
             return;
         }
 
+        if (config.placingBlocksBypassOnRegion.contains(type)) {
+            return;
+        }
+
         // always cancel to prevent breaking other protection
         // plugins or plugins using BlockPlaceEvent (eg. special ability blocks)
         event.setCancelled(true);

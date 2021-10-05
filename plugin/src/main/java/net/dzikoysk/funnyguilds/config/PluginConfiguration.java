@@ -100,6 +100,15 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
     public boolean regionsEnabled = true;
 
+    @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest się jej czlonkiem.")
+    @Comment("Zostaw puste, aby wylaczyc.")
+    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
+    @CustomKey("placing-blocks-bypass-on-region")
+    public Set<String> placingBlocksBypassOnRegion_ = Collections.emptySet();
+
+    @Exclude
+    public Set<Material> placingBlocksBypassOnRegion;
+
     @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
     @Comment("Dziala tylko jesli regiony sa wlaczone")
     @CustomKey("water-and-lava-flow-only-for-regions")
@@ -1144,16 +1153,19 @@ public class PluginConfiguration extends OkaeriConfig {
             this.enlargeItems = null;
         }
 
-        this.blockedInteract = new HashSet<>();
+        this.placingBlocksBypassOnRegion = new HashSet<>();
+        for (String stringMaterial : this.placingBlocksBypassOnRegion_) {
+            this.placingBlocksBypassOnRegion.add(MaterialUtils.parseMaterial(stringMaterial, false));
+        }
 
-        for (String s : this._blockedInteract) {
-            this.blockedInteract.add(MaterialUtils.parseMaterial(s, false));
+        this.blockedInteract = new HashSet<>();
+        for (String stringMaterial : this._blockedInteract) {
+            this.blockedInteract.add(MaterialUtils.parseMaterial(stringMaterial, false));
         }
 
         this.buggedBlocksExclude = new HashSet<>();
-
-        for (String s : this.buggedBlocksExclude_) {
-            this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(s, false));
+        for (String stringMaterial : this.buggedBlocksExclude_) {
+            this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(stringMaterial, false));
         }
 
         if (this.rankSystem == RankSystem.Type.ELO) {
