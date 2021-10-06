@@ -46,14 +46,12 @@ public class PlayerCommand extends AbstractFunnyListener {
 
         Guild guild = region.getGuild();
 
-        this.userManager.findByPlayer(player).peek(user -> {
-            if (guild.getMembers().contains(user)) {
-                return;
-            }
-
-            event.setCancelled(true);
-            player.sendMessage(messages.regionCommand);
-        });
+        this.userManager.findByPlayer(player)
+                .filter(user -> guild.getMembers().contains(user))
+                .peek(user -> {
+                    event.setCancelled(true);
+                    player.sendMessage(messages.regionCommand);
+                });
     }
 
 }

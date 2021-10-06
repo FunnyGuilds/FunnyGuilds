@@ -15,6 +15,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import panda.std.Option;
 
+import javax.annotation.Nullable;
+
 public class PlayerChat extends AbstractFunnyListener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -39,15 +41,15 @@ public class PlayerChat extends AbstractFunnyListener {
                 return;
             }
         }
-        
+
         int points = user.getRank().getPoints();
         String format = event.getFormat();
-        
+
         format = StringUtils.replace(format, "{RANK}", StringUtils.replace(config.chatRank, "{RANK}", String.valueOf(user.getRank().getPosition())));
         format = StringUtils.replace(format, "{POINTS}", config.chatPoints);
         format = StringUtils.replace(format, "{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
-        
+
         if (user.hasGuild()) {
             format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild, "{TAG}", user.getGuild().getTag()));
             format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition, "{POS}", getPositionString(user, config)));
@@ -55,7 +57,7 @@ public class PlayerChat extends AbstractFunnyListener {
             format = StringUtils.replace(format, "{TAG}", "");
             format = StringUtils.replace(format, "{POS}", "");
         }
-        
+
         event.setFormat(format);
     }
 
@@ -63,11 +65,11 @@ public class PlayerChat extends AbstractFunnyListener {
         if (sendMessageToAllGuilds(event, message, config, player, guild)) {
             return true;
         }
-        
+
         if (sendMessageToGuildAllies(event, message, config, player, guild)) {
             return true;
         }
-        
+
         return sendMessageToGuildMembers(event, message, config, player, guild);
     }
 
@@ -75,46 +77,46 @@ public class PlayerChat extends AbstractFunnyListener {
         String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
 
         for (Player looped : Bukkit.getOnlinePlayers()) {
-            this.userManager.findByPlayer(looped).peek(user -> {
-                if (user.getCache().isSpy()) {
-                    looped.sendMessage(spyMessage);
-                }
-            });
+            this.userManager.findByPlayer(looped)
+                    .filter(user -> user.getCache().isSpy())
+                    .peek(user -> {
+                        looped.sendMessage(spyMessage);
+                    });
         }
     }
 
     private boolean sendMessageToGuildMembers(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
         String guildPrefix = config.chatPriv;
         int prefixLength = guildPrefix.length();
-        
+
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(guildPrefix)) {
             String resultMessage = config.chatPrivDesign;
-            
+
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
                     StringUtils.replace(config.chatPosition, "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
-            
+
             String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
 
             this.spy(player, messageWithoutPrefix);
             this.sendMessageToGuild(guild, player, resultMessage);
-            
+
             event.setCancelled(true);
             return true;
         }
-        
+
         return false;
     }
 
     private boolean sendMessageToGuildAllies(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
         String allyPrefix = config.chatAlly;
         int prefixLength = allyPrefix.length();
-        
+
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allyPrefix)) {
             String resultMessage = config.chatAllyDesign;
-            
+
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
@@ -129,21 +131,21 @@ public class PlayerChat extends AbstractFunnyListener {
             for (Guild ally : guild.getAllies()) {
                 this.sendMessageToGuild(ally, player, resultMessage);
             }
-            
+
             event.setCancelled(true);
             return true;
         }
-        
+
         return false;
     }
 
     private boolean sendMessageToAllGuilds(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
         String allGuildsPrefix = config.chatGlobal;
         int prefixLength = allGuildsPrefix.length();
-        
+
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allGuildsPrefix)) {
             String resultMessage = config.chatGlobalDesign;
-            
+
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
@@ -157,11 +159,11 @@ public class PlayerChat extends AbstractFunnyListener {
             for (Guild globalGuild : this.guildManager.getGuilds()) {
                 this.sendMessageToGuild(globalGuild, player, resultMessage);
             }
-            
+
             event.setCancelled(true);
             return true;
         }
-        
+
         return false;
     }
 
@@ -172,30 +174,30 @@ public class PlayerChat extends AbstractFunnyListener {
 
         for (User onlineMember : guild.getOnlineMembers()) {
             Player member = onlineMember.getPlayer();
-            
+
             if (member == null) {
                 continue;
             }
-            
+
             if (!member.equals(player) || !onlineMember.getCache().isSpy()) {
                 member.sendMessage(message);
             }
         }
     }
 
-    private String getPositionString(User user, PluginConfiguration config) {
-        if(user == null) {
+    private String getPositionString(@Nullable User user, PluginConfiguration config) {
+        if (user == null) {
             return "";
         }
 
         if (user.isOwner()) {
             return config.chatPositionLeader;
         }
-        
+
         if (user.isDeputy()) {
             return config.chatPositionDeputy;
         }
-        
+
         return config.chatPositionMember;
     }
 

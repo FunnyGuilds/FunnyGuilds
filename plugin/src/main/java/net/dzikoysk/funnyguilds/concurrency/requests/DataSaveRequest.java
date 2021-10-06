@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 public class DataSaveRequest extends DefaultConcurrencyRequest {
 
     private final DataModel dataModel;
-
     private final boolean fullSave;
 
     public DataSaveRequest(DataModel dataModel, boolean fullSave) {

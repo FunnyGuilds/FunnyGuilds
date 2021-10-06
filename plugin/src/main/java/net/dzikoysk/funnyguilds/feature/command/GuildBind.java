@@ -13,11 +13,11 @@ import org.panda_lang.utilities.inject.Resources;
 @FunnyComponent
 final class GuildBind implements Bind {
 
-    private final MessageConfiguration messageConfiguration;
+    private final MessageConfiguration messages;
     private final UserBind userBind;
 
-    GuildBind(MessageConfiguration messageConfiguration, UserManager userManager) {
-        this.messageConfiguration = messageConfiguration;
+    GuildBind(MessageConfiguration messages, UserManager userManager) {
+        this.messages = messages;
         this.userBind = new UserBind(userManager);
     }
 
@@ -27,7 +27,7 @@ final class GuildBind implements Bind {
             User user = this.userBind.fetchUser(CommandUtils.getContext(args));
 
             if (!user.hasGuild()) {
-                throw new ValidationException(this.messageConfiguration.generalHasNoGuild);
+                throw new ValidationException(this.messages.generalHasNoGuild);
             }
 
             return user.getGuild();

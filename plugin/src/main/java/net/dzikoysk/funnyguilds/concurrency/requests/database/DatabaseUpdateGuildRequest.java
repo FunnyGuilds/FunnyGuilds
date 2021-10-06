@@ -18,13 +18,12 @@ import java.util.stream.Stream;
 
 public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 
-    private final PluginConfiguration pluginConfiguration;
+    private final PluginConfiguration config;
     private final DataModel dataModel;
-
     private final Guild guild;
 
-    public DatabaseUpdateGuildRequest(PluginConfiguration pluginConfiguration, DataModel dataModel, Guild guild) {
-        this.pluginConfiguration = pluginConfiguration;
+    public DatabaseUpdateGuildRequest(PluginConfiguration config, DataModel dataModel, Guild guild) {
+        this.config = config;
         this.dataModel = dataModel;
         this.guild = guild;
     }
@@ -35,7 +34,7 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
             if (this.dataModel instanceof SQLDataModel) {
                 DatabaseGuild.save(guild);
 
-                if (this.pluginConfiguration.regionsEnabled) {
+                if (this.config.regionsEnabled) {
                     DatabaseRegion.save(guild.getRegion());
                 }
 
@@ -47,13 +46,14 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
                 FlatGuild flatGuild = new FlatGuild(guild);
                 flatGuild.serialize((FlatDataModel) this.dataModel);
 
-                if (this.pluginConfiguration.regionsEnabled) {
+                if (this.config.regionsEnabled) {
                     FlatRegion flatRegion = new FlatRegion(guild.getRegion());
                     flatRegion.serialize((FlatDataModel) this.dataModel);
                 }
 
                 Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner()))
-                        .map(FlatUser::new).forEach(flatUser -> flatUser.serialize((FlatDataModel) this.dataModel));
+                        .map(FlatUser::new)
+                        .forEach(flatUser -> flatUser.serialize((FlatDataModel) this.dataModel));
             }
         }
         catch (Throwable th) {
