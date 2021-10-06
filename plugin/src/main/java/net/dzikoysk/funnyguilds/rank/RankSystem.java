@@ -2,11 +2,10 @@ package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-
 import java.util.Map;
 import java.util.function.BiFunction;
+import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 
 public class RankSystem {
 
@@ -62,7 +61,7 @@ public class RankSystem {
                     double victimE = 1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider));
 
                     attackerElo = (int) Math.round(attackerElo * (1 - attackerE));
-                    victimElo = (int) Math.round(victimElo * (0 - victimE) * - 1);
+                    victimElo = (int) Math.round(victimElo * (0 - victimE) * -1);
 
                     return new RankResult(attackerElo, victimElo);
                 })

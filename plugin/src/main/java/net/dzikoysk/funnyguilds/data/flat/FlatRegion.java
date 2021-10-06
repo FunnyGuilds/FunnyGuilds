@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
+import java.io.File;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
@@ -7,8 +8,6 @@ import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
-
-import java.io.File;
 
 public class FlatRegion {
 

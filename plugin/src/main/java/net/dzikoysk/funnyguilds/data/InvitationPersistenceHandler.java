@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.data;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
@@ -7,11 +11,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 public class InvitationPersistenceHandler {
 
@@ -62,7 +61,8 @@ public class InvitationPersistenceHandler {
 
                 if (invitation.isToGuild()) {
                     playerInvitations.add(invitation.getFor().toString());
-                } else if (invitation.isToAlly()) {
+                }
+                else if (invitation.isToAlly()) {
                     allyInvitations.add(invitation.getFor().toString());
                 }
 

@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
@@ -16,9 +18,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import panda.std.Option;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class SQLDataModel implements DataModel {
 
@@ -45,42 +44,42 @@ public class SQLDataModel implements DataModel {
         tabRegions = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
         tabGuilds = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
 
-        tabUsers.add("uuid",      SQLType.VARCHAR, 36, true);
-        tabUsers.add("name",      SQLType.TEXT,    true);
-        tabUsers.add("points",    SQLType.INT,     true);
-        tabUsers.add("kills",     SQLType.INT,     true);
-        tabUsers.add("deaths",    SQLType.INT,     true);
-        tabUsers.add("assists",   SQLType.INT,     true);
-        tabUsers.add("logouts",   SQLType.INT,     true);
-        tabUsers.add("ban",       SQLType.BIGINT);
-        tabUsers.add("reason",    SQLType.TEXT);
+        tabUsers.add("uuid", SQLType.VARCHAR, 36, true);
+        tabUsers.add("name", SQLType.TEXT, true);
+        tabUsers.add("points", SQLType.INT, true);
+        tabUsers.add("kills", SQLType.INT, true);
+        tabUsers.add("deaths", SQLType.INT, true);
+        tabUsers.add("assists", SQLType.INT, true);
+        tabUsers.add("logouts", SQLType.INT, true);
+        tabUsers.add("ban", SQLType.BIGINT);
+        tabUsers.add("reason", SQLType.TEXT);
         tabUsers.setPrimaryKey("uuid");
 
-        tabRegions.add("name",    SQLType.VARCHAR, 100, true);
-        tabRegions.add("center",  SQLType.TEXT,    true);
-        tabRegions.add("size",    SQLType.INT,     true);
-        tabRegions.add("enlarge", SQLType.INT,     true);
+        tabRegions.add("name", SQLType.VARCHAR, 100, true);
+        tabRegions.add("center", SQLType.TEXT, true);
+        tabRegions.add("size", SQLType.INT, true);
+        tabRegions.add("enlarge", SQLType.INT, true);
         tabRegions.setPrimaryKey("name");
 
-        tabGuilds.add("uuid",     SQLType.VARCHAR, 100, true);
-        tabGuilds.add("name",     SQLType.TEXT,    true);
-        tabGuilds.add("tag",      SQLType.TEXT,    true);
-        tabGuilds.add("owner",    SQLType.TEXT,    true);
-        tabGuilds.add("home",     SQLType.TEXT,    true);
-        tabGuilds.add("region",   SQLType.TEXT,    true);
-        tabGuilds.add("regions",  SQLType.TEXT,    true);
-        tabGuilds.add("members",  SQLType.TEXT,    true);
-        tabGuilds.add("points",   SQLType.INT,     true);
-        tabGuilds.add("lives",    SQLType.INT,     true);
-        tabGuilds.add("ban",      SQLType.BIGINT,  true);
-        tabGuilds.add("born",     SQLType.BIGINT,  true);
-        tabGuilds.add("validity", SQLType.BIGINT,  true);
-        tabGuilds.add("pvp",      SQLType.BOOLEAN, true);
+        tabGuilds.add("uuid", SQLType.VARCHAR, 100, true);
+        tabGuilds.add("name", SQLType.TEXT, true);
+        tabGuilds.add("tag", SQLType.TEXT, true);
+        tabGuilds.add("owner", SQLType.TEXT, true);
+        tabGuilds.add("home", SQLType.TEXT, true);
+        tabGuilds.add("region", SQLType.TEXT, true);
+        tabGuilds.add("regions", SQLType.TEXT, true);
+        tabGuilds.add("members", SQLType.TEXT, true);
+        tabGuilds.add("points", SQLType.INT, true);
+        tabGuilds.add("lives", SQLType.INT, true);
+        tabGuilds.add("ban", SQLType.BIGINT, true);
+        tabGuilds.add("born", SQLType.BIGINT, true);
+        tabGuilds.add("validity", SQLType.BIGINT, true);
+        tabGuilds.add("pvp", SQLType.BOOLEAN, true);
         tabGuilds.add("attacked", SQLType.BIGINT); //TODO: [FG 5.0] attacked -> protection
-        tabGuilds.add("allies",   SQLType.TEXT);
-        tabGuilds.add("enemies",  SQLType.TEXT);
-        tabGuilds.add("info",     SQLType.TEXT);
-        tabGuilds.add("deputy",   SQLType.TEXT);
+        tabGuilds.add("allies", SQLType.TEXT);
+        tabGuilds.add("enemies", SQLType.TEXT);
+        tabGuilds.add("info", SQLType.TEXT);
+        tabGuilds.add("deputy", SQLType.TEXT);
         tabGuilds.setPrimaryKey("uuid");
     }
 

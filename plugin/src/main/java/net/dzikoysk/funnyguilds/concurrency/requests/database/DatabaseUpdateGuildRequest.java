@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
+import java.util.stream.Stream;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -13,8 +14,6 @@ import net.dzikoysk.funnyguilds.data.flat.FlatGuild;
 import net.dzikoysk.funnyguilds.data.flat.FlatRegion;
 import net.dzikoysk.funnyguilds.data.flat.FlatUser;
 import net.dzikoysk.funnyguilds.guild.Guild;
-
-import java.util.stream.Stream;
 
 public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 

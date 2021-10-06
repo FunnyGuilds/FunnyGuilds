@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
+import net.dzikoysk.funnyguilds.guild.Guild;
 
 public class DatabaseUpdateGuildPointsRequest extends DefaultConcurrencyRequest {
 

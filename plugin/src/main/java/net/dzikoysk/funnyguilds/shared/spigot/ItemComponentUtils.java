@@ -1,20 +1,19 @@
 package net.dzikoysk.funnyguilds.shared.spigot;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
-import net.dzikoysk.funnyguilds.nms.Reflections;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.HoverEvent.Action;
-import org.bukkit.inventory.ItemStack;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.HoverEvent.Action;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.inventory.ItemStack;
 
 public final class ItemComponentUtils {
 
@@ -34,7 +33,8 @@ public final class ItemComponentUtils {
         SAVE = Reflections.getMethod(nmsItemStack, "save", nbtTagCompound);
     }
 
-    private ItemComponentUtils() {}
+    private ItemComponentUtils() {
+    }
 
     public static TextComponent translateComponentPlaceholder(String message, List<ItemStack> items, ItemStack item) {
         TextComponent translatedMessage = new TextComponent();
@@ -58,17 +58,17 @@ public final class ItemComponentUtils {
 
                     messageColor += messageChars[index + 1];
                 }
-                
+
                 continue;
             }
-            
+
             String subItem = message.substring(index, Math.min(message.length(), index + 6));
 
             if (subItem.equals("{ITEM}")) {
                 for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
                     translatedMessage.addExtra(extra);
                 }
-                
+
                 messagePart = new StringBuilder();
                 translatedMessage.addExtra(getItemComponent(item, messageColor));
                 index += 5;
@@ -83,28 +83,28 @@ public final class ItemComponentUtils {
                 }
 
                 messagePart = new StringBuilder();
-                
+
                 for (int itemNum = 0; itemNum < items.size(); itemNum++) {
                     translatedMessage.addExtra(getItemComponent(items.get(itemNum), messageColor));
-                    
+
                     if (itemNum != items.size() - 1) {
                         for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + ", ")) {
                             translatedMessage.addExtra(extra);
                         }
                     }
                 }
-                
+
                 index += 6;
                 continue;
             }
 
             messagePart.append(symbol);
         }
-        
+
         for (BaseComponent extra : TextComponent.fromLegacyText(messagePart.toString())) {
             translatedMessage.addExtra(extra);
         }
-        
+
         return translatedMessage;
     }
 
@@ -115,14 +115,15 @@ public final class ItemComponentUtils {
         for (BaseComponent extra : TextComponent.fromLegacyText(messageColor + item.getAmount() + config.itemAmountSuffix + " " + MaterialUtils.getMaterialName(item.getType()))) {
             itemComponent.addExtra(extra);
         }
-        
+
         try {
             String jsonItem = SAVE.invoke(AS_NMS_COPY.invoke(null, item), NBT_TAG_COMPOUND_CONSTRUCTOR.newInstance()).toString();
-            itemComponent.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[]{new TextComponent(jsonItem)}));
-        } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException exception) {
+            itemComponent.setHoverEvent(new HoverEvent(Action.SHOW_ITEM, new BaseComponent[] {new TextComponent(jsonItem)}));
+        }
+        catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | InstantiationException exception) {
             FunnyGuilds.getPluginLogger().error("Could not get item component", exception);
         }
-        
+
         return itemComponent;
     }
 

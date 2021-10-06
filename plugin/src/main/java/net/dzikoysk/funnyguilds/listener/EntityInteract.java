@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
@@ -9,8 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.InventoryHolder;
-
-import java.util.concurrent.TimeUnit;
 
 public class EntityInteract extends AbstractFunnyListener {
 
@@ -29,16 +28,16 @@ public class EntityInteract extends AbstractFunnyListener {
         if (clickedEntity instanceof Player) {
             Player clickedPlayer = (Player) clickedEntity;
 
-            if (!config.infoPlayerEnabled
-                    || (config.infoPlayerSneaking && !eventCaller.isSneaking())
-                    || informationMessageCooldowns.cooldown(eventCaller, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+            if (!config.infoPlayerEnabled ||
+                    (config.infoPlayerSneaking && !eventCaller.isSneaking()) ||
+                    informationMessageCooldowns.cooldown(eventCaller, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
 
                 return;
             }
 
             if (config.infoPlayerCommand) {
                 try {
-                    playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
+                    playerExecutor.execute(eventCaller, new String[] {clickedPlayer.getName()});
                 }
                 catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(eventCaller::sendMessage);
@@ -46,7 +45,7 @@ public class EntityInteract extends AbstractFunnyListener {
             }
             else {
                 this.userManager.findByPlayer(clickedPlayer)
-                    .peek(user -> playerExecutor.sendInfoMessage(messages.playerRightClickInfo, user, eventCaller));
+                        .peek(user -> playerExecutor.sendInfoMessage(messages.playerRightClickInfo, user, eventCaller));
             }
         }
 

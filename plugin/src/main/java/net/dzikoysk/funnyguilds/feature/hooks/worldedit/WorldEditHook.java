@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.hooks.worldedit;
 
-import org.bukkit.Location;
-
 import java.io.File;
+import org.bukkit.Location;
 
 public interface WorldEditHook {
 

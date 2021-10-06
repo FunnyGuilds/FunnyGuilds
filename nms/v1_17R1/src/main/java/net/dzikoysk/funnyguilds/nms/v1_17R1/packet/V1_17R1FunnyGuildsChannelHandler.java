@@ -2,12 +2,11 @@ package net.dzikoysk.funnyguilds.nms.v1_17R1.packet;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
 import net.minecraft.network.protocol.game.PacketPlayInUseEntity;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 public class V1_17R1FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsChannelHandler {
     private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
@@ -32,7 +31,8 @@ public class V1_17R1FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapt
             HAND_TYPE_FIELD = findInteractionAtLocationClass().getDeclaredField("a");
             HAND_TYPE_FIELD.setAccessible(true);
 
-        } catch (final NoSuchFieldException | NoSuchMethodException e) {
+        }
+        catch (final NoSuchFieldException | NoSuchMethodException e) {
             throw new RuntimeException("Failed to initialise V1_17R1FunnyGuildsChannelHandler", e);
         }
     }
@@ -50,7 +50,8 @@ public class V1_17R1FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapt
             if (actionTypeEnum.ordinal() == 1) {
                 //attack
                 this.packetCallbacksRegistry.handleAttackEntity(entityId, true);
-            } else if (actionTypeEnum.ordinal() == 2) {
+            }
+            else if (actionTypeEnum.ordinal() == 2) {
                 // interact_at
                 final Enum<?> handTypeEnum = (Enum<?>) HAND_TYPE_FIELD.get(actionType);
 

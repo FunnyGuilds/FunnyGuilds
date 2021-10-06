@@ -1,12 +1,5 @@
 package net.dzikoysk.funnyguilds.user;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.apache.commons.lang3.Validate;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
-import panda.std.Option;
-import panda.std.stream.PandaStream;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,6 +7,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.apache.commons.lang3.Validate;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class UserManager {
 

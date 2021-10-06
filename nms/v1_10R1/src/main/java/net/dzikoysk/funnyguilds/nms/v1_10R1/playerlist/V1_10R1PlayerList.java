@@ -2,6 +2,9 @@ package net.dzikoysk.funnyguilds.nms.v1_10R1.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.dzikoysk.funnyguilds.nms.v1_8R3.playerlist.PlayerInfoDataHelper;
@@ -15,10 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
-
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.UUID;
 
 public class V1_10R1PlayerList implements PlayerList {
     private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.ChatSerializer.a("");
@@ -99,11 +98,11 @@ public class V1_10R1PlayerList implements PlayerList {
             IChatBaseComponent headerComponent = EMPTY_COMPONENT;
             IChatBaseComponent footerComponent = EMPTY_COMPONENT;
 
-            if (! header.isEmpty()) {
+            if (!header.isEmpty()) {
                 headerComponent = CraftChatMessage.fromString(header, true)[0];
             }
 
-            if (! footer.isEmpty()) {
+            if (!footer.isEmpty()) {
                 footerComponent = CraftChatMessage.fromString(footer, true)[0];
             }
 

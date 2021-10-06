@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.OfflinePlayer;
 
 public final class PermissionUtils {

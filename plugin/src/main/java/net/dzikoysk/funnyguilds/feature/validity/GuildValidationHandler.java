@@ -1,10 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.validity;
 
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
 
 public class GuildValidationHandler implements Runnable {
 
@@ -13,11 +13,11 @@ public class GuildValidationHandler implements Runnable {
 
     @Override
     public void run() {
-        if (++ validateGuildsCounter >= 10) {
+        if (++validateGuildsCounter >= 10) {
             this.validateGuildLifetime();
         }
 
-        if (++ banGuildsCounter >= 7) {
+        if (++banGuildsCounter >= 7) {
             this.validateGuildBans();
         }
     }

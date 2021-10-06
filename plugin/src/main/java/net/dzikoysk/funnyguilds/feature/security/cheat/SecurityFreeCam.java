@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.feature.security.cheat;
 
+import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.StreamSupport;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -13,11 +17,6 @@ import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
 import panda.utilities.StringUtils;
 import panda.utilities.text.Joiner;
-
-import java.util.List;
-import java.util.Spliterator;
-import java.util.Spliterators;
-import java.util.stream.StreamSupport;
 
 import static java.util.stream.Collectors.toList;
 

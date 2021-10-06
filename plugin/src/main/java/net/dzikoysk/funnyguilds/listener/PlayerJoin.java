@@ -72,5 +72,5 @@ public class PlayerJoin extends AbstractFunnyListener {
             }
         }, 30L);
     }
-    
+
 }

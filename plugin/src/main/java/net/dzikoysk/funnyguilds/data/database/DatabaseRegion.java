@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.data.database;
 
+import java.sql.ResultSet;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
@@ -8,15 +9,13 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
 
-import java.sql.ResultSet;
-
 public class DatabaseRegion {
 
     public static Region deserialize(ResultSet rs) {
         if (rs == null) {
             return null;
         }
-        
+
         try {
             String name = rs.getString("name");
             String center = rs.getString("center");
@@ -27,24 +26,25 @@ public class DatabaseRegion {
             if (name == null) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize region! Caused by: name == null");
                 return null;
-            } else if (location == null) {
+            }
+            else if (location == null) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize region (" + name + ") ! Caused by: loc == null");
                 return null;
             }
 
             Object[] values = new Object[4];
-            
+
             values[0] = name;
             values[1] = location;
             values[2] = size;
             values[3] = enlarge;
-            
+
             return DeserializationUtils.deserializeRegion(values);
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize region", ex);
         }
-        
+
         return null;
     }
 
@@ -65,6 +65,7 @@ public class DatabaseRegion {
         statement.executeUpdate();
     }
 
-    private DatabaseRegion() {}
+    private DatabaseRegion() {
+    }
 
 }

@@ -16,7 +16,7 @@ public class GuildEnlargeEvent extends GuildEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildEnlargeEvent(EventCause eventCause, User doer, Guild guild) {
         super(eventCause, doer, guild);
     }
@@ -25,5 +25,5 @@ public class GuildEnlargeEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild enlargement has been cancelled by the server!";
     }
-    
+
 }

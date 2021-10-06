@@ -1,14 +1,6 @@
 package net.dzikoysk.funnyguilds.data.util;
 
 import com.google.common.collect.ImmutableList;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.bukkit.entity.Player;
-import panda.std.Option;
-
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +8,13 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.user.User;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.bukkit.entity.Player;
+import panda.std.Option;
 
 public final class InvitationList {
 
@@ -45,6 +44,7 @@ public final class InvitationList {
             }
         }
     }
+
     public static void expireInvitation(Guild from, User to) {
         for (Invitation invitation : INVITATION_LIST) {
             if (invitation.isToGuild() && invitation.getFrom().equals(from.getUUID()) && invitation.getFor().equals(to.getUUID())) {

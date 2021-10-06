@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.MVdWPlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.PlaceholderAPIHook;
@@ -16,11 +20,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 public class IndividualPlayerList {
 
@@ -62,10 +61,12 @@ public class IndividualPlayerList {
 
             if (entry != null) {
                 this.cellCount = entry.getKey();
-            } else {
+            }
+            else {
                 this.cellCount = PlayerListConstants.DEFAULT_CELL_COUNT;
             }
-        } else {
+        }
+        else {
             this.cellCount = PlayerListConstants.DEFAULT_CELL_COUNT;
         }
 

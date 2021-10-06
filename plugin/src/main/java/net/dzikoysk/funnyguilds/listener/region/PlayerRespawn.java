@@ -21,7 +21,7 @@ public class PlayerRespawn extends AbstractFunnyListener {
         Player player = event.getPlayer();
 
         Option<User> userOption = this.userManager.findByPlayer(player);
-        if(userOption.isEmpty()) {
+        if (userOption.isEmpty()) {
             return;
         }
         User user = userOption.get();
@@ -42,7 +42,7 @@ public class PlayerRespawn extends AbstractFunnyListener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin,  () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             Region guildRegion = RegionUtils.getAt(home);
 
             if (guildRegion == null) {

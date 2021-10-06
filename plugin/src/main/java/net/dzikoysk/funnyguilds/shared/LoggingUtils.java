@@ -14,11 +14,11 @@ public final class LoggingUtils {
 
     public static void flushLogger(Logger rootLogger) {
         rootLogger.getAppenders().values()
-                  .stream()
-                  .filter(appender -> appender instanceof AbstractOutputStreamAppender)
-                  .map(appender -> (AbstractOutputStreamAppender) appender)
-                  .filter(appender -> ! appender.getImmediateFlush())
-                  .forEach(appender -> appender.getManager().flush());
+                .stream()
+                .filter(appender -> appender instanceof AbstractOutputStreamAppender)
+                .map(appender -> (AbstractOutputStreamAppender) appender)
+                .filter(appender -> !appender.getImmediateFlush())
+                .forEach(appender -> appender.getManager().flush());
     }
 
 }

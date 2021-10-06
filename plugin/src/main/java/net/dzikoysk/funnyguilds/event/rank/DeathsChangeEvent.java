@@ -16,7 +16,7 @@ public class DeathsChangeEvent extends RankChangeEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public DeathsChangeEvent(EventCause eventCause, Rank rank, User doer, int change) {
         super(eventCause, rank, doer, change);
     }
@@ -25,5 +25,5 @@ public class DeathsChangeEvent extends RankChangeEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Deaths change has been cancelled by the server!";
     }
-    
+
 }

@@ -16,7 +16,7 @@ public class GuildDeleteEvent extends GuildEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildDeleteEvent(EventCause eventCause, User doer, Guild guild) {
         super(eventCause, doer, guild);
     }
@@ -25,5 +25,5 @@ public class GuildDeleteEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild deletion has been cancelled by the server!";
     }
-    
+
 }

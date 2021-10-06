@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.data.util;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.File;
 import java.io.IOException;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 public final class YamlWrapper extends YamlConfiguration {
 
@@ -12,7 +11,7 @@ public final class YamlWrapper extends YamlConfiguration {
 
     public YamlWrapper(File file) {
         super();
-        
+
         try {
             if (!file.exists()) {
                 file.getParentFile().mkdirs();
@@ -20,7 +19,8 @@ public final class YamlWrapper extends YamlConfiguration {
             }
 
             super.load(file);
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             FunnyGuilds.getPluginLogger().error("Failed to load the file!", exception);
         }
 
@@ -36,7 +36,8 @@ public final class YamlWrapper extends YamlConfiguration {
             }
 
             super.save(file);
-        } catch (IOException ioException) {
+        }
+        catch (IOException ioException) {
             FunnyGuilds.getPluginLogger().error("Failed to save the file!", ioException);
         }
     }
@@ -49,7 +50,8 @@ public final class YamlWrapper extends YamlConfiguration {
             }
 
             super.save(this.file);
-        } catch (IOException ioException) {
+        }
+        catch (IOException ioException) {
             FunnyGuilds.getPluginLogger().error("Failed to save the file!", ioException);
         }
     }

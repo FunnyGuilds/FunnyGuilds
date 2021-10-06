@@ -19,16 +19,16 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class KickAdminCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.kick.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.kick.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 1, messages.generalNoTagGiven);
 
         User user = UserValidation.requireUserByName(args[0]);
-        when (!user.hasGuild(), messages.generalPlayerHasNoGuild);
-        when (user.isOwner(), messages.adminGuildOwner);
+        when(!user.hasGuild(), messages.generalPlayerHasNoGuild);
+        when(user.isOwner(), messages.adminGuildOwner);
 
         Guild guild = user.getGuild();
         User admin = AdminUtils.getAdminUser(sender);

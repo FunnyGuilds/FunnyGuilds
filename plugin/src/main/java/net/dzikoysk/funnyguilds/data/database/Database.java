@@ -1,11 +1,10 @@
 package net.dzikoysk.funnyguilds.data.database;
 
 import com.zaxxer.hikari.HikariDataSource;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-
 import java.sql.Connection;
 import java.sql.SQLException;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 
 public class Database {
 
@@ -29,7 +28,7 @@ public class Database {
         this.dataSource.setJdbcUrl("jdbc:mysql://" + c.hostname + ":" + c.port + "/" + c.database + "?useSSL=" + c.useSSL);
         this.dataSource.setUsername(c.user);
 
-        if (c.password != null && ! c.password.isEmpty()) {
+        if (c.password != null && !c.password.isEmpty()) {
             this.dataSource.setPassword(c.password);
         }
 

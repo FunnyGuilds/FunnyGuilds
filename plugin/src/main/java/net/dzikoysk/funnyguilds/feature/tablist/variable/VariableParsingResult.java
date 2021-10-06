@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.tablist.variable;
 
+import java.util.Map;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Map;
 
 public class VariableParsingResult {
     private final User user;
@@ -30,7 +29,7 @@ public class VariableParsingResult {
         for (Map.Entry<String, String> entry : this.values.entrySet()) {
             string = StringUtils.replace(string, "{" + entry.getKey() + "}", entry.getValue());
         }
-        
+
         return string;
     }
 }

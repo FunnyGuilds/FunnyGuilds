@@ -17,9 +17,9 @@ public final class DeserializationUtils {
             FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: null");
             return null;
         }
-        
+
         final Guild guild = Guild.getOrCreate((UUID) values[0]);
-        
+
         guild.setName((String) values[1]);
         guild.setTag(FunnyGuilds.getInstance().getPluginConfiguration().guildTagKeepCase ? (String) values[2] : (FunnyGuilds.getInstance().getPluginConfiguration().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase()));
         guild.setOwner((User) values[3]);
@@ -36,7 +36,7 @@ public final class DeserializationUtils {
         guild.setDeputies((Set<User>) values[14]);
         guild.setPvP((boolean) values[15]);
         guild.deserializationUpdate();
-        
+
         return guild;
     }
 
@@ -45,14 +45,14 @@ public final class DeserializationUtils {
             FunnyGuilds.getPluginLogger().error("Cannot deserialize region! Caused by: null");
             return null;
         }
-        
+
         Region region = Region.getOrCreate((String) values[0]);
 
         region.setCenter((Location) values[1]);
         region.setSize((int) values[2]);
         region.setEnlarge((int) values[3]);
         region.update();
-        
+
         return region;
     }
 
@@ -61,7 +61,7 @@ public final class DeserializationUtils {
         String playerName = (String) values[1];
 
         User user = FunnyGuilds.getInstance().getUserManager().create(playerUniqueId, playerName);
-        
+
         user.getRank().setPoints((int) values[2]);
         user.getRank().setKills((int) values[3]);
         user.getRank().setDeaths((int) values[4]);
@@ -73,10 +73,11 @@ public final class DeserializationUtils {
         if (banTime > 0) {
             user.setBan(new UserBan((String) values[8], banTime));
         }
-        
+
         return user;
     }
 
-    private DeserializationUtils() {}
-    
+    private DeserializationUtils() {
+    }
+
 }

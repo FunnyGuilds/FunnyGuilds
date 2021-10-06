@@ -41,7 +41,8 @@ public class IndividualPrefixManager {
         cache.getScoreboard().peek(scoreboard -> {
             try {
                 player.setScoreboard(scoreboard);
-            } catch (IllegalStateException e) {
+            }
+            catch (IllegalStateException e) {
                 FunnyGuilds.getPluginLogger().warning("[IndividualPrefix] java.lang.IllegalStateException: Cannot set scoreboard for invalid CraftPlayer (" + player.getClass() + ")");
             }
         }).onEmpty(() -> {
@@ -83,7 +84,7 @@ public class IndividualPrefixManager {
 
             prefix.addGuild(to);
         }
-        
+
         updatePlayers();
     }
 
@@ -98,7 +99,7 @@ public class IndividualPrefixManager {
 
             prefix.addPlayer(player);
         }
-        
+
         updatePlayers();
     }
 
@@ -113,7 +114,7 @@ public class IndividualPrefixManager {
 
             prefix.removeGuild(guild);
         }
-        
+
         updatePlayers();
     }
 
@@ -128,7 +129,7 @@ public class IndividualPrefixManager {
 
             prefix.removePlayer(player);
         }
-        
+
         updatePlayers();
     }
 

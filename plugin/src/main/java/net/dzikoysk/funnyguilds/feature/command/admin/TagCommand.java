@@ -15,17 +15,17 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class TagCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.tag.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.tag.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 2, messages.generalNoTagGiven);
+        when(args.length < 2, messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         String tag = args[1];
-        when (guildManager.tagExists(tag), messages.createTagExists);
+        when(guildManager.tagExists(tag), messages.createTagExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 

@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-
 import java.text.DecimalFormat;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class MinecraftServerUtils {
 

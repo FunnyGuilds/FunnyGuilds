@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.util.Optional;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -11,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
-import java.util.Optional;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
@@ -20,10 +20,10 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     @Inject public DataModel dataModel;
 
     @FunnyCommand(
-        name = "${user.funnyguilds.name}",
-        description = "${user.funnyguilds.description}",
-        aliases = "${user.funnyguilds.aliases}",
-        acceptsExceeded = true
+            name = "${user.funnyguilds.name}",
+            description = "${user.funnyguilds.description}",
+            aliases = "${user.funnyguilds.aliases}",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
         String parameter = args.length > 0
@@ -60,14 +60,14 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     }
 
     private void reload(CommandSender sender) {
-        when (!sender.hasPermission("funnyguilds.reload"), messages.permission);
+        when(!sender.hasPermission("funnyguilds.reload"), messages.permission);
 
         sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
         this.plugin.getConcurrencyManager().postRequests(new ReloadRequest(this.plugin, sender));
     }
 
     private void saveAll(CommandSender sender) {
-        when (!sender.hasPermission("funnyguilds.admin"), messages.permission);
+        when(!sender.hasPermission("funnyguilds.admin"), messages.permission);
 
         sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
         long currentTime = System.currentTimeMillis();
@@ -87,7 +87,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     }
 
     private void post(CommandSender sender, String[] args) {
-        when (!sender.hasPermission("funnyguilds.admin"), messages.permission);
+        when(!sender.hasPermission("funnyguilds.admin"), messages.permission);
         Optional<FunnybinRequest> request = FunnybinRequest.of(sender, args);
 
         if (request.isPresent()) {

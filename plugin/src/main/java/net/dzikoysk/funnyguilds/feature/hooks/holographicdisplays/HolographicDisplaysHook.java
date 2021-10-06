@@ -1,6 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
 
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
@@ -9,9 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public final class HolographicDisplaysHook implements FunnyHologramManager {
 
@@ -27,10 +26,10 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
     @Override
     public Option<FunnyHologram> getOrCreateHologram(Guild guild) {
         return this.getFunnyHologram(guild).orElse(() -> this.getCorrectedLocation(guild)
-                        .map(location -> HologramsAPI.createHologram(plugin, location))
-                        .map(FunnyHologramImpl::new)
-                        .peek(hologram -> holograms.put(guild, hologram))
-                        .is(FunnyHologram.class));
+                .map(location -> HologramsAPI.createHologram(plugin, location))
+                .map(FunnyHologramImpl::new)
+                .peek(hologram -> holograms.put(guild, hologram))
+                .is(FunnyHologram.class));
     }
 
     @Override

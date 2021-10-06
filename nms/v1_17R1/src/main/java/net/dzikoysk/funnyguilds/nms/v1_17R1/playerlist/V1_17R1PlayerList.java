@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.nms.v1_17R1.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import java.util.List;
+import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
 import net.minecraft.network.chat.IChatBaseComponent;
@@ -14,9 +16,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
-
-import java.util.List;
-import java.util.UUID;
 
 public class V1_17R1PlayerList implements PlayerList {
     private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
@@ -80,11 +79,11 @@ public class V1_17R1PlayerList implements PlayerList {
             IChatBaseComponent headerComponent = EMPTY_COMPONENT;
             IChatBaseComponent footerComponent = EMPTY_COMPONENT;
 
-            if (! header.isEmpty()) {
+            if (!header.isEmpty()) {
                 headerComponent = CraftChatMessage.fromStringOrNull(header, true);
             }
 
-            if (! footer.isEmpty()) {
+            if (!footer.isEmpty()) {
                 footerComponent = CraftChatMessage.fromStringOrNull(footer, true);
             }
 

@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
@@ -17,8 +18,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import java.util.concurrent.TimeUnit;
 
 public class PlayerInteract extends AbstractFunnyListener {
 
@@ -70,8 +69,9 @@ public class PlayerInteract extends AbstractFunnyListener {
 
             if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 try {
-                    infoExecutor.execute(player, new String[] { guild.getTag() });
-                } catch (ValidationException validatorException) {
+                    infoExecutor.execute(player, new String[] {guild.getTag()});
+                }
+                catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(player::sendMessage);
                 }
             }
@@ -91,7 +91,8 @@ public class PlayerInteract extends AbstractFunnyListener {
 
                 if (guild.getMembers().contains(user)) {
                     event.setCancelled(blocked && config.regionExplodeBlockInteractions && !guild.canBuild());
-                } else {
+                }
+                else {
                     event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));
                 }
             });

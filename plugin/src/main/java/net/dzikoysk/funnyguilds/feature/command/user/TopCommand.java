@@ -11,11 +11,11 @@ import org.bukkit.command.CommandSender;
 public final class TopCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.top.name}",
-        description = "${user.top.description}",
-        aliases = "${user.top.aliases}",
-        permission = "funnyguilds.top",
-        acceptsExceeded = true
+            name = "${user.top.name}",
+            description = "${user.top.description}",
+            aliases = "${user.top.aliases}",
+            permission = "funnyguilds.top",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
         User user = this.userManager.findByName(sender.getName()).getOrNull();

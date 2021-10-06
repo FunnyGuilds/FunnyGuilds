@@ -66,10 +66,12 @@ public class BlockPlace extends AbstractFunnyListener {
             // wondering why? because bukkit and you probably don't want dupe glitches
             if (Reflections.USE_PRE_9_METHODS) {
                 player.setItemInHand(null);
-            } else {
+            }
+            else {
                 itemInHand.setAmount(0);
             }
-        } else {
+        }
+        else {
             itemInHand.setAmount(itemInHand.getAmount() - 1);
         }
 

@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 
 public class GuildPreCreateEvent extends GuildEvent {
-    
+
     private static final HandlerList handlers = new HandlerList();
 
     @Override

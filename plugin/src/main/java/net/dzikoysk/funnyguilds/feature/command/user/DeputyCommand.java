@@ -19,20 +19,20 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class DeputyCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.deputy.name}",
-        description = "${user.deputy.description}",
-        aliases = "${user.deputy.aliases}",
-        permission = "funnyguilds.deputy",
-        completer = "online-players:3",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.deputy.name}",
+            description = "${user.deputy.description}",
+            aliases = "${user.deputy.aliases}",
+            permission = "funnyguilds.deputy",
+            completer = "online-players:3",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
+        when(args.length < 1, messages.generalNoNickGiven);
 
         User deputyUser = UserValidation.requireUserByName(args[0]);
-        when (owner.equals(deputyUser), messages.deputyMustBeDifferent);
-        when (!guild.getMembers().contains(deputyUser), messages.generalIsNotMember);
+        when(owner.equals(deputyUser), messages.deputyMustBeDifferent);
+        when(!guild.getMembers().contains(deputyUser), messages.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
             return;

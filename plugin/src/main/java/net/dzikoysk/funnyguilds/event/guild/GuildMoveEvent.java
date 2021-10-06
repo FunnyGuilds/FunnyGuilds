@@ -18,10 +18,10 @@ public class GuildMoveEvent extends GuildEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildMoveEvent(EventCause eventCause, User doer, Guild guild, Location newLocation) {
         super(eventCause, doer, guild);
-        
+
         this.newLocation = newLocation;
     }
 
@@ -33,5 +33,5 @@ public class GuildMoveEvent extends GuildEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild region location change has been cancelled by the server!";
     }
-    
+
 }

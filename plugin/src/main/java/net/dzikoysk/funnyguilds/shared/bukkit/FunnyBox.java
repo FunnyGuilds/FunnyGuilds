@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
+import java.util.Objects;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -7,11 +11,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.util.NumberConversions;
 import org.bukkit.util.Vector;
-
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
-import java.util.Objects;
 
 public class FunnyBox {
 
@@ -204,9 +203,11 @@ public class FunnyBox {
             double centerX = this.getCenterX();
             if (newMaxX >= centerX) {
                 newMinX = newMaxX;
-            } else if (newMinX <= centerX) {
+            }
+            else if (newMinX <= centerX) {
                 newMaxX = newMinX;
-            } else {
+            }
+            else {
                 newMinX = centerX;
                 newMaxX = centerX;
             }
@@ -216,9 +217,11 @@ public class FunnyBox {
             double centerY = this.getCenterY();
             if (newMaxY >= centerY) {
                 newMinY = newMaxY;
-            } else if (newMinY <= centerY) {
+            }
+            else if (newMinY <= centerY) {
                 newMaxY = newMinY;
-            } else {
+            }
+            else {
                 newMinY = centerY;
                 newMaxY = centerY;
             }
@@ -228,9 +231,11 @@ public class FunnyBox {
             double centerZ = this.getCenterZ();
             if (newMaxZ >= centerZ) {
                 newMinZ = newMaxZ;
-            } else if (newMinZ <= centerZ) {
+            }
+            else if (newMinZ <= centerZ) {
                 newMaxZ = newMinZ;
-            } else {
+            }
+            else {
                 newMinZ = centerZ;
                 newMaxZ = centerZ;
             }
@@ -325,7 +330,9 @@ public class FunnyBox {
 
     public FunnyBox union(FunnyBox other) {
         Validate.notNull(other, "other cannot be null");
-        if (this.contains(other)) return this;
+        if (this.contains(other)) {
+            return this;
+        }
         double newMinX = Math.min(this.minX, other.minX);
         double newMinY = Math.min(this.minY, other.minY);
         double newMinZ = Math.min(this.minZ, other.minZ);
@@ -366,9 +373,9 @@ public class FunnyBox {
     }
 
     private boolean overlaps(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return (this.minX < maxX) && (this.maxX > minX)
-                && (this.minY < maxY) && (this.maxY > minY)
-                && (this.minZ < maxZ) && (this.maxZ > minZ);
+        return (this.minX < maxX) && (this.maxX > minX) &&
+                (this.minY < maxY) && (this.maxY > minY) &&
+                (this.minZ < maxZ) && (this.maxZ > minZ);
     }
 
     public boolean overlaps(FunnyBox other) {
@@ -392,9 +399,9 @@ public class FunnyBox {
     }
 
     public boolean contains(double x, double y, double z) {
-        return (x >= this.minX) && (x < this.maxX)
-                && (y >= this.minY) && (y < this.maxY)
-                && (z >= this.minZ) && (z < this.maxZ);
+        return (x >= this.minX) && (x < this.maxX) &&
+                (y >= this.minY) && (y < this.maxY) &&
+                (z >= this.minZ) && (z < this.maxZ);
     }
 
     public boolean contains(Vector position) {
@@ -403,9 +410,9 @@ public class FunnyBox {
     }
 
     private boolean contains(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        return (this.minX <= minX) && (this.maxX >= maxX)
-                && (this.minY <= minY) && (this.maxY >= maxY)
-                && (this.minZ <= minZ) && (this.maxZ >= maxZ);
+        return (this.minX <= minX) && (this.maxX >= maxX) &&
+                (this.minY <= minY) && (this.maxY >= maxY) &&
+                (this.minZ <= minZ) && (this.maxZ >= maxZ);
     }
 
     public boolean contains(FunnyBox other) {
@@ -435,7 +442,9 @@ public class FunnyBox {
         checkFinite(direction);
 
         Validate.isTrue(direction.lengthSquared() > 0, "directions's magnitude is 0");
-        if (maxDistance < 0.0d) return null;
+        if (maxDistance < 0.0d) {
+            return null;
+        }
 
         double startX = start.getX();
         double startY = start.getY();
@@ -460,7 +469,8 @@ public class FunnyBox {
             tMax = (this.maxX - startX) * divX;
             hitBlockFaceMin = BlockFace.WEST;
             hitBlockFaceMax = BlockFace.EAST;
-        } else {
+        }
+        else {
             tMin = (this.maxX - startX) * divX;
             tMax = (this.minX - startX) * divX;
             hitBlockFaceMin = BlockFace.EAST;
@@ -477,7 +487,8 @@ public class FunnyBox {
             tyMax = (this.maxY - startY) * divY;
             hitBlockFaceYMin = BlockFace.DOWN;
             hitBlockFaceYMax = BlockFace.UP;
-        } else {
+        }
+        else {
             tyMin = (this.maxY - startY) * divY;
             tyMax = (this.minY - startY) * divY;
             hitBlockFaceYMin = BlockFace.UP;
@@ -508,7 +519,8 @@ public class FunnyBox {
             tzMax = (this.maxZ - startZ) * divZ;
             hitBlockFaceZMin = BlockFace.NORTH;
             hitBlockFaceZMax = BlockFace.SOUTH;
-        } else {
+        }
+        else {
             tzMin = (this.maxZ - startZ) * divZ;
             tzMax = (this.minZ - startZ) * divZ;
             hitBlockFaceZMin = BlockFace.SOUTH;
@@ -542,7 +554,8 @@ public class FunnyBox {
         if (tMin < 0.0d) {
             t = tMax;
             hitBlockFace = hitBlockFaceMax;
-        } else {
+        }
+        else {
             t = tMin;
             hitBlockFace = hitBlockFaceMin;
         }
@@ -556,9 +569,15 @@ public class FunnyBox {
         double y = vector.getY();
         double z = vector.getZ();
 
-        if (x == -0.0D) x = 0.0D;
-        if (y == -0.0D) y = 0.0D;
-        if (z == -0.0D) z = 0.0D;
+        if (x == -0.0D) {
+            x = 0.0D;
+        }
+        if (y == -0.0D) {
+            y = 0.0D;
+        }
+        if (z == -0.0D) {
+            z = 0.0D;
+        }
 
         vector.setX(x);
         vector.setY(y);

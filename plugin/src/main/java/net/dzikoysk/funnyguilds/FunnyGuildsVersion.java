@@ -72,7 +72,8 @@ public final class FunnyGuildsVersion {
                     if (!commitHash.equals(currentNightlyHash)) {
                         printNewVersionAvailable(sender, latest + "-" + commitHash, true);
                     }
-                } catch (Throwable th) {
+                }
+                catch (Throwable th) {
                     FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
                     FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
                 }

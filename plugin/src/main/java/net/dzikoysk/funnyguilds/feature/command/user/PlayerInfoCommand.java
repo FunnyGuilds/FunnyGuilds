@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.util.List;
+import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
@@ -11,34 +13,32 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.List;
-import java.util.Locale;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class PlayerInfoCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.player.name}",
-        description = "${user.player.description}",
-        aliases = "${user.player.aliases}",
-        permission = "funnyguilds.playerinfo",
-        completer = "online-players:3",
-        acceptsExceeded = true
+            name = "${user.player.name}",
+            description = "${user.player.description}",
+            aliases = "${user.player.aliases}",
+            permission = "funnyguilds.playerinfo",
+            completer = "online-players:3",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length == 0 && !(sender instanceof Player), messages.playerOnly);
-        
+        when(args.length == 0 && !(sender instanceof Player), messages.playerOnly);
+
         String name = args.length == 0
                 ? sender.getName()
                 : args[0];
 
         User user = UserUtils.get(name, config.playerLookupIgnorecase);
-        when (user == null, messages.generalNotPlayedBefore);
+        when(user == null, messages.generalNotPlayedBefore);
 
         sendInfoMessage(messages.playerInfoList, user, sender);
     }
-    
+
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
         UserRank rank = infoUser.getRank();
 
@@ -61,7 +61,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             messageLine = StringUtils.replace(messageLine, "{LOGOUTS}", Integer.toString(rank.getLogouts()));
             messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()));
             messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(rank.getPosition()));
-            
+
             messageTarget.sendMessage(messageLine);
         }
     }

@@ -8,7 +8,6 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.validator.annotation.Min;
-
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;

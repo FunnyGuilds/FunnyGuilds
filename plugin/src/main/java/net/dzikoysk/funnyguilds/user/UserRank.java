@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds.user;
 
-import net.dzikoysk.funnyguilds.rank.Rank;
-
 import java.util.function.IntFunction;
+import net.dzikoysk.funnyguilds.rank.Rank;
 
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
 

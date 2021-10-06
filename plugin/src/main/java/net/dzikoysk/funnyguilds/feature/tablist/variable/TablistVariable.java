@@ -7,5 +7,5 @@ public interface TablistVariable {
     String[] names();
 
     String get(User user);
-    
+
 }

@@ -15,28 +15,28 @@ import org.bukkit.entity.Player;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
-public final class LeaderCommand extends AbstractFunnyCommand  {
+public final class LeaderCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.leader.name}",
-        description = "${user.leader.description}",
-        aliases = "${user.leader.aliases}",
-        permission = "funnyguilds.leader",
-        completer = "members:3",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.leader.name}",
+            description = "${user.leader.description}",
+            aliases = "${user.leader.aliases}",
+            permission = "funnyguilds.leader",
+            completer = "members:3",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
+        when(args.length < 1, messages.generalNoNickGiven);
 
         User leaderUser = UserValidation.requireUserByName(args[0]);
-        when (owner.equals(leaderUser), messages.leaderMustBeDifferent);
-        when (!guild.getMembers().contains(leaderUser), messages.generalIsNotMember);
+        when(owner.equals(leaderUser), messages.leaderMustBeDifferent);
+        when(!guild.getMembers().contains(leaderUser), messages.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(EventCause.USER, owner, guild, leaderUser))) {
             return;
         }
-        
+
         Player leaderPlayer = leaderUser.getPlayer();
         guild.setOwner(leaderUser);
         player.sendMessage(messages.leaderSet);

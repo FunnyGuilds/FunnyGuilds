@@ -10,10 +10,6 @@ import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.session.PasteBuilder;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.nms.Reflections;
-import org.bukkit.Location;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,6 +17,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.zip.GZIPInputStream;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.nms.Reflections;
+import org.bukkit.Location;
 
 public class WorldEdit6Hook implements WorldEditHook {
 
@@ -44,12 +43,12 @@ public class WorldEdit6Hook implements WorldEditHook {
             Object reader = schematicReaderConstructor.newInstance(nbtStream);
             Object clipboard = readSchematic.invoke(reader, pasteWorldData);
 
-            EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, - 1);
+            EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
 
             ClipboardHolder clipboardHolder = (ClipboardHolder) clipboardHolderConstructor.newInstance(clipboard, pasteWorldData);
             PasteBuilder builder = ((PasteBuilder) pasteConstructor.newInstance(clipboardHolder, editSession, pasteWorldData));
             builder = (PasteBuilder) pasteBuilderSetTo.invoke(builder, pasteLocation);
-            builder = builder.ignoreAirBlocks(! withAir);
+            builder = builder.ignoreAirBlocks(!withAir);
 
             Operations.completeLegacy(builder.build());
         }

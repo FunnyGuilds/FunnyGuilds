@@ -1,15 +1,14 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import panda.std.function.QuadFunction;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
+import panda.std.function.QuadFunction;
 
 public final class SpaceUtils {
 
@@ -18,7 +17,7 @@ public final class SpaceUtils {
     public static boolean chance(double chance) {
         return chance >= 100 || chance > ThreadLocalRandom.current().nextDouble(0, 100);
     }
-    
+
     public static List<Location> sphere(Location sphereCenter, int radius, int height, boolean hollow, boolean sphere, int plusY) {
         return mapSphereCoordinates(sphereCenter, radius, height, plusY, hollow, sphere, ArrayList::new, Location::new);
     }
@@ -54,5 +53,5 @@ public final class SpaceUtils {
 
         return result;
     }
-    
+
 }

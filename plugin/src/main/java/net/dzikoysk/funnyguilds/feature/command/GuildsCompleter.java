@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @FunnyComponent
 final class GuildsCompleter implements Completer {

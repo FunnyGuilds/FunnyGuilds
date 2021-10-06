@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.gui;
 
 import java.util.function.Consumer;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -10,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class GuiWindow {
 
-    private final Inventory   inv;
+    private final Inventory inv;
     private final FunnyHolder holder;
 
     public GuiWindow(String name, int rows) {

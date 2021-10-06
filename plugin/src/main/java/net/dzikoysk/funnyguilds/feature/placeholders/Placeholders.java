@@ -1,5 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -12,15 +20,6 @@ import org.bukkit.ChatColor;
 import panda.std.Pair;
 import panda.utilities.text.Formatter;
 import panda.utilities.text.Joiner;
-
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Placeholders<T> {
 
@@ -35,12 +34,12 @@ public class Placeholders<T> {
         PluginConfiguration config = plugin.getPluginConfiguration();
 
         ONLINE = new Placeholders<String>()
-                .raw("<online>",  () -> ChatColor.GREEN)
+                .raw("<online>", () -> ChatColor.GREEN)
                 .raw("</online>", end -> end);
 
         GUILD = new Placeholders<Guild>()
                 .property("GUILD", Guild::getName)
-                .property("TAG",   Guild::getTag);
+                .property("TAG", Guild::getTag);
 
         Function<Guild, Object> bindGuildProtection = guild -> {
             long now = System.currentTimeMillis();
@@ -52,31 +51,31 @@ public class Placeholders<T> {
         BiFunction<Collection<String>, String, Object> joinOrDefault = (list, listNoValue) -> list.isEmpty() ? listNoValue : Joiner.on(", ").join(list);
 
         GUILD_ALL = new Placeholders<Guild>()
-                .property("GUILD",              Guild::getName)
-                .property("TAG",                Guild::getTag)
-                .property("OWNER",              guild -> guild.getOwner().getName())
-                .property("MEMBERS-ONLINE",     guild -> guild.getOnlineMembers().size())
-                .property("MEMBERS-ALL",        guild -> guild.getMembers().size())
-                .property("DEPUTIES",           guild -> joinOrDefault.apply(UserUtils.getNamesOfUsers(guild.getDeputies()), "Brak"))
-                .property("REGION-SIZE",        guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
-                .property("GUILD-PROTECTION",   bindGuildProtection)
-                .property("POINTS-FORMAT",      guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
-                .property("POINTS",             guild -> guild.getRank().getAveragePoints())
-                .property("KILLS",              guild -> guild.getRank().getKills())
-                .property("DEATHS",             guild -> guild.getRank().getDeaths())
-                .property("ASSISTS",            guild -> guild.getRank().getAssists())
-                .property("LOGOUTS",            guild -> guild.getRank().getLogouts())
-                .property("KDR",                guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
-                .property("VALIDITY",           guild -> config.dateFormat.format(new Date(guild.getValidity())))
-                .property("LIVES",              Guild::getLives)
-                .property("RANK",               guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
-                .property("ALLIES",             guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
-                .property("ALLIES-TAGS",        guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
-                .property("ENEMIES",            guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
-                .property("ENEMIES-TAGS",       guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
+                .property("GUILD", Guild::getName)
+                .property("TAG", Guild::getTag)
+                .property("OWNER", guild -> guild.getOwner().getName())
+                .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
+                .property("MEMBERS-ALL", guild -> guild.getMembers().size())
+                .property("DEPUTIES", guild -> joinOrDefault.apply(UserUtils.getNamesOfUsers(guild.getDeputies()), "Brak"))
+                .property("REGION-SIZE", guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
+                .property("GUILD-PROTECTION", bindGuildProtection)
+                .property("POINTS-FORMAT", guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
+                .property("POINTS", guild -> guild.getRank().getAveragePoints())
+                .property("KILLS", guild -> guild.getRank().getKills())
+                .property("DEATHS", guild -> guild.getRank().getDeaths())
+                .property("ASSISTS", guild -> guild.getRank().getAssists())
+                .property("LOGOUTS", guild -> guild.getRank().getLogouts())
+                .property("KDR", guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
+                .property("VALIDITY", guild -> config.dateFormat.format(new Date(guild.getValidity())))
+                .property("LIVES", Guild::getLives)
+                .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
+                .property("ALLIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
+                .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
+                .property("ENEMIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
+                .property("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
 
         GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>>()
-                .property("MEMBERS",            pair -> {
+                .property("MEMBERS", pair -> {
                     String text = Joiner.on(", ").join(UserUtils.getOnlineNames(pair.getSecond().getMembers())).toString();
 
                     return !text.contains("<online>")

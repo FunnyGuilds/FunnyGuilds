@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.time.Instant;
+import java.time.LocalTime;
+import java.util.Iterator;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import org.bukkit.Location;
@@ -7,10 +10,6 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
-
-import java.time.Instant;
-import java.time.LocalTime;
-import java.util.Iterator;
 
 public class TntProtection extends AbstractFunnyListener {
 

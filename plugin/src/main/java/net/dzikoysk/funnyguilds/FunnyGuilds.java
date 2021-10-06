@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds;
 
 import eu.okaeri.configs.exception.OkaeriException;
+import java.io.File;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -78,8 +79,6 @@ import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
 import panda.std.Option;
 import panda.utilities.ClassUtils;
-
-import java.io.File;
 
 public class FunnyGuilds extends JavaPlugin {
 
@@ -218,7 +217,8 @@ public class FunnyGuilds extends JavaPlugin {
         try {
             CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
             this.funnyCommands = commandsConfiguration.createFunnyCommands(this.getServer(), this);
-        } catch (Exception exception) {
+        }
+        catch (Exception exception) {
             logger.error("Could not register commands", exception);
             shutdown("Critical error has been encountered!");
             return;

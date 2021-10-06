@@ -17,16 +17,16 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class UnbanCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.unban.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.unban.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 1, messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when (!guild.isBanned(), messages.adminGuildNotBanned);
-        
+        when(!guild.isBanned(), messages.adminGuildNotBanned);
+
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildUnbanEvent(AdminUtils.getCause(admin), admin, guild))) {
             return;

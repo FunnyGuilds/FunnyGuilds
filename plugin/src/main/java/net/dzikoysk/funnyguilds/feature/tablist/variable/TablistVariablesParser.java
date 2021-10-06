@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.tablist.variable;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.TimeFormattedVariable;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.TimeFormattedVariable;
+import net.dzikoysk.funnyguilds.user.User;
 
 public class TablistVariablesParser {
 

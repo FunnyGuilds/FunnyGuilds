@@ -1,15 +1,14 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import javax.annotation.Nullable;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 
 public final class GuildUtils {
 
@@ -142,6 +141,7 @@ public final class GuildUtils {
                 .anyMatch(tag -> tag.equalsIgnoreCase(guildTag));
     }
 
-    private GuildUtils() {}
+    private GuildUtils() {
+    }
 
 }

@@ -16,7 +16,7 @@ public class GuildMemberKickEvent extends GuildMemberEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildMemberKickEvent(EventCause eventCause, User doer, Guild guild, User member) {
         super(eventCause, doer, guild, member);
     }
@@ -25,5 +25,5 @@ public class GuildMemberKickEvent extends GuildMemberEvent {
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Member kick has been cancelled by the server!";
     }
-    
+
 }

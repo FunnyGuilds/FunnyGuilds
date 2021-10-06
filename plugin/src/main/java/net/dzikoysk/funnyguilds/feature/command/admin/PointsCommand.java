@@ -15,18 +15,19 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class PointsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${admin.points.name}",
-        permission = "funnyguilds.admin",
-        acceptsExceeded = true
+            name = "${admin.points.name}",
+            permission = "funnyguilds.admin",
+            acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when (args.length < 1, messages.generalNoNickGiven);
-        when (args.length < 2, messages.adminNoPointsGiven);
+        when(args.length < 1, messages.generalNoNickGiven);
+        when(args.length < 2, messages.adminNoPointsGiven);
 
         int points;
         try {
             points = Integer.parseInt(args[1]);
-        } catch (NumberFormatException numberFormatException) {
+        }
+        catch (NumberFormatException numberFormatException) {
             sender.sendMessage(messages.adminErrorInNumber.replace("{ERROR}", args[1]));
             return;
         }

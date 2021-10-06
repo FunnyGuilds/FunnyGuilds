@@ -1,13 +1,12 @@
 package net.dzikoysk.funnyguilds.feature.gui;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class FunnyHolder implements InventoryHolder {
 

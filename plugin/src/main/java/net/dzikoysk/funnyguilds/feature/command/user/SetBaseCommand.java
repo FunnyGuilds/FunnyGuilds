@@ -22,19 +22,19 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class SetBaseCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.set-base.name}",
-        description = "${user.set-base.description}",
-        aliases = "${user.set-base.aliases}",
-        permission = "funnyguilds.setbase",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.set-base.name}",
+            description = "${user.set-base.description}",
+            aliases = "${user.set-base.aliases}",
+            permission = "funnyguilds.setbase",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
-        when (!config.regionsEnabled, messages.regionsDisabled);
+        when(!config.regionsEnabled, messages.regionsDisabled);
 
         Region region = RegionUtils.get(guild.getName());
         Location location = player.getLocation();
-        when (!region.isIn(location), messages.setbaseOutside);
+        when(!region.isIn(location), messages.setbaseOutside);
 
         if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, user, guild, location))) {
             return;

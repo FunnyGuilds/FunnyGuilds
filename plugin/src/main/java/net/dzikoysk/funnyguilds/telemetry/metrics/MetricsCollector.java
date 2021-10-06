@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.telemetry.metrics;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.MultiLineChart;
 import org.bstats.charts.SingleLineChart;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class MetricsCollector implements Runnable {
 
@@ -27,14 +26,16 @@ public class MetricsCollector implements Runnable {
 
         try {
             mcstats = new MCStats(plugin);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             this.mcstats = null;
             FunnyGuilds.getPluginLogger().error("Could not initialize mcstats", ex);
         }
 
         try {
             this.bstats = new Metrics(plugin, 677);
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             this.bstats = null;
             FunnyGuilds.getPluginLogger().error("Could not initialize bstats", ex);
         }

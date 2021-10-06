@@ -1,9 +1,8 @@
 package net.dzikoysk.funnyguilds.nms;
 
+import java.lang.reflect.Field;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.plugin.PluginDescriptionFile;
-
-import java.lang.reflect.Field;
 
 public final class DescriptionChanger {
 
@@ -17,7 +16,7 @@ public final class DescriptionChanger {
         if (pluginName == null || pluginName.isEmpty()) {
             return;
         }
-        
+
         try {
             Field field = Reflections.getPrivateField(descriptionFile.getClass(), "name");
 

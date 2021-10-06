@@ -8,10 +8,10 @@ public abstract class FunnyEvent extends Event implements Cancellable {
 
     private final EventCause eventCause;
     private final User doer;
-    
+
     private String cancelMessage;
     private boolean cancelled;
-    
+
     public FunnyEvent(EventCause eventCause, User doer) {
         this.eventCause = eventCause;
         this.doer = doer;
@@ -22,22 +22,22 @@ public abstract class FunnyEvent extends Event implements Cancellable {
         this.eventCause = eventCause;
         this.doer = doer;
     }
-    
+
     public EventCause getEventCause() {
         return this.eventCause;
     }
-    
+
     public User getDoer() {
         return this.doer;
     }
-    
+
     public abstract String getDefaultCancelMessage();
-    
+
     public String getCancelMessage() {
         if (this.cancelMessage == null || this.cancelMessage.isEmpty()) {
             return getDefaultCancelMessage();
         }
-        
+
         return this.cancelMessage;
     }
 
@@ -54,7 +54,7 @@ public abstract class FunnyEvent extends Event implements Cancellable {
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
-    
+
     public void notifyDoer() {
         if (this.doer != null && this.doer.isOnline()) {
             this.doer.getPlayer().sendMessage(getCancelMessage());
@@ -70,5 +70,5 @@ public abstract class FunnyEvent extends Event implements Cancellable {
         UNKNOWN;
 
     }
-    
+
 }

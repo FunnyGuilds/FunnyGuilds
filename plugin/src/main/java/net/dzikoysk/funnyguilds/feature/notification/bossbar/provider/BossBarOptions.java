@@ -1,17 +1,16 @@
 package net.dzikoysk.funnyguilds.feature.notification.bossbar.provider;
 
 import com.google.common.collect.Sets;
+import java.util.Collection;
+import java.util.Set;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 
-import java.util.Collection;
-import java.util.Set;
-
 public final class BossBarOptions {
 
-    private final BarColor     barColor;
-    private final BarStyle     barStyle;
+    private final BarColor barColor;
+    private final BarStyle barStyle;
     private final Set<BarFlag> barFlags;
 
     private BossBarOptions(BarColor barColor, BarStyle barStyle, Set<BarFlag> barFlags) {
@@ -38,8 +37,8 @@ public final class BossBarOptions {
 
     public static class Builder {
 
-        private BarColor     barColor = BarColor.RED;
-        private BarStyle     barStyle = BarStyle.SOLID;
+        private BarColor barColor = BarColor.RED;
+        private BarStyle barStyle = BarStyle.SOLID;
         private Set<BarFlag> barFlags = Sets.newHashSet();
 
         public Builder color(String barColor) {

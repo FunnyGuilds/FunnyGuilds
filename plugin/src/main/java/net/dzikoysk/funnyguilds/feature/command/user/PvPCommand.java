@@ -16,22 +16,22 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 public final class PvPCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.pvp.name}",
-        description = "${user.pvp.description}",
-        aliases = "${user.pvp.aliases}",
-        permission = "funnyguilds.pvp",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.pvp.name}",
+            description = "${user.pvp.description}",
+            aliases = "${user.pvp.aliases}",
+            permission = "funnyguilds.pvp",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
         if (args.length > 0) {
-            when (!config.damageAlly, messages.generalAllyPvpDisabled);
+            when(!config.damageAlly, messages.generalAllyPvpDisabled);
 
             Guild targetAlliedGuild = GuildValidation.requireGuildByTag(args[0]);
             Formatter guildTagFormatter = new Formatter().register("{TAG}", targetAlliedGuild.getTag());
-            when (!guild.getAllies().contains(targetAlliedGuild), guildTagFormatter.format(messages.allyDoesntExist));
+            when(!guild.getAllies().contains(targetAlliedGuild), guildTagFormatter.format(messages.allyDoesntExist));
 
-            guild.setPvP(targetAlliedGuild, ! guild.getPvP(targetAlliedGuild));
+            guild.setPvP(targetAlliedGuild, !guild.getPvP(targetAlliedGuild));
             player.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messages.pvpAllyOn : messages.pvpAllyOff));
             return;
         }

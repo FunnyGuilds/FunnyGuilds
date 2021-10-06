@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
@@ -21,26 +22,25 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
 
-import java.util.List;
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class AllyCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.ally.name}",
-        description = "${user.ally.description}",
-        aliases = "${user.ally.aliases}",
-        permission = "funnyguilds.ally",
-        completer = "guilds:3",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.ally.name}",
+            description = "${user.ally.description}",
+            aliases = "${user.ally.aliases}",
+            permission = "funnyguilds.ally",
+            completer = "guilds:3",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
         List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            when (invitations.size() == 0, messages.allyHasNotInvitation);
+            when(invitations.size() == 0, messages.allyHasNotInvitation);
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
             for (String msg : messages.allyInvitationList) {
@@ -53,8 +53,8 @@ public final class AllyCommand extends AbstractFunnyCommand {
         Guild invitedGuild = GuildValidation.requireGuildByTag(args[0]);
         Player invitedOwner = invitedGuild.getOwner().getPlayer();
 
-        when (guild.equals(invitedGuild), messages.allySame);
-        when (guild.getAllies().contains(invitedGuild), messages.allyAlly);
+        when(guild.equals(invitedGuild), messages.allySame);
+        when(guild.getAllies().contains(invitedGuild), messages.allyAlly);
 
         if (guild.getEnemies().contains(invitedGuild)) {
             guild.removeEnemy(invitedGuild);
@@ -72,7 +72,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             }
         }
 
-        when (guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
+        when(guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
 
         if (invitedGuild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
             Formatter formatter = new Formatter()

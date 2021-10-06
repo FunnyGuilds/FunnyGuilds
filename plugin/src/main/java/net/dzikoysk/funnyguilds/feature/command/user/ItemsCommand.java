@@ -1,5 +1,8 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -12,20 +15,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 @FunnyComponent
 public final class ItemsCommand extends AbstractFunnyCommand {
 
     @FunnyCommand(
-        name = "${user.items.name}",
-        description = "${user.items.description}",
-        aliases = "${user.items.aliases}",
-        permission = "funnyguilds.items",
-        acceptsExceeded = true,
-        playerOnly = true
+            name = "${user.items.name}",
+            description = "${user.items.description}",
+            aliases = "${user.items.aliases}",
+            permission = "funnyguilds.items",
+            acceptsExceeded = true,
+            playerOnly = true
     )
     public void execute(Player player) {
         List<ItemStack> guiItems = config.guiItems;

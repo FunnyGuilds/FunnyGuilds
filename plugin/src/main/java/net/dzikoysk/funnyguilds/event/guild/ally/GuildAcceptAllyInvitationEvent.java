@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 public class GuildAcceptAllyInvitationEvent extends GuildAllyEvent {
 
     private static final HandlerList handlers = new HandlerList();
-    
+
     @Override
     public HandlerList getHandlers() {
         return handlers;
@@ -16,7 +16,7 @@ public class GuildAcceptAllyInvitationEvent extends GuildAllyEvent {
     public static HandlerList getHandlerList() {
         return handlers;
     }
-    
+
     public GuildAcceptAllyInvitationEvent(EventCause eventCause, User doer, Guild guild, Guild alliedGuild) {
         super(eventCause, doer, guild, alliedGuild);
     }

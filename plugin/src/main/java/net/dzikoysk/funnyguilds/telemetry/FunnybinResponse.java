@@ -8,8 +8,7 @@ public class FunnybinResponse {
     private String shortUrl;
     private String uuid;
 
-    public FunnybinResponse() {
-    }
+    public FunnybinResponse() {}
 
     public FunnybinResponse(String fullUrl, String shortUrl, String uuid) {
         this.fullUrl = fullUrl;
@@ -51,8 +50,8 @@ public class FunnybinResponse {
         }
         FunnybinResponse that = (FunnybinResponse) o;
         return Objects.equals(this.fullUrl, that.fullUrl) &&
-               Objects.equals(this.shortUrl, that.shortUrl) &&
-               Objects.equals(this.uuid, that.uuid);
+                Objects.equals(this.shortUrl, that.shortUrl) &&
+                Objects.equals(this.uuid, that.uuid);
     }
 
     @Override
@@ -64,9 +63,9 @@ public class FunnybinResponse {
     @Override
     public String toString() {
         return "FunnybinResponse{" +
-               "fullUrl='" + this.fullUrl + '\'' +
-               ", shortUrl='" + this.shortUrl + '\'' +
-               ", uuid='" + this.uuid + '\'' +
-               '}';
+                "fullUrl='" + this.fullUrl + '\'' +
+                ", shortUrl='" + this.shortUrl + '\'' +
+                ", uuid='" + this.uuid + '\'' +
+                '}';
     }
 }

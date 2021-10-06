@@ -1,13 +1,5 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
-import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import panda.std.Option;
-
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
@@ -15,6 +7,13 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import panda.std.Option;
 
 public class Guild extends AbstractMutableEntity {
 
@@ -31,10 +30,10 @@ public class Guild extends AbstractMutableEntity {
 
     private User owner;
     private Set<User> members = ConcurrentHashMap.newKeySet();
-    private Set<User> deputies  = ConcurrentHashMap.newKeySet();
-    private Set<Guild> allies  = ConcurrentHashMap.newKeySet();
-    private Set<Guild> enemies  = ConcurrentHashMap.newKeySet();
-    private Set<UUID> alliedFFGuilds  = ConcurrentHashMap.newKeySet();
+    private Set<User> deputies = ConcurrentHashMap.newKeySet();
+    private Set<Guild> allies = ConcurrentHashMap.newKeySet();
+    private Set<Guild> enemies = ConcurrentHashMap.newKeySet();
+    private Set<UUID> alliedFFGuilds = ConcurrentHashMap.newKeySet();
 
     private long born;
     private long validity;
@@ -183,7 +182,7 @@ public class Guild extends AbstractMutableEntity {
     public void setRegion(Region region) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        if (! config.regionsEnabled) {
+        if (!config.regionsEnabled) {
             return;
         }
 
@@ -413,7 +412,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Option<Location> getEnderCrystal() {
-        return this.getCenter().map(location -> location.add(0.5D, - 1.0D, 0.5D));
+        return this.getCenter().map(location -> location.add(0.5D, -1.0D, 0.5D));
     }
 
     @Override

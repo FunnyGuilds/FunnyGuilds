@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.security;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityFreeCam;
@@ -12,9 +14,6 @@ import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class SecuritySystem {
 
@@ -64,7 +63,7 @@ public final class SecuritySystem {
                     ? eye.add(0.0, ADDITIONAL_SNEAKING_HEIGHT_CURSOR, 0.0).toVector()
                     : eye.toVector();
             FunnyBox funnyBox = "ender_crystal".equalsIgnoreCase(config.heart.createType)
-                    ? new FunnyBox(x - 1.0, y - 1.0 ,z - 1.0, x + 1.0, y + 1.0 ,z + 1.0)
+                    ? new FunnyBox(x - 1.0, y - 1.0, z - 1.0, x + 1.0, y + 1.0, z + 1.0)
                     : FunnyBox.of(player.getWorld().getBlockAt(center));
 
             FunnyBox.RayTraceResult rayTraceResult = funnyBox.rayTrace(origin, direction, 6);
