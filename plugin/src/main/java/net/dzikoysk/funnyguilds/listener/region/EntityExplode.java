@@ -1,14 +1,12 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -20,7 +18,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.util.ArrayList;
@@ -28,21 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public class EntityExplode implements Listener {
-
-    private final FunnyGuilds plugin;
+public class EntityExplode extends AbstractFunnyListener {
 
     private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
 
-    public EntityExplode(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void preNormalExplosionHandler(EntityExplodeEvent event) {
-        MessageConfiguration messages = plugin.getMessageConfiguration();
-        PluginConfiguration config = plugin.getPluginConfiguration();
-
         List<Block> explodedBlocks = event.blockList();
         Location explodeLocation = event.getLocation();
         Map<Material, Double> explosiveMaterials = config.explodeMaterials;
@@ -164,7 +152,7 @@ public class EntityExplode implements Listener {
             }
         }
 
-        if (! SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, additionalExplodedBlocks))) {
+        if (!SimpleEventHandler.handle(new GuildEntityExplodeEvent(FunnyEvent.EventCause.UNKNOWN, additionalExplodedBlocks))) {
             event.setCancelled(true);
             return;
         }

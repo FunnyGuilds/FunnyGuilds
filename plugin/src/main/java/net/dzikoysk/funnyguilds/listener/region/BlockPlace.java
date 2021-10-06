@@ -1,9 +1,7 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -12,26 +10,16 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
-public class BlockPlace implements Listener {
+public class BlockPlace extends AbstractFunnyListener {
 
     private static final Vector ANTI_GLITCH_VELOCITY = new Vector(0, 0.4, 0);
 
-    private final FunnyGuilds plugin;
-
-    public BlockPlace(FunnyGuilds plugin) {
-        this.plugin = plugin;
-    }
-
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlace(BlockPlaceEvent event) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
-        MessageConfiguration messages = plugin.getMessageConfiguration();
-
         Player player = event.getPlayer();
         Block block = event.getBlock();
         Material type = block.getType();
@@ -96,13 +84,13 @@ public class BlockPlace implements Listener {
         }
 
         // delay, because we cannot do {@link Block#setType(Material)} immediately
-        Bukkit.getScheduler().runTask(plugin, () -> {
+        Bukkit.getScheduler().runTask(this.plugin, () -> {
 
             // fake place for bugged block
             block.setType(type);
 
             // start timer and return the item to the player if specified to do so
-            Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
                 event.getBlockReplacedState().update(true);
                 if (!player.isOnline()) {
                     return;

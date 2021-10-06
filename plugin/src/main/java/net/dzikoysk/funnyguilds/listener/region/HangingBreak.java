@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
-public class HangingBreak implements Listener {
+public class HangingBreak extends AbstractFunnyListener {
     
     @EventHandler
     public void onBreak(HangingBreakByEntityEvent event) {

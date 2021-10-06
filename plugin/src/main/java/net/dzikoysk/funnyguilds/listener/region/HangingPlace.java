@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.feature.protection.ProtectionSystem;
+import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 
-public class HangingPlace implements Listener {
+public class HangingPlace extends AbstractFunnyListener {
 
     @EventHandler
     public void onPlace(HangingPlaceEvent event) {

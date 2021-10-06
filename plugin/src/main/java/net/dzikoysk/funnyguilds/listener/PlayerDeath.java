@@ -1,14 +1,11 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUserPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -17,20 +14,17 @@ import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
-import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import panda.std.Option;
 import panda.utilities.text.Formatter;
 
 import java.util.ArrayList;
@@ -39,31 +33,24 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class PlayerDeath implements Listener {
-
-    private final FunnyGuilds plugin;
-
-    private final RankManager rankManager;
-    private final UserManager userManager;
+public class PlayerDeath extends AbstractFunnyListener {
 
     private final RankSystem rankSystem;
 
-    public PlayerDeath(FunnyGuilds plugin) {
-        this.plugin = plugin;
-
-        this.rankManager = plugin.getRankManager();
-        this.userManager = plugin.getUserManager();
-
-        this.rankSystem = RankSystem.create(plugin.getPluginConfiguration());
+    public PlayerDeath(PluginConfiguration config) {
+        this.rankSystem = RankSystem.create(config);
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent event) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
         Player playerVictim = event.getEntity();
         Player playerAttacker = event.getEntity().getKiller();
 
-        User victim = UserUtils.get(playerVictim.getUniqueId());
+        Option<User> victimOption = this.userManager.findByPlayer(playerVictim);
+        if (victimOption.isEmpty()) {
+            return;
+        }
+        User victim = victimOption.get();
         UserCache victimCache = victim.getCache();
 
         victim.getRank().updateDeaths(currentValue -> currentValue + 1);
@@ -91,7 +78,11 @@ public class PlayerDeath implements Listener {
             playerAttacker = lastAttacker.getPlayer();
         }
 
-        User attacker = UserUtils.get(playerAttacker.getUniqueId());
+        Option<User> attackerOption = this.userManager.findByPlayer(playerAttacker);
+        if(attackerOption.isEmpty()) {
+            return;
+        }
+        User attacker = attackerOption.get();
         UserCache attackerCache = attacker.getCache();
 
         if (victim.equals(attacker)) {
@@ -105,8 +96,6 @@ public class PlayerDeath implements Listener {
                 return;
             }
         }
-
-        MessageConfiguration messages = plugin.getMessageConfiguration();
 
         if (config.rankFarmingProtect) {
             Long attackTimestamp = attackerCache.wasAttackerOf(victim);
@@ -226,7 +215,6 @@ public class PlayerDeath implements Listener {
             }
         }
 
-        ConcurrencyManager concurrencyManager = plugin.getConcurrencyManager();
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         if (config.dataModel == DataModel.MYSQL) {
@@ -242,7 +230,7 @@ public class PlayerDeath implements Listener {
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
         }
 
-        concurrencyManager.postTask(taskBuilder
+        this.concurrencyManager.postTask(taskBuilder
                 .delegate(new DummyGlobalUpdateUserRequest(victim))
                 .delegate(new DummyGlobalUpdateUserRequest(attacker))
                 .build());
@@ -304,8 +292,6 @@ public class PlayerDeath implements Listener {
     }
 
     private int[] getEloValues(int victimPoints, int attackerPoints) {
-        PluginConfiguration config = plugin.getPluginConfiguration();
-
         int[] rankChanges = new int[2];
 
         int attackerElo = IntegerRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);

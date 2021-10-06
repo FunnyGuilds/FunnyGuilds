@@ -228,7 +228,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         this.concurrencyManager.postRequests(
                 new PrefixGlobalAddGuildRequest(guild),
                 new PrefixGlobalAddPlayerRequest(user.getName()),
-                new DatabaseUpdateGuildRequest(guild)
+                new DatabaseUpdateGuildRequest(this.config, this.plugin.getDataModel(), guild)
         );
 
         Formatter formatter = new Formatter()

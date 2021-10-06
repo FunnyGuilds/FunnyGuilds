@@ -204,6 +204,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(RankManager.class).assignInstance(this.rankManager);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
+            resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
@@ -224,45 +225,53 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new GuiActionHandler(), this);
-        pluginManager.registerEvents(new EntityDamage(this), this);
-        pluginManager.registerEvents(new EntityInteract(this), this);
-        pluginManager.registerEvents(new PlayerChat(this), this);
-        pluginManager.registerEvents(new PlayerDeath(this), this);
-        pluginManager.registerEvents(new PlayerJoin(this), this);
-        pluginManager.registerEvents(new PlayerLogin(this), this);
-        pluginManager.registerEvents(new PlayerQuit(this), this);
-        pluginManager.registerEvents(new GuildHeartProtectionHandler(), this);
-        pluginManager.registerEvents(new TntProtection(this), this);
+        try {
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(GuiActionHandler.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(EntityDamage.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(EntityInteract.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerChat.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerDeath.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerJoin.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerLogin.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerQuit.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(GuildHeartProtectionHandler.class), this);
+            pluginManager.registerEvents(this.injector.newInstanceWithFields(TntProtection.class), this);
 
-        if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
-            pluginManager.registerEvents(new BlockFlow(), this);
+            if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
+                pluginManager.registerEvents(this.injector.newInstanceWithFields(BlockFlow.class), this);
+            }
+
+            if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
+                pluginManager.registerEvents(this.injector.newInstanceWithFields(EntityPlace.class), this);
+            }
+            else {
+                logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
+            }
+
+            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
+                    this.injector.newInstanceWithFields(BlockBreak.class),
+                    this.injector.newInstanceWithFields(BlockIgnite.class),
+                    this.injector.newInstanceWithFields(BlockPlace.class),
+                    this.injector.newInstanceWithFields(BucketAction.class),
+                    this.injector.newInstanceWithFields(EntityExplode.class),
+                    this.injector.newInstanceWithFields(HangingBreak.class),
+                    this.injector.newInstanceWithFields(HangingPlace.class),
+                    this.injector.newInstanceWithFields(PlayerCommand.class),
+                    this.injector.newInstanceWithFields(PlayerInteract.class),
+                    this.injector.newInstanceWithFields(EntityProtect.class)
+            );
+
+            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, this.injector.newInstanceWithFields(PlayerMove.class));
+            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, this.injector.newInstanceWithFields(BlockPhysics.class));
+            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, this.injector.newInstanceWithFields(PlayerRespawn.class));
+            this.dynamicListenerManager.reloadAll();
+        }
+        catch (Throwable throwable) {
+            logger.error("Could not register listeners", throwable);
+            shutdown("Critical error has been encountered!");
+            return;
         }
 
-        if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
-            pluginManager.registerEvents(new EntityPlace(), this);
-        }
-        else {
-            logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
-        }
-
-        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
-                new BlockBreak(this),
-                new BlockIgnite(),
-                new BlockPlace(this),
-                new BucketAction(),
-                new EntityExplode(this),
-                new HangingBreak(),
-                new HangingPlace(),
-                new PlayerCommand(this),
-                new PlayerInteract(this),
-                new EntityProtect(this)
-        );
-
-        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, new PlayerMove(this));
-        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, new BlockPhysics());
-        this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, new PlayerRespawn(this));
-        this.dynamicListenerManager.reloadAll();
         this.handleReload();
 
         this.version.isNewAvailable(this.getServer().getConsoleSender(), true);
