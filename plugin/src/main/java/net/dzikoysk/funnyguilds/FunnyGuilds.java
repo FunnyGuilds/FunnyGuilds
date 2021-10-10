@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds;
 
+import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
 import net.dzikoysk.funnycommands.FunnyCommands;
@@ -72,6 +73,7 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -224,28 +226,35 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        PluginManager pluginManager = Bukkit.getPluginManager();
         try {
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(GuiActionHandler.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(EntityDamage.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(EntityInteract.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerChat.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerDeath.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerJoin.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerLogin.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(PlayerQuit.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(GuildHeartProtectionHandler.class), this);
-            pluginManager.registerEvents(this.injector.newInstanceWithFields(TntProtection.class), this);
+            PluginManager pluginManager = Bukkit.getPluginManager();
+            ImmutableSet.Builder<Class<? extends Listener>> setBuilder = ImmutableSet.builder();
+
+            setBuilder
+                    .add(GuiActionHandler.class)
+                    .add(EntityDamage.class)
+                    .add(EntityInteract.class)
+                    .add(PlayerChat.class)
+                    .add(PlayerDeath.class)
+                    .add(PlayerJoin.class)
+                    .add(PlayerLogin.class)
+                    .add(PlayerQuit.class)
+                    .add(GuildHeartProtectionHandler.class)
+                    .add(TntProtection.class);
 
             if (pluginConfiguration.regionsEnabled && pluginConfiguration.blockFlow) {
-                pluginManager.registerEvents(this.injector.newInstanceWithFields(BlockFlow.class), this);
+                setBuilder.add(BlockFlow.class);
             }
 
             if (ClassUtils.forName("org.bukkit.event.entity.EntityPlaceEvent").isPresent()) {
-                pluginManager.registerEvents(this.injector.newInstanceWithFields(EntityPlace.class), this);
+                setBuilder.add(EntityPlace.class);
             }
             else {
                 logger.warning("Cannot register EntityPlaceEvent listener on this version of server");
+            }
+
+            for (Class<? extends Listener> listenerClass : setBuilder.build()) {
+                pluginManager.registerEvents(this.injector.newInstanceWithFields(listenerClass), this);
             }
 
             this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled,
