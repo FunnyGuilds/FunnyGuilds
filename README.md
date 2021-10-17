@@ -30,7 +30,7 @@ FunnyGuilds hooks into those plugins:
 <repository>
     <id>panda-repository</id>
     <name>Panda Repository</name>
-    <url>https://repo.panda-lang.org/</url>
+    <url>https://repo.panda-lang.org/releases</url>
 </repository>
 ```
 ```xml
