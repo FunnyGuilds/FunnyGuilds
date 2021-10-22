@@ -13,7 +13,7 @@ dependencies {
 
     // okaeri config library
     implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.3.6"
-    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.3.6"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.4.1"
     implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.3.6"
 
     // general stuff
