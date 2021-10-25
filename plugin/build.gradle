@@ -47,7 +47,7 @@ dependencies {
     }
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
 
-    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.6"
+    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.7"
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
