@@ -7,14 +7,14 @@ dependencies {
 
     // funnyguilds & panda utilities
     implementation "net.dzikoysk:funnycommands:0.4.2"
-    implementation "org.panda-lang:expressible:1.0.18"
+    implementation "org.panda-lang:expressible:1.1.1"
     implementation "org.panda-lang:panda-utilities:0.5.0-alpha"
     implementation "org.panda-lang.utilities:di:1.4.1"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.3.6"
-    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.3.6"
-    implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.3.6"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.4.1"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.4.1"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.4.1"
 
     // general stuff
     implementation "com.zaxxer:HikariCP:4.0.3"
@@ -51,7 +51,7 @@ dependencies {
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
-    testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.7.1'
+    testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.7.2'
     testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
     testImplementation 'org.mockito:mockito-core:4.0.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:4.0.0'
