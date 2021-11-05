@@ -143,8 +143,8 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         RankSystem.RankResult result = rankSystem.calculate(config.rankSystem, attackerPoints, victimPoints);
 
-        PointsChangeEvent attackerPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker.getRank(), attacker, result.getAttackerPoints());
-        PointsChangeEvent victimPointsChangeEvent = new PointsChangeEvent(EventCause.USER, victim.getRank(), attacker, result.getVictimPoints());
+        PointsChangeEvent attackerPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, attacker, result.getAttackerPoints());
+        PointsChangeEvent victimPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, victim, result.getVictimPoints());
 
         List<String> assistEntries = new ArrayList<>();
         List<User> messageReceivers = new ArrayList<>();
@@ -179,10 +179,11 @@ public class PlayerDeath extends AbstractFunnyListener {
                         assists++;
                     }
 
-                    PointsChangeEvent assistPointsChangeEvent = new PointsChangeEvent(EventCause.USER, assistUser.getRank(), assistUser, addedPoints);
+                    PointsChangeEvent assistPointsChangeEvent = new PointsChangeEvent(EventCause.USER, assistUser, assistUser, addedPoints);
                     if (SimpleEventHandler.handle(assistPointsChangeEvent)) {
                         continue;
                     }
+                    addedPoints = assistPointsChangeEvent.getChange();
 
                     if (!config.broadcastDeathMessage) {
                         messageReceivers.add(assistUser);
@@ -195,7 +196,8 @@ public class PlayerDeath extends AbstractFunnyListener {
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", ChatUtils.getPercent(assistFraction));
                     assistEntries.add(assistEntry);
 
-                    assistUser.getRank().updatePoints(currentValue -> currentValue + addedPoints);
+                    int finalAddedPoints = addedPoints;
+                    assistUser.getRank().updatePoints(currentValue -> currentValue + finalAddedPoints);
                     assistUser.getRank().updateAssists(currentValue -> currentValue + 1);
                 }
 

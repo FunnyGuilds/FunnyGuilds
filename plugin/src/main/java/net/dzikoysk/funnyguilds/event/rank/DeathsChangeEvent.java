@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.event.rank;
 
-import net.dzikoysk.funnyguilds.rank.Rank;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 
@@ -17,8 +16,8 @@ public class DeathsChangeEvent extends RankChangeEvent {
         return handlers;
     }
 
-    public DeathsChangeEvent(EventCause eventCause, Rank rank, User doer, int change) {
-        super(eventCause, rank, doer, change);
+    public DeathsChangeEvent(EventCause eventCause, User doer, User affected, int change) {
+        super(eventCause, doer, affected, change);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
+
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
@@ -8,8 +10,6 @@ import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
-
-import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class KillsCommand extends AbstractFunnyCommand {
 
@@ -34,14 +34,19 @@ public final class KillsCommand extends AbstractFunnyCommand {
         User user = UserValidation.requireUserByName(args[0]);
         UserRank userRank = user.getRank();
 
-        int change = kills - userRank.getDeaths();
         User admin = AdminUtils.getAdminUser(sender);
-        if (!SimpleEventHandler.handle(new KillsChangeEvent(AdminUtils.getCause(admin), userRank, admin, change))) {
+        int change = kills - userRank.getDeaths();
+
+        KillsChangeEvent killsChangeEvent = new KillsChangeEvent(AdminUtils.getCause(admin), admin, user, change);
+        if (!SimpleEventHandler.handle(killsChangeEvent)) {
             return;
         }
+        change = killsChangeEvent.getChange();
 
-        user.getRank().setKills(kills);
-        sender.sendMessage(messages.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(kills)));
+        int finalKills = user.getRank().getKills() + change;
+        user.getRank().setKills(finalKills);
+
+        sender.sendMessage(messages.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(finalKills)));
     }
 
 }
