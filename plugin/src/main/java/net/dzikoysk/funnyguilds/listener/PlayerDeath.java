@@ -109,7 +109,8 @@ public class PlayerDeath extends AbstractFunnyListener {
 
                     return;
                 }
-            } else if (victimTimestamp != null) {
+            }
+            else if (victimTimestamp != null) {
                 if (victimTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
                     playerVictim.sendMessage(messages.rankLastAttackerV);
                     playerAttacker.sendMessage(messages.rankLastAttackerA);
@@ -279,10 +280,12 @@ public class PlayerDeath extends AbstractFunnyListener {
                     event.setDeathMessage(null);
                     player.sendMessage(deathMessage);
                 }
-            } else {
+            }
+            else {
                 event.setDeathMessage(deathMessage);
             }
-        } else {
+        }
+        else {
             event.setDeathMessage(null);
 
             for (User fighter : messageReceivers) {
