@@ -144,7 +144,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         RankSystem.RankResult result = rankSystem.calculate(config.rankSystem, attackerPoints, victimPoints);
 
         PointsChangeEvent attackerPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, attacker, result.getAttackerPoints());
-        PointsChangeEvent victimPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, victim, result.getVictimPoints());
+        PointsChangeEvent victimPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, victim, -result.getVictimPoints());
 
         List<String> assistEntries = new ArrayList<>();
         List<User> messageReceivers = new ArrayList<>();
@@ -211,7 +211,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
             victimPointsBeforeChange = victim.getRank().getPoints();
 
-            victim.getRank().updatePoints(currentValue -> currentValue - victimPointsChangeEvent.getChange());
+            victim.getRank().updatePoints(currentValue -> currentValue + victimPointsChangeEvent.getChange());
             victimCache.registerKiller(attacker);
             victimCache.clearDamage();
 
