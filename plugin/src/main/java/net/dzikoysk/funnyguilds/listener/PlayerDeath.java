@@ -55,7 +55,7 @@ public class PlayerDeath extends AbstractFunnyListener {
         UserCache victimCache = victim.getCache();
 
         DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(EventCause.USER, victim, victim, 1);
-        if(SimpleEventHandler.handle(deathsChangeEvent)) {
+        if (SimpleEventHandler.handle(deathsChangeEvent)) {
             victim.getRank().updateDeaths(currentValue -> currentValue + deathsChangeEvent.getChange());
         }
 
@@ -204,7 +204,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     assistUser.getRank().updatePoints(currentValue -> currentValue + finalAddedPoints);
 
                     AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(EventCause.USER, victim, assistUser, 1);
-                    if(SimpleEventHandler.handle(assistsChangeEvent)) {
+                    if (SimpleEventHandler.handle(assistsChangeEvent)) {
                         assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getChange());
                     }
                 }
