@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
-
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
@@ -10,6 +8,8 @@ import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
+
+import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class KillsCommand extends AbstractFunnyCommand {
 

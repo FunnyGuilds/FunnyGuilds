@@ -1,7 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
-
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -12,6 +10,8 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import panda.std.Option;
+
+import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class DeathsCommand extends AbstractFunnyCommand {
 
