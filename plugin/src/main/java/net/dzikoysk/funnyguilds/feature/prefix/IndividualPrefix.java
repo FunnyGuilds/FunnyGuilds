@@ -22,10 +22,6 @@ public class IndividualPrefix {
     }
 
     protected void addPlayer(String player) {
-        if (player == null) {
-            return;
-        }
-
         plugin.getUserManager().findByName(player)
                 .filter(User::hasGuild)
                 .peek(byName -> {
@@ -47,8 +43,8 @@ public class IndividualPrefix {
                         return;
                     }
 
-                    if (this.getUser().hasGuild()) {
-                        if (this.getUser().equals(byName) || this.getUser().getGuild().getMembers().contains(byName)) {
+                    if (this.user.hasGuild()) {
+                        if (this.user.equals(byName) || this.user.getGuild().getMembers().contains(byName)) {
                             team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur, byName.getGuild()));
                         }
                     }
@@ -63,7 +59,7 @@ public class IndividualPrefix {
         }
 
         Scoreboard scoreboard = getScoreboard();
-        Guild guild = getUser().getGuild();
+        Guild guild = user.getGuild();
 
         if (guild != null) {
             if (guild.equals(to)) {
@@ -113,10 +109,6 @@ public class IndividualPrefix {
     }
 
     protected void removePlayer(String playerName) {
-        if (playerName == null) {
-            return;
-        }
-
         Team team = getScoreboard().getEntryTeam(playerName);
         if (team != null) {
             team.removeEntry(playerName);
@@ -127,12 +119,18 @@ public class IndividualPrefix {
     }
 
     protected void removeGuild(Guild guild) {
-        if (guild == null || guild.getTag() == null || guild.getTag().isEmpty()) {
+        if (guild == null) {
             return;
         }
 
-        this.getUser().getCache().getScoreboard()
-                .map(scoreboard -> scoreboard.getTeam(guild.getTag()))
+        String tag = guild.getTag();
+
+        if (tag.isEmpty()) {
+            throw new IllegalStateException("Guild tag can't be empty!");
+        }
+
+        this.user.getCache().getScoreboard()
+                .map(scoreboard -> scoreboard.getTeam(tag))
                 .peek(Team::unregister);
 
         for (User member : guild.getMembers()) {
@@ -141,13 +139,9 @@ public class IndividualPrefix {
     }
 
     public void initialize() {
-        if (getUser() == null) {
-            return;
-        }
-
         Set<Guild> guilds = plugin.getGuildManager().getGuilds();
         Scoreboard scoreboard = getScoreboard();
-        Guild guild = getUser().getGuild();
+        Guild guild = user.getGuild();
 
         if (guild != null) {
             guilds.remove(guild);
@@ -164,10 +158,6 @@ public class IndividualPrefix {
             }
 
             for (User member : guild.getMembers()) {
-                if (member.getName() == null) {
-                    continue;
-                }
-
                 if (!team.hasEntry(member.getName())) {
                     team.addEntry(member.getName());
                 }
@@ -186,13 +176,9 @@ public class IndividualPrefix {
                     team = scoreboard.registerNewTeam(one.getTag());
                 }
 
-                for (User u : one.getMembers()) {
-                    if (u.getName() == null) {
-                        continue;
-                    }
-
-                    if (!team.hasEntry(u.getName())) {
-                        team.addEntry(u.getName());
+                for (User member : one.getMembers()) {
+                    if (!team.hasEntry(member.getName())) {
+                        team.addEntry(member.getName());
                     }
                 }
 
@@ -209,7 +195,7 @@ public class IndividualPrefix {
         }
         else {
             String other = plugin.getPluginConfiguration().prefixOther;
-            registerSoloTeam(this.getUser());
+            registerSoloTeam(this.user);
 
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {
@@ -222,13 +208,9 @@ public class IndividualPrefix {
                     team = scoreboard.registerNewTeam(one.getTag());
                 }
 
-                for (User u : one.getMembers()) {
-                    if (u.getName() == null) {
-                        continue;
-                    }
-
-                    if (!team.hasEntry(u.getName())) {
-                        team.addEntry(u.getName());
+                for (User member : one.getMembers()) {
+                    if (!team.hasEntry(member.getName())) {
+                        team.addEntry(member.getName());
                     }
                 }
 
@@ -277,10 +259,6 @@ public class IndividualPrefix {
     public Scoreboard getScoreboard() {
         return this.user.getCache().getScoreboard()
                 .orThrow(() -> new NullPointerException("scoreboard is null"));
-    }
-
-    public User getUser() {
-        return this.user;
     }
 
 }

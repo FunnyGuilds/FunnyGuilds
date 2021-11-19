@@ -89,8 +89,8 @@ public class IndividualPrefixManager {
     }
 
     public static void addPlayer(String player) {
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            User user = UserUtils.get(p.getUniqueId());
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            User user = UserUtils.get(onlinePlayer.getUniqueId());
             IndividualPrefix prefix = user.getCache().getIndividualPrefix();
 
             if (prefix == null) {
