@@ -3,13 +3,13 @@ package net.dzikoysk.funnyguilds.feature.prefix;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+import panda.utilities.text.Formatter;
 
 public class IndividualPrefix {
 
@@ -49,7 +49,7 @@ public class IndividualPrefix {
 
                     if (this.getUser().hasGuild()) {
                         if (this.getUser().equals(byName) || this.getUser().getGuild().getMembers().contains(byName)) {
-                            team.setPrefix(replace(plugin.getPluginConfiguration().prefixOur, "{TAG}", byName.getGuild().getTag()));
+                            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur, byName.getGuild()));
                         }
                     }
 
@@ -93,7 +93,7 @@ public class IndividualPrefix {
                 prefix = plugin.getPluginConfiguration().prefixEnemies;
             }
 
-            team.setPrefix(replace(prefix, "{TAG}", to.getTag()));
+            team.setPrefix(preparePrefix(prefix, to));
         }
         else {
             Team team = scoreboard.getTeam(to.getTag());
@@ -108,24 +108,22 @@ public class IndividualPrefix {
                 }
             }
 
-            team.setPrefix(replace(plugin.getPluginConfiguration().prefixOther, "{TAG}", to.getTag()));
+            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOther, to));
         }
     }
 
-    protected void removePlayer(String player) {
-        if (player == null) {
+    protected void removePlayer(String playerName) {
+        if (playerName == null) {
             return;
         }
 
-        Team team = getScoreboard().getEntryTeam(player);
+        Team team = getScoreboard().getEntryTeam(playerName);
         if (team != null) {
-            team.removeEntry(player);
-            if (team.getName().isEmpty()) {
-                team.setPrefix(replace(plugin.getPluginConfiguration().prefixOther, "{TAG}", team.getName()));
-            }
+            team.removeEntry(playerName);
         }
 
-        registerSoloTeam(UserUtils.get(player));
+        plugin.getUserManager().findByName(playerName)
+                .peek(this::registerSoloTeam);
     }
 
     protected void removeGuild(Guild guild) {
@@ -147,7 +145,7 @@ public class IndividualPrefix {
             return;
         }
 
-        Set<Guild> guilds = GuildUtils.getGuilds();
+        Set<Guild> guilds = plugin.getGuildManager().getGuilds();
         Scoreboard scoreboard = getScoreboard();
         Guild guild = getUser().getGuild();
 
@@ -175,7 +173,7 @@ public class IndividualPrefix {
                 }
             }
 
-            team.setPrefix(replace(our, "{TAG}", guild.getTag()));
+            team.setPrefix(preparePrefix(our, guild));
 
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {
@@ -199,13 +197,13 @@ public class IndividualPrefix {
                 }
 
                 if (guild.getAllies().contains(one)) {
-                    team.setPrefix(replace(ally, "{TAG}", one.getTag()));
+                    team.setPrefix(preparePrefix(ally, one));
                 }
                 else if (guild.getEnemies().contains(one) || one.getEnemies().contains(guild)) {
-                    team.setPrefix(replace(enemy, "{TAG}", one.getTag()));
+                    team.setPrefix(preparePrefix(enemy, one));
                 }
                 else {
-                    team.setPrefix(replace(other, "{TAG}", one.getTag()));
+                    team.setPrefix(preparePrefix(other, one));
                 }
             }
         }
@@ -234,14 +232,14 @@ public class IndividualPrefix {
                     }
                 }
 
-                team.setPrefix(replace(other, "{TAG}", one.getTag()));
+                team.setPrefix(preparePrefix(other, one));
             }
         }
     }
 
     private void registerSoloTeam(User soloUser) {
         String teamName = soloUser.getName() + "_solo";
-        Set<Guild> guilds = GuildUtils.getGuilds();
+        Set<Guild> guilds = plugin.getGuildManager().getGuilds();
 
         if (teamName.length() > 16) {
             teamName = soloUser.getName();
@@ -264,14 +262,15 @@ public class IndividualPrefix {
         }
     }
 
-    private String replace(String f, String r, String t) {
-        String s = f.replace(r, t);
+    private String preparePrefix(String text, Guild guild) {
+        Formatter formatter = Placeholders.GUILD.toFormatter(guild);
+        String formatted = formatter.format(text);
 
-        if (s.length() > 16) {
-            s = s.substring(0, 16);
+        if (formatted.length() > 16) {
+            formatted = formatted.substring(0, 16);
         }
 
-        return s;
+        return formatted;
     }
 
     @NotNull
