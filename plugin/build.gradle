@@ -14,7 +14,7 @@ dependencies {
     // okaeri config library
     implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.4.2"
     implementation "eu.okaeri:okaeri-configs-serdes-commons:3.4.2"
-    implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.4.1"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.4.2"
 
     // general stuff
     implementation "com.zaxxer:HikariCP:4.0.3"
