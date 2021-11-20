@@ -6,15 +6,15 @@ dependencies {
     }
 
     // funnyguilds & panda utilities
+    api "org.panda-lang:expressible:1.1.1"
     implementation "net.dzikoysk:funnycommands:0.4.2"
-    implementation "org.panda-lang:expressible:1.1.1"
     implementation "org.panda-lang:panda-utilities:0.5.0-alpha"
     implementation "org.panda-lang.utilities:di:1.4.1"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.4.1"
-    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.4.1"
-    implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.4.1"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.4.2"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.4.2"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.4.2"
 
     // general stuff
     implementation "com.zaxxer:HikariCP:4.0.3"
@@ -37,9 +37,10 @@ dependencies {
     // integrations
     shadow("me.clip:placeholderapi:2.10.10") {
         exclude group: "com.google.code.gson", module: "gson"
+        exclude group: "net.kyori", module: "adventure-platform-bukkit"
     }
     shadow "net.kyori:adventure-api:4.9.3"
-    shadow "net.kyori:adventure-platform-bukkit:4.0.0"
+    shadow "net.kyori:adventure-platform-bukkit:4.0.1-SNAPSHOT"
 
     shadow "me.robin:leaderheads-api:1.0.0"
     shadow "net.milkbowl.vault:VaultAPI:1.7"
@@ -48,7 +49,7 @@ dependencies {
     }
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
 
-    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.6"
+    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.7"
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
