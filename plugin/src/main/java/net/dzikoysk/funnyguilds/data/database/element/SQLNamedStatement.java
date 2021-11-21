@@ -32,10 +32,9 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate() {
-        try (Connection con = Database.getConnection()) {
-            try (PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
-                statement.executeUpdate();
-            }
+        try (Connection con = Database.getConnection();
+             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
+            statement.executeUpdate();
         }
         catch (SQLException sqlException) {
             FunnyGuilds.getPluginLogger().error("Could not execute update", sqlException);
@@ -43,10 +42,9 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate(boolean ignoreFails) {
-        try (Connection con = Database.getConnection()) {
-            try (PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
-                statement.executeUpdate();
-            }
+        try (Connection con = Database.getConnection();
+             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
+            statement.executeUpdate();
         }
         catch (SQLException sqlException) {
             if (ignoreFails) {
@@ -59,12 +57,10 @@ public class SQLNamedStatement {
     }
 
     public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer) {
-        try (Connection con = Database.getConnection()) {
-            try (PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    consumer.accept(resultSet);
-                }
-            }
+        try (Connection con = Database.getConnection();
+             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
+             ResultSet resultSet = statement.executeQuery()) {
+            consumer.accept(resultSet);
         }
         catch (SQLException sqlException) {
             FunnyGuilds.getPluginLogger().error("Could not execute query", sqlException);
