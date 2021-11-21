@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.Database;
+import panda.std.function.ThrowingConsumer;
 
 public class SQLNamedStatement {
 
@@ -31,9 +32,8 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate() {
-        try (Connection con = Database.getConnection()) {
-            PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
-
+        try (Connection con = Database.getConnection();
+             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
             statement.executeUpdate();
         }
         catch (SQLException sqlException) {
@@ -42,9 +42,8 @@ public class SQLNamedStatement {
     }
 
     public void executeUpdate(boolean ignoreFails) {
-        try (Connection con = Database.getConnection()) {
-            PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
-
+        try (Connection con = Database.getConnection();
+             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
             statement.executeUpdate();
         }
         catch (SQLException sqlException) {
@@ -57,17 +56,15 @@ public class SQLNamedStatement {
         }
     }
 
-    public ResultSet executeQuery() {
-        try (Connection con = Database.getConnection()) {
-            PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
-
-            return statement.executeQuery();
+    public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer) {
+        try (Connection con = Database.getConnection();
+             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
+             ResultSet resultSet = statement.executeQuery()) {
+            consumer.accept(resultSet);
         }
         catch (SQLException sqlException) {
             FunnyGuilds.getPluginLogger().error("Could not execute query", sqlException);
         }
-
-        return null;
     }
 
     private PreparedStatement setPlaceholders(PreparedStatement preparedStatement) throws SQLException {

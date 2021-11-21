@@ -96,23 +96,23 @@ public class SQLDataModel implements DataModel {
         concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
     }
 
-    public void loadUsers() throws SQLException {
-        ResultSet result = SQLBasicUtils.getSelectAll(SQLDataModel.tabUsers).executeQuery();
+    public void loadUsers() {
+        SQLBasicUtils.getSelectAll(SQLDataModel.tabUsers).executeQuery(result -> {
+            while (result.next()) {
+                String userName = result.getString("name");
 
-        while (result.next()) {
-            String userName = result.getString("name");
+                if (!UserUtils.validateUsername(userName)) {
+                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
+                    continue;
+                }
 
-            if (!UserUtils.validateUsername(userName)) {
-                FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
-                continue;
+                User user = DatabaseUser.deserialize(result);
+
+                if (user != null) {
+                    user.wasChanged();
+                }
             }
-
-            User user = DatabaseUser.deserialize(result);
-
-            if (user != null) {
-                user.wasChanged();
-            }
-        }
+        });
 
         FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
     }
@@ -123,16 +123,16 @@ public class SQLDataModel implements DataModel {
             return;
         }
 
-        ResultSet result = SQLBasicUtils.getSelectAll(SQLDataModel.tabRegions).executeQuery();
+        SQLBasicUtils.getSelectAll(SQLDataModel.tabRegions).executeQuery(result -> {
+            while (result.next()) {
+                Region region = DatabaseRegion.deserialize(result);
 
-        while (result.next()) {
-            Region region = DatabaseRegion.deserialize(result);
-
-            if (region != null) {
-                region.wasChanged();
-                RegionUtils.addRegion(region);
+                if (region != null) {
+                    region.wasChanged();
+                    RegionUtils.addRegion(region);
+                }
             }
-        }
+        });
 
         FunnyGuilds.getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
     }
@@ -140,37 +140,37 @@ public class SQLDataModel implements DataModel {
     public void loadGuilds() throws SQLException {
         GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
 
-        ResultSet resultAll = SQLBasicUtils.getSelectAll(SQLDataModel.tabGuilds).executeQuery();
+        SQLBasicUtils.getSelectAll(SQLDataModel.tabGuilds).executeQuery(resultAll -> {
+            while (resultAll.next()) {
+                Guild guild = DatabaseGuild.deserialize(resultAll);
 
-        while (resultAll.next()) {
-            Guild guild = DatabaseGuild.deserialize(resultAll);
-
-            if (guild != null) {
-                guild.wasChanged();
+                if (guild != null) {
+                    guild.wasChanged();
+                }
             }
-        }
+        });
 
-        ResultSet result = SQLBasicUtils.getSelect(SQLDataModel.tabGuilds, "tag", "allies", "enemies").executeQuery();
+        SQLBasicUtils.getSelect(SQLDataModel.tabGuilds, "tag", "allies", "enemies").executeQuery(result -> {
+            while (result.next()) {
+                Option<Guild> guildOption = guildManager.findByTag(result.getString("tag"));
+                if (guildOption.isEmpty()) {
+                    continue;
+                }
 
-        while (result.next()) {
-            Option<Guild> guildOption = guildManager.findByTag(result.getString("tag"));
-            if (guildOption.isEmpty()) {
-                continue;
+                Guild guild = guildOption.get();
+
+                String alliesList = result.getString("allies");
+                String enemiesList = result.getString("enemies");
+
+                if (alliesList != null && !alliesList.equals("")) {
+                    guild.setAllies(guildManager.findByNames(ChatUtils.fromString(alliesList)));
+                }
+
+                if (enemiesList != null && !enemiesList.equals("")) {
+                    guild.setEnemies(guildManager.findByNames(ChatUtils.fromString(enemiesList)));
+                }
             }
-
-            Guild guild = guildOption.get();
-
-            String alliesList = result.getString("allies");
-            String enemiesList = result.getString("enemies");
-
-            if (alliesList != null && !alliesList.equals("")) {
-                guild.setAllies(guildManager.findByNames(ChatUtils.fromString(alliesList)));
-            }
-
-            if (enemiesList != null && !enemiesList.equals("")) {
-                guild.setEnemies(guildManager.findByNames(ChatUtils.fromString(enemiesList)));
-            }
-        }
+        });
 
         for (Guild guild : guildManager.getGuilds()) {
             if (guild.getOwner() != null) {
