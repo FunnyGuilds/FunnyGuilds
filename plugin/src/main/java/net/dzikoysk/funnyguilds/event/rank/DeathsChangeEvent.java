@@ -16,8 +16,8 @@ public class DeathsChangeEvent extends RankChangeEvent {
         return handlers;
     }
 
-    public DeathsChangeEvent(EventCause eventCause, User doer, User affected, int change) {
-        super(eventCause, doer, affected, change);
+    public DeathsChangeEvent(EventCause eventCause, User doer, User affected, int deathsChange) {
+        super(eventCause, doer, affected, deathsChange);
     }
 
     @Override

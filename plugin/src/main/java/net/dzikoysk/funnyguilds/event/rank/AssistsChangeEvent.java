@@ -16,8 +16,8 @@ public class AssistsChangeEvent extends RankChangeEvent {
         return handlers;
     }
 
-    public AssistsChangeEvent(EventCause eventCause, User doer, User affected, int change) {
-        super(eventCause, doer, affected, change);
+    public AssistsChangeEvent(EventCause eventCause, User doer, User affected, int assistsChange) {
+        super(eventCause, doer, affected, assistsChange);
     }
 
     @Override

@@ -16,8 +16,8 @@ public class KillsChangeEvent extends RankChangeEvent {
         return handlers;
     }
 
-    public KillsChangeEvent(EventCause eventCause, User doer, User affected, int change) {
-        super(eventCause, doer, affected, change);
+    public KillsChangeEvent(EventCause eventCause, User doer, User affected, int killsChange) {
+        super(eventCause, doer, affected, killsChange);
     }
 
     @Override

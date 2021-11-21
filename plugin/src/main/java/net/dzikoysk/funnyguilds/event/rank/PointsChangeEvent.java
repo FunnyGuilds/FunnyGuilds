@@ -16,8 +16,8 @@ public class PointsChangeEvent extends RankChangeEvent {
         return handlers;
     }
 
-    public PointsChangeEvent(EventCause eventCause, User doer, User affected, int change) {
-        super(eventCause, doer, affected, change);
+    public PointsChangeEvent(EventCause eventCause, User doer, User affected, int pointsChange) {
+        super(eventCause, doer, affected, pointsChange);
     }
 
     @Override
