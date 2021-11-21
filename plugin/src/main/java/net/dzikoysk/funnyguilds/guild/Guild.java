@@ -448,32 +448,4 @@ public class Guild extends AbstractMutableEntity {
         return this.name;
     }
 
-    @Deprecated
-    public static Guild getOrCreate(UUID uuid) {
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (guild.getUUID().equals(uuid)) {
-                return guild;
-            }
-        }
-
-        final Guild newGuild = new Guild(uuid);
-        GuildUtils.addGuild(newGuild);
-
-        return newGuild;
-    }
-
-    @Deprecated
-    public static Guild getOrCreate(String name) {
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (guild.getName().equalsIgnoreCase(name)) {
-                return guild;
-            }
-        }
-
-        final Guild newGuild = new Guild(name);
-        GuildUtils.addGuild(newGuild);
-
-        return newGuild;
-    }
-
 }
