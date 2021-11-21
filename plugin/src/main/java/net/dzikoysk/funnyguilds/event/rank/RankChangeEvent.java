@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.user.User;
 
 public abstract class RankChangeEvent extends RankEvent {
 
-    private int change;
+    protected int change;
 
     public RankChangeEvent(EventCause eventCause, User doer, User affected, int change) {
         super(eventCause, doer, affected);

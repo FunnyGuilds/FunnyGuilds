@@ -20,6 +20,10 @@ public class PointsChangeEvent extends RankChangeEvent {
         super(eventCause, doer, affected, pointsChange);
     }
 
+    public int getPointsChange() {
+        return this.change;
+    }
+
     @Override
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Points change has been cancelled by the server!";

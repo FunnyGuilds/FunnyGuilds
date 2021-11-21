@@ -20,6 +20,10 @@ public class AssistsChangeEvent extends RankChangeEvent {
         super(eventCause, doer, affected, assistsChange);
     }
 
+    public int getAssistsChange() {
+        return this.change;
+    }
+
     @Override
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Assists change has been cancelled by the server!";

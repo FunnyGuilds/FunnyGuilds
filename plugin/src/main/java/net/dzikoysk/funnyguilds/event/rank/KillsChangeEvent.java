@@ -20,6 +20,10 @@ public class KillsChangeEvent extends RankChangeEvent {
         super(eventCause, doer, affected, killsChange);
     }
 
+    public int getKillsChange() {
+        return this.change;
+    }
+
     @Override
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Kills change has been cancelled by the server!";
