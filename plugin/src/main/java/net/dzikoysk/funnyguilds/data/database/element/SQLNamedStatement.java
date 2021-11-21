@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.Database;
+import panda.std.function.ThrowingConsumer;
 
 public class SQLNamedStatement {
 
@@ -35,6 +36,7 @@ public class SQLNamedStatement {
             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
 
             statement.executeUpdate();
+            statement.close();
         }
         catch (SQLException sqlException) {
             FunnyGuilds.getPluginLogger().error("Could not execute update", sqlException);
@@ -46,6 +48,7 @@ public class SQLNamedStatement {
             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
 
             statement.executeUpdate();
+            statement.close();
         }
         catch (SQLException sqlException) {
             if (ignoreFails) {
@@ -57,11 +60,14 @@ public class SQLNamedStatement {
         }
     }
 
-    public ResultSet executeQuery() {
+    public ResultSet executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer) {
         try (Connection con = Database.getConnection()) {
             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
+            ResultSet resultSet = statement.executeQuery();
 
-            return statement.executeQuery();
+            consumer.accept(resultSet);
+            resultSet.close();
+            statement.close();
         }
         catch (SQLException sqlException) {
             FunnyGuilds.getPluginLogger().error("Could not execute query", sqlException);
