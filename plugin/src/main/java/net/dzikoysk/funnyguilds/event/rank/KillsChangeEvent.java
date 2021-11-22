@@ -1,12 +1,13 @@
 package net.dzikoysk.funnyguilds.event.rank;
 
-import net.dzikoysk.funnyguilds.rank.Rank;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 
-public class KillsChangeEvent extends RankChangeEvent {
+public class KillsChangeEvent extends AbstractRankEvent {
 
     private static final HandlerList handlers = new HandlerList();
+
+    private int killsChange;
 
     @Override
     public HandlerList getHandlers() {
@@ -17,8 +18,18 @@ public class KillsChangeEvent extends RankChangeEvent {
         return handlers;
     }
 
-    public KillsChangeEvent(EventCause eventCause, Rank rank, User doer, int change) {
-        super(eventCause, rank, doer, change);
+    public KillsChangeEvent(EventCause eventCause, User doer, User affected, int killsChange) {
+        super(eventCause, doer, affected);
+
+        this.killsChange = killsChange;
+    }
+
+    public int getKillsChange() {
+        return killsChange;
+    }
+
+    public void setKillsChange(int killsChange) {
+        this.killsChange = killsChange;
     }
 
     @Override

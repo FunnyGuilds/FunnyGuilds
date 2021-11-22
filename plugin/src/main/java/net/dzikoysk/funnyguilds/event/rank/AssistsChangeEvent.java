@@ -3,11 +3,11 @@ package net.dzikoysk.funnyguilds.event.rank;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 
-public class DeathsChangeEvent extends AbstractRankEvent {
+public class AssistsChangeEvent extends AbstractRankEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    private int deathsChange;
+    private int assistsChange;
 
     @Override
     public HandlerList getHandlers() {
@@ -18,23 +18,23 @@ public class DeathsChangeEvent extends AbstractRankEvent {
         return handlers;
     }
 
-    public DeathsChangeEvent(EventCause eventCause, User doer, User affected, int deathsChange) {
+    public AssistsChangeEvent(EventCause eventCause, User doer, User affected, int assistsChange) {
         super(eventCause, doer, affected);
 
-        this.deathsChange = deathsChange;
+        this.assistsChange = assistsChange;
     }
 
-    public int getDeathsChange() {
-        return deathsChange;
+    public int getAssistsChange() {
+        return assistsChange;
     }
 
-    public void setDeathsChange(int deathsChange) {
-        this.deathsChange = deathsChange;
+    public void setAssistsChange(int assistsChange) {
+        this.assistsChange = assistsChange;
     }
 
     @Override
     public String getDefaultCancelMessage() {
-        return "[FunnyGuilds] Deaths change has been cancelled by the server!";
+        return "[FunnyGuilds] Assists change has been cancelled by the server!";
     }
 
 }

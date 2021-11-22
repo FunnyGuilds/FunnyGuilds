@@ -34,14 +34,19 @@ public final class KillsCommand extends AbstractFunnyCommand {
         User user = UserValidation.requireUserByName(args[0]);
         UserRank userRank = user.getRank();
 
-        int change = kills - userRank.getDeaths();
         User admin = AdminUtils.getAdminUser(sender);
-        if (!SimpleEventHandler.handle(new KillsChangeEvent(AdminUtils.getCause(admin), userRank, admin, change))) {
+        int change = kills - userRank.getDeaths();
+
+        KillsChangeEvent killsChangeEvent = new KillsChangeEvent(AdminUtils.getCause(admin), admin, user, change);
+        if (!SimpleEventHandler.handle(killsChangeEvent)) {
             return;
         }
+        change = killsChangeEvent.getKillsChange();
 
-        user.getRank().setKills(kills);
-        sender.sendMessage(messages.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(kills)));
+        int finalKills = user.getRank().getKills() + change;
+        user.getRank().setKills(finalKills);
+
+        sender.sendMessage(messages.adminKillsChanged.replace("{PLAYER}", user.getName()).replace("{KILLS}", Integer.toString(finalKills)));
     }
 
 }

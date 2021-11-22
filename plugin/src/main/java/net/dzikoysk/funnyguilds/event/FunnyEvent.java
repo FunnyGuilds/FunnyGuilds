@@ -62,13 +62,11 @@ public abstract class FunnyEvent extends Event implements Cancellable {
     }
 
     public enum EventCause {
-
         ADMIN,
         CONSOLE,
         SYSTEM,
         USER,
         UNKNOWN;
-
     }
 
 }

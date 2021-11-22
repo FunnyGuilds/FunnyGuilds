@@ -33,20 +33,23 @@ public final class PointsCommand extends AbstractFunnyCommand {
         }
 
         User user = UserValidation.requireUserByName(args[0]);
-
         UserRank userRank = user.getRank();
-        int change = points - userRank.getPoints();
 
         User admin = AdminUtils.getAdminUser(sender);
-        if (!SimpleEventHandler.handle(new PointsChangeEvent(AdminUtils.getCause(admin), userRank, admin, change))) {
+        int change = points - userRank.getPoints();
+
+        PointsChangeEvent pointsChangeEvent = new PointsChangeEvent(AdminUtils.getCause(admin), admin, user, change);
+        if (!SimpleEventHandler.handle(pointsChangeEvent)) {
             return;
         }
+        change = pointsChangeEvent.getPointsChange();
 
-        user.getRank().setPoints(points);
+        int finalPoints = user.getRank().getPoints() + change;
+        user.getRank().setPoints(finalPoints);
 
         String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
-        message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
-        message = message.replace("{POINTS}", String.valueOf(points));
+        message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(finalPoints, config.pointsFormat));
+        message = message.replace("{POINTS}", String.valueOf(finalPoints));
 
         sender.sendMessage(message);
     }

@@ -1,14 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
-import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
-final class AdminUtils extends AbstractFunnyCommand {
+final class AdminUtils {
 
     private AdminUtils() {}
 
