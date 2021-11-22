@@ -201,21 +201,7 @@ public class UserManager {
      * @return if user with given name have ever played on a server
      */
     public boolean playedBefore(String nickname, boolean ignoreCase) {
-        if (nickname == null) {
-            return false;
-        }
-
-        if (ignoreCase) {
-            for (String userNickname : usersByName.keySet()) {
-                if (userNickname.equalsIgnoreCase(nickname)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        return usersByName.containsKey(nickname);
+        return findByName(nickname, ignoreCase).isPresent();
     }
 
     /**

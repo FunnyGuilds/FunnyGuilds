@@ -256,7 +256,7 @@ public class GuildManager {
      * @return if guild with given name exists
      */
     public boolean nameExists(String name) {
-        return !this.findByName(name).isEmpty();
+        return this.findByName(name).isPresent();
     }
 
     /**
@@ -266,7 +266,7 @@ public class GuildManager {
      * @return if guild with given tag exists
      */
     public boolean tagExists(String tag) {
-        return !this.findByTag(tag).isEmpty();
+        return this.findByTag(tag).isPresent();
     }
 
     /**
