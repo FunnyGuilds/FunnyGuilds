@@ -175,6 +175,7 @@ public class GuildManager {
     /**
      * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
      *
+     * @param uuid the uuid which will be assigned to Guild
      * @param name the name which will be assigned to Guild
      * @param tag the tag which will be assigned to Guild
      * @return the guild
