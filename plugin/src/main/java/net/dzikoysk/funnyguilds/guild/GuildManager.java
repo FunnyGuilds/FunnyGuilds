@@ -173,6 +173,28 @@ public class GuildManager {
     }
 
     /**
+     * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
+     *
+     * @param name the name which will be assigned to Guild
+     * @param tag the tag which will be assigned to Guild
+     * @return the guild
+     */
+    public Guild create(UUID uuid, String name, String tag) {
+        Validate.notNull(uuid, "uuid can't be null!");
+        Validate.notNull(name, "name can't be null!");
+        Validate.notBlank(name, "name can't be blank!");
+        Validate.isTrue(GuildUtils.validateName(pluginConfiguration, name), "name is not valid!");
+        Validate.notNull(tag, "tag can't be null!");
+        Validate.notBlank(tag, "tag can't be blank!");
+        Validate.isTrue(GuildUtils.validateTag(pluginConfiguration, tag), "tag is not valid!");
+
+        Guild guild = new Guild(uuid, name, tag);
+        addGuild(guild);
+
+        return guild;
+    }
+
+    /**
      * Add guild to storage. If you think you should use this method you probably shouldn't.
      *
      * @param guild the guild to addition

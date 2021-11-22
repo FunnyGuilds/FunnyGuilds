@@ -62,6 +62,12 @@ public class Guild extends AbstractMutableEntity {
         this.tag = tag;
     }
 
+    Guild(UUID uuid, String name, String tag) {
+        this(uuid);
+        this.name = name;
+        this.tag = tag;
+    }
+
     public void broadcast(String message) {
         for (User user : this.getOnlineMembers()) {
             if (user.getPlayer() == null) {

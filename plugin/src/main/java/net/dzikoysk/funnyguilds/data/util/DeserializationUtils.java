@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
@@ -18,10 +19,13 @@ public final class DeserializationUtils {
             return null;
         }
 
-        final Guild guild = Guild.getOrCreate((UUID) values[0]);
+        GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
 
-        guild.setName((String) values[1]);
-        guild.setTag(FunnyGuilds.getInstance().getPluginConfiguration().guildTagKeepCase ? (String) values[2] : (FunnyGuilds.getInstance().getPluginConfiguration().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase()));
+        UUID guildUuid = (UUID) values[0];
+        String guildName = (String) values[1];
+        String guildTag = FunnyGuilds.getInstance().getPluginConfiguration().guildTagKeepCase ? (String) values[2] : (FunnyGuilds.getInstance().getPluginConfiguration().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase());
+        Guild guild = guildManager.findByUuid(guildUuid).orElseGet(guildManager.create(guildUuid, guildName, guildTag));
+
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
         guild.setRegion((Region) values[5]);
