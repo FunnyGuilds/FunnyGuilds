@@ -42,7 +42,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(pointsChangeEvent)) {
             return;
         }
-        change = pointsChangeEvent.getChange();
+        change = pointsChangeEvent.getPointsChange();
 
         int finalPoints = user.getRank().getPoints() + change;
         user.getRank().setPoints(finalPoints);

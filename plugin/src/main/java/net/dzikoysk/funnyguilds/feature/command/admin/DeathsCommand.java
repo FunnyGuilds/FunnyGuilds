@@ -38,7 +38,7 @@ public final class DeathsCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(deathsChangeEvent)) {
             return;
         }
-        change = deathsChangeEvent.getChange();
+        change = deathsChangeEvent.getDeathsChange();
 
         int finalDeaths = user.getRank().getDeaths() + change;
         user.getRank().setDeaths(finalDeaths);

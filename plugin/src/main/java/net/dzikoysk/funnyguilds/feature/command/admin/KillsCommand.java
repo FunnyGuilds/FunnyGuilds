@@ -41,7 +41,7 @@ public final class KillsCommand extends AbstractFunnyCommand {
         if (!SimpleEventHandler.handle(killsChangeEvent)) {
             return;
         }
-        change = killsChangeEvent.getChange();
+        change = killsChangeEvent.getKillsChange();
 
         int finalKills = user.getRank().getKills() + change;
         user.getRank().setKills(finalKills);

@@ -56,7 +56,7 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(EventCause.USER, victim, victim, 1);
         if (SimpleEventHandler.handle(deathsChangeEvent)) {
-            victim.getRank().updateDeaths(currentValue -> currentValue + deathsChangeEvent.getChange());
+            victim.getRank().updateDeaths(currentValue -> currentValue + deathsChangeEvent.getDeathsChange());
         }
 
         if (playerAttacker == null) {
@@ -159,7 +159,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             double attackerDamage = victimCache.killedBy(attacker);
 
             if (config.assistEnable && victimCache.isAssisted()) {
-                double toShare = attackerPointsChangeEvent.getChange() * (1 - config.assistKillerShare);
+                double toShare = attackerPointsChangeEvent.getPointsChange() * (1 - config.assistKillerShare);
                 double totalDamage = victimCache.getTotalDamage() + attackerDamage;
                 int givenPoints = 0;
 
@@ -187,7 +187,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     if (!SimpleEventHandler.handle(assistPointsChangeEvent)) {
                         continue;
                     }
-                    addedPoints = assistPointsChangeEvent.getChange();
+                    addedPoints = assistPointsChangeEvent.getPointsChange();
 
                     if (!config.broadcastDeathMessage) {
                         messageReceivers.add(assistUser);
@@ -205,26 +205,26 @@ public class PlayerDeath extends AbstractFunnyListener {
 
                     AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(EventCause.USER, victim, assistUser, 1);
                     if (SimpleEventHandler.handle(assistsChangeEvent)) {
-                        assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getChange());
+                        assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getAssistsChange());
                     }
                 }
 
-                double updatedAttackerPoints = attackerPointsChangeEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
-                attackerPointsChangeEvent.setChange((int) Math.round(updatedAttackerPoints));
+                double updatedAttackerPoints = attackerPointsChangeEvent.getPointsChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
+                attackerPointsChangeEvent.setPointsChange((int) Math.round(updatedAttackerPoints));
             }
 
-            attacker.getRank().updatePoints(currentValue -> currentValue + attackerPointsChangeEvent.getChange());
+            attacker.getRank().updatePoints(currentValue -> currentValue + attackerPointsChangeEvent.getPointsChange());
 
             KillsChangeEvent killsChangeEvent = new KillsChangeEvent(EventCause.USER, attacker, victim, 1);
             if (SimpleEventHandler.handle(killsChangeEvent)) {
-                attacker.getRank().updateKills(currentValue -> currentValue + killsChangeEvent.getChange());
+                attacker.getRank().updateKills(currentValue -> currentValue + killsChangeEvent.getKillsChange());
             }
 
             attackerCache.registerVictim(victim);
 
             victimPointsBeforeChange = victim.getRank().getPoints();
 
-            victim.getRank().updatePoints(currentValue -> currentValue + victimPointsChangeEvent.getChange());
+            victim.getRank().updatePoints(currentValue -> currentValue + victimPointsChangeEvent.getPointsChange());
             victimCache.registerKiller(attacker);
             victimCache.clearDamage();
 
@@ -257,8 +257,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         Formatter killFormatter = new Formatter()
                 .register("{ATTACKER}", attacker.getName())
                 .register("{VICTIM}", victim.getName())
-                .register("{+}", Integer.toString(attackerPointsChangeEvent.getChange()))
-                .register("{-}", Math.min(victimPointsBeforeChange, victimPointsChangeEvent.getChange()))
+                .register("{+}", Integer.toString(attackerPointsChangeEvent.getPointsChange()))
+                .register("{-}", Math.min(victimPointsBeforeChange, victimPointsChangeEvent.getPointsChange()))
                 .register("{POINTS-FORMAT}", IntegerRange.inRangeToString(victimPoints, config.pointsFormat))
                 .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
