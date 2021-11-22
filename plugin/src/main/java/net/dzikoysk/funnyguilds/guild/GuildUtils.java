@@ -115,7 +115,7 @@ public final class GuildUtils {
     /**
      * Add guild to storage. If you think you should use this method you probably shouldn't.
      *
-     * @param guild the guild to addition
+     * @param guild guild to add
      * @deprecated for removal in the future, in favour of {@link GuildManager#addGuild(Guild)}
      */
     @Deprecated
@@ -127,7 +127,7 @@ public final class GuildUtils {
     /**
      * Remove guild from storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#deleteGuild(Guild)}.
      *
-     * @param guild the guild to removal
+     * @param guild guild to remove
      * @deprecated for removal in the future, in favour of {@link GuildManager#removeGuild(Guild)}
      */
     @Deprecated
@@ -139,7 +139,7 @@ public final class GuildUtils {
     /**
      * Delete guild in every possible way.
      *
-     * @param guild the guild to deletion
+     * @param guild guild to delete
      * @deprecated for removal in the future, in favour of {@link GuildManager#deleteGuild(Guild)}
      */
     @Deprecated

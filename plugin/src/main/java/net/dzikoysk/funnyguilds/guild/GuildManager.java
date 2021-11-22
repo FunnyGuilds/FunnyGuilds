@@ -198,7 +198,7 @@ public class GuildManager {
     /**
      * Add guild to storage. If you think you should use this method you probably shouldn't.
      *
-     * @param guild the guild to addition
+     * @param guild guild to add
      */
     public void addGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
@@ -208,7 +208,7 @@ public class GuildManager {
     /**
      * Remove guild from storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#deleteGuild(Guild)}.
      *
-     * @param guild the guild to removal
+     * @param guild guild to remove
      */
     public void removeGuild(Guild guild) {
         Validate.notNull(guild, "user can't be null!");
@@ -218,7 +218,7 @@ public class GuildManager {
     /**
      * Delete guild in every possible way.
      *
-     * @param guild the guild to deletion
+     * @param guild guild to delete
      */
     public void deleteGuild(Guild guild) {
         if (guild == null) {

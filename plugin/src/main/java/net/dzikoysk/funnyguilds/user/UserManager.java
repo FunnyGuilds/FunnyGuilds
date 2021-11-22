@@ -147,7 +147,7 @@ public class UserManager {
     /**
      * Add user to storage. If you think you should use this method you probably shouldn't.
      *
-     * @param user the user to addition
+     * @param user user to add
      */
     public void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
@@ -159,7 +159,7 @@ public class UserManager {
     /**
      * Remove user from storage. If you think you should use this method you probably shouldn't.
      *
-     * @param user the user to removal
+     * @param user user to remove
      */
     public void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
