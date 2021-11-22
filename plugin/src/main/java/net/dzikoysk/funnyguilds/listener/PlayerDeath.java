@@ -15,8 +15,10 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
+import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
+import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
-import net.dzikoysk.funnyguilds.event.rank.RankChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
@@ -52,7 +54,10 @@ public class PlayerDeath extends AbstractFunnyListener {
         User victim = victimOption.get();
         UserCache victimCache = victim.getCache();
 
-        victim.getRank().updateDeaths(currentValue -> currentValue + 1);
+        DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(EventCause.USER, victim, victim, 1);
+        if (SimpleEventHandler.handle(deathsChangeEvent)) {
+            victim.getRank().updateDeaths(currentValue -> currentValue + deathsChangeEvent.getDeathsChange());
+        }
 
         if (playerAttacker == null) {
             if (!config.considerLastAttackerAsKiller) {
@@ -61,14 +66,12 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
 
             User lastAttacker = victimCache.getLastKiller();
-
             if (lastAttacker == null || !lastAttacker.isOnline()) {
                 victimCache.clearDamage();
                 return;
             }
 
             Long attackTime = victimCache.wasVictimOf(lastAttacker);
-
             if (attackTime == null || attackTime + config.lastAttackerAsKillerConsiderationTimeout_ < System.currentTimeMillis()) {
                 victimCache.clearDamage();
                 return;
@@ -144,19 +147,19 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         RankSystem.RankResult result = rankSystem.calculate(config.rankSystem, attackerPoints, victimPoints);
 
-        RankChangeEvent attackerEvent = new PointsChangeEvent(EventCause.USER, attacker.getRank(), attacker, result.getAttackerPoints());
-        RankChangeEvent victimEvent = new PointsChangeEvent(EventCause.USER, victim.getRank(), attacker, result.getVictimPoints());
+        PointsChangeEvent attackerPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, attacker, result.getAttackerPoints());
+        PointsChangeEvent victimPointsChangeEvent = new PointsChangeEvent(EventCause.USER, attacker, victim, -result.getVictimPoints());
 
         List<String> assistEntries = new ArrayList<>();
         List<User> messageReceivers = new ArrayList<>();
 
         int victimPointsBeforeChange = victim.getRank().getPoints();
 
-        if (SimpleEventHandler.handle(attackerEvent) && SimpleEventHandler.handle(victimEvent)) {
+        if (SimpleEventHandler.handle(attackerPointsChangeEvent) && SimpleEventHandler.handle(victimPointsChangeEvent)) {
             double attackerDamage = victimCache.killedBy(attacker);
 
             if (config.assistEnable && victimCache.isAssisted()) {
-                double toShare = attackerEvent.getChange() * (1 - config.assistKillerShare);
+                double toShare = attackerPointsChangeEvent.getPointsChange() * (1 - config.assistKillerShare);
                 double totalDamage = victimCache.getTotalDamage() + attackerDamage;
                 int givenPoints = 0;
 
@@ -174,11 +177,17 @@ public class PlayerDeath extends AbstractFunnyListener {
 
                     if (config.assistsLimit > 0) {
                         if (assists >= config.assistsLimit) {
-                            continue;
+                            break;
                         }
 
                         assists++;
                     }
+
+                    PointsChangeEvent assistPointsChangeEvent = new PointsChangeEvent(EventCause.USER, assistUser, assistUser, addedPoints);
+                    if (!SimpleEventHandler.handle(assistPointsChangeEvent)) {
+                        continue;
+                    }
+                    addedPoints = assistPointsChangeEvent.getPointsChange();
 
                     if (!config.broadcastDeathMessage) {
                         messageReceivers.add(assistUser);
@@ -191,21 +200,31 @@ public class PlayerDeath extends AbstractFunnyListener {
                     assistEntry = StringUtils.replace(assistEntry, "{SHARE}", ChatUtils.getPercent(assistFraction));
                     assistEntries.add(assistEntry);
 
-                    assistUser.getRank().updatePoints(currentValue -> currentValue + addedPoints);
-                    assistUser.getRank().updateAssists(currentValue -> currentValue + 1);
+                    int finalAddedPoints = addedPoints;
+                    assistUser.getRank().updatePoints(currentValue -> currentValue + finalAddedPoints);
+
+                    AssistsChangeEvent assistsChangeEvent = new AssistsChangeEvent(EventCause.USER, victim, assistUser, 1);
+                    if (SimpleEventHandler.handle(assistsChangeEvent)) {
+                        assistUser.getRank().updateAssists(currentValue -> currentValue + assistsChangeEvent.getAssistsChange());
+                    }
                 }
 
-                double updatedAttackerPoints = attackerEvent.getChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
-                attackerEvent.setChange((int) Math.round(updatedAttackerPoints));
+                double updatedAttackerPoints = attackerPointsChangeEvent.getPointsChange() - toShare + (givenPoints < toShare ? toShare - givenPoints : 0);
+                attackerPointsChangeEvent.setPointsChange((int) Math.round(updatedAttackerPoints));
             }
 
-            attacker.getRank().updateKills(currentValue -> currentValue + 1);
-            attacker.getRank().updatePoints(currentValue -> currentValue + attackerEvent.getChange());
+            attacker.getRank().updatePoints(currentValue -> currentValue + attackerPointsChangeEvent.getPointsChange());
+
+            KillsChangeEvent killsChangeEvent = new KillsChangeEvent(EventCause.USER, attacker, victim, 1);
+            if (SimpleEventHandler.handle(killsChangeEvent)) {
+                attacker.getRank().updateKills(currentValue -> currentValue + killsChangeEvent.getKillsChange());
+            }
+
             attackerCache.registerVictim(victim);
 
             victimPointsBeforeChange = victim.getRank().getPoints();
 
-            victim.getRank().updatePoints(currentValue -> currentValue - victimEvent.getChange());
+            victim.getRank().updatePoints(currentValue -> currentValue + victimPointsChangeEvent.getPointsChange());
             victimCache.registerKiller(attacker);
             victimCache.clearDamage();
 
@@ -238,8 +257,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         Formatter killFormatter = new Formatter()
                 .register("{ATTACKER}", attacker.getName())
                 .register("{VICTIM}", victim.getName())
-                .register("{+}", Integer.toString(attackerEvent.getChange()))
-                .register("{-}", Math.min(victimPointsBeforeChange, victimEvent.getChange()))
+                .register("{+}", Integer.toString(attackerPointsChangeEvent.getPointsChange()))
+                .register("{-}", Math.min(victimPointsBeforeChange, victimPointsChangeEvent.getPointsChange()))
                 .register("{POINTS-FORMAT}", IntegerRange.inRangeToString(victimPoints, config.pointsFormat))
                 .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))

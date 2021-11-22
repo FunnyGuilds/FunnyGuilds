@@ -33,7 +33,7 @@ public class SQLNamedStatement {
 
     public void executeUpdate() {
         try (Connection con = Database.getConnection();
-             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
+                PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
             statement.executeUpdate();
         }
         catch (SQLException sqlException) {
@@ -43,7 +43,7 @@ public class SQLNamedStatement {
 
     public void executeUpdate(boolean ignoreFails) {
         try (Connection con = Database.getConnection();
-             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
+                PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
             statement.executeUpdate();
         }
         catch (SQLException sqlException) {
@@ -58,8 +58,8 @@ public class SQLNamedStatement {
 
     public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer) {
         try (Connection con = Database.getConnection();
-             PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
-             ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
+                ResultSet resultSet = statement.executeQuery()) {
             consumer.accept(resultSet);
         }
         catch (SQLException sqlException) {

@@ -30,15 +30,20 @@ public final class DeathsCommand extends AbstractFunnyCommand {
 
         User admin = AdminUtils.getAdminUser(sender);
         User user = UserValidation.requireUserByName(args[0]);
+
         UserRank userRank = user.getRank();
         int change = deaths - userRank.getDeaths();
 
-        if (!SimpleEventHandler.handle(new DeathsChangeEvent(AdminUtils.getCause(admin), userRank, admin, change))) {
+        DeathsChangeEvent deathsChangeEvent = new DeathsChangeEvent(AdminUtils.getCause(admin), admin, user, change);
+        if (!SimpleEventHandler.handle(deathsChangeEvent)) {
             return;
         }
+        change = deathsChangeEvent.getDeathsChange();
 
-        userRank.setDeaths(deaths);
-        sender.sendMessage(messages.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(deaths)));
+        int finalDeaths = user.getRank().getDeaths() + change;
+        user.getRank().setDeaths(finalDeaths);
+
+        sender.sendMessage(messages.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(finalDeaths)));
     }
 
 }
