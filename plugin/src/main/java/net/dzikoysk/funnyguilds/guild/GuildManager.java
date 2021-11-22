@@ -140,7 +140,7 @@ public class GuildManager {
     /**
      * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
      *
-     * @param name the name which will be assigned to Guild
+     * @param name the name which will be assigned to guild
      * @return the guild
      */
     public Guild create(String name) {
@@ -157,8 +157,8 @@ public class GuildManager {
     /**
      * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
      *
-     * @param name the name which will be assigned to Guild
-     * @param tag the tag which will be assigned to Guild
+     * @param name the name which will be assigned to guild
+     * @param tag the tag which will be assigned to guild
      * @return the guild
      */
     public Guild create(String name, String tag) {
@@ -175,9 +175,9 @@ public class GuildManager {
     /**
      * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
      *
-     * @param uuid the uuid which will be assigned to Guild
-     * @param name the name which will be assigned to Guild
-     * @param tag the tag which will be assigned to Guild
+     * @param uuid the uuid which will be assigned to guild
+     * @param name the name which will be assigned to guild
+     * @param tag the tag which will be assigned to guild
      * @return the guild
      */
     public Guild create(UUID uuid, String name, String tag) {

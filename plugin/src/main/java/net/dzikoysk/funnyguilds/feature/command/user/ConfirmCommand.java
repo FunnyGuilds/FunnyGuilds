@@ -37,7 +37,7 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.guildManager.removeGuild(guild);
+        this.guildManager.deleteGuild(guild);
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())

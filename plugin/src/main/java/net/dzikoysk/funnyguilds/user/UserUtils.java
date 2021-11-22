@@ -52,7 +52,7 @@ public final class UserUtils {
     /**
      * Gets the user.
      *
-     * @param uuid the universally unique identifier of User
+     * @param uuid the universally unique identifier of user
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByUuid(UUID)}
      */
@@ -66,7 +66,7 @@ public final class UserUtils {
     /**
      * Gets the user.
      *
-     * @param nickname the name of User
+     * @param nickname the name of user
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String)}
      */
@@ -80,7 +80,7 @@ public final class UserUtils {
     /**
      * Gets the user.
      *
-     * @param nickname the name of User
+     * @param nickname the name of user
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String, boolean)}

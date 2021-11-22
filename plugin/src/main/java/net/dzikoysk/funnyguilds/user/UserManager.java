@@ -55,7 +55,7 @@ public class UserManager {
     /**
      * Gets the user.
      *
-     * @param uuid the universally unique identifier of User
+     * @param uuid the universally unique identifier of user
      * @return the user
      */
     public Option<User> findByUuid(UUID uuid) {
@@ -65,7 +65,7 @@ public class UserManager {
     /**
      * Gets the user.
      *
-     * @param nickname the name of User
+     * @param nickname the name of user
      * @return the user
      */
     public Option<User> findByName(String nickname) {
@@ -75,7 +75,7 @@ public class UserManager {
     /**
      * Gets the user.
      *
-     * @param nickname the name of User
+     * @param nickname the name of user
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      */
@@ -114,7 +114,7 @@ public class UserManager {
     /**
      * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByUuid(UUID)}, {@link UserManager#findByName(String)} etc.
      *
-     * @param uuid the universally unique identifier which will be assigned to User
+     * @param uuid the universally unique identifier which will be assigned to user
      * @param name the nickname which will be assigned to User
      * @return the user
      */
@@ -147,7 +147,7 @@ public class UserManager {
     /**
      * Add user to storage. If you think you should use this method you probably shouldn't.
      *
-     * @param user to addition
+     * @param user the user to addition
      */
     public void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
