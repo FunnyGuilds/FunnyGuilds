@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import org.jetbrains.annotations.ApiStatus;
 
 public final class UserUtils {
 
@@ -21,17 +22,20 @@ public final class UserUtils {
      * @deprecated for removal in the future, in favour of {@link UserManager#getUsers()}
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Set<User> getUsers() {
         return UserManager.getInstance().getUsers();
     }
 
     /**
-     * Gets the set of users from collection of names.
+     * Gets the set of users from collection of strings (names).
      *
+     * @param names collection of names
      * @return set of users
      * @deprecated for removal in the future, in favour of {@link UserManager#findByNames(Collection)}
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Set<User> getUsersFromString(Collection<String> names) {
         UserManager userManager = UserManager.getInstance();
         Set<User> users = new HashSet<>();
@@ -54,6 +58,7 @@ public final class UserUtils {
      */
     @Nullable
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static User get(UUID uuid) {
         return UserManager.getInstance().findByUuid(uuid).getOrNull();
     }
@@ -67,6 +72,7 @@ public final class UserUtils {
      */
     @Nullable
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static User get(String nickname) {
         return get(nickname, false);
     }
@@ -74,21 +80,34 @@ public final class UserUtils {
     /**
      * Gets the user.
      *
-     * @param nickname   the name of User
+     * @param nickname the name of User
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String, boolean)}
      */
     @Nullable
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static User get(String nickname, boolean ignoreCase) {
         return UserManager.getInstance().findByName(nickname, ignoreCase).getOrNull();
     }
 
+    /**
+     * Gets the set of usernames from collection of users.
+     *
+     * @param users collection of users
+     * @return set of usernames
+     */
     public static Set<String> getNamesOfUsers(Collection<User> users) {
         return users.stream().map(User::getName).collect(Collectors.toSet());
     }
 
+    /**
+     * Gets the set of usernames (with tags to format) from collection of users.
+     *
+     * @param users collection of users
+     * @return set of usernames (with tags to format)
+     */
     public static Set<String> getOnlineNames(Collection<User> users) {
         Set<String> set = new HashSet<>();
 
@@ -99,10 +118,22 @@ public final class UserUtils {
         return set;
     }
 
+    /**
+     * Validate username.
+     *
+     * @param name username to validate
+     * @return if username is valid
+     */
     public static boolean validateUsername(String name) {
         return USERNAME_PATTERN.matcher(name).matches();
     }
 
+    /**
+     * Validate universally unique identifier.
+     *
+     * @param uuid universally unique identifier to validate
+     * @return if universally unique identifier is valid
+     */
     public static boolean validateUUID(String uuid) {
         return UUID_PATTERN.matcher(uuid).matches();
     }
