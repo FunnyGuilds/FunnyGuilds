@@ -1,14 +1,19 @@
 FunnyGuilds  
-[![Build Status](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg)](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml) [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u) [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u) [![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open") [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Average time to resolve an issue")
+[![Build Status](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml/badge.svg)](https://github.com/FunnyGuilds/FunnyGuilds/actions/workflows/gradle.yml) [![Version](https://repo.panda-lang.org/api/badge/latest/releases/net/dzikoysk/funnyguilds/plugin?color=42c611&name=FunnyGuilds&prefix=v)]() [![Discord Online](https://img.shields.io/discord/254623242914889729.svg)](https://discord.gg/CYvyq3u) [![Discord](https://img.shields.io/badge/discord-funnyguilds-738bd7.svg?style=square)](https://discord.gg/CYvyq3u) [![Percentage of issues still open](http://isitmaintained.com/badge/open/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Percentage of issues still open") [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/FunnyGuilds/FunnyGuilds.svg)](http://isitmaintained.com/project/FunnyGuilds/FunnyGuilds "Average time to resolve an issue")
 ===========
 
 #### About
 FunnyGuilds is an amazing, fully customizable RPG plugin that allows you to create guilds.
-<br>
-Project website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
-<br>
 
-#### Supported Minecraft versions
+---
+
+Website: <a href="https://funnyguilds.dzikoysk.net">FunnyGuilds</a>
+<br>
+Community: <a href="https://discord.gg/CYvyq3u">Discord</a>
+<br>
+Description: <a href="https://github.com/FunnyGuilds/FunnyGuilds/wiki">Wiki (PL/ENG)</a>
+
+#### Supported Spigot versions
 1.8.8, 1.9.4, 1.10.2, 1.11.2, 1.12.2, 1.13.2, 1.14.4, 1.15.2, 1.16.5, 1.17.1
 
 #### Download
@@ -35,14 +40,14 @@ FunnyGuilds hooks into those plugins:
 ```
 ```xml
 <dependency>
-    <groupId>net.dzikoysk</groupId>
-    <artifactId>funnyguilds</artifactId>
-    <version>4.9.7</version>
+    <groupId>net.dzikoysk.funnyguilds</groupId>
+    <artifactId>plugin</artifactId>
+    <version>4.10.0</version>
 </dependency>
 ```
 
 #### Stats
-Current statistics (since 3.9.9.2) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
+Current statistics (since 3.9.x) - [BStats](https://bstats.org/plugin/bukkit/FunnyGuilds)
 <br>
 The best reported statistics (on [MCStats](http://mcstats.org/plugin/FunnyGuilds)):
 
