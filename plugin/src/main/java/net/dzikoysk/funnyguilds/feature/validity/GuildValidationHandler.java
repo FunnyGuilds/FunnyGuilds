@@ -4,12 +4,18 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 
 public class GuildValidationHandler implements Runnable {
 
+    private final GuildManager guildManager;
+
     private int banGuildsCounter;
     private int validateGuildsCounter;
+
+    public GuildValidationHandler(GuildManager guildManager) {
+        this.guildManager = guildManager;
+    }
 
     @Override
     public void run() {
@@ -23,7 +29,7 @@ public class GuildValidationHandler implements Runnable {
     }
 
     private void validateGuildLifetime() {
-        for (Guild guild : GuildUtils.getGuilds()) {
+        for (Guild guild : this.guildManager.getGuilds()) {
             if (guild.isValid()) {
                 continue;
             }
@@ -33,14 +39,14 @@ public class GuildValidationHandler implements Runnable {
             }
 
             ValidityUtils.broadcast(guild);
-            GuildUtils.deleteGuild(guild);
+            this.guildManager.deleteGuild(guild);
         }
 
         this.validateGuildsCounter = 0;
     }
 
     private void validateGuildBans() {
-        for (Guild guild : GuildUtils.getGuilds()) {
+        for (Guild guild : this.guildManager.getGuilds()) {
             if (guild.getBan() > System.currentTimeMillis()) {
                 continue;
             }

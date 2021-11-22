@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
@@ -123,7 +122,7 @@ public class WarSystem {
             }
         }
 
-        GuildUtils.deleteGuild(loser);
+        FunnyGuilds.getInstance().getGuildManager().deleteGuild(loser);
         conqueror.addLive();
 
         message = WarUtils.getBroadcastMessage(conqueror, loser);

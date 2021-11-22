@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,7 +37,7 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
             return;
         }
 
-        GuildUtils.deleteGuild(guild);
+        this.guildManager.removeGuild(guild);
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())

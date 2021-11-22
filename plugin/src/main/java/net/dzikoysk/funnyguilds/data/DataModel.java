@@ -34,7 +34,7 @@ public interface DataModel {
                 continue;
             }
 
-            GuildUtils.deleteGuild(guild);
+            FunnyGuilds.getInstance().getGuildManager().deleteGuild(guild);
             repaired++;
         }
 

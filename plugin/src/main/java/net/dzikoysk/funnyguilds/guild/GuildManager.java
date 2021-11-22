@@ -91,7 +91,7 @@ public class GuildManager {
      * Gets the guild.
      *
      * @param name the name of guild
-     * @param ignoreCase ignore the case of the nickname
+     * @param ignoreCase ignore the case of the name
      * @return the guild
      */
     public Option<Guild> findByName(String name, boolean ignoreCase) {
@@ -116,7 +116,7 @@ public class GuildManager {
      * Gets the guild.
      *
      * @param tag the tag of guild
-     * @param ignoreCase ignore the case of the nickname
+     * @param ignoreCase ignore the case of the tag
      * @return the guild
      */
     public Option<Guild> findByTag(String tag, boolean ignoreCase) {
