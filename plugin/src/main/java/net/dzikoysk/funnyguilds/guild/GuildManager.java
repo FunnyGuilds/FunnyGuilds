@@ -44,26 +44,56 @@ public class GuildManager {
         return this.guildsMap.entrySet().size();
     }
 
+    /**
+     * Gets the copied set of guilds.
+     *
+     * @return set of guild
+     */
     public Set<Guild> getGuilds() {
         return new HashSet<>(this.guildsMap.values());
     }
 
+    /**
+     * Gets the set of guilds from collection of strings (names).
+     *
+     * @param names collection of names
+     * @return set of guild
+     */
     public Set<Guild> findByNames(Collection<String> names) {
         return PandaStream.of(names)
                 .flatMap(this::findByName)
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Gets the set of guilds from collection of strings (tags).
+     *
+     * @param tags collection of tags
+     * @return set of guild
+     */
     public Set<Guild> findByTags(Collection<String> tags) {
         return PandaStream.of(tags)
                 .flatMap(this::findByTag)
                 .collect(Collectors.toSet());
     }
 
+    /**
+     * Gets the guild.
+     *
+     * @param uuid the uuid of guild
+     * @return the guild
+     */
     public Option<Guild> findByUuid(UUID uuid) {
         return Option.of(guildsMap.get(uuid));
     }
 
+    /**
+     * Gets the guild.
+     *
+     * @param name the name of guild
+     * @param ignoreCase ignore the case of the nickname
+     * @return the guild
+     */
     public Option<Guild> findByName(String name, boolean ignoreCase) {
         return PandaStream.of(guildsMap.entrySet())
                 .find(entry -> ignoreCase
@@ -72,10 +102,23 @@ public class GuildManager {
                 .map(Map.Entry::getValue);
     }
 
+    /**
+     * Gets the guild.
+     *
+     * @param name the name of guild
+     * @return the guild
+     */
     public Option<Guild> findByName(String name) {
         return this.findByName(name, false);
     }
 
+    /**
+     * Gets the guild.
+     *
+     * @param tag the tag of guild
+     * @param ignoreCase ignore the case of the nickname
+     * @return the guild
+     */
     public Option<Guild> findByTag(String tag, boolean ignoreCase) {
         return PandaStream.of(guildsMap.entrySet())
                 .find(entry -> ignoreCase
@@ -84,10 +127,22 @@ public class GuildManager {
                 .map(Map.Entry::getValue);
     }
 
+    /**
+     * Gets the guild.
+     *
+     * @param tag the tag of guild
+     * @return the guild
+     */
     public Option<Guild> findByTag(String tag) {
         return this.findByTag(tag, false);
     }
 
+    /**
+     * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
+     *
+     * @param name the name which will be assigned to Guild
+     * @return the guild
+     */
     public Guild create(String name) {
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
@@ -99,6 +154,13 @@ public class GuildManager {
         return guild;
     }
 
+    /**
+     * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
+     *
+     * @param name the name which will be assigned to Guild
+     * @param tag the tag which will be assigned to Guild
+     * @return the guild
+     */
     public Guild create(String name, String tag) {
         Validate.notNull(tag, "tag can't be null!");
         Validate.notBlank(tag, "tag can't be blank!");
@@ -110,16 +172,31 @@ public class GuildManager {
         return guild;
     }
 
+    /**
+     * Add guild to storage. If you think you should use this method you probably shouldn't.
+     *
+     * @param guild the guild to addition
+     */
     public void addGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
         guildsMap.put(guild.getUUID(), guild);
     }
 
+    /**
+     * Remove guild from storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#deleteGuild(Guild)}.
+     *
+     * @param guild the guild to removal
+     */
     public void removeGuild(Guild guild) {
         Validate.notNull(guild, "user can't be null!");
         guildsMap.remove(guild.getUUID());
     }
 
+    /**
+     * Delete guild in every possible way.
+     *
+     * @param guild the guild to deletion
+     */
     public void deleteGuild(Guild guild) {
         if (guild == null) {
             return;
@@ -172,14 +249,31 @@ public class GuildManager {
         PluginHook.HOLOGRAPHIC_DISPLAYS.deleteHologram(guild);
     }
 
+    /**
+     * Checks if guild with given name exists.
+     *
+     * @param name the guild name to check if exists
+     * @return if guild with given name exists
+     */
     public boolean nameExists(String name) {
         return !this.findByName(name).isEmpty();
     }
 
+    /**
+     * Checks if guild with given tag exists.
+     *
+     * @param tag the guild tag to check if exists
+     * @return if guild with given tag exists
+     */
     public boolean tagExists(String tag) {
         return !this.findByTag(tag).isEmpty();
     }
 
+    /**
+     * Spawn heart for guild. You probably shouldn't use this method.
+     *
+     * @param guild the guild for which heart should be spawned
+     */
     public void spawnHeart(Guild guild) {
         if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
             Block heart = guild.getRegion().getCenter().getBlock().getRelative(BlockFace.DOWN);
