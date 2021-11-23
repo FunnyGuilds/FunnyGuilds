@@ -29,8 +29,8 @@ public final class DeserializationUtils {
         String guildTag = pluginConfiguration.guildTagKeepCase
                 ? rawGuildTag
                 : pluginConfiguration.guildTagUppercase
-                ? rawGuildTag.toUpperCase()
-                : rawGuildTag.toLowerCase();
+                    ? rawGuildTag.toUpperCase()
+                    : rawGuildTag.toLowerCase();
         Guild guild = guildManager.findByUuid(guildUuid).orElseGet(guildManager.create(guildUuid, guildName, guildTag));
 
         guild.setOwner((User) values[3]);
