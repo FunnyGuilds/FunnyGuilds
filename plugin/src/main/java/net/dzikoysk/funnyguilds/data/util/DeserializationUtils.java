@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.data.util;
 import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -13,17 +14,23 @@ import org.bukkit.Location;
 public final class DeserializationUtils {
 
     @SuppressWarnings("unchecked")
-    public static Guild deserializeGuild(Object[] values) {
+    public static Guild deserializeGuild(FunnyGuilds plugin, Object[] values) {
         if (values == null) {
             FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: null");
             return null;
         }
 
-        GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
+        PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
+        GuildManager guildManager = plugin.getGuildManager();
 
         UUID guildUuid = (UUID) values[0];
         String guildName = (String) values[1];
-        String guildTag = FunnyGuilds.getInstance().getPluginConfiguration().guildTagKeepCase ? (String) values[2] : (FunnyGuilds.getInstance().getPluginConfiguration().guildTagUppercase ? ((String) values[2]).toUpperCase() : ((String) values[2]).toLowerCase());
+        String rawGuildTag = (String) values[2];
+        String guildTag = pluginConfiguration.guildTagKeepCase
+                ? rawGuildTag
+                : pluginConfiguration.guildTagUppercase
+                ? rawGuildTag.toUpperCase()
+                : rawGuildTag.toLowerCase();
         Guild guild = guildManager.findByUuid(guildUuid).orElseGet(guildManager.create(guildUuid, guildName, guildTag));
 
         guild.setOwner((User) values[3]);

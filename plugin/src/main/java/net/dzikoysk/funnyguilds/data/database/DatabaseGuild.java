@@ -110,7 +110,7 @@ public class DatabaseGuild {
             values[14] = deputies;
             values[15] = pvp;
 
-            return DeserializationUtils.deserializeGuild(values);
+            return DeserializationUtils.deserializeGuild(FunnyGuilds.getInstance(), values);
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", ex);
