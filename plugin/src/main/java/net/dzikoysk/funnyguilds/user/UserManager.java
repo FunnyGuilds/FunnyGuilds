@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -40,8 +41,9 @@ public class UserManager {
     }
 
     /**
-     * Gets the set of users from collection of names.
+     * Gets the set of users from collection of strings (names).
      *
+     * @param names collection of names
      * @return set of users
      */
     public Set<User> findByNames(Collection<String> names) {
@@ -53,7 +55,7 @@ public class UserManager {
     /**
      * Gets the user.
      *
-     * @param uuid the universally unique identifier of User
+     * @param uuid the universally unique identifier of user
      * @return the user
      */
     public Option<User> findByUuid(UUID uuid) {
@@ -63,7 +65,7 @@ public class UserManager {
     /**
      * Gets the user.
      *
-     * @param nickname the name of User
+     * @param nickname the name of user
      * @return the user
      */
     public Option<User> findByName(String nickname) {
@@ -73,7 +75,8 @@ public class UserManager {
     /**
      * Gets the user.
      *
-     * @param nickname the name of User
+     * @param nickname the name of user
+     * @param ignoreCase ignore the case of the nickname
      * @return the user
      */
     public Option<User> findByName(String nickname, boolean ignoreCase) {
@@ -86,7 +89,12 @@ public class UserManager {
         return Option.of(usersByName.get(nickname));
     }
 
-    public Option<User> findByPlayer(Player player) {
+    /**
+     * Gets the user.
+     *
+     * @return the user
+     */
+    public Option<User> findByPlayer(@NotNull Player player) {
         if (player.getUniqueId().version() == 2) {
             return Option.of(new User(player));
         }
@@ -94,10 +102,22 @@ public class UserManager {
         return findByUuid(player.getUniqueId());
     }
 
-    public Option<User> findByPlayer(OfflinePlayer offline) {
-        return findByName(offline.getName());
+    /**
+     * Gets the user.
+     *
+     * @return the user
+     */
+    public Option<User> findByPlayer(OfflinePlayer offlinePlayer) {
+        return findByUuid(offlinePlayer.getUniqueId());
     }
 
+    /**
+     * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByUuid(UUID)}, {@link UserManager#findByName(String)} etc.
+     *
+     * @param uuid the universally unique identifier which will be assigned to user
+     * @param name the nickname which will be assigned to User
+     * @return the user
+     */
     public User create(UUID uuid, String name) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
@@ -110,6 +130,11 @@ public class UserManager {
         return user;
     }
 
+    /**
+     * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByPlayer(Player)}.
+     *
+     * @return the user
+     */
     public User create(Player player) {
         Validate.notNull(player, "player can't be null!");
 
@@ -119,6 +144,11 @@ public class UserManager {
         return user;
     }
 
+    /**
+     * Add user to storage. If you think you should use this method you probably shouldn't.
+     *
+     * @param user user to add
+     */
     public void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
@@ -126,6 +156,11 @@ public class UserManager {
         usersByName.put(user.getName(), user);
     }
 
+    /**
+     * Remove user from storage. If you think you should use this method you probably shouldn't.
+     *
+     * @param user user to remove
+     */
     public void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
 
@@ -133,6 +168,12 @@ public class UserManager {
         usersByName.remove(user.getName());
     }
 
+    /**
+     * Update username for user.
+     *
+     * @param user the user for which the nickname will be changed
+     * @param newUsername the new nickname for user
+     */
     public void updateUsername(User user, String newUsername) {
         Validate.notNull(user, "user can't be null!");
 
@@ -142,26 +183,25 @@ public class UserManager {
         user.setName(newUsername);
     }
 
+    /**
+     * Checks if user with given nickname have ever played on a server.
+     *
+     * @param nickname the nickname of user to check if ever played on
+     * @return if user with given name have ever played on a server
+     */
     public boolean playedBefore(String nickname) {
         return playedBefore(nickname, false);
     }
 
+    /**
+     * Checks if user with given nickname have ever played on a server.
+     *
+     * @param nickname the nickname of user to check if ever played on
+     * @param ignoreCase ignore the case of the nickname
+     * @return if user with given name have ever played on a server
+     */
     public boolean playedBefore(String nickname, boolean ignoreCase) {
-        if (nickname == null) {
-            return false;
-        }
-
-        if (ignoreCase) {
-            for (String userNickname : usersByName.keySet()) {
-                if (userNickname.equalsIgnoreCase(nickname)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        return usersByName.containsKey(nickname);
+        return findByName(nickname, ignoreCase).isPresent();
     }
 
     /**

@@ -62,6 +62,12 @@ public class Guild extends AbstractMutableEntity {
         this.tag = tag;
     }
 
+    Guild(UUID uuid, String name, String tag) {
+        this(uuid);
+        this.name = name;
+        this.tag = tag;
+    }
+
     public void broadcast(String message) {
         for (User user : this.getOnlineMembers()) {
             if (user.getPlayer() == null) {
@@ -446,34 +452,6 @@ public class Guild extends AbstractMutableEntity {
     @Override
     public String toString() {
         return this.name;
-    }
-
-    @Deprecated
-    public static Guild getOrCreate(UUID uuid) {
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (guild.getUUID().equals(uuid)) {
-                return guild;
-            }
-        }
-
-        final Guild newGuild = new Guild(uuid);
-        GuildUtils.addGuild(newGuild);
-
-        return newGuild;
-    }
-
-    @Deprecated
-    public static Guild getOrCreate(String name) {
-        for (Guild guild : GuildUtils.getGuilds()) {
-            if (guild.getName().equalsIgnoreCase(name)) {
-                return guild;
-            }
-        }
-
-        final Guild newGuild = new Guild(name);
-        GuildUtils.addGuild(newGuild);
-
-        return newGuild;
     }
 
 }

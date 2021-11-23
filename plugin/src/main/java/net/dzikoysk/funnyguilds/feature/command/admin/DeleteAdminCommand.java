@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -32,7 +31,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        GuildUtils.deleteGuild(guild);
+        this.guildManager.deleteGuild(guild);
 
         Formatter formatter = Placeholders.GUILD
                 .property("ADMIN", sender::getName)
