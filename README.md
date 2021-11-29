@@ -43,6 +43,7 @@ FunnyGuilds hooks into those plugins:
     <groupId>net.dzikoysk.funnyguilds</groupId>
     <artifactId>plugin</artifactId>
     <version>4.10.0</version>
+    <scope>provided</scope>
 </dependency>
 ```
 
