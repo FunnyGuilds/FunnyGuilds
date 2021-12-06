@@ -27,6 +27,7 @@ subprojects {
         maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         maven { url "https://repo.panda-lang.org/releases" }
+        maven { url "https://libraries.minecraft.net" }
         maven { url "https://storehouse.okaeri.eu/repository/maven-public" }
         maven { url "https://maven.sk89q.com/repo" }
         maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi" }
@@ -44,8 +45,9 @@ subprojects {
     publishing {
         repositories {
             maven {
-                name = "panda-repository"
+                name = "local-repository"
                 url = uri("https://repo.panda-lang.org/releases")
+                //allowInsecureProtocol(true)
 
                 credentials {
                     username = System.getenv("MAVEN_NAME")
@@ -77,6 +79,6 @@ subprojects {
 
 idea {
     project {
-        jdkName = "16"
+        jdkName = "17"
     }
 }
