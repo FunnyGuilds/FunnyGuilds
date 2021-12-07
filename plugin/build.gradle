@@ -40,7 +40,7 @@ dependencies {
         exclude group: "net.kyori", module: "adventure-platform-bukkit"
     }
     shadow "net.kyori:adventure-api:4.9.3"
-    shadow "net.kyori:adventure-platform-bukkit:4.0.1-SNAPSHOT"
+    shadow "net.kyori:adventure-platform-bukkit:4.0.2-SNAPSHOT"
 
     shadow "me.robin:leaderheads-api:1.0.0"
     shadow "net.milkbowl.vault:VaultAPI:1.7"
