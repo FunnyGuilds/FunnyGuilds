@@ -4,6 +4,7 @@ import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.config.IntegerRange
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
+import net.dzikoysk.funnyguilds.guild.Guild
 import org.junit.jupiter.api.Test
 
 import static org.junit.jupiter.api.Assertions.assertEquals
@@ -16,7 +17,7 @@ class RankUtilsTest extends FunnyGuildsSpec {
         def rankRecalculationTask = new RankRecalculationTask(config, rankManager, userManager, guildManager);
 
         // given: a guild on top of the ranking
-        def guild = guildManager.create('OnlyPanda', 'OP')
+        def guild = guildManager.addGuild(new Guild('OnlyPanda', 'OP'))
 
         def user = userManager.create(UUID.randomUUID(), 'name')
         guild.addMember(user)

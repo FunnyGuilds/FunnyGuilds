@@ -146,7 +146,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Guild guild = this.guildManager.create(name, tag);
+        Guild guild = new Guild(name, tag);
         guild.setOwner(user);
         guild.setLives(config.warLives);
         guild.setBorn(System.currentTimeMillis());
@@ -157,6 +157,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         if (config.regionsEnabled) {
             Region region = new Region(guild, guildLocation, config.regionSize);
+            guild.setRegion(region);
 
             WorldBorder border = player.getWorld().getWorldBorder();
             double radius = border.getSize() / 2;
@@ -171,7 +172,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 return;
             }
 
-            guild.setRegion(region);
 
             FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
 
@@ -219,6 +219,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             player.teleport(guildLocation);
         }
 
+        this.guildManager.addGuild(guild);
         user.setGuild(guild);
 
         if (config.regionsEnabled) {

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.placeholders
 
 import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
+import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -42,7 +43,7 @@ class PlaceholdersTest extends FunnyGuildsSpec {
 
     @Test
     void 'test GUILD_MEMBERS_COLOR_CONTEXT placeholder' () {
-        def guild = guildManager.create('guild')
+        def guild = guildManager.addGuild(new Guild('guild'))
         def user1 = userManager.create(UUID.randomUUID(), 'user1')
         def user2 = userManager.create(UUID.nameUUIDFromBytes('online'.getBytes()), 'user2')
         def user3 = userManager.create(UUID.randomUUID(), 'user3')

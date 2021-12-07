@@ -44,25 +44,25 @@ public class Guild extends AbstractMutableEntity {
 
     private boolean pvp;
 
-    private Guild(UUID uuid) {
+    public Guild(UUID uuid) {
         this.uuid = uuid;
 
         this.rank = new GuildRank(this);
         this.born = System.currentTimeMillis();
     }
 
-    Guild(String name) {
+    public Guild(String name) {
         this(UUID.randomUUID());
         this.name = name;
     }
 
-    Guild(String name, String tag) {
+    public Guild(String name, String tag) {
         this(UUID.randomUUID());
         this.name = name;
         this.tag = tag;
     }
 
-    Guild(UUID uuid, String name, String tag) {
+    public Guild(UUID uuid, String name, String tag) {
         this(uuid);
         this.name = name;
         this.tag = tag;

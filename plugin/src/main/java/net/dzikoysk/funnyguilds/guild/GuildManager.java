@@ -143,6 +143,7 @@ public class GuildManager {
      * @param name the name which will be assigned to guild
      * @return the guild
      */
+    /*
     public Guild create(String name) {
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
@@ -153,6 +154,7 @@ public class GuildManager {
 
         return guild;
     }
+     */
 
     /**
      * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
@@ -161,6 +163,7 @@ public class GuildManager {
      * @param tag the tag which will be assigned to guild
      * @return the guild
      */
+    /*
     public Guild create(String name, String tag) {
         Validate.notNull(tag, "tag can't be null!");
         Validate.notBlank(tag, "tag can't be blank!");
@@ -171,6 +174,7 @@ public class GuildManager {
 
         return guild;
     }
+    */
 
     /**
      * Create the guild and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#findByUuid(UUID)}, {@link GuildManager#findByName(String)} etc.
@@ -180,6 +184,7 @@ public class GuildManager {
      * @param tag the tag which will be assigned to guild
      * @return the guild
      */
+    /*
     public Guild create(UUID uuid, String name, String tag) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
@@ -194,15 +199,17 @@ public class GuildManager {
 
         return guild;
     }
+    */
 
     /**
      * Add guild to storage. If you think you should use this method you probably shouldn't.
      *
      * @param guild guild to add
      */
-    public void addGuild(Guild guild) {
+    public Guild addGuild(Guild guild) {
         Validate.notNull(guild, "guild can't be null!");
         guildsMap.put(guild.getUUID(), guild);
+        return guild;
     }
 
     /**
