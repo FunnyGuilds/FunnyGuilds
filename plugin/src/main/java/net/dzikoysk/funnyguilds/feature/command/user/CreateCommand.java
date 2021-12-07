@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,8 +40,6 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class CreateCommand extends AbstractFunnyCommand {
-
-    private static final int SKY_LIMIT = 256;
 
     @FunnyCommand(
             name = "${user.create.name}",
@@ -70,6 +69,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         String name = args[1];
         Location guildLocation = player.getLocation().getBlock().getLocation();
+        World world = player.getWorld();
 
         when(tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
         when(tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
@@ -94,7 +94,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 guildLocation.setY(heart.createCenterY);
             }
 
-            if (heart.createEntityType != null && guildLocation.getBlockY() < (SKY_LIMIT - 2)) {
+            if (heart.createEntityType != null && guildLocation.getBlockY() < (world.getMaxHeight() - 2)) {
                 guildLocation.setY(guildLocation.getBlockY() + 2);
             }
 
@@ -159,9 +159,9 @@ public final class CreateCommand extends AbstractFunnyCommand {
             Region region = new Region(guild, guildLocation, config.regionSize);
             guild.setRegion(region);
 
-            WorldBorder border = player.getWorld().getWorldBorder();
+            WorldBorder border = world.getWorldBorder();
             double radius = border.getSize() / 2;
-            FunnyBox bbox = FunnyBox.of(border.getCenter().toVector(), radius - config.createMinDistanceFromBorder, 256, radius - config.createMinDistanceFromBorder);
+            FunnyBox bbox = FunnyBox.of(border.getCenter().toVector(), radius - config.createMinDistanceFromBorder, world.getMaxHeight(), radius - config.createMinDistanceFromBorder);
             FunnyBox gbox = FunnyBox.of(region.getFirstCorner(), region.getSecondCorner());
 
             // border box does not contain guild box
