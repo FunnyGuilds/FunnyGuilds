@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockFadeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import panda.std.Option;
 
 public class GuildHeartProtectionHandler extends AbstractFunnyListener {
 
@@ -62,13 +63,13 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
             return false;
         }
 
-        Location loc = block.getLocation();
-        Region region = RegionUtils.getAt(loc);
+        Location blockLocation = block.getLocation();
 
-        if (region == null) {
+        Option<Region> regionOption = FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(blockLocation);
+        if (regionOption.isEmpty()) {
             return false;
         }
 
-        return block.getLocation().equals(region.getHeart());
+        return block.getLocation().equals(regionOption.get().getHeart());
     }
 }

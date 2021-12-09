@@ -2,14 +2,11 @@ package net.dzikoysk.funnyguilds.listener;
 
 import java.time.Instant;
 import java.time.LocalTime;
-import java.util.Iterator;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import panda.std.Option;
 
 public class TntProtection extends AbstractFunnyListener {
 
@@ -37,34 +34,22 @@ public class TntProtection extends AbstractFunnyListener {
         }
 
         if (config.tntProtection.time.enabled) {
-            Region region = RegionUtils.getAt(event.getLocation());
-
-            if (region != null) {
+            if (this.regionManager.findRegionAtLocation(event.getLocation()).isPresent()) {
                 event.setCancelled(true);
                 return;
             }
 
-            Iterator<Block> affectedBlocks = event.blockList().iterator();
-
-            while (affectedBlocks.hasNext()) {
-                Block block = affectedBlocks.next();
-                Region maybeRegion = RegionUtils.getAt(block.getLocation());
-
-                if (maybeRegion != null) {
-                    affectedBlocks.remove();
-                }
-            }
+            event.blockList().removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation()).isPresent());
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
-        Location explosionLocation = event.getLocation();
-        Region region = RegionUtils.getAt(explosionLocation);
-
-        if (region != null) {
-            region.getGuild().setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli());
+        Option<Region> regionOption = this.regionManager.findRegionAtLocation(event.getLocation());
+        if (regionOption.isEmpty()) {
+            return;
         }
+        regionOption.get().getGuild().setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli());
     }
 
 }

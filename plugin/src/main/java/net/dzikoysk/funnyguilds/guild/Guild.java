@@ -293,7 +293,7 @@ public class Guild extends AbstractMutableEntity {
                     Option<User> user = plugin.getUserManager().findByPlayer(player);
                     return user.isDefined() && user.get().getGuild() != this;
                 })
-                .map(player -> RegionUtils.getAt(player.getLocation()))
+                .map(player -> plugin.getRegionManager().findRegionAtLocation(player.getLocation()).getOrNull())
                 .anyMatch(region -> region != null && region.getGuild() == this);
     }
 

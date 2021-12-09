@@ -6,16 +6,15 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
-import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.whenNull;
 
 @FunnyComponent
 public final class EscapeCommand extends AbstractFunnyCommand {
@@ -34,8 +33,10 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         when(user.getCache().getTeleportation() != null, messages.escapeInProgress);
 
         Location playerLocation = player.getLocation();
-        Region region = RegionUtils.getAt(playerLocation);
-        whenNull(region, messages.escapeNoNeedToRun);
+
+        Option<Region> regionOption = this.regionManager.findRegionAtLocation(playerLocation);
+        when(regionOption.isEmpty(), messages.escapeNoNeedToRun);
+        Region region = regionOption.get();
 
         int time = config.escapeDelay;
 

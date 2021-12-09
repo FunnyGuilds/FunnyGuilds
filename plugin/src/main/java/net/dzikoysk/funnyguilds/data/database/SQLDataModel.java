@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.data.database;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
@@ -129,7 +128,7 @@ public class SQLDataModel implements DataModel {
 
                 if (region != null) {
                     region.wasChanged();
-                    RegionUtils.addRegion(region);
+                    FunnyGuilds.getInstance().getRegionManager().addRegion(region);
                 }
             }
         });

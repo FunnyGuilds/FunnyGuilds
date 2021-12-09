@@ -41,7 +41,7 @@ public class GuildManager {
     }
 
     public int countGuilds() {
-        return this.guildsMap.entrySet().size();
+        return this.guildsMap.size();
     }
 
     /**
@@ -218,7 +218,7 @@ public class GuildManager {
      * @param guild guild to remove
      */
     public void removeGuild(Guild guild) {
-        Validate.notNull(guild, "user can't be null!");
+        Validate.notNull(guild, "guild can't be null!");
         guildsMap.remove(guild.getUUID());
     }
 

@@ -5,8 +5,8 @@ import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePl
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 import net.dzikoysk.funnyguilds.user.User;
@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
+import panda.std.Option;
 
 public class PlayerJoin extends AbstractFunnyListener {
 
@@ -62,13 +63,18 @@ public class PlayerJoin extends AbstractFunnyListener {
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             this.plugin.getVersion().isNewAvailable(player, false);
 
-            Region region = RegionUtils.getAt(player.getLocation());
-            if (region == null || region.getGuild() == null) {
+            Option<Region> regionOption = this.regionManager.findRegionAtLocation(player.getLocation());
+            if (regionOption.isEmpty()) {
+                return;
+            }
+
+            Guild guild = regionOption.get().getGuild();
+            if(guild == null) {
                 return;
             }
 
             if (config.heart.createEntityType != null) {
-                GuildEntityHelper.spawnGuildHeart(region.getGuild(), player);
+                GuildEntityHelper.spawnGuildHeart(guild, player);
             }
         }, 30L);
     }

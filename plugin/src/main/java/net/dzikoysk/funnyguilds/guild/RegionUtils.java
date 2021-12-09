@@ -2,66 +2,45 @@ package net.dzikoysk.funnyguilds.guild;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
 import panda.std.Option;
 
 public final class RegionUtils {
 
-    public static final Set<Region> REGION_LIST = ConcurrentHashMap.newKeySet();
-
+    @Deprecated
     public static Set<Region> getRegions() {
-        return new HashSet<>(REGION_LIST);
+        return FunnyGuilds.getInstance().getRegionManager().getRegions();
     }
 
+    @Deprecated
+    @Nullable
     public static Region get(String name) {
-        if (name == null) {
-            return null;
-        }
-
-        for (Region region : REGION_LIST) {
-            if (name.equalsIgnoreCase(region.getName())) {
-                return region;
-            }
-        }
-
-        return null;
+        return FunnyGuilds.getInstance().getRegionManager().findByName(name).getOrNull();
     }
 
+    @Deprecated
     public static boolean isIn(Location location) {
-        for (Region region : REGION_LIST) {
-            if (region.isIn(location)) {
-                return true;
-            }
-        }
-
-        return false;
+        return FunnyGuilds.getInstance().getRegionManager().isInRegion(location);
     }
 
+    @Deprecated
+    @Nullable
     public static Region getAt(Location location) {
-        for (Region region : REGION_LIST) {
-            if (region.isIn(location)) {
-                return region;
-            }
-        }
-
-        return null;
+        return FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location).getOrNull();
     }
 
+    @Deprecated
     public static Option<Region> getAtOpt(Location location) {
-        return Option.of(getAt(location));
+        return FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location);
     }
 
+    @Deprecated
     public static boolean isNear(Location center) {
         if (center == null) {
             return false;
@@ -76,7 +55,7 @@ public final class RegionUtils {
 
         int requiredDistance = (2 * size) + config.regionMinDistance;
 
-        for (Region region : REGION_LIST) {
+        for (Region region : getRegions()) {
             if (region.getCenter() == null) {
                 continue;
             }
@@ -97,21 +76,19 @@ public final class RegionUtils {
         return false;
     }
 
-    public static void delete(@Nullable Region region) {
-        if (region == null) {
-            return;
-        }
+    @Deprecated
+    public static void addRegion(Region region) {
+        FunnyGuilds.getInstance().getRegionManager().addRegion(region);
+    }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
-            dataModel.getRegionFile(region).delete();
-        }
+    @Deprecated
+    public static void removeRegion(Region region) {
+        FunnyGuilds.getInstance().getRegionManager().removeRegion(region);
+    }
 
-        if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            DatabaseRegion.delete(region);
-        }
-
-        region.delete();
+    @Deprecated
+    public static void delete(Region region) {
+        FunnyGuilds.getInstance().getRegionManager().deleteRegion(region);
     }
 
     public static List<String> getNames(Collection<Region> lsg) {
@@ -129,14 +106,7 @@ public final class RegionUtils {
         return list;
     }
 
-    public static void addRegion(Region region) {
-        REGION_LIST.add(region);
-    }
-
-    public static void removeRegion(Region region) {
-        REGION_LIST.remove(region);
-    }
-
+    @Deprecated
     public static String toString(@Nullable Region region) {
         return region != null ? region.getName() : "null";
     }

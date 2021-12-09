@@ -2,12 +2,12 @@ package net.dzikoysk.funnyguilds.listener.region;
 
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import panda.std.Option;
 
 public class PlayerCommand extends AbstractFunnyListener {
 
@@ -38,13 +38,11 @@ public class PlayerCommand extends AbstractFunnyListener {
             return;
         }
 
-        Region region = RegionUtils.getAt(player.getLocation());
-
-        if (region == null) {
+        Option<Region> regionOption = this.regionManager.findRegionAtLocation(player.getLocation());
+        if (regionOption.isEmpty()) {
             return;
         }
-
-        Guild guild = region.getGuild();
+        Guild guild = regionOption.get().getGuild();
 
         this.userManager.findByPlayer(player)
                 .filterNot(user -> guild.getMembers().contains(user))

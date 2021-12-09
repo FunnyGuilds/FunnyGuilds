@@ -79,7 +79,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         when(!name.matches(config.nameRegex.getPattern()), messages.createOLName);
         when(guildManager.nameExists(name), messages.createNameExists);
         when(guildManager.tagExists(tag), messages.createTagExists);
-        when(config.regionsEnabled && RegionUtils.isIn(guildLocation), messages.createIsNear);
+        when(config.regionsEnabled && this.regionManager.isInRegion(guildLocation), messages.createIsNear);
         when(config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
 
         if (config.checkForRestrictedGuildNames) {
@@ -223,7 +223,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         user.setGuild(guild);
 
         if (config.regionsEnabled) {
-            RegionUtils.addRegion(guild.getRegion());
+            this.regionManager.addRegion(guild.getRegion());
         }
 
         this.concurrencyManager.postRequests(

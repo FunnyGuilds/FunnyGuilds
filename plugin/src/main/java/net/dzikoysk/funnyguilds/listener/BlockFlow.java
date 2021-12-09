@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.BlockFromToEvent;
+import panda.std.Option;
 
 public class BlockFlow extends AbstractFunnyListener {
 
@@ -13,9 +13,8 @@ public class BlockFlow extends AbstractFunnyListener {
             return;
         }
 
-        Region region = RegionUtils.getAt(event.getToBlock().getLocation());
-
-        if (region == null) {
+        Option<Region> regionOption = this.regionManager.findRegionAtLocation(event.getToBlock().getLocation());
+        if (regionOption.isEmpty()) {
             event.setCancelled(true);
         }
     }
