@@ -64,7 +64,7 @@ public class RegionManager {
     }
 
     public boolean isNearRegion(Location center) {
-        if(center == null) {
+        if (center == null) {
             return false;
         }
 
