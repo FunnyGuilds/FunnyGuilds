@@ -98,7 +98,7 @@ public class DatabaseGuild {
             values[2] = tag;
             values[3] = owner;
             values[4] = LocationUtils.parseLocation(home);
-            values[5] = RegionUtils.get(regionName);
+            values[5] = plugin.getRegionManager().findByName(regionName).getOrNull();
             values[6] = members;
             values[7] = Sets.newHashSet();
             values[8] = Sets.newHashSet();

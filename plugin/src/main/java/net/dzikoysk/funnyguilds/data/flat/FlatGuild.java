@@ -22,6 +22,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
+import panda.std.Option;
 
 public class FlatGuild {
 
@@ -73,11 +74,12 @@ public class FlatGuild {
         Set<String> allyNames = loadSet(wrapper, "allies");
         Set<String> enemyNames = loadSet(wrapper, "enemies");
 
-        final Region region = RegionUtils.get(regionName);
-        if (region == null && configuration.regionsEnabled) {
+        Option<Region> regionOption = FunnyGuilds.getInstance().getRegionManager().findByName(regionName);
+        if (regionOption.isEmpty() && configuration.regionsEnabled) {
             FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
             return null;
         }
+        Region region = regionOption.get();
 
         UUID uuid = UUID.randomUUID();
         if (id != null && !id.isEmpty()) {

@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,10 +30,9 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
         when(!config.regionsEnabled, messages.regionsDisabled);
-
-        Region region = RegionUtils.get(guild.getName());
+        Region region = this.regionManager.findByName(guild.getName()).getOrNull();
         Location location = player.getLocation();
-        when(!region.isIn(location), messages.setbaseOutside);
+        when(region == null || !region.isIn(location), messages.setbaseOutside);
 
         if (!SimpleEventHandler.handle(new GuildBaseChangeEvent(EventCause.USER, user, guild, location))) {
             return;
