@@ -252,7 +252,7 @@ public class GuildManager {
                 }
             }
 
-            RegionUtils.delete(guild.getRegion());
+            this.plugin.getRegionManager().deleteRegion(guild.getRegion());
         }
 
         this.plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(guild));

@@ -20,7 +20,6 @@ import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramM
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
@@ -80,7 +79,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         when(guildManager.nameExists(name), messages.createNameExists);
         when(guildManager.tagExists(tag), messages.createTagExists);
         when(config.regionsEnabled && this.regionManager.isInRegion(guildLocation), messages.createIsNear);
-        when(config.regionsEnabled && RegionUtils.isNear(guildLocation), messages.createIsNear);
+        when(config.regionsEnabled && this.regionManager.isNearRegion(guildLocation), messages.createIsNear);
 
         if (config.checkForRestrictedGuildNames) {
             when(!GuildUtils.validateName(config, name), messages.restrictedGuildName);

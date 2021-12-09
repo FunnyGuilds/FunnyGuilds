@@ -46,7 +46,7 @@ public interface DataModel {
                 continue;
             }
 
-            RegionUtils.delete(region);
+            FunnyGuilds.getInstance().getRegionManager().deleteRegion(region);
             repaired++;
         }
 
