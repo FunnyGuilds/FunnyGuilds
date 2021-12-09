@@ -1,13 +1,11 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
 import panda.std.Option;
 
@@ -25,11 +23,6 @@ public final class RegionUtils {
     }
 
     @Deprecated
-    public static boolean isIn(Location location) {
-        return FunnyGuilds.getInstance().getRegionManager().isInRegion(location);
-    }
-
-    @Deprecated
     @Nullable
     public static Region getAt(Location location) {
         return FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location).getOrNull();
@@ -41,39 +34,13 @@ public final class RegionUtils {
     }
 
     @Deprecated
+    public static boolean isIn(Location location) {
+        return FunnyGuilds.getInstance().getRegionManager().isInRegion(location);
+    }
+
+    @Deprecated
     public static boolean isNear(Location center) {
-        if (center == null) {
-            return false;
-        }
-
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        int size = config.regionSize;
-
-        if (config.enlargeItems != null) {
-            size += (config.enlargeItems.size() * config.enlargeSize);
-        }
-
-        int requiredDistance = (2 * size) + config.regionMinDistance;
-
-        for (Region region : getRegions()) {
-            if (region.getCenter() == null) {
-                continue;
-            }
-
-            if (region.getCenter().equals(center)) {
-                continue;
-            }
-
-            if (!center.getWorld().equals(region.getCenter().getWorld())) {
-                continue;
-            }
-
-            if (LocationUtils.flatDistance(center, region.getCenter()) < requiredDistance) {
-                return true;
-            }
-        }
-
-        return false;
+        return FunnyGuilds.getInstance().getRegionManager().isNearRegion(center);
     }
 
     @Deprecated
@@ -91,19 +58,11 @@ public final class RegionUtils {
         FunnyGuilds.getInstance().getRegionManager().deleteRegion(region);
     }
 
-    public static List<String> getNames(Collection<Region> lsg) {
-        List<String> list = new ArrayList<>();
-        if (lsg == null) {
-            return list;
-        }
-
-        for (Region r : lsg) {
-            if (r != null && r.getName() != null) {
-                list.add(r.getName());
-            }
-        }
-
-        return list;
+    public static Set<String> getNamesOfRegions(Collection<Region> regions) {
+        return regions.stream()
+                .filter(Objects::nonNull)
+                .map(Region::getName)
+                .collect(Collectors.toSet());
     }
 
     @Deprecated

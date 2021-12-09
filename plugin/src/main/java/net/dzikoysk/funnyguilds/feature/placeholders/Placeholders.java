@@ -69,10 +69,10 @@ public class Placeholders<T> {
                 .property("VALIDITY", guild -> config.dateFormat.format(new Date(guild.getValidity())))
                 .property("LIVES", Guild::getLives)
                 .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
-                .property("ALLIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
-                .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
-                .property("ENEMIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
-                .property("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
+                .property("ALLIES", guild -> joinOrDefault.apply(GuildUtils.getNamesOfGuilds(guild.getAllies()), messages.alliesNoValue))
+                .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTagsOfGuilds(guild.getAllies()), messages.alliesNoValue))
+                .property("ENEMIES", guild -> joinOrDefault.apply(GuildUtils.getNamesOfGuilds(guild.getEnemies()), messages.enemiesNoValue))
+                .property("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTagsOfGuilds(guild.getEnemies()), messages.enemiesNoValue));
 
         GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>>()
                 .property("MEMBERS", pair -> {

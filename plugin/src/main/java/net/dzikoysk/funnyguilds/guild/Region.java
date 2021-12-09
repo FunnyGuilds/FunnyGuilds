@@ -61,15 +61,6 @@ public class Region extends AbstractMutableEntity {
         }
     }
 
-    public void delete() {
-        RegionUtils.removeRegion(this);
-        this.guild = null;
-        this.world = null;
-        this.center = null;
-        this.firstCorner = null;
-        this.secondCorner = null;
-    }
-
     public boolean isIn(Location loc) {
         if (loc == null || this.firstCorner == null || this.secondCorner == null) {
             return false;

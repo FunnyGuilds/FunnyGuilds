@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -99,7 +100,10 @@ public final class UserUtils {
      * @return set of usernames
      */
     public static Set<String> getNamesOfUsers(Collection<User> users) {
-        return users.stream().map(User::getName).collect(Collectors.toSet());
+        return users.stream()
+                .filter(Objects::nonNull)
+                .map(User::getName)
+                .collect(Collectors.toSet());
     }
 
     /**

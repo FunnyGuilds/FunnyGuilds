@@ -69,7 +69,7 @@ public class PlayerJoin extends AbstractFunnyListener {
             }
 
             Guild guild = regionOption.get().getGuild();
-            if(guild == null) {
+            if (guild == null) {
                 return;
             }
 

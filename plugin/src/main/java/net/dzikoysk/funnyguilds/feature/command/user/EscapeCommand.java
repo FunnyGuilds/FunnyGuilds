@@ -33,7 +33,6 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         when(user.getCache().getTeleportation() != null, messages.escapeInProgress);
 
         Location playerLocation = player.getLocation();
-
         Option<Region> regionOption = this.regionManager.findRegionAtLocation(playerLocation);
         when(regionOption.isEmpty(), messages.escapeNoNeedToRun);
         Region region = regionOption.get();

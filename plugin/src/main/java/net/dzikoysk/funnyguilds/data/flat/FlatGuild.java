@@ -177,8 +177,8 @@ public class FlatGuild {
         wrapper.set("members", UserUtils.getNamesOfUsers(guild.getMembers()));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);
-        wrapper.set("allies", GuildUtils.getNames(guild.getAllies()));
-        wrapper.set("enemies", GuildUtils.getNames(guild.getEnemies()));
+        wrapper.set("allies", GuildUtils.getNamesOfGuilds(guild.getAllies()));
+        wrapper.set("enemies", GuildUtils.getNamesOfGuilds(guild.getEnemies()));
         wrapper.set("born", guild.getBorn());
         wrapper.set("validity", guild.getValidity());
         wrapper.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection

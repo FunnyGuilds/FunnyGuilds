@@ -122,8 +122,8 @@ public class DatabaseGuild {
     public static void save(Guild guild) {
         String members = ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getMembers()), false);
         String deputies = ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), false);
-        String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
-        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
+        String allies = ChatUtils.toString(GuildUtils.getNamesOfGuilds(guild.getAllies()), false);
+        String enemies = ChatUtils.toString(GuildUtils.getNamesOfGuilds(guild.getEnemies()), false);
         SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
 
         statement.set("uuid", guild.getUUID().toString());

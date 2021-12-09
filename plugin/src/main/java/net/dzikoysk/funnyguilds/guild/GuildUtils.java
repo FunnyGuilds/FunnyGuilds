@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -154,7 +153,7 @@ public final class GuildUtils {
      * @param guilds collection of users
      * @return set of usernames
      */
-    public static Set<String> getNames(Collection<Guild> guilds) {
+    public static Set<String> getNamesOfGuilds(Collection<Guild> guilds) {
         return guilds.stream()
                 .filter(Objects::nonNull)
                 .map(Guild::getName)
@@ -167,11 +166,11 @@ public final class GuildUtils {
      * @param guilds collection of users
      * @return set of guild tags
      */
-    public static List<String> getTags(Collection<Guild> guilds) {
+    public static Set<String> getTagsOfGuilds(Collection<Guild> guilds) {
         return guilds.stream()
                 .filter(Objects::nonNull)
                 .map(Guild::getTag)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     /**
