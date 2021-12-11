@@ -153,7 +153,7 @@ public final class GuildUtils {
      * @param guilds collection of users
      * @return set of usernames
      */
-    public static Set<String> getNamesOfGuilds(Collection<Guild> guilds) {
+    public static Set<String> getNames(Collection<Guild> guilds) {
         return guilds.stream()
                 .filter(Objects::nonNull)
                 .map(Guild::getName)
@@ -166,7 +166,7 @@ public final class GuildUtils {
      * @param guilds collection of users
      * @return set of guild tags
      */
-    public static Set<String> getTagsOfGuilds(Collection<Guild> guilds) {
+    public static Set<String> getTags(Collection<Guild> guilds) {
         return guilds.stream()
                 .filter(Objects::nonNull)
                 .map(Guild::getTag)

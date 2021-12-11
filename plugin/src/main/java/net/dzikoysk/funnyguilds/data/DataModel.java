@@ -22,8 +22,8 @@ public interface DataModel {
             return;
         }
 
-        Set<String> guilds = GuildUtils.getNamesOfGuilds(GuildUtils.getGuilds());
-        Set<String> regions = RegionUtils.getNamesOfRegions(RegionUtils.getRegions());
+        Set<String> guilds = GuildUtils.getNames(GuildUtils.getGuilds());
+        Set<String> regions = RegionUtils.getNames(RegionUtils.getRegions());
 
         int repaired = 0;
 
@@ -37,8 +37,8 @@ public interface DataModel {
             repaired++;
         }
 
-        guilds = GuildUtils.getNamesOfGuilds(GuildUtils.getGuilds());
-        regions = RegionUtils.getNamesOfRegions(RegionUtils.getRegions());
+        guilds = GuildUtils.getNames(GuildUtils.getGuilds());
+        regions = RegionUtils.getNames(RegionUtils.getRegions());
 
         for (Region region : RegionUtils.getRegions()) {
             if (region.getName() != null && guilds.contains(region.getName())) {

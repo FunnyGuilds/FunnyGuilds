@@ -176,18 +176,18 @@ public class FlatGuild {
         wrapper.set("tag", guild.getTag());
         wrapper.set("owner", guild.getOwner().getName());
         wrapper.set("home", LocationUtils.toString(guild.getHome()));
-        wrapper.set("members", UserUtils.getNamesOfUsers(guild.getMembers()));
+        wrapper.set("members", UserUtils.getNames(guild.getMembers()));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);
-        wrapper.set("allies", GuildUtils.getNamesOfGuilds(guild.getAllies()));
-        wrapper.set("enemies", GuildUtils.getNamesOfGuilds(guild.getEnemies()));
+        wrapper.set("allies", GuildUtils.getNames(guild.getAllies()));
+        wrapper.set("enemies", GuildUtils.getNames(guild.getEnemies()));
         wrapper.set("born", guild.getBorn());
         wrapper.set("validity", guild.getValidity());
         wrapper.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
         wrapper.set("lives", guild.getLives());
         wrapper.set("ban", guild.getBan());
         wrapper.set("pvp", guild.getPvP());
-        wrapper.set("deputy", ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), false));
+        wrapper.set("deputy", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
 
         wrapper.save();
         return true;

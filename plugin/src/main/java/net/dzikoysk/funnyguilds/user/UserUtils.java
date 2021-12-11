@@ -99,7 +99,7 @@ public final class UserUtils {
      * @param users collection of users
      * @return set of usernames
      */
-    public static Set<String> getNamesOfUsers(Collection<User> users) {
+    public static Set<String> getNames(Collection<User> users) {
         return users.stream()
                 .filter(Objects::nonNull)
                 .map(User::getName)

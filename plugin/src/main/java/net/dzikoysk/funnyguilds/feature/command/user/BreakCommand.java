@@ -37,7 +37,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
 
         if (args.length < 1) {
             List<String> list = messages.breakAlliesList;
-            String iss = ChatUtils.toString(GuildUtils.getNamesOfGuilds(guild.getAllies()), true);
+            String iss = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
 
             for (String msg : list) {
                 player.sendMessage(msg.replace("{GUILDS}", iss));
