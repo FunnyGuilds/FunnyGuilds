@@ -20,7 +20,8 @@ import org.bukkit.craftbukkit.v1_10_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
 public class V1_10R1PlayerList implements PlayerList {
-    private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.ChatSerializer.a("");
+    
+    private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.ChatSerializer.a(PlayerListConstants.EMPTY_COMPONENT_VALUE);
     private static final PlayerInfoDataHelper PLAYER_INFO_DATA_HELPER = new PlayerInfoDataHelper(PacketPlayOutPlayerInfo.class, EnumGamemode.SURVIVAL);
 
     private static final Field PLAYER_INFO_DATA_ACCESSOR;
