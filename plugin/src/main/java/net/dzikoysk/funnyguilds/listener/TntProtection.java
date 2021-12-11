@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import panda.std.Option;
 
 public class TntProtection extends AbstractFunnyListener {
 
@@ -45,11 +44,9 @@ public class TntProtection extends AbstractFunnyListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
-        Option<Region> regionOption = this.regionManager.findRegionAtLocation(event.getLocation());
-        if (regionOption.isEmpty()) {
-            return;
-        }
-        regionOption.get().getGuild().setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli());
+        this.regionManager.findRegionAtLocation(event.getLocation())
+                .map(Region::getGuild)
+                .peek(guild -> guild.setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli()));
     }
 
 }

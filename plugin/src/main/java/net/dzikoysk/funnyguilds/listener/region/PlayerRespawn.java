@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
@@ -42,13 +41,9 @@ public class PlayerRespawn extends AbstractFunnyListener {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            Option<Region> regionOption = this.regionManager.findRegionAtLocation(home);
-            if (regionOption.isEmpty()) {
-                return;
-            }
-
-            Guild guild = regionOption.get().getGuild();
-            GuildEntityHelper.spawnGuildHeart(guild, player);
+            this.regionManager.findRegionAtLocation(home)
+                    .map(Region::getGuild)
+                    .peek(guild -> GuildEntityHelper.spawnGuildHeart(guild, player));
         });
     }
 }
