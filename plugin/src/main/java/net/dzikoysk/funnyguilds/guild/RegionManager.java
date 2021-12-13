@@ -13,7 +13,10 @@ import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -83,6 +86,18 @@ public class RegionManager {
                 .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
                 .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
                 .isPresent();
+    }
+
+    public boolean isGuildHeart(PluginConfiguration config, Block block) {
+        Pair<Material, Byte> md = config.heart.createMaterial;
+        if (md == null || block.getType() != md.getLeft()) {
+            return false;
+        }
+
+        Location blockLocation = block.getLocation();
+        return this.findRegionAtLocation(blockLocation)
+                .map(region -> blockLocation.equals(region.getHeart()))
+                .orElseGet(false);
     }
 
     public void addRegion(Region region) {
