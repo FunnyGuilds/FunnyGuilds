@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRequest;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
@@ -21,6 +22,7 @@ import panda.std.Option;
 public class SQLDataModel implements DataModel {
 
     private static SQLDataModel instance;
+
     public static SQLTable tabUsers;
     public static SQLTable tabRegions;
     public static SQLTable tabGuilds;
@@ -39,9 +41,10 @@ public class SQLDataModel implements DataModel {
     }
 
     public static void loadModels() {
-        tabUsers = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.usersTableName);
-        tabRegions = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.regionsTableName);
-        tabGuilds = new SQLTable(FunnyGuilds.getInstance().getPluginConfiguration().mysql.guildsTableName);
+        PluginConfiguration pluginConfiguration = FunnyGuilds.getInstance().getPluginConfiguration();
+        tabUsers = new SQLTable(pluginConfiguration.mysql.usersTableName);
+        tabRegions = new SQLTable(pluginConfiguration.mysql.regionsTableName);
+        tabGuilds = new SQLTable(pluginConfiguration.mysql.guildsTableName);
 
         tabUsers.add("uuid", SQLType.VARCHAR, 36, true);
         tabUsers.add("name", SQLType.TEXT, true);

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.user.User;
@@ -45,7 +46,7 @@ public class FlatUser {
         values[7] = ban;
         values[8] = reason;
 
-        return DeserializationUtils.deserializeUser(values);
+        return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values);
     }
 
     public boolean serialize(FlatDataModel flatDataModel) {

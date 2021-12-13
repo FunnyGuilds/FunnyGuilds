@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
@@ -211,6 +212,7 @@ public class UserManager {
      * @deprecated for removal in the future, in favour of {@link FunnyGuilds#getUserManager()}
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static UserManager getInstance() {
         return INSTANCE;
     }

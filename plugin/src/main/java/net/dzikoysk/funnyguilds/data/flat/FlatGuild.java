@@ -144,7 +144,7 @@ public class FlatGuild {
         values[14] = deputies;
         values[15] = pvp;
 
-        return DeserializationUtils.deserializeGuild(FunnyGuilds.getInstance(), values);
+        return DeserializationUtils.deserializeGuild(configuration, guildManager, values);
     }
 
     public boolean serialize(FlatDataModel flatDataModel) {

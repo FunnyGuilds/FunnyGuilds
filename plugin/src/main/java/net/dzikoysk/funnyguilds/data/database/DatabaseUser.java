@@ -38,7 +38,7 @@ public class DatabaseUser {
             values[7] = ban;
             values[8] = reason;
 
-            return DeserializationUtils.deserializeUser(values);
+            return DeserializationUtils.deserializeUser(FunnyGuilds.getInstance().getUserManager(), values);
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize user", ex);
