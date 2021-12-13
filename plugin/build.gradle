@@ -28,11 +28,11 @@ dependencies {
     implementation "org.bstats:bstats-bukkit:2.2.1"
 
     // probably fix for some exception?
-    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.14.1"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.15.0"
 
     // bukkit stuff
     shadow "org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT"
-    shadow "org.apache.logging.log4j:log4j-core:2.14.1"
+    shadow "org.apache.logging.log4j:log4j-core:2.15.0"
 
     // integrations
     shadow("me.clip:placeholderapi:2.10.10") {
@@ -49,7 +49,7 @@ dependencies {
     }
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
 
-    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.7"
+    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.8"
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
