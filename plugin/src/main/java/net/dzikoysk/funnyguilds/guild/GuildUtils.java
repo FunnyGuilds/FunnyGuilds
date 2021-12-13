@@ -177,7 +177,7 @@ public final class GuildUtils {
      * Validate guild name.
      *
      * @param pluginConfiguration the PluginConfiguration from which pattern will be used
-     * @param guildName guild name to validate
+     * @param guildName           guild name to validate
      * @return if guild name is valid
      */
     public static boolean validateName(PluginConfiguration pluginConfiguration, String guildName) {
@@ -189,7 +189,7 @@ public final class GuildUtils {
      * Validate guild tag.
      *
      * @param pluginConfiguration the PluginConfiguration from which pattern will be used
-     * @param guildTag guild tag to validate
+     * @param guildTag            guild tag to validate
      * @return if guild tag is valid
      */
     public static boolean validateTag(PluginConfiguration pluginConfiguration, String guildTag) {

@@ -10,14 +10,14 @@ public class BlockPhysics extends AbstractFunnyListener {
 
     @EventHandler
     public void onPhysics(BlockPhysicsEvent event) {
-        if (this.regionManager.isGuildHeart(this.config, event.getBlock())) {
+        if (this.regionManager.isGuildHeart(event.getBlock())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onFall(EntityChangeBlockEvent event) {
-        if (event.getEntityType() == EntityType.FALLING_BLOCK && this.regionManager.isGuildHeart(this.config, event.getBlock())) {
+        if (event.getEntityType() == EntityType.FALLING_BLOCK && this.regionManager.isGuildHeart(event.getBlock())) {
             event.setCancelled(true);
         }
     }

@@ -76,7 +76,7 @@ public class UserManager {
     /**
      * Gets the user.
      *
-     * @param nickname the name of user
+     * @param nickname   the name of user
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      */
@@ -172,7 +172,7 @@ public class UserManager {
     /**
      * Update username for user.
      *
-     * @param user the user for which the nickname will be changed
+     * @param user        the user for which the nickname will be changed
      * @param newUsername the new nickname for user
      */
     public void updateUsername(User user, String newUsername) {
@@ -197,7 +197,7 @@ public class UserManager {
     /**
      * Checks if user with given nickname have ever played on a server.
      *
-     * @param nickname the nickname of user to check if ever played on
+     * @param nickname   the nickname of user to check if ever played on
      * @param ignoreCase ignore the case of the nickname
      * @return if user with given name have ever played on a server
      */

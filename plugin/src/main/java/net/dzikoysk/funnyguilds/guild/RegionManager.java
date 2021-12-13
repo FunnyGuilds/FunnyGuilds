@@ -40,10 +40,22 @@ public class RegionManager {
         return this.regionsMap.size();
     }
 
+    /**
+     * Gets the copied set of regions.
+     *
+     * @return set of regions
+     */
     public Set<Region> getRegions() {
         return new HashSet<>(this.regionsMap.values());
     }
 
+    /**
+     * Gets the region.
+     *
+     * @param name       the name of region (probably name of guild)
+     * @param ignoreCase ignore the case of the tag
+     * @return the guild
+     */
     public Option<Region> findByName(String name, boolean ignoreCase) {
         return PandaStream.of(regionsMap.entrySet())
                 .find(entry -> ignoreCase
@@ -52,20 +64,44 @@ public class RegionManager {
                 .map(Map.Entry::getValue);
     }
 
+    /**
+     * Gets the region.
+     *
+     * @param name the name of region (probably name of guild)
+     * @return the region
+     */
     public Option<Region> findByName(String name) {
         return this.findByName(name, false);
     }
 
+    /**
+     * Gets the region.
+     *
+     * @param location the location of region
+     * @return the region
+     */
     public Option<Region> findRegionAtLocation(Location location) {
         return PandaStream.of(regionsMap.entrySet())
                 .find(entry -> entry.getValue().isIn(location))
                 .map(Map.Entry::getValue);
     }
 
+    /**
+     * Checks if there is a region in the given location.
+     *
+     * @param location the location of region
+     * @return if given location is in region
+     */
     public boolean isInRegion(Location location) {
         return this.findRegionAtLocation(location).isPresent();
     }
 
+    /**
+     * Checks if there is any region in area (used to check if it's possible to create a new guild in given location).
+     *
+     * @param center the center of region
+     * @return if is region nearby
+     */
     public boolean isNearRegion(Location center) {
         if (center == null) {
             return false;
@@ -88,8 +124,14 @@ public class RegionManager {
                 .isPresent();
     }
 
-    public boolean isGuildHeart(PluginConfiguration config, Block block) {
-        Pair<Material, Byte> md = config.heart.createMaterial;
+    /**
+     * Checks if given block is guild's heart.
+     *
+     * @param block block to check
+     * @return if given block is guild's heart
+     */
+    public boolean isGuildHeart(Block block) {
+        Pair<Material, Byte> md = this.pluginConfiguration.heart.createMaterial;
         if (md == null || block.getType() != md.getLeft()) {
             return false;
         }
@@ -100,16 +142,31 @@ public class RegionManager {
                 .orElseGet(false);
     }
 
+    /**
+     * Add region to storage. If you think you should use this method you probably shouldn't.
+     *
+     * @param region region to add
+     */
     public void addRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
         this.regionsMap.put(region.getName(), region);
     }
 
+    /**
+     * Remove region from storage. If you think you should use this method you probably shouldn't - instead use {@link RegionManager#deleteRegion(Region)}.
+     *
+     * @param region region to remove
+     */
     public void removeRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
         this.regionsMap.remove(region.getName());
     }
 
+    /**
+     * Delete region in every possible way.
+     *
+     * @param region region to delete
+     */
     public void deleteRegion(Region region) {
         Validate.notNull(region, "region can't be null!");
 
@@ -125,6 +182,12 @@ public class RegionManager {
         this.removeRegion(region);
     }
 
+    /**
+     * Checks if region with given name exists.
+     *
+     * @param name region name
+     * @return if region exists
+     */
     public boolean regionExists(String name) {
         return this.findByName(name).isPresent();
     }

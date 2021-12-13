@@ -81,7 +81,7 @@ public final class UserUtils {
     /**
      * Gets the user.
      *
-     * @param nickname the name of user
+     * @param nickname   the name of user
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String, boolean)}

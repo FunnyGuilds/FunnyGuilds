@@ -14,7 +14,7 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
     @EventHandler
     public void onPistonExtend(BlockPistonExtendEvent event) {
         for (Block block : event.getBlocks()) {
-            if (this.regionManager.isGuildHeart(this.config, block)) {
+            if (this.regionManager.isGuildHeart(block)) {
                 event.setCancelled(true);
             }
         }
@@ -23,7 +23,7 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
     @EventHandler
     public void onPistonRetract(BlockPistonRetractEvent event) {
         for (Block block : event.getBlocks()) {
-            if (this.regionManager.isGuildHeart(this.config, block)) {
+            if (this.regionManager.isGuildHeart(block)) {
                 event.setCancelled(true);
             }
         }
@@ -31,21 +31,21 @@ public class GuildHeartProtectionHandler extends AbstractFunnyListener {
 
     @EventHandler
     public void onBlockBurn(BlockBurnEvent event) {
-        if (this.regionManager.isGuildHeart(this.config, event.getBlock())) {
+        if (this.regionManager.isGuildHeart(event.getBlock())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockFade(BlockFadeEvent event) {
-        if (this.regionManager.isGuildHeart(this.config, event.getBlock())) {
+        if (this.regionManager.isGuildHeart(event.getBlock())) {
             event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onBlockExplode(BlockExplodeEvent event) {
-        if (this.regionManager.isGuildHeart(this.config, event.getBlock())) {
+        if (this.regionManager.isGuildHeart(event.getBlock())) {
             event.setCancelled(true);
         }
     }
