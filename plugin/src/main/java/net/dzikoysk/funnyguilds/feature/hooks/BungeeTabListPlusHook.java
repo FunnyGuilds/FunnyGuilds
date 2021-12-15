@@ -13,19 +13,21 @@ import org.bukkit.entity.Player;
 
 public class BungeeTabListPlusHook extends AbstractPluginHook {
 
-    BungeeTabListPlusHook(String name) {
+    private final FunnyGuilds plugin;
+
+    BungeeTabListPlusHook(String name, FunnyGuilds plugin) {
         super(name);
+        this.plugin = plugin;
     }
 
     @Override
     public void init() {
-        BungeeTabListPlusHook.initVariableHook();
+        this.initVariableHook();
         super.init();
     }
 
-    public static void initVariableHook() {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        UserManager userManager = plugin.getUserManager();
+    public void initVariableHook() {
+        UserManager userManager = this.plugin.getUserManager();
 
         for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
             BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_" + variable.getKey()) {

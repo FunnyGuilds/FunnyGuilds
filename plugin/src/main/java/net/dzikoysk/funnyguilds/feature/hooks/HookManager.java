@@ -63,7 +63,7 @@ public class HookManager {
         BUNGEE_TAB_LIST_PLUS = setupHook("BungeeTabListPlus", pluginName -> {
             try {
                 Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
-                return new BungeeTabListPlusHook(pluginName);
+                return new BungeeTabListPlusHook(pluginName, plugin);
             }
             catch (ClassNotFoundException exception) {
                 return null;
@@ -72,14 +72,14 @@ public class HookManager {
         MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> {
             try {
                 Class.forName("be.maximvdw.placeholderapi.PlaceholderReplacer");
-                return new MVdWPlaceholderAPIHook(pluginName);
+                return new MVdWPlaceholderAPIHook(pluginName, plugin);
             }
             catch (ClassNotFoundException exception) {
                 return null;
             }
         });
-        PLACEHOLDER_API = setupHook("PlaceholderAPI", PlaceholderAPIHook::new);
-        LEADER_HEADS = setupHook("LeaderHeads", LeaderHeadsHook::new);
+        PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
+        LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
         HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin));
     }
 

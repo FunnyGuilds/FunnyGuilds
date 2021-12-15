@@ -14,19 +14,21 @@ import panda.utilities.StringUtils;
 
 public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
-    MVdWPlaceholderAPIHook(String name) {
+    private final FunnyGuilds plugin;
+
+    MVdWPlaceholderAPIHook(String name, FunnyGuilds plugin) {
         super(name);
+        this.plugin = plugin;
     }
 
     @Override
     public void init() {
-        MVdWPlaceholderAPIHook.initPlaceholderHook();
+        this.initPlaceholderHook();
         super.init();
     }
 
-    public static void initPlaceholderHook() {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        UserManager userManager = plugin.getUserManager();
+    public void initPlaceholderHook() {
+        UserManager userManager = this.plugin.getUserManager();
 
         for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + variable.getKey(), event -> {

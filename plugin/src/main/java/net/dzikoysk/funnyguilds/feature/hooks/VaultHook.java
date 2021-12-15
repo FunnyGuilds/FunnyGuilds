@@ -21,11 +21,11 @@ public class VaultHook extends AbstractPluginHook {
 
     @Override
     public void init() {
-        VaultHook.initHooks();
+        this.initHooks();
         super.init();
     }
 
-    public static void initHooks() {
+    public void initHooks() {
         RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
 
