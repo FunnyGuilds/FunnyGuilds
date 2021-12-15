@@ -5,7 +5,7 @@ import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -35,7 +35,7 @@ public class HologramUpdateHandler implements Runnable {
         }
 
         ItemStack item = new ItemStack(hologramConfig.item);
-        FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
+        FunnyHologramManager hologramManager = HookManager.HOLOGRAPHIC_DISPLAYS;
         for (Guild guild : plugin.getGuildManager().getGuilds()) {
             Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
             List<String> lines = PandaStream.of(hologramConfig.displayedLines)

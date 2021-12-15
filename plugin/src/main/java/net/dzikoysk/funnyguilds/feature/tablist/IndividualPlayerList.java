@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
+import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.MVdWPlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.PlaceholderAPIHook;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariablesParser;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.VariableParsingResult;
@@ -139,7 +139,6 @@ public class IndividualPlayerList {
         String formatted = cell;
 
         Player player = this.user.getPlayer();
-
         if (player == null) {
             return formatted;
         }
@@ -148,11 +147,11 @@ public class IndividualPlayerList {
         formatted = result.replaceInString(formatted);
         formatted = ChatUtils.colored(formatted);
 
-        if (PluginHook.isPresent(PluginHook.PLUGIN_PLACEHOLDERAPI)) {
+        if (HookManager.PLACEHOLDER_API.isFullyInitialized()) {
             formatted = PlaceholderAPIHook.replacePlaceholders(player, formatted);
         }
 
-        if (PluginHook.isPresent(PluginHook.PLUGIN_MVDWPLACEHOLDERAPI)) {
+        if (HookManager.MVDW_PLACEHOLDER_API.isFullyInitialized()) {
             formatted = MVdWPlaceholderAPIHook.replacePlaceholders(player, formatted);
         }
 

@@ -10,20 +10,23 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.entity.Player;
 
-public final class PlaceholderAPIHook {
+public class PlaceholderAPIHook extends AbstractPluginHook{
 
     private static final String FUNNYGUILDS_VERSION = FunnyGuilds.getInstance().getDescription().getVersion();
 
-    public static void initPlaceholderHook() {
+    PlaceholderAPIHook(String name) {
+        super(name);
+    }
+
+    @Override
+    public void init() {
         new FunnyGuildsPlaceholder().register();
-        FunnyGuilds.getPluginLogger().info("PlaceholderAPI hook has been enabled!");
+        super.init();
     }
 
     public static String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.setPlaceholders(user, base);
     }
-
-    private PlaceholderAPIHook() {}
 
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion {
 

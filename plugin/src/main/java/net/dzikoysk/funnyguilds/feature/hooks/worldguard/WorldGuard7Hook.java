@@ -13,17 +13,23 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import org.bukkit.Location;
 
-public class WorldGuard7Hook implements WorldGuardHook {
+public class WorldGuard7Hook extends WorldGuardHook {
 
     private WorldGuard worldGuard;
     private StateFlag noPointsFlag;
 
+    public WorldGuard7Hook(String name) {
+        super(name);
+    }
+
     @Override
-    public void init() {
+    public void earlyInit() {
         worldGuard = WorldGuard.getInstance();
         noPointsFlag = new StateFlag("fg-no-points", false);
 
         worldGuard.getFlagRegistry().register(noPointsFlag);
+
+        super.earlyInit();
     }
 
     @Override

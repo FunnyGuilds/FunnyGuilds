@@ -10,10 +10,20 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-public final class VaultHook {
+public class VaultHook extends AbstractPluginHook {
 
     private static Economy economyHook;
     private static Permission permissionHook;
+
+    VaultHook(String name) {
+        super(name);
+    }
+
+    @Override
+    public void init() {
+        VaultHook.initHooks();
+        super.init();
+    }
 
     public static void initHooks() {
         RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
@@ -60,8 +70,4 @@ public final class VaultHook {
     public static boolean hasPermission(OfflinePlayer player, String permission) {
         return permissionHook.playerHas(null, player, permission);
     }
-
-    private VaultHook() {
-    }
-
 }

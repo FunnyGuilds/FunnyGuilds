@@ -15,7 +15,7 @@ import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.feature.command.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
@@ -102,6 +102,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private ConcurrencyManager concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
+    private HookManager hookManager;
     private RankManager rankManager;
     private UserManager userManager;
     private GuildManager guildManager;
@@ -163,7 +164,10 @@ public class FunnyGuilds extends JavaPlugin {
         this.concurrencyManager.printStatus();
 
         this.dynamicListenerManager = new DynamicListenerManager(this);
-        PluginHook.earlyInit();
+
+        this.hookManager = new HookManager(plugin);
+        this.hookManager.setupHooks();
+        this.hookManager.earlyInit();
     }
 
     @Override
@@ -285,7 +289,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.handleReload();
 
         this.version.isNewAvailable(this.getServer().getConsoleSender(), true);
-        PluginHook.init();
+        this.hookManager.init();
 
         if (MinecraftServerUtils.getReloadCount() > 0) {
             Bukkit.broadcast(ChatUtils.colored(messageConfiguration.reloadWarn), "funnyguilds.admin");

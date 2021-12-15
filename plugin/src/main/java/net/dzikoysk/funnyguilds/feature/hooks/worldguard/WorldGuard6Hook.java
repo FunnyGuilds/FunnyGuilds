@@ -20,7 +20,7 @@ import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class WorldGuard6Hook implements WorldGuardHook {
+public class WorldGuard6Hook extends WorldGuardHook {
 
     private static final MethodHandle GET_REGION_MANAGER;
     private static final MethodHandle GET_APPLICABLE_REGIONS;
@@ -45,8 +45,12 @@ public class WorldGuard6Hook implements WorldGuardHook {
     private WorldGuardPlugin worldGuard;
     private StateFlag noPointsFlag;
 
+    public WorldGuard6Hook(String name) {
+        super(name);
+    }
+
     @Override
-    public void init() {
+    public void earlyInit() {
         worldGuard = WorldGuardPlugin.inst();
         noPointsFlag = new StateFlag("fg-no-points", false);
 
@@ -61,6 +65,8 @@ public class WorldGuard6Hook implements WorldGuardHook {
         catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             FunnyGuilds.getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
         }
+
+        super.earlyInit();
     }
 
     @Override

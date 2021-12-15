@@ -6,21 +6,34 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
-public final class HolographicDisplaysHook implements FunnyHologramManager {
+public final class HolographicDisplaysHook extends AbstractPluginHook implements FunnyHologramManager {
 
     private final FunnyGuilds plugin;
     private final PluginConfiguration config;
     private final Map<Guild, FunnyHologramImpl> holograms = new ConcurrentHashMap<>();
 
-    private HolographicDisplaysHook(FunnyGuilds plugin) {
+    public HolographicDisplaysHook(String name, FunnyGuilds plugin) {
+        super(name);
         this.plugin = plugin;
         this.config = plugin.getPluginConfiguration();
+    }
+
+    @Override
+    public void init() {
+        this.runHandler();
+        super.init();
+    }
+
+    public void runHandler() {
+        HologramConfiguration hologramConfig = plugin.getPluginConfiguration().heart.hologram;
+        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new HologramUpdateHandler(plugin), 100L, hologramConfig.updateInterval);
     }
 
     @Override
@@ -59,15 +72,6 @@ public final class HolographicDisplaysHook implements FunnyHologramManager {
 
         return guild.getCenter()
                 .map(location -> location.add(hologram.locationCorrection.toLocation(location.getWorld())));
-    }
-
-    public static HolographicDisplaysHook createAndRunHandler(FunnyGuilds plugin) {
-        HologramConfiguration hologramConfig = plugin.getPluginConfiguration().heart.hologram;
-        HolographicDisplaysHook holographicDisplaysHook = new HolographicDisplaysHook(plugin);
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new HologramUpdateHandler(plugin), 100L, hologramConfig.updateInterval);
-
-        return holographicDisplaysHook;
     }
 
 }

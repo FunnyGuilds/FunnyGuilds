@@ -10,10 +10,16 @@ import me.robin.leaderheads.objects.BoardType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.user.User;
 
-public class LeaderHeadsHook {
+public class LeaderHeadsHook extends AbstractPluginHook{
 
-    public static void initLeaderHeadsHook() {
+    LeaderHeadsHook(String name) {
+        super(name);
+    }
+
+    @Override
+    public void init() {
         new TopRankCollector();
+        super.init();
     }
 
     public static class TopRankCollector extends DataCollector {

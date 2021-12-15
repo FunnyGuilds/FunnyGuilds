@@ -12,7 +12,17 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import panda.utilities.StringUtils;
 
-public final class MVdWPlaceholderAPIHook {
+public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
+
+    MVdWPlaceholderAPIHook(String name) {
+        super(name);
+    }
+
+    @Override
+    public void init() {
+        MVdWPlaceholderAPIHook.initPlaceholderHook();
+        super.init();
+    }
 
     public static void initPlaceholderHook() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
@@ -53,7 +63,5 @@ public final class MVdWPlaceholderAPIHook {
     public static String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.replacePlaceholders(user, base);
     }
-
-    private MVdWPlaceholderAPIHook() {}
 
 }
