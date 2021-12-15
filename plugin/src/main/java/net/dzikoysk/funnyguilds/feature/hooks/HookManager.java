@@ -104,7 +104,12 @@ public class HookManager {
         if (PandaStream.of(plugin.getPluginConfiguration().disabledHooks)
                 .find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName))
                 .isPresent()) {
-            FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook is disabled in configuration, some features may not be available");
+            if (!pluginName.equalsIgnoreCase("FunnyTab")) {
+                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook is disabled in configuration, some features may not be available");
+                return hook;
+            }
+
+            FunnyGuilds.getPluginLogger().info("You can't disable FunnyTab plugin hook lol");
         }
 
         hook.setPresent(true);
