@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import org.bukkit.Bukkit;
 
-public class FunnyTabHook extends AbstractPluginHook{
+public class FunnyTabHook extends AbstractPluginHook {
 
     private final FunnyGuilds plugin;
 

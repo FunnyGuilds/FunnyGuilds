@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.hooks;
 
-/*import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
+import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
 import codecrafter47.bungeetablistplus.api.bukkit.Variable;
 import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import org.bukkit.entity.Player;*/
+import org.bukkit.entity.Player;
 
 public class BungeeTabListPlusHook extends AbstractPluginHook {
 
@@ -24,7 +24,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
     }
 
     public static void initVariableHook() {
-        /*FunnyGuilds plugin = FunnyGuilds.getInstance();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
         UserManager userManager = plugin.getUserManager();
 
         for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
@@ -64,7 +64,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
             });
         }
 
-        FunnyGuilds.getPluginLogger().info("BungeeTabListPlus hook has been enabled!");*/
+        FunnyGuilds.getPluginLogger().info("BungeeTabListPlus hook has been enabled!");
     }
 
 }

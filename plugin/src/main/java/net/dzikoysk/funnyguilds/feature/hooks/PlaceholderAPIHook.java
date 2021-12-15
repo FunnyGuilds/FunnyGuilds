@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.entity.Player;
 
-public class PlaceholderAPIHook extends AbstractPluginHook{
+public class PlaceholderAPIHook extends AbstractPluginHook {
 
     private static final String FUNNYGUILDS_VERSION = FunnyGuilds.getInstance().getDescription().getVersion();
 

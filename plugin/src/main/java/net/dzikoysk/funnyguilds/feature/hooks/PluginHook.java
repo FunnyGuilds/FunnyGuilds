@@ -6,7 +6,7 @@ public interface PluginHook {
 
     boolean isPresent();
 
-    default void setPresent(boolean present) {};
+    default void setPresent(boolean present) {}
 
     boolean isEarlyInitialized();
 

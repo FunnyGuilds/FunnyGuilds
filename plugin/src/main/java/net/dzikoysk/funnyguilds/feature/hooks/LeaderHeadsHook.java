@@ -10,7 +10,7 @@ import me.robin.leaderheads.objects.BoardType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.user.User;
 
-public class LeaderHeadsHook extends AbstractPluginHook{
+public class LeaderHeadsHook extends AbstractPluginHook {
 
     LeaderHeadsHook(String name) {
         super(name);
