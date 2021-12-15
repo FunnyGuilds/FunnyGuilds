@@ -31,12 +31,13 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
 
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion {
 
-        private final String FUNNYGUILDS_VERSION = FunnyGuilds.getInstance().getDescription().getVersion();
-
         private final FunnyGuilds plugin;
+
+        private final String funnyguildsVersion;
 
         private FunnyGuildsPlaceholder(FunnyGuilds plugin) {
             this.plugin = plugin;
+            this.funnyguildsVersion = plugin.getDescription().getVersion();
         }
 
         @Override
@@ -76,7 +77,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
 
         @Override
         public String getVersion() {
-            return FUNNYGUILDS_VERSION;
+            return funnyguildsVersion;
         }
 
         @Override
