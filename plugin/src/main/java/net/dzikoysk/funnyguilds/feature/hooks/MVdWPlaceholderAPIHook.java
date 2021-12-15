@@ -62,7 +62,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         FunnyGuilds.getPluginLogger().info("MVdWPlaceholderAPI hook has been enabled!");
     }
 
-    public static String replacePlaceholders(Player user, String base) {
+    public String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.replacePlaceholders(user, base);
     }
 

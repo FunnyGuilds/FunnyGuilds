@@ -25,7 +25,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         super.init();
     }
 
-    public static String replacePlaceholders(Player user, String base) {
+    public String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.setPlaceholders(user, base);
     }
 

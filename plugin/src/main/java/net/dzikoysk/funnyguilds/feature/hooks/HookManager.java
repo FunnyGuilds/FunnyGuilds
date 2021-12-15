@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Bukkit;
+import panda.std.stream.PandaStream;
 
 public class HookManager {
 
@@ -98,6 +99,12 @@ public class HookManager {
         T hook = hookSupplier.apply(pluginName);
         if (hook == null) {
             return null;
+        }
+
+        if (PandaStream.of(plugin.getPluginConfiguration().disabledHooks)
+                .find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName))
+                .isPresent()) {
+            FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook is disabled in configuration, some features may not be available");
         }
 
         hook.setPresent(true);

@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
-import net.dzikoysk.funnyguilds.feature.hooks.MVdWPlaceholderAPIHook;
-import net.dzikoysk.funnyguilds.feature.hooks.PlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariablesParser;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.VariableParsingResult;
@@ -148,11 +146,11 @@ public class IndividualPlayerList {
         formatted = ChatUtils.colored(formatted);
 
         if (HookManager.PLACEHOLDER_API.isFullyInitialized()) {
-            formatted = PlaceholderAPIHook.replacePlaceholders(player, formatted);
+            formatted = HookManager.PLACEHOLDER_API.replacePlaceholders(player, formatted);
         }
 
         if (HookManager.MVDW_PLACEHOLDER_API.isFullyInitialized()) {
-            formatted = MVdWPlaceholderAPIHook.replacePlaceholders(player, formatted);
+            formatted = HookManager.MVDW_PLACEHOLDER_API.replacePlaceholders(player, formatted);
         }
 
         return formatted;
