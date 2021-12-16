@@ -122,16 +122,24 @@ public class HookManager {
     }
 
     public void earlyInit() {
-        pluginHooks.forEach((plugin, hook) -> {
+        pluginHooks.forEach((pluginName, hook) -> {
             hook.earlyInit();
         });
     }
 
     public void init() {
-        pluginHooks.forEach((plugin, hook) -> {
-            FunnyGuilds.getPluginLogger().info(plugin + " plugin hook has been enabled!");
+        pluginHooks.forEach((pluginName, hook) -> {
+            FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
             hook.init();
         });
+    }
+
+    public PluginHook getHook(String pluginName) {
+        return pluginHooks.get(pluginName);
+    }
+
+    public boolean isHookPresent(String pluginName) {
+        return pluginHooks.containsKey(pluginName);
     }
 
 }
