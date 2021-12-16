@@ -72,7 +72,6 @@ public class WorldGuard6Hook extends WorldGuardHook {
     @Override
     public boolean isInNonPointsRegion(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
-
         if (regionSet == null) {
             return false;
         }
@@ -89,8 +88,8 @@ public class WorldGuard6Hook extends WorldGuardHook {
     @Override
     public boolean isInIgnoredRegion(Location location) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        ApplicableRegionSet regionSet = getRegionSet(location);
 
+        ApplicableRegionSet regionSet = getRegionSet(location);
         if (regionSet == null) {
             return false;
         }
@@ -103,7 +102,6 @@ public class WorldGuard6Hook extends WorldGuardHook {
     @Override
     public boolean isInRegion(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
-
         if (regionSet == null) {
             return false;
         }
