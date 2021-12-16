@@ -1,140 +1,137 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
-import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Location;
+import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
 
 public final class RegionUtils {
 
-    public static final Set<Region> REGION_LIST = ConcurrentHashMap.newKeySet();
-
+    /**
+     * Gets the copied set of regions.
+     *
+     * @return set of regions
+     * @deprecated for removal in the future, in favour of {@link RegionManager#getRegions()}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Set<Region> getRegions() {
-        return new HashSet<>(REGION_LIST);
+        return FunnyGuilds.getInstance().getRegionManager().getRegions();
     }
 
+    /**
+     * Gets the region.
+     *
+     * @param name the name of region (probably name of guild)
+     * @return the region
+     * @deprecated for removal in the future, in favour of {@link RegionManager#findByName(String)}
+     */
+    @Deprecated
+    @Nullable
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Region get(String name) {
-        if (name == null) {
-            return null;
-        }
-
-        for (Region region : REGION_LIST) {
-            if (name.equalsIgnoreCase(region.getName())) {
-                return region;
-            }
-        }
-
-        return null;
+        return FunnyGuilds.getInstance().getRegionManager().findByName(name).getOrNull();
     }
 
-    public static boolean isIn(Location location) {
-        for (Region region : REGION_LIST) {
-            if (region.isIn(location)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    /**
+     * Gets the region.
+     *
+     * @param location the location of region
+     * @return the region
+     * @deprecated for removal in the future, in favour of {@link RegionManager#findRegionAtLocation(Location)}
+     */
+    @Deprecated
+    @Nullable
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Region getAt(Location location) {
-        for (Region region : REGION_LIST) {
-            if (region.isIn(location)) {
-                return region;
-            }
-        }
-
-        return null;
+        return FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location).getOrNull();
     }
 
+    /**
+     * Gets the region.
+     *
+     * @param location the location of region
+     * @return the region
+     * @deprecated for removal in the future, in favour of {@link RegionManager#findRegionAtLocation(Location)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static Option<Region> getAtOpt(Location location) {
-        return Option.of(getAt(location));
+        return FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location);
     }
 
+    /**
+     * Checks if there is a region in the given location.
+     *
+     * @param location the location of region
+     * @return if given location is in region
+     * @deprecated for removal in the future, in favour of {@link RegionManager#isInRegion(Location)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    public static boolean isIn(Location location) {
+        return FunnyGuilds.getInstance().getRegionManager().isInRegion(location);
+    }
+
+    /**
+     * Checks if there is any region in area (used to check if it's possible to create a new guild in given location).
+     *
+     * @param center the center of region
+     * @return if is region nearby
+     * @deprecated for removal in the future, in favour of {@link RegionManager#isNearRegion(Location)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static boolean isNear(Location center) {
-        if (center == null) {
-            return false;
-        }
-
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        int size = config.regionSize;
-
-        if (config.enlargeItems != null) {
-            size += (config.enlargeItems.size() * config.enlargeSize);
-        }
-
-        int requiredDistance = (2 * size) + config.regionMinDistance;
-
-        for (Region region : REGION_LIST) {
-            if (region.getCenter() == null) {
-                continue;
-            }
-
-            if (region.getCenter().equals(center)) {
-                continue;
-            }
-
-            if (!center.getWorld().equals(region.getCenter().getWorld())) {
-                continue;
-            }
-
-            if (LocationUtils.flatDistance(center, region.getCenter()) < requiredDistance) {
-                return true;
-            }
-        }
-
-        return false;
+        return FunnyGuilds.getInstance().getRegionManager().isNearRegion(center);
     }
 
-    public static void delete(@Nullable Region region) {
-        if (region == null) {
-            return;
-        }
-
-        if (FunnyGuilds.getInstance().getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = (FlatDataModel) FunnyGuilds.getInstance().getDataModel();
-            dataModel.getRegionFile(region).delete();
-        }
-
-        if (FunnyGuilds.getInstance().getDataModel() instanceof SQLDataModel) {
-            DatabaseRegion.delete(region);
-        }
-
-        region.delete();
-    }
-
-    public static List<String> getNames(Collection<Region> lsg) {
-        List<String> list = new ArrayList<>();
-        if (lsg == null) {
-            return list;
-        }
-
-        for (Region r : lsg) {
-            if (r != null && r.getName() != null) {
-                list.add(r.getName());
-            }
-        }
-
-        return list;
-    }
-
+    /**
+     * Add region to storage. If you think you should use this method you probably shouldn't.
+     *
+     * @param region region to add
+     * @deprecated for removal in the future, in favour of {@link RegionManager#addRegion(Region)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static void addRegion(Region region) {
-        REGION_LIST.add(region);
+        FunnyGuilds.getInstance().getRegionManager().addRegion(region);
     }
 
+    /**
+     * Remove region from storage. If you think you should use this method you probably shouldn't - instead use {@link RegionManager#deleteRegion(Region)}.
+     *
+     * @param region region to remove
+     * @deprecated for removal in the future, in favour of {@link RegionManager#removeRegion(Region)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static void removeRegion(Region region) {
-        REGION_LIST.remove(region);
+        FunnyGuilds.getInstance().getRegionManager().removeRegion(region);
+    }
+
+    /**
+     * Delete region in every possible way.
+     *
+     * @param region region to delete
+     * @deprecated for removal in the future, in favour of {@link RegionManager#deleteRegion(Region)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    public static void delete(Region region) {
+        FunnyGuilds.getInstance().getRegionManager().deleteRegion(region);
+    }
+
+    public static Set<String> getNames(Collection<Region> regions) {
+        return regions.stream()
+                .filter(Objects::nonNull)
+                .map(Region::getName)
+                .collect(Collectors.toSet());
     }
 
     public static String toString(@Nullable Region region) {

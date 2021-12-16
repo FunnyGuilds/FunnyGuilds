@@ -18,13 +18,13 @@ public class Region extends AbstractMutableEntity {
     private Location firstCorner;
     private Location secondCorner;
 
-    private Region(String name) {
+    public Region(String name) {
         this.name = name;
     }
 
     public Region(Guild guild, Location loc, int size) {
+        this(guild.getName());
         this.guild = guild;
-        this.name = guild.getName();
         this.world = loc.getWorld();
         this.center = loc;
         this.size = size;
@@ -59,15 +59,6 @@ public class Region extends AbstractMutableEntity {
             this.firstCorner = l.toLocation(this.world);
             this.secondCorner = p.toLocation(this.world);
         }
-    }
-
-    public void delete() {
-        RegionUtils.removeRegion(this);
-        this.guild = null;
-        this.world = null;
-        this.center = null;
-        this.firstCorner = null;
-        this.secondCorner = null;
     }
 
     public boolean isIn(Location loc) {
@@ -192,16 +183,6 @@ public class Region extends AbstractMutableEntity {
     @Override
     public String toString() {
         return this.name;
-    }
-
-    public static Region getOrCreate(String name) {
-        for (Region region : RegionUtils.getRegions()) {
-            if (region.getName() != null && region.getName().equalsIgnoreCase(name)) {
-                return region;
-            }
-        }
-
-        return new Region(name);
     }
 
 }

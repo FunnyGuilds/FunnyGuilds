@@ -39,7 +39,7 @@ public class DatabaseRegion {
             values[2] = size;
             values[3] = enlarge;
 
-            return DeserializationUtils.deserializeRegion(values);
+            return DeserializationUtils.deserializeRegion(FunnyGuilds.getInstance().getRegionManager(), values);
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize region", ex);

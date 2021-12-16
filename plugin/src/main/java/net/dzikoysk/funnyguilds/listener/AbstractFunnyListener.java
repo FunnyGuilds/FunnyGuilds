@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.event.Listener;
@@ -26,5 +27,6 @@ public abstract class AbstractFunnyListener implements Listener {
     @Inject public RankManager rankManager;
     @Inject public UserManager userManager;
     @Inject public GuildManager guildManager;
+    @Inject public RegionManager regionManager;
 
 }

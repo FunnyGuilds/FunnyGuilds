@@ -30,7 +30,6 @@ public class FlatRegion {
         }
 
         Location center = LocationUtils.parseLocation(centerString);
-
         if (center == null) {
             FunnyGuilds.getPluginLogger().error("Cannot deserialize region! Caused by: center is null");
             return null;
@@ -46,7 +45,7 @@ public class FlatRegion {
         values[2] = size;
         values[3] = enlarge;
 
-        return DeserializationUtils.deserializeRegion(values);
+        return DeserializationUtils.deserializeRegion(FunnyGuilds.getInstance().getRegionManager(), values);
     }
 
     public boolean serialize(FlatDataModel flatDataModel) {

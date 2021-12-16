@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import panda.std.Option;
 
 public class PlayerInteract extends AbstractFunnyListener {
 
@@ -41,11 +41,11 @@ public class PlayerInteract extends AbstractFunnyListener {
             return;
         }
 
-        Region region = RegionUtils.getAt(clicked.getLocation());
-
-        if (region == null) {
+        Option<Region> regionOption = this.regionManager.findRegionAtLocation(clicked.getLocation());
+        if (regionOption.isEmpty()) {
             return;
         }
+        Region region = regionOption.get();
 
         Block heart = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
 
