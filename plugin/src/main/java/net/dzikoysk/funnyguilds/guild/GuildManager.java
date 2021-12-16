@@ -41,7 +41,7 @@ public class GuildManager {
     }
 
     public int countGuilds() {
-        return this.guildsMap.entrySet().size();
+        return this.guildsMap.size();
     }
 
     /**
@@ -90,7 +90,7 @@ public class GuildManager {
     /**
      * Gets the guild.
      *
-     * @param name the name of guild
+     * @param name       the name of guild
      * @param ignoreCase ignore the case of the name
      * @return the guild
      */
@@ -115,7 +115,7 @@ public class GuildManager {
     /**
      * Gets the guild.
      *
-     * @param tag the tag of guild
+     * @param tag        the tag of guild
      * @param ignoreCase ignore the case of the tag
      * @return the guild
      */
@@ -218,7 +218,7 @@ public class GuildManager {
      * @param guild guild to remove
      */
     public void removeGuild(Guild guild) {
-        Validate.notNull(guild, "user can't be null!");
+        Validate.notNull(guild, "guild can't be null!");
         guildsMap.remove(guild.getUUID());
     }
 
@@ -252,7 +252,7 @@ public class GuildManager {
                 }
             }
 
-            RegionUtils.delete(guild.getRegion());
+            this.plugin.getRegionManager().deleteRegion(guild.getRegion());
         }
 
         this.plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(guild));

@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +36,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
 
         ItemStack need = config.enlargeItems.get(enlarge);
         when(!player.getInventory().containsAtLeast(need, need.getAmount()), messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
-        when(RegionUtils.isNear(region.getCenter()), messages.enlargeIsNear);
+        when(this.regionManager.isNearRegion(region.getCenter()), messages.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, user.getGuild()))) {
             return;

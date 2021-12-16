@@ -98,7 +98,7 @@ public class DatabaseGuild {
             values[2] = tag;
             values[3] = owner;
             values[4] = LocationUtils.parseLocation(home);
-            values[5] = RegionUtils.get(regionName);
+            values[5] = plugin.getRegionManager().findByName(regionName).getOrNull();
             values[6] = members;
             values[7] = Sets.newHashSet();
             values[8] = Sets.newHashSet();
@@ -110,7 +110,7 @@ public class DatabaseGuild {
             values[14] = deputies;
             values[15] = pvp;
 
-            return DeserializationUtils.deserializeGuild(FunnyGuilds.getInstance(), values);
+            return DeserializationUtils.deserializeGuild(plugin.getPluginConfiguration(), plugin.getGuildManager(), values);
         }
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", ex);
@@ -120,8 +120,8 @@ public class DatabaseGuild {
     }
 
     public static void save(Guild guild) {
-        String members = ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getMembers()), false);
-        String deputies = ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), false);
+        String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
+        String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
         String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
         String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
         SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);

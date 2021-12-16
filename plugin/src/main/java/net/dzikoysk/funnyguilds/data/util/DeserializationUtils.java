@@ -7,21 +7,20 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Location;
 
 public final class DeserializationUtils {
 
     @SuppressWarnings("unchecked")
-    public static Guild deserializeGuild(FunnyGuilds plugin, Object[] values) {
+    public static Guild deserializeGuild(PluginConfiguration pluginConfiguration, GuildManager guildManager, Object[] values) {
         if (values == null) {
             FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild! Caused by: null");
             return null;
         }
-
-        PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
-        GuildManager guildManager = plugin.getGuildManager();
 
         UUID guildUuid = (UUID) values[0];
         String guildName = (String) values[1];
@@ -31,7 +30,6 @@ public final class DeserializationUtils {
                 : pluginConfiguration.guildTagUppercase
                     ? rawGuildTag.toUpperCase()
                     : rawGuildTag.toLowerCase();
-
 
         Guild guild = guildManager.findByUuid(guildUuid)
                 .orElseGet(() -> {
@@ -58,13 +56,17 @@ public final class DeserializationUtils {
         return guild;
     }
 
-    public static Region deserializeRegion(Object[] values) {
+    public static Region deserializeRegion(RegionManager regionManager, Object[] values) {
         if (values == null) {
             FunnyGuilds.getPluginLogger().error("Cannot deserialize region! Caused by: null");
             return null;
         }
 
-        Region region = Region.getOrCreate((String) values[0]);
+        String regionName = (String) values[0];
+
+        Region region = regionManager.findByName(regionName)
+                        .orElseGet(new Region(regionName));
+
         region.setCenter((Location) values[1]);
         region.setSize((int) values[2]);
         region.setEnlarge((int) values[3]);
@@ -73,11 +75,11 @@ public final class DeserializationUtils {
         return region;
     }
 
-    public static User deserializeUser(Object[] values) {
+    public static User deserializeUser(UserManager userManager, Object[] values) {
         UUID playerUniqueId = UUID.fromString((String) values[0]);
         String playerName = (String) values[1];
 
-        User user = FunnyGuilds.getInstance().getUserManager().create(playerUniqueId, playerName);
+        User user = userManager.create(playerUniqueId, playerName);
 
         user.getRank().setPoints((int) values[2]);
         user.getRank().setKills((int) values[3]);

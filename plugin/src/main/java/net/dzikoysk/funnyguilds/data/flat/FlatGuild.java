@@ -22,6 +22,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
+import panda.std.Option;
 
 public class FlatGuild {
 
@@ -73,11 +74,12 @@ public class FlatGuild {
         Set<String> allyNames = loadSet(wrapper, "allies");
         Set<String> enemyNames = loadSet(wrapper, "enemies");
 
-        final Region region = RegionUtils.get(regionName);
-        if (region == null && configuration.regionsEnabled) {
+        Option<Region> regionOption = FunnyGuilds.getInstance().getRegionManager().findByName(regionName);
+        if (regionOption.isEmpty() && configuration.regionsEnabled) {
             FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
             return null;
         }
+        Region region = regionOption.get();
 
         UUID uuid = UUID.randomUUID();
         if (id != null && !id.isEmpty()) {
@@ -142,7 +144,7 @@ public class FlatGuild {
         values[14] = deputies;
         values[15] = pvp;
 
-        return DeserializationUtils.deserializeGuild(FunnyGuilds.getInstance(), values);
+        return DeserializationUtils.deserializeGuild(configuration, guildManager, values);
     }
 
     public boolean serialize(FlatDataModel flatDataModel) {
@@ -174,7 +176,7 @@ public class FlatGuild {
         wrapper.set("tag", guild.getTag());
         wrapper.set("owner", guild.getOwner().getName());
         wrapper.set("home", LocationUtils.toString(guild.getHome()));
-        wrapper.set("members", UserUtils.getNamesOfUsers(guild.getMembers()));
+        wrapper.set("members", UserUtils.getNames(guild.getMembers()));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);
         wrapper.set("allies", GuildUtils.getNames(guild.getAllies()));
@@ -185,7 +187,7 @@ public class FlatGuild {
         wrapper.set("lives", guild.getLives());
         wrapper.set("ban", guild.getBan());
         wrapper.set("pvp", guild.getPvP());
-        wrapper.set("deputy", ChatUtils.toString(UserUtils.getNamesOfUsers(guild.getDeputies()), false));
+        wrapper.set("deputy", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
 
         wrapper.save();
         return true;

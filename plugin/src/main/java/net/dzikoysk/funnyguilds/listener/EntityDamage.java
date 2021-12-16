@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Animals;
@@ -28,7 +27,7 @@ public class EntityDamage extends AbstractFunnyListener {
             Entity victim = event.getEntity();
 
             if (config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
-                RegionUtils.getAtOpt(victim.getLocation())
+                this.regionManager.findRegionAtLocation(victim.getLocation())
                         .map(Region::getGuild)
                         .filterNot(guild -> guild.equals(attackerUser.getGuild()))
                         .peek(guild -> event.setCancelled(true));
@@ -45,7 +44,6 @@ public class EntityDamage extends AbstractFunnyListener {
             }
 
             User victimUser = victimOption.get();
-
             if (victimUser.hasGuild() && attackerUser.hasGuild()) {
                 if (victimUser.getUUID().equals(attackerUser.getUUID())) {
                     return;

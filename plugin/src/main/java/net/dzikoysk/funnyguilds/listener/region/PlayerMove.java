@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
@@ -51,14 +50,15 @@ public class PlayerMove extends AbstractFunnyListener {
             User user = userOption.get();
 
             UserCache cache = user.getCache();
-            Region region = RegionUtils.getAt(to);
 
-            if (region == null && user.getCache().getEnter()) {
+            Option<Region> regionToOption = this.regionManager.findRegionAtLocation(to);
+
+            if (regionToOption.isEmpty() && user.getCache().getEnter()) {
                 cache.setEnter(false);
-                region = RegionUtils.getAt(from);
 
-                if (region != null) {
-                    Guild guild = region.getGuild();
+                Option<Region> regionFromOption = this.regionManager.findRegionAtLocation(from);
+                if (regionFromOption.isPresent()) {
+                    Guild guild = regionFromOption.get().getGuild();
 
                     if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
                         event.setCancelled(true);
@@ -103,8 +103,8 @@ public class PlayerMove extends AbstractFunnyListener {
                     }
                 }
             }
-            else if (!cache.getEnter() && region != null) {
-                Guild guild = region.getGuild();
+            else if (!cache.getEnter() && regionToOption.isPresent()) {
+                Guild guild = regionToOption.get().getGuild();
 
                 if (guild == null || guild.getName() == null) {
                     return;

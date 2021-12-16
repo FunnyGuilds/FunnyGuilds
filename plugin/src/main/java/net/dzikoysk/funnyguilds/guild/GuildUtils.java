@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -167,18 +166,18 @@ public final class GuildUtils {
      * @param guilds collection of users
      * @return set of guild tags
      */
-    public static List<String> getTags(Collection<Guild> guilds) {
+    public static Set<String> getTags(Collection<Guild> guilds) {
         return guilds.stream()
                 .filter(Objects::nonNull)
                 .map(Guild::getTag)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     /**
      * Validate guild name.
      *
      * @param pluginConfiguration the PluginConfiguration from which pattern will be used
-     * @param guildName guild name to validate
+     * @param guildName           guild name to validate
      * @return if guild name is valid
      */
     public static boolean validateName(PluginConfiguration pluginConfiguration, String guildName) {
@@ -190,7 +189,7 @@ public final class GuildUtils {
      * Validate guild tag.
      *
      * @param pluginConfiguration the PluginConfiguration from which pattern will be used
-     * @param guildTag guild tag to validate
+     * @param guildTag            guild tag to validate
      * @return if guild tag is valid
      */
     public static boolean validateTag(PluginConfiguration pluginConfiguration, String guildTag) {

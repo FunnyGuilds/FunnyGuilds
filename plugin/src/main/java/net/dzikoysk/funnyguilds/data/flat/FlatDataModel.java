@@ -240,7 +240,7 @@ public class FlatDataModel implements DataModel {
             }
 
             region.wasChanged();
-            RegionUtils.addRegion(region);
+            FunnyGuilds.getInstance().getRegionManager().addRegion(region);
         }
 
         if (errors > 0) {

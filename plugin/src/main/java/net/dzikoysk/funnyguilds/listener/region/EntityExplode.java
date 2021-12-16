@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
@@ -23,6 +22,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import panda.std.Option;
 
 public class EntityExplode extends AbstractFunnyListener {
 
@@ -59,21 +59,20 @@ public class EntityExplode extends AbstractFunnyListener {
 
         if (config.explodeShouldAffectOnlyGuild) {
             explodedBlocks.removeIf(block -> {
-                Region region = RegionUtils.getAt(block.getLocation());
-
+                Region region = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
                 return (region == null || region.getGuild() == null) && block.getType() != Material.TNT;
             });
 
             blocksInSphere.removeIf(block -> {
-                Region region = RegionUtils.getAt(block.getLocation());
-
+                Region region = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
                 return region == null || region.getGuild() == null;
             });
         }
 
-        Region region = RegionUtils.getAt(explodeLocation);
+        Option<Region> regionOption = this.regionManager.findRegionAtLocation(explodeLocation);
 
-        if (region != null) {
+        if (regionOption.isPresent()) {
+            Region region = regionOption.get();
             Guild guild = region.getGuild();
 
             if (config.warTntProtection && !guild.canBeAttacked()) {
@@ -107,10 +106,10 @@ public class EntityExplode extends AbstractFunnyListener {
 
         if (config.warTntProtection) {
             boolean anyRemoved = explodedBlocks.removeIf(block -> {
-                Region regionAtExplosion = RegionUtils.getAt(block.getLocation());
+                Region regionAtExplosion = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
                 return regionAtExplosion != null && regionAtExplosion.getGuild() != null && !regionAtExplosion.getGuild().canBeAttacked();
             }) || blocksInSphere.removeIf(block -> {
-                Region regionAtExplosion = RegionUtils.getAt(block.getLocation());
+                Region regionAtExplosion = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
                 return regionAtExplosion != null && regionAtExplosion.getGuild() != null && !regionAtExplosion.getGuild().canBeAttacked();
             });
 

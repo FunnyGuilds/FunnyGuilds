@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
@@ -51,7 +50,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
                 messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
-        when(RegionUtils.isNear(location), messages.createIsNear);
+        when(this.regionManager.isNearRegion(location), messages.createIsNear);
 
         User admin = AdminUtils.getAdminUser(player);
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {

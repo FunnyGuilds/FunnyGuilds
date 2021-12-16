@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -80,7 +81,7 @@ public final class UserUtils {
     /**
      * Gets the user.
      *
-     * @param nickname the name of user
+     * @param nickname   the name of user
      * @param ignoreCase ignore the case of the nickname
      * @return the user
      * @deprecated for removal in the future, in favour of {@link UserManager#findByName(String, boolean)}
@@ -98,8 +99,11 @@ public final class UserUtils {
      * @param users collection of users
      * @return set of usernames
      */
-    public static Set<String> getNamesOfUsers(Collection<User> users) {
-        return users.stream().map(User::getName).collect(Collectors.toSet());
+    public static Set<String> getNames(Collection<User> users) {
+        return users.stream()
+                .filter(Objects::nonNull)
+                .map(User::getName)
+                .collect(Collectors.toSet());
     }
 
     /**

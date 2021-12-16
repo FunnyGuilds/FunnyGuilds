@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -24,7 +23,7 @@ public interface DataModel {
         }
 
         Set<String> guilds = GuildUtils.getNames(GuildUtils.getGuilds());
-        List<String> regions = RegionUtils.getNames(RegionUtils.getRegions());
+        Set<String> regions = RegionUtils.getNames(RegionUtils.getRegions());
 
         int repaired = 0;
 
@@ -47,7 +46,7 @@ public interface DataModel {
                 continue;
             }
 
-            RegionUtils.delete(region);
+            FunnyGuilds.getInstance().getRegionManager().deleteRegion(region);
             repaired++;
         }
 

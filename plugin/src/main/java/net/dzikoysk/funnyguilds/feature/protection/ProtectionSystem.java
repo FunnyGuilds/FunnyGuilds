@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -32,20 +31,18 @@ public final class ProtectionSystem {
             return Option.none();
         }
 
-        Region region = RegionUtils.getAt(location);
-
-        if (region == null) {
+        Option<Region> regionOption = FunnyGuilds.getInstance().getRegionManager().findRegionAtLocation(location);
+        if (regionOption.isEmpty()) {
             return Option.none();
         }
+        Region region = regionOption.get();
 
         Guild guild = region.getGuild();
-
         if (guild == null || guild.getName() == null) {
             return Option.none();
         }
 
         User user = UserUtils.get(player.getUniqueId());
-
         if (!guild.getMembers().contains(user)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }

@@ -22,6 +22,7 @@ import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
 import net.dzikoysk.funnyguilds.listener.EntityInteract;
@@ -106,6 +107,7 @@ public class FunnyGuilds extends JavaPlugin {
     private RankManager rankManager;
     private UserManager userManager;
     private GuildManager guildManager;
+    private RegionManager regionManager;
     private NmsAccessor nmsAccessor;
 
     private DataModel dataModel;
@@ -181,6 +183,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.rankManager = new RankManager(this.pluginConfiguration);
         this.userManager = new UserManager();
         this.guildManager = new GuildManager(this);
+        this.regionManager = new RegionManager(this);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -210,6 +213,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(RankManager.class).assignInstance(this.rankManager);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
+            resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
@@ -443,6 +447,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public GuildManager getGuildManager() {
         return guildManager;
+    }
+
+    public RegionManager getRegionManager() {
+        return regionManager;
     }
 
     public NmsAccessor getNmsAccessor() {

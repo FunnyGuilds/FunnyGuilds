@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
 import net.dzikoysk.funnyguilds.user.User;
@@ -62,13 +61,10 @@ public class PlayerJoin extends AbstractFunnyListener {
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             this.plugin.getVersion().isNewAvailable(player, false);
 
-            Region region = RegionUtils.getAt(player.getLocation());
-            if (region == null || region.getGuild() == null) {
-                return;
-            }
-
             if (config.heart.createEntityType != null) {
-                GuildEntityHelper.spawnGuildHeart(region.getGuild(), player);
+                this.regionManager.findRegionAtLocation(player.getLocation())
+                        .map(Region::getGuild)
+                        .peek(guild -> GuildEntityHelper.spawnGuildHeart(guild, player));
             }
         }, 30L);
     }

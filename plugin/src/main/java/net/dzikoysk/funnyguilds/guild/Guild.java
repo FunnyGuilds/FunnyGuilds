@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class Guild extends AbstractMutableEntity {
 
@@ -288,13 +289,14 @@ public class Guild extends AbstractMutableEntity {
     public boolean isSomeoneInRegion() {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
 
-        return plugin.getPluginConfiguration().regionsEnabled && Bukkit.getOnlinePlayers().stream()
+        return plugin.getPluginConfiguration().regionsEnabled && PandaStream.of(Bukkit.getOnlinePlayers())
                 .filter(player -> {
                     Option<User> user = plugin.getUserManager().findByPlayer(player);
                     return user.isDefined() && user.get().getGuild() != this;
                 })
-                .map(player -> RegionUtils.getAt(player.getLocation()))
-                .anyMatch(region -> region != null && region.getGuild() == this);
+                .flatMap(player -> plugin.getRegionManager().findRegionAtLocation(player.getLocation()))
+                .find(region -> region != null && region.getGuild() == this)
+                .isPresent();
     }
 
     public boolean isValid() {
