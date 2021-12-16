@@ -112,13 +112,11 @@ public class User extends AbstractMutableEntity {
         }
 
         Player player = this.playerRef.get();
-
         if (player != null) {
             return player;
         }
 
         player = Bukkit.getPlayer(this.uuid);
-
         if (player != null) {
             this.playerRef = new WeakReference<>(player);
             return player;
@@ -161,7 +159,6 @@ public class User extends AbstractMutableEntity {
 
     public boolean sendMessage(String message) {
         Player player = getPlayer();
-
         if (player == null) {
             return false;
         }
