@@ -21,11 +21,6 @@ public class VaultHook extends AbstractPluginHook {
 
     @Override
     public void init() {
-        this.initHooks();
-        super.init();
-    }
-
-    public void initHooks() {
         RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
 
@@ -33,15 +28,17 @@ public class VaultHook extends AbstractPluginHook {
             economyHook = economyProvider.getProvider();
         }
         else {
-            FunnyGuilds.getPluginLogger().warning("No economy provider found, some features may not be available");
+            FunnyGuilds.getPluginLogger().warning("Vault - No economy provider found, some features may not be available");
         }
 
         if (permissionProvider != null) {
             permissionHook = permissionProvider.getProvider();
         }
         else {
-            FunnyGuilds.getPluginLogger().warning("No permission provider found, some features may not be available");
+            FunnyGuilds.getPluginLogger().warning("Vault - No permission provider found, some features may not be available");
         }
+
+        super.init();
     }
 
     public static boolean isEconomyHooked() {

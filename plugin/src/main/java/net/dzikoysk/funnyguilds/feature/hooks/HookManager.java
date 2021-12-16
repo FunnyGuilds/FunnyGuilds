@@ -59,7 +59,6 @@ public class HookManager {
                 return new WorldEdit7Hook(pluginName);
             }
         });
-        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false);
         VAULT = setupHook("Vault", VaultHook::new);
         BUNGEE_TAB_LIST_PLUS = setupHook("BungeeTabListPlus", pluginName -> {
             try {
@@ -82,6 +81,7 @@ public class HookManager {
         PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
         LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
         HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin));
+        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false);
     }
 
     public <T extends PluginHook> T setupHook(String pluginName, Function<String, T> hookSupplier, boolean notifyIfMissing) {
@@ -113,7 +113,7 @@ public class HookManager {
         }
 
         hook.setPresent(true);
-        this.pluginHooks.put(hook.getName(), hook);
+        this.pluginHooks.put(pluginName, hook);
         return hook;
     }
 
@@ -129,6 +129,7 @@ public class HookManager {
 
     public void init() {
         pluginHooks.forEach((plugin, hook) -> {
+            FunnyGuilds.getPluginLogger().info(plugin + " plugin hook has been enabled!");
             hook.init();
         });
     }

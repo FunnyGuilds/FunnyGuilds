@@ -22,16 +22,10 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
 
     @Override
     public void init() {
-        this.initVariableHook();
-        super.init();
-    }
-
-    public void initVariableHook() {
         UserManager userManager = this.plugin.getUserManager();
 
         for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
             BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_" + variable.getKey()) {
-
                 @Override
                 public String getReplacement(Player player) {
                     return userManager.findByPlayer(player)
@@ -45,7 +39,6 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
         for (int i = 1; i <= 100; i++) {
             final int index = i;
             BungeeTabListPlusBukkitAPI.registerVariable(plugin, new Variable("funnyguilds_gtop-" + index) {
-
                 @Override
                 public String getReplacement(Player player) {
                     User user = userManager.findByPlayer(player).getOrNull();
@@ -66,7 +59,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
             });
         }
 
-        FunnyGuilds.getPluginLogger().info("BungeeTabListPlus hook has been enabled!");
+        super.init();
     }
 
 }

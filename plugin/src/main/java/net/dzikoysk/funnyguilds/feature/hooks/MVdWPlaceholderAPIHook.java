@@ -23,17 +23,11 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
     @Override
     public void init() {
-        this.initPlaceholderHook();
-        super.init();
-    }
-
-    public void initPlaceholderHook() {
         UserManager userManager = this.plugin.getUserManager();
 
         for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + variable.getKey(), event -> {
                 OfflinePlayer target = event.getOfflinePlayer();
-
                 if (target == null) {
                     return StringUtils.EMPTY;
                 }
@@ -59,7 +53,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + index, event -> RankUtils.parseRank(null, "{PTOP-" + index + "}"));
         }
 
-        FunnyGuilds.getPluginLogger().info("MVdWPlaceholderAPI hook has been enabled!");
+        super.init();
     }
 
     public String replacePlaceholders(Player user, String base) {
