@@ -69,15 +69,7 @@ public class HookManager {
                 return null;
             }
         });
-        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> {
-            try {
-                Class.forName("be.maximvdw.placeholderapi.PlaceholderReplacer");
-                return new MVdWPlaceholderAPIHook(pluginName, plugin);
-            }
-            catch (ClassNotFoundException exception) {
-                return null;
-            }
-        });
+        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin));
         PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
         LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
         HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin));
