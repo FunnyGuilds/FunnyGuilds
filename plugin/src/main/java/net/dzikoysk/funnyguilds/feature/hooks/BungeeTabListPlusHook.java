@@ -16,7 +16,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
 
     private final FunnyGuilds plugin;
 
-    public BungeeTabListPlusHook(String name, FunnyGuilds plugin) {
+    BungeeTabListPlusHook(String name, FunnyGuilds plugin) {
         super(name);
         this.plugin = plugin;
     }
@@ -50,7 +50,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
         super.init();
     }
 
-    static class FunctionVariable extends Variable {
+    private static class FunctionVariable extends Variable {
 
         private final Function<Player, String> replacement;
 
