@@ -4,8 +4,8 @@ public abstract class AbstractPluginHook implements PluginHook {
 
     private final String name;
 
-    protected boolean earlyInitialized;
-    protected boolean initialized;
+    private boolean earlyInitialized;
+    private boolean initialized;
 
     protected AbstractPluginHook(String name) {
         this.name = name;
