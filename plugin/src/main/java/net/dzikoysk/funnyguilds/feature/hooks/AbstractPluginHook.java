@@ -22,7 +22,7 @@ public abstract class AbstractPluginHook implements PluginHook {
     }
 
     @Override
-    public void callEarlyInit() {
+    public final void callEarlyInit() {
         this.earlyInit();
         this.earlyInitialized = true;
     }
@@ -36,7 +36,7 @@ public abstract class AbstractPluginHook implements PluginHook {
     }
 
     @Override
-    public void callInit() {
+    public final void callInit() {
         this.init();
         this.initialized = true;
     }
