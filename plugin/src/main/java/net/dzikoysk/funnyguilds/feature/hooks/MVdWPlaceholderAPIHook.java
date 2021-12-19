@@ -52,8 +52,6 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
             final int index = i;
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + index, event -> RankUtils.parseRank(null, "{PTOP-" + index + "}"));
         }
-
-        super.init();
     }
 
     public String replacePlaceholders(Player user, String base) {

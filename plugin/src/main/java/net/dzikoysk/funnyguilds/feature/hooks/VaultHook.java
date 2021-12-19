@@ -37,8 +37,6 @@ public class VaultHook extends AbstractPluginHook {
         else {
             FunnyGuilds.getPluginLogger().warning("Vault - No permission provider found, some features may not be available");
         }
-
-        super.init();
     }
 
     public static boolean isEconomyHooked() {

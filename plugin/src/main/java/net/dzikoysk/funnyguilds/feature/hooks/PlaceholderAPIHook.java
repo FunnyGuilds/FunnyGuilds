@@ -22,7 +22,6 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
     @Override
     public void init() {
         new FunnyGuildsPlaceholder(plugin).register();
-        super.init();
     }
 
     public String replacePlaceholders(Player user, String base) {

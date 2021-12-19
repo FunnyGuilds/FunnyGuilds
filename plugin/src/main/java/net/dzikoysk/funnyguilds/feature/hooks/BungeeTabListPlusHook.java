@@ -46,8 +46,6 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
             BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_ptop-" + i, player ->
                     RankUtils.parseRank(null, "{PTOP-" + index + "}")));
         }
-
-        super.init();
     }
 
     private static class FunctionVariable extends Variable {

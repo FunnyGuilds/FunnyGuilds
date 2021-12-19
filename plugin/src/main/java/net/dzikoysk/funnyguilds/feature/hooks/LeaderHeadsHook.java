@@ -22,7 +22,6 @@ public class LeaderHeadsHook extends AbstractPluginHook {
     @Override
     public void init() {
         new TopRankCollector(plugin);
-        super.init();
     }
 
     public static class TopRankCollector extends DataCollector {

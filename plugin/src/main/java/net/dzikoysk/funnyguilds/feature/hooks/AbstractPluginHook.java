@@ -4,7 +4,6 @@ public abstract class AbstractPluginHook implements PluginHook {
 
     private final String name;
 
-    protected boolean present;
     protected boolean earlyInitialized;
     protected boolean initialized;
 
@@ -18,23 +17,17 @@ public abstract class AbstractPluginHook implements PluginHook {
     }
 
     @Override
-    public boolean isPresent() {
-        return present;
-    }
-
-    @Override
-    public void setPresent(boolean present) {
-        this.present = present;
-    }
-
-    @Override
     public boolean isEarlyInitialized() {
         return this.earlyInitialized;
     }
 
     @Override
-    public void earlyInit() {
+    public void callEarlyInit() {
+        this.earlyInit();
         this.earlyInitialized = true;
+    }
+
+    public void earlyInit() {
     }
 
     @Override
@@ -43,8 +36,12 @@ public abstract class AbstractPluginHook implements PluginHook {
     }
 
     @Override
-    public void init() {
+    public void callInit() {
+        this.init();
         this.initialized = true;
+    }
+
+    public void init() {
     }
 
 }

@@ -66,8 +66,6 @@ public class WorldEdit6Hook extends WorldEditHook {
         catch (NoSuchMethodException ex) {
             FunnyGuilds.getPluginLogger().error("Could not properly initialize WorldGuard hook!");
         }
-
-        super.init();
     }
 
     @Override

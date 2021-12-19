@@ -104,7 +104,6 @@ public class HookManager {
             FunnyGuilds.getPluginLogger().info("You can't disable FunnyTab plugin hook lol");
         }
 
-        hook.setPresent(true);
         this.pluginHooks.put(pluginName, hook);
         return hook;
     }
@@ -115,14 +114,14 @@ public class HookManager {
 
     public void earlyInit() {
         pluginHooks.forEach((pluginName, hook) -> {
-            hook.earlyInit();
+            hook.callEarlyInit();
         });
     }
 
     public void init() {
         pluginHooks.forEach((pluginName, hook) -> {
             FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
-            hook.init();
+            hook.callInit();
         });
     }
 

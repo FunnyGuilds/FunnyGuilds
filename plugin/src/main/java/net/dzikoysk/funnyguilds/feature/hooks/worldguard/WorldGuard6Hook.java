@@ -65,8 +65,6 @@ public class WorldGuard6Hook extends WorldGuardHook {
         catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             FunnyGuilds.getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
         }
-
-        super.earlyInit();
     }
 
     @Override

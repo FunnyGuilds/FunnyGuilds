@@ -28,8 +28,6 @@ public class WorldGuard7Hook extends WorldGuardHook {
         noPointsFlag = new StateFlag("fg-no-points", false);
 
         worldGuard.getFlagRegistry().register(noPointsFlag);
-
-        super.earlyInit();
     }
 
     @Override

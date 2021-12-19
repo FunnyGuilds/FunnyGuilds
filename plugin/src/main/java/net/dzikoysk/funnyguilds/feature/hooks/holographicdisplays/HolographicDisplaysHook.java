@@ -29,8 +29,6 @@ public final class HolographicDisplaysHook extends AbstractPluginHook implements
     public void init() {
         HologramConfiguration hologramConfig = plugin.getPluginConfiguration().heart.hologram;
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new HologramUpdateHandler(plugin), 100L, hologramConfig.updateInterval);
-
-        super.init();
     }
 
     @Override
