@@ -14,7 +14,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -172,7 +172,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
 
 
-            FunnyHologramManager hologramManager = PluginHook.HOLOGRAPHIC_DISPLAYS;
+            FunnyHologramManager hologramManager = HookManager.HOLOGRAPHIC_DISPLAYS;
 
             hologramManager.getCorrectedLocation(guild)
                     .peek(location -> hologramManager.getOrCreateHologram(guild)
@@ -192,7 +192,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         if (config.regionsEnabled) {
             if (heart.pasteSchematicOnCreation) {
-                if (!PluginHook.WORLD_EDIT.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
+                if (!HookManager.WORLD_EDIT.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
                     player.sendMessage(messages.createGuildCouldNotPasteSchematic);
                 }
             }

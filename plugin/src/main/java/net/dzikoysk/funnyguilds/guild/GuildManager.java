@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
@@ -276,7 +276,7 @@ public class GuildManager {
         }
 
         removeGuild(guild);
-        PluginHook.HOLOGRAPHIC_DISPLAYS.deleteHologram(guild);
+        HookManager.HOLOGRAPHIC_DISPLAYS.deleteHologram(guild);
     }
 
     /**

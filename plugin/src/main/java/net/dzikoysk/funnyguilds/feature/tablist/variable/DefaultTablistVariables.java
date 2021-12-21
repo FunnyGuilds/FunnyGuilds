@@ -11,7 +11,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.SimpleTablistVariable;
@@ -90,7 +90,7 @@ public final class DefaultTablistVariables {
             parser.add(variable);
         }
 
-        if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD)) {
+        if (HookManager.WORLD_GUARD.isFullyInitialized()) {
             String wgRegionNoValue = FunnyGuilds.getInstance().getMessageConfiguration().wgRegionNoValue;
 
             parser.add(new SimpleTablistVariable("WG-REGION", user -> {
@@ -104,7 +104,7 @@ public final class DefaultTablistVariables {
             }));
         }
 
-        if (PluginHook.isPresent(PluginHook.PLUGIN_VAULT) && VaultHook.isEconomyHooked()) {
+        if (HookManager.WORLD_GUARD.isFullyInitialized() && VaultHook.isEconomyHooked()) {
             parser.add(new SimpleTablistVariable("VAULT-MONEY", user -> {
                 Player userPlayer = user.getPlayer();
 
@@ -205,7 +205,7 @@ public final class DefaultTablistVariables {
         }
 
         Location location = user.getPlayer().getLocation();
-        List<String> regionNames = PluginHook.WORLD_GUARD.getRegionNames(location);
+        List<String> regionNames = HookManager.WORLD_GUARD.getRegionNames(location);
 
         if (regionNames != null && !regionNames.isEmpty()) {
             return regionNames;

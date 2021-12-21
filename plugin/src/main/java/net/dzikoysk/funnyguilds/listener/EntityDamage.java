@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
+import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -77,7 +77,7 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            if (PluginHook.isPresent(PluginHook.PLUGIN_WORLDGUARD) && PluginHook.WORLD_GUARD.isInIgnoredRegion(victim.getLocation())) {
+            if (HookManager.WORLD_GUARD.isFullyInitialized() && HookManager.WORLD_GUARD.isInIgnoredRegion(victim.getLocation())) {
                 return;
             }
 

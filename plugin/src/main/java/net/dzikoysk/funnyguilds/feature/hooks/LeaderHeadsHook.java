@@ -10,14 +10,25 @@ import me.robin.leaderheads.objects.BoardType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.user.User;
 
-public class LeaderHeadsHook {
+public class LeaderHeadsHook extends AbstractPluginHook {
 
-    public static void initLeaderHeadsHook() {
-        new TopRankCollector();
+    private final FunnyGuilds plugin;
+
+    LeaderHeadsHook(String name, FunnyGuilds plugin) {
+        super(name);
+        this.plugin = plugin;
+    }
+
+    @Override
+    public void init() {
+        new TopRankCollector(plugin);
     }
 
     public static class TopRankCollector extends DataCollector {
-        public TopRankCollector() {
+
+        private final FunnyGuilds plugin;
+
+        public TopRankCollector(FunnyGuilds plugin) {
             super(
                     "funnyguilds-top-rank",
                     "FunnyGuilds",
@@ -28,6 +39,7 @@ public class LeaderHeadsHook {
                     true,
                     String.class
             );
+            this.plugin = plugin;
         }
 
         @Override
@@ -35,12 +47,13 @@ public class LeaderHeadsHook {
             List<Entry<?, Double>> topUsers = new ArrayList<>();
 
             for (int i = 1; i <= 10; i++) {
-                User user = FunnyGuilds.getInstance().getRankManager().getUser(i);
+                User user = this.plugin.getRankManager().getUser(i);
                 topUsers.add(Maps.immutableEntry(user.getName(), ((double) user.getRank().getPoints())));
             }
 
             return topUsers;
         }
+
     }
 
 }

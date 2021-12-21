@@ -21,7 +21,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Location;
 
-public class WorldEdit6Hook implements WorldEditHook {
+public class WorldEdit6Hook extends WorldEditHook {
 
     private Constructor<?> schematicReaderConstructor;
     private Constructor<?> clipboardHolderConstructor;
@@ -32,31 +32,8 @@ public class WorldEdit6Hook implements WorldEditHook {
     private Method pasteBuilderSetTo;
     private Method readSchematic;
 
-    @Override
-    public boolean pasteSchematic(File schematicFile, Location location, boolean withAir) {
-        try {
-            Object pasteLocation = vectorConstructor.newInstance(location.getX(), location.getY(), location.getZ());
-            com.sk89q.worldedit.world.World pasteWorld = new BukkitWorld(location.getWorld());
-            Object pasteWorldData = getWorldData.invoke(pasteWorld);
-
-            NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(schematicFile)));
-            Object reader = schematicReaderConstructor.newInstance(nbtStream);
-            Object clipboard = readSchematic.invoke(reader, pasteWorldData);
-
-            EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
-
-            ClipboardHolder clipboardHolder = (ClipboardHolder) clipboardHolderConstructor.newInstance(clipboard, pasteWorldData);
-            PasteBuilder builder = ((PasteBuilder) pasteConstructor.newInstance(clipboardHolder, editSession, pasteWorldData));
-            builder = (PasteBuilder) pasteBuilderSetTo.invoke(builder, pasteLocation);
-            builder = builder.ignoreAirBlocks(!withAir);
-
-            Operations.completeLegacy(builder.build());
-        }
-        catch (InstantiationException | IllegalAccessException | InvocationTargetException | MaxChangedBlocksException | IOException ex) {
-            throw new RuntimeException("Could not paste schematic: " + schematicFile.getAbsolutePath(), ex);
-        }
-
-        return true;
+    public WorldEdit6Hook(String name) {
+        super(name);
     }
 
     @Override
@@ -90,4 +67,32 @@ public class WorldEdit6Hook implements WorldEditHook {
             FunnyGuilds.getPluginLogger().error("Could not properly initialize WorldGuard hook!");
         }
     }
+
+    @Override
+    public boolean pasteSchematic(File schematicFile, Location location, boolean withAir) {
+        try {
+            Object pasteLocation = vectorConstructor.newInstance(location.getX(), location.getY(), location.getZ());
+            com.sk89q.worldedit.world.World pasteWorld = new BukkitWorld(location.getWorld());
+            Object pasteWorldData = getWorldData.invoke(pasteWorld);
+
+            NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(schematicFile)));
+            Object reader = schematicReaderConstructor.newInstance(nbtStream);
+            Object clipboard = readSchematic.invoke(reader, pasteWorldData);
+
+            EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
+
+            ClipboardHolder clipboardHolder = (ClipboardHolder) clipboardHolderConstructor.newInstance(clipboard, pasteWorldData);
+            PasteBuilder builder = ((PasteBuilder) pasteConstructor.newInstance(clipboardHolder, editSession, pasteWorldData));
+            builder = (PasteBuilder) pasteBuilderSetTo.invoke(builder, pasteLocation);
+            builder = builder.ignoreAirBlocks(!withAir);
+
+            Operations.completeLegacy(builder.build());
+        }
+        catch (InstantiationException | IllegalAccessException | InvocationTargetException | MaxChangedBlocksException | IOException ex) {
+            throw new RuntimeException("Could not paste schematic: " + schematicFile.getAbsolutePath(), ex);
+        }
+
+        return true;
+    }
+
 }

@@ -13,13 +13,17 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import org.bukkit.Location;
 
-public class WorldGuard7Hook implements WorldGuardHook {
+public class WorldGuard7Hook extends WorldGuardHook {
 
     private WorldGuard worldGuard;
     private StateFlag noPointsFlag;
 
+    public WorldGuard7Hook(String name) {
+        super(name);
+    }
+
     @Override
-    public void init() {
+    public void earlyInit() {
         worldGuard = WorldGuard.getInstance();
         noPointsFlag = new StateFlag("fg-no-points", false);
 
@@ -29,7 +33,6 @@ public class WorldGuard7Hook implements WorldGuardHook {
     @Override
     public boolean isInNonPointsRegion(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
-
         if (regionSet == null) {
             return false;
         }
@@ -46,8 +49,8 @@ public class WorldGuard7Hook implements WorldGuardHook {
     @Override
     public boolean isInIgnoredRegion(Location location) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        ApplicableRegionSet regionSet = getRegionSet(location);
 
+        ApplicableRegionSet regionSet = getRegionSet(location);
         if (regionSet == null) {
             return false;
         }
@@ -60,7 +63,6 @@ public class WorldGuard7Hook implements WorldGuardHook {
     @Override
     public boolean isInRegion(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
-
         if (regionSet == null) {
             return false;
         }
@@ -75,7 +77,6 @@ public class WorldGuard7Hook implements WorldGuardHook {
         }
 
         RegionManager regionManager = worldGuard.getPlatform().getRegionContainer().get(BukkitAdapter.adapt(location.getWorld()));
-
         if (regionManager == null) {
             return null;
         }

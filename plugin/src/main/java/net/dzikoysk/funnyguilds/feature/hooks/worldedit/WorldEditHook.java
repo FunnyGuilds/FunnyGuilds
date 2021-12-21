@@ -1,11 +1,15 @@
 package net.dzikoysk.funnyguilds.feature.hooks.worldedit;
 
 import java.io.File;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import org.bukkit.Location;
 
-public interface WorldEditHook {
+public abstract class WorldEditHook extends AbstractPluginHook {
 
-    boolean pasteSchematic(File schematicFile, Location location, boolean withAir);
+    public WorldEditHook(String name) {
+        super(name);
+    }
 
-    void init();
+    public abstract boolean pasteSchematic(File schematicFile, Location location, boolean withAir);
+
 }

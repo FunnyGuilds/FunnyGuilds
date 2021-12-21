@@ -10,12 +10,17 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-public final class VaultHook {
+public class VaultHook extends AbstractPluginHook {
 
     private static Economy economyHook;
     private static Permission permissionHook;
 
-    public static void initHooks() {
+    VaultHook(String name) {
+        super(name);
+    }
+
+    @Override
+    public void init() {
         RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
 
@@ -23,14 +28,14 @@ public final class VaultHook {
             economyHook = economyProvider.getProvider();
         }
         else {
-            FunnyGuilds.getPluginLogger().warning("No economy provider found, some features may not be available");
+            FunnyGuilds.getPluginLogger().warning("Vault - No economy provider found, some features may not be available");
         }
 
         if (permissionProvider != null) {
             permissionHook = permissionProvider.getProvider();
         }
         else {
-            FunnyGuilds.getPluginLogger().warning("No permission provider found, some features may not be available");
+            FunnyGuilds.getPluginLogger().warning("Vault - No permission provider found, some features may not be available");
         }
     }
 
@@ -60,8 +65,4 @@ public final class VaultHook {
     public static boolean hasPermission(OfflinePlayer player, String permission) {
         return permissionHook.playerHas(null, player, permission);
     }
-
-    private VaultHook() {
-    }
-
 }

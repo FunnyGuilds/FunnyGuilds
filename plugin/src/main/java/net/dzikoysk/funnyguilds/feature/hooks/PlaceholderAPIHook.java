@@ -7,25 +7,37 @@ import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
-public final class PlaceholderAPIHook {
+public class PlaceholderAPIHook extends AbstractPluginHook {
 
-    private static final String FUNNYGUILDS_VERSION = FunnyGuilds.getInstance().getDescription().getVersion();
+    private final FunnyGuilds plugin;
 
-    public static void initPlaceholderHook() {
-        new FunnyGuildsPlaceholder().register();
-        FunnyGuilds.getPluginLogger().info("PlaceholderAPI hook has been enabled!");
+    PlaceholderAPIHook(String name, FunnyGuilds plugin) {
+        super(name);
+        this.plugin = plugin;
     }
 
-    public static String replacePlaceholders(Player user, String base) {
+    @Override
+    public void init() {
+        new FunnyGuildsPlaceholder(plugin).register();
+    }
+
+    public String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.setPlaceholders(user, base);
     }
 
-    private PlaceholderAPIHook() {}
-
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion {
+
+        private final FunnyGuilds plugin;
+
+        private final String funnyguildsVersion;
+
+        private FunnyGuildsPlaceholder(FunnyGuilds plugin) {
+            this.plugin = plugin;
+            this.funnyguildsVersion = plugin.getDescription().getVersion();
+        }
 
         @Override
         public String onPlaceholderRequest(Player player, String identifier) {
@@ -33,10 +45,11 @@ public final class PlaceholderAPIHook {
                 return "";
             }
 
-            User user = UserUtils.get(player.getUniqueId());
-            if (user == null) {
+            Option<User> userOption = this.plugin.getUserManager().findByPlayer(player);
+            if (userOption.isEmpty()) {
                 return "";
             }
+            User user = userOption.get();
 
             TablistVariable variable = DefaultTablistVariables.getFunnyVariables().get(identifier.toLowerCase());
             if (variable != null) {
@@ -63,7 +76,7 @@ public final class PlaceholderAPIHook {
 
         @Override
         public String getVersion() {
-            return FUNNYGUILDS_VERSION;
+            return funnyguildsVersion;
         }
 
         @Override

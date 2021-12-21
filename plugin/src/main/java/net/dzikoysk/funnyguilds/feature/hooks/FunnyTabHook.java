@@ -4,12 +4,18 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import org.bukkit.Bukkit;
 
-public final class FunnyTabHook {
+public class FunnyTabHook extends AbstractPluginHook {
 
-    private FunnyTabHook() {}
+    private final FunnyGuilds plugin;
 
-    public static void initFunnyDisabler() {
-        final FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
+    FunnyTabHook(String name, FunnyGuilds plugin) {
+        super(name);
+        this.plugin = plugin;
+    }
+
+    @Override
+    public void init() {
+        FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         logger.info("!!!      FUNNYTAB JEST JUZ      !!!");
         logger.info("!!!        PRZESTARZALY         !!!");
@@ -22,7 +28,7 @@ public final class FunnyTabHook {
         logger.info("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-        Bukkit.getPluginManager().disablePlugin(FunnyGuilds.getInstance());
+        Bukkit.getPluginManager().disablePlugin(plugin);
     }
 
 }

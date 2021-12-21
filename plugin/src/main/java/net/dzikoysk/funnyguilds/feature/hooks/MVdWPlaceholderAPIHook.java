@@ -12,16 +12,22 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import panda.utilities.StringUtils;
 
-public final class MVdWPlaceholderAPIHook {
+public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
-    public static void initPlaceholderHook() {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        UserManager userManager = plugin.getUserManager();
+    private final FunnyGuilds plugin;
+
+    MVdWPlaceholderAPIHook(String name, FunnyGuilds plugin) {
+        super(name);
+        this.plugin = plugin;
+    }
+
+    @Override
+    public void init() {
+        UserManager userManager = this.plugin.getUserManager();
 
         for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + variable.getKey(), event -> {
                 OfflinePlayer target = event.getOfflinePlayer();
-
                 if (target == null) {
                     return StringUtils.EMPTY;
                 }
@@ -46,14 +52,10 @@ public final class MVdWPlaceholderAPIHook {
             final int index = i;
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + index, event -> RankUtils.parseRank(null, "{PTOP-" + index + "}"));
         }
-
-        FunnyGuilds.getPluginLogger().info("MVdWPlaceholderAPI hook has been enabled!");
     }
 
-    public static String replacePlaceholders(Player user, String base) {
+    public String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.replacePlaceholders(user, base);
     }
-
-    private MVdWPlaceholderAPIHook() {}
 
 }

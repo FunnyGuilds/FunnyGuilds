@@ -17,7 +17,11 @@ import java.io.IOException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Location;
 
-public class WorldEdit7Hook implements WorldEditHook {
+public class WorldEdit7Hook extends WorldEditHook {
+
+    public WorldEdit7Hook(String name) {
+        super(name);
+    }
 
     @Override
     public boolean pasteSchematic(File schematicFile, Location location, boolean withAir) {
@@ -46,8 +50,4 @@ public class WorldEdit7Hook implements WorldEditHook {
         }
     }
 
-    @Override
-    public void init() {
-
-    }
 }
