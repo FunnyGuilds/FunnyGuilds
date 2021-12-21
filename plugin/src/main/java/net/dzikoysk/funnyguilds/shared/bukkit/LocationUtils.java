@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 
 public final class LocationUtils {
 
+    private final static int LEGACY_MIN_HEIGHT = 0;
+
     private LocationUtils() {}
 
     public static double flatDistance(Location a, Location b) {
@@ -67,7 +69,7 @@ public final class LocationUtils {
             return world.getMinHeight();
         }
         catch (NoSuchMethodError ex) {
-            return 0;
+            return LEGACY_MIN_HEIGHT;
         }
     }
 
