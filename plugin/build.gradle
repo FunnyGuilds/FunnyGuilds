@@ -28,7 +28,7 @@ dependencies {
     implementation "org.bstats:bstats-bukkit:2.2.1"
 
     // probably fix for some exception?
-    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.15.0"
+    implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.17.0"
 
     // bukkit stuff
     shadow "org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT"
