@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -105,19 +106,13 @@ public class Guild extends AbstractMutableEntity {
         return this.lives;
     }
 
-    public void setLives(int i) {
-        this.lives = i;
+    public void setLives(int lives) {
+        this.lives = Math.max(0, lives);
         this.markChanged();
     }
 
-    public void addLive() {
-        this.lives++;
-        this.markChanged();
-    }
-
-    public void removeLive() {
-        this.lives--;
-        this.markChanged();
+    public void updateLives(IntFunction<Integer> update) {
+        this.setLives(update.apply(this.lives));
     }
 
     public Region getRegion() {
