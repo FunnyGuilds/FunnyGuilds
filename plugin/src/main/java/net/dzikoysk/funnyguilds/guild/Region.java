@@ -11,10 +11,12 @@ public class Region extends AbstractMutableEntity {
 
     private String name;
     private Guild guild;
-    private Location center;
+
     private World world;
+    private Location center;
     private int size;
     private int enlarge;
+
     private Location firstCorner;
     private Location secondCorner;
 
@@ -22,75 +24,29 @@ public class Region extends AbstractMutableEntity {
         this.name = name;
     }
 
-    public Region(Guild guild, Location loc, int size) {
+    public Region(Guild guild, Location location, int size) {
         this(guild.getName());
+
         this.guild = guild;
-        this.world = loc.getWorld();
-        this.center = loc;
+        this.world = location.getWorld();
+        this.center = location;
         this.size = size;
+
         this.update();
     }
 
-    public synchronized void update() {
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
         super.markChanged();
-
-        if (this.center == null) {
-            return;
-        }
-
-        if (this.size < 1) {
-            return;
-        }
-
-        if (this.world == null) {
-            this.world = Bukkit.getWorlds().get(0);
-        }
-
-        if (this.world != null) {
-            int lx = this.center.getBlockX() + this.size;
-            int lz = this.center.getBlockZ() + this.size;
-
-            int px = this.center.getBlockX() - this.size;
-            int pz = this.center.getBlockZ() - this.size;
-
-            Vector l = new Vector(lx, 0, lz);
-            Vector p = new Vector(px, this.world.getMaxHeight(), pz);
-
-            this.firstCorner = l.toLocation(this.world);
-            this.secondCorner = p.toLocation(this.world);
-        }
     }
 
-    public boolean isIn(Location loc) {
-        if (loc == null || this.firstCorner == null || this.secondCorner == null) {
-            return false;
-        }
-
-        if (!this.center.getWorld().equals(loc.getWorld())) {
-            return false;
-        }
-
-        if (loc.getBlockX() > this.getLowerX() && loc.getBlockX() < this.getUpperX()) {
-            if (loc.getBlockY() > this.getLowerY() && loc.getBlockY() < this.getUpperY()) {
-                return loc.getBlockZ() > this.getLowerZ() && loc.getBlockZ() < this.getUpperZ();
-            }
-        }
-
-        return false;
-    }
-
-    private int compareCoordinates(boolean upper, int a, int b) {
-        if (upper) {
-            return Math.max(b, a);
-        }
-        else {
-            return Math.min(a, b);
-        }
-    }
-
-    public void setName(String s) {
-        this.name = s;
-        super.markChanged();
+    public Guild getGuild() {
+        return this.guild;
     }
 
     public void setGuild(Guild guild) {
@@ -98,24 +54,8 @@ public class Region extends AbstractMutableEntity {
         super.markChanged();
     }
 
-    public void setCenter(Location loc) {
-        this.center = loc;
-        this.world = loc.getWorld();
-        this.update();
-    }
-
-    public void setSize(int i) {
-        this.size = i;
-        this.update();
-    }
-
-    public void setEnlarge(int i) {
-        this.enlarge = i;
-        super.markChanged();
-    }
-
-    public Guild getGuild() {
-        return this.guild;
+    public World getWorld() {
+        return this.world;
     }
 
     public Location getCenter() {
@@ -126,16 +66,28 @@ public class Region extends AbstractMutableEntity {
         return getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
     }
 
+    public void setCenter(Location location) {
+        this.center = location;
+        this.world = location.getWorld();
+        this.update();
+    }
+
     public int getSize() {
         return this.size;
     }
 
-    public World getWorld() {
-        return this.world;
+    public void setSize(int size) {
+        this.size = size;
+        this.update();
     }
 
     public int getEnlarge() {
         return this.enlarge;
+    }
+
+    public void setEnlarge(int enlarge) {
+        this.enlarge = enlarge;
+        super.markChanged();
     }
 
     public int getUpperX() {
@@ -170,14 +122,67 @@ public class Region extends AbstractMutableEntity {
         return this.secondCorner;
     }
 
-    @Override
-    public EntityType getType() {
-        return EntityType.REGION;
+    private int compareCoordinates(boolean upper, int a, int b) {
+        if (upper) {
+            return Math.max(b, a);
+        }
+        else {
+            return Math.min(a, b);
+        }
+    }
+
+    public boolean isIn(Location location) {
+        if (location == null || this.firstCorner == null || this.secondCorner == null) {
+            return false;
+        }
+
+        if (!this.center.getWorld().equals(location.getWorld())) {
+            return false;
+        }
+
+        if (location.getBlockX() > this.getLowerX() && location.getBlockX() < this.getUpperX()) {
+            if (location.getBlockY() > this.getLowerY() && location.getBlockY() < this.getUpperY()) {
+                return location.getBlockZ() > this.getLowerZ() && location.getBlockZ() < this.getUpperZ();
+            }
+        }
+
+        return false;
+    }
+
+
+    public synchronized void update() {
+        super.markChanged();
+
+        if (this.center == null) {
+            return;
+        }
+
+        if (this.size < 1) {
+            return;
+        }
+
+        if (this.world == null) {
+            this.world = Bukkit.getWorlds().get(0);
+        }
+
+        if (this.world != null) {
+            int lx = this.center.getBlockX() + this.size;
+            int lz = this.center.getBlockZ() + this.size;
+
+            int px = this.center.getBlockX() - this.size;
+            int pz = this.center.getBlockZ() - this.size;
+
+            Vector l = new Vector(lx, 0, lz);
+            Vector p = new Vector(px, this.world.getMaxHeight(), pz);
+
+            this.firstCorner = l.toLocation(this.world);
+            this.secondCorner = p.toLocation(this.world);
+        }
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public EntityType getType() {
+        return EntityType.REGION;
     }
 
     @Override

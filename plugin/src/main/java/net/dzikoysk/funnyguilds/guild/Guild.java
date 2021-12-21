@@ -390,8 +390,8 @@ public class Guild extends AbstractMutableEntity {
         return this.pvp;
     }
 
-    public void setPvP(boolean newPvp) {
-        this.pvp = newPvp;
+    public void setPvP(boolean pvp) {
+        this.pvp = pvp;
         this.markChanged();
     }
 
