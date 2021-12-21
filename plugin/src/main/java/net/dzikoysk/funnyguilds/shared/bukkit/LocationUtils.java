@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 public final class LocationUtils {
 
-    private final static int LEGACY_MIN_HEIGHT = 0;
+    private static final int LEGACY_MIN_HEIGHT = 0;
 
     private LocationUtils() {}
 
