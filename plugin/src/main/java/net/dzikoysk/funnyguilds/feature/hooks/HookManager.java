@@ -26,7 +26,7 @@ public class HookManager {
     public static MVdWPlaceholderAPIHook MVDW_PLACEHOLDER_API;
     public static PlaceholderAPIHook PLACEHOLDER_API;
     public static LeaderHeadsHook LEADER_HEADS;
-    public static FunnyHologramManager HOLOGRAPHIC_DISPLAYS = new EmptyHologramManagerImpl();
+    public static FunnyHologramManager HOLOGRAPHIC_DISPLAYS;
 
     private final FunnyGuilds plugin;
 
@@ -72,11 +72,13 @@ public class HookManager {
         MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin));
         PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
         LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
-        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin));
+        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> Bukkit.getPluginManager().getPlugin("HolographicDisplays") != null
+                ? new HolographicDisplaysHook(pluginName, plugin)
+                : new EmptyHologramManagerImpl());
         FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false);
     }
 
-    public <T extends PluginHook> T setupHook(String pluginName, Function<String, T> hookSupplier, boolean notifyIfMissing) {
+    public <T> T setupHook(String pluginName, Function<String, T> hookSupplier, boolean notifyIfMissing) {
         if (hookSupplier == null) {
             return null;
         }
@@ -93,6 +95,10 @@ public class HookManager {
             return null;
         }
 
+        if (!(hook instanceof PluginHook)) {
+            return hook;
+        }
+
         if (PandaStream.of(plugin.getPluginConfiguration().disabledHooks)
                 .find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName))
                 .isPresent()) {
@@ -104,11 +110,11 @@ public class HookManager {
             FunnyGuilds.getPluginLogger().info("You can't disable FunnyTab plugin hook lol");
         }
 
-        this.pluginHooks.put(pluginName, hook);
+        this.pluginHooks.put(pluginName, (PluginHook) hook);
         return hook;
     }
 
-    public <T extends PluginHook> T setupHook(String pluginName, Function<String, T> hookSupplier) {
+    public <T> T setupHook(String pluginName, Function<String, T> hookSupplier) {
         return this.setupHook(pluginName, hookSupplier, true);
     }
 
