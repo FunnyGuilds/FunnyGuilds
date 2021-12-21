@@ -7,3 +7,8 @@ updates:
     time: "04:00"
     timezone: "Europe/Warsaw"
   open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.sk89q.worldedit:worldedit-bukkit
+    versions:
+      - "> 7.2.6"
+

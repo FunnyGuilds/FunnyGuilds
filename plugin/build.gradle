@@ -49,7 +49,9 @@ dependencies {
     }
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
 
-    shadow "com.sk89q.worldedit:worldedit-bukkit:7.2.8"
+    shadow("com.sk89q.worldedit:worldedit-bukkit:7.2.6") {
+        because "WorldEdit on versions higher than 7.2.6 causes GH-1708 for some unknown reason"
+    }
     shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
