@@ -89,7 +89,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         HeartConfiguration heart = config.heart;
 
         if (config.regionsEnabled) {
-            if (heart.createCenterY != 0) {
+            if (!heart.usePlayerPositionForCenterY) {
                 guildLocation.setY(heart.createCenterY);
             }
 

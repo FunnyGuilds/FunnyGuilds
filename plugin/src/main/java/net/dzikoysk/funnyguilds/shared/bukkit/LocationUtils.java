@@ -62,4 +62,13 @@ public final class LocationUtils {
                 location.getBlockZ();
     }
 
+    public static int getMinHeight(World world) {
+        try {
+            return world.getMinHeight();
+        }
+        catch (NoSuchMethodError ex) {
+            return 0;
+        }
+    }
+
 }

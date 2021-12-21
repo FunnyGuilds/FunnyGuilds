@@ -32,8 +32,10 @@ public class HeartConfiguration extends OkaeriConfig {
     @Exclude
     public EntityType createEntityType;
 
+    @Comment("Czy poziom na jakim ma byc wyznaczone centrum gildii ma byc ustalany przez pozycje gracza")
+    public boolean usePlayerPositionForCenterY = false;
+
     @Comment("Na jakim poziomie ma byc wyznaczone centrum gildii")
-    @Comment("Wpisz 0 jesli ma byc ustalone przez pozycje gracza")
     @CustomKey("create-center-y")
     public int createCenterY = 60;
 
