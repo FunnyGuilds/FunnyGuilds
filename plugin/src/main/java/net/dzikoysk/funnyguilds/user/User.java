@@ -40,70 +40,29 @@ public class User extends AbstractMutableEntity {
         this(player.getUniqueId(), player.getName());
     }
 
-    public void removeGuild() {
-        this.guild = null;
-        this.markChanged();
-    }
-
-    public boolean hasGuild() {
-        return this.guild != null;
-    }
-
-    public void setGuild(Guild guild) {
-        this.guild = guild;
-        this.markChanged();
-    }
-
-    public void setBan(UserBan ban) {
-        this.ban = ban;
-    }
-
-    public boolean canManage() {
-        return isOwner() || isDeputy();
-    }
-
-    public boolean isOwner() {
-        if (!hasGuild()) {
-            return false;
-        }
-
-        return this.guild.getOwner().equals(this);
-    }
-
-    public boolean isDeputy() {
-        if (!hasGuild()) {
-            return false;
-        }
-
-        return this.guild.getDeputies().contains(this);
-    }
-
-    public boolean isOnline() {
-        if (this.name == null) {
-            return false;
-        }
-
-        return Bukkit.getPlayer(this.uuid) != null;
-    }
-
-    public boolean isBanned() {
-        return this.ban != null && this.ban.isBanned();
-    }
-
     public UUID getUUID() {
         return this.uuid;
     }
 
-    public Guild getGuild() {
-        return this.guild;
+    @Override
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public UserCache getCache() {
+        return this.cache;
     }
 
     public UserRank getRank() {
         return this.rank;
     }
 
-    public UserBan getBan() {
-        return ban;
+    public OfflinePlayer getOfflinePlayer() {
+        return Bukkit.getOfflinePlayer(this.uuid);
     }
 
     public Player getPlayer() {
@@ -127,36 +86,22 @@ public class User extends AbstractMutableEntity {
         return null;
     }
 
-    public OfflinePlayer getOfflinePlayer() {
-        return Bukkit.getOfflinePlayer(this.uuid);
-    }
-
-    public int getPing() {
-        return PingUtils.getPing(getPlayer());
-    }
-
-    public UserCache getCache() {
-        return this.cache;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public EntityType getType() {
-        return EntityType.USER;
-    }
-
     public void updateReference(Player player) {
         Validate.notNull(player, "you can't update reference with null player!");
 
         this.playerRef = new WeakReference<>(player);
+    }
+
+    public boolean isOnline() {
+        if (this.name == null) {
+            return false;
+        }
+
+        return Bukkit.getPlayer(this.uuid) != null;
+    }
+
+    public int getPing() {
+        return PingUtils.getPing(getPlayer());
     }
 
     public boolean sendMessage(String message) {
@@ -170,8 +115,63 @@ public class User extends AbstractMutableEntity {
         return true;
     }
 
+    public Guild getGuild() {
+        return this.guild;
+    }
+
+    public boolean hasGuild() {
+        return this.guild != null;
+    }
+
+    public void setGuild(Guild guild) {
+        this.guild = guild;
+        this.markChanged();
+    }
+
+    public void removeGuild() {
+        this.guild = null;
+        this.markChanged();
+    }
+
+    public boolean canManage() {
+        return isOwner() || isDeputy();
+    }
+
+    public boolean isOwner() {
+        if (!hasGuild()) {
+            return false;
+        }
+
+        return this.guild.getOwner().equals(this);
+    }
+
+    public boolean isDeputy() {
+        if (!hasGuild()) {
+            return false;
+        }
+
+        return this.guild.getDeputies().contains(this);
+    }
+
+    public UserBan getBan() {
+        return ban;
+    }
+
+    public boolean isBanned() {
+        return this.ban != null && this.ban.isBanned();
+    }
+
+    public void setBan(UserBan ban) {
+        this.ban = ban;
+    }
+
     public BossBarProvider getBossBar() {
         return this.bossBarProvider;
+    }
+
+    @Override
+    public EntityType getType() {
+        return EntityType.USER;
     }
 
     @Override
