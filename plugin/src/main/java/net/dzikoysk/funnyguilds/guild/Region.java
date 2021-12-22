@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -33,6 +34,54 @@ public class Region extends AbstractMutableEntity {
         this.size = size;
 
         this.update();
+    }
+
+    public synchronized void update() {
+        super.markChanged();
+
+        if (this.center == null) {
+            return;
+        }
+
+        if (this.size < 1) {
+            return;
+        }
+
+        if (this.world == null) {
+            this.world = Bukkit.getWorlds().get(0);
+        }
+
+        if (this.world != null) {
+            int lx = this.center.getBlockX() + this.size;
+            int lz = this.center.getBlockZ() + this.size;
+
+            int px = this.center.getBlockX() - this.size;
+            int pz = this.center.getBlockZ() - this.size;
+
+            Vector l = new Vector(lx, LocationUtils.getMinHeight(this.world), lz);
+            Vector p = new Vector(px, this.world.getMaxHeight(), pz);
+
+            this.firstCorner = l.toLocation(this.world);
+            this.secondCorner = p.toLocation(this.world);
+        }
+    }
+
+    public boolean isIn(Location location) {
+        if (location == null || this.firstCorner == null || this.secondCorner == null) {
+            return false;
+        }
+
+        if (!this.center.getWorld().equals(location.getWorld())) {
+            return false;
+        }
+
+        if (location.getBlockX() > this.getLowerX() && location.getBlockX() < this.getUpperX()) {
+            if (location.getBlockY() > this.getLowerY() && location.getBlockY() < this.getUpperY()) {
+                return location.getBlockZ() > this.getLowerZ() && location.getBlockZ() < this.getUpperZ();
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -128,55 +177,6 @@ public class Region extends AbstractMutableEntity {
         }
         else {
             return Math.min(a, b);
-        }
-    }
-
-    public boolean isIn(Location location) {
-        if (location == null || this.firstCorner == null || this.secondCorner == null) {
-            return false;
-        }
-
-        if (!this.center.getWorld().equals(location.getWorld())) {
-            return false;
-        }
-
-        if (location.getBlockX() > this.getLowerX() && location.getBlockX() < this.getUpperX()) {
-            if (location.getBlockY() > this.getLowerY() && location.getBlockY() < this.getUpperY()) {
-                return location.getBlockZ() > this.getLowerZ() && location.getBlockZ() < this.getUpperZ();
-            }
-        }
-
-        return false;
-    }
-
-
-    public synchronized void update() {
-        super.markChanged();
-
-        if (this.center == null) {
-            return;
-        }
-
-        if (this.size < 1) {
-            return;
-        }
-
-        if (this.world == null) {
-            this.world = Bukkit.getWorlds().get(0);
-        }
-
-        if (this.world != null) {
-            int lx = this.center.getBlockX() + this.size;
-            int lz = this.center.getBlockZ() + this.size;
-
-            int px = this.center.getBlockX() - this.size;
-            int pz = this.center.getBlockZ() - this.size;
-
-            Vector l = new Vector(lx, 0, lz);
-            Vector p = new Vector(px, this.world.getMaxHeight(), pz);
-
-            this.firstCorner = l.toLocation(this.world);
-            this.secondCorner = p.toLocation(this.world);
         }
     }
 
