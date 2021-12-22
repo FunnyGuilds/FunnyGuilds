@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -53,7 +54,7 @@ public class Region extends AbstractMutableEntity {
             int px = this.center.getBlockX() - this.size;
             int pz = this.center.getBlockZ() - this.size;
 
-            Vector l = new Vector(lx, 0, lz);
+            Vector l = new Vector(lx, LocationUtils.getMinHeight(this.world), lz);
             Vector p = new Vector(px, this.world.getMaxHeight(), pz);
 
             this.firstCorner = l.toLocation(this.world);

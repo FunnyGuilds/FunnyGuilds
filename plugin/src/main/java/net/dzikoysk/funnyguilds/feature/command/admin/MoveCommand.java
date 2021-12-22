@@ -38,7 +38,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         Location location = player.getLocation();
 
-        if (heart.createCenterY != 0) {
+        if (!heart.usePlayerPositionForCenterY) {
             location.setY(heart.createCenterY);
         }
 
