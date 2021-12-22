@@ -70,6 +70,21 @@ public class Guild extends AbstractMutableEntity {
         this.tag = tag;
     }
 
+    public void broadcast(String message) {
+        for (User user : this.getOnlineMembers()) {
+            if (user.getPlayer() == null) {
+                continue;
+            }
+
+            user.getPlayer().sendMessage(message);
+        }
+    }
+
+    public void deserializationUpdate() {
+        this.owner.setGuild(this);
+        this.members.forEach(user -> user.setGuild(this));
+    }
+
     public UUID getUUID() {
         return this.uuid;
     }
@@ -401,21 +416,6 @@ public class Guild extends AbstractMutableEntity {
         else {
             this.alliedFFGuilds.remove(alliedGuild.getUUID());
         }
-    }
-
-    public void broadcast(String message) {
-        for (User user : this.getOnlineMembers()) {
-            if (user.getPlayer() == null) {
-                continue;
-            }
-
-            user.getPlayer().sendMessage(message);
-        }
-    }
-
-    public void deserializationUpdate() {
-        this.owner.setGuild(this);
-        this.members.forEach(user -> user.setGuild(this));
     }
 
     @Override

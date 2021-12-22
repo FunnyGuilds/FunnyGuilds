@@ -40,6 +40,17 @@ public class User extends AbstractMutableEntity {
         this(player.getUniqueId(), player.getName());
     }
 
+    public boolean sendMessage(String message) {
+        Player player = getPlayer();
+
+        if (player == null) {
+            return false;
+        }
+
+        player.sendMessage(message);
+        return true;
+    }
+
     public UUID getUUID() {
         return this.uuid;
     }
@@ -102,17 +113,6 @@ public class User extends AbstractMutableEntity {
 
     public int getPing() {
         return PingUtils.getPing(getPlayer());
-    }
-
-    public boolean sendMessage(String message) {
-        Player player = getPlayer();
-
-        if (player == null) {
-            return false;
-        }
-
-        player.sendMessage(message);
-        return true;
     }
 
     public Guild getGuild() {
