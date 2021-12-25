@@ -120,14 +120,26 @@ public class HookManager {
 
     public void earlyInit() {
         pluginHooks.forEach((pluginName, hook) -> {
-            hook.callEarlyInit();
+            try {
+                hook.callEarlyInit();
+            }
+            catch (Exception exception) {
+                FunnyGuilds.getPluginLogger().error("Failed to early initialize " + pluginName + " plugin hook");
+                exception.printStackTrace();
+            }
         });
     }
 
     public void init() {
         pluginHooks.forEach((pluginName, hook) -> {
-            FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
-            hook.callInit();
+            try {
+                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
+                hook.callInit();
+            }
+            catch (Exception exception) {
+                FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook");
+                exception.printStackTrace();
+            }
         });
     }
 
