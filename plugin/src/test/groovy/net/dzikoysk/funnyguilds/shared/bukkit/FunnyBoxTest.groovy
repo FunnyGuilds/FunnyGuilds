@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue
 class FunnyBoxTest extends BukkitSpec {
 
     @Test
-    void 'should work pls' () {
+    void 'test FunnyBox' () {
         double createMinDistanceFromBorder = 50
 
         double radius = 10_000 / 2

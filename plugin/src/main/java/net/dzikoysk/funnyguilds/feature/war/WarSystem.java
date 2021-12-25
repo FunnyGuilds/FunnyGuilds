@@ -71,7 +71,7 @@ public class WarSystem {
         guild.setProtection(Instant.now().plus(config.warWait).toEpochMilli());
 
         if (SimpleEventHandler.handle(new GuildLivesChangeEvent(EventCause.SYSTEM, user, guild, guild.getLives() - 1))) {
-            guild.removeLive();
+            guild.updateLives(lives -> lives - 1);
         }
 
         if (guild.getLives() < 1) {
@@ -98,7 +98,7 @@ public class WarSystem {
 
     public void conquer(Guild conqueror, Guild loser, User attacker) {
         if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, attacker, loser))) {
-            loser.addLive();
+            loser.updateLives(lives -> lives + 1);
             return;
         }
 
@@ -123,7 +123,7 @@ public class WarSystem {
         }
 
         FunnyGuilds.getInstance().getGuildManager().deleteGuild(loser);
-        conqueror.addLive();
+        conqueror.updateLives(lives -> lives + 1);
 
         message = WarUtils.getBroadcastMessage(conqueror, loser);
         Bukkit.broadcastMessage(message);

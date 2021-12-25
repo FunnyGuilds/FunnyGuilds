@@ -13,18 +13,6 @@ public class DamageCache {
         this.lastTime = lastTime;
     }
 
-    public void setDamage(double damage) {
-        this.damage = damage;
-    }
-
-    public void setLastTime(long lastTime) {
-        this.lastTime = lastTime;
-    }
-
-    public void addDamage(double damage) {
-        this.damage += damage;
-    }
-
     public User getAttacker() {
         return attacker;
     }
@@ -33,7 +21,20 @@ public class DamageCache {
         return damage;
     }
 
+    public void setDamage(double damage) {
+        this.damage = damage;
+    }
+
+    public void addDamage(double damage) {
+        this.damage += damage;
+    }
+
     public long getLastTime() {
         return lastTime;
     }
+
+    public void setLastTime(long lastTime) {
+        this.lastTime = lastTime;
+    }
+
 }
