@@ -85,10 +85,10 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 Guild guildOne = userOne.getGuild();
                 Guild guildTwo = userTwo.getGuild();
                 if (guildOne != null) {
-                    if(guildOne.getAllies().contains(guildTwo)) {
+                    if (guildOne.getAllies().contains(guildTwo)) {
                         return IndividualPrefix.preparePrefix(config.prefixAllies, guildTwo);
                     }
-                    else if(guildOne.getEnemies().contains(guildTwo) || guildTwo.getEnemies().contains(guildOne)) {
+                    else if (guildOne.getEnemies().contains(guildTwo) || guildTwo.getEnemies().contains(guildOne)) {
                         return IndividualPrefix.preparePrefix(config.prefixEnemies, guildTwo);
                     }
                     else {
