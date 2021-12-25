@@ -103,11 +103,11 @@ public class HookManager {
                 .find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName))
                 .isPresent()) {
             if (!pluginName.equalsIgnoreCase("FunnyTab")) {
-                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook is disabled in configuration, some features may not be available");
+                FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
                 return hook;
             }
 
-            FunnyGuilds.getPluginLogger().info("You can't disable FunnyTab plugin hook lol");
+            FunnyGuilds.getPluginLogger().warning("You can't disable FunnyTab plugin hook lol");
         }
 
         this.pluginHooks.put(pluginName, (PluginHook) hook);
@@ -120,14 +120,26 @@ public class HookManager {
 
     public void earlyInit() {
         pluginHooks.forEach((pluginName, hook) -> {
-            hook.callEarlyInit();
+            try {
+                hook.callEarlyInit();
+            }
+            catch (Exception exception) {
+                FunnyGuilds.getPluginLogger().error("Failed to early initialize " + pluginName + " plugin hook");
+                exception.printStackTrace();
+            }
         });
     }
 
     public void init() {
         pluginHooks.forEach((pluginName, hook) -> {
-            FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
-            hook.callInit();
+            try {
+                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
+                hook.callInit();
+            }
+            catch (Exception exception) {
+                FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook");
+                exception.printStackTrace();
+            }
         });
     }
 
