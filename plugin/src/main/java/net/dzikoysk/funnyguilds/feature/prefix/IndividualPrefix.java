@@ -244,7 +244,7 @@ public class IndividualPrefix {
         }
     }
 
-    private String preparePrefix(String text, Guild guild) {
+    public static String preparePrefix(String text, Guild guild) {
         Formatter formatter = Placeholders.GUILD.toFormatter(guild);
         String formatted = formatter.format(text);
 

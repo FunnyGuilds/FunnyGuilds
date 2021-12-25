@@ -2,11 +2,16 @@ package net.dzikoysk.funnyguilds.feature.hooks;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
+import me.clip.placeholderapi.expansion.Relational;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 
@@ -28,7 +33,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return PlaceholderAPI.setPlaceholders(user, base);
     }
 
-    private static class FunnyGuildsPlaceholder extends PlaceholderExpansion {
+    private static class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
 
         private final FunnyGuilds plugin;
 
@@ -57,6 +62,48 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             return RankUtils.parseRank(user, "{" + identifier.toUpperCase() + "}");
+        }
+
+        @Override
+        public String onPlaceholderRequest(Player one, Player two, String identifier) {
+            PluginConfiguration config = this.plugin.getPluginConfiguration();
+            UserManager userManager = this.plugin.getUserManager();
+
+            if (one == null || two == null) {
+                return null;
+            }
+
+            Option<User> userOneOption = userManager.findByPlayer(one);
+            Option<User> userTwoOption = userManager.findByPlayer(two);
+            if (userOneOption.isEmpty() || userTwoOption.isEmpty()) {
+                return null;
+            }
+            User userOne = userOneOption.get();
+            User userTwo = userTwoOption.get();
+
+            if (identifier.equalsIgnoreCase("tag")) {
+                Guild guildOne = userOne.getGuild();
+                Guild guildTwo = userTwo.getGuild();
+                if (guildOne != null) {
+                    if(guildOne.getAllies().contains(guildTwo)) {
+                        return IndividualPrefix.preparePrefix(config.prefixAllies, guildTwo);
+                    }
+                    else if(guildOne.getEnemies().contains(guildTwo) || guildTwo.getEnemies().contains(guildOne)) {
+                        return IndividualPrefix.preparePrefix(config.prefixEnemies, guildTwo);
+                    }
+                    else {
+                        return IndividualPrefix.preparePrefix(config.prefixOther, guildTwo);
+                    }
+                }
+                else {
+                    if (guildTwo != null) {
+                        return "";
+                    }
+                    return IndividualPrefix.preparePrefix(config.prefixOther, guildTwo);
+                }
+            }
+
+            return null;
         }
 
         @Override
