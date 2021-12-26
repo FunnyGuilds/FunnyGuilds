@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.data;
 
 import java.sql.SQLException;
 import java.util.List;
-
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;

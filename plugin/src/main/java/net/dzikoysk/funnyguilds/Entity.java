@@ -1,8 +1,7 @@
 package net.dzikoysk.funnyguilds;
 
-import panda.std.stream.PandaStream;
-
 import java.util.List;
+import panda.std.stream.PandaStream;
 
 public interface Entity {
 

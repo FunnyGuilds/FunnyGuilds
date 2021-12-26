@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
