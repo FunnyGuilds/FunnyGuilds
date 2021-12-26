@@ -94,19 +94,6 @@ public final class UserUtils {
     }
 
     /**
-     * Gets the set of usernames from collection of users.
-     *
-     * @param users collection of users
-     * @return set of usernames
-     */
-    public static Set<String> getNames(Collection<User> users) {
-        return users.stream()
-                .filter(Objects::nonNull)
-                .map(User::getName)
-                .collect(Collectors.toSet());
-    }
-
-    /**
      * Gets the set of usernames (with tags to format) from collection of users.
      *
      * @param users collection of users

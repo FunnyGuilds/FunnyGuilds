@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -14,7 +16,6 @@ import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -176,18 +177,18 @@ public class FlatGuild {
         wrapper.set("tag", guild.getTag());
         wrapper.set("owner", guild.getOwner().getName());
         wrapper.set("home", LocationUtils.toString(guild.getHome()));
-        wrapper.set("members", UserUtils.getNames(guild.getMembers()));
+        wrapper.set("members", Entity.names(guild.getMembers()));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);
-        wrapper.set("allies", GuildUtils.getNames(guild.getAllies()));
-        wrapper.set("enemies", GuildUtils.getNames(guild.getEnemies()));
+        wrapper.set("allies", Entity.names(guild.getAllies()));
+        wrapper.set("enemies", Entity.names(guild.getEnemies()));
         wrapper.set("born", guild.getBorn());
         wrapper.set("validity", guild.getValidity());
         wrapper.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
         wrapper.set("lives", guild.getLives());
         wrapper.set("ban", guild.getBan());
         wrapper.set("pvp", guild.getPvP());
-        wrapper.set("deputy", ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false));
+        wrapper.set("deputy", ChatUtils.toString(Entity.names(guild.getDeputies()), false));
 
         wrapper.save();
         return true;

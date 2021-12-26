@@ -127,13 +127,6 @@ public final class RegionUtils {
         FunnyGuilds.getInstance().getRegionManager().deleteRegion(region);
     }
 
-    public static Set<String> getNames(Collection<Region> regions) {
-        return regions.stream()
-                .filter(Objects::nonNull)
-                .map(Region::getName)
-                .collect(Collectors.toSet());
-    }
-
     public static String toString(@Nullable Region region) {
         return region != null ? region.getName() : "null";
     }

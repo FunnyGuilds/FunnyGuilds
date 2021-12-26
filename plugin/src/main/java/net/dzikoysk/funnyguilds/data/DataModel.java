@@ -1,7 +1,9 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.List;
+
+import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
@@ -22,8 +24,8 @@ public interface DataModel {
             return;
         }
 
-        Set<String> guilds = GuildUtils.getNames(GuildUtils.getGuilds());
-        Set<String> regions = RegionUtils.getNames(RegionUtils.getRegions());
+        List<String> guilds = Entity.names(GuildUtils.getGuilds());
+        List<String> regions = Entity.names(RegionUtils.getRegions());
 
         int repaired = 0;
 
@@ -37,8 +39,8 @@ public interface DataModel {
             repaired++;
         }
 
-        guilds = GuildUtils.getNames(GuildUtils.getGuilds());
-        regions = RegionUtils.getNames(RegionUtils.getRegions());
+        guilds = Entity.names(GuildUtils.getGuilds());
+        regions = Entity.names(RegionUtils.getRegions());
 
         for (Region region : RegionUtils.getRegions()) {
             if (region.getName() != null && guilds.contains(region.getName())) {

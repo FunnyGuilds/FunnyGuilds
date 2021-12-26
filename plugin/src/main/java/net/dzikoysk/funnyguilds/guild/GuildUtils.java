@@ -148,19 +148,6 @@ public final class GuildUtils {
     }
 
     /**
-     * Gets the set of guild names from collection of guild.
-     *
-     * @param guilds collection of users
-     * @return set of usernames
-     */
-    public static Set<String> getNames(Collection<Guild> guilds) {
-        return guilds.stream()
-                .filter(Objects::nonNull)
-                .map(Guild::getName)
-                .collect(Collectors.toSet());
-    }
-
-    /**
      * Gets the set of guild tags from collection of guild.
      *
      * @param guilds collection of users

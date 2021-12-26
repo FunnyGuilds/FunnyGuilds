@@ -6,13 +6,14 @@ import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+
+import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
@@ -120,10 +121,10 @@ public class DatabaseGuild {
     }
 
     public static void save(Guild guild) {
-        String members = ChatUtils.toString(UserUtils.getNames(guild.getMembers()), false);
-        String deputies = ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false);
-        String allies = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), false);
-        String enemies = ChatUtils.toString(GuildUtils.getNames(guild.getEnemies()), false);
+        String members = ChatUtils.toString(Entity.names(guild.getMembers()), false);
+        String deputies = ChatUtils.toString(Entity.names(guild.getDeputies()), false);
+        String allies = ChatUtils.toString(Entity.names(guild.getAllies()), false);
+        String enemies = ChatUtils.toString(Entity.names(guild.getEnemies()), false);
         SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
 
         statement.set("uuid", guild.getUUID().toString());
