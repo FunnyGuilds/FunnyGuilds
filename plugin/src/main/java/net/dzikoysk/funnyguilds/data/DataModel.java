@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Collection;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -23,8 +23,8 @@ public interface DataModel {
             return;
         }
 
-        List<String> guilds = Entity.names(GuildUtils.getGuilds());
-        List<String> regions = Entity.names(RegionUtils.getRegions());
+        Collection<String> guilds = Entity.names(GuildUtils.getGuilds());
+        Collection<String> regions = Entity.names(RegionUtils.getRegions());
 
         int repaired = 0;
 

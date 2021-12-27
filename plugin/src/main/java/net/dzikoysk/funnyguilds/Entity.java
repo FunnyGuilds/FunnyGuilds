@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds;
 
-import java.util.List;
+import java.util.Set;
 import panda.std.stream.PandaStream;
 
 public interface Entity {
@@ -17,10 +17,10 @@ public interface Entity {
 
     String getName();
 
-    static <T extends Entity> List<String> names(Iterable<T> entities) {
+    static <T extends Entity> Set<String> names(Iterable<T> entities) {
         return PandaStream.of(entities)
                 .map(Entity::getName)
-                .toList();
+                .toSet();
     }
 
 }
