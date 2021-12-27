@@ -73,7 +73,7 @@ processResources {
 }
 
 shadowJar {
-    archiveFileName = "FunnyGuilds ${project.version} (MC 1.8-1.17).jar"
+    archiveFileName = "FunnyGuilds ${project.version} (MC 1.8-1.18).jar"
 
     relocate "net.dzikoysk.funnycommands", "net.dzikoysk.funnyguilds.libs.net.dzikoysk.funnycommands"
     relocate "panda.utilities", "net.dzikoysk.funnyguilds.libs.panda.utilities"
