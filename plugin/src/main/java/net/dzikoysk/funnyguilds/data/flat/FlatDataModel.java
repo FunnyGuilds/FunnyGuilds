@@ -65,9 +65,8 @@ public class FlatDataModel implements DataModel {
                 IOUtils.initialize(file, true);
                 return file;
             }
+            default: return null;
         }
-
-        return null;
     }
 
     public File getUserFile(User user) {

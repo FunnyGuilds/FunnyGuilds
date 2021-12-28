@@ -132,6 +132,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                         return new FunnybinRequest(sender, Arrays.asList(args).subList(2, args.length));
                     }
                     break;
+                default: return null;
             }
         }
 

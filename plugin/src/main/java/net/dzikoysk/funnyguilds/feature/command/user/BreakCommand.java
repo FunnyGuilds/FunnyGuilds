@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
+import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
@@ -13,7 +14,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
@@ -37,7 +37,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
 
         if (args.length < 1) {
             List<String> list = messages.breakAlliesList;
-            String iss = ChatUtils.toString(GuildUtils.getNames(guild.getAllies()), true);
+            String iss = ChatUtils.toString(Entity.names(guild.getAllies()), true);
 
             for (String msg : list) {
                 player.sendMessage(msg.replace("{GUILDS}", iss));

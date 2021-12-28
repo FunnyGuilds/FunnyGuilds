@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -56,7 +57,7 @@ public class Placeholders<T> {
                 .property("OWNER", guild -> guild.getOwner().getName())
                 .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
                 .property("MEMBERS-ALL", guild -> guild.getMembers().size())
-                .property("DEPUTIES", guild -> joinOrDefault.apply(UserUtils.getNames(guild.getDeputies()), "Brak"))
+                .property("DEPUTIES", guild -> joinOrDefault.apply(Entity.names(guild.getDeputies()), "Brak"))
                 .property("REGION-SIZE", guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
                 .property("GUILD-PROTECTION", bindGuildProtection)
                 .property("POINTS-FORMAT", guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
@@ -69,9 +70,9 @@ public class Placeholders<T> {
                 .property("VALIDITY", guild -> config.dateFormat.format(new Date(guild.getValidity())))
                 .property("LIVES", Guild::getLives)
                 .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
-                .property("ALLIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getAllies()), messages.alliesNoValue))
+                .property("ALLIES", guild -> joinOrDefault.apply(Entity.names(guild.getAllies()), messages.alliesNoValue))
                 .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
-                .property("ENEMIES", guild -> joinOrDefault.apply(GuildUtils.getNames(guild.getEnemies()), messages.enemiesNoValue))
+                .property("ENEMIES", guild -> joinOrDefault.apply(Entity.names(guild.getEnemies()), messages.enemiesNoValue))
                 .property("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
 
         GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>>()

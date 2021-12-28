@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -148,7 +149,7 @@ public final class DefaultTablistVariables {
         FUNNY_VARIABLES.put("g-deputies", GuildDependentTablistVariable.ofGuild("G-DEPUTIES",
                 guild -> guild.getDeputies().isEmpty()
                         ? messages.gDeputiesNoValue
-                        : ChatUtils.toString(UserUtils.getNames(guild.getDeputies()), false),
+                        : ChatUtils.toString(Entity.names(guild.getDeputies()), false),
                 user -> messages.gDeputiesNoValue));
 
         FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY",
