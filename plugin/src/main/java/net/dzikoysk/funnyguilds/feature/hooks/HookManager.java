@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Bukkit;
+import panda.std.Option;
 import panda.std.stream.PandaStream;
 
 public class HookManager {
@@ -49,7 +50,7 @@ public class HookManager {
                 FunnyGuilds.getPluginLogger().warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
                 return null;
             }
-        });
+        }).getOrNull();
         WORLD_EDIT = setupHook("WorldEdit", pluginName -> {
             try {
                 Class.forName("com.sk89q.worldedit.Vector");
@@ -58,8 +59,8 @@ public class HookManager {
             catch (ClassNotFoundException ignored) {
                 return new WorldEdit7Hook(pluginName);
             }
-        });
-        VAULT = setupHook("Vault", VaultHook::new);
+        }).getOrNull();
+        VAULT = setupHook("Vault", VaultHook::new).getOrNull();
         BUNGEE_TAB_LIST_PLUS = setupHook("BungeeTabListPlus", pluginName -> {
             try {
                 Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
@@ -68,35 +69,38 @@ public class HookManager {
             catch (ClassNotFoundException exception) {
                 return null;
             }
-        });
-        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin));
-        PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
-        LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
-        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> Bukkit.getPluginManager().getPlugin("HolographicDisplays") != null
-                ? new HolographicDisplaysHook(pluginName, plugin)
-                : new EmptyHologramManagerImpl());
-        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false);
+        }).getOrNull();
+
+        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin)).getOrNull();
+        PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin)).getOrNull();
+        LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin)).getOrNull();
+
+        HOLOGRAPHIC_DISPLAYS = this.<FunnyHologramManager>setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin))
+                .orElseGet(new EmptyHologramManagerImpl());
+
+        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false).getOrNull();
     }
 
-    public <T> T setupHook(String pluginName, Function<String, T> hookSupplier, boolean notifyIfMissing) {
+    public <T> Option<T> setupHook(String pluginName, Function<String, T> hookSupplier, boolean notifyIfMissing) {
         if (hookSupplier == null) {
-            return null;
+            return Option.none();
         }
 
         if (Bukkit.getPluginManager().getPlugin(pluginName) == null) {
             if (notifyIfMissing) {
                 FunnyGuilds.getPluginLogger().info(pluginName + " plugin could not be found, some features may not be available");
             }
-            return hookSupplier.apply(pluginName);
+
+            return Option.none();
         }
 
         T hook = hookSupplier.apply(pluginName);
         if (hook == null) {
-            return null;
+            return Option.none();
         }
 
         if (!(hook instanceof PluginHook)) {
-            return hook;
+            return Option.of(hook);
         }
 
         if (PandaStream.of(plugin.getPluginConfiguration().disabledHooks)
@@ -104,17 +108,17 @@ public class HookManager {
                 .isPresent()) {
             if (!pluginName.equalsIgnoreCase("FunnyTab")) {
                 FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
-                return hook;
+                return Option.of(hook);
             }
 
             FunnyGuilds.getPluginLogger().warning("You can't disable FunnyTab plugin hook lol");
         }
 
         this.pluginHooks.put(pluginName, (PluginHook) hook);
-        return hook;
+        return Option.of(hook);
     }
 
-    public <T> T setupHook(String pluginName, Function<String, T> hookSupplier) {
+    public <T> Option<T> setupHook(String pluginName, Function<String, T> hookSupplier) {
         return this.setupHook(pluginName, hookSupplier, true);
     }
 

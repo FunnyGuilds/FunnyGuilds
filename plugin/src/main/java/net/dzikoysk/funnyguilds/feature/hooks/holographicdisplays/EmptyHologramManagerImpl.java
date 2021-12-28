@@ -4,7 +4,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Location;
 import panda.std.Option;
 
-public class EmptyHologramManagerImpl implements FunnyHologramManager {
+public final class EmptyHologramManagerImpl implements FunnyHologramManager {
 
     @Override
     public Option<FunnyHologram> getOrCreateHologram(Guild guild) {
