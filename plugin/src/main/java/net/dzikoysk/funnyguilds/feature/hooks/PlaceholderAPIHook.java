@@ -81,9 +81,14 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             User userOne = userOneOption.get();
             User userTwo = userTwoOption.get();
 
-            if (identifier.equalsIgnoreCase("tag")) {
+            if (identifier.equalsIgnoreCase("prefix")) {
                 Guild guildOne = userOne.getGuild();
                 Guild guildTwo = userTwo.getGuild();
+
+                if (guildTwo == null || guildTwo.getTag() == null) {
+                    return "";
+                }
+
                 if (guildOne != null) {
                     if (guildOne.getAllies().contains(guildTwo)) {
                         return IndividualPrefix.preparePrefix(config.prefixAllies, guildTwo);
@@ -96,9 +101,6 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                     }
                 }
                 else {
-                    if (guildTwo != null) {
-                        return "";
-                    }
                     return IndividualPrefix.preparePrefix(config.prefixOther, guildTwo);
                 }
             }
