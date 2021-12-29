@@ -32,7 +32,7 @@ dependencies {
 
     // bukkit stuff
     shadow "org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT"
-    shadow "org.apache.logging.log4j:log4j-core:2.17.0"
+    shadow "org.apache.logging.log4j:log4j-core:2.17.1"
 
     // integrations
     shadow("me.clip:placeholderapi:2.11.0") {
