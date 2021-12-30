@@ -35,12 +35,11 @@ dependencies {
     shadow "org.apache.logging.log4j:log4j-core:2.17.0"
 
     // integrations
-    shadow("me.clip:placeholderapi:2.11.0") {
+    shadow("me.clip:placeholderapi:2.10.9") {
+        because "PlaceholderAPI on versions higher than 2.10.9 causes GH-1700 for some unknown reason"
         exclude group: "com.google.code.gson", module: "gson"
-        exclude group: "net.kyori", module: "adventure-platform-bukkit"
     }
     shadow "net.kyori:adventure-api:4.9.3"
-    shadow "net.kyori:adventure-platform-bukkit:4.0.2-SNAPSHOT"
 
     shadow "me.robin:leaderheads-api:1.0.0"
     shadow "net.milkbowl.vault:VaultAPI:1.7"
