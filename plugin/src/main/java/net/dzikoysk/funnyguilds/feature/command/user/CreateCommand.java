@@ -189,7 +189,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         if (config.regionsEnabled) {
             if (heart.pasteSchematicOnCreation) {
                 HookManager.WORLD_EDIT.peek(worldEdit -> {
-                    if(worldEdit.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
+                    if (worldEdit.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
                         player.sendMessage(messages.createGuildCouldNotPasteSchematic);
                     }
                 });
