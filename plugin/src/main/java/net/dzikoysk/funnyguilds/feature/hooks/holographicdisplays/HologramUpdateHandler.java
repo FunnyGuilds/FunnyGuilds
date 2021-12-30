@@ -35,25 +35,26 @@ public class HologramUpdateHandler implements Runnable {
         }
 
         ItemStack item = new ItemStack(hologramConfig.item);
-        FunnyHologramManager hologramManager = HookManager.HOLOGRAPHIC_DISPLAYS;
-        for (Guild guild : plugin.getGuildManager().getGuilds()) {
-            Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
-            List<String> lines = PandaStream.of(hologramConfig.displayedLines)
-                    .map(formatter::format)
-                    .map(ChatUtils::colored)
-                    .map(line -> Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
-                            .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "<online>"), guild)))
-                    .toList();
+        HookManager.HOLOGRAPHIC_DISPLAYS.peek(hologramManager -> {
+            for (Guild guild : plugin.getGuildManager().getGuilds()) {
+                Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
+                List<String> lines = PandaStream.of(hologramConfig.displayedLines)
+                        .map(formatter::format)
+                        .map(ChatUtils::colored)
+                        .map(line -> Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+                                .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "<online>"), guild)))
+                        .toList();
 
-            Bukkit.getScheduler().runTask(plugin, () -> hologramManager.getOrCreateHologram(guild).peek(hologram -> {
-                hologram.clearHologram();
+                Bukkit.getScheduler().runTask(plugin, () -> hologramManager.getOrCreateHologram(guild).peek(hologram -> {
+                    hologram.clearHologram();
 
-                if (hologramConfig.item != Material.AIR) {
-                    hologram.addIconItem(item);
-                }
+                    if (hologramConfig.item != Material.AIR) {
+                        hologram.addIconItem(item);
+                    }
 
-                hologram.addLines(lines);
-            }));
-        }
+                    hologram.addLines(lines);
+                }));
+            }
+        });
     }
 }

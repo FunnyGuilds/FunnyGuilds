@@ -91,7 +91,7 @@ public final class DefaultTablistVariables {
             parser.add(variable);
         }
 
-        if (HookManager.WORLD_GUARD.isFullyInitialized()) {
+        if (HookManager.WORLD_GUARD.isPresent()) {
             String wgRegionNoValue = FunnyGuilds.getInstance().getMessageConfiguration().wgRegionNoValue;
 
             parser.add(new SimpleTablistVariable("WG-REGION", user -> {
@@ -105,7 +105,7 @@ public final class DefaultTablistVariables {
             }));
         }
 
-        if (HookManager.WORLD_GUARD.isFullyInitialized() && VaultHook.isEconomyHooked()) {
+        if (HookManager.VAULT.isPresent() && VaultHook.isEconomyHooked()) {
             parser.add(new SimpleTablistVariable("VAULT-MONEY", user -> {
                 Player userPlayer = user.getPlayer();
 
@@ -206,7 +206,8 @@ public final class DefaultTablistVariables {
         }
 
         Location location = user.getPlayer().getLocation();
-        List<String> regionNames = HookManager.WORLD_GUARD.getRegionNames(location);
+        List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location))
+                .getOrNull();
 
         if (regionNames != null && !regionNames.isEmpty()) {
             return regionNames;

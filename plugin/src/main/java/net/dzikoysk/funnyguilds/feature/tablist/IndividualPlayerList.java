@@ -145,12 +145,12 @@ public class IndividualPlayerList {
         formatted = result.replaceInString(formatted);
         formatted = ChatUtils.colored(formatted);
 
-        if (HookManager.PLACEHOLDER_API.isFullyInitialized()) {
-            formatted = HookManager.PLACEHOLDER_API.replacePlaceholders(player, formatted);
+        if (HookManager.PLACEHOLDER_API.isPresent()) {
+            formatted = HookManager.PLACEHOLDER_API.get().replacePlaceholders(player, formatted);
         }
 
-        if (HookManager.MVDW_PLACEHOLDER_API.isFullyInitialized()) {
-            formatted = HookManager.MVDW_PLACEHOLDER_API.replacePlaceholders(player, formatted);
+        if (HookManager.MVDW_PLACEHOLDER_API.isPresent()) {
+            formatted = HookManager.MVDW_PLACEHOLDER_API.get().replacePlaceholders(player, formatted);
         }
 
         return formatted;

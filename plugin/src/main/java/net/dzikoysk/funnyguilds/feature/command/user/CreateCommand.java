@@ -16,7 +16,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -171,12 +170,9 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 return;
             }
 
-
-            FunnyHologramManager hologramManager = HookManager.HOLOGRAPHIC_DISPLAYS;
-
-            hologramManager.getCorrectedLocation(guild)
+            HookManager.HOLOGRAPHIC_DISPLAYS.peek(hologramManager -> hologramManager.getCorrectedLocation(guild)
                     .peek(location -> hologramManager.getOrCreateHologram(guild)
-                            .peek(hologram -> hologram.setLocation(location)));
+                            .peek(hologram -> hologram.setLocation(location))));
         }
 
         if (!SimpleEventHandler.handle(new GuildPreCreateEvent(EventCause.USER, user, guild))) {
@@ -192,9 +188,11 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
         if (config.regionsEnabled) {
             if (heart.pasteSchematicOnCreation) {
-                if (!HookManager.WORLD_EDIT.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
-                    player.sendMessage(messages.createGuildCouldNotPasteSchematic);
-                }
+                HookManager.WORLD_EDIT.peek(worldEdit -> {
+                    if(worldEdit.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
+                        player.sendMessage(messages.createGuildCouldNotPasteSchematic);
+                    }
+                });
             }
             else if (heart.createCenterSphere) {
                 for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {

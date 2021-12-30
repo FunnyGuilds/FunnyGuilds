@@ -276,7 +276,7 @@ public class GuildManager {
         }
 
         removeGuild(guild);
-        HookManager.HOLOGRAPHIC_DISPLAYS.deleteHologram(guild);
+        HookManager.HOLOGRAPHIC_DISPLAYS.peek(hologramManager -> hologramManager.deleteHologram(guild));
     }
 
     /**

@@ -77,7 +77,8 @@ public class EntityDamage extends AbstractFunnyListener {
                 return;
             }
 
-            if (HookManager.WORLD_GUARD.isFullyInitialized() && HookManager.WORLD_GUARD.isInIgnoredRegion(victim.getLocation())) {
+            if (HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.isInIgnoredRegion(victim.getLocation()))
+                    .orElseGet(false)) {
                 return;
             }
 
