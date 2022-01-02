@@ -8,7 +8,6 @@ public abstract class FunnyEvent extends Event implements Cancellable {
 
     private final EventCause eventCause;
     private final User doer;
-
     private String cancelMessage;
     private boolean cancelled;
 

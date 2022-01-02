@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
@@ -231,11 +232,12 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 new DatabaseUpdateGuildRequest(this.config, this.plugin.getDataModel(), guild)
         );
 
+        SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, guild));
+
         Formatter formatter = new Formatter()
                 .register("{GUILD}", name)
                 .register("{TAG}", tag)
                 .register("{PLAYER}", player.getName());
-
         player.sendMessage(formatter.format(messages.createGuild));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastCreate));
 
