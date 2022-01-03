@@ -69,13 +69,10 @@ public class HookManager {
                 return null;
             }
         });
-
         MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin));
         PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
         LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
-
         HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin), true);
-
         FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false);
     }
 
