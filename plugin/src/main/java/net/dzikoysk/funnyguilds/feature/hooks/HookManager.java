@@ -55,7 +55,7 @@ public class HookManager {
                 Class.forName("com.sk89q.worldedit.Vector");
                 return new WorldEdit6Hook(pluginName);
             }
-            catch (ClassNotFoundException ignored) {
+            catch (ClassNotFoundException exception) {
                 return new WorldEdit7Hook(pluginName);
             }
         });
