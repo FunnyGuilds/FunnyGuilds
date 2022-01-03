@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.EmptyHologramManagerImpl;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
@@ -75,15 +74,14 @@ public class HookManager {
         PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
         LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
 
-        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin),
-                Option.of(new EmptyHologramManagerImpl()), true);
+        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin), true);
 
-        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), Option.none(), false);
+        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false);
     }
 
-    public <T> Option<T> setupHook(String pluginName, Function<String, T> hookSupplier, Option<T> fallback, boolean notifyIfMissing) {
+    public <T> Option<T> setupHook(String pluginName, Function<String, T> hookSupplier, boolean notifyIfMissing) {
         if (hookSupplier == null) {
-            return fallback;
+            return Option.none();
         }
 
         if (Bukkit.getPluginManager().getPlugin(pluginName) == null) {
@@ -91,12 +89,12 @@ public class HookManager {
                 FunnyGuilds.getPluginLogger().info(pluginName + " plugin could not be found, some features may not be available");
             }
 
-            return fallback;
+            return Option.none();
         }
 
         T hook = hookSupplier.apply(pluginName);
         if (hook == null) {
-            return fallback;
+            return Option.none();
         }
 
         if (!(hook instanceof PluginHook)) {
@@ -119,7 +117,7 @@ public class HookManager {
     }
 
     public <T> Option<T> setupHook(String pluginName, Function<String, T> hookSupplier) {
-        return this.setupHook(pluginName, hookSupplier, Option.none(), true);
+        return this.setupHook(pluginName, hookSupplier, true);
     }
 
     public void earlyInit() {
