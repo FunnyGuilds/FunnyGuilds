@@ -20,6 +20,7 @@ import net.dzikoysk.funnyguilds.event.rank.DeathsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.KillsChangeEvent;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
+import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
@@ -92,8 +93,9 @@ public class PlayerDeath extends AbstractFunnyListener {
             return;
         }
 
-        if (HookManager.WORLD_GUARD.isFullyInitialized()) {
-            if (HookManager.WORLD_GUARD.isInNonPointsRegion(playerVictim.getLocation()) || HookManager.WORLD_GUARD.isInNonPointsRegion(playerAttacker.getLocation())) {
+        if (HookManager.WORLD_GUARD.isPresent()) {
+            WorldGuardHook worldGuard = HookManager.WORLD_GUARD.get();
+            if (worldGuard.isInNonPointsRegion(playerVictim.getLocation()) || worldGuard.isInNonPointsRegion(playerAttacker.getLocation())) {
                 victimCache.clearDamage();
                 return;
             }

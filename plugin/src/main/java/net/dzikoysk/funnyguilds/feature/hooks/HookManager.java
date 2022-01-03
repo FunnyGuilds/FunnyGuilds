@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.EmptyHologramManagerImpl;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
 import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
@@ -19,15 +18,15 @@ import panda.std.stream.PandaStream;
 
 public class HookManager {
 
-    public static WorldGuardHook WORLD_GUARD;
-    public static WorldEditHook WORLD_EDIT;
-    public static FunnyTabHook FUNNY_TAB;
-    public static VaultHook VAULT;
-    public static BungeeTabListPlusHook BUNGEE_TAB_LIST_PLUS;
-    public static MVdWPlaceholderAPIHook MVDW_PLACEHOLDER_API;
-    public static PlaceholderAPIHook PLACEHOLDER_API;
-    public static LeaderHeadsHook LEADER_HEADS;
-    public static FunnyHologramManager HOLOGRAPHIC_DISPLAYS;
+    public static Option<WorldGuardHook> WORLD_GUARD;
+    public static Option<WorldEditHook> WORLD_EDIT;
+    public static Option<FunnyTabHook> FUNNY_TAB;
+    public static Option<VaultHook> VAULT;
+    public static Option<BungeeTabListPlusHook> BUNGEE_TAB_LIST_PLUS;
+    public static Option<MVdWPlaceholderAPIHook> MVDW_PLACEHOLDER_API;
+    public static Option<PlaceholderAPIHook> PLACEHOLDER_API;
+    public static Option<LeaderHeadsHook> LEADER_HEADS;
+    public static Option<FunnyHologramManager> HOLOGRAPHIC_DISPLAYS;
 
     private final FunnyGuilds plugin;
 
@@ -50,7 +49,7 @@ public class HookManager {
                 FunnyGuilds.getPluginLogger().warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
                 return null;
             }
-        }).getOrNull();
+        });
         WORLD_EDIT = setupHook("WorldEdit", pluginName -> {
             try {
                 Class.forName("com.sk89q.worldedit.Vector");
@@ -59,8 +58,8 @@ public class HookManager {
             catch (ClassNotFoundException ignored) {
                 return new WorldEdit7Hook(pluginName);
             }
-        }).getOrNull();
-        VAULT = setupHook("Vault", VaultHook::new).getOrNull();
+        });
+        VAULT = setupHook("Vault", VaultHook::new);
         BUNGEE_TAB_LIST_PLUS = setupHook("BungeeTabListPlus", pluginName -> {
             try {
                 Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
@@ -69,16 +68,15 @@ public class HookManager {
             catch (ClassNotFoundException exception) {
                 return null;
             }
-        }).getOrNull();
+        });
 
-        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin)).getOrNull();
-        PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin)).getOrNull();
-        LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin)).getOrNull();
+        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin));
+        PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
+        LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
 
-        HOLOGRAPHIC_DISPLAYS = this.<FunnyHologramManager>setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin))
-                .orElseGet(new EmptyHologramManagerImpl());
+        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin), true);
 
-        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false).getOrNull();
+        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false);
     }
 
     public <T> Option<T> setupHook(String pluginName, Function<String, T> hookSupplier, boolean notifyIfMissing) {
