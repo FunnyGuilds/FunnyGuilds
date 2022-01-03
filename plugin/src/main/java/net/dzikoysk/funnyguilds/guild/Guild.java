@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.guild;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -425,25 +426,21 @@ public class Guild extends AbstractMutableEntity {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-
-        result = prime * result + (uuid == null ? 0 : uuid.hashCode());
-
-        return result;
+        return Objects.hash(uuid);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if (this == obj) {
             return true;
         }
 
-        if (obj == null || obj.getClass() != this.getClass()) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
 
-        return ((Guild) obj).getUUID().equals(this.uuid);
+        Guild guild = (Guild) obj;
+        return this.uuid.equals(guild.uuid);
     }
 
     @Override
