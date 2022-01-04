@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class LocalTimeTransformer extends BidirectionalTransformer<String, LocalTime> {
 
-    public final static DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     @Override
     public GenericsPair<String, LocalTime> getPair() {
