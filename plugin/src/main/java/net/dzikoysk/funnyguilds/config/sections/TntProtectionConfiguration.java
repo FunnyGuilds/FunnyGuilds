@@ -25,16 +25,13 @@ public class TntProtectionConfiguration extends OkaeriConfig {
         @Comment("O ktorej godzinie ma sie zaczac ochrona przed TNT w gildii")
         @Comment("Godzina w formacie HH:mm")
         @CustomKey("start-time")
-        public String startTime_ = "22:00";
-        @Exclude
-        public LocalTime startTime;
+        public LocalTime startTime = LocalTime.of(22, 0);
 
         @Comment("Do ktorej godziny ma dzialac ochrona przed TNT w gildii")
         @Comment("Godzina w formacie HH:mm")
         @CustomKey("end-time")
-        public String endTime_ = "06:00";
-        @Exclude
-        public LocalTime endTime;
+        public LocalTime endTime = LocalTime.of(6, 0);
+
         @Exclude
         public boolean passingMidnight;
 

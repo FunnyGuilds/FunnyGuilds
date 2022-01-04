@@ -2,12 +2,10 @@ package net.dzikoysk.funnyguilds.config;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 
@@ -577,6 +575,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Override
     public OkaeriConfig load() throws OkaeriException {
         super.load();
+
         try {
             for (Field field : this.getClass().getDeclaredFields()) {
                 if (field.getType().equals(String.class)) {
@@ -595,14 +594,8 @@ public class MessageConfiguration extends OkaeriConfig {
         catch (Exception ex) {
             FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
         }
+
         return this;
-    }
-
-    @Exclude
-    public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
-
-    public static String decolor(String coloredString) {
-        return DECOLOR_PATTERN.matcher(coloredString).replaceAll("&$1");
     }
 
 }

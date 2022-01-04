@@ -21,8 +21,6 @@ import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,11 +100,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest się jej czlonkiem.")
     @Comment("Zostaw puste, aby wylaczyc.")
     @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
-    @CustomKey("placing-blocks-bypass-on-region")
-    public Set<String> placingBlocksBypassOnRegion_ = Collections.emptySet();
-
-    @Exclude
-    public Set<Material> placingBlocksBypassOnRegion;
+    public Set<Material> placingBlocksBypassOnRegion = Collections.emptySet();
 
     @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
     @Comment("Dziala tylko jesli regiony sa wlaczone")
@@ -314,10 +308,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public HeartConfiguration heart = new HeartConfiguration();
 
     @Comment("Typy blokow, z ktorymi osoba spoza gildii NIE moze prowadzic interakcji na terenie innej gildii")
-    @CustomKey("blocked-interact")
-    public List<String> _blockedInteract = Arrays.asList("CHEST", "TRAPPED_CHEST");
-    @Exclude
-    public Set<Material> blockedInteract;
+    public List<Material> blockedInteract = Arrays.asList(Material.CHEST, Material.TRAPPED_CHEST);
 
     @Comment("Czy funkcja efektu 'zbugowanych' klockow ma byc wlaczona (dziala tylko na terenie wrogiej gildii)")
     public boolean buggedBlocks = false;
@@ -792,6 +783,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wyglad tagu osob w gildii")
     @CustomKey("prefix-our")
     public String prefixOur_ = "&a{TAG}&f ";
+
     @Exclude
     public String prefixOur;
 
@@ -810,7 +802,6 @@ public class PluginConfiguration extends OkaeriConfig {
     public String prefixEnemies;
 
     @Comment("Wyglad tagu gildii neutralnej. Widziany rowniez przez graczy bez gildii")
-    @CustomKey("prefix-other")
     public String prefixOther_ = "&7{TAG}&f ";
 
     @Exclude
@@ -1123,8 +1114,10 @@ public class PluginConfiguration extends OkaeriConfig {
     @Override
     public OkaeriConfig load() throws OkaeriException {
         super.load();
+
         heart.loadProcessedProperties();
         this.loadProcessedProperties();
+
         return this;
     }
 
@@ -1157,16 +1150,6 @@ public class PluginConfiguration extends OkaeriConfig {
             this.enlargeItems = null;
         }
 
-        this.placingBlocksBypassOnRegion = new HashSet<>();
-        for (String stringMaterial : this.placingBlocksBypassOnRegion_) {
-            this.placingBlocksBypassOnRegion.add(MaterialUtils.parseMaterial(stringMaterial, false));
-        }
-
-        this.blockedInteract = new HashSet<>();
-        for (String stringMaterial : this._blockedInteract) {
-            this.blockedInteract.add(MaterialUtils.parseMaterial(stringMaterial, false));
-        }
-
         this.buggedBlocksExclude = new HashSet<>();
         for (String stringMaterial : this.buggedBlocksExclude_) {
             this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(stringMaterial, false));
@@ -1191,7 +1174,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
         for (Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
             double chance = entry.getValue();
-
             if (chance < 0) {
                 continue;
             }
@@ -1203,7 +1185,6 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             Material material = MaterialUtils.parseMaterial(entry.getKey(), true);
-
             if (material == null || material == Material.AIR) {
                 continue;
             }
@@ -1213,16 +1194,11 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.explodeMaterials = map;
 
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        this.tntProtection.time.startTime = LocalTime.parse(tntProtection.time.startTime_, timeFormatter);
-        this.tntProtection.time.endTime = LocalTime.parse(tntProtection.time.endTime_, timeFormatter);
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.isAfter(this.tntProtection.time.endTime);
-        this.translatedMaterials = new HashMap<>();
 
+        this.translatedMaterials = new HashMap<>();
         for (String materialName : translatedMaterials_.keySet()) {
             Material material = MaterialUtils.matchMaterial(materialName.toUpperCase());
-
             if (material == null) {
                 continue;
             }

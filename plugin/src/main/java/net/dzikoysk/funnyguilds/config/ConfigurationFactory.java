@@ -1,20 +1,21 @@
 package net.dzikoysk.funnyguilds.config;
 
 import eu.okaeri.configs.ConfigManager;
-import eu.okaeri.configs.serdes.SimpleObjectTransformer;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import java.io.File;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
+import net.dzikoysk.funnyguilds.config.transformer.DecolorTransformer;
+import net.dzikoysk.funnyguilds.config.transformer.LocalTimeTransformer;
+import net.dzikoysk.funnyguilds.config.transformer.MaterialTransformer;
 
 public final class ConfigurationFactory {
 
     public MessageConfiguration createMessageConfiguration(File messageConfigurationFile) {
         return ConfigManager.create(MessageConfiguration.class, (it) -> {
             it.withConfigurer(new YamlBukkitConfigurer());
-            it.withSerdesPack(registry -> registry.register(SimpleObjectTransformer.of(String.class, String.class, MessageConfiguration::decolor)));
             it.withBindFile(messageConfigurationFile);
             it.saveDefaults();
             it.load(true);
@@ -24,6 +25,11 @@ public final class ConfigurationFactory {
     public PluginConfiguration createPluginConfiguration(File pluginConfigurationFile) {
         return ConfigManager.create(PluginConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
+            it.withSerdesPack(registry -> {
+                registry.register(new DecolorTransformer());
+                registry.register(new MaterialTransformer());
+                registry.register(new LocalTimeTransformer());
+            });
             it.withBindFile(pluginConfigurationFile);
             it.saveDefaults();
             it.load(true);
