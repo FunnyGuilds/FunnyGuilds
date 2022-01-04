@@ -58,7 +58,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
 
         validity += config.validityTime.toMillis();
         guild.setValidity(validity);
-        player.sendMessage(messages.validityDone.replace("{DATE}", config.dateFormat.format(new Date(validity))));
+        player.sendMessage(messages.validityDone.replace("{DATE}", messages.dateFormat.format(new Date(validity))));
     }
 
 }

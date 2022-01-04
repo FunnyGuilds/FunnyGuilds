@@ -19,7 +19,6 @@ import eu.okaeri.validator.annotation.NotBlank;
 import eu.okaeri.validator.annotation.Pattern;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -70,9 +69,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Exclude
     public final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
-
-    @Exclude
-    public SimpleDateFormat dateFormat;
 
     @Comment("Wyswietlana nazwa pluginu")
     public String pluginName = "FunnyGuilds";
@@ -1122,8 +1118,6 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public void loadProcessedProperties() {
-        this.dateFormat = new SimpleDateFormat(FunnyGuilds.getInstance().getMessageConfiguration().dateFormat);
-
         this.createItems = loadItemStackList(this.items_);
         this.createItemsVip = loadItemStackList(this.itemsVip_);
 
@@ -1171,7 +1165,6 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         Map<Material, Double> map = new EnumMap<>(Material.class);
-
         for (Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
             double chance = entry.getValue();
             if (chance < 0) {
@@ -1191,7 +1184,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
             map.put(material, chance);
         }
-
         this.explodeMaterials = map;
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.isAfter(this.tntProtection.time.endTime);

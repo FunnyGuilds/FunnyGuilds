@@ -10,13 +10,17 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 import net.dzikoysk.funnyguilds.config.transformer.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.LocalTimeTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.MaterialTransformer;
+import net.dzikoysk.funnyguilds.config.transformer.SimpleDateFormatTransformer;
 
 public final class ConfigurationFactory {
 
     public MessageConfiguration createMessageConfiguration(File messageConfigurationFile) {
         return ConfigManager.create(MessageConfiguration.class, (it) -> {
             it.withConfigurer(new YamlBukkitConfigurer());
-            it.withSerdesPack(registry -> registry.register(new DecolorTransformer()));
+            it.withSerdesPack(registry -> {
+                registry.register(new DecolorTransformer());
+                registry.register(new SimpleDateFormatTransformer());
+            });
             it.withBindFile(messageConfigurationFile);
             it.saveDefaults();
             it.load(true);

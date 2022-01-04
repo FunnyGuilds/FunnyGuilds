@@ -4,6 +4,7 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -12,7 +13,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 public class MessageConfiguration extends OkaeriConfig {
 
     @Comment("<------- Global Date Format -------> #")
-    public String dateFormat = "dd.MM.yyyy HH:mm:ss";
+    public SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
     @Comment("<------- No Value Messages -------> #")
     public String gNameNoValue = "Brak (G-NAME/NAME)";
