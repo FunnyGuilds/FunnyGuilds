@@ -34,14 +34,15 @@ public class PlayerMove extends AbstractFunnyListener {
         Location to = event.getTo();
         Player player = event.getPlayer();
 
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            if (to == null) {
-                return;
-            }
+        if (to == null) {
+            return;
+        }
 
-            if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) {
-                return;
-            }
+        if (from.getBlockX() == to.getBlockX() && from.getBlockZ() == to.getBlockZ()) {
+            return;
+        }
+        
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
 
             Option<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
