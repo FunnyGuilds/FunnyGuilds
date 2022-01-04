@@ -56,7 +56,7 @@ public class BucketAction extends AbstractFunnyListener {
         }
 
         // always cancel to prevent breaking other protection
-        // plugins or plugins using PlayerBucketFillEvent (eg. special ability blocks)
+        // plugins or plugins using PlayerBucketEmptyEvent (eg. special ability blocks)
         event.setCancelled(true);
     }
 
