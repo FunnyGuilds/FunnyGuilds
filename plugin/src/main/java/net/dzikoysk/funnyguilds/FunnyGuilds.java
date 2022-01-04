@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.DataPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.InvitationPersistenceHandler;
 import net.dzikoysk.funnyguilds.data.database.Database;
-import net.dzikoysk.funnyguilds.feature.command.CommandsConfiguration;
+import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
@@ -226,7 +226,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager, this.guildManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
-            CommandsConfiguration commandsConfiguration = new CommandsConfiguration();
+            FunnyCommandsConfiguration commandsConfiguration = new FunnyCommandsConfiguration();
             this.funnyCommands = commandsConfiguration.createFunnyCommands(this.getServer(), this);
         }
         catch (Exception exception) {

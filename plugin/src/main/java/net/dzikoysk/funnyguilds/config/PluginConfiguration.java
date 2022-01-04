@@ -9,7 +9,6 @@ import eu.okaeri.configs.annotation.Header;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
-import eu.okaeri.configs.annotation.Variable;
 import eu.okaeri.configs.exception.OkaeriException;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
 import eu.okaeri.validator.annotation.DecimalMax;
@@ -33,7 +32,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
@@ -975,7 +976,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Nazwy komend")
     @CustomKey("commands")
-    public Commands commands = new Commands();
+    public CommandsConfiguration commands = new CommandsConfiguration();
 
     @Comment("Czy event PlayMoveEvent ma byc aktywny (odpowiada za wyswietlanie powiadomien o wejsciu na teren gildii)")
     @CustomKey("event-move")
@@ -1038,7 +1039,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("1. Wylacz serwer")
     @Comment("2. Zmien dane w configu FG")
     @Comment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
-    public MySQL mysql = new MySQL("localhost", 3306, "db", "root", "passwd", 5, 30000, true, "users", "guilds", "regions");
+    public MysqlConfiguration mysql = new MysqlConfiguration("localhost", 3306, "db", "root", "passwd", 5, 30000, true, "users", "guilds", "regions");
 
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
@@ -1245,148 +1246,9 @@ public class PluginConfiguration extends OkaeriConfig {
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }
 
-    @Names(strategy = NameStrategy.IDENTITY)
-    public static class Commands extends OkaeriConfig {
-
-        public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
-
-        @Comment public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
-        @Comment public FunnyCommand create = new FunnyCommand("zaloz");
-        @Comment public FunnyCommand delete = new FunnyCommand("usun");
-        @Comment public FunnyCommand confirm = new FunnyCommand("potwierdz");
-        @Comment public FunnyCommand invite = new FunnyCommand("zapros");
-        @Comment public FunnyCommand join = new FunnyCommand("dolacz");
-        @Comment public FunnyCommand leave = new FunnyCommand("opusc");
-        @Comment public FunnyCommand kick = new FunnyCommand("wyrzuc");
-        @Comment public FunnyCommand base = new FunnyCommand("baza");
-        @Comment public FunnyCommand enlarge = new FunnyCommand("powieksz");
-        @Comment public FunnyCommand ally = new FunnyCommand("sojusz");
-        @Comment public FunnyCommand war = new FunnyCommand("wojna");
-        @Comment public FunnyCommand items = new FunnyCommand("przedmioty");
-        @Comment public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
-        @Comment public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
-        @Comment public FunnyCommand tnt = new FunnyCommand("tnt");
-
-        @CustomKey("break")
-        @Comment public FunnyCommand break_ = new FunnyCommand("rozwiaz");
-
-        @Comment public FunnyCommand info = new FunnyCommand("info");
-        @Comment public FunnyCommand player = new FunnyCommand("gracz");
-        @Comment public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
-        @Comment public FunnyCommand validity = new FunnyCommand("przedluz");
-        @Comment public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
-        @Comment public FunnyCommand deputy = new FunnyCommand("zastepca");
-        @Comment public FunnyCommand ranking = new FunnyCommand("ranking");
-        @Comment public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
-        @Comment public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
-
-        @Comment({"", "Komendy administratora"})
-        public AdminCommands admin = new AdminCommands();
-
-        @Names(strategy = NameStrategy.IDENTITY)
-        public static class FunnyCommand extends OkaeriConfig {
-
-            public String name;
-            public List<String> aliases;
-            public boolean enabled;
-
-            public FunnyCommand() {
-            }
-
-            public FunnyCommand(String name) {
-                this(name, Collections.emptyList(), true);
-            }
-
-            public FunnyCommand(String name, List<String> aliases) {
-                this(name, aliases, true);
-            }
-
-            public FunnyCommand(String name, List<String> aliases, boolean enabled) {
-                this.name = name;
-                this.aliases = aliases;
-                this.enabled = enabled;
-            }
-
-        }
-
-        @Names(strategy = NameStrategy.IDENTITY)
-        public static class AdminCommands extends OkaeriConfig {
-
-            public String main = "ga";
-            public String add = "ga dodaj";
-            public String delete = "ga usun";
-            public String kick = "ga wyrzuc";
-            public String teleport = "ga tp";
-            public String points = "ga points";
-            public String kills = "ga kills";
-            public String deaths = "ga deaths";
-            public String ban = "ga ban";
-            public String lives = "ga zycia";
-            public String move = "ga przenies";
-            public String unban = "ga unban";
-            public String validity = "ga przedluz";
-            public String name = "ga nazwa";
-            public String tag = "ga tag";
-            public String spy = "ga spy";
-            public String enabled = "ga enabled";
-            public String leader = "ga lider";
-            public String deputy = "ga zastepca";
-            public String protection = "ga ochrona";
-            public String base = "ga baza";
-
-        }
-
-    }
-
     public enum DataModel {
         FLAT,
         MYSQL
-    }
-
-    @Names(strategy = NameStrategy.IDENTITY)
-    public static class MySQL extends OkaeriConfig {
-
-        @Variable("FG_MYSQL_HOSTNAME")
-        public String hostname;
-        @Variable("FG_MYSQL_PORT")
-        public int port;
-        @Variable("FG_MYSQL_DATABASE")
-        public String database;
-        @Variable("FG_MYSQL_USER")
-        public String user;
-        @Variable("FG_MYSQL_PASSWORD")
-        public String password;
-
-        @Variable("FG_MYSQL_POOL_SIZE")
-        public int poolSize;
-        @Variable("FG_MYSQL_CONNECTION_TIMEOUT")
-        public int connectionTimeout;
-        @Variable("FG_MYSQL_USE_SSL")
-        public boolean useSSL;
-
-        @Variable("FG_MYSQL_USERS_TABLE_NAME")
-        public String usersTableName;
-        @Variable("FG_MYSQL_GUILDS_TABLE_NAME")
-        public String guildsTableName;
-        @Variable("FG_MYSQL_REGIONS_TABLE_NAME")
-        public String regionsTableName;
-
-        public MySQL() {}
-
-        public MySQL(String hostname, int port, String database, String user, String password, int poolSize, int connectionTimeout, boolean useSSL, String usersTableName, String guildsTableName, String regionsTableName) {
-            this.hostname = hostname;
-            this.port = port;
-            this.database = database;
-            this.user = user;
-            this.password = password;
-            this.poolSize = poolSize;
-            this.connectionTimeout = connectionTimeout;
-            this.useSSL = useSSL;
-            this.usersTableName = usersTableName;
-            this.guildsTableName = guildsTableName;
-            this.regionsTableName = regionsTableName;
-        }
-
     }
 
 }
