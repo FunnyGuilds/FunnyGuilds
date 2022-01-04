@@ -16,6 +16,7 @@ public final class ConfigurationFactory {
     public MessageConfiguration createMessageConfiguration(File messageConfigurationFile) {
         return ConfigManager.create(MessageConfiguration.class, (it) -> {
             it.withConfigurer(new YamlBukkitConfigurer());
+            it.withSerdesPack(registry -> registry.register(new DecolorTransformer()));
             it.withBindFile(messageConfigurationFile);
             it.saveDefaults();
             it.load(true);
@@ -26,7 +27,6 @@ public final class ConfigurationFactory {
         return ConfigManager.create(PluginConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
-                registry.register(new DecolorTransformer());
                 registry.register(new MaterialTransformer());
                 registry.register(new LocalTimeTransformer());
             });
