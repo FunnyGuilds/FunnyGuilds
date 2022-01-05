@@ -10,14 +10,16 @@ public class BucketAction extends AbstractFunnyListener {
 
     @EventHandler
     public void onFill(PlayerBucketFillEvent event) {
-        ProtectionSystem.isProtected(event.getPlayer(), event.getBlockClicked().getLocation(), false)
+        ProtectionSystem.isProtected(event.getPlayer(), event.getBlockClicked().getLocation(), true)
+                .filterNot(predicate -> config.placingBlocksBypassOnRegion.contains(event.getBlockClicked().getType()))
                 .peek(result -> event.setCancelled(true))
                 .peek(ProtectionSystem::defaultResponse);
     }
 
     @EventHandler
     public void onEmpty(PlayerBucketEmptyEvent event) {
-        ProtectionSystem.isProtected(event.getPlayer(), event.getBlockClicked().getLocation(), false)
+        ProtectionSystem.isProtected(event.getPlayer(), event.getBlockClicked().getLocation(), true)
+                .filterNot(predicate -> config.placingBlocksBypassOnRegion.contains(event.getBucket()))
                 .peek(result -> event.setCancelled(true))
                 .peek(ProtectionSystem::defaultResponse);
     }
