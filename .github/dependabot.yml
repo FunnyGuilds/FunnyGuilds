@@ -8,9 +8,6 @@ updates:
     timezone: "Europe/Warsaw"
   open-pull-requests-limit: 10
   ignore:
-  - dependency-name: com.sk89q.worldedit:worldedit-bukkit
-    versions:
-    - "> 7.2.6"
   - dependency-name: me.clip:placeholderapi
     versions:
     - "> 2.10.9"

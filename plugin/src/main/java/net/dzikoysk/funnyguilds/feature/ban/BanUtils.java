@@ -61,7 +61,7 @@ public final class BanUtils {
 
         UserBan userBan = user.getBan();
         message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
-        message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
+        message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getMessageConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
         message = StringUtils.replace(message, "{REASON}", userBan.getReason());
         message = StringUtils.replace(message, "{PLAYER}", user.getName());
 

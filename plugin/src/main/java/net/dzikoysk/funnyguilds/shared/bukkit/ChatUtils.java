@@ -5,12 +5,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import panda.utilities.StringUtils;
 
 public final class ChatUtils {
 
     private ChatUtils() {}
+
+    public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
 
     public static String colored(String message) {
         return message != null ? ChatColor.translateAlternateColorCodes('&', message) : null;
@@ -23,6 +26,10 @@ public final class ChatUtils {
         }
 
         return colored;
+    }
+
+    public static String decolor(String coloredString) {
+        return DECOLOR_PATTERN.matcher(coloredString).replaceAll("&$1");
     }
 
     public static String getLastColorBefore(String text, String before) {

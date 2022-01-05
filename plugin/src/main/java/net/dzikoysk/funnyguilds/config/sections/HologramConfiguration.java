@@ -23,7 +23,7 @@ public class HologramConfiguration extends OkaeriConfig {
     public Material item = Material.AIR;
 
     @Comment("Tekst wyświetlany przez hologram")
-    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {GUILD-PROTECTION}")
+    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {GUILD-PROTECTION}")
     public List<String> displayedLines = new ImmutableList.Builder<String>()
             .add("&7&m-------------------")
             .add("&7- &bFunnyGuilds &7-")
@@ -33,6 +33,7 @@ public class HologramConfiguration extends OkaeriConfig {
             .add("&7~ Created by &bFunnyGuilds Team &7~")
             .add("&7&m-------------------")
             .build();
+
     @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji.")
     public LocationConfiguration locationCorrection = new LocationConfiguration(0.5, 2.5, 0.5);
 

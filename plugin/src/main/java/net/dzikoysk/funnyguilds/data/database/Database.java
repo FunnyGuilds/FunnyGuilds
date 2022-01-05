@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 
 public class Database {
 
@@ -16,7 +16,7 @@ public class Database {
         instance = this;
 
         this.dataSource = new HikariDataSource();
-        PluginConfiguration.MySQL c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
+        MysqlConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
 
         int poolSize = c.poolSize;
         if (poolSize <= 0) {

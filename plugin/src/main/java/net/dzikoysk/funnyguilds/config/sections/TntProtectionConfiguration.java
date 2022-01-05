@@ -7,7 +7,7 @@ import eu.okaeri.configs.annotation.Exclude;
 import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
-import java.time.LocalTime;
+import net.dzikoysk.funnyguilds.config.FunnyTime;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TntProtectionConfiguration extends OkaeriConfig {
@@ -25,16 +25,13 @@ public class TntProtectionConfiguration extends OkaeriConfig {
         @Comment("O ktorej godzinie ma sie zaczac ochrona przed TNT w gildii")
         @Comment("Godzina w formacie HH:mm")
         @CustomKey("start-time")
-        public String startTime_ = "22:00";
-        @Exclude
-        public LocalTime startTime;
+        public FunnyTime startTime = new FunnyTime(22, 0);
 
         @Comment("Do ktorej godziny ma dzialac ochrona przed TNT w gildii")
         @Comment("Godzina w formacie HH:mm")
         @CustomKey("end-time")
-        public String endTime_ = "06:00";
-        @Exclude
-        public LocalTime endTime;
+        public FunnyTime endTime = new FunnyTime(6, 0);
+
         @Exclude
         public boolean passingMidnight;
 

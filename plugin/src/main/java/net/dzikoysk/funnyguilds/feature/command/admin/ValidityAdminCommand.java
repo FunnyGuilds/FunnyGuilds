@@ -46,7 +46,7 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         validity += time;
         guild.setValidity(validity);
 
-        String date = config.dateFormat.format(new Date(validity));
+        String date = messages.dateFormat.format(new Date(validity));
         sender.sendMessage(messages.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", date));
     }
 

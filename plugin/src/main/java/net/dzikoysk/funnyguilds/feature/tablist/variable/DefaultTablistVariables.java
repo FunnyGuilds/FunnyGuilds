@@ -161,6 +161,7 @@ public final class DefaultTablistVariables {
         //FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY", guild -> guild.getDeputies().isEmpty() ? messages.gDeputyNoValue : guild.getDeputies().iterator().next(RandomUtils.RANDOM_INSTANCE.nextInt(guild.getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
 
         putGuild("g-lives", "G-LIVES", user -> user.getGuild().getLives(), user -> "0");
+        putGuild("g-lives-symbol", "G-LIVES-SYMBOL", user -> user.getGuild().getLives(), user -> panda.utilities.StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol));
         putGuild("g-allies", "G-ALLIES", user -> user.getGuild().getAllies().size(), user -> "0");
         putGuild("g-points", "G-POINTS", user -> user.getGuild().getRank().getAveragePoints(), user -> "0");
         putGuild("g-kills", "G-KILLS", user -> user.getGuild().getRank().getKills(), user -> "0");
@@ -170,7 +171,7 @@ public final class DefaultTablistVariables {
         putGuild("g-members-all", "G-MEMBERS-ALL", user -> user.getGuild().getMembers().size(), user -> "0");
 
         putGuild("g-validity", "G-VALIDITY",
-                user -> FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(user.getGuild().getValidityDate()),
+                user -> messages.dateFormat.format(user.getGuild().getValidityDate()),
                 user -> messages.gValidityNoValue);
 
         putGuild("g-points-format", "G-POINTS-FORMAT",
