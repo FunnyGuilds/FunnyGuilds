@@ -33,6 +33,7 @@ public class HologramConfiguration extends OkaeriConfig {
             .add("&7~ Created by &bFunnyGuilds Team &7~")
             .add("&7&m-------------------")
             .build();
+
     @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji.")
     public LocationConfiguration locationCorrection = new LocationConfiguration(0.5, 2.5, 0.5);
 

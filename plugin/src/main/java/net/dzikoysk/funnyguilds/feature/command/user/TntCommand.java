@@ -23,16 +23,16 @@ public final class TntCommand extends AbstractFunnyCommand {
         when(!config.tntProtection.time.enabled, messages.tntProtectDisable);
 
         LocalTime now = LocalTime.now();
-        LocalTime start = config.tntProtection.time.startTime;
-        LocalTime end = config.tntProtection.time.endTime;
+        LocalTime start = config.tntProtection.time.startTime.getTime();
+        LocalTime end = config.tntProtection.time.endTime.getTime();
         String message = messages.tntInfo;
 
         boolean isWithinTimeframe = config.tntProtection.time.passingMidnight
                 ? now.isAfter(start) || now.isBefore(end)
                 : now.isAfter(start) && now.isBefore(end);
 
-        message = StringUtils.replace(message, "{PROTECTION_START}", config.tntProtection.time.startTime_);
-        message = StringUtils.replace(message, "{PROTECTION_END}", config.tntProtection.time.endTime_);
+        message = StringUtils.replace(message, "{PROTECTION_START}", config.tntProtection.time.startTime.getFormattedTime());
+        message = StringUtils.replace(message, "{PROTECTION_END}", config.tntProtection.time.endTime.getFormattedTime());
 
         sender.sendMessage(message);
         sender.sendMessage(isWithinTimeframe ? messages.tntNowDisabled : messages.tntNowEnabled);

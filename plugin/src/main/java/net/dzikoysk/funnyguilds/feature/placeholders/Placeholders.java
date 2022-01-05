@@ -67,7 +67,7 @@ public class Placeholders<T> {
                 .property("ASSISTS", guild -> guild.getRank().getAssists())
                 .property("LOGOUTS", guild -> guild.getRank().getLogouts())
                 .property("KDR", guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
-                .property("VALIDITY", guild -> config.dateFormat.format(new Date(guild.getValidity())))
+                .property("VALIDITY", guild -> messages.dateFormat.format(new Date(guild.getValidity())))
                 .property("LIVES", Guild::getLives)
                 .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
                 .property("ALLIES", guild -> joinOrDefault.apply(Entity.names(guild.getAllies()), messages.alliesNoValue))

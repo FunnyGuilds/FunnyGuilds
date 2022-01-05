@@ -170,7 +170,7 @@ public final class DefaultTablistVariables {
         putGuild("g-members-all", "G-MEMBERS-ALL", user -> user.getGuild().getMembers().size(), user -> "0");
 
         putGuild("g-validity", "G-VALIDITY",
-                user -> FunnyGuilds.getInstance().getPluginConfiguration().dateFormat.format(user.getGuild().getValidityDate()),
+                user -> messages.dateFormat.format(user.getGuild().getValidityDate()),
                 user -> messages.gValidityNoValue);
 
         putGuild("g-points-format", "G-POINTS-FORMAT",

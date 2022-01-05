@@ -16,8 +16,8 @@ public class TntProtection extends AbstractFunnyListener {
         }
 
         LocalTime now = LocalTime.now();
-        LocalTime start = config.tntProtection.time.startTime;
-        LocalTime end = config.tntProtection.time.endTime;
+        LocalTime start = config.tntProtection.time.startTime.getTime();
+        LocalTime end = config.tntProtection.time.endTime.getTime();
 
         boolean isWithinTimeframe = config.tntProtection.time.passingMidnight
                 ? now.isAfter(start) || now.isBefore(end)

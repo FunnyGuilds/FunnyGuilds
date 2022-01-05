@@ -8,8 +8,7 @@ import java.util.function.Function;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration.Commands.FunnyCommand;
+import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BanCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BaseAdminCommand;
@@ -61,12 +60,12 @@ import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
 import org.bukkit.Server;
 import panda.utilities.text.Joiner;
 
-public final class CommandsConfiguration {
+public final class FunnyCommandsConfiguration {
 
     public FunnyCommands createFunnyCommands(Server server, FunnyGuilds plugin) {
-        PluginConfiguration.Commands commands = plugin.getPluginConfiguration().commands;
+        CommandsConfiguration commands = plugin.getPluginConfiguration().commands;
 
-        FunnyCommand enlargeCommand = commands.enlarge;
+        CommandsConfiguration.FunnyCommand enlargeCommand = commands.enlarge;
         enlargeCommand.enabled = enlargeCommand.enabled && plugin.getPluginConfiguration().enlargeEnable;
 
         CommandComponents userCommands = new CommandComponents("user")
@@ -151,7 +150,7 @@ public final class CommandsConfiguration {
             this.group = group;
         }
 
-        private CommandComponents command(String name, FunnyCommand configuration, Class<?> command) {
+        private CommandComponents command(String name, CommandsConfiguration.FunnyCommand configuration, Class<?> command) {
             if (configuration.enabled) {
                 this.placeholders.put(group + "." + name + ".name", key -> configuration.name);
                 this.placeholders.put(group + "." + name + ".aliases", key -> Joiner.on(", ").join(configuration.aliases).toString());
