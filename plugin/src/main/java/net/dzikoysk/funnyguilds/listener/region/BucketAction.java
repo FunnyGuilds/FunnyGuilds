@@ -14,46 +14,18 @@ public class BucketAction extends AbstractFunnyListener {
 
     @EventHandler
     public void onFill(PlayerBucketFillEvent event) {
-        Player player = event.getPlayer();
-        Block block = event.getBlockClicked();
-        Material type = block.getType();
-        Location blockLocation = block.getLocation();
-
-        boolean isProtected = ProtectionSystem.isProtected(player, blockLocation, true)
-                .peek(ProtectionSystem::defaultResponse)
-                .isPresent();
-
-        if (!isProtected) {
-            return;
-        }
-
-        if (config.placingBlocksBypassOnRegion.contains(type)) {
-            return;
-        }
-
-        event.setCancelled(true);
+        ProtectionSystem.isProtected(event.getPlayer(), event.getBlockClicked().getLocation(), true)
+                .filter(predicate -> !config.placingBlocksBypassOnRegion.contains(event.getBlockClicked().getType()))
+                .peek(result -> event.setCancelled(true))
+                .peek(ProtectionSystem::defaultResponse);
     }
 
     @EventHandler
     public void onEmpty(PlayerBucketEmptyEvent event) {
-        Player player = event.getPlayer();
-        Block block = event.getBlockClicked();
-        Material type = event.getBucket();
-        Location blockLocation = block.getLocation();
-
-        boolean isProtected = ProtectionSystem.isProtected(player, blockLocation, true)
-                .peek(ProtectionSystem::defaultResponse)
-                .isPresent();
-
-        if (!isProtected) {
-            return;
-        }
-
-        if (config.placingBlocksBypassOnRegion.contains(type)) {
-            return;
-        }
-
-        event.setCancelled(true);
+        ProtectionSystem.isProtected(event.getPlayer(), event.getBlockClicked().getLocation(), true)
+                .filter(predicate -> !config.placingBlocksBypassOnRegion.contains(event.getBucket()))
+                .peek(result -> event.setCancelled(true))
+                .peek(ProtectionSystem::defaultResponse);
     }
 
 }
