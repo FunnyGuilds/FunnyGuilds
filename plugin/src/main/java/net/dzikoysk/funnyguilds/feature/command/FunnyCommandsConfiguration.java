@@ -150,7 +150,7 @@ public final class FunnyCommandsConfiguration {
             this.group = group;
         }
 
-        private CommandComponents command(String name, net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration.FunnyCommand configuration, Class<?> command) {
+        private CommandComponents command(String name, CommandsConfiguration.FunnyCommand configuration, Class<?> command) {
             if (configuration.enabled) {
                 this.placeholders.put(group + "." + name + ".name", key -> configuration.name);
                 this.placeholders.put(group + "." + name + ".aliases", key -> Joiner.on(", ").join(configuration.aliases).toString());
