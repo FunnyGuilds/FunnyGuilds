@@ -661,6 +661,13 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("damage-ally")
     public boolean damageAlly = false;
 
+    @Comment("Symbol (lub slowo) ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL")
+    @CustomKey("lives-repeating-symbol")
+    public String livesRepeatingSymbol_ = "♥";
+
+    @Exclude
+    public String livesRepeatingSymbol;
+
     @Comment("Wyglad znaczika {POS} wstawionego w format chatu")
     @Comment("Znacznik ten pokazuje czy ktos jest liderem, zastepca czy zwyklym czlonkiem gildii")
     @CustomKey("chat-position")
@@ -1217,6 +1224,8 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.joinItems = this.loadItemStackList(this.joinItems_);
         this.baseItems = this.loadItemStackList(this.baseItems_);
+
+        this.livesRepeatingSymbol = ChatUtils.colored(this.livesRepeatingSymbol_);
 
         this.prefixOur = ChatUtils.colored(this.prefixOur_);
         this.prefixAllies = ChatUtils.colored(this.prefixAllies_);
