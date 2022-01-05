@@ -31,8 +31,6 @@ public class BucketAction extends AbstractFunnyListener {
             return;
         }
 
-        // always cancel to prevent breaking other protection
-        // plugins or plugins using PlayerBucketFillEvent (eg. special ability blocks)
         event.setCancelled(true);
     }
 
@@ -55,8 +53,6 @@ public class BucketAction extends AbstractFunnyListener {
             return;
         }
 
-        // always cancel to prevent breaking other protection
-        // plugins or plugins using PlayerBucketEmptyEvent (eg. special ability blocks)
         event.setCancelled(true);
     }
 
