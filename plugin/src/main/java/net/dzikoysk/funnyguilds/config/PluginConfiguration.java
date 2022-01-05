@@ -1187,7 +1187,7 @@ public class PluginConfiguration extends OkaeriConfig {
         }
         this.explodeMaterials = map;
 
-        this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.isAfter(this.tntProtection.time.endTime);
+        this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
 
         this.translatedMaterials = new HashMap<>();
         for (String materialName : translatedMaterials_.keySet()) {

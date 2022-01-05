@@ -8,7 +8,7 @@ import java.io.File;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 import net.dzikoysk.funnyguilds.config.transformer.DecolorTransformer;
-import net.dzikoysk.funnyguilds.config.transformer.LocalTimeTransformer;
+import net.dzikoysk.funnyguilds.config.transformer.FunnyTimeTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.MaterialTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.SimpleDateFormatTransformer;
 
@@ -32,7 +32,7 @@ public final class ConfigurationFactory {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
                 registry.register(new MaterialTransformer());
-                registry.register(new LocalTimeTransformer());
+                registry.register(new FunnyTimeTransformer());
             });
             it.withBindFile(pluginConfigurationFile);
             it.saveDefaults();
