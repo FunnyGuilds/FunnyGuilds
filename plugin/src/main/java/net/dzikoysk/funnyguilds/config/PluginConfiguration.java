@@ -661,12 +661,25 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("damage-ally")
     public boolean damageAlly = false;
 
-    @Comment("Symbol (lub slowo) ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL")
-    @CustomKey("lives-repeating-symbol")
-    public String livesRepeatingSymbol_ = "♥";
+    public LivesRepeatingSymbol livesRepeatingSymbol = new LivesRepeatingSymbol();
 
-    @Exclude
-    public String livesRepeatingSymbol;
+    public static class LivesRepeatingSymbol extends OkaeriConfig {
+
+        @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL")
+        @CustomKey("full")
+        public String full_ = "&c❤";
+
+        @Exclude
+        public String full;
+
+        @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL-EMPTY")
+        @CustomKey("empty")
+        public String empty_ = "&8❤";
+
+        @Exclude
+        public String empty;
+
+    }
 
     @Comment("Wyglad znaczika {POS} wstawionego w format chatu")
     @Comment("Znacznik ten pokazuje czy ktos jest liderem, zastepca czy zwyklym czlonkiem gildii")
@@ -1225,7 +1238,8 @@ public class PluginConfiguration extends OkaeriConfig {
         this.joinItems = this.loadItemStackList(this.joinItems_);
         this.baseItems = this.loadItemStackList(this.baseItems_);
 
-        this.livesRepeatingSymbol = ChatUtils.colored(this.livesRepeatingSymbol_);
+        this.livesRepeatingSymbol.full = ChatUtils.colored(this.livesRepeatingSymbol.full_);
+        this.livesRepeatingSymbol.empty = ChatUtils.colored(this.livesRepeatingSymbol.empty_);
 
         this.prefixOur = ChatUtils.colored(this.prefixOur_);
         this.prefixAllies = ChatUtils.colored(this.prefixAllies_);

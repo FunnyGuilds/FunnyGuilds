@@ -161,7 +161,10 @@ public final class DefaultTablistVariables {
         //FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY", guild -> guild.getDeputies().isEmpty() ? messages.gDeputyNoValue : guild.getDeputies().iterator().next(RandomUtils.RANDOM_INSTANCE.nextInt(guild.getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
 
         putGuild("g-lives", "G-LIVES", user -> user.getGuild().getLives(), user -> "0");
-        putGuild("g-lives-symbol", "G-LIVES-SYMBOL", user -> user.getGuild().getLives(), user -> panda.utilities.StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol));
+        putGuild("g-lives-symbol", "G-LIVES-SYMBOL", user -> user.getGuild().getLives(), user ->
+                panda.utilities.StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol.full));
+        putGuild("g-lives-symbol-empty", "G-LIVES-SYMBOL-EMPTY", user -> user.getGuild().getLives(), user ->
+                panda.utilities.StringUtils.repeated(config.warLives - user.getGuild().getLives(), config.livesRepeatingSymbol.empty));
         putGuild("g-allies", "G-ALLIES", user -> user.getGuild().getAllies().size(), user -> "0");
         putGuild("g-points", "G-POINTS", user -> user.getGuild().getRank().getAveragePoints(), user -> "0");
         putGuild("g-kills", "G-KILLS", user -> user.getGuild().getRank().getKills(), user -> "0");

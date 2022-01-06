@@ -41,6 +41,8 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("{G-DEPUTIES} - zastepcy gildii")
     @Comment("{G-DEPUTY} - losowy z zastepcow gildii")
     @Comment("{G-LIVES} - liczba zyc gildii")
+    @Comment("{G-LIVES-SYMBOL} - liczba zyc gildii w postaci powtarzajacego sie symbolu (do ustawienia w lives-repeating-symbol.full w config.yml)")
+    @Comment("{G-LIVES-SYMBOL-EMPTY} - liczba brakujacych zyc gildii w postaci powtarzajacego sie symbolu (do ustawienia w lives-repeating-symbol.empty w config.yml)")
     @Comment("{G-ALLIES} - liczba sojusznikow gildii")
     @Comment("{G-POINTS} - punkty gildii")
     @Comment("{G-POINTS-FORMAT} - punkty gildii z formatowaniem")
