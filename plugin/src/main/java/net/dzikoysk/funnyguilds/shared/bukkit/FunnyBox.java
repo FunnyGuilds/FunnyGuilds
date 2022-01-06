@@ -409,6 +409,11 @@ public class FunnyBox {
         return this.contains(position.getX(), position.getY(), position.getZ());
     }
 
+    public boolean contains(Location position) {
+        Validate.notNull(position, "position cannot be null");
+        return this.contains(position.getX(), position.getY(), position.getZ());
+    }
+
     private boolean contains(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
         return (this.minX <= minX) && (this.maxX >= maxX) &&
                 (this.minY <= minY) && (this.maxY >= maxY) &&

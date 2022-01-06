@@ -12,11 +12,12 @@ import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class Guild extends AbstractMutableEntity {
 
@@ -113,6 +114,7 @@ public class Guild extends AbstractMutableEntity {
         return this.rank;
     }
 
+    @Deprecated
     public boolean isRanked() {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         return members.size() >= config.minMembersToInclude;
@@ -159,16 +161,28 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean isSomeoneInRegion() {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        return plugin.getPluginConfiguration().regionsEnabled && PandaStream.of(Bukkit.getOnlinePlayers())
-                .filter(player -> {
-                    Option<User> user = plugin.getUserManager().findByPlayer(player);
-                    return user.isDefined() && user.get().getGuild() != this;
-                })
-                .flatMap(player -> plugin.getRegionManager().findRegionAtLocation(player.getLocation()))
-                .find(region -> region != null && region.getGuild() == this)
-                .isPresent();
+        if (!config.regionsEnabled) {
+            return false;
+        }
+
+        FunnyBox box = FunnyBox.of(region.getFirstCorner(), region.getSecondCorner());
+        Set<UUID> membersUuid = members.stream()
+                .map(User::getUUID)
+                .collect(Collectors.toSet());
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!box.contains(player.getLocation().toVector())) {
+                continue;
+            }
+
+            if (!membersUuid.contains(player.getUniqueId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public Location getHome() {
