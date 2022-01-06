@@ -5,10 +5,7 @@ import net.dzikoysk.funnyguilds.data.MutableEntity
 import net.dzikoysk.funnyguilds.user.User
 import nl.jqno.equalsverifier.EqualsVerifier
 import org.bukkit.Location
-import org.bukkit.World
 import org.junit.jupiter.api.Test
-
-import java.lang.ref.ReferenceQueue
 
 final class GuildTest extends FunnyGuildsSpec {
 
