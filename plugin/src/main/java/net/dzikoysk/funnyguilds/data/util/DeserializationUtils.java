@@ -40,7 +40,11 @@ public final class DeserializationUtils {
 
         guild.setOwner((User) values[3]);
         guild.setHome((Location) values[4]);
-        guild.setRegion((Region) values[5]);
+
+        if (pluginConfiguration.regionsEnabled) {
+            guild.setRegion((Region) values[5]);
+        }
+
         guild.setMembers((Set<User>) values[6]);
         guild.setAllies((Set<Guild>) values[7]);
         guild.setEnemies((Set<Guild>) values[8]);

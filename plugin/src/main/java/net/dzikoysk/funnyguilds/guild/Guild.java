@@ -136,12 +136,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setRegion(Region region) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (!config.regionsEnabled) {
-            return;
-        }
-
         this.region = region;
         this.region.setGuild(this);
 
