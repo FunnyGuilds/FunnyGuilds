@@ -17,7 +17,6 @@ final class UserTest extends FunnyGuildsSpec {
         Guild guild1 = new Guild("")
         Guild guild2 = new Guild("")
 
-
         EqualsVerifier.forClass(User.class)
                 .usingGetClass()
                 .withNonnullFields("uuid")
