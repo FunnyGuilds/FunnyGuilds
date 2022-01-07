@@ -15,8 +15,8 @@ final class GuildTest extends FunnyGuildsSpec {
         User user2 = userManager.create(UUID.nameUUIDFromBytes("user2".getBytes()), "user2")
         Guild guild1 = new Guild("guild1")
         Guild guild2 = new Guild("guild2")
-        def region1 = new Region("region1")
-        def region2 = new Region("region2")
+        Region region1 = new Region("region1")
+        Region region2 = new Region("region2")
 
 
         EqualsVerifier.forClass(Guild.class)

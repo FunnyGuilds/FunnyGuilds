@@ -12,11 +12,13 @@ import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
 
 public class Guild extends AbstractMutableEntity {
@@ -114,10 +116,14 @@ public class Guild extends AbstractMutableEntity {
         return this.rank;
     }
 
+    /**
+     * @return true if guild is ranked; false if guild is not ranked.
+     * @deprecated for removal in the future, in favour of {@link RankManager#isRankedGuild(Guild)}}
+     */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public boolean isRanked() {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        return members.size() >= config.minMembersToInclude;
+        return RankManager.getInstance().isRankedGuild(this);
     }
 
     public int getLives() {
@@ -167,7 +173,7 @@ public class Guild extends AbstractMutableEntity {
             return false;
         }
 
-        FunnyBox box = FunnyBox.of(region.getFirstCorner(), region.getSecondCorner());
+        FunnyBox box = region.toBox();
         Set<UUID> membersUuid = members.stream()
                 .map(User::getUUID)
                 .collect(Collectors.toSet());
