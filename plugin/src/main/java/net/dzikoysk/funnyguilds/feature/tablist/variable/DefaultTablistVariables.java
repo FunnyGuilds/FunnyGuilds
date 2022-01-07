@@ -162,16 +162,15 @@ public final class DefaultTablistVariables {
 
         putGuild("g-lives", "G-LIVES", user -> user.getGuild().getLives(), user -> "0");
         putGuild("g-lives-symbol", "G-LIVES-LOST-SYMBOL", user -> {
-                    int lives = user.getGuild().getLives();
-                    if (lives <= (config).warLives) {
-                        return panda.utilities.StringUtils.repeated(lives, config.livesRepeatingSymbol.full) +
-                                panda.utilities.StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty);
-                    }
-                    else {
-                        return panda.utilities.StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full) + config.livesRepeatingSymbol.more;
-                    }
-                },
-                user -> messages.livesNoValue);
+            int lives = user.getGuild().getLives();
+            if (lives <= (config).warLives) {
+                return panda.utilities.StringUtils.repeated(lives, config.livesRepeatingSymbol.full) +
+                        panda.utilities.StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty);
+            }
+            else {
+                return panda.utilities.StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full) + config.livesRepeatingSymbol.more;
+            }
+        }, user -> messages.livesNoValue);
         putGuild("g-lives-symbol-all", "G-LIVES-SYMBOL", user ->
                         panda.utilities.StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol.full),
                 user -> messages.livesNoValue);

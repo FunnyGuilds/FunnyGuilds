@@ -1074,7 +1074,8 @@ public class PluginConfiguration extends OkaeriConfig {
                         for (int i = 0; i < list.size(); i++) {
                             list.set(i, ChatUtils.colored(list.get(i)));
                         }
-                    } catch (Exception ignored) {
+                    }
+                    catch (Exception ignored) {
                     }
                 }
             }
