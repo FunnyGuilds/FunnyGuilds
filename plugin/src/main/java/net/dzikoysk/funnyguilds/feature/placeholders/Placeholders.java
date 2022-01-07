@@ -70,9 +70,17 @@ public class Placeholders<T> {
                 .property("KDR", guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
                 .property("VALIDITY", guild -> messages.dateFormat.format(new Date(guild.getValidity())))
                 .property("LIVES", Guild::getLives)
-                .property("LIVES-SYMBOL", guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full))
-                .property("LIVES-SYMBOL-EMPTY", guild ->
-                        StringUtils.repeated(config.warLives - guild.getLives(), config.livesRepeatingSymbol.empty))
+                .property("LIVES-SYMBOL", guild -> {
+                    int lives = guild.getLives();
+                    if (lives <= (config).warLives) {
+                        return StringUtils.repeated(lives, config.livesRepeatingSymbol.full) +
+                                StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty);
+                    }
+                    else {
+                        return StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full) + config.livesRepeatingSymbol.more;
+                    }
+                })
+                .property("LIVES-SYMBOL-ALL", guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full))
                 .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
                 .property("ALLIES", guild -> joinOrDefault.apply(Entity.names(guild.getAllies()), messages.alliesNoValue))
                 .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))

@@ -18,6 +18,7 @@ import eu.okaeri.validator.annotation.NotBlank;
 import eu.okaeri.validator.annotation.Pattern;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
+import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -237,11 +238,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
     @Comment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
-    @CustomKey("gui-items-title")
-    public String guiItemsTitle_ = "&5&lPrzedmioty na gildie";
-
-    @Exclude
-    public String guiItemsTitle;
+    public String guiItemsTitle = "&5&lPrzedmioty na gildie";
 
     @Comment("GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @Comment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
@@ -256,21 +253,13 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @Comment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
-    @CustomKey("gui-items-vip-title")
-    public String guiItemsVipTitle_ = "&5&lPrzedmioty na gildie (VIP)";
-
-    @Exclude
-    public String guiItemsVipTitle;
+    public String guiItemsVipTitle = "&5&lPrzedmioty na gildie (VIP)";
 
     @Comment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
     @Comment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
     @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
     @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby. (np. golden_apple)")
-    @CustomKey("gui-items-name")
-    public String guiItemsName_ = "&7>> &a{ITEM-NO-AMOUNT} &7<<";
-
-    @Exclude
-    public String guiItemsName;
+    public String guiItemsName = "&7>> &a{ITEM-NO-AMOUNT} &7<<";
 
     @Comment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
     @Comment("Linie te mozna ustawic ponizej")
@@ -286,12 +275,8 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("{EC-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma w enderchescie")
     @Comment("{ALL-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie i w enderchescie")
     @Comment("{ALL-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
-    @CustomKey("gui-items-lore")
-    public List<String> guiItemsLore_ = Arrays.asList("", "&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
+    public List<String> guiItemsLore = Arrays.asList("", "&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
             "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
-
-    @Exclude
-    public List<String> guiItemsLore;
 
     @Comment("Minimalna odleglosc od spawnu")
     public int createDistance = 100;
@@ -665,28 +650,20 @@ public class PluginConfiguration extends OkaeriConfig {
 
     public static class LivesRepeatingSymbol extends OkaeriConfig {
 
+        @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL lub LIVES-SYMBOL-ALL")
+        public String full = "&c\u2764";
+
         @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL")
-        @CustomKey("full")
-        public String full_ = "&c❤";
+        public String empty = "&8\u2764";
 
-        @Exclude
-        public String full;
-
-        @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL-EMPTY")
-        @CustomKey("empty")
-        public String empty_ = "&8❤";
-
-        @Exclude
-        public String empty;
+        @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL, kiedy gildia posiada wiecej zyc niz podstawowe (war-lives)")
+        public String more = "&a+";
 
     }
 
     @Comment("Wyglad znaczika {POS} wstawionego w format chatu")
     @Comment("Znacznik ten pokazuje czy ktos jest liderem, zastepca czy zwyklym czlonkiem gildii")
-    @CustomKey("chat-position")
-    public String chatPosition_ = "&b{POS} ";
-    @Exclude
-    public String chatPosition;
+    public String chatPosition = "&b{POS} ";
 
     @Comment("Znacznik dla lidera gildii")
     @CustomKey("chat-position-leader")
@@ -701,23 +678,14 @@ public class PluginConfiguration extends OkaeriConfig {
     public String chatPositionMember = "";
 
     @Comment("Wyglad znacznika {TAG} wstawionego w format chatu")
-    @CustomKey("chat-guild")
-    public String chatGuild_ = "&b{TAG} ";
-    @Exclude
-    public String chatGuild;
+    public String chatGuild = "&b{TAG} ";
 
     @Comment("Wyglad znacznika {RANK} wstawionego w format chatu")
-    @CustomKey("chat-rank")
-    public String chatRank_ = "&b{RANK} ";
-    @Exclude
-    public String chatRank;
+    public String chatRank = "&b{RANK} ";
 
     @Comment("Wyglad znacznika {POINTS} wstawionego w format chatu")
     @Comment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
-    @CustomKey("chat-points")
-    public String chatPoints_ = "&b{POINTS} ";
-    @Exclude
-    public String chatPoints;
+    public String chatPoints = "&b{POINTS} ";
 
     @Comment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
     @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS} jest uzywane jedynie na liscie graczy")
@@ -734,19 +702,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
     @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
     @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
-    @CustomKey("ptop-points")
-    public String ptopPoints_ = " &7[{POINTS}&7]";
-
-    @Exclude
-    public String ptopPoints;
+    public String ptopPoints = " &7[{POINTS}&7]";
 
     @Comment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
     @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
     @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam tag - nie podawaj tu nic")
-    @CustomKey("gtop-points")
-    public String gtopPoints_ = " &7[&b{POINTS-FORMAT}&7]";
-    @Exclude
-    public String gtopPoints;
+    public String gtopPoints = " &7[&b{POINTS-FORMAT}&7]";
 
     @Comment("Wyglad znacznika {PING-FORMAT} w zaleznosci od wartosci pingu")
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
@@ -774,71 +735,40 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Wyglad wiadomosci wysylanej na czacie gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    @CustomKey("chat-priv-design")
-    public String chatPrivDesign_ = "&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}";
-    @Exclude
-    public String chatPrivDesign;
+    public String chatPrivDesign = "&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}";
 
     @Comment("Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    @CustomKey("chat-ally-design")
-    public String chatAllyDesign_ = "&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
-    @Exclude
-    public String chatAllyDesign;
+    public String chatAllyDesign = "&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
 
     @Comment("Wyglad wiadomosci wysylanej na czacie globalnym gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    @CustomKey("chat-global-design")
-    public String chatGlobalDesign_ = "&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
-    @Exclude
-    public String chatGlobalDesign;
+    public String chatGlobalDesign = "&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
 
     @Comment("Czy wiadomosci z chatow gildyjnych powinny byc wyswietlane w logach serwera")
     @CustomKey("log-guild-chat")
     public boolean logGuildChat = false;
 
     @Comment("Wyglad tagu osob w gildii")
-    @CustomKey("prefix-our")
-    public String prefixOur_ = "&a{TAG}&f ";
-
-    @Exclude
-    public String prefixOur;
+    public String prefixOur = "&a{TAG}&f ";
 
     @Comment("Wyglad tagu gildii sojuszniczej")
-    @CustomKey("prefix-allies")
-    public String prefixAllies_ = "&6{TAG}&f ";
-
-    @Exclude
-    public String prefixAllies;
+    public String prefixAllies = "&6{TAG}&f ";
 
     @Comment("Wyglad tagu wrogiej gildii")
     @CustomKey("prefix-enemies")
-    public String prefixEnemies_ = "&c{TAG}&f ";
-
-    @Exclude
-    public String prefixEnemies;
+    public String prefixEnemies = "&c{TAG}&f ";
 
     @Comment("Wyglad tagu gildii neutralnej. Widziany rowniez przez graczy bez gildii")
-    public String prefixOther_ = "&7{TAG}&f ";
-
-    @Exclude
-    public String prefixOther;
+    public String prefixOther = "&7{TAG}&f ";
 
     @Comment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
     @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
-    @CustomKey("ptop-online")
-    public String ptopOnline_ = "&a";
-
-    @Exclude
-    public String ptopOnline;
+    public String ptopOnline = "&a";
 
     @Comment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
     @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-online) pusta")
-    @CustomKey("ptop-offline")
-    public String ptopOffline_ = "&c";
-
-    @Exclude
-    public String ptopOffline;
+    public String ptopOffline = "&c";
 
     @CustomKey("use-shared-scoreboard")
     @Comment("Czy FunnyGuilds powinno korzystac z wspoldzielonego scoreboarda")
@@ -853,11 +783,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean dummyEnable = true;
 
     @Comment("Wyglad nazwy wyswietlanej (suffix, za punktami)")
-    @CustomKey("dummy-suffix")
-    public String dummySuffix_ = "pkt";
-
-    @Exclude
-    public String dummySuffix;
+    public String dummySuffix = "pkt";
 
     @Comment("Czy tagi gildyjne obok nicku gracza maja byc wlaczone")
     @CustomKey("guild-tag-enabled")
@@ -1135,6 +1061,28 @@ public class PluginConfiguration extends OkaeriConfig {
         heart.loadProcessedProperties();
         this.loadProcessedProperties();
 
+        try {
+            for (Field field : this.getClass().getDeclaredFields()) {
+                if (field.getType().equals(String.class)) {
+                    field.set(this, ChatUtils.colored((String) field.get(this)));
+                }
+
+                if (field.getType().equals(List.class)) {
+                    try {
+                        List<String> list = (List<String>) field.get(this);
+
+                        for (int i = 0; i < list.size(); i++) {
+                            list.set(i, ChatUtils.colored(list.get(i)));
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+            }
+        }
+        catch (Exception ex) {
+            FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
+        }
+
         return this;
     }
 
@@ -1147,11 +1095,6 @@ public class PluginConfiguration extends OkaeriConfig {
         if (!useCommonGUI) {
             this.guiItemsVip = loadGUI(this.guiItemsVip_);
         }
-
-        this.guiItemsTitle = ChatUtils.colored(this.guiItemsTitle_);
-        this.guiItemsVipTitle = ChatUtils.colored(this.guiItemsVipTitle_);
-        this.guiItemsName = ChatUtils.colored(this.guiItemsName_);
-        this.guiItemsLore = ChatUtils.colored(this.guiItemsLore_);
 
         if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getLeft())) {
             this.eventPhysics = true;
@@ -1238,33 +1181,8 @@ public class PluginConfiguration extends OkaeriConfig {
         this.joinItems = this.loadItemStackList(this.joinItems_);
         this.baseItems = this.loadItemStackList(this.baseItems_);
 
-        this.livesRepeatingSymbol.full = ChatUtils.colored(this.livesRepeatingSymbol.full_);
-        this.livesRepeatingSymbol.empty = ChatUtils.colored(this.livesRepeatingSymbol.empty_);
-
-        this.prefixOur = ChatUtils.colored(this.prefixOur_);
-        this.prefixAllies = ChatUtils.colored(this.prefixAllies_);
-        this.prefixOther = ChatUtils.colored(this.prefixOther_);
-        this.prefixEnemies = ChatUtils.colored(this.prefixEnemies_);
-
-        this.ptopOnline = ChatUtils.colored(this.ptopOnline_);
-        this.ptopOffline = ChatUtils.colored(this.ptopOffline_);
-
-        this.dummySuffix = ChatUtils.colored(this.dummySuffix_);
-
-        this.chatPosition = ChatUtils.colored(this.chatPosition_);
-        this.chatGuild = ChatUtils.colored(this.chatGuild_);
-        this.chatRank = ChatUtils.colored(this.chatRank_);
-        this.chatPoints = ChatUtils.colored(this.chatPoints_);
-
         this.pointsFormat = IntegerRange.parseIntegerRange(this.pointsFormat_, true);
         this.pingFormat = IntegerRange.parseIntegerRange(this.pingFormat_, true);
-
-        this.ptopPoints = ChatUtils.colored(this.ptopPoints_);
-        this.gtopPoints = ChatUtils.colored(this.gtopPoints_);
-
-        this.chatPrivDesign = ChatUtils.colored(this.chatPrivDesign_);
-        this.chatAllyDesign = ChatUtils.colored(this.chatAllyDesign_);
-        this.chatGlobalDesign = ChatUtils.colored(this.chatGlobalDesign_);
 
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }

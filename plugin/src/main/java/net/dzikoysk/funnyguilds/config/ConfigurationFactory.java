@@ -31,6 +31,7 @@ public final class ConfigurationFactory {
         return ConfigManager.create(PluginConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
+                registry.register(new DecolorTransformer());
                 registry.register(new MaterialTransformer());
                 registry.register(new FunnyTimeTransformer());
             });
