@@ -656,7 +656,7 @@ public class PluginConfiguration extends OkaeriConfig {
         @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL")
         public String empty = "&8\u2764";
 
-        @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL, kiedy gildia posiada wiecej zyc niz podstawowe (war-lives)")
+        @Comment("Symbol (lub slowo), ktore ma byc pokazywane na koncu placeholdera LIVES-SYMBOL, kiedy gildia posiada wiecej zyc niz podstawowe (war-lives)")
         public String more = "&a+";
 
     }
