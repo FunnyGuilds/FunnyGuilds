@@ -112,13 +112,15 @@ public class RegionManager {
         FunnyBox box = region.toBox();
 
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!box.contains(player.getLocation().toVector())) {
+            if (ignoredUuids.contains(player.getUniqueId())) {
                 continue;
             }
 
-            if (!ignoredUuids.contains(player.getUniqueId())) {
-                return true;
+            if (!box.contains(player.getLocation())) {
+                continue;
             }
+
+            return true;
         }
 
         return false;
