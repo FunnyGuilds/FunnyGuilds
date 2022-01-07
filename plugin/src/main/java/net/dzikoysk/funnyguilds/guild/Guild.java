@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.guild;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -166,29 +167,9 @@ public class Guild extends AbstractMutableEntity {
         return this.getCenter().map(location -> location.add(0.5D, -1.0D, 0.5D));
     }
 
+    @Deprecated
     public boolean isSomeoneInRegion() {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (!config.regionsEnabled) {
-            return false;
-        }
-
-        FunnyBox box = region.toBox();
-        Set<UUID> membersUuid = members.stream()
-                .map(User::getUUID)
-                .collect(Collectors.toSet());
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!box.contains(player.getLocation().toVector())) {
-                continue;
-            }
-
-            if (!membersUuid.contains(player.getUniqueId())) {
-                return true;
-            }
-        }
-
-        return false;
+        return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(region, new HashSet<>(members));
     }
 
     public Location getHome() {

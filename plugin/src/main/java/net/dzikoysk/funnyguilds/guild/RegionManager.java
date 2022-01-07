@@ -1,22 +1,31 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -94,6 +103,34 @@ public class RegionManager {
      */
     public boolean isInRegion(Location location) {
         return this.findRegionAtLocation(location).isPresent();
+    }
+
+    public boolean isAnyPlayerInRegion(Region region, Collection<UUID> ignoredUuids) {
+        if (!pluginConfiguration.regionsEnabled) {
+            return false;
+        }
+
+        FunnyBox box = region.toBox();
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!box.contains(player.getLocation().toVector())) {
+                continue;
+            }
+
+            if (!ignoredUuids.contains(player.getUniqueId())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isAnyPlayerInRegion(Region region) {
+        return isAnyPlayerInRegion(region, Collections.emptySet());
+    }
+
+    public boolean isAnyUserInRegion(Region region, Collection<User> users) {
+        return isAnyPlayerInRegion(region, users.stream().map(User::getUUID).collect(Collectors.toSet()));
     }
 
     /**
