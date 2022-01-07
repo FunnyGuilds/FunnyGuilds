@@ -650,13 +650,13 @@ public class PluginConfiguration extends OkaeriConfig {
 
     public static class LivesRepeatingSymbol extends OkaeriConfig {
 
-        @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL lub LIVES-SYMBOL-ALL")
+        @Comment("Symbol (lub slowo), ktory ma byc powtarzany przy uzyciu placeholdera LIVES-SYMBOL lub LIVES-SYMBOL-ALL")
         public String full = "&c\u2764";
 
-        @Comment("Symbol (lub slowo), ktore ma byc powtarzane przy uzyciu placeholdera LIVES-SYMBOL")
+        @Comment("Symbol (lub slowo), ktory ma byc powtarzany przy uzyciu placeholdera LIVES-SYMBOL")
         public String empty = "&8\u2764";
 
-        @Comment("Symbol (lub slowo), ktore ma byc pokazywane na koncu placeholdera LIVES-SYMBOL, kiedy gildia posiada wiecej zyc niz podstawowe (war-lives)")
+        @Comment("Symbol (lub slowo), ktory ma byc pokazywany na koncu placeholdera LIVES-SYMBOL, kiedy gildia posiada wiecej zyc niz podstawowe (war-lives)")
         public String more = "&a+";
 
     }

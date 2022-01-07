@@ -161,7 +161,7 @@ public final class DefaultTablistVariables {
         //FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY", guild -> guild.getDeputies().isEmpty() ? messages.gDeputyNoValue : guild.getDeputies().iterator().next(RandomUtils.RANDOM_INSTANCE.nextInt(guild.getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
 
         putGuild("g-lives", "G-LIVES", user -> user.getGuild().getLives(), user -> "0");
-        putGuild("g-lives-symbol", "G-LIVES-LOST-SYMBOL", user -> {
+        putGuild("g-lives-symbol", "G-LIVES-SYMBOL", user -> {
             int lives = user.getGuild().getLives();
             if (lives <= (config).warLives) {
                 return panda.utilities.StringUtils.repeated(lives, config.livesRepeatingSymbol.full) +
@@ -171,7 +171,7 @@ public final class DefaultTablistVariables {
                 return panda.utilities.StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full) + config.livesRepeatingSymbol.more;
             }
         }, user -> messages.livesNoValue);
-        putGuild("g-lives-symbol-all", "G-LIVES-SYMBOL", user ->
+        putGuild("g-lives-symbol-all", "G-LIVES-SYMBOL-ALL", user ->
                         panda.utilities.StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol.full),
                 user -> messages.livesNoValue);
         putGuild("g-allies", "G-ALLIES", user -> user.getGuild().getAllies().size(), user -> "0");
