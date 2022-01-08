@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.tablist.variable;
 
-import com.google.common.base.Joiner;
 import java.time.format.TextStyle;
 import java.util.Collections;
 import java.util.List;
@@ -28,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import panda.utilities.StringUtils;
+import panda.utilities.text.Joiner;
 
 public final class DefaultTablistVariables {
 
