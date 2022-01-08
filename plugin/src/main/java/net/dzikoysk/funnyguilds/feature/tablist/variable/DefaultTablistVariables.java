@@ -163,7 +163,7 @@ public final class DefaultTablistVariables {
         putGuild("g-lives", "G-LIVES", user -> user.getGuild().getLives(), user -> "0");
         putGuild("g-lives-symbol", "G-LIVES-SYMBOL", user -> {
             int lives = user.getGuild().getLives();
-            if (lives <= (config).warLives) {
+            if (lives <= config.warLives) {
                 return panda.utilities.StringUtils.repeated(lives, config.livesRepeatingSymbol.full.getValue()) +
                         panda.utilities.StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty.getValue());
             }

@@ -72,7 +72,7 @@ public class Placeholders<T> {
                 .property("LIVES", Guild::getLives)
                 .property("LIVES-SYMBOL", guild -> {
                     int lives = guild.getLives();
-                    if (lives <= (config).warLives) {
+                    if (lives <= config.warLives) {
                         return StringUtils.repeated(lives, config.livesRepeatingSymbol.full.getValue()) +
                                 StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty.getValue());
                     }
