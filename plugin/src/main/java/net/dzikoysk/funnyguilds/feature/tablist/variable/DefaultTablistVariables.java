@@ -164,15 +164,16 @@ public final class DefaultTablistVariables {
         putGuild("g-lives-symbol", "G-LIVES-SYMBOL", user -> {
             int lives = user.getGuild().getLives();
             if (lives <= (config).warLives) {
-                return panda.utilities.StringUtils.repeated(lives, config.livesRepeatingSymbol.full) +
-                        panda.utilities.StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty);
+                return panda.utilities.StringUtils.repeated(lives, config.livesRepeatingSymbol.full.getValue()) +
+                        panda.utilities.StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty.getValue());
             }
             else {
-                return panda.utilities.StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full) + config.livesRepeatingSymbol.more;
+                return panda.utilities.StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full.getValue()) +
+                        config.livesRepeatingSymbol.more.getValue();
             }
         }, user -> messages.livesNoValue);
         putGuild("g-lives-symbol-all", "G-LIVES-SYMBOL-ALL", user ->
-                        panda.utilities.StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol.full),
+                        panda.utilities.StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol.full.getValue()),
                 user -> messages.livesNoValue);
         putGuild("g-allies", "G-ALLIES", user -> user.getGuild().getAllies().size(), user -> "0");
         putGuild("g-points", "G-POINTS", user -> user.getGuild().getRank().getAveragePoints(), user -> "0");

@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 import net.dzikoysk.funnyguilds.config.transformer.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.FunnyTimeTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.MaterialTransformer;
+import net.dzikoysk.funnyguilds.config.transformer.RawStringTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.SimpleDateFormatTransformer;
 
 public final class ConfigurationFactory {
@@ -31,7 +32,7 @@ public final class ConfigurationFactory {
         return ConfigManager.create(PluginConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
-                registry.register(new DecolorTransformer());
+                registry.register(new RawStringTransformer());
                 registry.register(new MaterialTransformer());
                 registry.register(new FunnyTimeTransformer());
             });

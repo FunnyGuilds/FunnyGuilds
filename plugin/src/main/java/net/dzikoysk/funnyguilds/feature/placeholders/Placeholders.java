@@ -73,14 +73,15 @@ public class Placeholders<T> {
                 .property("LIVES-SYMBOL", guild -> {
                     int lives = guild.getLives();
                     if (lives <= (config).warLives) {
-                        return StringUtils.repeated(lives, config.livesRepeatingSymbol.full) +
-                                StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty);
+                        return StringUtils.repeated(lives, config.livesRepeatingSymbol.full.getValue()) +
+                                StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty.getValue());
                     }
                     else {
-                        return StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full) + config.livesRepeatingSymbol.more;
+                        return StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full.getValue()) +
+                                config.livesRepeatingSymbol.more.getValue();
                     }
                 })
-                .property("LIVES-SYMBOL-ALL", guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full))
+                .property("LIVES-SYMBOL-ALL", guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full.getValue()))
                 .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
                 .property("ALLIES", guild -> joinOrDefault.apply(Entity.names(guild.getAllies()), messages.alliesNoValue))
                 .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))

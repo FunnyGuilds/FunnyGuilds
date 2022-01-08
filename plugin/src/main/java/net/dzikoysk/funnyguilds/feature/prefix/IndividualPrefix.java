@@ -45,7 +45,7 @@ public class IndividualPrefix {
 
                     if (this.user.hasGuild()) {
                         if (this.user.equals(byName) || this.user.getGuild().getMembers().contains(byName)) {
-                            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur, byName.getGuild()));
+                            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur.getValue(), byName.getGuild()));
                         }
                     }
 
@@ -79,14 +79,14 @@ public class IndividualPrefix {
                 }
             }
 
-            String prefix = plugin.getPluginConfiguration().prefixOther;
+            String prefix = plugin.getPluginConfiguration().prefixOther.getValue();
 
             if (guild.getAllies().contains(to)) {
-                prefix = plugin.getPluginConfiguration().prefixAllies;
+                prefix = plugin.getPluginConfiguration().prefixAllies.getValue();
             }
 
             if (guild.getEnemies().contains(to) || to.getEnemies().contains(guild)) {
-                prefix = plugin.getPluginConfiguration().prefixEnemies;
+                prefix = plugin.getPluginConfiguration().prefixEnemies.getValue();
             }
 
             team.setPrefix(preparePrefix(prefix, to));
@@ -104,7 +104,7 @@ public class IndividualPrefix {
                 }
             }
 
-            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOther, to));
+            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOther.getValue(), to));
         }
     }
 
@@ -147,12 +147,12 @@ public class IndividualPrefix {
             guilds.remove(guild);
 
             PluginConfiguration config = plugin.getPluginConfiguration();
-            String our = config.prefixOur;
-            String ally = config.prefixAllies;
-            String enemy = config.prefixEnemies;
-            String other = config.prefixOther;
-            Team team = scoreboard.getTeam(guild.getTag());
+            String our = config.prefixOur.getValue();
+            String ally = config.prefixAllies.getValue();
+            String enemy = config.prefixEnemies.getValue();
+            String other = config.prefixOther.getValue();
 
+            Team team = scoreboard.getTeam(guild.getTag());
             if (team == null) {
                 team = scoreboard.registerNewTeam(guild.getTag());
             }
@@ -194,7 +194,7 @@ public class IndividualPrefix {
             }
         }
         else {
-            String other = plugin.getPluginConfiguration().prefixOther;
+            String other = plugin.getPluginConfiguration().prefixOther.getValue();
             registerSoloTeam(this.user);
 
             for (Guild one : guilds) {

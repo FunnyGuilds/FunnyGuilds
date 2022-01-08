@@ -44,14 +44,14 @@ public class PlayerChat extends AbstractFunnyListener {
         int points = user.getRank().getPoints();
         String format = event.getFormat();
 
-        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(config.chatRank, "{RANK}", String.valueOf(user.getRank().getPosition())));
-        format = StringUtils.replace(format, "{POINTS}", config.chatPoints);
+        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(config.chatRank.getValue(), "{RANK}", String.valueOf(user.getRank().getPosition())));
+        format = StringUtils.replace(format, "{POINTS}", config.chatPoints.getValue());
         format = StringUtils.replace(format, "{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
 
         if (user.hasGuild()) {
-            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild, "{TAG}", user.getGuild().getTag()));
-            format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition, "{POS}", getPositionString(user, config)));
+            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().getTag()));
+            format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(user, config)));
         }
         else {
             format = StringUtils.replace(format, "{TAG}", "");
@@ -90,12 +90,12 @@ public class PlayerChat extends AbstractFunnyListener {
         int prefixLength = guildPrefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(guildPrefix)) {
-            String resultMessage = config.chatPrivDesign;
+            String resultMessage = config.chatPrivDesign.getValue();
 
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
 
             String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
@@ -115,12 +115,12 @@ public class PlayerChat extends AbstractFunnyListener {
         int prefixLength = allyPrefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allyPrefix)) {
-            String resultMessage = config.chatAllyDesign;
+            String resultMessage = config.chatAllyDesign.getValue();
 
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
@@ -144,12 +144,12 @@ public class PlayerChat extends AbstractFunnyListener {
         int prefixLength = allGuildsPrefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allGuildsPrefix)) {
-            String resultMessage = config.chatGlobalDesign;
+            String resultMessage = config.chatGlobalDesign.getValue();
 
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition, "{POS}", getPositionString(this.userManager.findByPlayer(player).getOrNull(), config)));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player).getOrNull(), config)));
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);

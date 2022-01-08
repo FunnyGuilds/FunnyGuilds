@@ -49,7 +49,7 @@ public class RankUtils {
             }
 
             int points = guild.getRank().getAveragePoints();
-            String pointsFormat = config.gtopPoints;
+            String pointsFormat = config.gtopPoints.getValue();
 
             if (!pointsFormat.isEmpty()) {
                 pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
@@ -59,19 +59,19 @@ public class RankUtils {
             String guildTag = guild.getTag();
 
             if (tablistConfig.playerListUseRelationshipColors) {
-                guildTag = StringUtils.replace(config.prefixOther, "{TAG}", guild.getTag());
+                guildTag = StringUtils.replace(config.prefixOther.getValue(), "{TAG}", guild.getTag());
 
                 if (targetUser != null && targetUser.hasGuild()) {
                     Guild sourceGuild = targetUser.getGuild();
 
                     if (sourceGuild.getAllies().contains(guild)) {
-                        guildTag = StringUtils.replace(config.prefixAllies, "{TAG}", guild.getTag());
+                        guildTag = StringUtils.replace(config.prefixAllies.getValue(), "{TAG}", guild.getTag());
                     }
                     else if (sourceGuild.getEnemies().contains(guild)) {
-                        guildTag = StringUtils.replace(config.prefixEnemies, "{TAG}", guild.getTag());
+                        guildTag = StringUtils.replace(config.prefixEnemies.getValue(), "{TAG}", guild.getTag());
                     }
                     else if (sourceGuild.getUUID().equals(guild.getUUID())) {
-                        guildTag = StringUtils.replace(config.prefixOur, "{TAG}", guild.getTag());
+                        guildTag = StringUtils.replace(config.prefixOur.getValue(), "{TAG}", guild.getTag());
                     }
                 }
             }
@@ -87,7 +87,7 @@ public class RankUtils {
             }
 
             int points = user.getRank().getPoints();
-            String pointsFormat = config.ptopPoints;
+            String pointsFormat = config.ptopPoints.getValue();
 
             if (!pointsFormat.isEmpty()) {
                 pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));

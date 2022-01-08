@@ -18,7 +18,6 @@ import eu.okaeri.validator.annotation.NotBlank;
 import eu.okaeri.validator.annotation.Pattern;
 import eu.okaeri.validator.annotation.Positive;
 import eu.okaeri.validator.annotation.PositiveOrZero;
-import java.lang.reflect.Field;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -238,7 +237,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Nazwa GUI z przedmiotami na gildie dla osob bez uprawnienia funnyguilds.vip.items")
     @Comment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
-    public String guiItemsTitle = "&5&lPrzedmioty na gildie";
+    public RawString guiItemsTitle = new RawString("&5&lPrzedmioty na gildie");
 
     @Comment("GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @Comment("Zasada tworzenia GUI jest taka sama jak w przypadku sekcji gui-items")
@@ -253,13 +252,13 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Nazwa GUI z przedmiotami na gildie dla osob z uprawnieniem funnyguilds.vip.items")
     @Comment("Nazwa moze zawierac max. 32 znaki, wliczajac w to kody kolorow")
-    public String guiItemsVipTitle = "&5&lPrzedmioty na gildie (VIP)";
+    public RawString guiItemsVipTitle = new RawString("&5&lPrzedmioty na gildie (VIP)");
 
     @Comment("Zmiana nazwy i koloru przedmiotow na gildie (nie ma znaczenia uprawnienie funnyguilds.vip.items)")
     @Comment("Jesli nie chcesz uzywać tej funkcji, to pozostaw gui-items-name: \"\"")
     @Comment("{ITEM} - nazwa przedmiotu (np. 1 golden_apple)")
     @Comment("{ITEM-NO-AMOUNT} - nazwa przedmiotu bez liczby. (np. golden_apple)")
-    public String guiItemsName = "&7>> &a{ITEM-NO-AMOUNT} &7<<";
+    public RawString guiItemsName = new RawString("&7>> &a{ITEM-NO-AMOUNT} &7<<");
 
     @Comment("Czy do przedmiotow na gildie, ktore sa w GUI, maja byc dodawane dodatkowe linie opisu?")
     @Comment("Linie te mozna ustawic ponizej")
@@ -275,7 +274,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("{EC-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma w enderchescie")
     @Comment("{ALL-AMOUNT} - ilosc danego przedmiotu, jaka gracz ma przy sobie i w enderchescie")
     @Comment("{ALL-PERCENT} - procent wymaganej ilosci danego przedmiotu, jaki gracz ma przy sobie i w enderchescie")
-    public List<String> guiItemsLore = Arrays.asList("", "&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
+    public List<RawString> guiItemsLore = RawString.listOf("", "&aPosiadzasz juz:", "&a{PINV-AMOUNT} przy sobie &7({PINV-PERCENT}%)",
             "&a{EC-AMOUNT} w enderchescie &7({EC-PERCENT}%)", "&a{ALL-AMOUNT} calkowicie &7({ALL-PERCENT}%)");
 
     @Comment("Minimalna odleglosc od spawnu")
@@ -651,19 +650,19 @@ public class PluginConfiguration extends OkaeriConfig {
     public static class LivesRepeatingSymbol extends OkaeriConfig {
 
         @Comment("Symbol (lub slowo), ktory ma byc powtarzany przy uzyciu placeholdera LIVES-SYMBOL lub LIVES-SYMBOL-ALL")
-        public String full = "&c\u2764";
+        public RawString full = new RawString("&c\u2764");
 
         @Comment("Symbol (lub slowo), ktory ma byc powtarzany przy uzyciu placeholdera LIVES-SYMBOL")
-        public String empty = "&8\u2764";
+        public RawString empty = new RawString("&8\u2764");
 
         @Comment("Symbol (lub slowo), ktory ma byc pokazywany na koncu placeholdera LIVES-SYMBOL, kiedy gildia posiada wiecej zyc niz podstawowe (war-lives)")
-        public String more = "&a+";
+        public RawString more = new RawString("&a+");
 
     }
 
     @Comment("Wyglad znaczika {POS} wstawionego w format chatu")
     @Comment("Znacznik ten pokazuje czy ktos jest liderem, zastepca czy zwyklym czlonkiem gildii")
-    public String chatPosition = "&b{POS} ";
+    public RawString chatPosition = new RawString("&b{POS} ");
 
     @Comment("Znacznik dla lidera gildii")
     @CustomKey("chat-position-leader")
@@ -678,14 +677,14 @@ public class PluginConfiguration extends OkaeriConfig {
     public String chatPositionMember = "";
 
     @Comment("Wyglad znacznika {TAG} wstawionego w format chatu")
-    public String chatGuild = "&b{TAG} ";
+    public RawString chatGuild = new RawString("&b{TAG} ");
 
     @Comment("Wyglad znacznika {RANK} wstawionego w format chatu")
-    public String chatRank = "&b{RANK} ";
+    public RawString chatRank = new RawString("&b{RANK} ");
 
     @Comment("Wyglad znacznika {POINTS} wstawionego w format chatu")
     @Comment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
-    public String chatPoints = "&b{POINTS} ";
+    public RawString chatPoints = new RawString("&b{POINTS} ");
 
     @Comment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
     @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS} jest uzywane jedynie na liscie graczy")
@@ -702,12 +701,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
     @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
     @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
-    public String ptopPoints = " &7[{POINTS}&7]";
+    public RawString ptopPoints = new RawString(" &7[{POINTS}&7]");
 
     @Comment("Znacznik z punktami dodawany do zmiennej {GTOP-x}")
     @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
     @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam tag - nie podawaj tu nic")
-    public String gtopPoints = " &7[&b{POINTS-FORMAT}&7]";
+    public RawString gtopPoints = new RawString(" &7[&b{POINTS-FORMAT}&7]");
 
     @Comment("Wyglad znacznika {PING-FORMAT} w zaleznosci od wartosci pingu")
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
@@ -735,40 +734,39 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Wyglad wiadomosci wysylanej na czacie gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public String chatPrivDesign = "&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}";
+    public RawString chatPrivDesign = new RawString("&8[&aChat gildii&8] &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("Wyglad wiadomosci wysylanej na czacie sojusznikow dla sojusznikow")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public String chatAllyDesign = "&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
+    public RawString chatAllyDesign = new RawString("&8[&6Chat sojuszniczy&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("Wyglad wiadomosci wysylanej na czacie globalnym gildii")
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
-    public String chatGlobalDesign = "&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}";
+    public RawString chatGlobalDesign = new RawString("&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
     @Comment("Czy wiadomosci z chatow gildyjnych powinny byc wyswietlane w logach serwera")
     @CustomKey("log-guild-chat")
     public boolean logGuildChat = false;
 
     @Comment("Wyglad tagu osob w gildii")
-    public String prefixOur = "&a{TAG}&f ";
+    public RawString prefixOur = new RawString("&a{TAG}&f ");
 
     @Comment("Wyglad tagu gildii sojuszniczej")
-    public String prefixAllies = "&6{TAG}&f ";
+    public RawString prefixAllies = new RawString("&6{TAG}&f ");
 
     @Comment("Wyglad tagu wrogiej gildii")
-    @CustomKey("prefix-enemies")
-    public String prefixEnemies = "&c{TAG}&f ";
+    public RawString prefixEnemies = new RawString("&c{TAG}&f ");
 
     @Comment("Wyglad tagu gildii neutralnej. Widziany rowniez przez graczy bez gildii")
-    public String prefixOther = "&7{TAG}&f ";
+    public RawString prefixOther = new RawString("&7{TAG}&f ");
 
     @Comment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
     @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
-    public String ptopOnline = "&a";
+    public RawString ptopOnline = new RawString("&a");
 
     @Comment("Kolory dodawane przed nickiem gracza offline przy zamianie zmiennej {PTOP-x}")
     @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-online) pusta")
-    public String ptopOffline = "&c";
+    public RawString ptopOffline = new RawString("&c");
 
     @CustomKey("use-shared-scoreboard")
     @Comment("Czy FunnyGuilds powinno korzystac z wspoldzielonego scoreboarda")
@@ -783,7 +781,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean dummyEnable = true;
 
     @Comment("Wyglad nazwy wyswietlanej (suffix, za punktami)")
-    public String dummySuffix = "pkt";
+    public RawString dummySuffix = new RawString("pkt");
 
     @Comment("Czy tagi gildyjne obok nicku gracza maja byc wlaczone")
     @CustomKey("guild-tag-enabled")
@@ -1060,29 +1058,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
         heart.loadProcessedProperties();
         this.loadProcessedProperties();
-
-        try {
-            for (Field field : this.getClass().getDeclaredFields()) {
-                if (field.getType().equals(String.class)) {
-                    field.set(this, ChatUtils.colored((String) field.get(this)));
-                }
-
-                if (field.getType().equals(List.class)) {
-                    try {
-                        List<String> list = (List<String>) field.get(this);
-
-                        for (int i = 0; i < list.size(); i++) {
-                            list.set(i, ChatUtils.colored(list.get(i)));
-                        }
-                    }
-                    catch (Exception ignored) {
-                    }
-                }
-            }
-        }
-        catch (Exception ex) {
-            FunnyGuilds.getPluginLogger().error("Could not load message configuration", ex);
-        }
 
         return this;
     }

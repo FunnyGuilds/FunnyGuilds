@@ -78,7 +78,7 @@ public class Dummy {
         if (objective == null || !objective.getName().equals(OBJECTIVE_NAME)) {
             objective = scoreboard.registerNewObjective(OBJECTIVE_NAME, "dummy");
             objective.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            objective.setDisplayName(plugin.getPluginConfiguration().dummySuffix);
+            objective.setDisplayName(plugin.getPluginConfiguration().dummySuffix.getValue());
         }
 
         UserManager userManager = plugin.getUserManager();
