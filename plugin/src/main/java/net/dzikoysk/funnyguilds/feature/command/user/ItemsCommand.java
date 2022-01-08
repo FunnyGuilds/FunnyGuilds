@@ -6,6 +6,7 @@ import java.util.Objects;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -28,11 +29,11 @@ public final class ItemsCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player) {
         List<ItemStack> guiItems = config.guiItems;
-        String title = config.guiItemsTitle;
+        String title = config.guiItemsTitle.getValue();
 
         if (!config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
             guiItems = config.guiItemsVip;
-            title = config.guiItemsVipTitle;
+            title = config.guiItemsVipTitle.getValue();
         }
 
         GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
@@ -58,7 +59,8 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                     lore = new ArrayList<>(config.guiItemsLore.size());
                 }
 
-                for (String line : config.guiItemsLore) {
+                for (RawString rawLine : config.guiItemsLore) {
+                    String line = rawLine.getValue();
                     line = StringUtils.replace(line, "{REQ-AMOUNT}", Integer.toString(requiredAmount));
                     line = StringUtils.replace(line, "{PINV-AMOUNT}", Integer.toString(inventoryAmount));
                     line = StringUtils.replace(line, "{PINV-PERCENT}", ChatUtils.getPercent(inventoryAmount, requiredAmount));
@@ -71,7 +73,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 }
 
                 if (!Objects.equals(config.guiItemsName, "")) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName, null, item));
+                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName.getValue(), null, item));
                 }
 
                 meta.setLore(lore);

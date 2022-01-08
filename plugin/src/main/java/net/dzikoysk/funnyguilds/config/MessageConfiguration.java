@@ -23,6 +23,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String gDeputyNoValue = "Brak (G-DEPUTY)";
     public String gValidityNoValue = "Brak (G-VALIDITY)";
     public String gRegionSizeNoValue = "Brak (G-REGION-SIZE)";
+    public String livesNoValue = "Brak (LIVES-SYMBOL/LIVES-SYMBOL-ALL)";
     public String alliesNoValue = "Brak (ALLIES)";
     public String enemiesNoValue = "Brak (ENEMIES)";
     public String gtopNoValue = "Brak (GTOP-x)";
@@ -196,7 +197,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
 
-    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {GUILD-PROTECTION}")
+    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",

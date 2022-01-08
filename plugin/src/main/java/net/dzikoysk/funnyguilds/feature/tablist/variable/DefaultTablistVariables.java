@@ -23,10 +23,11 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import panda.utilities.StringUtils;
+import panda.utilities.text.Joiner;
 
 public final class DefaultTablistVariables {
 
@@ -101,7 +102,7 @@ public final class DefaultTablistVariables {
 
             parser.add(new SimpleTablistVariable("WG-REGIONS", user -> {
                 List<String> regionNames = getWorldGuardRegionNames(user);
-                return regionNames != null && !regionNames.isEmpty() ? StringUtils.join(regionNames, ", ") : wgRegionNoValue;
+                return regionNames != null && !regionNames.isEmpty() ? Joiner.on(", ").join(regionNames) : wgRegionNoValue;
             }));
         }
 
@@ -161,7 +162,20 @@ public final class DefaultTablistVariables {
         //FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY", guild -> guild.getDeputies().isEmpty() ? messages.gDeputyNoValue : guild.getDeputies().iterator().next(RandomUtils.RANDOM_INSTANCE.nextInt(guild.getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
 
         putGuild("g-lives", "G-LIVES", user -> user.getGuild().getLives(), user -> "0");
-        putGuild("g-lives-symbol", "G-LIVES-SYMBOL", user -> user.getGuild().getLives(), user -> panda.utilities.StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol));
+        putGuild("g-lives-symbol", "G-LIVES-SYMBOL", user -> {
+            int lives = user.getGuild().getLives();
+            if (lives <= config.warLives) {
+                return StringUtils.repeated(lives, config.livesRepeatingSymbol.full.getValue()) +
+                        StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty.getValue());
+            }
+            else {
+                return StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full.getValue()) +
+                        config.livesRepeatingSymbol.more.getValue();
+            }
+        }, user -> messages.livesNoValue);
+        putGuild("g-lives-symbol-all", "G-LIVES-SYMBOL-ALL", user ->
+                        StringUtils.repeated(user.getGuild().getLives(), config.livesRepeatingSymbol.full.getValue()),
+                user -> messages.livesNoValue);
         putGuild("g-allies", "G-ALLIES", user -> user.getGuild().getAllies().size(), user -> "0");
         putGuild("g-points", "G-POINTS", user -> user.getGuild().getRank().getAveragePoints(), user -> "0");
         putGuild("g-kills", "G-KILLS", user -> user.getGuild().getRank().getKills(), user -> "0");
