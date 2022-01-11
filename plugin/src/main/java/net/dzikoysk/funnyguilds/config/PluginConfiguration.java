@@ -760,6 +760,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wyglad tagu gildii neutralnej. Widziany rowniez przez graczy bez gildii")
     public RawString prefixOther = new RawString("&7{TAG}&f ");
 
+    @Comment("Czy ptop-online/ptop-offline maja uznawac graczy na vanishu za graczy offline")
+    @Comment("UWAGA: Opcja powinna wspierac pluginy jak VanishNoPacket, SuperVanish czy PremiumVanish")
+    @Comment("Jesli opcja by nie dzialala z tymi (lub innymi) pluginami prosze stworzyc Issue na GitHub'ie")
+    public boolean ptopRespectVanish = true;
+
     @Comment("Kolory dodawane przed nickiem gracza online przy zamianie zmiennej {PTOP-x}")
     @Comment("Jesli nie chcesz kolorowania zaleznego od statusu online - pozostaw te sekcje (i ptop-offline) pusta")
     public RawString ptopOnline = new RawString("&a");

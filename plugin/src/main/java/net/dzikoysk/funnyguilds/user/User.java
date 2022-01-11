@@ -11,6 +11,7 @@ import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.MetadataValue;
 
 public class User extends AbstractMutableEntity {
 
@@ -109,6 +110,21 @@ public class User extends AbstractMutableEntity {
         }
 
         return Bukkit.getPlayer(this.uuid) != null;
+    }
+
+    public boolean isVanished() {
+        if (!isOnline()) {
+            return false;
+        }
+
+        // Should work with VanishNoPacket, SuperVanish and PremiumVanish
+        for (MetadataValue meta : getPlayer().getMetadata("vanished")) {
+            if (meta.asBoolean()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public int getPing() {
