@@ -95,7 +95,7 @@ public class RankUtils {
             }
 
             boolean online = user.isOnline();
-            if(online && config.ptopRespectVanish){
+            if (online && config.ptopRespectVanish) {
                 online = !user.isVanished();
             }
 
