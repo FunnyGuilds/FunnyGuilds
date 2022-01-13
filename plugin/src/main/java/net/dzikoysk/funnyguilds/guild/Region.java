@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -178,6 +179,10 @@ public class Region extends AbstractMutableEntity {
         else {
             return Math.min(a, b);
         }
+    }
+
+    public FunnyBox toBox() {
+        return FunnyBox.of(firstCorner, secondCorner);
     }
 
     @Override

@@ -3,6 +3,8 @@ package net.dzikoysk.funnyguilds.guild;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,11 +13,14 @@ import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
+import net.dzikoysk.funnyguilds.rank.RankManager;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 
 public class Guild extends AbstractMutableEntity {
 
@@ -112,9 +117,14 @@ public class Guild extends AbstractMutableEntity {
         return this.rank;
     }
 
+    /**
+     * @return true if guild is ranked; false if guild is not ranked.
+     * @deprecated for removal in the future, in favour of {@link RankManager#isRankedGuild(Guild)}}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public boolean isRanked() {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        return members.size() >= config.minMembersToInclude;
+        return RankManager.getInstance().isRankedGuild(this);
     }
 
     public int getLives() {
@@ -135,12 +145,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void setRegion(Region region) {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-
-        if (!config.regionsEnabled) {
-            return;
-        }
-
         this.region = region;
         this.region.setGuild(this);
 
@@ -163,17 +167,9 @@ public class Guild extends AbstractMutableEntity {
         return this.getCenter().map(location -> location.add(0.5D, -1.0D, 0.5D));
     }
 
+    @Deprecated
     public boolean isSomeoneInRegion() {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-
-        return plugin.getPluginConfiguration().regionsEnabled && PandaStream.of(Bukkit.getOnlinePlayers())
-                .filter(player -> {
-                    Option<User> user = plugin.getUserManager().findByPlayer(player);
-                    return user.isDefined() && user.get().getGuild() != this;
-                })
-                .flatMap(player -> plugin.getRegionManager().findRegionAtLocation(player.getLocation()))
-                .find(region -> region != null && region.getGuild() == this)
-                .isPresent();
+        return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(region, new HashSet<>(members));
     }
 
     public Location getHome() {
@@ -425,25 +421,21 @@ public class Guild extends AbstractMutableEntity {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-
-        result = prime * result + (uuid == null ? 0 : uuid.hashCode());
-
-        return result;
+        return Objects.hash(uuid);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == this) {
+        if (this == obj) {
             return true;
         }
 
-        if (obj == null || obj.getClass() != this.getClass()) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
 
-        return ((Guild) obj).getUUID().equals(this.uuid);
+        Guild guild = (Guild) obj;
+        return this.uuid.equals(guild.uuid);
     }
 
     @Override

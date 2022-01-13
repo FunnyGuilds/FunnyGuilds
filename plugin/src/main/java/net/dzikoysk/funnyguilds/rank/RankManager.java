@@ -51,6 +51,10 @@ public class RankManager {
         return this.guildsRank.size();
     }
 
+    public boolean isRankedGuild(Guild guild) {
+        return guild.getMembers().size() >= pluginConfiguration.minMembersToInclude;
+    }
+
     /**
      * Gets the rank manager.
      *

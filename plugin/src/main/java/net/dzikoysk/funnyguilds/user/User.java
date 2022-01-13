@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.user;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
@@ -176,25 +177,22 @@ public class User extends AbstractMutableEntity {
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (uuid == null ? 0 : uuid.hashCode());
-        return result;
+        return Objects.hash(uuid);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
+        if (this == obj) {
+            return true;
         }
 
-        if (obj.getClass() != this.getClass()) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
 
         User user = (User) obj;
 
-        return user.getUUID().equals(this.uuid);
+        return this.uuid.equals(user.uuid);
     }
 
     @Override
