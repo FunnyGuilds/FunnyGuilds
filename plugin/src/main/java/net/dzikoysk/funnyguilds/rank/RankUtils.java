@@ -94,7 +94,12 @@ public class RankUtils {
                 pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
             }
 
-            return StringUtils.replace(rankTop, "{PTOP-" + index + '}', (user.isOnline() ? config.ptopOnline : config.ptopOffline) + user.getName() + pointsFormat);
+            boolean online = user.isOnline();
+            if (online && config.ptopRespectVanish) {
+                online = !user.isVanished();
+            }
+
+            return StringUtils.replace(rankTop, "{PTOP-" + index + '}', (online ? config.ptopOnline : config.ptopOffline) + user.getName() + pointsFormat);
         }
 
         return null;
