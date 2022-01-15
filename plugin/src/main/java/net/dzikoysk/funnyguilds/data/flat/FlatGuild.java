@@ -204,7 +204,7 @@ public class FlatGuild {
             return (Set<String>) collection;
         }
 
-        return null;
+        return new HashSet<>();
     }
 
 }
