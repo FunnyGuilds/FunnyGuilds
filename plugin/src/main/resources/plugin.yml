@@ -3,7 +3,7 @@ main: net.dzikoysk.funnyguilds.FunnyGuilds
 version: '@funnyGuildsVersion@ Tribute-@funnyGuildsCommit@'
 author: 'FunnyGuilds Team'
 website: https://github.com/FunnyGuilds
-softdepend: [WorldEdit, WorldGuard, Vault, PlaceholderAPI, FunnyTab, BungeeTabListPlus, MVdWPlaceholderAPI]
+softdepend: [WorldEdit, WorldGuard, Vault, PlaceholderAPI, FunnyTab, BungeeTabListPlus, MVdWPlaceholderAPI, HolographicDisplays]
 api-version: 1.13
 
 permissions:
