@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuard7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -81,7 +82,8 @@ public class HookManager {
             return Option.none();
         }
 
-        if (Bukkit.getPluginManager().getPlugin(pluginName) == null) {
+        Plugin hookPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
+        if (hookPlugin == null || !hookPlugin.isEnabled()) {
             if (notifyIfMissing) {
                 FunnyGuilds.getPluginLogger().info(pluginName + " plugin could not be found, some features may not be available");
             }
