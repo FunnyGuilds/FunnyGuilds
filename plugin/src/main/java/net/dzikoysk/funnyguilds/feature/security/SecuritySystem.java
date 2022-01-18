@@ -67,11 +67,10 @@ public final class SecuritySystem {
                     : FunnyBox.of(player.getWorld().getBlockAt(center));
 
             FunnyBox.RayTraceResult rayTraceResult = funnyBox.rayTrace(origin, direction, 6);
-            if (rayTraceResult == null) {
-                return;
-            }
-
-            Vector hitPoint = rayTraceResult.getHitPosition();
+            Vector hitPoint = rayTraceResult == null
+                ? center.toVector()
+                ; rayTraceResult.getHitPosition();
+            
             double distance = hitPoint.distance(origin);
 
             SecurityFreeCam.on(player, origin, hitPoint, distance);
