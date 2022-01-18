@@ -69,7 +69,7 @@ public final class SecuritySystem {
             FunnyBox.RayTraceResult rayTraceResult = funnyBox.rayTrace(origin, direction, 6);
             Vector hitPoint = rayTraceResult == null
                 ? center.toVector()
-                ; rayTraceResult.getHitPosition();
+                : rayTraceResult.getHitPosition();
             
             double distance = hitPoint.distance(origin);
 
