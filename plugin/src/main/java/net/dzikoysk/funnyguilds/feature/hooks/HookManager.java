@@ -141,8 +141,8 @@ public class HookManager {
     public void init() {
         pluginHooks.forEach((pluginName, hook) -> {
             try {
-                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
                 hook.callInit();
+                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
             }
             catch (Exception exception) {
                 FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook");
