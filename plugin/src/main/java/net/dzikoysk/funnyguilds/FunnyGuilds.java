@@ -168,7 +168,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.dynamicListenerManager = new DynamicListenerManager(this);
 
         this.hookManager = new HookManager(plugin);
-        this.hookManager.setupHooks();
+        this.hookManager.setupEarlyHooks();
         this.hookManager.earlyInit();
     }
 
@@ -293,6 +293,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.handleReload();
 
         this.version.isNewAvailable(this.getServer().getConsoleSender(), true);
+        this.hookManager.setupHooks();
         this.hookManager.init();
 
         if (MinecraftServerUtils.getReloadCount() > 0) {

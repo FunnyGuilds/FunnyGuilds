@@ -37,6 +37,10 @@ public class WorldEdit6Hook extends WorldEditHook {
     }
 
     @Override
+    public void earlyInit() {
+    }
+
+    @Override
     public void init() {
         try {
             Class<?> schematicReaderClass = Reflections.getClass("com.sk89q.worldedit.extent.clipboard.io.SchematicReader");

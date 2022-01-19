@@ -22,6 +22,10 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
     }
 
     @Override
+    public void earlyInit() {
+    }
+
+    @Override
     public void init() {
         UserManager userManager = this.plugin.getUserManager();
 

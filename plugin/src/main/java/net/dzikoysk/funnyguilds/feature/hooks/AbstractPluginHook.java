@@ -27,9 +27,6 @@ public abstract class AbstractPluginHook implements PluginHook {
         this.earlyInitialized = true;
     }
 
-    public void earlyInit() {
-    }
-
     @Override
     public boolean isInitialized() {
         return this.initialized;
@@ -41,7 +38,8 @@ public abstract class AbstractPluginHook implements PluginHook {
         this.initialized = true;
     }
 
-    public void init() {
-    }
+    public abstract void earlyInit();
+
+    public abstract void init();
 
 }

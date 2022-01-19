@@ -68,6 +68,10 @@ public class WorldGuard6Hook extends WorldGuardHook {
     }
 
     @Override
+    public void init() {
+    }
+
+    @Override
     public boolean isInNonPointsRegion(Location location) {
         ApplicableRegionSet regionSet = getRegionSet(location);
         if (regionSet == null) {

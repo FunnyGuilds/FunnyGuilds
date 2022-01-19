@@ -25,6 +25,10 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
     }
 
     @Override
+    public void earlyInit() {
+    }
+
+    @Override
     public void init() {
         new FunnyGuildsPlaceholder(plugin).register();
     }

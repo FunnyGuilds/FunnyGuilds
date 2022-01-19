@@ -14,7 +14,7 @@ public class FunnyTabHook extends AbstractPluginHook {
     }
 
     @Override
-    public void init() {
+    public void earlyInit() {
         FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         logger.info("!!!      FUNNYTAB JEST JUZ      !!!");
@@ -29,6 +29,10 @@ public class FunnyTabHook extends AbstractPluginHook {
         logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         Bukkit.getPluginManager().disablePlugin(plugin);
+    }
+
+    @Override
+    public void init() {
     }
 
 }

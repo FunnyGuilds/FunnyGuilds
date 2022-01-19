@@ -37,8 +37,8 @@ public class HookManager {
         this.plugin = plugin;
     }
 
-    public void setupHooks() {
-        WORLD_GUARD = setupHook("WorldGuard", pluginName -> {
+    public void setupEarlyHooks() {
+        WORLD_GUARD = setupHook("WorldGuard", false, pluginName -> {
             try {
                 Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
                 Class.forName("com.sk89q.worldguard.protection.flags.Flag");
@@ -51,7 +51,12 @@ public class HookManager {
                 return null;
             }
         });
-        WORLD_EDIT = setupHook("WorldEdit", pluginName -> {
+
+        FUNNY_TAB = setupHook("FunnyTab", false, pluginName -> new FunnyTabHook(pluginName, plugin), false);
+    }
+
+    public void setupHooks() {
+        WORLD_EDIT = setupHook("WorldEdit", true, pluginName -> {
             try {
                 Class.forName("com.sk89q.worldedit.Vector");
                 return new WorldEdit6Hook(pluginName);
@@ -60,8 +65,9 @@ public class HookManager {
                 return new WorldEdit7Hook(pluginName);
             }
         });
-        VAULT = setupHook("Vault", VaultHook::new);
-        BUNGEE_TAB_LIST_PLUS = setupHook("BungeeTabListPlus", pluginName -> {
+
+
+        BUNGEE_TAB_LIST_PLUS = setupHook("BungeeTabListPlus", true, pluginName -> {
             try {
                 Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
                 return new BungeeTabListPlusHook(pluginName, plugin);
@@ -70,20 +76,21 @@ public class HookManager {
                 return null;
             }
         });
-        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin));
-        PLACEHOLDER_API = setupHook("PlaceholderAPI", pluginName -> new PlaceholderAPIHook(pluginName, plugin));
-        LEADER_HEADS = setupHook("LeaderHeads", pluginName -> new LeaderHeadsHook(pluginName, plugin));
-        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", pluginName -> new HolographicDisplaysHook(pluginName, plugin), true);
-        FUNNY_TAB = setupHook("FunnyTab", pluginName -> new FunnyTabHook(pluginName, plugin), false);
+
+        VAULT = setupHook("Vault", true, VaultHook::new);
+        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", true, pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin));
+        PLACEHOLDER_API = setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, plugin));
+        LEADER_HEADS = setupHook("LeaderHeads", true, pluginName -> new LeaderHeadsHook(pluginName, plugin));
+        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, plugin), true);
     }
 
-    public <T> Option<T> setupHook(String pluginName, Function<String, T> hookSupplier, boolean notifyIfMissing) {
+    public <T> Option<T> setupHook(String pluginName, boolean requireEnabled, Function<String, T> hookSupplier, boolean notifyIfMissing) {
         if (hookSupplier == null) {
             return Option.none();
         }
 
         Plugin hookPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
-        if (hookPlugin == null || !hookPlugin.isEnabled()) {
+        if (hookPlugin == null || (requireEnabled && !hookPlugin.isEnabled())) {
             if (notifyIfMissing) {
                 FunnyGuilds.getPluginLogger().info(pluginName + " plugin could not be found, some features may not be available");
             }
@@ -115,8 +122,8 @@ public class HookManager {
         return Option.of(hook);
     }
 
-    public <T> Option<T> setupHook(String pluginName, Function<String, T> hookSupplier) {
-        return this.setupHook(pluginName, hookSupplier, true);
+    public <T> Option<T> setupHook(String pluginName, boolean requireEnabled, Function<String, T> hookSupplier) {
+        return this.setupHook(pluginName, requireEnabled, hookSupplier, true);
     }
 
     public void earlyInit() {

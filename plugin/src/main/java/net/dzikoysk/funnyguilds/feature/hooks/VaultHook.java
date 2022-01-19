@@ -20,6 +20,10 @@ public class VaultHook extends AbstractPluginHook {
     }
 
     @Override
+    public void earlyInit() {
+    }
+
+    @Override
     public void init() {
         RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);

@@ -20,6 +20,10 @@ public class LeaderHeadsHook extends AbstractPluginHook {
     }
 
     @Override
+    public void earlyInit() {
+    }
+
+    @Override
     public void init() {
         new TopRankCollector(plugin);
     }
