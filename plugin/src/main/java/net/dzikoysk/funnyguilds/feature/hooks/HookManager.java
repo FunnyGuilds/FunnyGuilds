@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.FunnyHologramManager;
-import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
+import net.dzikoysk.funnyguilds.feature.hooks.hologram.HologramHook;
+import net.dzikoysk.funnyguilds.feature.hooks.hologram.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit6Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEdit7Hook;
 import net.dzikoysk.funnyguilds.feature.hooks.worldedit.WorldEditHook;
@@ -29,7 +29,7 @@ public class HookManager {
     public static Option<MVdWPlaceholderAPIHook> MVDW_PLACEHOLDER_API;
     public static Option<PlaceholderAPIHook> PLACEHOLDER_API;
     public static Option<LeaderHeadsHook> LEADER_HEADS;
-    public static Option<FunnyHologramManager> HOLOGRAPHIC_DISPLAYS;
+    public static Option<HologramHook> HOLOGRAPHIC_DISPLAYS;
 
     private final FunnyGuilds plugin;
     private final Map<String, Pair<Completable<Option<?>>, PluginHook>> pluginHooks = new HashMap<>();
@@ -85,7 +85,7 @@ public class HookManager {
         setupHook("LeaderHeads", true, pluginName -> new LeaderHeadsHook(pluginName, plugin), true)
                 .subscribe(hook -> LEADER_HEADS = (Option<LeaderHeadsHook>) hook);
         setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, plugin), true)
-                .subscribe(hook -> HOLOGRAPHIC_DISPLAYS = (Option<FunnyHologramManager>) hook);
+                .subscribe(hook -> HOLOGRAPHIC_DISPLAYS = (Option<HologramHook>) hook);
     }
 
     public Completable<Option<?>> setupHook(String pluginName, boolean requireEnabled,

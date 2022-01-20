@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
+package net.dzikoysk.funnyguilds.feature.hooks.hologram;
 
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 import java.util.Map;
@@ -6,14 +6,16 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
-import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
+import net.dzikoysk.funnyguilds.feature.hologram.FunnyHologram;
+import net.dzikoysk.funnyguilds.feature.hologram.FunnyHologramImpl;
+import net.dzikoysk.funnyguilds.feature.hologram.HologramUpdateHandler;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
-public final class HolographicDisplaysHook extends AbstractPluginHook implements FunnyHologramManager {
+public final class HolographicDisplaysHook extends HologramHook {
 
     private final FunnyGuilds plugin;
     private final PluginConfiguration config;
