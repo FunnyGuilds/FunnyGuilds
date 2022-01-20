@@ -4,16 +4,8 @@ public interface PluginHook {
 
     String getName();
 
-    boolean isEarlyInitialized();
+    void earlyInit();
 
-    void callEarlyInit();
-
-    boolean isInitialized();
-
-    void callInit();
-
-    default boolean isFullyInitialized() {
-        return isEarlyInitialized() && isInitialized();
-    }
+    void init();
 
 }

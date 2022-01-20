@@ -15,6 +15,8 @@ import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import panda.std.Option;
+import panda.std.Pair;
+import panda.std.reactive.Completable;
 import panda.std.stream.PandaStream;
 
 public class HookManager {
@@ -30,63 +32,66 @@ public class HookManager {
     public static Option<FunnyHologramManager> HOLOGRAPHIC_DISPLAYS;
 
     private final FunnyGuilds plugin;
-
-    private final Map<String, PluginHook> pluginHooks = new HashMap<>();
+    private final Map<String, Pair<Completable<Option<?>>, PluginHook>> pluginHooks = new HashMap<>();
 
     public HookManager(FunnyGuilds plugin) {
         this.plugin = plugin;
     }
 
+    @SuppressWarnings("unchecked")
     public void setupEarlyHooks() {
-        WORLD_GUARD = setupHook("WorldGuard", false, pluginName -> {
+        setupHook("WorldGuard", false, pluginName -> {
             try {
                 Class.forName("com.sk89q.worldguard.protection.flags.registry.FlagRegistry");
                 Class.forName("com.sk89q.worldguard.protection.flags.Flag");
 
                 String worldGuardVersion = Bukkit.getPluginManager().getPlugin(pluginName).getDescription().getVersion();
                 return worldGuardVersion.startsWith("7") ? new WorldGuard7Hook(pluginName) : new WorldGuard6Hook(pluginName);
-            }
-            catch (ClassNotFoundException exception) {
+            } catch (ClassNotFoundException exception) {
                 FunnyGuilds.getPluginLogger().warning("FunnyGuilds supports only WorldGuard v6.2 or newer");
                 return null;
             }
-        });
+        }, true).subscribe(hook -> WORLD_GUARD = (Option<WorldGuardHook>) hook);
 
-        FUNNY_TAB = setupHook("FunnyTab", false, pluginName -> new FunnyTabHook(pluginName, plugin), false);
+        setupHook("FunnyTab", false, pluginName -> new FunnyTabHook(pluginName, plugin), false)
+                .subscribe(hook -> FUNNY_TAB = (Option<FunnyTabHook>) hook);
     }
 
+    @SuppressWarnings("unchecked")
     public void setupHooks() {
-        WORLD_EDIT = setupHook("WorldEdit", true, pluginName -> {
+        setupHook("WorldEdit", true, pluginName -> {
             try {
                 Class.forName("com.sk89q.worldedit.Vector");
                 return new WorldEdit6Hook(pluginName);
-            }
-            catch (ClassNotFoundException exception) {
+            } catch (ClassNotFoundException exception) {
                 return new WorldEdit7Hook(pluginName);
             }
-        });
+        }, true).subscribe(hook -> WORLD_EDIT = (Option<WorldEditHook>) hook);
 
-
-        BUNGEE_TAB_LIST_PLUS = setupHook("BungeeTabListPlus", true, pluginName -> {
+        setupHook("BungeeTabListPlus", true, pluginName -> {
             try {
                 Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
                 return new BungeeTabListPlusHook(pluginName, plugin);
-            }
-            catch (ClassNotFoundException exception) {
+            } catch (ClassNotFoundException exception) {
                 return null;
             }
-        });
+        }, true).subscribe(hook -> BUNGEE_TAB_LIST_PLUS = (Option<BungeeTabListPlusHook>) hook);
 
-        VAULT = setupHook("Vault", true, VaultHook::new);
-        MVDW_PLACEHOLDER_API = setupHook("MVdWPlaceholderAPI", true, pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin));
-        PLACEHOLDER_API = setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, plugin));
-        LEADER_HEADS = setupHook("LeaderHeads", true, pluginName -> new LeaderHeadsHook(pluginName, plugin));
-        HOLOGRAPHIC_DISPLAYS = setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, plugin), true);
+        setupHook("Vault", true, VaultHook::new, true).subscribe(hook -> VAULT = (Option<VaultHook>) hook);
+        setupHook("MVdWPlaceholderAPI", true, pluginName -> new MVdWPlaceholderAPIHook(pluginName, plugin), true)
+                .subscribe(hook -> MVDW_PLACEHOLDER_API = (Option<MVdWPlaceholderAPIHook>) hook);
+        setupHook("PlaceholderAPI", true, pluginName -> new PlaceholderAPIHook(pluginName, plugin), true)
+                .subscribe(hook -> PLACEHOLDER_API = (Option<PlaceholderAPIHook>) hook);
+        setupHook("LeaderHeads", true, pluginName -> new LeaderHeadsHook(pluginName, plugin), true)
+                .subscribe(hook -> LEADER_HEADS = (Option<LeaderHeadsHook>) hook);
+        setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, plugin), true)
+                .subscribe(hook -> HOLOGRAPHIC_DISPLAYS = (Option<FunnyHologramManager>) hook);
     }
 
-    public <T> Option<T> setupHook(String pluginName, boolean requireEnabled, Function<String, T> hookSupplier, boolean notifyIfMissing) {
+    public Completable<Option<?>> setupHook(String pluginName, boolean requireEnabled,
+                                            Function<String, PluginHook> hookSupplier, boolean notifyIfMissing) {
         if (hookSupplier == null) {
-            return Option.none();
+            return Completable.completed(Option.none());
         }
 
         Plugin hookPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
@@ -95,16 +100,12 @@ public class HookManager {
                 FunnyGuilds.getPluginLogger().info(pluginName + " plugin could not be found, some features may not be available");
             }
 
-            return Option.none();
+            return Completable.completed(Option.none());
         }
 
-        T hook = hookSupplier.apply(pluginName);
+        PluginHook hook = hookSupplier.apply(pluginName);
         if (hook == null) {
-            return Option.none();
-        }
-
-        if (!(hook instanceof PluginHook)) {
-            return Option.of(hook);
+            return Completable.completed(Option.none());
         }
 
         if (PandaStream.of(plugin.getPluginConfiguration().disabledHooks)
@@ -112,26 +113,29 @@ public class HookManager {
                 .isPresent()) {
             if (!pluginName.equalsIgnoreCase("FunnyTab")) {
                 FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
-                return Option.of(hook);
+                return Completable.completed(Option.none());
             }
 
             FunnyGuilds.getPluginLogger().warning("You can't disable FunnyTab plugin hook lol");
         }
 
-        this.pluginHooks.put(pluginName, (PluginHook) hook);
-        return Option.of(hook);
-    }
+        Completable<Option<?>> hookCompletable = new Completable<>();
+        this.pluginHooks.put(pluginName, Pair.of(hookCompletable, hook));
 
-    public <T> Option<T> setupHook(String pluginName, boolean requireEnabled, Function<String, T> hookSupplier) {
-        return this.setupHook(pluginName, requireEnabled, hookSupplier, true);
+        return hookCompletable;
     }
 
     public void earlyInit() {
-        pluginHooks.forEach((pluginName, hook) -> {
-            try {
-                hook.callEarlyInit();
+        pluginHooks.forEach((pluginName, hookPair) -> {
+            if (hookPair.getFirst().isReady()) {
+                return;
             }
-            catch (Exception exception) {
+
+            try {
+                hookPair.getSecond().earlyInit();
+            } catch (Exception exception) {
+                hookPair.getFirst().complete(Option.none());
+
                 FunnyGuilds.getPluginLogger().error("Failed to early initialize " + pluginName + " plugin hook");
                 exception.printStackTrace();
             }
@@ -139,24 +143,23 @@ public class HookManager {
     }
 
     public void init() {
-        pluginHooks.forEach((pluginName, hook) -> {
-            try {
-                hook.callInit();
-                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
+        pluginHooks.forEach((pluginName, hookPair) -> {
+            if (hookPair.getFirst().isReady()) {
+                return;
             }
-            catch (Exception exception) {
+
+            try {
+                hookPair.getSecond().init();
+                hookPair.getFirst().complete(Option.of(hookPair.getSecond()));
+
+                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
+            } catch (Exception exception) {
+                hookPair.getFirst().complete(Option.none());
+
                 FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook");
                 exception.printStackTrace();
             }
         });
-    }
-
-    public PluginHook getHook(String pluginName) {
-        return pluginHooks.get(pluginName);
-    }
-
-    public boolean isHookPresent(String pluginName) {
-        return pluginHooks.containsKey(pluginName);
     }
 
 }
