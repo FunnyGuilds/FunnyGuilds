@@ -75,7 +75,7 @@ public class HookManager {
 
         this.setupHook("BungeeTabListPlus", true, pluginName -> {
             try {
-                Class.forName("consecrate47.bungeetablistplus.api.bukkit.Variable");
+                Class.forName("codecrafter47.bungeetablistplus.api.bukkit.Variable");
                 return new BungeeTabListPlusHook(pluginName, plugin);
             }
             catch (ClassNotFoundException exception) {
