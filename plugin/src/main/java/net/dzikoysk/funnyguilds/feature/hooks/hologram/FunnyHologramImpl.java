@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.hooks.hologram;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import java.util.List;
-
 import net.dzikoysk.funnyguilds.feature.hologram.FunnyHologram;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
