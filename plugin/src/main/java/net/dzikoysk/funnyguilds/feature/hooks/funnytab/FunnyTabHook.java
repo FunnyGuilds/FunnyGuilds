@@ -15,25 +15,22 @@ public class FunnyTabHook extends AbstractPluginHook {
     }
 
     @Override
-    public void earlyInit() {
+    public HookInitResult earlyInit() {
         FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
-        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        logger.info("!!!      FUNNYTAB JEST JUZ      !!!");
-        logger.info("!!!        PRZESTARZALY         !!!");
-        logger.info("!!!                             !!!");
-        logger.info("!!!       SKASUJ GO PRZED       !!!");
-        logger.info("!!!    UZYWANIEM FUNNYGUILDS    !!!");
-        logger.info("!!!                             !!!");
-        logger.info("!!!     DO CZASU USUNIECIA      !!!");
-        logger.info("!!!     FUNNYGUILDS BEDZIE      !!!");
-        logger.info("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
-        logger.info("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        logger.warning("!!!      FUNNYTAB JEST JUZ      !!!");
+        logger.warning("!!!        PRZESTARZALY         !!!");
+        logger.warning("!!!                             !!!");
+        logger.warning("!!!       SKASUJ GO PRZED       !!!");
+        logger.warning("!!!    UZYWANIEM FUNNYGUILDS    !!!");
+        logger.warning("!!!                             !!!");
+        logger.warning("!!!     DO CZASU USUNIECIA      !!!");
+        logger.warning("!!!     FUNNYGUILDS BEDZIE      !!!");
+        logger.warning("!!!   AUTOMATYCZNIE WYLACZANE   !!!");
+        logger.warning("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         Bukkit.getPluginManager().disablePlugin(plugin);
-    }
-
-    @Override
-    public void init() {
+        return HookInitResult.UNUSED;
     }
 
 }

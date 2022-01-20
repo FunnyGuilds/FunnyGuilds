@@ -23,11 +23,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
     }
 
     @Override
-    public void earlyInit() {
-    }
-
-    @Override
-    public void init() {
+    public HookInitResult init() {
         UserManager userManager = this.plugin.getUserManager();
 
         for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
@@ -57,6 +53,8 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
             final int index = i;
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + index, event -> RankUtils.parseRank(null, "{PTOP-" + index + "}"));
         }
+
+        return HookInitResult.SUCCESS;
     }
 
     public String replacePlaceholders(Player user, String base) {

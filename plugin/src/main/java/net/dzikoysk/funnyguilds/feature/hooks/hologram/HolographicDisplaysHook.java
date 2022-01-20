@@ -27,13 +27,11 @@ public final class HolographicDisplaysHook extends HologramHook {
     }
 
     @Override
-    public void earlyInit() {
-    }
-
-    @Override
-    public void init() {
+    public HookInitResult init() {
         HologramConfiguration hologramConfig = config.heart.hologram;
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new HologramUpdateHandler(plugin), 100L, hologramConfig.updateInterval);
+
+        return HookInitResult.SUCCESS;
     }
 
     @Override

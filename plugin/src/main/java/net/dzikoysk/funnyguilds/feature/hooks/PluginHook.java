@@ -4,8 +4,16 @@ public interface PluginHook {
 
     String getName();
 
-    void earlyInit();
+    default HookInitResult earlyInit() throws Throwable {
+        return HookInitResult.UNUSED;
+    }
 
-    void init();
+    default HookInitResult init() throws Throwable {
+        return HookInitResult.UNUSED;
+    }
+
+    enum HookInitResult {
+        SUCCESS, FAILURE, UNUSED
+    }
 
 }

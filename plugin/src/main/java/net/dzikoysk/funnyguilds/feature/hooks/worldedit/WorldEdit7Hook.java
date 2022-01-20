@@ -24,14 +24,6 @@ public class WorldEdit7Hook extends WorldEditHook {
     }
 
     @Override
-    public void earlyInit() {
-    }
-
-    @Override
-    public void init() {
-    }
-
-    @Override
     public boolean pasteSchematic(File schematicFile, Location location, boolean withAir) {
         try {
             BlockVector3 pasteLocation = BlockVector3.at(location.getX(), location.getY(), location.getZ());

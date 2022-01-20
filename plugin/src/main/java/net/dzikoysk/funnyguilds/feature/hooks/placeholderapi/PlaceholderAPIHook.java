@@ -26,12 +26,9 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
     }
 
     @Override
-    public void earlyInit() {
-    }
-
-    @Override
-    public void init() {
+    public HookInitResult init() {
         new FunnyGuildsPlaceholder(plugin).register();
+        return HookInitResult.SUCCESS;
     }
 
     public String replacePlaceholders(Player user, String base) {
@@ -41,7 +38,6 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
 
         private final FunnyGuilds plugin;
-
         private final String funnyguildsVersion;
 
         private FunnyGuildsPlaceholder(FunnyGuilds plugin) {

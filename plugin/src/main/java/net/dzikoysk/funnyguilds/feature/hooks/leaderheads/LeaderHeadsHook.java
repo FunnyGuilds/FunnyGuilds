@@ -21,12 +21,9 @@ public class LeaderHeadsHook extends AbstractPluginHook {
     }
 
     @Override
-    public void earlyInit() {
-    }
-
-    @Override
-    public void init() {
+    public HookInitResult init() {
         new TopRankCollector(plugin);
+        return HookInitResult.SUCCESS;
     }
 
     public static class TopRankCollector extends DataCollector {

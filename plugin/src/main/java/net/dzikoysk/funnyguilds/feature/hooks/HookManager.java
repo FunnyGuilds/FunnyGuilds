@@ -145,13 +145,22 @@ public class HookManager {
             }
 
             try {
-                completableHook.earlyInit();
-            }
-            catch (Exception exception) {
-                completableHook.markAsNotCompleted();
+                PluginHook.HookInitResult result = completableHook.earlyInit();
+                if (result == PluginHook.HookInitResult.UNUSED) {
+                    return;
+                }
 
-                FunnyGuilds.getPluginLogger().error("Failed to early initialize " + pluginName + " plugin hook");
-                exception.printStackTrace();
+                if (result == PluginHook.HookInitResult.FAILURE) {
+                    FunnyGuilds.getPluginLogger().error("Failed to early initialize " + pluginName + " plugin hook");
+                    completableHook.markAsNotCompleted();
+                    return;
+                }
+
+                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been early initialized!");
+            }
+            catch (Throwable throwable) {
+                FunnyGuilds.getPluginLogger().error("Failed to early initialize " + pluginName + " plugin hook", throwable);
+                completableHook.markAsNotCompleted();
             }
         });
     }
@@ -163,16 +172,22 @@ public class HookManager {
             }
 
             try {
-                completableHook.init();
+                PluginHook.HookInitResult result = completableHook.init();
+                if (result == PluginHook.HookInitResult.FAILURE) {
+                    FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook");
+                    completableHook.markAsNotCompleted();
+                    return;
+                }
+
+                if (result != PluginHook.HookInitResult.UNUSED) {
+                    FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been initialized!");
+                }
+
                 completableHook.markAsCompleted();
-
-                FunnyGuilds.getPluginLogger().info(pluginName + " plugin hook has been enabled!");
             }
-            catch (Exception exception) {
+            catch (Throwable throwable) {
+                FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook", throwable);
                 completableHook.markAsNotCompleted();
-
-                FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook");
-                exception.printStackTrace();
             }
         });
     }

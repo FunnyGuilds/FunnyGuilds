@@ -13,12 +13,12 @@ public class CompletableHook<T extends PluginHook> {
         this.completableHook = completableHook;
     }
 
-    public void earlyInit() {
-        hook.earlyInit();
+    public PluginHook.HookInitResult earlyInit() throws Throwable {
+        return hook.earlyInit();
     }
 
-    public void init() {
-        hook.init();
+    public PluginHook.HookInitResult init() throws Throwable {
+        return hook.init();
     }
 
     public void markAsCompleted() {
