@@ -133,7 +133,6 @@ public class HookManager {
         }
 
         Completable<Option<T>> hookCompletable = new Completable<>();
-
         this.pluginHooks.put(pluginName, new CompletableHook<>(hook, hookCompletable));
 
         return hookCompletable;

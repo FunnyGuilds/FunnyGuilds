@@ -18,7 +18,7 @@ public class CompletableHook<T extends PluginHook> {
     }
 
     public void init() {
-        hook.earlyInit();
+        hook.init();
     }
 
     public void markAsCompleted() {
