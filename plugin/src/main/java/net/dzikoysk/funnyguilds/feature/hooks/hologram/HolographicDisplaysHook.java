@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.feature.hologram.FunnyHologram;
-import net.dzikoysk.funnyguilds.feature.hologram.FunnyHologramImpl;
 import net.dzikoysk.funnyguilds.feature.hologram.HologramUpdateHandler;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.bukkit.Bukkit;

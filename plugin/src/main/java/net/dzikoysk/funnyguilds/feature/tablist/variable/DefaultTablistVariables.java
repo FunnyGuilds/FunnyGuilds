@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
-import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
+import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.TimeFormattedVariable;

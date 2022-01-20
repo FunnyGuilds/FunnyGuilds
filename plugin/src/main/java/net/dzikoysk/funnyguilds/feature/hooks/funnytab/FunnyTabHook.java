@@ -1,14 +1,15 @@
-package net.dzikoysk.funnyguilds.feature.hooks;
+package net.dzikoysk.funnyguilds.feature.hooks.funnytab;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import org.bukkit.Bukkit;
 
 public class FunnyTabHook extends AbstractPluginHook {
 
     private final FunnyGuilds plugin;
 
-    FunnyTabHook(String name, FunnyGuilds plugin) {
+    public FunnyTabHook(String name, FunnyGuilds plugin) {
         super(name);
         this.plugin = plugin;
     }

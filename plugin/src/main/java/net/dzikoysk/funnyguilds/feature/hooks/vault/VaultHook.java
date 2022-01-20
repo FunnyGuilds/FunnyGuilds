@@ -1,6 +1,7 @@
-package net.dzikoysk.funnyguilds.feature.hooks;
+package net.dzikoysk.funnyguilds.feature.hooks.vault;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -15,7 +16,7 @@ public class VaultHook extends AbstractPluginHook {
     private static Economy economyHook;
     private static Permission permissionHook;
 
-    VaultHook(String name) {
+    public VaultHook(String name) {
         super(name);
     }
 

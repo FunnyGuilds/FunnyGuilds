@@ -1,8 +1,9 @@
-package net.dzikoysk.funnyguilds.feature.hooks;
+package net.dzikoysk.funnyguilds.feature.hooks.mvdwplaceholderapi;
 
 import be.maximvdw.placeholderapi.PlaceholderAPI;
 import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
@@ -16,7 +17,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
     private final FunnyGuilds plugin;
 
-    MVdWPlaceholderAPIHook(String name, FunnyGuilds plugin) {
+    public MVdWPlaceholderAPIHook(String name, FunnyGuilds plugin) {
         super(name);
         this.plugin = plugin;
     }
