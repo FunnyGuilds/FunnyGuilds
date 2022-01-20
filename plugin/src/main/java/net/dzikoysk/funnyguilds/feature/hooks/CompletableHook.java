@@ -29,7 +29,7 @@ public class CompletableHook<T extends PluginHook> {
         completableHook.complete(Option.none());
     }
 
-    public boolean isReady() {
+    public boolean isCompleted() {
         return completableHook.isReady();
     }
 

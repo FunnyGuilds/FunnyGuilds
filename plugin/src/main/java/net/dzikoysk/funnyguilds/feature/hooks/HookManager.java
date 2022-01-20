@@ -140,7 +140,7 @@ public class HookManager {
 
     public void earlyInit() {
         pluginHooks.forEach((pluginName, completableHook) -> {
-            if (completableHook.isReady()) {
+            if (completableHook.isCompleted()) {
                 return;
             }
 
@@ -158,7 +158,7 @@ public class HookManager {
 
     public void init() {
         pluginHooks.forEach((pluginName, completableHook) -> {
-            if (completableHook.isReady()) {
+            if (completableHook.isCompleted()) {
                 return;
             }
 
