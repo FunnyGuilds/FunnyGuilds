@@ -37,7 +37,7 @@ public class WorldEdit7Hook extends WorldEditHook {
             Clipboard clipboard = ClipboardFormats.findByFile(schematicFile).getReader(new FileInputStream(schematicFile)).read();
             ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard);
 
-            EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
+            EditSession editSession = WorldEdit.getInstance().newEditSession(pasteWorld);
 
             Operation operation = clipboardHolder
                     .createPaste(editSession)
