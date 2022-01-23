@@ -24,6 +24,11 @@ public class WorldEdit7Hook extends WorldEditHook {
     }
 
     @Override
+    public HookInitResult init() throws Throwable {
+        return HookInitResult.SUCCESS;
+    }
+
+    @Override
     public boolean pasteSchematic(File schematicFile, Location location, boolean withAir) {
         try {
             BlockVector3 pasteLocation = BlockVector3.at(location.getX(), location.getY(), location.getZ());
