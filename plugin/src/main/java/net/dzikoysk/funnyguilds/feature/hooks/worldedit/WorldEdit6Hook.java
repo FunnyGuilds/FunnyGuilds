@@ -17,7 +17,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.zip.GZIPInputStream;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Location;
 
@@ -37,35 +36,32 @@ public class WorldEdit6Hook extends WorldEditHook {
     }
 
     @Override
-    public void init() {
-        try {
-            Class<?> schematicReaderClass = Reflections.getClass("com.sk89q.worldedit.extent.clipboard.io.SchematicReader");
-            Class<?> worldDataClass = Reflections.getClass("com.sk89q.worldedit.world.registry.WorldData");
-            Class<?> vectorClass = Reflections.getClass("com.sk89q.worldedit.Vector");
+    public HookInitResult init() throws Throwable {
+        Class<?> schematicReaderClass = Reflections.getClass("com.sk89q.worldedit.extent.clipboard.io.SchematicReader");
+        Class<?> worldDataClass = Reflections.getClass("com.sk89q.worldedit.world.registry.WorldData");
+        Class<?> vectorClass = Reflections.getClass("com.sk89q.worldedit.Vector");
 
-            schematicReaderConstructor = Reflections.getConstructor(schematicReaderClass,
-                    Reflections.getClass("com.sk89q.jnbt.NBTInputStream"));
-            pasteConstructor = Reflections.getConstructor(PasteBuilder.class, ClipboardHolder.class, Extent.class, worldDataClass);
-            clipboardHolderConstructor = Reflections.getConstructor(ClipboardHolder.class, Clipboard.class, worldDataClass);
-            vectorConstructor = Reflections.getConstructor(vectorClass,
-                    double.class, double.class, double.class);
+        schematicReaderConstructor = Reflections.getConstructor(schematicReaderClass,
+                Reflections.getClass("com.sk89q.jnbt.NBTInputStream"));
+        pasteConstructor = Reflections.getConstructor(PasteBuilder.class, ClipboardHolder.class, Extent.class, worldDataClass);
+        clipboardHolderConstructor = Reflections.getConstructor(ClipboardHolder.class, Clipboard.class, worldDataClass);
+        vectorConstructor = Reflections.getConstructor(vectorClass,
+                double.class, double.class, double.class);
 
-            schematicReaderConstructor.setAccessible(true);
-            pasteConstructor.setAccessible(true);
-            clipboardHolderConstructor.setAccessible(true);
-            vectorConstructor.setAccessible(true);
+        schematicReaderConstructor.setAccessible(true);
+        pasteConstructor.setAccessible(true);
+        clipboardHolderConstructor.setAccessible(true);
+        vectorConstructor.setAccessible(true);
 
-            getWorldData = com.sk89q.worldedit.world.World.class.getDeclaredMethod("getWorldData");
-            readSchematic = schematicReaderClass.getDeclaredMethod("read", worldDataClass);
-            pasteBuilderSetTo = PasteBuilder.class.getDeclaredMethod("to", vectorClass);
+        getWorldData = com.sk89q.worldedit.world.World.class.getDeclaredMethod("getWorldData");
+        readSchematic = schematicReaderClass.getDeclaredMethod("read", worldDataClass);
+        pasteBuilderSetTo = PasteBuilder.class.getDeclaredMethod("to", vectorClass);
 
-            getWorldData.setAccessible(true);
-            readSchematic.setAccessible(true);
-            pasteBuilderSetTo.setAccessible(true);
-        }
-        catch (NoSuchMethodException ex) {
-            FunnyGuilds.getPluginLogger().error("Could not properly initialize WorldGuard hook!");
-        }
+        getWorldData.setAccessible(true);
+        readSchematic.setAccessible(true);
+        pasteBuilderSetTo.setAccessible(true);
+
+        return HookInitResult.SUCCESS;
     }
 
     @Override

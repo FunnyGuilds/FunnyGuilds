@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
+package net.dzikoysk.funnyguilds.feature.hologram;
 
 
 import java.util.List;

@@ -1,15 +1,16 @@
-package net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays;
+package net.dzikoysk.funnyguilds.feature.hooks.hologram;
 
 import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import java.util.List;
+import net.dzikoysk.funnyguilds.feature.hologram.FunnyHologram;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 
-class FunnyHologramImpl implements FunnyHologram {
+public class FunnyHologramImpl implements FunnyHologram {
 
     private final Hologram hologram;
 
-    FunnyHologramImpl(Hologram hologram) {
+    public FunnyHologramImpl(Hologram hologram) {
         this.hologram = hologram;
     }
 
@@ -50,7 +51,7 @@ class FunnyHologramImpl implements FunnyHologram {
         return this;
     }
 
-    void delete() {
+    public void delete() {
         this.hologram.delete();
     }
 

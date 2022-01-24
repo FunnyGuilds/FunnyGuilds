@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.shared.bukkit;
 
-import net.dzikoysk.funnyguilds.feature.hooks.VaultHook;
+import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.OfflinePlayer;
 

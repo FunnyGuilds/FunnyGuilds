@@ -1,10 +1,11 @@
-package net.dzikoysk.funnyguilds.feature.hooks;
+package net.dzikoysk.funnyguilds.feature.hooks.bungeetablist;
 
 import codecrafter47.bungeetablistplus.api.bukkit.BungeeTabListPlusBukkitAPI;
 import codecrafter47.bungeetablistplus.api.bukkit.Variable;
 import java.util.Map.Entry;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
@@ -16,13 +17,13 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
 
     private final FunnyGuilds plugin;
 
-    BungeeTabListPlusHook(String name, FunnyGuilds plugin) {
+    public BungeeTabListPlusHook(String name, FunnyGuilds plugin) {
         super(name);
         this.plugin = plugin;
     }
 
     @Override
-    public void init() {
+    public HookInitResult init() {
         UserManager userManager = this.plugin.getUserManager();
 
         for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
@@ -46,6 +47,8 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
             BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_ptop-" + i, player ->
                     RankUtils.parseRank(null, "{PTOP-" + index + "}")));
         }
+
+        return HookInitResult.SUCCESS;
     }
 
     private static class FunctionVariable extends Variable {

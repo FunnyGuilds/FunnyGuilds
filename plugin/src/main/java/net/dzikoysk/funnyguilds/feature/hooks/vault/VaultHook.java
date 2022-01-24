@@ -1,6 +1,7 @@
-package net.dzikoysk.funnyguilds.feature.hooks;
+package net.dzikoysk.funnyguilds.feature.hooks.vault;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.permission.Permission;
@@ -15,12 +16,12 @@ public class VaultHook extends AbstractPluginHook {
     private static Economy economyHook;
     private static Permission permissionHook;
 
-    VaultHook(String name) {
+    public VaultHook(String name) {
         super(name);
     }
 
     @Override
-    public void init() {
+    public HookInitResult init() {
         RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
         RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
 
@@ -37,6 +38,8 @@ public class VaultHook extends AbstractPluginHook {
         else {
             FunnyGuilds.getPluginLogger().warning("Vault - No permission provider found, some features may not be available");
         }
+
+        return HookInitResult.SUCCESS;
     }
 
     public static boolean isEconomyHooked() {

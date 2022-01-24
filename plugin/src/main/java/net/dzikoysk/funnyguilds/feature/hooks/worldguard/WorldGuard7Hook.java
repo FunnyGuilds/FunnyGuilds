@@ -23,11 +23,12 @@ public class WorldGuard7Hook extends WorldGuardHook {
     }
 
     @Override
-    public void earlyInit() {
+    public HookInitResult earlyInit() {
         worldGuard = WorldGuard.getInstance();
         noPointsFlag = new StateFlag("fg-no-points", false);
 
         worldGuard.getFlagRegistry().register(noPointsFlag);
+        return HookInitResult.SUCCESS;
     }
 
     @Override

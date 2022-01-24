@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.hooks;
+package net.dzikoysk.funnyguilds.feature.hooks.leaderheads;
 
 import com.google.common.collect.Maps;
 import java.util.ArrayList;
@@ -8,20 +8,22 @@ import java.util.Map.Entry;
 import me.robin.leaderheads.datacollectors.DataCollector;
 import me.robin.leaderheads.objects.BoardType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.user.User;
 
 public class LeaderHeadsHook extends AbstractPluginHook {
 
     private final FunnyGuilds plugin;
 
-    LeaderHeadsHook(String name, FunnyGuilds plugin) {
+    public LeaderHeadsHook(String name, FunnyGuilds plugin) {
         super(name);
         this.plugin = plugin;
     }
 
     @Override
-    public void init() {
+    public HookInitResult init() {
         new TopRankCollector(plugin);
+        return HookInitResult.SUCCESS;
     }
 
     public static class TopRankCollector extends DataCollector {

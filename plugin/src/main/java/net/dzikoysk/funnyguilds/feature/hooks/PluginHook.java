@@ -4,16 +4,16 @@ public interface PluginHook {
 
     String getName();
 
-    boolean isEarlyInitialized();
+    default HookInitResult earlyInit() throws Throwable {
+        return HookInitResult.UNUSED;
+    }
 
-    void callEarlyInit();
+    default HookInitResult init() throws Throwable {
+        return HookInitResult.UNUSED;
+    }
 
-    boolean isInitialized();
-
-    void callInit();
-
-    default boolean isFullyInitialized() {
-        return isEarlyInitialized() && isInitialized();
+    enum HookInitResult {
+        SUCCESS, FAILURE, UNUSED
     }
 
 }

@@ -1,10 +1,11 @@
-package net.dzikoysk.funnyguilds.feature.hooks;
+package net.dzikoysk.funnyguilds.feature.hooks.placeholderapi;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
@@ -19,14 +20,15 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
 
     private final FunnyGuilds plugin;
 
-    PlaceholderAPIHook(String name, FunnyGuilds plugin) {
+    public PlaceholderAPIHook(String name, FunnyGuilds plugin) {
         super(name);
         this.plugin = plugin;
     }
 
     @Override
-    public void init() {
+    public HookInitResult init() {
         new FunnyGuildsPlaceholder(plugin).register();
+        return HookInitResult.SUCCESS;
     }
 
     public String replacePlaceholders(Player user, String base) {
@@ -36,7 +38,6 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
 
         private final FunnyGuilds plugin;
-
         private final String funnyguildsVersion;
 
         private FunnyGuildsPlaceholder(FunnyGuilds plugin) {
