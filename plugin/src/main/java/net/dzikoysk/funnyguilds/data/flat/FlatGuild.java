@@ -2,6 +2,8 @@ package net.dzikoysk.funnyguilds.data.flat;
 
 import java.io.File;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,6 +24,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Location;
+import org.bukkit.configuration.ConfigurationSection;
 import panda.std.Option;
 
 public class FlatGuild {
@@ -176,11 +179,11 @@ public class FlatGuild {
         wrapper.set("tag", guild.getTag());
         wrapper.set("owner", guild.getOwner().getName());
         wrapper.set("home", LocationUtils.toString(guild.getHome()));
-        wrapper.set("members", Entity.names(guild.getMembers()));
+        wrapper.set("members", new ArrayList<>(Entity.names(guild.getMembers())));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);
-        wrapper.set("allies", Entity.names(guild.getAllies()));
-        wrapper.set("enemies", Entity.names(guild.getEnemies()));
+        wrapper.set("allies", new ArrayList<>(Entity.names(guild.getAllies())));
+        wrapper.set("enemies", new ArrayList<>(Entity.names(guild.getEnemies())));
         wrapper.set("born", guild.getBorn());
         wrapper.set("validity", guild.getValidity());
         wrapper.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
@@ -203,8 +206,11 @@ public class FlatGuild {
         else if (collection instanceof Set) {
             return (Set<String>) collection;
         }
+        else if (collection instanceof ConfigurationSection) {
+            return ((ConfigurationSection) collection).getKeys(false);
+        }
 
-        return new HashSet<>();
+        return Collections.emptySet();
     }
 
 }
