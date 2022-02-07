@@ -35,7 +35,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
         // Guild TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
             final int index = i;
-            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("guild_top_" + i, player -> {
+            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_gtop_" + i, player -> {
                 User user = userManager.findByPlayer(player).getOrNull();
                 return RankUtils.parseRank(user, "{GTOP-" + index + "}");
             }));
