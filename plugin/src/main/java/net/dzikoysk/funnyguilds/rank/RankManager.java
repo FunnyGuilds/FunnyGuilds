@@ -19,6 +19,9 @@ public class RankManager {
 
     private final PluginConfiguration pluginConfiguration;
 
+    private final UserManager userManager;
+    private final GuildManager guildManager;
+
     protected HashMap<String, UserTop> userTopMap = new HashMap<>();
     protected HashMap<String, GuildTop> guildTopMap = new HashMap<>();
 
@@ -28,13 +31,36 @@ public class RankManager {
     public RankManager(PluginConfiguration pluginConfiguration, UserManager userManager, GuildManager guildManager) {
         this.pluginConfiguration = pluginConfiguration;
 
+        this.userManager = userManager;
+        this.guildManager = guildManager;
+
+        INSTANCE = this;
+    }
+
+    public void addTops() {
         UserRecalculation userRecalculation = new UserRecalculation(pluginConfiguration, userManager);
         GuildRecalculation guildRecalculation = new GuildRecalculation(guildManager);
 
-        userTopMap.put("points", new UserTop(UserComparator.POINTS_COMPARATOR, userRecalculation));
-        guildTopMap.put("avg_points", new GuildTop(GuildComparator.AVG_POINTS_COMPARATOR, guildRecalculation));
+        this.addUserTop("points", new UserTop(UserComparator.POINTS_COMPARATOR, userRecalculation));
+        this.addUserTop("kills", new UserTop(UserComparator.KILLS_COMPARATOR, userRecalculation));
+        this.addUserTop("deaths", new UserTop(UserComparator.DEATHS_COMPARATOR, userRecalculation));
+        this.addUserTop("kdr", new UserTop(UserComparator.KDR_COMPARATOR, userRecalculation));
+        this.addUserTop("assists", new UserTop(UserComparator.ASSISTS_COMPARATOR, userRecalculation));
+        this.addUserTop("logouts", new UserTop(UserComparator.LOGOUTS_COMPARATOR, userRecalculation));
 
-        INSTANCE = this;
+        this.addGuildTop("points", new GuildTop(GuildComparator.POINTS_COMPARATOR, guildRecalculation));
+        this.addGuildTop("kills", new GuildTop(GuildComparator.KILLS_COMPARATOR, guildRecalculation));
+        this.addGuildTop("deaths", new GuildTop(GuildComparator.DEATHS_COMPARATOR, guildRecalculation));
+        this.addGuildTop("kdr", new GuildTop(GuildComparator.KDR_COMPARATOR, guildRecalculation));
+        this.addGuildTop("assists", new GuildTop(GuildComparator.ASSISTS_COMPARATOR, guildRecalculation));
+        this.addGuildTop("logouts", new GuildTop(GuildComparator.LOGOUTS_COMPARATOR, guildRecalculation));
+
+        this.addGuildTop("avg_points", new GuildTop(GuildComparator.AVG_POINTS_COMPARATOR, guildRecalculation));
+        this.addGuildTop("avg_kills", new GuildTop(GuildComparator.AVG_KILLS_COMPARATOR, guildRecalculation));
+        this.addGuildTop("avg_deaths", new GuildTop(GuildComparator.AVG_DEATHS_COMPARATOR, guildRecalculation));
+        this.addGuildTop("avg_kdr", new GuildTop(GuildComparator.AVG_KDR_COMPARATOR, guildRecalculation));
+        this.addGuildTop("avg_assists", new GuildTop(GuildComparator.AVG_ASSISTS_COMPARATOR, guildRecalculation));
+        this.addGuildTop("avg_logouts", new GuildTop(GuildComparator.AVG_LOGOUTS_COMPARATOR, guildRecalculation));
     }
 
     public Option<UserTop> getUserTop(String id) {
@@ -42,9 +68,17 @@ public class RankManager {
                 .orElse(this.userTopMap.get("points"));
     }
 
+    private void addUserTop(String id, UserTop userTop) {
+        this.userTopMap.put(id, userTop);
+    }
+
     public Option<GuildTop> getGuildTop(String id) {
         return Option.of(this.guildTopMap.get(id))
                 .orElse(this.guildTopMap.get("avg_points"));
+    }
+
+    private void addGuildTop(String id, GuildTop guildTop) {
+        this.guildTopMap.put(id, guildTop);
     }
 
     public User getUser(int place) {
@@ -58,6 +92,7 @@ public class RankManager {
                 .map(top -> top.getGuild(place))
                 .getOrNull();
     }
+
 
     public boolean isRankedGuild(Guild guild) {
         return guild.getMembers().size() >= pluginConfiguration.minMembersToInclude;
