@@ -73,7 +73,7 @@ public class RankManager {
     public void addUserTop(String id, UserTop userTop) {
         if (PandaStream.of(this.pluginConfiguration.top.enabledUserTops)
                 .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
-                .isPresent()) {
+                .isEmpty()) {
             return;
         }
         this.userTopMap.put(id.toLowerCase(), userTop);
@@ -87,7 +87,7 @@ public class RankManager {
     public void addGuildTop(String id, GuildTop guildTop) {
         if (PandaStream.of(this.pluginConfiguration.top.enabledGuildTops)
                 .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
-                .isPresent()) {
+                .isEmpty()) {
             return;
         }
         this.guildTopMap.put(id.toLowerCase(), guildTop);
