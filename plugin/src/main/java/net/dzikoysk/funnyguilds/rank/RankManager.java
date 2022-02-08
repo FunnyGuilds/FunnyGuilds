@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import java.util.HashMap;
+import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -14,6 +15,7 @@ import net.dzikoysk.funnyguilds.user.top.UserComparator;
 import net.dzikoysk.funnyguilds.user.top.UserRecalculation;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class RankManager {
 
@@ -22,8 +24,8 @@ public class RankManager {
     private final UserManager userManager;
     private final GuildManager guildManager;
 
-    protected HashMap<String, UserTop> userTopMap = new HashMap<>();
-    protected HashMap<String, GuildTop> guildTopMap = new HashMap<>();
+    protected final Map<String, UserTop> userTopMap = new HashMap<>();
+    protected final Map<String, GuildTop> guildTopMap = new HashMap<>();
 
     @Deprecated
     private static RankManager INSTANCE;
@@ -64,21 +66,31 @@ public class RankManager {
     }
 
     public Option<UserTop> getUserTop(String id) {
-        return Option.of(this.userTopMap.get(id))
+        return Option.of(this.userTopMap.get(id.toLowerCase()))
                 .orElse(this.userTopMap.get("points"));
     }
 
     public void addUserTop(String id, UserTop userTop) {
-        this.userTopMap.put(id, userTop);
+        if (PandaStream.of(this.pluginConfiguration.top.enabledUserTops)
+                .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
+                .isPresent()) {
+            return;
+        }
+        this.userTopMap.put(id.toLowerCase(), userTop);
     }
 
     public Option<GuildTop> getGuildTop(String id) {
-        return Option.of(this.guildTopMap.get(id))
+        return Option.of(this.guildTopMap.get(id.toLowerCase()))
                 .orElse(this.guildTopMap.get("avg_points"));
     }
 
     public void addGuildTop(String id, GuildTop guildTop) {
-        this.guildTopMap.put(id, guildTop);
+        if (PandaStream.of(this.pluginConfiguration.top.enabledGuildTops)
+                .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
+                .isPresent()) {
+            return;
+        }
+        this.guildTopMap.put(id.toLowerCase(), guildTop);
     }
 
     public User getUser(int place) {

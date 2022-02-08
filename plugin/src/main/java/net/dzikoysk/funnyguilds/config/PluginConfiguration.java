@@ -36,6 +36,7 @@ import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
 import net.dzikoysk.funnyguilds.guild.GuildRegex;
@@ -149,6 +150,8 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Minimalna liczba graczy w gildii, aby zaliczala sie ona do rankingu")
     @CustomKey("guild-min-members")
     public int minMembersToInclude = 1;
+
+    public TopConfiguration top = new TopConfiguration();
 
     @Comment("Czy wiadomosci o braku potrzebnych przedmiotow maja zawierac elementy, na ktore mozna najechac")
     @Comment("Takie elementy pokazuja informacje o przedmiocie, np. jego typ, nazwe czy opis")
