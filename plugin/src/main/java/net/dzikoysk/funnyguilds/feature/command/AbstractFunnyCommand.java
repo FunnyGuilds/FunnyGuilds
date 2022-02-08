@@ -23,9 +23,9 @@ public abstract class AbstractFunnyCommand {
 
     @Inject public ConcurrencyManager concurrencyManager;
 
-    @Inject public RankManager rankManager;
     @Inject public UserManager userManager;
     @Inject public GuildManager guildManager;
+    @Inject public RankManager rankManager;
     @Inject public RegionManager regionManager;
 
 }

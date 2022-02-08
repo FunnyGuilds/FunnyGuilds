@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.function.IntFunction;
 import net.dzikoysk.funnyguilds.rank.Rank;
+import net.dzikoysk.funnyguilds.user.top.UserComparator;
 
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
@@ -101,21 +102,7 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
 
     @Override
     public int compareTo(UserRank rank) {
-        int result = Integer.compare(this.getPoints(), rank.getPoints());
-
-        if (result == 0) {
-            if (getIdentityName() == null) {
-                return -1;
-            }
-
-            if (rank.getIdentityName() == null) {
-                return 1;
-            }
-
-            result = getIdentityName().compareTo(rank.getIdentityName());
-        }
-
-        return result;
+        return UserComparator.POINTS_COMPARATOR.compare(this, rank);
     }
 
 }

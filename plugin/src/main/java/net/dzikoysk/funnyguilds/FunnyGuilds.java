@@ -104,9 +104,9 @@ public class FunnyGuilds extends JavaPlugin {
     private ConcurrencyManager concurrencyManager;
     private DynamicListenerManager dynamicListenerManager;
     private HookManager hookManager;
-    private RankManager rankManager;
     private UserManager userManager;
     private GuildManager guildManager;
+    private RankManager rankManager;
     private RegionManager regionManager;
     private NmsAccessor nmsAccessor;
 
@@ -180,9 +180,9 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        this.rankManager = new RankManager(this.pluginConfiguration);
         this.userManager = new UserManager();
         this.guildManager = new GuildManager(this);
+        this.rankManager = new RankManager(pluginConfiguration, userManager, guildManager);
         this.regionManager = new RegionManager(this);
 
         try {
@@ -210,9 +210,9 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(MessageConfiguration.class).assignInstance(this.messageConfiguration);
             resources.on(TablistConfiguration.class).assignInstance(this.tablistConfiguration);
             resources.on(ConcurrencyManager.class).assignInstance(this.concurrencyManager);
-            resources.on(RankManager.class).assignInstance(this.rankManager);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
+            resources.on(RankManager.class).assignInstance(this.rankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(DataModel.class).assignInstance(this.dataModel);
@@ -223,7 +223,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(guildManager), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager, this.guildManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
             FunnyCommandsConfiguration commandsConfiguration = new FunnyCommandsConfiguration();
@@ -438,16 +438,16 @@ public class FunnyGuilds extends JavaPlugin {
         return this.dynamicListenerManager;
     }
 
-    public RankManager getRankManager() {
-        return rankManager;
-    }
-
     public UserManager getUserManager() {
         return userManager;
     }
 
     public GuildManager getGuildManager() {
         return guildManager;
+    }
+
+    public RankManager getRankManager() {
+        return rankManager;
     }
 
     public RegionManager getRegionManager() {

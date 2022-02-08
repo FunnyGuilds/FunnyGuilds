@@ -35,9 +35,9 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected PluginConfiguration config = new PluginConfiguration()
     protected MessageConfiguration messages = new MessageConfiguration()
 
-    protected RankManager rankManager
     protected UserManager userManager
     protected GuildManager guildManager
+    protected RankManager rankManager
     protected RegionManager regionManager
 
     @BeforeAll
@@ -51,14 +51,14 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getPluginConfiguration()).thenReturn(config)
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
 
-        rankManager = new RankManager(config)
         userManager = new UserManager()
         guildManager = new GuildManager(funnyGuilds);
+        rankManager = new RankManager(config, userManager, guildManager);
         regionManager = new RegionManager(funnyGuilds);
 
-        lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
         lenient().when(funnyGuilds.getGuildManager()).thenReturn(guildManager)
+        lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)

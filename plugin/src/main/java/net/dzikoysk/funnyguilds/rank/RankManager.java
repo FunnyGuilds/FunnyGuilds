@@ -1,54 +1,62 @@
 package net.dzikoysk.funnyguilds.rank;
 
-import com.google.common.collect.Iterables;
-import java.util.Collections;
-import java.util.NavigableSet;
-import java.util.TreeSet;
+import java.util.HashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildRank;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.top.GuildComparator;
+import net.dzikoysk.funnyguilds.guild.top.GuildRecalculation;
+import net.dzikoysk.funnyguilds.guild.top.GuildTop;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserRank;
+import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.user.top.UserComparator;
+import net.dzikoysk.funnyguilds.user.top.UserRecalculation;
+import net.dzikoysk.funnyguilds.user.top.UserTop;
+import panda.std.Option;
 
 public class RankManager {
 
     private final PluginConfiguration pluginConfiguration;
 
-    protected NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
-    protected NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
+    protected HashMap<String, UserTop> userTopMap = new HashMap<>();
+    protected HashMap<String, GuildTop> guildTopMap = new HashMap<>();
 
     @Deprecated
     private static RankManager INSTANCE;
 
-    public RankManager(PluginConfiguration pluginConfiguration) {
+    public RankManager(PluginConfiguration pluginConfiguration, UserManager userManager, GuildManager guildManager) {
         this.pluginConfiguration = pluginConfiguration;
+
+        UserRecalculation userRecalculation = new UserRecalculation(pluginConfiguration, userManager);
+        GuildRecalculation guildRecalculation = new GuildRecalculation(guildManager);
+
+        userTopMap.put("points", new UserTop(UserComparator.POINTS_COMPARATOR, userRecalculation));
+        guildTopMap.put("avg_points", new GuildTop(GuildComparator.AVG_POINTS_COMPARATOR, guildRecalculation));
 
         INSTANCE = this;
     }
 
-    public User getUser(int place) {
-        if (place - 1 < this.usersRank.size()) {
-            return Iterables.get(this.usersRank, place - 1).getUser();
-        }
+    public Option<UserTop> getUserTop(String id) {
+        return Option.of(this.userTopMap.get(id))
+                .orElse(this.userTopMap.get("points"));
+    }
 
-        return null;
+    public Option<GuildTop> getGuildTop(String id) {
+        return Option.of(this.guildTopMap.get(id))
+                .orElse(this.guildTopMap.get("avg_points"));
+    }
+
+    public User getUser(int place) {
+        return getUserTop("points")
+                .map(top -> top.getUser(place))
+                .getOrNull();
     }
 
     public Guild getGuild(int place) {
-        if (place - 1 < this.guildsRank.size()) {
-            return Iterables.get(this.guildsRank, place - 1).getGuild();
-        }
-
-        return null;
-    }
-
-    public int countUsers() {
-        return this.usersRank.size();
-    }
-
-    public int countGuilds() {
-        return this.guildsRank.size();
+        return getGuildTop("avg_points")
+                .map(top -> top.getGuild(place))
+                .getOrNull();
     }
 
     public boolean isRankedGuild(Guild guild) {

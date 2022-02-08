@@ -12,7 +12,7 @@ class RankManagerTest extends FunnyGuildsSpec {
 
     @Test
     void 'should correctly update the guilds and users ranking'() {
-        def rankRecalculationTask = new RankRecalculationTask(config, rankManager, userManager, guildManager);
+        def rankRecalculationTask = new RankRecalculationTask(funnyGuilds);
 
         def user1 = userManager.create(UUID.randomUUID(), 'user1')
         def user2 = userManager.create(UUID.randomUUID(), 'user2')
