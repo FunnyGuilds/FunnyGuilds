@@ -14,7 +14,6 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.top.UserComparator;
 import net.dzikoysk.funnyguilds.user.top.UserRecalculation;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
-import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -92,26 +91,14 @@ public class RankManager {
         this.guildTopMap.put(id.toLowerCase(), guildTop);
     }
 
-    public Option<User> getUserOption(int place) {
+    public Option<User> getUser(int place) {
         return getUserTop("points")
                 .map(top -> top.getUser(place));
     }
 
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public User getUser(int place) {
-        return this.getUserOption(place).getOrNull();
-    }
-
-    public Option<Guild> getGuildOption(int place) {
+    public Option<Guild> getGuild(int place) {
         return getGuildTop("avg_points")
                 .map(top -> top.getGuild(place));
-    }
-
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public Guild getGuild(int place) {
-        return this.getGuildOption(place).getOrNull();
     }
 
     public boolean isRankedGuild(Guild guild) {

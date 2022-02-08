@@ -31,12 +31,12 @@ class RankManagerTest extends FunnyGuildsSpec {
 
         rankRecalculationTask.run()
 
-        assertEquals user1, rankManager.getUser(1)
-        assertEquals user2, rankManager.getUser(2)
-        assertEquals user3, rankManager.getUser(3)
-        assertEquals guild1, rankManager.getGuild(1)
-        assertEquals guild2, rankManager.getGuild(2)
-        assertEquals guild3, rankManager.getGuild(3)
+        assertEquals user1, rankManager.getUser(1).getOrNull()
+        assertEquals user2, rankManager.getUser(2).getOrNull()
+        assertEquals user3, rankManager.getUser(3).getOrNull()
+        assertEquals guild1, rankManager.getGuild(1).getOrNull()
+        assertEquals guild2, rankManager.getGuild(2).getOrNull()
+        assertEquals guild3, rankManager.getGuild(3).getOrNull()
 
         user1.rank.points = 100
         user2.rank.points = 150
@@ -44,12 +44,12 @@ class RankManagerTest extends FunnyGuildsSpec {
 
         rankRecalculationTask.run()
 
-        assertEquals user3, rankManager.getUser(1)
-        assertEquals user2, rankManager.getUser(2)
-        assertEquals user1, rankManager.getUser(3)
-        assertEquals guild3, rankManager.getGuild(1)
-        assertEquals guild2, rankManager.getGuild(2)
-        assertEquals guild1, rankManager.getGuild(3)
+        assertEquals user3, rankManager.getUser(1).getOrNull()
+        assertEquals user2, rankManager.getUser(2).getOrNull()
+        assertEquals user1, rankManager.getUser(3).getOrNull()
+        assertEquals guild3, rankManager.getGuild(1).getOrNull()
+        assertEquals guild2, rankManager.getGuild(2).getOrNull()
+        assertEquals guild1, rankManager.getGuild(3).getOrNull()
     }
 
 }

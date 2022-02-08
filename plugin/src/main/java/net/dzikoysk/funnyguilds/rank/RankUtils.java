@@ -43,7 +43,7 @@ public class RankUtils {
         }
 
         if (rankTop.contains("GTOP")) {
-            Option<Guild> guildOption = rankManager.getGuildOption(index);
+            Option<Guild> guildOption = rankManager.getGuild(index);
             if (guildOption.isEmpty()) {
                 return StringUtils.replace(rankTop, "{GTOP-" + index + '}', messages.gtopNoValue);
             }
@@ -81,7 +81,7 @@ public class RankUtils {
 
         }
         else if (rankTop.contains("PTOP")) {
-            Option<User> userOption = rankManager.getUserOption(index);
+            Option<User> userOption = rankManager.getUser(index);
             if (userOption.isEmpty()) {
                 return StringUtils.replace(rankTop, "{PTOP-" + index + '}', messages.ptopNoValue);
             }

@@ -47,7 +47,7 @@ public class LeaderHeadsHook extends AbstractPluginHook {
         public List<Entry<?, Double>> requestAll() {
             List<Entry<?, Double>> topUsers = new ArrayList<>();
             for (int i = 1; i <= 10; i++) {
-                this.plugin.getRankManager().getUserOption(i)
+                this.plugin.getRankManager().getUser(i)
                         .peek(user -> topUsers.add(Maps.immutableEntry(user.getName(), ((double) user.getRank().getPoints()))));
             }
             return topUsers;
