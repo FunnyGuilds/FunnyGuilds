@@ -183,7 +183,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.userManager = new UserManager();
         this.guildManager = new GuildManager(this);
         this.rankManager = new RankManager(pluginConfiguration, userManager, guildManager);
-        this.rankManager.addTops();
+        this.rankManager.addDefaultTops();
         this.regionManager = new RegionManager(this);
 
         try {

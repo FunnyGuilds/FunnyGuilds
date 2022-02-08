@@ -37,7 +37,7 @@ public class RankManager {
         INSTANCE = this;
     }
 
-    public void addTops() {
+    public void addDefaultTops() {
         UserRecalculation userRecalculation = new UserRecalculation(pluginConfiguration, userManager);
         GuildRecalculation guildRecalculation = new GuildRecalculation(guildManager);
 
