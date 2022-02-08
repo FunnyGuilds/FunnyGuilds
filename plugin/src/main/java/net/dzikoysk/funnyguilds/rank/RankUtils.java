@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
+import panda.std.Option;
 
 public class RankUtils {
 
@@ -42,11 +43,11 @@ public class RankUtils {
         }
 
         if (rankTop.contains("GTOP")) {
-            Guild guild = rankManager.getGuild(index);
-
-            if (guild == null) {
+            Option<Guild> guildOption = rankManager.getGuildOption(index);
+            if (guildOption.isEmpty()) {
                 return StringUtils.replace(rankTop, "{GTOP-" + index + '}', messages.gtopNoValue);
             }
+            Guild guild = guildOption.get();
 
             int points = guild.getRank().getAveragePoints();
             String pointsFormat = config.gtopPoints.getValue();
@@ -80,11 +81,11 @@ public class RankUtils {
 
         }
         else if (rankTop.contains("PTOP")) {
-            User user = rankManager.getUser(index);
-
-            if (user == null) {
+            Option<User> userOption = rankManager.getUserOption(index);
+            if (userOption.isEmpty()) {
                 return StringUtils.replace(rankTop, "{PTOP-" + index + '}', messages.ptopNoValue);
             }
+            User user = userOption.get();
 
             int points = user.getRank().getPoints();
             String pointsFormat = config.ptopPoints.getValue();

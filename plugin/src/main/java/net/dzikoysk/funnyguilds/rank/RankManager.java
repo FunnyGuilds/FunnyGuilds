@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.top.UserComparator;
 import net.dzikoysk.funnyguilds.user.top.UserRecalculation;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
+import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -97,6 +98,7 @@ public class RankManager {
     }
 
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public User getUser(int place) {
         return this.getUserOption(place).getOrNull();
     }
@@ -107,6 +109,7 @@ public class RankManager {
     }
 
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public Guild getGuild(int place) {
         return this.getGuildOption(place).getOrNull();
     }
