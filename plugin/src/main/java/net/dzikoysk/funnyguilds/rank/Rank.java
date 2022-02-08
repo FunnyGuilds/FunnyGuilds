@@ -79,4 +79,16 @@ public abstract class Rank<T extends MutableEntity> {
         return Integer.toString(this.getPoints());
     }
 
+    public static int compareName(Rank<?> o1, Rank<?> o2) {
+        if (o1.getIdentityName() == null) {
+            return -1;
+        }
+
+        if (o2.getIdentityName() == null) {
+            return 1;
+        }
+
+        return o1.getIdentityName().compareTo(o2.getIdentityName());
+    }
+
 }

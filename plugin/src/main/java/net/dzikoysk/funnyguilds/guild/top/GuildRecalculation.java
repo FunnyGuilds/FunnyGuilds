@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.guild.top;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
@@ -19,7 +18,7 @@ public class GuildRecalculation implements Function<Comparator<GuildRank>, Navig
 
     @Override
     public NavigableSet<GuildRank> apply(Comparator<GuildRank> userRankComparator) {
-        NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder(userRankComparator));
+        NavigableSet<GuildRank> guildsRank = new TreeSet<>(userRankComparator);
 
         for (Guild guild : guildManager.getGuilds()) {
             GuildRank guildRank = guild.getRank();

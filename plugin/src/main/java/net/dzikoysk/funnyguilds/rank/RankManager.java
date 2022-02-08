@@ -66,8 +66,7 @@ public class RankManager {
     }
 
     public Option<UserTop> getUserTop(String id) {
-        return Option.of(this.userTopMap.get(id.toLowerCase()))
-                .orElse(this.userTopMap.get("points"));
+        return Option.of(this.userTopMap.get(id.toLowerCase()));
     }
 
     public void addUserTop(String id, UserTop userTop) {
@@ -80,8 +79,7 @@ public class RankManager {
     }
 
     public Option<GuildTop> getGuildTop(String id) {
-        return Option.of(this.guildTopMap.get(id.toLowerCase()))
-                .orElse(this.guildTopMap.get("avg_points"));
+        return Option.of(this.guildTopMap.get(id.toLowerCase()));
     }
 
     public void addGuildTop(String id, GuildTop guildTop) {

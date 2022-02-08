@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.user.top;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
@@ -23,7 +22,7 @@ public class UserRecalculation implements Function<Comparator<UserRank>, Navigab
 
     @Override
     public NavigableSet<UserRank> apply(Comparator<UserRank> userRankComparator) {
-        NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder(userRankComparator));
+        NavigableSet<UserRank> usersRank = new TreeSet<>(userRankComparator);
 
         for (User user : userManager.getUsers()) {
             UserRank userRank = user.getRank();
