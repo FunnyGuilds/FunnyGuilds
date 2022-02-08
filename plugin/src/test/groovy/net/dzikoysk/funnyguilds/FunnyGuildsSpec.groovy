@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarPro
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.RankManager
+import net.dzikoysk.funnyguilds.rank.TopFactory
 import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
 import org.junit.jupiter.api.AfterAll
@@ -53,9 +54,10 @@ class FunnyGuildsSpec extends BukkitSpec {
 
         userManager = new UserManager()
         guildManager = new GuildManager(funnyGuilds)
-        rankManager = new RankManager(config, userManager, guildManager)
-        rankManager.addDefaultTops()
+        rankManager = new RankManager(config)
         regionManager = new RegionManager(funnyGuilds)
+
+        new TopFactory(config, rankManager).addDefaultTops(userManager, guildManager)
 
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
         lenient().when(funnyGuilds.getGuildManager()).thenReturn(guildManager)
