@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.Iterables;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
@@ -19,7 +18,7 @@ public class Top<T> {
         this.comparator = comparator;
         this.recalculateFunction = recalculateFunction;
 
-        this.values = new TreeSet<>(Collections.reverseOrder(comparator));
+        this.values = new TreeSet<>(comparator);
     }
 
     public Comparator<T> getComparator() {
