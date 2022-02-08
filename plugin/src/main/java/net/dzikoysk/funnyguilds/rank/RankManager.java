@@ -68,7 +68,7 @@ public class RankManager {
                 .orElse(this.userTopMap.get("points"));
     }
 
-    private void addUserTop(String id, UserTop userTop) {
+    public void addUserTop(String id, UserTop userTop) {
         this.userTopMap.put(id, userTop);
     }
 
@@ -77,7 +77,7 @@ public class RankManager {
                 .orElse(this.guildTopMap.get("avg_points"));
     }
 
-    private void addGuildTop(String id, GuildTop guildTop) {
+    public void addGuildTop(String id, GuildTop guildTop) {
         this.guildTopMap.put(id, guildTop);
     }
 
