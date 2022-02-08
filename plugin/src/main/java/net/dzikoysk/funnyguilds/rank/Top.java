@@ -27,7 +27,7 @@ public class Top<T> {
     }
 
     public Option<T> get(int place) {
-        if (place - 1 < this.values.size()) {
+        if (place > 0 && place - 1 < this.values.size()) {
             return Option.of(Iterables.get(this.values, place - 1));
         }
         return Option.none();

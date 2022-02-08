@@ -91,18 +91,25 @@ public class RankManager {
         this.guildTopMap.put(id.toLowerCase(), guildTop);
     }
 
-    public User getUser(int place) {
+    public Option<User> getUserOption(int place) {
         return getUserTop("points")
-                .map(top -> top.getUser(place))
-                .getOrNull();
+                .map(top -> top.getUser(place));
     }
 
-    public Guild getGuild(int place) {
+    @Deprecated
+    public User getUser(int place) {
+        return this.getUserOption(place).getOrNull();
+    }
+
+    public Option<Guild> getGuildOption(int place) {
         return getGuildTop("avg_points")
-                .map(top -> top.getGuild(place))
-                .getOrNull();
+                .map(top -> top.getGuild(place));
     }
 
+    @Deprecated
+    public Guild getGuild(int place) {
+        return this.getGuildOption(place).getOrNull();
+    }
 
     public boolean isRankedGuild(Guild guild) {
         return guild.getMembers().size() >= pluginConfiguration.minMembersToInclude;
