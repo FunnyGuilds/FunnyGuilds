@@ -43,12 +43,12 @@ public class RankManager {
     }
 
     public Option<User> getUser(int place) {
-        return getUserTop("points")
+        return getUserTop(TopFactory.USER_POINTS_TOP)
                 .map(top -> top.getUser(place));
     }
 
     public Option<Guild> getGuild(int place) {
-        return getGuildTop("avg_points")
+        return getGuildTop(TopFactory.GUILD_AVG_POINTS_TOP)
                 .map(top -> top.getGuild(place));
     }
 
