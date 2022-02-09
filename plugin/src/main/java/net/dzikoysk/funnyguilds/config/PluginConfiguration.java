@@ -701,7 +701,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Exclude
     public Map<IntegerRange, String> pointsFormat;
 
-    @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
+    @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
     @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
     @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
     public RawString ptopPoints = new RawString(" &7[{POINTS}&7]");

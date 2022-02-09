@@ -44,12 +44,12 @@ public class RankManager {
 
     public Option<User> getUser(int place) {
         return getUserTop(TopFactory.USER_POINTS_TOP)
-                .map(top -> top.getUser(place));
+                .flatMap(top -> top.getUser(place));
     }
 
     public Option<Guild> getGuild(int place) {
         return getGuildTop(TopFactory.GUILD_AVG_POINTS_TOP)
-                .map(top -> top.getGuild(place));
+                .flatMap(top -> top.getGuild(place));
     }
 
     public boolean isRankedGuild(Guild guild) {

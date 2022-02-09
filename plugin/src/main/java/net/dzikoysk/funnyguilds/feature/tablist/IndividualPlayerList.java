@@ -130,7 +130,8 @@ public class IndividualPlayerList {
         if (temp != null) {
             return temp;
         }
-        return cell;
+        temp = RankUtils.parseComparableRank(this.user, cell);
+        return temp;
     }
 
     private String putVars(String cell) {

@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.rank;
 
 import com.google.common.collect.Iterables;
-import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.function.Function;
@@ -9,19 +8,19 @@ import panda.std.Option;
 
 public class Top<T> {
 
-    private final Comparator<T> comparator;
-    private final Function<Comparator<T>, NavigableSet<T>> recalculateFunction;
+    private final TopComparator<T> comparator;
+    private final Function<TopComparator<T>, NavigableSet<T>> recalculateFunction;
 
     private NavigableSet<T> values;
 
-    public Top(Comparator<T> comparator, Function<Comparator<T>, NavigableSet<T>> recalculateFunction) {
+    public Top(TopComparator<T> comparator, Function<TopComparator<T>, NavigableSet<T>> recalculateFunction) {
         this.comparator = comparator;
         this.recalculateFunction = recalculateFunction;
 
         this.values = new TreeSet<>(comparator);
     }
 
-    public Comparator<T> getComparator() {
+    public TopComparator<T> getComparator() {
         return comparator;
     }
 

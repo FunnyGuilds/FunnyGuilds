@@ -1,22 +1,22 @@
 package net.dzikoysk.funnyguilds.guild.top;
 
-import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.rank.Top;
+import net.dzikoysk.funnyguilds.rank.TopComparator;
+import panda.std.Option;
 
 public class GuildTop extends Top<GuildRank> {
 
-    public GuildTop(Comparator<GuildRank> comparator, Function<Comparator<GuildRank>, NavigableSet<GuildRank>> recalculateFunction) {
+    public GuildTop(TopComparator<GuildRank> comparator, Function<TopComparator<GuildRank>, NavigableSet<GuildRank>> recalculateFunction) {
         super(comparator, recalculateFunction);
     }
 
-    public Guild getGuild(int place) {
+    public Option<Guild> getGuild(int place) {
         return this.get(place)
-                .map(GuildRank::getGuild)
-                .getOrNull();
+                .map(GuildRank::getGuild);
     }
 
 }

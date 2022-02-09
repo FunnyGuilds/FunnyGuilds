@@ -1,14 +1,14 @@
 package net.dzikoysk.funnyguilds.guild.top;
 
-import java.util.Comparator;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
+import net.dzikoysk.funnyguilds.rank.TopComparator;
 
-public class GuildRecalculation implements Function<Comparator<GuildRank>, NavigableSet<GuildRank>> {
+public class GuildRecalculation implements Function<TopComparator<GuildRank>, NavigableSet<GuildRank>> {
 
     private final GuildManager guildManager;
 
@@ -17,7 +17,7 @@ public class GuildRecalculation implements Function<Comparator<GuildRank>, Navig
     }
 
     @Override
-    public NavigableSet<GuildRank> apply(Comparator<GuildRank> userRankComparator) {
+    public NavigableSet<GuildRank> apply(TopComparator<GuildRank> userRankComparator) {
         NavigableSet<GuildRank> guildsRank = new TreeSet<>(userRankComparator);
 
         for (Guild guild : guildManager.getGuilds()) {

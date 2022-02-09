@@ -1,19 +1,19 @@
 package net.dzikoysk.funnyguilds.user.top;
 
-import java.util.Comparator;
 import net.dzikoysk.funnyguilds.rank.Rank;
+import net.dzikoysk.funnyguilds.rank.TopComparator;
 import net.dzikoysk.funnyguilds.user.UserRank;
 
 public final class UserComparator {
 
-    public static final Comparator<UserRank> POINTS_COMPARATOR = new Points().reversed();
-    public static final Comparator<UserRank> KILLS_COMPARATOR = new Kills().reversed();
-    public static final Comparator<UserRank> DEATHS_COMPARATOR = new Deaths().reversed();
-    public static final Comparator<UserRank> KDR_COMPARATOR = new KDR().reversed();
-    public static final Comparator<UserRank> ASSISTS_COMPARATOR = new Assists().reversed();
-    public static final Comparator<UserRank> LOGOUTS_COMPARATOR = new Logouts().reversed();
+    public static final TopComparator<UserRank> POINTS_COMPARATOR = new Points().reversed();
+    public static final TopComparator<UserRank> KILLS_COMPARATOR = new Kills().reversed();
+    public static final TopComparator<UserRank> DEATHS_COMPARATOR = new Deaths().reversed();
+    public static final TopComparator<UserRank> KDR_COMPARATOR = new KDR().reversed();
+    public static final TopComparator<UserRank> ASSISTS_COMPARATOR = new Assists().reversed();
+    public static final TopComparator<UserRank> LOGOUTS_COMPARATOR = new Logouts().reversed();
 
-    private static class Points implements Comparator<UserRank> {
+    private static class Points implements TopComparator<UserRank> {
 
         @Override
         public int compare(UserRank o1, UserRank o2) {
@@ -24,9 +24,14 @@ public final class UserComparator {
             return result;
         }
 
+
+        @Override
+        public String getValue(UserRank rank) {
+            return String.valueOf(rank.getPoints());
+        }
     }
 
-    private static class Kills implements Comparator<UserRank> {
+    private static class Kills implements TopComparator<UserRank> {
 
         @Override
         public int compare(UserRank o1, UserRank o2) {
@@ -36,10 +41,15 @@ public final class UserComparator {
             }
             return result;
         }
+        
+        @Override
+        public String getValue(UserRank rank) {
+            return String.valueOf(rank.getKills());
+        }
 
     }
 
-    private static class Deaths implements Comparator<UserRank> {
+    private static class Deaths implements TopComparator<UserRank> {
 
         @Override
         public int compare(UserRank o1, UserRank o2) {
@@ -50,9 +60,14 @@ public final class UserComparator {
             return result;
         }
 
+        @Override
+        public String getValue(UserRank rank) {
+            return String.valueOf(rank.getDeaths());
+        }
+
     }
 
-    private static class KDR implements Comparator<UserRank> {
+    private static class KDR implements TopComparator<UserRank> {
 
         @Override
         public int compare(UserRank o1, UserRank o2) {
@@ -63,9 +78,14 @@ public final class UserComparator {
             return result;
         }
 
+        @Override
+        public String getValue(UserRank rank) {
+            return String.valueOf(rank.getKDR());
+        }
+
     }
 
-    private static class Assists implements Comparator<UserRank> {
+    private static class Assists implements TopComparator<UserRank> {
 
         @Override
         public int compare(UserRank o1, UserRank o2) {
@@ -76,9 +96,14 @@ public final class UserComparator {
             return result;
         }
 
+        @Override
+        public String getValue(UserRank rank) {
+            return String.valueOf(rank.getAssists());
+        }
+
     }
 
-    private static class Logouts implements Comparator<UserRank> {
+    private static class Logouts implements TopComparator<UserRank> {
 
         @Override
         public int compare(UserRank o1, UserRank o2) {
@@ -87,6 +112,11 @@ public final class UserComparator {
                 result = Rank.compareName(o1, o2);
             }
             return result;
+        }
+
+        @Override
+        public String getValue(UserRank rank) {
+            return String.valueOf(rank.getLogouts());
         }
 
     }

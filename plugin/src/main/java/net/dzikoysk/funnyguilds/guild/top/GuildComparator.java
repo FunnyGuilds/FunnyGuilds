@@ -1,26 +1,26 @@
 package net.dzikoysk.funnyguilds.guild.top;
 
-import java.util.Comparator;
 import net.dzikoysk.funnyguilds.guild.GuildRank;
 import net.dzikoysk.funnyguilds.rank.Rank;
+import net.dzikoysk.funnyguilds.rank.TopComparator;
 
 public final class GuildComparator {
 
-    public static final Comparator<GuildRank> POINTS_COMPARATOR = new Points().reversed();
-    public static final Comparator<GuildRank> KILLS_COMPARATOR = new Kills().reversed();
-    public static final Comparator<GuildRank> DEATHS_COMPARATOR = new Deaths().reversed();
-    public static final Comparator<GuildRank> KDR_COMPARATOR = new KDR().reversed();
-    public static final Comparator<GuildRank> ASSISTS_COMPARATOR = new Assists().reversed();
-    public static final Comparator<GuildRank> LOGOUTS_COMPARATOR = new Logouts().reversed();
+    public static final TopComparator<GuildRank> POINTS_COMPARATOR = new Points().reversed();
+    public static final TopComparator<GuildRank> KILLS_COMPARATOR = new Kills().reversed();
+    public static final TopComparator<GuildRank> DEATHS_COMPARATOR = new Deaths().reversed();
+    public static final TopComparator<GuildRank> KDR_COMPARATOR = new KDR().reversed();
+    public static final TopComparator<GuildRank> ASSISTS_COMPARATOR = new Assists().reversed();
+    public static final TopComparator<GuildRank> LOGOUTS_COMPARATOR = new Logouts().reversed();
 
-    public static final Comparator<GuildRank> AVG_POINTS_COMPARATOR = new AveragePoints().reversed();
-    public static final Comparator<GuildRank> AVG_KILLS_COMPARATOR = new AverageKills().reversed();
-    public static final Comparator<GuildRank> AVG_DEATHS_COMPARATOR = new AverageDeaths().reversed();
-    public static final Comparator<GuildRank> AVG_KDR_COMPARATOR = new AverageKDR().reversed();
-    public static final Comparator<GuildRank> AVG_ASSISTS_COMPARATOR = new AverageAssists().reversed();
-    public static final Comparator<GuildRank> AVG_LOGOUTS_COMPARATOR = new AverageLogouts().reversed();
+    public static final TopComparator<GuildRank> AVG_POINTS_COMPARATOR = new AveragePoints().reversed();
+    public static final TopComparator<GuildRank> AVG_KILLS_COMPARATOR = new AverageKills().reversed();
+    public static final TopComparator<GuildRank> AVG_DEATHS_COMPARATOR = new AverageDeaths().reversed();
+    public static final TopComparator<GuildRank> AVG_KDR_COMPARATOR = new AverageKDR().reversed();
+    public static final TopComparator<GuildRank> AVG_ASSISTS_COMPARATOR = new AverageAssists().reversed();
+    public static final TopComparator<GuildRank> AVG_LOGOUTS_COMPARATOR = new AverageLogouts().reversed();
 
-    private static class Points implements Comparator<GuildRank> {
+    private static class Points implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -31,9 +31,13 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getPoints());
+        }
     }
 
-    private static class Kills implements Comparator<GuildRank> {
+    private static class Kills implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -44,9 +48,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getKills());
+        }
+
     }
 
-    private static class Deaths implements Comparator<GuildRank> {
+    private static class Deaths implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -57,9 +66,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getDeaths());
+        }
+
     }
 
-    private static class KDR implements Comparator<GuildRank> {
+    private static class KDR implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -70,9 +84,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank object) {
+            return String.valueOf(object.getKDR());
+        }
+
     }
 
-    private static class Assists implements Comparator<GuildRank> {
+    private static class Assists implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -83,9 +102,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getAssists());
+        }
+
     }
 
-    private static class Logouts implements Comparator<GuildRank> {
+    private static class Logouts implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -96,9 +120,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getLogouts());
+        }
+
     }
 
-    private static class AveragePoints implements Comparator<GuildRank> {
+    private static class AveragePoints implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -109,9 +138,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getAveragePoints());
+        }
+
     }
 
-    private static class AverageKills implements Comparator<GuildRank> {
+    private static class AverageKills implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -122,9 +156,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getAverageKills());
+        }
+
     }
 
-    private static class AverageDeaths implements Comparator<GuildRank> {
+    private static class AverageDeaths implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -135,9 +174,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getAverageDeaths());
+        }
+
     }
 
-    private static class AverageKDR implements Comparator<GuildRank> {
+    private static class AverageKDR implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -148,9 +192,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getAverageKDR());
+        }
+
     }
 
-    private static class AverageAssists implements Comparator<GuildRank> {
+    private static class AverageAssists implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -161,9 +210,14 @@ public final class GuildComparator {
             return result;
         }
 
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getAverageAssists());
+        }
+
     }
 
-    private static class AverageLogouts implements Comparator<GuildRank> {
+    private static class AverageLogouts implements TopComparator<GuildRank> {
 
         @Override
         public int compare(GuildRank o1, GuildRank o2) {
@@ -172,6 +226,11 @@ public final class GuildComparator {
                 result = Rank.compareName(o1, o2);
             }
             return result;
+        }
+
+        @Override
+        public String getValue(GuildRank rank) {
+            return String.valueOf(rank.getAverageLogouts());
         }
 
     }
