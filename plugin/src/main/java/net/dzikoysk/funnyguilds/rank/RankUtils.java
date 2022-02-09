@@ -16,7 +16,7 @@ import panda.std.Option;
 
 public class RankUtils {
 
-    private final static Pattern RANK_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)}");
+    private static final Pattern RANK_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)}");
 
     public static String parseComparableRank(User targetUser, String text) {
         return parseComparableRank(
