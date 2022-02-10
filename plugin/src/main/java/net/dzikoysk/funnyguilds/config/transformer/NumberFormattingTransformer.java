@@ -44,7 +44,7 @@ public class NumberFormattingTransformer extends BidirectionalTransformer<String
                 return fallback;
             }
             else {
-                if(numberString.contains(".")) {
+                if (numberString.contains(".")) {
                     return Float.parseFloat(numberString);
                 }
                 else {

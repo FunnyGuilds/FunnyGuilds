@@ -999,7 +999,7 @@ public class PluginConfiguration extends OkaeriConfig {
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
         for (String item : strings) {
-            if (item == null || "" .equals(item)) {
+            if (item == null || "".equals(item)) {
                 continue;
             }
 
@@ -1151,7 +1151,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.itemAmountSuffix = ChatUtils.colored(this.itemAmountSuffix_);
 
-        if (!"v1_8_R1" .equals(Reflections.SERVER_VERSION) && !"v1_8_R3" .equals(Reflections.SERVER_VERSION)) {
+        if (!"v1_8_R1".equals(Reflections.SERVER_VERSION) && !"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
             this.bossBarOptions_ = BossBarOptions.builder()
                     .color(this.bossBarColor)
                     .style(this.bossBarStyle)
