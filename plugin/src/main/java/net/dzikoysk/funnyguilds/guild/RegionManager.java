@@ -185,7 +185,7 @@ public class RegionManager {
     }
 
     /**
-     * Remove region from storage. If you think you should use this method you probably shouldn't - instead use {@link RegionManager#deleteRegion(Region)}.
+     * Remove region from storage. If you think you should use this method you probably shouldn't - instead use {@link RegionManager#deleteRegion(DataModel, Region)}.
      *
      * @param region region to remove
      */
@@ -195,9 +195,10 @@ public class RegionManager {
     }
 
     /**
-     * Delete region in every possible way.
+     * Delete region from storage and from database.
      *
      * @param region region to delete
+     * @deprecated for removal in the future with database rework (GH-1402)
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
