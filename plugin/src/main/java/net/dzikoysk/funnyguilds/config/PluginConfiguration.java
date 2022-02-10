@@ -695,11 +695,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
     @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
-    public List<NumberFormatting> pointsFormat = Arrays.asList(
-            new NumberFormatting(0, 749, "&4{POINTS}"),
-            new NumberFormatting(750, 999, "&c{POINTS}"),
-            new NumberFormatting(1000, 1499, "&a{POINTS}"),
-            new NumberFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
+    public List<RangeFormatting> pointsFormat = Arrays.asList(
+            new RangeFormatting(0, 749, "&4{POINTS}"),
+            new RangeFormatting(750, 999, "&c{POINTS}"),
+            new RangeFormatting(1000, 1499, "&a{POINTS}"),
+            new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
     );
 
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
@@ -716,11 +716,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
     @Comment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minPing w gore, np.: \"301-* &c{PING}\"")
-    public List<NumberFormatting> pingFormat = Arrays.asList(
-            new NumberFormatting(0, 75, "&a{PING}"),
-            new NumberFormatting(76, 150, "&e{PING}"),
-            new NumberFormatting(151, 300, "&c{PING}"),
-            new NumberFormatting(301, Integer.MAX_VALUE, "&c{PING}")
+    public List<RangeFormatting> pingFormat = Arrays.asList(
+            new RangeFormatting(0, 75, "&a{PING}"),
+            new RangeFormatting(76, 150, "&e{PING}"),
+            new RangeFormatting(151, 300, "&c{PING}"),
+            new RangeFormatting(301, Integer.MAX_VALUE, "&c{PING}")
     );
 
     @NotBlank

@@ -46,8 +46,8 @@ public final class NumberRange {
                 .orElseGet(value.toString());
     }
 
-    public static <V> String inRangeToString(Number value, List<NumberFormatting> numberFormatting) {
-        return inRangeToString(value, NumberFormatting.toNumberRangeMap(numberFormatting));
+    public static <V> String inRangeToString(Number value, List<RangeFormatting> numberFormatting) {
+        return inRangeToString(value, RangeFormatting.toNumberRangeMap(numberFormatting));
     }
 
     public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {

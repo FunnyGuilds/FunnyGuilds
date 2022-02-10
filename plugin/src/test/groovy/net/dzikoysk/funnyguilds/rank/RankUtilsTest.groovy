@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.rank
 
 import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
-import net.dzikoysk.funnyguilds.config.NumberFormatting
+import net.dzikoysk.funnyguilds.config.RangeFormatting
 import net.dzikoysk.funnyguilds.config.RawString
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.Guild
@@ -26,7 +26,7 @@ class RankUtilsTest extends FunnyGuildsSpec {
         rankRecalculationTask.run()
 
         config.gtopPoints = new RawString(' {POINTS-FORMAT}')
-        config.pointsFormat = [ new NumberFormatting(0, Integer.MAX_VALUE, '{POINTS}') ]
+        config.pointsFormat = [ new RangeFormatting(0, Integer.MAX_VALUE, '{POINTS}') ]
 
         // when: the GTOP placeholder is requested to parse
         def rank = RankUtils.parseRank(config, new TablistConfiguration(), messages, rankManager, user, '{GTOP-1}')

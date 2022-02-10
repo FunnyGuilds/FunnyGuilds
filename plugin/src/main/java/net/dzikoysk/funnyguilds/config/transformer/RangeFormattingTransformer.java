@@ -5,20 +5,20 @@ import eu.okaeri.configs.serdes.BidirectionalTransformer;
 import eu.okaeri.configs.serdes.SerdesContext;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.dzikoysk.funnyguilds.config.NumberFormatting;
 import net.dzikoysk.funnyguilds.config.NumberRange;
+import net.dzikoysk.funnyguilds.config.RangeFormatting;
 
-public class NumberFormattingTransformer extends BidirectionalTransformer<String, NumberFormatting> {
+public class RangeFormattingTransformer extends BidirectionalTransformer<String, RangeFormatting> {
 
     private static final Pattern RANGE_PATTERN = Pattern.compile("(-?[0-9.*]+)-(-?[0-9.*]+)");
 
     @Override
-    public GenericsPair<String, NumberFormatting> getPair() {
-        return this.genericsPair(String.class, NumberFormatting.class);
+    public GenericsPair<String, RangeFormatting> getPair() {
+        return this.genericsPair(String.class, RangeFormatting.class);
     }
 
     @Override
-    public NumberFormatting leftToRight(String data, SerdesContext serdesContext) {
+    public RangeFormatting leftToRight(String data, SerdesContext serdesContext) {
         String[] split = data.split(" ");
 
         Matcher matcher = RANGE_PATTERN.matcher(split[0]);
@@ -30,11 +30,11 @@ public class NumberFormattingTransformer extends BidirectionalTransformer<String
             max = parseNumber(matcher.group(2), Integer.MAX_VALUE);
         }
 
-        return new NumberFormatting(new NumberRange(min, max), split[1]);
+        return new RangeFormatting(new NumberRange(min, max), split[1]);
     }
 
     @Override
-    public String rightToLeft(NumberFormatting data, SerdesContext serdesContext) {
+    public String rightToLeft(RangeFormatting data, SerdesContext serdesContext) {
         return data.toString();
     }
 

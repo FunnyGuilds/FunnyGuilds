@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import net.dzikoysk.funnyguilds.config.NumberFormatting;
+import net.dzikoysk.funnyguilds.config.RangeFormatting;
 import net.dzikoysk.funnyguilds.config.RawString;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
@@ -53,24 +53,24 @@ public class TopConfiguration extends OkaeriConfig {
         @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
         @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
         @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma byc uzywane dane formatowanie")
-        public Map<String, List<NumberFormatting>> ptopValueFormatting = ImmutableMap.<String, List<NumberFormatting>>builder()
+        public Map<String, List<RangeFormatting>> ptopValueFormatting = ImmutableMap.<String, List<RangeFormatting>>builder()
                 .put("points", Arrays.asList(
-                        new NumberFormatting(0, 749, "&4{VALUE}"),
-                        new NumberFormatting(750, 999, "&c{VALUE}"),
-                        new NumberFormatting(1000, 1499, "&a{VALUE}"),
-                        new NumberFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new RangeFormatting(0, 749, "&4{VALUE}"),
+                        new RangeFormatting(750, 999, "&c{VALUE}"),
+                        new RangeFormatting(1000, 1499, "&a{VALUE}"),
+                        new RangeFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .put("kills", Arrays.asList(
-                        new NumberFormatting(0, 10, "&c{VALUE}"),
-                        new NumberFormatting(11, 25, "&a{VALUE}"),
-                        new NumberFormatting(26, 50, "&e{VALUE}"),
-                        new NumberFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new RangeFormatting(0, 10, "&c{VALUE}"),
+                        new RangeFormatting(11, 25, "&a{VALUE}"),
+                        new RangeFormatting(26, 50, "&e{VALUE}"),
+                        new RangeFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .put("deaths", Arrays.asList(
-                        new NumberFormatting(0, 10, "&c{VALUE}"),
-                        new NumberFormatting(11, 25, "&a{VALUE}"),
-                        new NumberFormatting(26, 50, "&e{VALUE}"),
-                        new NumberFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new RangeFormatting(0, 10, "&c{VALUE}"),
+                        new RangeFormatting(11, 25, "&a{VALUE}"),
+                        new RangeFormatting(26, 50, "&e{VALUE}"),
+                        new RangeFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .build();
 
@@ -80,24 +80,24 @@ public class TopConfiguration extends OkaeriConfig {
         @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
         @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
         @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma byc uzywane dane formatowanie")
-        public Map<String, List<NumberFormatting>> gtopValueFormatting = ImmutableMap.<String, List<NumberFormatting>>builder()
+        public Map<String, List<RangeFormatting>> gtopValueFormatting = ImmutableMap.<String, List<RangeFormatting>>builder()
                 .put("kills", Arrays.asList(
-                        new NumberFormatting(0, 30, "&c{VALUE}"),
-                        new NumberFormatting(31, 75, "&a{VALUE}"),
-                        new NumberFormatting(76, 150, "&e{VALUE}"),
-                        new NumberFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new RangeFormatting(0, 30, "&c{VALUE}"),
+                        new RangeFormatting(31, 75, "&a{VALUE}"),
+                        new RangeFormatting(76, 150, "&e{VALUE}"),
+                        new RangeFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .put("deaths", Arrays.asList(
-                        new NumberFormatting(0, 30, "&c{VALUE}"),
-                        new NumberFormatting(31, 75, "&a{VALUE}"),
-                        new NumberFormatting(76, 150, "&e{VALUE}"),
-                        new NumberFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new RangeFormatting(0, 30, "&c{VALUE}"),
+                        new RangeFormatting(31, 75, "&a{VALUE}"),
+                        new RangeFormatting(76, 150, "&e{VALUE}"),
+                        new RangeFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .put("avg_points", Arrays.asList(
-                        new NumberFormatting(0, 749, "&4{VALUE}"),
-                        new NumberFormatting(750, 999, "&c{VALUE}"),
-                        new NumberFormatting(1000, 1499, "&a{VALUE}"),
-                        new NumberFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new RangeFormatting(0, 749, "&4{VALUE}"),
+                        new RangeFormatting(750, 999, "&c{VALUE}"),
+                        new RangeFormatting(1000, 1499, "&a{VALUE}"),
+                        new RangeFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .build();
 
