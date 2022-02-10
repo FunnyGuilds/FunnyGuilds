@@ -1,9 +1,11 @@
 package net.dzikoysk.funnyguilds.rank;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.NumberFormatting;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
@@ -74,11 +76,14 @@ public class RankUtils {
                 }
                 User user = userOption.get();
 
-                String topValue = userTop.getComparator().getValue(user.getRank()).toString();
+                Number topValue = userTop.getComparator().getValue(user.getRank());
                 String topFormat = config.top.format.ptop.getValue();
                 if (!topFormat.isEmpty()) {
-                    topFormat = topFormat.replace("{VALUE-FORMAT}", topValue);
-                    topFormat = topFormat.replace("{VALUE}", topValue);
+                    List<NumberFormatting> valueFormatting = config.top.format.valueFormatting.get("ptop_" + comparatorType.toLowerCase());
+                    topFormat = topFormat.replace("{VALUE-FORMAT}", valueFormatting == null
+                            ? topValue.toString()
+                            : NumberRange.inRangeToString(topValue, valueFormatting));
+                    topFormat = topFormat.replace("{VALUE}", topValue.toString());
                 }
 
                 return formatUserRank(config, text, "{PTOP-" + comparatorType + "-" + index + "}", targetUser, user, topFormat);
@@ -96,12 +101,13 @@ public class RankUtils {
                 }
                 Guild guild = guildOption.get();
 
-                String topValue = guildTop.getComparator().getValue(guild.getRank()).toString();
+                Number topValue = guildTop.getComparator().getValue(guild.getRank());
                 String topFormat = config.top.format.gtop.getValue();
-                if (!topFormat.isEmpty()) {
-                    topFormat = topFormat.replace("{VALUE-FORMAT}", topValue);
-                    topFormat = topFormat.replace("{VALUE}", topValue);
-                }
+                List<NumberFormatting> valueFormatting = config.top.format.valueFormatting.get("gtop_" + comparatorType.toLowerCase());
+                topFormat = topFormat.replace("{VALUE-FORMAT}", valueFormatting == null
+                        ? topValue.toString()
+                        : NumberRange.inRangeToString(topValue, valueFormatting));
+                topFormat = topFormat.replace("{VALUE}", topValue.toString());
 
                 return formatGuildRank(config, tablistConfig, text, "{GTOP-" + comparatorType + "-" + index + "}", targetUser, guild, topFormat);
             }

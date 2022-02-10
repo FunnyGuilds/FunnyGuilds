@@ -151,8 +151,6 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("guild-min-members")
     public int minMembersToInclude = 1;
 
-    public TopConfiguration top = new TopConfiguration();
-
     @Comment("Czy wiadomosci o braku potrzebnych przedmiotow maja zawierac elementy, na ktore mozna najechac")
     @Comment("Takie elementy pokazuja informacje o przedmiocie, np. jego typ, nazwe czy opis")
     @Comment("Funkcja jest obecnie troche niedopracowana i moze powodowac problemy na niektorych wersjach MC, np. 1.8.8")
@@ -688,6 +686,8 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wyglad znacznika {POINTS} wstawionego w format chatu")
     @Comment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
     public RawString chatPoints = new RawString("&b{POINTS} ");
+
+    public TopConfiguration top = new TopConfiguration();
 
     @Comment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
     @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS} jest uzywane jedynie na liscie graczy")

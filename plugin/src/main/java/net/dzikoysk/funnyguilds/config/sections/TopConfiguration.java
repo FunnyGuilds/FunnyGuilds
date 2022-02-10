@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.config.sections;
 
+import com.google.common.collect.ImmutableMap;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.NameModifier;
@@ -7,6 +8,7 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import net.dzikoysk.funnyguilds.config.NumberFormatting;
@@ -38,12 +40,44 @@ public class TopConfiguration extends OkaeriConfig {
         @Comment("Jesli nie chcesz wyswietlac wartosci, tylko sam tag - nie podawaj tu nic")
         public RawString gtop = new RawString(" &7[&b{VALUE}&7]");
 
-        public List<NumberFormatting> valueFormatting = Arrays.asList(
-                new NumberFormatting(0, 749, "&4{VALUE}"),
-                new NumberFormatting(750, 999, "&c{VALUE}"),
-                new NumberFormatting(1000, 1499, "&a{VALUE}"),
-                new NumberFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
-        );
+        public Map<String, List<NumberFormatting>> valueFormatting = ImmutableMap.<String, List<NumberFormatting>>builder()
+                .put("ptop_points", Arrays.asList(
+                        new NumberFormatting(0, 749, "&4{VALUE}"),
+                        new NumberFormatting(750, 999, "&c{VALUE}"),
+                        new NumberFormatting(1000, 1499, "&a{VALUE}"),
+                        new NumberFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
+                ))
+                .put("ptop_kills", Arrays.asList(
+                        new NumberFormatting(0, 10, "&c{VALUE}"),
+                        new NumberFormatting(11, 25, "&a{VALUE}"),
+                        new NumberFormatting(26, 50, "&e{VALUE}"),
+                        new NumberFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
+                ))
+                .put("ptop_deaths", Arrays.asList(
+                        new NumberFormatting(0, 10, "&c{VALUE}"),
+                        new NumberFormatting(11, 25, "&a{VALUE}"),
+                        new NumberFormatting(26, 50, "&e{VALUE}"),
+                        new NumberFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
+                ))
+                .put("gtop_kills", Arrays.asList(
+                        new NumberFormatting(0, 30, "&c{VALUE}"),
+                        new NumberFormatting(31, 75, "&a{VALUE}"),
+                        new NumberFormatting(76, 150, "&e{VALUE}"),
+                        new NumberFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
+                ))
+                .put("gtop_deaths", Arrays.asList(
+                        new NumberFormatting(0, 30, "&c{VALUE}"),
+                        new NumberFormatting(31, 75, "&a{VALUE}"),
+                        new NumberFormatting(76, 150, "&e{VALUE}"),
+                        new NumberFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
+                ))
+                .put("gtop_avg_points", Arrays.asList(
+                        new NumberFormatting(0, 749, "&4{VALUE}"),
+                        new NumberFormatting(750, 999, "&c{VALUE}"),
+                        new NumberFormatting(1000, 1499, "&a{VALUE}"),
+                        new NumberFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
+                ))
+                .build();
 
     }
 

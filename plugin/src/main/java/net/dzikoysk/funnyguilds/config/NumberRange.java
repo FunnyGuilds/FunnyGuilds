@@ -28,11 +28,11 @@ public final class NumberRange {
         return this.maxRange;
     }
 
-    public static <V> Option<V> inRange(int value, Map<NumberRange, V> rangeMap) {
+    public static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
         for (Entry<NumberRange, V> entry : rangeMap.entrySet()) {
             NumberRange range = entry.getKey();
 
-            if (value >= range.getMinRange().doubleValue() && value <= range.getMaxRange().doubleValue()) {
+            if (value.floatValue() >= range.getMinRange().floatValue() && value.floatValue() <= range.getMaxRange().floatValue()) {
                 return Option.of(entry.getValue());
             }
         }
@@ -40,13 +40,13 @@ public final class NumberRange {
         return Option.none();
     }
 
-    public static <V> String inRangeToString(int value, Map<NumberRange, V> rangeMap) {
+    public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap) {
         return inRange(value, rangeMap)
                 .map(Objects::toString)
-                .orElseGet(Integer.toString(value));
+                .orElseGet(value.toString());
     }
 
-    public static <V> String inRangeToString(int value, List<NumberFormatting> numberFormatting) {
+    public static <V> String inRangeToString(Number value, List<NumberFormatting> numberFormatting) {
         return inRangeToString(value, NumberFormatting.toNumberRangeMap(numberFormatting));
     }
 
