@@ -37,7 +37,8 @@ public class PlayerJoin extends AbstractFunnyListener {
                 tablistConfig.playerListHeader, tablistConfig.playerListFooter,
                 tablistConfig.pages,
                 tablistConfig.playerListPing,
-                tablistConfig.playerListFillCells
+                tablistConfig.playerListFillCells,
+                config.top.enableTabLegacyPlaceholders
         );
 
         cache.setPlayerList(individualPlayerList);

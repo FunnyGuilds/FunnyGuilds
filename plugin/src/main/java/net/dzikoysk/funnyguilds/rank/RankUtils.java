@@ -19,7 +19,14 @@ import panda.std.Option;
 public class RankUtils {
 
     private static final Pattern RANK_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)}");
+    private static final Pattern LEGACY_RANK_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([0-9]+)}");
 
+    /**
+     * Parse top placeholders (PTOP/GTOP-type-x) in text
+     * @param targetUser user for which text will be parsed
+     * @param text text to parse
+     * @return parsed text
+     */
     public static String parseComparableRank(User targetUser, String text) {
         return parseComparableRank(
                 FunnyGuilds.getInstance().getPluginConfiguration(),
@@ -31,6 +38,12 @@ public class RankUtils {
         );
     }
 
+    /**
+     * Parse top placeholders (PTOP/GTOP-type-x) in text
+     * @param targetUser user for which text will be parsed
+     * @param text text to parse
+     * @return parsed text
+     */
     public static String parseComparableRank(
             PluginConfiguration config,
             TablistConfiguration tablistConfig,
@@ -41,6 +54,10 @@ public class RankUtils {
     ) {
         if (text == null) {
             return null;
+        }
+
+        if (!text.contains("TOP-")) {
+            return text;
         }
 
         Matcher matcher = RANK_PATTERN.matcher(text);
@@ -116,6 +133,12 @@ public class RankUtils {
         return text;
     }
 
+    /**
+     * Parse legacy top placeholders (PTOP/GTOPe-x) in text
+     * @param targetUser user for which text will be parsed
+     * @param text text to parse
+     * @return parsed text
+     */
     @Deprecated
     public static String parseRank(User targetUser, String text) {
         return parseRank(
@@ -128,6 +151,12 @@ public class RankUtils {
         );
     }
 
+    /**
+     * Parse legacy top placeholders (PTOP/GTOPe-x) in text
+     * @param targetUser user for which text will be parsed
+     * @param text text to parse
+     * @return parsed text
+     */
     @Deprecated
     public static String parseRank(
             PluginConfiguration config,
@@ -142,76 +171,63 @@ public class RankUtils {
         }
 
         if (!text.contains("TOP-")) {
-            return null;
+            return text;
         }
 
-        int index;
-        try {
-            index = Integer.parseInt(getIndexString(text));
-        }
-        catch (NumberFormatException ex) {
-            return null;
-        }
+        Matcher matcher = LEGACY_RANK_PATTERN.matcher(text);
+        while (matcher.find()) {
+            String topType = matcher.group(1);
+            String indexString = matcher.group(2);
 
-        if (index <= 0) {
-            FunnyGuilds.getPluginLogger().error("Index in TOP- must be greater or equal to 1!");
-            return null;
-        }
-
-        if (text.contains("GTOP")) {
-            Option<Guild> guildOption = rankManager.getGuild(index);
-            if (guildOption.isEmpty()) {
-                return StringUtils.replace(text, "{GTOP-" + index + '}', messages.gtopNoValue);
+            int index;
+            try {
+                index = Integer.parseInt(indexString);
             }
-            Guild guild = guildOption.get();
-
-            int points = guild.getRank().getAveragePoints();
-            String pointsFormat = config.gtopPoints.getValue();
-            if (!pointsFormat.isEmpty()) {
-                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
-                pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
+            catch (NumberFormatException ex) {
+                FunnyGuilds.getPluginLogger().error(indexString + "is invalid " + topType + " index!");
+                break;
             }
 
-            String guildTag = guild.getTag();
-            if (tablistConfig.playerListUseRelationshipColors) {
-                guildTag = StringUtils.replace(config.prefixOther.getValue(), "{TAG}", guild.getTag());
+            if (index < 1) {
+                FunnyGuilds.getPluginLogger().error("Index in " + topType + " must be greater or equal to 1!");
+                break;
+            }
 
-                if (targetUser != null && targetUser.hasGuild()) {
-                    Guild sourceGuild = targetUser.getGuild();
-
-                    if (sourceGuild.getAllies().contains(guild)) {
-                        guildTag = StringUtils.replace(config.prefixAllies.getValue(), "{TAG}", guild.getTag());
-                    }
-                    else if (sourceGuild.getEnemies().contains(guild)) {
-                        guildTag = StringUtils.replace(config.prefixEnemies.getValue(), "{TAG}", guild.getTag());
-                    }
-                    else if (sourceGuild.getUUID().equals(guild.getUUID())) {
-                        guildTag = StringUtils.replace(config.prefixOur.getValue(), "{TAG}", guild.getTag());
-                    }
+            if (topType.equalsIgnoreCase("PTOP")) {
+                Option<User> userOption = rankManager.getUser(index);
+                if (userOption.isEmpty()) {
+                    return StringUtils.replace(text, "{PTOP-" + index + "}", messages.ptopNoValue);
                 }
+                User user = userOption.get();
+
+                int points = user.getRank().getPoints();
+                String pointsFormat = config.ptopPoints.getValue();
+                if (!pointsFormat.isEmpty()) {
+                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
+                    pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
+                }
+
+                return formatUserRank(config, text, "{PTOP-" + index + "}", targetUser, user, pointsFormat);
             }
+            else if (topType.equalsIgnoreCase("GTOP")) {
+                Option<Guild> guildOption = rankManager.getGuild(index);
+                if (guildOption.isEmpty()) {
+                    return StringUtils.replace(text, "{GTOP-" + index + "}", messages.gtopNoValue);
+                }
+                Guild guild = guildOption.get();
 
-            return formatGuildRank(config, tablistConfig, text, "{GTOP-" + index + '}', targetUser, guild, pointsFormat);
+                int points = guild.getRank().getAveragePoints();
+                String pointsFormat = config.gtopPoints.getValue();
+                if (!pointsFormat.isEmpty()) {
+                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
+                    pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
+                }
 
+                return formatGuildRank(config, tablistConfig, text, "{GTOP-" + index + "}", targetUser, guild, pointsFormat);
+            }
         }
-        else if (text.contains("PTOP")) {
-            Option<User> userOption = rankManager.getUser(index);
-            if (userOption.isEmpty()) {
-                return StringUtils.replace(text, "{PTOP-" + index + '}', messages.ptopNoValue);
-            }
-            User user = userOption.get();
 
-            int points = user.getRank().getPoints();
-            String pointsFormat = config.ptopPoints.getValue();
-            if (!pointsFormat.isEmpty()) {
-                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
-                pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
-            }
-
-            return formatUserRank(config, text, "{PTOP-" + index + "}", targetUser, user, pointsFormat);
-        }
-
-        return null;
+        return text;
     }
 
     private static String formatUserRank(PluginConfiguration config, String text, String placeholder, User targetUser, User user, String topFormat) {
@@ -245,12 +261,13 @@ public class RankUtils {
         return StringUtils.replace(text, placeholder, guildTag + topFormat);
     }
 
-    public static String getIndexString(String rank) {
+    public static int getIndex(String text) {
         StringBuilder sb = new StringBuilder();
         boolean open = false;
         boolean start = false;
+        int result = -1;
 
-        for (char c : rank.toCharArray()) {
+        for (char c : text.toCharArray()) {
             boolean end = false;
 
             switch (c) {
@@ -274,17 +291,13 @@ public class RankUtils {
             }
         }
 
-        return sb.toString();
-    }
-
-    public static int getIndex(String parse) {
-        int result = -1;
         try {
-            result = Integer.parseInt(getIndexString(parse));
+            result = Integer.parseInt(sb.toString());
         }
         catch (NumberFormatException e) {
-            FunnyGuilds.getPluginLogger().parser(parse + " contains an invalid number: " + parse);
+            FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + sb.toString());
         }
+
         return result;
     }
 

@@ -31,7 +31,7 @@ public class TopConfiguration extends OkaeriConfig {
 
     @Comment("Czy placeholdery {PTOP-x} oraz {GTOP-x} maja byc wlaczone na tabie.")
     @Comment("Wylaczenie tej funkcji moze minimalnie odciazyc serwer, wiec jesli to mozliwe najlepiej ja wylaczyc.")
-    public boolean enableLegacyPlaceholders = true;
+    public boolean enableTabLegacyPlaceholders = true;
 
     public Format format = new Format();
 

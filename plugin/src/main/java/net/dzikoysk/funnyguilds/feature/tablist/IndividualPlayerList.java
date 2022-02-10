@@ -34,6 +34,8 @@ public class IndividualPlayerList {
     private final List<TablistPage> pages;
     private final int pagesCount;
 
+    private final boolean enableLegacyPlaceholders;
+
     private int cycle = 0;
     private int currentPage = 0;
 
@@ -43,7 +45,7 @@ public class IndividualPlayerList {
                                 String header, String footer,
                                 List<TablistPage> pages,
                                 int cellPing,
-                                boolean fillCells) {
+                                boolean fillCells, boolean enableLegacyPlaceholders) {
         this.user = user;
         this.variableParser = new TablistVariablesParser();
 
@@ -53,6 +55,8 @@ public class IndividualPlayerList {
         this.pages = pages;
         this.pagesCount = pages.size();
         this.cellPing = cellPing;
+
+        this.enableLegacyPlaceholders = enableLegacyPlaceholders;
 
         if (!fillCells) {
             Entry<Integer, String> entry = MapUtil.findTheMaximumEntryByKey(unformattedCells);
@@ -126,11 +130,16 @@ public class IndividualPlayerList {
     }
 
     private String putRank(String cell) {
-        String temp = RankUtils.parseRank(this.user, cell);
+        String temp = RankUtils.parseComparableRank(this.user, cell);
+
+        if(enableLegacyPlaceholders) {
+            temp = RankUtils.parseRank(this.user, temp);
+        }
+
         if (temp != null) {
             return temp;
         }
-        temp = RankUtils.parseComparableRank(this.user, cell);
+
         return temp;
     }
 
