@@ -32,8 +32,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getPoints());
+        public Integer getValue(GuildRank rank) {
+            return rank.getPoints();
         }
     }
 
@@ -49,8 +49,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getKills());
+        public Integer getValue(GuildRank rank) {
+            return rank.getKills();
         }
 
     }
@@ -67,8 +67,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getDeaths());
+        public Integer getValue(GuildRank rank) {
+            return rank.getDeaths();
         }
 
     }
@@ -85,8 +85,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank object) {
-            return String.valueOf(object.getKDR());
+        public Float getValue(GuildRank object) {
+            return object.getKDR();
         }
 
     }
@@ -103,8 +103,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getAssists());
+        public Integer getValue(GuildRank rank) {
+            return rank.getAssists();
         }
 
     }
@@ -121,8 +121,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getLogouts());
+        public Integer getValue(GuildRank rank) {
+            return rank.getLogouts();
         }
 
     }
@@ -139,8 +139,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getAveragePoints());
+        public Integer getValue(GuildRank rank) {
+            return rank.getAveragePoints();
         }
 
     }
@@ -157,8 +157,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getAverageKills());
+        public Integer getValue(GuildRank rank) {
+            return rank.getAverageKills();
         }
 
     }
@@ -175,8 +175,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getAverageDeaths());
+        public Integer getValue(GuildRank rank) {
+            return rank.getAverageDeaths();
         }
 
     }
@@ -193,8 +193,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getAverageKDR());
+        public Float getValue(GuildRank rank) {
+            return rank.getAverageKDR();
         }
 
     }
@@ -211,8 +211,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getAverageAssists());
+        public Integer getValue(GuildRank rank) {
+            return rank.getAverageAssists();
         }
 
     }
@@ -229,8 +229,8 @@ public final class GuildComparator {
         }
 
         @Override
-        public String getValue(GuildRank rank) {
-            return String.valueOf(rank.getAverageLogouts());
+        public Integer getValue(GuildRank rank) {
+            return rank.getAverageLogouts();
         }
 
     }

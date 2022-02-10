@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
@@ -46,7 +46,7 @@ public class PlayerChat extends AbstractFunnyListener {
 
         format = StringUtils.replace(format, "{RANK}", StringUtils.replace(config.chatRank.getValue(), "{RANK}", String.valueOf(user.getRank().getPosition())));
         format = StringUtils.replace(format, "{POINTS}", config.chatPoints.getValue());
-        format = StringUtils.replace(format, "{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
+        format = StringUtils.replace(format, "{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
 
         if (user.hasGuild()) {

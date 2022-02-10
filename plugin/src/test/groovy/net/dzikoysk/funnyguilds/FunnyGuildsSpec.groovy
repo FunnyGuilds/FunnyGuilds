@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds
 
 import groovy.transform.CompileStatic
-import net.dzikoysk.funnyguilds.config.IntegerRange
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
+import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
 import net.dzikoysk.funnyguilds.guild.GuildManager
@@ -70,9 +70,9 @@ class FunnyGuildsSpec extends BukkitSpec {
 
     @BeforeEach
     void preparePluginConfiguration() {
-        Map<IntegerRange, Integer> parsedData = new HashMap<>()
+        Map<NumberRange, Integer> parsedData = new HashMap<>()
 
-        IntegerRange.parseIntegerRange(config.eloConstants_, false)
+        NumberRange.parseIntegerRange(config.eloConstants_, false)
                 .forEach((range, number) -> parsedData.put(range, Integer.parseInt(number)))
 
         config.eloConstants = parsedData

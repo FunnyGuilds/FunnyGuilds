@@ -26,8 +26,8 @@ public final class UserComparator {
 
 
         @Override
-        public String getValue(UserRank rank) {
-            return String.valueOf(rank.getPoints());
+        public Integer getValue(UserRank rank) {
+            return rank.getPoints();
         }
     }
 
@@ -43,8 +43,8 @@ public final class UserComparator {
         }
         
         @Override
-        public String getValue(UserRank rank) {
-            return String.valueOf(rank.getKills());
+        public Integer getValue(UserRank rank) {
+            return rank.getKills();
         }
 
     }
@@ -61,8 +61,8 @@ public final class UserComparator {
         }
 
         @Override
-        public String getValue(UserRank rank) {
-            return String.valueOf(rank.getDeaths());
+        public Integer getValue(UserRank rank) {
+            return rank.getDeaths();
         }
 
     }
@@ -79,8 +79,8 @@ public final class UserComparator {
         }
 
         @Override
-        public String getValue(UserRank rank) {
-            return String.valueOf(rank.getKDR());
+        public Float getValue(UserRank rank) {
+            return rank.getKDR();
         }
 
     }
@@ -97,8 +97,8 @@ public final class UserComparator {
         }
 
         @Override
-        public String getValue(UserRank rank) {
-            return String.valueOf(rank.getAssists());
+        public Integer getValue(UserRank rank) {
+            return rank.getAssists();
         }
 
     }
@@ -115,8 +115,8 @@ public final class UserComparator {
         }
 
         @Override
-        public String getValue(UserRank rank) {
-            return String.valueOf(rank.getLogouts());
+        public Integer getValue(UserRank rank) {
+            return rank.getLogouts();
         }
 
     }

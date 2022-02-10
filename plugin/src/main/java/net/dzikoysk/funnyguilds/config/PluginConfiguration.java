@@ -589,7 +589,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
 
     @Exclude
-    public Map<IntegerRange, Integer> eloConstants;
+    public Map<NumberRange, Integer> eloConstants;
 
     @Positive
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
@@ -695,11 +695,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
     @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
-    @CustomKey("points-format")
-    public List<String> pointsFormat_ = Arrays.asList("0-749 &4{POINTS}", "750-999 &c{POINTS}", "1000-1499 &a{POINTS}", "1500-* &6&l{POINTS}");
-
-    @Exclude
-    public Map<IntegerRange, String> pointsFormat;
+    public List<NumberFormatting> pointsFormat = Arrays.asList(
+            new NumberFormatting(0, 749, "&4{POINTS}"),
+            new NumberFormatting(750, 999, "&c{POINTS}"),
+            new NumberFormatting(1000, 1499, "&a{POINTS}"),
+            new NumberFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
+    );
 
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
     @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
@@ -715,10 +716,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
     @Comment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minPing w gore, np.: \"301-* &c{PING}\"")
-    @CustomKey("ping-format")
-    public List<String> pingFormat_ = Arrays.asList("0-75 &a{PING}", "76-150 &e{PING}", "151-300 &c{PING}", "301-* &c{PING}");
-    @Exclude
-    public Map<IntegerRange, String> pingFormat;
+    public List<NumberFormatting> pingFormat = Arrays.asList(
+            new NumberFormatting(0, 75, "&a{PING}"),
+            new NumberFormatting(76, 150, "&e{PING}"),
+            new NumberFormatting(151, 300, "&c{PING}"),
+            new NumberFormatting(301, Integer.MAX_VALUE, "&c{PING}")
+    );
 
     @NotBlank
     @Comment("Symbol od ktorego zaczyna sie wiadomosc do gildii")
@@ -996,7 +999,7 @@ public class PluginConfiguration extends OkaeriConfig {
     private List<ItemStack> loadItemStackList(List<String> strings) {
         List<ItemStack> items = new ArrayList<>();
         for (String item : strings) {
-            if (item == null || "".equals(item)) {
+            if (item == null || "" .equals(item)) {
                 continue;
             }
 
@@ -1098,9 +1101,9 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         if (this.rankSystem == RankSystem.Type.ELO) {
-            Map<IntegerRange, Integer> parsedData = new HashMap<>();
+            Map<NumberRange, Integer> parsedData = new HashMap<>();
 
-            for (Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
+            for (Entry<NumberRange, String> entry : NumberRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
                 try {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
                 }
@@ -1148,7 +1151,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.itemAmountSuffix = ChatUtils.colored(this.itemAmountSuffix_);
 
-        if (!"v1_8_R1".equals(Reflections.SERVER_VERSION) && !"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
+        if (!"v1_8_R1" .equals(Reflections.SERVER_VERSION) && !"v1_8_R3" .equals(Reflections.SERVER_VERSION)) {
             this.bossBarOptions_ = BossBarOptions.builder()
                     .color(this.bossBarColor)
                     .style(this.bossBarStyle)
@@ -1164,9 +1167,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.joinItems = this.loadItemStackList(this.joinItems_);
         this.baseItems = this.loadItemStackList(this.baseItems_);
-
-        this.pointsFormat = IntegerRange.parseIntegerRange(this.pointsFormat_, true);
-        this.pingFormat = IntegerRange.parseIntegerRange(this.pingFormat_, true);
 
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }

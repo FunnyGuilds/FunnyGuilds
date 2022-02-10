@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 public interface TopComparator<T> extends Comparator<T> {
 
-    String getValue(T object);
+    Number getValue(T object);
 
     @Override
     default TopComparator<T> reversed() {
@@ -21,7 +21,7 @@ public interface TopComparator<T> extends Comparator<T> {
         }
 
         @Override
-        public String getValue(T object) {
+        public Number getValue(T object) {
             return this.comparator.getValue(object);
         }
 

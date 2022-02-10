@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.Map;
 import java.util.function.BiFunction;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 
 public class RankSystem {
@@ -54,8 +54,8 @@ public class RankSystem {
     public static RankSystem create(PluginConfiguration config) {
         ImmutableMap<Type, RankingAlgorithm> build = new ImmutableMap.Builder<Type, RankingAlgorithm>()
                 .put(Type.ELO, (attackerPoints, victimPoints) -> {
-                    int attackerElo = IntegerRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
-                    int victimElo = IntegerRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
+                    int attackerElo = NumberRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
+                    int victimElo = NumberRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
 
                     double attackerE = 1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider));
                     double victimE = 1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider));

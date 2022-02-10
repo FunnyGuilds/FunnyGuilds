@@ -10,29 +10,29 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import panda.std.Option;
 
-public final class IntegerRange {
+public final class NumberRange {
 
-    private final int minRange;
-    private final int maxRange;
+    private final Number minRange;
+    private final Number maxRange;
 
-    public IntegerRange(int minRange, int maxRange) {
+    public NumberRange(Number minRange, Number maxRange) {
         this.minRange = minRange;
         this.maxRange = maxRange;
     }
 
-    public int getMinRange() {
+    public Number getMinRange() {
         return this.minRange;
     }
 
-    public int getMaxRange() {
+    public Number getMaxRange() {
         return this.maxRange;
     }
 
-    public static <V> Option<V> inRange(int value, Map<IntegerRange, V> rangeMap) {
-        for (Entry<IntegerRange, V> entry : rangeMap.entrySet()) {
-            IntegerRange range = entry.getKey();
+    public static <V> Option<V> inRange(int value, Map<NumberRange, V> rangeMap) {
+        for (Entry<NumberRange, V> entry : rangeMap.entrySet()) {
+            NumberRange range = entry.getKey();
 
-            if (value >= range.getMinRange() && value <= range.getMaxRange()) {
+            if (value >= range.getMinRange().doubleValue() && value <= range.getMaxRange().doubleValue()) {
                 return Option.of(entry.getValue());
             }
         }
@@ -40,14 +40,18 @@ public final class IntegerRange {
         return Option.none();
     }
 
-    public static <V> String inRangeToString(int value, Map<IntegerRange, V> rangeMap) {
+    public static <V> String inRangeToString(int value, Map<NumberRange, V> rangeMap) {
         return inRange(value, rangeMap)
                 .map(Objects::toString)
                 .orElseGet(Integer.toString(value));
     }
 
-    public static Map<IntegerRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
-        Map<IntegerRange, String> parsed = new HashMap<>();
+    public static <V> String inRangeToString(int value, List<NumberFormatting> numberFormatting) {
+        return inRangeToString(value, NumberFormatting.toNumberRangeMap(numberFormatting));
+    }
+
+    public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
+        Map<NumberRange, String> parsed = new HashMap<>();
 
         for (String rangeEntry : rangeEntries) {
             String[] rangeParts = rangeEntry.split(" ", 2);
@@ -96,10 +100,15 @@ public final class IntegerRange {
                 valueString += " ";
             }
 
-            parsed.put(new IntegerRange(minRange, maxRange), color ? ChatUtils.colored(valueString) : valueString);
+            parsed.put(new NumberRange(minRange, maxRange), color ? ChatUtils.colored(valueString) : valueString);
         }
 
         return parsed;
+    }
+
+    @Override
+    public String toString() {
+        return (this.minRange.floatValue() <= Integer.MIN_VALUE ? "*" : this.minRange.toString()) + "-" + (this.maxRange.floatValue() >= Integer.MAX_VALUE ? "*" : this.maxRange.toString());
     }
 
     public static class MissingFormatException extends RuntimeException {

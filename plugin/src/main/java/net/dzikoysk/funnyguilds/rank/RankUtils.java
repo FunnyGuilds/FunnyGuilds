@@ -3,8 +3,8 @@ package net.dzikoysk.funnyguilds.rank;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -74,7 +74,7 @@ public class RankUtils {
                 }
                 User user = userOption.get();
 
-                String topValue = userTop.getComparator().getValue(user.getRank());
+                String topValue = userTop.getComparator().getValue(user.getRank()).toString();
                 String topFormat = config.top.format.ptop.getValue();
                 if (!topFormat.isEmpty()) {
                     topFormat = topFormat.replace("{VALUE-FORMAT}", topValue);
@@ -86,17 +86,17 @@ public class RankUtils {
             else if (topType.equalsIgnoreCase("GTOP")) {
                 Option<GuildTop> guildTopOption = rankManager.getGuildTop(comparatorType);
                 if (guildTopOption.isEmpty()) {
-                    return StringUtils.replace(text, "{PTOP-" + comparatorType + "-" + index + "}", messages.gtopNoValue);
+                    return StringUtils.replace(text, "{GTOP-" + comparatorType + "-" + index + "}", messages.gtopNoValue);
                 }
                 GuildTop guildTop = guildTopOption.get();
 
                 Option<Guild> guildOption = guildTop.getGuild(index);
                 if (guildOption.isEmpty()) {
-                    return StringUtils.replace(text, "{PTOP-" + comparatorType + "-" + index + "}", messages.gtopNoValue);
+                    return StringUtils.replace(text, "{GTOP-" + comparatorType + "-" + index + "}", messages.gtopNoValue);
                 }
                 Guild guild = guildOption.get();
 
-                String topValue = guildTop.getComparator().getValue(guild.getRank());
+                String topValue = guildTop.getComparator().getValue(guild.getRank()).toString();
                 String topFormat = config.top.format.gtop.getValue();
                 if (!topFormat.isEmpty()) {
                     topFormat = topFormat.replace("{VALUE-FORMAT}", topValue);
@@ -162,7 +162,7 @@ public class RankUtils {
             int points = guild.getRank().getAveragePoints();
             String pointsFormat = config.gtopPoints.getValue();
             if (!pointsFormat.isEmpty()) {
-                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
+                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
                 pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
             }
 
@@ -198,7 +198,7 @@ public class RankUtils {
             int points = user.getRank().getPoints();
             String pointsFormat = config.ptopPoints.getValue();
             if (!pointsFormat.isEmpty()) {
-                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
+                pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
                 pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
             }
 
