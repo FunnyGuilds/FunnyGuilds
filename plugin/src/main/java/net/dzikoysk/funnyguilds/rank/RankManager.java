@@ -26,6 +26,14 @@ public class RankManager {
         INSTANCE = this;
     }
 
+    public Map<String, UserTop> getUserTopMap() {
+        return userTopMap;
+    }
+
+    public Map<String, GuildTop> getGuildTopMap() {
+        return guildTopMap;
+    }
+
     public Option<UserTop> getUserTop(String id) {
         return Option.of(this.userTopMap.get(id.toLowerCase()));
     }
