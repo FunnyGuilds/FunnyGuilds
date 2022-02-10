@@ -79,7 +79,7 @@ public class RankUtils {
                 Number topValue = userTop.getComparator().getValue(user.getRank());
                 String topFormat = config.top.format.ptop.getValue();
                 if (!topFormat.isEmpty()) {
-                    List<NumberFormatting> valueFormatting = config.top.format.valueFormatting.get("ptop_" + comparatorType.toLowerCase());
+                    List<NumberFormatting> valueFormatting = config.top.format.ptopValueFormatting.get(comparatorType.toLowerCase());
                     topFormat = topFormat.replace("{VALUE-FORMAT}", valueFormatting == null
                             ? topValue.toString()
                             : NumberRange.inRangeToString(topValue, valueFormatting));
@@ -103,7 +103,7 @@ public class RankUtils {
 
                 Number topValue = guildTop.getComparator().getValue(guild.getRank());
                 String topFormat = config.top.format.gtop.getValue();
-                List<NumberFormatting> valueFormatting = config.top.format.valueFormatting.get("gtop_" + comparatorType.toLowerCase());
+                List<NumberFormatting> valueFormatting = config.top.format.gtopValueFormatting.get(comparatorType.toLowerCase());
                 topFormat = topFormat.replace("{VALUE-FORMAT}", valueFormatting == null
                         ? topValue.toString()
                         : NumberRange.inRangeToString(topValue, valueFormatting));

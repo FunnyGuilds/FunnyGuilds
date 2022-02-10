@@ -47,43 +47,53 @@ public class TopConfiguration extends OkaeriConfig {
         @Comment("Jesli nie chcesz wyswietlac wartosci, tylko sam tag - nie podawaj tu nic")
         public RawString gtop = new RawString(" &7[&b{VALUE}&7]");
 
-        @Comment("Wyglad znacznikika {VALUE-FORMAT} w zaleznosci od wartosci topki")
+        @Comment("Wyglad znacznikika {VALUE-FORMAT} w zaleznosci od wartosci topki graczy")
         @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow")
         @Comment("Elementy listy powinny byc postaci: \"minValue-maxValue wyglad\", np.: \"0-750 &4{VALUE}\"")
         @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
         @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
-        public Map<String, List<NumberFormatting>> valueFormatting = ImmutableMap.<String, List<NumberFormatting>>builder()
-                .put("ptop_points", Arrays.asList(
+        @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma byc uzywane dane formatowanie")
+        public Map<String, List<NumberFormatting>> ptopValueFormatting = ImmutableMap.<String, List<NumberFormatting>>builder()
+                .put("points", Arrays.asList(
                         new NumberFormatting(0, 749, "&4{VALUE}"),
                         new NumberFormatting(750, 999, "&c{VALUE}"),
                         new NumberFormatting(1000, 1499, "&a{VALUE}"),
                         new NumberFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
-                .put("ptop_kills", Arrays.asList(
+                .put("kills", Arrays.asList(
                         new NumberFormatting(0, 10, "&c{VALUE}"),
                         new NumberFormatting(11, 25, "&a{VALUE}"),
                         new NumberFormatting(26, 50, "&e{VALUE}"),
                         new NumberFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
-                .put("ptop_deaths", Arrays.asList(
+                .put("deaths", Arrays.asList(
                         new NumberFormatting(0, 10, "&c{VALUE}"),
                         new NumberFormatting(11, 25, "&a{VALUE}"),
                         new NumberFormatting(26, 50, "&e{VALUE}"),
                         new NumberFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
-                .put("gtop_kills", Arrays.asList(
+                .build();
+
+        @Comment("Wyglad znacznikika {VALUE-FORMAT} w zaleznosci od wartosci topki gildii")
+        @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow")
+        @Comment("Elementy listy powinny byc postaci: \"minValue-maxValue wyglad\", np.: \"0-750 &4{VALUE}\"")
+        @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
+        @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
+        @Comment("Nazwa sekcji oznacza dla jakiego typu topki ma byc uzywane dane formatowanie")
+        public Map<String, List<NumberFormatting>> gtopValueFormatting = ImmutableMap.<String, List<NumberFormatting>>builder()
+                .put("kills", Arrays.asList(
                         new NumberFormatting(0, 30, "&c{VALUE}"),
                         new NumberFormatting(31, 75, "&a{VALUE}"),
                         new NumberFormatting(76, 150, "&e{VALUE}"),
                         new NumberFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
-                .put("gtop_deaths", Arrays.asList(
+                .put("deaths", Arrays.asList(
                         new NumberFormatting(0, 30, "&c{VALUE}"),
                         new NumberFormatting(31, 75, "&a{VALUE}"),
                         new NumberFormatting(76, 150, "&e{VALUE}"),
                         new NumberFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
                 ))
-                .put("gtop_avg_points", Arrays.asList(
+                .put("avg_points", Arrays.asList(
                         new NumberFormatting(0, 749, "&4{VALUE}"),
                         new NumberFormatting(750, 999, "&c{VALUE}"),
                         new NumberFormatting(1000, 1499, "&a{VALUE}"),
