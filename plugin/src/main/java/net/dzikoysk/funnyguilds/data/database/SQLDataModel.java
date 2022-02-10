@@ -179,7 +179,7 @@ public class SQLDataModel implements DataModel {
                 continue;
             }
 
-            guildManager.deleteGuild(guild);
+            guildManager.deleteGuild(FunnyGuilds.getInstance(), guild);
         }
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());

@@ -8,9 +8,9 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.guild.RegionManager;
 
 public interface DataModel {
 
@@ -19,35 +19,39 @@ public interface DataModel {
     void save(boolean ignoreNotChanged);
 
     default void validateLoadedData() {
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        GuildManager guildManager = plugin.getGuildManager();
+        RegionManager regionManager = plugin.getRegionManager();
+
+        if (!plugin.getPluginConfiguration().regionsEnabled) {
             return;
         }
 
-        Set<String> guilds = Entity.names(GuildUtils.getGuilds());
-        Set<String> regions = Entity.names(RegionUtils.getRegions());
+        Set<String> guilds = Entity.names(guildManager.getGuilds());
+        Set<String> regions = Entity.names(regionManager.getRegions());
 
         int repaired = 0;
 
-        for (Guild guild : GuildUtils.getGuilds()) {
+        for (Guild guild : guildManager.getGuilds()) {
             if (guild.getName() != null && regions.contains(guild.getName())) {
                 guilds.remove(guild.getName());
                 continue;
             }
 
-            FunnyGuilds.getInstance().getGuildManager().deleteGuild(guild);
+            guildManager.deleteGuild(plugin, guild);
             repaired++;
         }
 
-        guilds = Entity.names(GuildUtils.getGuilds());
-        regions = Entity.names(RegionUtils.getRegions());
+        guilds = Entity.names(guildManager.getGuilds());
+        regions = Entity.names(regionManager.getRegions());
 
-        for (Region region : RegionUtils.getRegions()) {
+        for (Region region : regionManager.getRegions()) {
             if (region.getName() != null && guilds.contains(region.getName())) {
                 regions.remove(region.getName());
                 continue;
             }
 
-            FunnyGuilds.getInstance().getRegionManager().deleteRegion(region);
+            regionManager.deleteRegion(plugin.getDataModel(), region);
             repaired++;
         }
 
