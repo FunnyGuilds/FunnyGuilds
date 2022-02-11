@@ -25,7 +25,7 @@ dependencies {
         because "WorldEdit defined a constraint that we must use 2.8.0 and there is no way to ignore it"
     }
     implementation "org.apache.commons:commons-lang3:3.12.0"
-    implementation "org.bstats:bstats-bukkit:2.2.1"
+    implementation "org.bstats:bstats-bukkit:3.0.0"
 
     // probably fix for some exception?
     implementation "org.apache.logging.log4j:log4j-slf4j-impl:2.17.1"
@@ -49,11 +49,11 @@ dependencies {
     shadow "me.robin:leaderheads-api:1.0.0"
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
-    testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.8.3'
+    testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.9'
     testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
     testImplementation 'org.mockito:mockito-core:4.2.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:4.3.1'
-    testImplementation 'org.mockito:mockito-inline:4.2.0'
+    testImplementation 'org.mockito:mockito-inline:4.3.1'
     testImplementation 'org.codehaus.groovy:groovy-all:3.0.9'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
