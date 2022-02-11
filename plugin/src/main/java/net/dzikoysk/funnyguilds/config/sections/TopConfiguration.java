@@ -58,19 +58,19 @@ public class TopConfiguration extends OkaeriConfig {
                         new NumberRangeFormatting(0, 749, "&4{VALUE}"),
                         new NumberRangeFormatting(750, 999, "&c{VALUE}"),
                         new NumberRangeFormatting(1000, 1499, "&a{VALUE}"),
-                        new NumberRangeFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new NumberRangeFormatting(1500, Integer.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .put("kills", Arrays.asList(
                         new NumberRangeFormatting(0, 10, "&c{VALUE}"),
                         new NumberRangeFormatting(11, 25, "&a{VALUE}"),
                         new NumberRangeFormatting(26, 50, "&e{VALUE}"),
-                        new NumberRangeFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new NumberRangeFormatting(51, Integer.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .put("deaths", Arrays.asList(
                         new NumberRangeFormatting(0, 10, "&c{VALUE}"),
                         new NumberRangeFormatting(11, 25, "&a{VALUE}"),
                         new NumberRangeFormatting(26, 50, "&e{VALUE}"),
-                        new NumberRangeFormatting(51, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new NumberRangeFormatting(51, Integer.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .build();
 
@@ -85,19 +85,19 @@ public class TopConfiguration extends OkaeriConfig {
                         new NumberRangeFormatting(0, 30, "&c{VALUE}"),
                         new NumberRangeFormatting(31, 75, "&a{VALUE}"),
                         new NumberRangeFormatting(76, 150, "&e{VALUE}"),
-                        new NumberRangeFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new NumberRangeFormatting(151, Integer.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .put("deaths", Arrays.asList(
                         new NumberRangeFormatting(0, 30, "&c{VALUE}"),
                         new NumberRangeFormatting(31, 75, "&a{VALUE}"),
                         new NumberRangeFormatting(76, 150, "&e{VALUE}"),
-                        new NumberRangeFormatting(151, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new NumberRangeFormatting(151, Integer.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .put("avg_points", Arrays.asList(
                         new NumberRangeFormatting(0, 749, "&4{VALUE}"),
                         new NumberRangeFormatting(750, 999, "&c{VALUE}"),
                         new NumberRangeFormatting(1000, 1499, "&a{VALUE}"),
-                        new NumberRangeFormatting(1500, Float.MAX_VALUE, "&6&l{VALUE}")
+                        new NumberRangeFormatting(1500, Integer.MAX_VALUE, "&6&l{VALUE}")
                 ))
                 .build();
 

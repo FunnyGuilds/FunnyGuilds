@@ -25,8 +25,8 @@ public class DoubleRangeFormattingTransformer extends BidirectionalTransformer<S
         double min = Integer.MIN_VALUE;
         double max = Integer.MAX_VALUE;
         if (matcher.matches()) {
-            min = parseNumber(matcher.group(1), Integer.MIN_VALUE);
-            max = parseNumber(matcher.group(2), Integer.MAX_VALUE);
+            min = parseDouble(matcher.group(1), Integer.MIN_VALUE);
+            max = parseDouble(matcher.group(2), Integer.MAX_VALUE);
         }
 
         return new DoubleRangeFormatting(min, max, split[1]);
@@ -37,7 +37,7 @@ public class DoubleRangeFormattingTransformer extends BidirectionalTransformer<S
         return data.toString();
     }
 
-    private static double parseNumber(String numberString, double fallback) {
+    private static double parseDouble(String numberString, double fallback) {
         try {
             if (numberString.contains("*")) {
                 return fallback;
