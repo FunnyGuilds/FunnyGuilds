@@ -122,7 +122,7 @@ public class WarSystem {
             }
         }
 
-        FunnyGuilds.getInstance().getGuildManager().deleteGuild(loser);
+        FunnyGuilds.getInstance().getGuildManager().deleteGuild(FunnyGuilds.getInstance(), loser);
         conqueror.updateLives(lives -> lives + 1);
 
         message = WarUtils.getBroadcastMessage(conqueror, loser);

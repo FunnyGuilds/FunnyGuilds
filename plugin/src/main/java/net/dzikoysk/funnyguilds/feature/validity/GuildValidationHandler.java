@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.validity;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
@@ -8,13 +9,15 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 
 public class GuildValidationHandler implements Runnable {
 
+    private final FunnyGuilds plugin;
     private final GuildManager guildManager;
 
     private int banGuildsCounter;
     private int validateGuildsCounter;
 
-    public GuildValidationHandler(GuildManager guildManager) {
-        this.guildManager = guildManager;
+    public GuildValidationHandler(FunnyGuilds plugin) {
+        this.plugin = plugin;
+        this.guildManager = plugin.getGuildManager();
     }
 
     @Override
@@ -39,7 +42,7 @@ public class GuildValidationHandler implements Runnable {
             }
 
             ValidityUtils.broadcast(guild);
-            this.guildManager.deleteGuild(guild);
+            this.guildManager.deleteGuild(this.plugin, guild);
         }
 
         this.validateGuildsCounter = 0;

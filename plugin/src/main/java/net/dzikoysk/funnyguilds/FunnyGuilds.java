@@ -182,8 +182,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.rankManager = new RankManager(this.pluginConfiguration);
         this.userManager = new UserManager();
-        this.guildManager = new GuildManager(this);
-        this.regionManager = new RegionManager(this);
+        this.guildManager = new GuildManager(this.pluginConfiguration);
+        this.regionManager = new RegionManager(this.pluginConfiguration);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -221,7 +221,7 @@ public class FunnyGuilds extends JavaPlugin {
         MetricsCollector collector = new MetricsCollector(this);
         collector.start();
 
-        this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(guildManager), 100L, 20L);
+        this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
         this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(pluginConfiguration, this.rankManager, this.userManager, this.guildManager), 20L, this.pluginConfiguration.rankingUpdateInterval);
 

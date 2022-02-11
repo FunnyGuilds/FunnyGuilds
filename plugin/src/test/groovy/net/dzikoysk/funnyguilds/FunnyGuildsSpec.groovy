@@ -53,8 +53,8 @@ class FunnyGuildsSpec extends BukkitSpec {
 
         rankManager = new RankManager(config)
         userManager = new UserManager()
-        guildManager = new GuildManager(funnyGuilds);
-        regionManager = new RegionManager(funnyGuilds);
+        guildManager = new GuildManager(config);
+        regionManager = new RegionManager(config);
 
         lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)

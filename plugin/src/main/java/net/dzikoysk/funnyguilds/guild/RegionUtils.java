@@ -1,11 +1,9 @@
 package net.dzikoysk.funnyguilds.guild;
 
-import java.util.Collection;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.data.DataModel;
 import org.bukkit.Location;
 import org.jetbrains.annotations.ApiStatus;
 import panda.std.Option;
@@ -104,7 +102,7 @@ public final class RegionUtils {
     }
 
     /**
-     * Remove region from storage. If you think you should use this method you probably shouldn't - instead use {@link RegionManager#deleteRegion(Region)}.
+     * Remove region from storage. If you think you should use this method you probably shouldn't - instead use {@link RegionManager#deleteRegion(DataModel, Region)}.
      *
      * @param region region to remove
      * @deprecated for removal in the future, in favour of {@link RegionManager#removeRegion(Region)}
@@ -119,12 +117,12 @@ public final class RegionUtils {
      * Delete region in every possible way.
      *
      * @param region region to delete
-     * @deprecated for removal in the future, in favour of {@link RegionManager#deleteRegion(Region)}
+     * @deprecated for removal in the future, in favour of {@link RegionManager#deleteRegion(DataModel, Region)}
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static void delete(Region region) {
-        FunnyGuilds.getInstance().getRegionManager().deleteRegion(region);
+        FunnyGuilds.getInstance().getRegionManager().deleteRegion(FunnyGuilds.getInstance().getDataModel(), region);
     }
 
     public static String toString(@Nullable Region region) {
