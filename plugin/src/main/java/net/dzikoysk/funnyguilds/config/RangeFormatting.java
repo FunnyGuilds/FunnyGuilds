@@ -60,10 +60,10 @@ public class RangeFormatting {
                 .toMap(RangeFormatting::getRange, RangeFormatting::getValue);
     }
 
-    private static Number parseNumber(String numberString, Number fallback) {
+    private static Number parseNumber(String numberString, Number borderValue) {
         try {
             if (numberString.contains("*")) {
-                return fallback;
+                return borderValue;
             }
             else {
                 if (numberString.contains(".")) {
@@ -74,9 +74,9 @@ public class RangeFormatting {
                 }
             }
         }
-        catch (NumberFormatException ex) {
-            ex.printStackTrace();
-            return fallback;
+        catch (NumberFormatException exception) {
+            exception.printStackTrace();
+            return borderValue;
         }
     }
 
