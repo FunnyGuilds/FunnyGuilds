@@ -134,7 +134,7 @@ public class RankUtils {
     }
 
     /**
-     * Parse legacy top placeholders (PTOP/GTOPe-x) in text
+     * Parse legacy top placeholders (PTOP/GTOP-x) in text
      * @param targetUser user for which text will be parsed
      * @param text text to parse
      * @return parsed text
@@ -152,7 +152,7 @@ public class RankUtils {
     }
 
     /**
-     * Parse legacy top placeholders (PTOP/GTOPe-x) in text
+     * Parse legacy top placeholders (PTOP/GTOP-x) in text
      * @param targetUser user for which text will be parsed
      * @param text text to parse
      * @return parsed text
