@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.util.function.IntFunction;
 import net.dzikoysk.funnyguilds.rank.Rank;
+import net.dzikoysk.funnyguilds.rank.TopFactory;
 import net.dzikoysk.funnyguilds.user.top.UserComparator;
 
 public class UserRank extends Rank<User> implements Comparable<UserRank> {
@@ -25,14 +26,14 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     @Deprecated
     @Override
     public int getPosition() {
-        return this.getPosition("points")
+        return this.getPosition(TopFactory.USER_POINTS_TOP)
                 .orElseGet(0);
     }
 
     @Deprecated
     @Override
     public void setPosition(int position) {
-        this.setPosition("points", position);
+        this.setPosition(TopFactory.USER_POINTS_TOP, position);
     }
 
     @Override
