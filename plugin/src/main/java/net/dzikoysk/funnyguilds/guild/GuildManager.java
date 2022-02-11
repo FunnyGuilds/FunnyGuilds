@@ -28,16 +28,12 @@ import panda.std.stream.PandaStream;
 
 public class GuildManager {
 
-    private final FunnyGuilds plugin;
-
     private final PluginConfiguration pluginConfiguration;
 
     private final Map<UUID, Guild> guildsMap = new ConcurrentHashMap<>();
 
-    public GuildManager(FunnyGuilds plugin) {
-        this.plugin = plugin;
-
-        this.pluginConfiguration = plugin.getPluginConfiguration();
+    public GuildManager(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
     }
 
     public int countGuilds() {
@@ -227,7 +223,7 @@ public class GuildManager {
      *
      * @param guild guild to delete
      */
-    public void deleteGuild(Guild guild) {
+    public void deleteGuild(FunnyGuilds plugin, Guild guild) {
         if (guild == null) {
             return;
         }
@@ -242,7 +238,7 @@ public class GuildManager {
                 else if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
                     Location centerLocation = region.getCenter().clone();
 
-                    Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    Bukkit.getScheduler().runTask(plugin, () -> {
                         Block block = centerLocation.getBlock().getRelative(BlockFace.DOWN);
 
                         if (block.getLocation().getBlockY() > 1) {
@@ -252,10 +248,10 @@ public class GuildManager {
                 }
             }
 
-            this.plugin.getRegionManager().deleteRegion(guild.getRegion());
+            plugin.getRegionManager().deleteRegion(plugin.getDataModel(), guild.getRegion());
         }
 
-        this.plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(guild));
+        plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(guild));
 
         guild.getMembers().forEach(User::removeGuild);
 
@@ -267,11 +263,11 @@ public class GuildManager {
             globalGuild.removeEnemy(guild);
         }
 
-        if (this.plugin.getDataModel() instanceof FlatDataModel) {
-            FlatDataModel dataModel = ((FlatDataModel) this.plugin.getDataModel());
+        if (plugin.getDataModel() instanceof FlatDataModel) {
+            FlatDataModel dataModel = ((FlatDataModel) plugin.getDataModel());
             dataModel.getGuildFile(guild).delete();
         }
-        else if (this.plugin.getDataModel() instanceof SQLDataModel) {
+        else if (plugin.getDataModel() instanceof SQLDataModel) {
             DatabaseGuild.delete(guild);
         }
 

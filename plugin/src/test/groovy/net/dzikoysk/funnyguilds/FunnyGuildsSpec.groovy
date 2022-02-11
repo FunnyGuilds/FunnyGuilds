@@ -53,9 +53,9 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
 
         userManager = new UserManager()
-        guildManager = new GuildManager(funnyGuilds)
+        guildManager = new GuildManager(config);
         rankManager = new RankManager(config)
-        regionManager = new RegionManager(funnyGuilds)
+        regionManager = new RegionManager(config);
 
         new TopFactory(config, rankManager).addDefaultTops(userManager, guildManager)
 

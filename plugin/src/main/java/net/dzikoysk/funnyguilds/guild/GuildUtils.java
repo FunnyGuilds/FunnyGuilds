@@ -139,12 +139,12 @@ public final class GuildUtils {
      * Delete guild in every possible way.
      *
      * @param guild guild to delete
-     * @deprecated for removal in the future, in favour of {@link GuildManager#deleteGuild(Guild)}
+     * @deprecated for removal in the future, in favour of {@link GuildManager#deleteGuild(FunnyGuilds, Guild)}
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public static void deleteGuild(Guild guild) {
-        FunnyGuilds.getInstance().getGuildManager().deleteGuild(guild);
+        FunnyGuilds.getInstance().getGuildManager().deleteGuild(FunnyGuilds.getInstance(), guild);
     }
 
     /**
