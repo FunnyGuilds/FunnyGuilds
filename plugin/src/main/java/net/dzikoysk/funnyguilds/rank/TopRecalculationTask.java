@@ -18,13 +18,13 @@ public class TopRecalculationTask implements Runnable {
 
     private void recalculateUsersTop(RankManager rankManager) {
         rankManager.userTopMap.forEach((key, top) -> {
-            top.recalculate();
+            top.recalculate(key);
         });
     }
 
     private void recalculateGuildsTop(RankManager rankManager) {
         rankManager.guildTopMap.forEach((key, top) -> {
-            top.recalculate();
+            top.recalculate(key);
         });
     }
 }

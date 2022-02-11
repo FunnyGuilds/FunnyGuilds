@@ -13,6 +13,19 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
         return entity;
     }
 
+    @Deprecated
+    @Override
+    public int getPosition() {
+        return this.getPosition("avg_points")
+                .orElseGet(0);
+    }
+
+    @Deprecated
+    @Override
+    public void setPosition(int position) {
+        this.setPosition("avg_points", position);
+    }
+
     @Override
     public int getPoints() {
         return this.entity.getMembers().stream()

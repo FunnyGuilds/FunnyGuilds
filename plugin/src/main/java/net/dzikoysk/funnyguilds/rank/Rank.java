@@ -1,12 +1,15 @@
 package net.dzikoysk.funnyguilds.rank;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
+import panda.std.Option;
 
 public abstract class Rank<T extends MutableEntity> {
 
     protected final T entity;
-    protected int position;
+    protected Map<String, Integer> position = new HashMap<>();
 
     public Rank(T entity) {
         this.entity = entity;
@@ -24,13 +27,19 @@ public abstract class Rank<T extends MutableEntity> {
         return this.entity.getName();
     }
 
-    public int getPosition() {
-        return this.position;
+    public Option<Integer> getPosition(String top) {
+        return Option.of(this.position.get(top.toLowerCase()));
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setPosition(String top, int position) {
+        this.position.put(top.toLowerCase(), position);
     }
+
+    @Deprecated
+    public abstract int getPosition();
+
+    @Deprecated
+    public abstract void setPosition(int position);
 
     public abstract int getPoints();
 

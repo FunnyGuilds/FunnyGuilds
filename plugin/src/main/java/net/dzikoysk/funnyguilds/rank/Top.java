@@ -3,17 +3,17 @@ package net.dzikoysk.funnyguilds.rank;
 import com.google.common.collect.Iterables;
 import java.util.NavigableSet;
 import java.util.TreeSet;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import panda.std.Option;
 
 public class Top<T> {
 
     private final TopComparator<T> comparator;
-    private final Function<TopComparator<T>, NavigableSet<T>> recalculateFunction;
+    private final BiFunction<String, TopComparator<T>, NavigableSet<T>> recalculateFunction;
 
     private NavigableSet<T> values;
 
-    public Top(TopComparator<T> comparator, Function<TopComparator<T>, NavigableSet<T>> recalculateFunction) {
+    public Top(TopComparator<T> comparator, BiFunction<String, TopComparator<T>, NavigableSet<T>> recalculateFunction) {
         this.comparator = comparator;
         this.recalculateFunction = recalculateFunction;
 
@@ -35,8 +35,8 @@ public class Top<T> {
         return this.values.size();
     }
 
-    public void recalculate() {
-        this.values = this.recalculateFunction.apply(this.comparator);
+    public void recalculate(String id) {
+        this.values = this.recalculateFunction.apply(id, this.comparator);
     }
 
 }

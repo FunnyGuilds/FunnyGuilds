@@ -22,6 +22,19 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
         return entity;
     }
 
+    @Deprecated
+    @Override
+    public int getPosition() {
+        return this.getPosition("points")
+                .orElseGet(0);
+    }
+
+    @Deprecated
+    @Override
+    public void setPosition(int position) {
+        this.setPosition("points", position);
+    }
+
     @Override
     public int getPoints() {
         return this.points;
