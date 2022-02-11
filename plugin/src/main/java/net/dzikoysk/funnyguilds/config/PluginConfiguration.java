@@ -41,7 +41,6 @@ import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
-import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
@@ -1021,7 +1020,7 @@ public class PluginConfiguration extends OkaeriConfig {
             ItemStack item = null;
 
             if (var.contains("GUI-")) {
-                int index = Placeholders.getIndex(var);
+                int index = getIndex(var);
 
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
@@ -1029,7 +1028,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
             else if (var.contains("VIPITEM-")) {
                 try {
-                    int index = Placeholders.getIndex(var);
+                    int index = getIndex(var);
 
                     if (index > 0 && index <= createItemsVip.size()) {
                         item = createItemsVip.get(index - 1);
@@ -1041,7 +1040,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
             else if (var.contains("ITEM-")) {
                 try {
-                    int index = Placeholders.getIndex(var);
+                    int index = getIndex(var);
 
                     if (index > 0 && index <= createItems.size()) {
                         item = createItems.get(index - 1);
@@ -1176,6 +1175,46 @@ public class PluginConfiguration extends OkaeriConfig {
     public enum DataModel {
         FLAT,
         MYSQL
+    }
+
+    public static int getIndex(String text) {
+        StringBuilder sb = new StringBuilder();
+        boolean open = false;
+        boolean start = false;
+        int result = -1;
+
+        for (char c : text.toCharArray()) {
+            boolean end = false;
+
+            switch (c) {
+                case '{':
+                    open = true;
+                    break;
+                case '-':
+                    start = true;
+                    break;
+                case '}':
+                    end = true;
+                    break;
+                default:
+                    if (open && start) {
+                        sb.append(c);
+                    }
+            }
+
+            if (end) {
+                break;
+            }
+        }
+
+        try {
+            result = Integer.parseInt(sb.toString());
+        }
+        catch (NumberFormatException e) {
+            FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + sb.toString());
+        }
+
+        return result;
     }
 
 }
