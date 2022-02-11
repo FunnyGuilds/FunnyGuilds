@@ -224,7 +224,7 @@ public class FunnyGuilds extends JavaPlugin {
         MetricsCollector collector = new MetricsCollector(this);
         collector.start();
 
-        this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(guildManager), 100L, 20L);
+        this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(this), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
         this.topRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TopRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
