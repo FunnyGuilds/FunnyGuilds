@@ -270,10 +270,17 @@ public class RankUtils {
             String comparatorType = matcher.group(2);
 
             if (positionType.equalsIgnoreCase("POSITION")) {
+                if (targetUser == null) {
+                    return StringUtils.replace(text, "{POSITION}", "0");
+                }
                 return StringUtils.replace(text, "{POSITION-" + comparatorType + "}", Integer.toString(targetUser.getRank().getPosition(comparatorType)
                         .orElseGet(0)));
             }
             else if (positionType.equalsIgnoreCase("G-POSITION")) {
+                if (targetUser == null) {
+                    return StringUtils.replace(text, "{POSITION}", messages.minMembersToIncludeNoValue);
+                }
+
                 Guild guild = targetUser.getGuild();
                 if (guild == null) {
                     return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", messages.minMembersToIncludeNoValue);

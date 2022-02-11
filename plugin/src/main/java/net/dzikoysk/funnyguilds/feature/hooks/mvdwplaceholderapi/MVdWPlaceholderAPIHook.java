@@ -62,7 +62,6 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
             }
         }
 
-
         // Guild TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
             final int index = i;
@@ -81,6 +80,20 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
                 });
             }
         }
+
+        rankManager.getUserTopMap().forEach((id, top) -> {
+            PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_position-" + id, event -> {
+                User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
+                return RankUtils.parseTopPosition(user, "{POSITION-" + id.toUpperCase() + "}");
+            });
+        });
+
+        rankManager.getGuildTopMap().forEach((id, top) -> {
+            PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_g-position-" + id, event -> {
+                User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
+                return RankUtils.parseTopPosition(user, "{G-POSITION-" + id.toUpperCase() + "}");
+            });
+        });
 
         return HookInitResult.SUCCESS;
     }

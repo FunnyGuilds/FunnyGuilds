@@ -74,6 +74,20 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
             }
         }
 
+        rankManager.getUserTopMap().forEach((id, top) -> {
+            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_position-" + id, player -> {
+                User user = userManager.findByPlayer(player).getOrNull();
+                return RankUtils.parseTopPosition(user, "{POSITION-" + id.toUpperCase() + "}");
+            }));
+        });
+
+        rankManager.getGuildTopMap().forEach((id, top) -> {
+            BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_g-position-" + id, player -> {
+                User user = userManager.findByPlayer(player).getOrNull();
+                return RankUtils.parseTopPosition(user, "{G-POSITION-" + id.toUpperCase() + "}");
+            }));
+        });
+
         return HookInitResult.SUCCESS;
     }
 
