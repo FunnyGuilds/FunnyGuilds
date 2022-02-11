@@ -32,8 +32,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.range.IntegerRange;
-import net.dzikoysk.funnyguilds.config.range.formatting.IntegerRangeFormatting;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
@@ -588,7 +586,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
 
     @Exclude
-    public Map<IntegerRange, Integer> eloConstants;
+    public Map<NumberRange, Integer> eloConstants;
 
     @Positive
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
@@ -696,11 +694,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
     @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
-    public List<IntegerRangeFormatting> pointsFormat = Arrays.asList(
-            new IntegerRangeFormatting(0, 749, "&4{POINTS}"),
-            new IntegerRangeFormatting(750, 999, "&c{POINTS}"),
-            new IntegerRangeFormatting(1000, 1499, "&a{POINTS}"),
-            new IntegerRangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
+    public List<RangeFormatting> pointsFormat = Arrays.asList(
+            new RangeFormatting(0, 749, "&4{POINTS}"),
+            new RangeFormatting(750, 999, "&c{POINTS}"),
+            new RangeFormatting(1000, 1499, "&a{POINTS}"),
+            new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
     );
 
     @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
@@ -717,11 +715,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
     @Comment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minPing w gore, np.: \"301-* &c{PING}\"")
-    public List<IntegerRangeFormatting> pingFormat = Arrays.asList(
-            new IntegerRangeFormatting(0, 75, "&a{PING}"),
-            new IntegerRangeFormatting(76, 150, "&e{PING}"),
-            new IntegerRangeFormatting(151, 300, "&c{PING}"),
-            new IntegerRangeFormatting(301, Integer.MAX_VALUE, "&c{PING}")
+    public List<RangeFormatting> pingFormat = Arrays.asList(
+            new RangeFormatting(0, 75, "&a{PING}"),
+            new RangeFormatting(76, 150, "&e{PING}"),
+            new RangeFormatting(151, 300, "&c{PING}"),
+            new RangeFormatting(301, Integer.MAX_VALUE, "&c{PING}")
     );
 
     @NotBlank
@@ -1102,9 +1100,9 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         if (this.rankSystem == RankSystem.Type.ELO) {
-            Map<IntegerRange, Integer> parsedData = new HashMap<>();
+            Map<NumberRange, Integer> parsedData = new HashMap<>();
 
-            for (Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
+            for (Entry<NumberRange, String> entry : NumberRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
                 try {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
                 }

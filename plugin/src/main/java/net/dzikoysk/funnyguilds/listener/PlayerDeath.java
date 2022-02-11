@@ -10,9 +10,9 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateUserPointsRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.dummy.DummyGlobalUpdateUserRequest;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration.DataModel;
-import net.dzikoysk.funnyguilds.config.range.IntegerRange;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.AssistsChangeEvent;
@@ -261,7 +261,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{VICTIM}", victim.getName())
                 .register("{+}", Integer.toString(attackerPointsChangeEvent.getPointsChange()))
                 .register("{-}", Math.min(victimPointsBeforeChange, victimPointsChangeEvent.getPointsChange()))
-                .register("{POINTS-FORMAT}", IntegerRange.inRangeToString(victimPoints, config.pointsFormat))
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(victimPoints, config.pointsFormat))
                 .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
                 .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
@@ -317,8 +317,8 @@ public class PlayerDeath extends AbstractFunnyListener {
     private int[] getEloValues(int victimPoints, int attackerPoints) {
         int[] rankChanges = new int[2];
 
-        int attackerElo = IntegerRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
-        int victimElo = IntegerRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
+        int attackerElo = NumberRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
+        int victimElo = NumberRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
 
         rankChanges[0] = (int) Math.round(attackerElo * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider)))));
         rankChanges[1] = (int) Math.round(victimElo * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * -1);

@@ -1,12 +1,13 @@
-package net.dzikoysk.funnyguilds.config.range;
+package net.dzikoysk.funnyguilds.config;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import net.dzikoysk.funnyguilds.config.range.formatting.NumberRangeFormatting;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
-public final class NumberRange implements AbstractRange<Number> {
+public final class NumberRange {
 
     private final Number minRange;
     private final Number maxRange;
@@ -16,21 +17,19 @@ public final class NumberRange implements AbstractRange<Number> {
         this.maxRange = maxRange;
     }
 
-    @Override
     public Number getMinRange() {
         return this.minRange;
     }
 
-    @Override
     public Number getMaxRange() {
         return this.maxRange;
     }
 
-    static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
+    public static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
         for (Map.Entry<NumberRange, V> entry : rangeMap.entrySet()) {
             NumberRange range = entry.getKey();
 
-            if (value.doubleValue() >= range.getMinRange().doubleValue() && value.doubleValue() <= range.getMaxRange().doubleValue()) {
+            if (value.floatValue() >= range.getMinRange().floatValue() && value.floatValue() <= range.getMaxRange().floatValue() - 0.00001F) {
                 return Option.of(entry.getValue());
             }
         }
@@ -44,8 +43,14 @@ public final class NumberRange implements AbstractRange<Number> {
                 .orElseGet(value.toString());
     }
 
-    public static <V> String inRangeToString(Number value, List<NumberRangeFormatting> numberFormatting) {
-        return inRangeToString(value, NumberRangeFormatting.toNumberRangeMap(numberFormatting));
+    public static <V> String inRangeToString(Number value, List<RangeFormatting> numberFormatting) {
+        return inRangeToString(value, RangeFormatting.toRangeMap(numberFormatting));
+    }
+
+    public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
+        return PandaStream.of(rangeEntries)
+                .map(RangeFormatting::new)
+                .toMap(RangeFormatting::getRange, (formatting) -> color ? ChatUtils.colored(formatting.getValue()) : formatting.getValue());
     }
 
     @Override
