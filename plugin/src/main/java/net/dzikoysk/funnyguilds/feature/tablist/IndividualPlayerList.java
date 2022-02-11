@@ -122,7 +122,7 @@ public class IndividualPlayerList {
     private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
         String[] allCells = new String[PlayerListConstants.DEFAULT_CELL_COUNT + 2]; // Additional two for header/footer
         for (int i = 0; i < this.cellCount; i++) {
-            allCells[i] = this.putRank(tablistPattern.getOrDefault(i + 1, ""));
+            allCells[i] = this.putTop(tablistPattern.getOrDefault(i + 1, ""));
         }
         allCells[PlayerListConstants.DEFAULT_CELL_COUNT] = header;
         allCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1] = footer;
@@ -130,15 +130,12 @@ public class IndividualPlayerList {
         return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\0');
     }
 
-    private String putRank(String cell) {
-        String temp = RankUtils.parseComparableRank(this.user, cell);
+    private String putTop(String cell) {
+        String temp = RankUtils.parseTopPosition(this.user, cell);
 
+        temp = RankUtils.parseTop(this.user, temp);
         if (enableLegacyPlaceholders) {
             temp = RankUtils.parseRank(this.user, temp);
-        }
-
-        if (temp != null) {
-            return temp;
         }
 
         return temp;

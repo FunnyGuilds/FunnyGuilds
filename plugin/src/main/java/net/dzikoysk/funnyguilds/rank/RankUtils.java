@@ -19,18 +19,19 @@ import panda.std.Option;
 
 public class RankUtils {
 
-    private static final Pattern RANK_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)}");
-    private static final Pattern LEGACY_RANK_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([0-9]+)}");
+    private static final Pattern TOP_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)}");
+    private static final Pattern TOP_POSITION_PATTERN = Pattern.compile("\\{(POSITION|G-POSITION)-([A-Za-z_]+)}");
+    private static final Pattern LEGACY_TOP_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([0-9]+)}");
 
     /**
      * Parse top placeholders (PTOP/GTOP-type-x) in text
      *
      * @param targetUser user for which text will be parsed
-     * @param text text to parse
+     * @param text       text to parse
      * @return parsed text
      */
-    public static String parseComparableRank(User targetUser, String text) {
-        return parseComparableRank(
+    public static String parseTop(User targetUser, String text) {
+        return parseTop(
                 FunnyGuilds.getInstance().getPluginConfiguration(),
                 FunnyGuilds.getInstance().getTablistConfiguration(),
                 FunnyGuilds.getInstance().getMessageConfiguration(),
@@ -44,10 +45,10 @@ public class RankUtils {
      * Parse top placeholders (PTOP/GTOP-type-x) in text
      *
      * @param targetUser user for which text will be parsed
-     * @param text text to parse
+     * @param text       text to parse
      * @return parsed text
      */
-    public static String parseComparableRank(
+    public static String parseTop(
             PluginConfiguration config,
             TablistConfiguration tablistConfig,
             MessageConfiguration messages,
@@ -63,8 +64,8 @@ public class RankUtils {
             return text;
         }
 
-        Matcher matcher = RANK_PATTERN.matcher(text);
-        while (matcher.find()) {
+        Matcher matcher = TOP_PATTERN.matcher(text);
+        if (matcher.find()) {
             String topType = matcher.group(1);
             String comparatorType = matcher.group(2);
             String indexString = matcher.group(3);
@@ -75,12 +76,12 @@ public class RankUtils {
             }
             catch (NumberFormatException ex) {
                 FunnyGuilds.getPluginLogger().error(indexString + "is invalid " + topType + " index!");
-                break;
+                return text;
             }
 
             if (index < 1) {
                 FunnyGuilds.getPluginLogger().error("Index in " + topType + " must be greater or equal to 1!");
-                break;
+                return text;
             }
 
             if (topType.equalsIgnoreCase("PTOP")) {
@@ -140,7 +141,7 @@ public class RankUtils {
      * Parse legacy top placeholders (PTOP/GTOP-x) in text
      *
      * @param targetUser user for which text will be parsed
-     * @param text text to parse
+     * @param text       text to parse
      * @return parsed text
      */
     @Deprecated
@@ -159,7 +160,7 @@ public class RankUtils {
      * Parse legacy top placeholders (PTOP/GTOP-x) in text
      *
      * @param targetUser user for which text will be parsed
-     * @param text text to parse
+     * @param text       text to parse
      * @return parsed text
      */
     @Deprecated
@@ -179,8 +180,8 @@ public class RankUtils {
             return text;
         }
 
-        Matcher matcher = LEGACY_RANK_PATTERN.matcher(text);
-        while (matcher.find()) {
+        Matcher matcher = LEGACY_TOP_PATTERN.matcher(text);
+        if (matcher.find()) {
             String topType = matcher.group(1);
             String indexString = matcher.group(2);
 
@@ -190,12 +191,12 @@ public class RankUtils {
             }
             catch (NumberFormatException ex) {
                 FunnyGuilds.getPluginLogger().error(indexString + "is invalid " + topType + " index!");
-                break;
+                return text;
             }
 
             if (index < 1) {
                 FunnyGuilds.getPluginLogger().error("Index in " + topType + " must be greater or equal to 1!");
-                break;
+                return text;
             }
 
             if (topType.equalsIgnoreCase("PTOP")) {
@@ -229,6 +230,58 @@ public class RankUtils {
                 }
 
                 return formatGuildRank(config, tablistConfig, text, "{GTOP-" + index + "}", targetUser, guild, pointsFormat);
+            }
+        }
+
+        return text;
+    }
+
+    public static String parseTopPosition(
+            User targetUser,
+            String text
+    ) {
+        return parseTopPosition(
+                FunnyGuilds.getInstance().getPluginConfiguration(),
+                FunnyGuilds.getInstance().getMessageConfiguration(),
+                FunnyGuilds.getInstance().getRankManager(),
+                targetUser,
+                text
+        );
+    }
+
+    public static String parseTopPosition(
+            PluginConfiguration config,
+            MessageConfiguration messages,
+            RankManager rankManager,
+            User targetUser,
+            String text
+    ) {
+        if (text == null) {
+            return null;
+        }
+
+        if (!text.contains("POSITION-")) {
+            return text;
+        }
+
+        Matcher matcher = TOP_POSITION_PATTERN.matcher(text);
+        if (matcher.find()) {
+            String positionType = matcher.group(1);
+            String comparatorType = matcher.group(2);
+
+            if (positionType.equalsIgnoreCase("POSITION")) {
+                return StringUtils.replace(text, "{POSITION-" + comparatorType + "}", Integer.toString(targetUser.getRank().getPosition(comparatorType)
+                        .orElseGet(0)));
+            }
+            else if (positionType.equalsIgnoreCase("G-POSITION")) {
+                Guild guild = targetUser.getGuild();
+                if (guild == null) {
+                    return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", messages.minMembersToIncludeNoValue);
+                }
+
+                return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", rankManager.isRankedGuild(guild)
+                        ? Integer.toString(guild.getRank().getPosition(comparatorType).orElseGet(0))
+                        : messages.minMembersToIncludeNoValue);
             }
         }
 
