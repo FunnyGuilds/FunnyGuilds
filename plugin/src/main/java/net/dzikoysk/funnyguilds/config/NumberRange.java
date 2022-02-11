@@ -26,15 +26,20 @@ public final class NumberRange {
     }
 
     public static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
-        for (Map.Entry<NumberRange, V> entry : rangeMap.entrySet()) {
-            NumberRange range = entry.getKey();
+        return PandaStream.of(rangeMap.entrySet())
+                .find((entry) -> {
+                    NumberRange range = entry.getKey();
 
-            if (value.floatValue() >= range.getMinRange().floatValue() && value.floatValue() <= range.getMaxRange().floatValue() - 0.00001F) {
-                return Option.of(entry.getValue());
-            }
-        }
+                    Number minRange = range.getMinRange();
+                    Number maxRange = range.getMaxRange();
 
-        return Option.none();
+                    if (minRange instanceof Integer && maxRange instanceof Integer) {
+                        return value.floatValue() >= minRange.intValue() && value.floatValue() <= maxRange.intValue();
+                    }
+
+                    return value.floatValue() >= minRange.floatValue() && value.floatValue() < maxRange.floatValue();
+                })
+                .map(Map.Entry::getValue);
     }
 
     public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap) {
