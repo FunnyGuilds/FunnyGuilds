@@ -29,6 +29,7 @@ public interface TopComparator<T> extends Comparator<T> {
         public int compare(T o1, T o2) {
             return this.comparator.compare(o2, o1);
         }
+
     }
 
 }

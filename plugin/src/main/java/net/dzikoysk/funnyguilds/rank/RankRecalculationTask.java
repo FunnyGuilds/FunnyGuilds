@@ -2,11 +2,11 @@ package net.dzikoysk.funnyguilds.rank;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
-public class TopRecalculationTask implements Runnable {
+public class RankRecalculationTask implements Runnable {
 
     private final RankManager rankManager;
 
-    public TopRecalculationTask(FunnyGuilds plugin) {
+    public RankRecalculationTask(FunnyGuilds plugin) {
         this.rankManager = plugin.getRankManager();
     }
 

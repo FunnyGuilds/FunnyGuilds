@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRank;
+import panda.std.stream.PandaStream;
 
 public class UserRecalculation implements BiFunction<String, TopComparator<UserRank>, NavigableSet<UserRank>> {
 
@@ -24,19 +25,13 @@ public class UserRecalculation implements BiFunction<String, TopComparator<UserR
     public NavigableSet<UserRank> apply(String id, TopComparator<UserRank> topComparator) {
         NavigableSet<UserRank> usersRank = new TreeSet<>(topComparator);
 
-        for (User user : userManager.getUsers()) {
-            UserRank userRank = user.getRank();
-
-            if (this.pluginConfiguration.skipPrivilegedPlayersInRankPositions &&
-                    PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt")) {
-                continue;
-            }
-
-            usersRank.add(userRank);
-        }
+        PandaStream.of(userManager.getUsers())
+                .filterNot(user -> this.pluginConfiguration.skipPrivilegedPlayersInRankPositions &&
+                        PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt"))
+                .map(User::getRank)
+                .forEach(usersRank::add);
 
         int position = 0;
-
         for (UserRank userRank : usersRank) {
             userRank.setPosition(id, ++position);
         }
