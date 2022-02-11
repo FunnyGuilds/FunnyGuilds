@@ -377,7 +377,7 @@ public class FunnyGuilds extends JavaPlugin {
                     this.tablistConfiguration.pages,
                     this.tablistConfiguration.playerListPing,
                     this.tablistConfiguration.playerListFillCells,
-                    this.pluginConfiguration.top.enableTabLegacyPlaceholders
+                    this.pluginConfiguration.top.enableLegacyPlaceholders
             );
 
             cache.setPlayerList(individualPlayerList);

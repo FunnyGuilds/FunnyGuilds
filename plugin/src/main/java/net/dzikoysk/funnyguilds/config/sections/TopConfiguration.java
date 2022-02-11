@@ -29,9 +29,9 @@ public class TopConfiguration extends OkaeriConfig {
     @Comment("Dostepne typy topek: points, kills, deaths, assists, logouts, avg_points, avg_kills, avg_deaths, avg_assists, avg_logouts")
     public Set<String> enabledGuildTops = new TreeSet<>(Arrays.asList("kills", "deaths", "avg_points"));
 
-    @Comment("Czy placeholdery {PTOP-x} oraz {GTOP-x} maja byc wlaczone na tabie.")
+    @Comment("Czy placeholdery {PTOP-x} oraz {GTOP-x} maja byc wlaczone na tabie oraz w placeholderach (np. z PlaceholderAPI).")
     @Comment("Wylaczenie tej funkcji moze minimalnie odciazyc serwer, wiec jesli to mozliwe najlepiej ja wylaczyc.")
-    public boolean enableTabLegacyPlaceholders = true;
+    public boolean enableLegacyPlaceholders = true;
 
     public Format format = new Format();
 
