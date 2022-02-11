@@ -1,38 +1,40 @@
-package net.dzikoysk.funnyguilds.config;
+package net.dzikoysk.funnyguilds.config.range;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.range.formatting.IntegerRangeFormatting;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import panda.std.Option;
 
-public final class NumberRange {
+public final class IntegerRange implements AbstractRange<Integer> {
 
-    private final Number minRange;
-    private final Number maxRange;
+    private final int minRange;
+    private final int maxRange;
 
-    public NumberRange(Number minRange, Number maxRange) {
+    public IntegerRange(int minRange, int maxRange) {
         this.minRange = minRange;
         this.maxRange = maxRange;
     }
 
-    public Number getMinRange() {
+    @Override
+    public Integer getMinRange() {
         return this.minRange;
     }
 
-    public Number getMaxRange() {
+    @Override
+    public Integer getMaxRange() {
         return this.maxRange;
     }
 
-    public static <V> Option<V> inRange(Number value, Map<NumberRange, V> rangeMap) {
-        for (Entry<NumberRange, V> entry : rangeMap.entrySet()) {
-            NumberRange range = entry.getKey();
+    public static <V> Option<V> inRange(int value, Map<IntegerRange, V> rangeMap) {
+        for (Map.Entry<IntegerRange, V> entry : rangeMap.entrySet()) {
+            IntegerRange range = entry.getKey();
 
-            if (value.floatValue() >= range.getMinRange().floatValue() && value.floatValue() <= range.getMaxRange().floatValue()) {
+            if (value >= range.getMinRange() && value <= range.getMaxRange()) {
                 return Option.of(entry.getValue());
             }
         }
@@ -40,29 +42,27 @@ public final class NumberRange {
         return Option.none();
     }
 
-    public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap) {
+    public static <V> String inRangeToString(int value, Map<IntegerRange, V> rangeMap) {
         return inRange(value, rangeMap)
                 .map(Objects::toString)
-                .orElseGet(value.toString());
+                .orElseGet(Integer.toString(value));
     }
 
-    public static <V> String inRangeToString(Number value, List<RangeFormatting> numberFormatting) {
-        return inRangeToString(value, RangeFormatting.toNumberRangeMap(numberFormatting));
+    public static <V> String inRangeToString(int value, List<IntegerRangeFormatting> integerFormatting) {
+        return inRangeToString(value, IntegerRangeFormatting.toIntegerRangeMap(integerFormatting));
     }
 
-    public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
-        Map<NumberRange, String> parsed = new HashMap<>();
+    public static Map<IntegerRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {
+        Map<IntegerRange, String> parsed = new HashMap<>();
 
         for (String rangeEntry : rangeEntries) {
             String[] rangeParts = rangeEntry.split(" ", 2);
-
             if (rangeParts.length != 2) {
                 FunnyGuilds.getPluginLogger().parser("\"" + rangeEntry + "\" is not a valid range String!");
                 continue;
             }
 
             String rangeValue = rangeParts[0].trim();
-
             int splitOperator = rangeValue.startsWith("-")
                     ? rangeValue.indexOf('-', 1)
                     : rangeValue.indexOf('-');
@@ -100,7 +100,7 @@ public final class NumberRange {
                 valueString += " ";
             }
 
-            parsed.put(new NumberRange(minRange, maxRange), color ? ChatUtils.colored(valueString) : valueString);
+            parsed.put(new IntegerRange(minRange, maxRange), color ? ChatUtils.colored(valueString) : valueString);
         }
 
         return parsed;
@@ -108,15 +108,7 @@ public final class NumberRange {
 
     @Override
     public String toString() {
-        return (this.minRange.floatValue() <= Integer.MIN_VALUE ? "*" : this.minRange.toString()) + "-" + (this.maxRange.floatValue() >= Integer.MAX_VALUE ? "*" : this.maxRange.toString());
-    }
-
-    public static class MissingFormatException extends RuntimeException {
-
-        public MissingFormatException(int value, String rangeType) {
-            super("No format for value " + value + " and range " + rangeType + " found!");
-        }
-
+        return (this.minRange <= Integer.MIN_VALUE ? "*" : this.minRange) + "-" + (this.maxRange >= Integer.MAX_VALUE ? "*" : this.maxRange);
     }
 
 }

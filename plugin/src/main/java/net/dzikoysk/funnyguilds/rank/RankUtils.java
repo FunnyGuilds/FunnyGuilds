@@ -5,9 +5,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.config.RangeFormatting;
+import net.dzikoysk.funnyguilds.config.range.IntegerRange;
+import net.dzikoysk.funnyguilds.config.range.NumberRange;
+import net.dzikoysk.funnyguilds.config.range.formatting.NumberRangeFormatting;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.top.GuildTop;
@@ -96,7 +97,7 @@ public class RankUtils {
                 Number topValue = userTop.getComparator().getValue(user.getRank());
                 String topFormat = config.top.format.ptop.getValue();
                 if (!topFormat.isEmpty()) {
-                    List<RangeFormatting> valueFormatting = config.top.format.ptopValueFormatting.get(comparatorType.toLowerCase());
+                    List<NumberRangeFormatting> valueFormatting = config.top.format.ptopValueFormatting.get(comparatorType.toLowerCase());
                     topFormat = topFormat.replace("{VALUE-FORMAT}", valueFormatting == null
                             ? topValue.toString()
                             : NumberRange.inRangeToString(topValue, valueFormatting));
@@ -120,7 +121,7 @@ public class RankUtils {
 
                 Number topValue = guildTop.getComparator().getValue(guild.getRank());
                 String topFormat = config.top.format.gtop.getValue();
-                List<RangeFormatting> valueFormatting = config.top.format.gtopValueFormatting.get(comparatorType.toLowerCase());
+                List<NumberRangeFormatting> valueFormatting = config.top.format.gtopValueFormatting.get(comparatorType.toLowerCase());
                 topFormat = topFormat.replace("{VALUE-FORMAT}", valueFormatting == null
                         ? topValue.toString()
                         : NumberRange.inRangeToString(topValue, valueFormatting));
@@ -203,7 +204,7 @@ public class RankUtils {
                 int points = user.getRank().getPoints();
                 String pointsFormat = config.ptopPoints.getValue();
                 if (!pointsFormat.isEmpty()) {
-                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
+                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
@@ -219,7 +220,7 @@ public class RankUtils {
                 int points = guild.getRank().getAveragePoints();
                 String pointsFormat = config.gtopPoints.getValue();
                 if (!pointsFormat.isEmpty()) {
-                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
+                    pointsFormat = pointsFormat.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
@@ -259,46 +260,6 @@ public class RankUtils {
         }
 
         return StringUtils.replace(text, placeholder, guildTag + topFormat);
-    }
-
-    public static int getIndex(String text) {
-        StringBuilder sb = new StringBuilder();
-        boolean open = false;
-        boolean start = false;
-        int result = -1;
-
-        for (char c : text.toCharArray()) {
-            boolean end = false;
-
-            switch (c) {
-                case '{':
-                    open = true;
-                    break;
-                case '-':
-                    start = true;
-                    break;
-                case '}':
-                    end = true;
-                    break;
-                default:
-                    if (open && start) {
-                        sb.append(c);
-                    }
-            }
-
-            if (end) {
-                break;
-            }
-        }
-
-        try {
-            result = Integer.parseInt(sb.toString());
-        }
-        catch (NumberFormatException e) {
-            FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + sb.toString());
-        }
-
-        return result;
     }
 
     private RankUtils() {

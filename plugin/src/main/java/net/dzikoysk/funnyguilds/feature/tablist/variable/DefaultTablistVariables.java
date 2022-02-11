@@ -10,8 +10,8 @@ import java.util.function.Function;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.range.IntegerRange;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTablistVariable;
@@ -59,14 +59,7 @@ public final class DefaultTablistVariables {
         parser.add(new TimeFormattedVariable("MONTH_NUMBER", (user, time) -> time.getMonthValue()));
         parser.add(new TimeFormattedVariable("YEAR", (user, time) -> time.getYear()));
 
-        parser.add(new SimpleTablistVariable("TPS", user -> {
-            try {
-                return MinecraftServerUtils.getFormattedTPS();
-            }
-            catch (NumberRange.MissingFormatException missingFormatException) {
-                return "0";
-            }
-        }));
+        parser.add(new SimpleTablistVariable("TPS", user -> MinecraftServerUtils.getFormattedTPS()));
 
         parser.add(new SimpleTablistVariable("WORLD", user -> {
             Player userPlayer = user.getPlayer();
@@ -136,11 +129,11 @@ public final class DefaultTablistVariables {
         putSimple("kdr", "KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR()));
 
         putSimple("ping-format", "PING-FORMAT", user ->
-                NumberRange.inRangeToString(user.getPing(), config.pingFormat)
+                IntegerRange.inRangeToString(user.getPing(), config.pingFormat)
                         .replace("{PING}", String.valueOf(user.getPing())));
 
         putSimple("points-format", "POINTS-FORMAT", user ->
-                NumberRange.inRangeToString(user.getRank().getPoints(), config.pointsFormat)
+                IntegerRange.inRangeToString(user.getRank().getPoints(), config.pointsFormat)
                         .replace("{POINTS}", String.valueOf(user.getRank().getPoints())));
 
         FUNNY_VARIABLES.put("g-name", GuildDependentTablistVariable.ofGuild("G-NAME", Guild::getName, user -> messages.gNameNoValue));
@@ -189,9 +182,9 @@ public final class DefaultTablistVariables {
                 user -> messages.gValidityNoValue);
 
         putGuild("g-points-format", "G-POINTS-FORMAT",
-                user -> NumberRange.inRangeToString(user.getGuild().getRank().getAveragePoints(), config.pointsFormat)
+                user -> IntegerRange.inRangeToString(user.getGuild().getRank().getAveragePoints(), config.pointsFormat)
                         .replace("{POINTS}", String.valueOf(user.getGuild().getRank().getAveragePoints())),
-                user -> NumberRange.inRangeToString(0, config.pointsFormat)
+                user -> IntegerRange.inRangeToString(0, config.pointsFormat)
                         .replace("{POINTS}", "0"));
 
         putGuild("g-position", "G-POSITION",

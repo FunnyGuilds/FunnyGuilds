@@ -2,8 +2,8 @@ package net.dzikoysk.funnyguilds.rank
 
 import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
-import net.dzikoysk.funnyguilds.config.RangeFormatting
 import net.dzikoysk.funnyguilds.config.RawString
+import net.dzikoysk.funnyguilds.config.range.formatting.IntegerRangeFormatting
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.Guild
 import org.junit.jupiter.api.Test
@@ -15,7 +15,7 @@ class RankUtilsTest extends FunnyGuildsSpec {
 
     @Test
     void 'should parse rank with guild name'() {
-        def rankRecalculationTask = new RankRecalculationTask(funnyGuilds);
+        def rankRecalculationTask = new TopRecalculationTask(funnyGuilds);
 
         // given: a guild on top of the ranking
         def guild = guildManager.addGuild(new Guild('OnlyPanda', 'OP'))
@@ -26,7 +26,7 @@ class RankUtilsTest extends FunnyGuildsSpec {
         rankRecalculationTask.run()
 
         config.gtopPoints = new RawString(' {POINTS-FORMAT}')
-        config.pointsFormat = [ new RangeFormatting(0, Integer.MAX_VALUE, '{POINTS}') ]
+        config.pointsFormat = [ new IntegerRangeFormatting(0, Integer.MAX_VALUE, '{POINTS}') ]
 
         // when: the GTOP placeholder is requested to parse
         def rank = RankUtils.parseRank(config, new TablistConfiguration(), messages, rankManager, user, '{GTOP-1}')

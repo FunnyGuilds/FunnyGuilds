@@ -45,7 +45,8 @@ public class IndividualPlayerList {
                                 String header, String footer,
                                 List<TablistPage> pages,
                                 int cellPing,
-                                boolean fillCells, boolean enableLegacyPlaceholders) {
+                                boolean fillCells,
+                                boolean enableLegacyPlaceholders) {
         this.user = user;
         this.variableParser = new TablistVariablesParser();
 
@@ -132,7 +133,7 @@ public class IndividualPlayerList {
     private String putRank(String cell) {
         String temp = RankUtils.parseComparableRank(this.user, cell);
 
-        if(enableLegacyPlaceholders) {
+        if (enableLegacyPlaceholders) {
             temp = RankUtils.parseRank(this.user, temp);
         }
 

@@ -21,8 +21,8 @@ public class UserRecalculation implements Function<TopComparator<UserRank>, Navi
     }
 
     @Override
-    public NavigableSet<UserRank> apply(TopComparator<UserRank> userRankComparator) {
-        NavigableSet<UserRank> usersRank = new TreeSet<>(userRankComparator);
+    public NavigableSet<UserRank> apply(TopComparator<UserRank> topComparator) {
+        NavigableSet<UserRank> usersRank = new TreeSet<>(topComparator);
 
         for (User user : userManager.getUsers()) {
             UserRank userRank = user.getRank();

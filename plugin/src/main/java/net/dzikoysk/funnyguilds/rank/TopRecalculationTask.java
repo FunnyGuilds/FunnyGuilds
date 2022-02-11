@@ -2,27 +2,27 @@ package net.dzikoysk.funnyguilds.rank;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 
-public class RankRecalculationTask implements Runnable {
+public class TopRecalculationTask implements Runnable {
 
     private final RankManager rankManager;
 
-    public RankRecalculationTask(FunnyGuilds plugin) {
+    public TopRecalculationTask(FunnyGuilds plugin) {
         this.rankManager = plugin.getRankManager();
     }
 
     @Override
     public void run() {
-        this.recalculateUsersRank(this.rankManager);
-        this.recalculateGuildsRank(this.rankManager);
+        this.recalculateUsersTop(this.rankManager);
+        this.recalculateGuildsTop(this.rankManager);
     }
 
-    private void recalculateUsersRank(RankManager rankManager) {
+    private void recalculateUsersTop(RankManager rankManager) {
         rankManager.userTopMap.forEach((key, top) -> {
             top.recalculate();
         });
     }
 
-    public void recalculateGuildsRank(RankManager rankManager) {
+    private void recalculateGuildsTop(RankManager rankManager) {
         rankManager.guildTopMap.forEach((key, top) -> {
             top.recalculate();
         });

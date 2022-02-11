@@ -11,8 +11,8 @@ import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.config.range.IntegerRange;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
@@ -61,7 +61,7 @@ public class Placeholders<T> {
                 .property("DEPUTIES", guild -> joinOrDefault.apply(Entity.names(guild.getDeputies()), "Brak"))
                 .property("REGION-SIZE", guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
                 .property("GUILD-PROTECTION", bindGuildProtection)
-                .property("POINTS-FORMAT", guild -> NumberRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
+                .property("POINTS-FORMAT", guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
                 .property("POINTS", guild -> guild.getRank().getAveragePoints())
                 .property("KILLS", guild -> guild.getRank().getKills())
                 .property("DEATHS", guild -> guild.getRank().getDeaths())
@@ -142,6 +142,46 @@ public class Placeholders<T> {
         placeholders.placeholders.put(newKey, newBind);
 
         return placeholders;
+    }
+
+    public static int getIndex(String text) {
+        StringBuilder sb = new StringBuilder();
+        boolean open = false;
+        boolean start = false;
+        int result = -1;
+
+        for (char c : text.toCharArray()) {
+            boolean end = false;
+
+            switch (c) {
+                case '{':
+                    open = true;
+                    break;
+                case '-':
+                    start = true;
+                    break;
+                case '}':
+                    end = true;
+                    break;
+                default:
+                    if (open && start) {
+                        sb.append(c);
+                    }
+            }
+
+            if (end) {
+                break;
+            }
+        }
+
+        try {
+            result = Integer.parseInt(sb.toString());
+        }
+        catch (NumberFormatException e) {
+            FunnyGuilds.getPluginLogger().parser(text + " contains an invalid number: " + sb.toString());
+        }
+
+        return result;
     }
 
 }

@@ -17,8 +17,8 @@ public class GuildRecalculation implements Function<TopComparator<GuildRank>, Na
     }
 
     @Override
-    public NavigableSet<GuildRank> apply(TopComparator<GuildRank> userRankComparator) {
-        NavigableSet<GuildRank> guildsRank = new TreeSet<>(userRankComparator);
+    public NavigableSet<GuildRank> apply(TopComparator<GuildRank> topComparator) {
+        NavigableSet<GuildRank> guildsRank = new TreeSet<>(topComparator);
 
         for (Guild guild : guildManager.getGuilds()) {
             GuildRank guildRank = guild.getRank();

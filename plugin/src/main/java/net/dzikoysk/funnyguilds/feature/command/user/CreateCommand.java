@@ -8,7 +8,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
-import net.dzikoysk.funnyguilds.config.NumberRange;
+import net.dzikoysk.funnyguilds.config.range.IntegerRange;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -113,9 +113,9 @@ public final class CreateCommand extends AbstractFunnyCommand {
             if (points < requiredRank) {
                 String msg = messages.createRank;
 
-                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", NumberRange.inRangeToString(requiredRank, config.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
+                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", IntegerRange.inRangeToString(requiredRank, config.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
                 msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
-                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
+                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", IntegerRange.inRangeToString(points, config.pointsFormat));
                 msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
 
                 player.sendMessage(msg);

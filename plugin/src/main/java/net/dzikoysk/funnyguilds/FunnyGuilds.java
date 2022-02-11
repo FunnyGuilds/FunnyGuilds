@@ -65,8 +65,8 @@ import net.dzikoysk.funnyguilds.nms.v1_18R1.V1_18R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.RankManager;
-import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.rank.TopFactory;
+import net.dzikoysk.funnyguilds.rank.TopRecalculationTask;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
@@ -119,7 +119,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private volatile BukkitTask guildValidationTask;
     private volatile BukkitTask tablistBroadcastTask;
-    private volatile BukkitTask rankRecalculationTask;
+    private volatile BukkitTask topRecalculationTask;
 
     private boolean isDisabling;
     private boolean forceDisabling;
@@ -226,7 +226,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new GuildValidationHandler(guildManager), 100L, 20L);
         this.tablistBroadcastTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TablistBroadcastHandler(this), 20L, this.tablistConfiguration.playerListUpdateInterval);
-        this.rankRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new RankRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
+        this.topRecalculationTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this, new TopRecalculationTask(this), 20L, this.pluginConfiguration.rankingUpdateInterval);
 
         try {
             FunnyCommandsConfiguration commandsConfiguration = new FunnyCommandsConfiguration();
@@ -320,7 +320,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.guildValidationTask.cancel();
         this.tablistBroadcastTask.cancel();
-        this.rankRecalculationTask.cancel();
+        this.topRecalculationTask.cancel();
 
         this.userManager.getUsers().forEach(user -> user.getBossBar().removeNotification());
 
