@@ -50,28 +50,17 @@ public class Guild extends AbstractMutableEntity {
 
     private boolean pvp;
 
-    public Guild(UUID uuid) {
-        this.uuid = uuid;
+    public Guild(UUID uuid, @NotNull String name, @NotNull String tag) {
+        this.uuid = uuid != null ? uuid : UUID.randomUUID();
+        this.name = name;
+        this.tag = tag;
 
         this.rank = new GuildRank(this);
         this.born = System.currentTimeMillis();
     }
 
-    public Guild(@NotNull String name) {
-        this(UUID.randomUUID());
-        this.name = name;
-    }
-
     public Guild(@NotNull String name, @NotNull String tag) {
-        this(UUID.randomUUID());
-        this.name = name;
-        this.tag = tag;
-    }
-
-    public Guild(UUID uuid, @NotNull String name, @NotNull String tag) {
-        this(uuid != null ? uuid : UUID.randomUUID());
-        this.name = name;
-        this.tag = tag;
+        this(null, name, tag);
     }
 
     public void broadcast(String message) {
@@ -88,6 +77,7 @@ public class Guild extends AbstractMutableEntity {
         return this.uuid;
     }
 
+    @NotNull
     @Override
     public String getName() {
         return this.name;
@@ -98,6 +88,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
+    @NotNull
     public String getTag() {
         return this.tag;
     }

@@ -151,16 +151,6 @@ public class FlatGuild {
     }
 
     public boolean serialize(FlatDataModel flatDataModel) {
-        if (guild.getName() == null) {
-            FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild! Caused by: name is null");
-            return false;
-        }
-
-        if (guild.getTag() == null) {
-            FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: tag is null");
-            return false;
-        }
-
         if (guild.getOwner() == null) {
             FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
             return false;

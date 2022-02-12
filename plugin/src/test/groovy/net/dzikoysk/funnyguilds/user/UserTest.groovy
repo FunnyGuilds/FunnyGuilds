@@ -14,8 +14,8 @@ final class UserTest extends FunnyGuildsSpec {
     void 'user should implement proper equals & hashcode'() {
         User user1 = userManager.create(UUID.nameUUIDFromBytes("user1".getBytes()), "user1")
         User user2 = userManager.create(UUID.nameUUIDFromBytes("user2".getBytes()), "user2")
-        Guild guild1 = new Guild("guild1")
-        Guild guild2 = new Guild("guild2")
+        Guild guild1 = new Guild('guild1', 'TEST1')
+        Guild guild2 = new Guild('guild2', 'TEST2')
 
         EqualsVerifier.forClass(User.class)
                 .usingGetClass()

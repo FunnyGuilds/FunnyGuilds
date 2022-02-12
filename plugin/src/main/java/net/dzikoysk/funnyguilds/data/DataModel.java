@@ -33,7 +33,7 @@ public interface DataModel {
         int repaired = 0;
 
         for (Guild guild : guildManager.getGuilds()) {
-            if (guild.getName() != null && regions.contains(guild.getName())) {
+            if (regions.contains(guild.getName())) {
                 guilds.remove(guild.getName());
                 continue;
             }
@@ -46,7 +46,7 @@ public interface DataModel {
         regions = Entity.names(regionManager.getRegions());
 
         for (Region region : regionManager.getRegions()) {
-            if (region.getName() != null && guilds.contains(region.getName())) {
+            if (guilds.contains(region.getName())) {
                 regions.remove(region.getName());
                 continue;
             }
