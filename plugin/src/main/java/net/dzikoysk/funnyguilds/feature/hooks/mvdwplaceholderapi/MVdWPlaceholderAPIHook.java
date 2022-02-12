@@ -31,8 +31,8 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         UserManager userManager = this.plugin.getUserManager();
         RankManager rankManager = this.plugin.getRankManager();
 
-        DefaultTablistVariables.getFunnyVariables()
-                .forEach((id, variable) -> PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + id, event -> {
+        DefaultTablistVariables.getFunnyVariables().forEach((id, variable) ->
+                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + id, event -> {
                     OfflinePlayer target = event.getOfflinePlayer();
                     if (target == null) {
                         return StringUtils.EMPTY;
@@ -48,55 +48,51 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
         // User TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
-            final int index = i;
+            final int position = i;
 
-            userTopMap.forEach((id, top) -> {
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + id + "-" + index, event -> {
-                    User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
-                    return RankUtils.parseTop(user, "{PTOP-" + id.toUpperCase() + "-" + index + "}");
-                });
-            });
+            userTopMap.forEach((id, top) ->
+                    PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + id + "-" + position, event -> {
+                        User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
+                        return RankUtils.parseTop(user, "{PTOP-" + id.toUpperCase() + "-" + position + "}");
+                    }));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + index, event -> {
+                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + position, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
-                    return RankUtils.parseRank(user, "{PTOP-" + index + "}");
+                    return RankUtils.parseRank(user, "{PTOP-" + position + "}");
                 });
             }
         }
 
         // Guild TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
-            final int index = i;
+            final int position = i;
 
-            guildTopMap.forEach((id, top) -> {
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + id + "-" + index, event -> {
-                    User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
-                    return RankUtils.parseTop(user, "{GTOP-" + id.toUpperCase() + "-" + index + "}");
-                });
-            });
+            guildTopMap.forEach((id, top) ->
+                    PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + id + "-" + position, event -> {
+                        User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
+                        return RankUtils.parseTop(user, "{GTOP-" + id.toUpperCase() + "-" + position + "}");
+                    }));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + index, event -> {
+                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + position, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
-                    return RankUtils.parseRank(user, "{GTOP-" + index + "}");
+                    return RankUtils.parseRank(user, "{GTOP-" + position + "}");
                 });
             }
         }
 
-        userTopMap.forEach((id, top) -> {
-            PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_position-" + id, event -> {
-                User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
-                return RankUtils.parseTopPosition(user, "{POSITION-" + id.toUpperCase() + "}");
-            });
-        });
+        userTopMap.forEach((id, top) ->
+                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_position-" + id, event -> {
+                    User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
+                    return RankUtils.parseTopPosition(user, "{POSITION-" + id.toUpperCase() + "}");
+                }));
 
-        guildTopMap.forEach((id, top) -> {
-            PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_g-position-" + id, event -> {
-                User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
-                return RankUtils.parseTopPosition(user, "{G-POSITION-" + id.toUpperCase() + "}");
-            });
-        });
+        guildTopMap.forEach((id, top) ->
+                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_g-position-" + id, event -> {
+                    User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
+                    return RankUtils.parseTopPosition(user, "{G-POSITION-" + id.toUpperCase() + "}");
+                }));
 
         return HookInitResult.SUCCESS;
     }
