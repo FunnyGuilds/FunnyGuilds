@@ -32,11 +32,9 @@ public final class NumberRange {
 
                     Number minRange = range.getMinRange();
                     Number maxRange = range.getMaxRange();
-
                     if (minRange instanceof Integer && maxRange instanceof Integer) {
                         return value.floatValue() >= minRange.intValue() && value.floatValue() <= maxRange.intValue();
                     }
-
                     return value.floatValue() >= minRange.floatValue() && value.floatValue() < maxRange.floatValue();
                 })
                 .map(Map.Entry::getValue);

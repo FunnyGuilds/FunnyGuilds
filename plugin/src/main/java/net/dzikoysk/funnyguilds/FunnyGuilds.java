@@ -66,7 +66,6 @@ import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
-import net.dzikoysk.funnyguilds.rank.TopFactory;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
@@ -184,9 +183,9 @@ public class FunnyGuilds extends JavaPlugin {
         this.userManager = new UserManager();
         this.guildManager = new GuildManager(this.pluginConfiguration);
         this.rankManager = new RankManager(this.pluginConfiguration);
+        this.rankManager.registerDefaultUserTops(this.userManager);
+        this.rankManager.registerDefaultGuildTops(this.guildManager);
         this.regionManager = new RegionManager(this.pluginConfiguration);
-
-        new TopFactory(pluginConfiguration, rankManager).addDefaultTops(userManager, guildManager);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);

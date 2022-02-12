@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.guild.top.GuildComparator;
 import net.dzikoysk.funnyguilds.rank.Rank;
-import net.dzikoysk.funnyguilds.rank.TopFactory;
+import net.dzikoysk.funnyguilds.rank.RankManager;
 
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
@@ -17,14 +17,14 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     @Deprecated
     @Override
     public int getPosition() {
-        return this.getPosition(TopFactory.GUILD_AVG_POINTS_TOP)
+        return this.getPosition(RankManager.GUILD_AVG_POINTS_TOP)
                 .orElseGet(0);
     }
 
     @Deprecated
     @Override
     public void setPosition(int position) {
-        this.setPosition(TopFactory.GUILD_AVG_POINTS_TOP, position);
+        this.setPosition(RankManager.GUILD_AVG_POINTS_TOP, position);
     }
 
     @Override
