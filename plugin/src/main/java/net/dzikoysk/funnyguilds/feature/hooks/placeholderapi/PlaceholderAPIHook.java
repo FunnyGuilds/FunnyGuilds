@@ -83,14 +83,15 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             User userTwo = userTwoOption.get();
 
             if (identifier.equalsIgnoreCase("prefix")) {
-                Guild guildOne = userOne.getGuild();
-                Guild guildTwo = userTwo.getGuild();
-
-                if (guildTwo == null || guildTwo.getTag() == null) {
-                    return "";
+                Option<Guild> guildOneOption = userOne.getGuildOption();
+                Option<Guild> guildTwoOption = userTwo.getGuildOption();
+                if (guildTwoOption.isEmpty() || guildTwoOption.map(Guild::getTag).getOrNull() == null) {
+                    return null;
                 }
+                Guild guildOne = guildOneOption.get();
+                Guild guildTwo = guildTwoOption.get();
 
-                if (guildOne != null) {
+                if (guildOneOption.isPresent()) {
                     if (guildOne.getAllies().contains(guildTwo)) {
                         return IndividualPrefix.preparePrefix(config.prefixAllies.getValue(), guildTwo);
                     }
@@ -109,6 +110,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             return null;
         }
 
+        
         @Override
         public String getAuthor() {
             return "FunnyGuilds Team";

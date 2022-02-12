@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -29,8 +28,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         User user = UserValidation.requireUserByName(args[0]);
         when(!user.hasGuild(), messages.generalPlayerHasNoGuild);
         when(user.isOwner(), messages.adminGuildOwner);
-
-        Guild guild = user.getGuild();
+        Guild guild = user.getGuildOption().get();
         User admin = AdminUtils.getAdminUser(sender);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(AdminUtils.getCause(admin), admin, guild, user))) {
@@ -39,22 +37,23 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
 
         this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
 
-        Player player = user.getPlayer();
-        guild.removeMember(user);
-        user.removeGuild();
+        user.getPlayerOption().peek(player -> {
+            guild.removeMember(user);
+            user.removeGuild();
 
-        Formatter formatter = new Formatter()
-                .register("{GUILD}", guild.getName())
-                .register("{TAG}", guild.getTag())
-                .register("{PLAYER}", user.getName());
+            Formatter formatter = new Formatter()
+                    .register("{GUILD}", guild.getName())
+                    .register("{TAG}", guild.getTag())
+                    .register("{PLAYER}", user.getName());
 
-        if (player != null) {
-            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
-            player.sendMessage(formatter.format(messages.kickToPlayer));
-        }
+            if (player != null) {
+                this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
+                player.sendMessage(formatter.format(messages.kickToPlayer));
+            }
 
-        sender.sendMessage(formatter.format(messages.kickToOwner));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
+            sender.sendMessage(formatter.format(messages.kickToOwner));
+            Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
+        });
     }
 
 }

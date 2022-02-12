@@ -29,7 +29,7 @@ public class PlayerChat extends AbstractFunnyListener {
         User user = userOption.get();
 
         if (user.hasGuild()) {
-            Guild guild = user.getGuild();
+            Guild guild = user.getGuildOption().get();
             String message = event.getMessage();
 
             if (sendGuildMessage(event, message, player, guild)) {
@@ -50,7 +50,7 @@ public class PlayerChat extends AbstractFunnyListener {
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
 
         if (user.hasGuild()) {
-            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().getTag()));
+            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuildOption().get().getTag()));
             format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(user, config)));
         }
         else {

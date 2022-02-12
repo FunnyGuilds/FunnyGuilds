@@ -60,9 +60,9 @@ public class IndividualPrefix {
         }
 
         Scoreboard scoreboard = getScoreboard();
-        Guild guild = user.getGuild();
 
-        if (guild != null) {
+        if (user.hasGuild()) {
+            Guild guild = user.getGuildOption().get();
             if (guild.equals(to)) {
                 initialize();
                 return;
@@ -142,9 +142,9 @@ public class IndividualPrefix {
     public void initialize() {
         Set<Guild> guilds = plugin.getGuildManager().getGuilds();
         Scoreboard scoreboard = getScoreboard();
-        Guild guild = user.getGuild();
 
-        if (guild != null) {
+        if (user.hasGuild()) {
+            Guild guild = user.getGuildOption().get();
             guilds.remove(guild);
 
             PluginConfiguration config = plugin.getPluginConfiguration();

@@ -23,7 +23,7 @@ final class MembersCompleter implements Completer {
     public List<String> apply(Context context, String prefix, Integer limit) {
         return this.userManager.findByName(context.getCommandSender().getName())
                 .filter(User::hasGuild)
-                .map(User::getGuild)
+                .flatMap(User::getGuildOption)
                 .map(guild -> CommandUtils.collectCompletions(guild.getMembers(), prefix, limit, ArrayList::new, User::getName))
                 .orElseGet(Collections.emptyList());
     }

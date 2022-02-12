@@ -46,7 +46,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Guild guild = user.getGuild();
+        Guild guild = user.getGuildOption().get();
         when(guild.equals(region.getGuild()), messages.escapeOnYourRegion);
 
         if (time >= 1) {
@@ -57,15 +57,13 @@ public final class EscapeCommand extends AbstractFunnyCommand {
                     .replace("{Z}", Integer.toString(playerLocation.getBlockZ()));
 
             for (User member : region.getGuild().getOnlineMembers()) {
-                member.getPlayer().sendMessage(msg);
+                member.sendMessage(msg);
             }
         }
 
-        scheduleTeleportation(player, user, guild.getHome(), time, () -> {
-            for (User member : region.getGuild().getOnlineMembers()) {
-                member.getPlayer().sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName()));
-            }
-        });
+        guild.getHomeOption().peek(home -> scheduleTeleportation(player, user, home, time, () ->
+                region.getGuild().getOnlineMembers()
+                        .forEach(member -> member.sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName())))));
     }
 
     private void scheduleTeleportation(Player player, User user, Location destination, int time, Runnable onSuccess) {

@@ -102,6 +102,10 @@ public class User extends AbstractMutableEntity {
         return Option.none();
     }
 
+    /**
+     * @return bukkit player or null if offline
+     * @deprecated for removal in the future, in favour of {@link User#getPlayerOption()}
+     */
     @Nullable
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
@@ -148,6 +152,10 @@ public class User extends AbstractMutableEntity {
         return this.guild;
     }
 
+    /**
+     * @return user's guild
+     * @deprecated for removal in the future, in favour of {@link User#getGuildOption()}
+     */
     @Nullable
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")

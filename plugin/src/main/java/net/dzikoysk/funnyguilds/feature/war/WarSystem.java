@@ -47,7 +47,7 @@ public class WarSystem {
             return;
         }
 
-        Guild attacker = user.getGuild();
+        Guild attacker = user.getGuildOption().get();
 
         if (attacker.equals(guild)) {
             return;

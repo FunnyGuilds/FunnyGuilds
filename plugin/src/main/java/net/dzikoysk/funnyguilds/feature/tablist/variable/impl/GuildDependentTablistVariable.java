@@ -29,13 +29,13 @@ public final class GuildDependentTablistVariable implements TablistVariable {
 
     @Override
     public String get(User user) {
-        return user.getGuild() != null
+        return user.hasGuild()
                 ? Objects.toString(this.whenInGuild.apply(user))
                 : Objects.toString(this.whenNotInGuild.apply(user));
     }
 
     public static GuildDependentTablistVariable ofGuild(String name, Function<Guild, Object> whenInGuild, Function<User, Object> whenNotInGuild) {
-        return new GuildDependentTablistVariable(new String[] {name}, user -> whenInGuild.apply(user.getGuild()), whenNotInGuild);
+        return new GuildDependentTablistVariable(new String[] {name}, user -> whenInGuild.apply(user.getGuildOption().get()), whenNotInGuild);
     }
 
 }

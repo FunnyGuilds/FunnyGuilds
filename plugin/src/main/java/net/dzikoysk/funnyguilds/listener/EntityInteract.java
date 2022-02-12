@@ -51,7 +51,7 @@ public class EntityInteract extends AbstractFunnyListener {
 
         if (config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
             this.userManager.findByPlayer(eventCaller)
-                    .filter(user -> user.hasGuild() && !user.getGuild().canBuild())
+                    .filter(user -> user.hasGuild() && !user.getGuildOption().get().canBuild())
                     .peek(user -> event.setCancelled(true));
         }
     }

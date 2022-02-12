@@ -240,11 +240,11 @@ public class PlayerDeath extends AbstractFunnyListener {
 
         if (config.dataModel == DataModel.MYSQL) {
             if (victim.hasGuild()) {
-                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild()));
+                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuildOption().get()));
             }
 
             if (attacker.hasGuild()) {
-                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(attacker.getGuild()));
+                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(attacker.getGuildOption().get()));
             }
 
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
@@ -268,10 +268,10 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
                 .register("{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)))
                 .register("{VTAG}", victim.hasGuild()
-                        ? StringUtils.replace(config.chatGuild.getValue(), "{TAG}", victim.getGuild().getTag())
+                        ? StringUtils.replace(config.chatGuild.getValue(), "{TAG}", victim.getGuildOption().get().getTag())
                         : "")
                 .register("{ATAG}", attacker.hasGuild()
-                        ? StringUtils.replace(config.chatGuild.getValue(), "{TAG}", attacker.getGuild().getTag())
+                        ? StringUtils.replace(config.chatGuild.getValue(), "{TAG}", attacker.getGuildOption().get().getTag())
                         : "")
                 .register("{ASSISTS}", config.assistEnable && !assistEntries.isEmpty()
                         ? StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))

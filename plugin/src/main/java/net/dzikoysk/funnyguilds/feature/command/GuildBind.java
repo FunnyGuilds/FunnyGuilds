@@ -30,7 +30,7 @@ final class GuildBind implements Bind {
                 throw new ValidationException(this.messages.generalHasNoGuild);
             }
 
-            return user.getGuild();
+            return user.getGuildOption().getOrNull();
         });
     }
 

@@ -141,6 +141,10 @@ public class Guild extends AbstractMutableEntity {
         return this.region;
     }
 
+    /**
+     * @return region of the guild.
+     * @deprecated for removal in the future, in favour of {@link Guild#getRegionOption()}}
+     */
     @Nullable
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
@@ -195,11 +199,19 @@ public class Guild extends AbstractMutableEntity {
         return this.home;
     }
 
+    /**
+     * @return home location of the guild
+     * @deprecated for removal in the future, in favour of {@link Guild#getHomeOption()}}
+     */
     @Nullable
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public Location getHome() {
         return this.home.getOrNull();
+    }
+
+    public boolean hasHome() {
+        return this.home.isPresent();
     }
 
     public void setHome(@Nullable Location home) {
@@ -215,6 +227,10 @@ public class Guild extends AbstractMutableEntity {
         return this.owner;
     }
 
+    /**
+     * @return owner of the guild
+     * @deprecated for removal in the future, in favour of {@link Guild#getOwnerOption()}}
+     */
     @Nullable
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
