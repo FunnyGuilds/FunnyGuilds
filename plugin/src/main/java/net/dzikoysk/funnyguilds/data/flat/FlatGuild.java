@@ -177,8 +177,8 @@ public class FlatGuild {
         wrapper.set("uuid", guild.getUUID().toString());
         wrapper.set("name", guild.getName());
         wrapper.set("tag", guild.getTag());
-        wrapper.set("owner", guild.getOwner().getName());
-        wrapper.set("home", LocationUtils.toString(guild.getHome()));
+        wrapper.set("owner", guild.getOwnerOption().map(User::getName).getOrNull());
+        wrapper.set("home", LocationUtils.toString(guild.getHomeOption().getOrNull()));
         wrapper.set("members", new ArrayList<>(Entity.names(guild.getMembers())));
         wrapper.set("region", RegionUtils.toString(guild.getRegion()));
         wrapper.set("regions", null);

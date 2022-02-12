@@ -129,9 +129,9 @@ public class DatabaseGuild {
         statement.set("uuid", guild.getUUID().toString());
         statement.set("name", guild.getName());
         statement.set("tag", guild.getTag());
-        statement.set("owner", guild.getOwner().getName());
-        statement.set("home", LocationUtils.toString(guild.getHome()));
-        statement.set("region", RegionUtils.toString(guild.getRegion()));
+        statement.set("owner", guild.getOwnerOption().map(User::getName).getOrNull());
+        statement.set("home", LocationUtils.toString(guild.getHomeOption().getOrNull()));
+        statement.set("region", RegionUtils.toString(guild.getRegionOption().getOrNull()));
         statement.set("regions", "#abandoned");
         statement.set("members", members);
         statement.set("deputy", deputies);
