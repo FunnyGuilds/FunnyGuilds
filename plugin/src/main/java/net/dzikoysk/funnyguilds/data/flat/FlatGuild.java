@@ -166,7 +166,7 @@ public class FlatGuild {
             return false;
         }
 
-        if (guild.hasRegion() && FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+        if (!guild.hasRegion() && FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
             FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: region is null");
             return false;
         }
