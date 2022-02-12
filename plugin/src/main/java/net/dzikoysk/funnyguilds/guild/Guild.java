@@ -57,19 +57,19 @@ public class Guild extends AbstractMutableEntity {
         this.born = System.currentTimeMillis();
     }
 
-    public Guild(String name) {
+    public Guild(@NotNull String name) {
         this(UUID.randomUUID());
         this.name = name;
     }
 
-    public Guild(String name, String tag) {
+    public Guild(@NotNull String name, @NotNull String tag) {
         this(UUID.randomUUID());
         this.name = name;
         this.tag = tag;
     }
 
-    public Guild(UUID uuid, String name, String tag) {
-        this(uuid);
+    public Guild(UUID uuid, @NotNull String name, @NotNull String tag) {
+        this(uuid != null ? uuid : UUID.randomUUID());
         this.name = name;
         this.tag = tag;
     }
@@ -106,6 +106,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
+    @NotNull
     public GuildRank getRank() {
         return this.rank;
     }
@@ -137,19 +138,8 @@ public class Guild extends AbstractMutableEntity {
      * @return region of the guild.
      */
     @NotNull
-    public Option<Region> getRegionOption() {
+    public Option<Region> getRegion() {
         return this.region;
-    }
-
-    /**
-     * @return region of the guild.
-     * @deprecated for removal in the future, in favour of {@link Guild#getRegionOption()}}
-     */
-    @Nullable
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public Region getRegion() {
-        return this.region.getOrNull();
     }
 
     public boolean hasRegion() {
@@ -161,7 +151,7 @@ public class Guild extends AbstractMutableEntity {
 
         this.region.peek(peekRegion -> {
             peekRegion.setGuild(this);
-            peekRegion.getCenterOption()
+            peekRegion.getCenter()
                     .peek(center -> this.home = Option.of(center.clone()));
         });
 
@@ -171,7 +161,7 @@ public class Guild extends AbstractMutableEntity {
     @NotNull
     public Option<Location> getCenter() {
         return this.region
-                .flatMap(Region::getCenterOption)
+                .flatMap(Region::getCenter)
                 .map(Location::clone);
     }
 
@@ -193,19 +183,8 @@ public class Guild extends AbstractMutableEntity {
      * @return home location of the guild
      */
     @NotNull
-    public Option<Location> getHomeOption() {
+    public Option<Location> getHome() {
         return this.home;
-    }
-
-    /**
-     * @return home location of the guild
-     * @deprecated for removal in the future, in favour of {@link Guild#getHomeOption()}}
-     */
-    @Nullable
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public Location getHome() {
-        return this.home.getOrNull();
     }
 
     public boolean hasHome() {

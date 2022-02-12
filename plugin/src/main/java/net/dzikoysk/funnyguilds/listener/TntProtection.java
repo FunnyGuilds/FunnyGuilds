@@ -45,7 +45,7 @@ public class TntProtection extends AbstractFunnyListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
         this.regionManager.findRegionAtLocation(event.getLocation())
-                .flatMap(Region::getGuildOption)
+                .flatMap(Region::getGuild)
                 .peek(guild -> guild.setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli()));
     }
 

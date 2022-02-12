@@ -37,7 +37,7 @@ public class PlayerCommand extends AbstractFunnyListener {
         }
 
         this.regionManager.findRegionAtLocation(player.getLocation())
-                .flatMap(Region::getGuildOption)
+                .flatMap(Region::getGuild)
                 .peek(guild -> this.userManager.findByPlayer(player)
                         .filterNot(user -> guild.getMembers().contains(user))
                         .peek(user -> {

@@ -45,13 +45,13 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
         Region region = regionOption.get();
 
-        Block heart = region.getHeartBlockOption().getOrNull();
+        Block heart = region.getHeartBlock().getOrNull();
         if (clicked.equals(heart)) {
             if (heart.getType() == Material.DRAGON_EGG) {
                 event.setCancelled(true);
             }
 
-            region.getGuildOption()
+            region.getGuild()
                     .peek(guild -> {
                         if (SecuritySystem.onHitCrystal(player, guild)) {
                             return;
@@ -77,7 +77,7 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
 
         if (eventAction == Action.RIGHT_CLICK_BLOCK) {
-            region.getGuildOption()
+            region.getGuild()
                     .peek(guild -> {
                         if (guild.getName() == null) {
                             return;

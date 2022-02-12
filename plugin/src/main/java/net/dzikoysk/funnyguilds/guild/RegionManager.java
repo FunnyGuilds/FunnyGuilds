@@ -154,7 +154,7 @@ public class RegionManager {
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
 
         return PandaStream.of(this.regionsMap.values())
-                .flatMap(Region::getCenterOption)
+                .flatMap(Region::getCenter)
                 .filterNot(regionCenter -> regionCenter.equals(center))
                 .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
                 .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)

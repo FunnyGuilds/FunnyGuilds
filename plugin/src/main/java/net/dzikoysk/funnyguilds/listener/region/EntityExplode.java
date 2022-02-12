@@ -58,12 +58,12 @@ public class EntityExplode extends AbstractFunnyListener {
 
         if (config.explodeShouldAffectOnlyGuild) {
             explodedBlocks.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
-                    .filter(region -> region.getGuildOption().isEmpty())
+                    .filter(region -> region.getGuild().isEmpty())
                     .filter(region -> block.getType() != Material.TNT)
                     .isEmpty());
 
             blocksInSphere.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
-                    .filter(region -> region.getGuildOption().isEmpty())
+                    .filter(region -> region.getGuild().isEmpty())
                     .isEmpty());
         }
 
@@ -71,7 +71,7 @@ public class EntityExplode extends AbstractFunnyListener {
 
         if (regionOption.isPresent()) {
             Region region = regionOption.get();
-            region.getGuildOption()
+            region.getGuild()
                     .peek(guild -> {
                         if (config.warTntProtection && !guild.canBeAttacked()) {
                             event.setCancelled(true);
@@ -106,13 +106,13 @@ public class EntityExplode extends AbstractFunnyListener {
             boolean anyRemoved = explodedBlocks.removeIf(block ->
                     this.regionManager.findRegionAtLocation(block.getLocation())
                             .filter(Region::hasGuild)
-                            .flatMap(Region::getGuildOption)
+                            .flatMap(Region::getGuild)
                             .filter(guild -> !guild.canBeAttacked())
                             .isPresent()) ||
                     blocksInSphere.removeIf(block ->
                             this.regionManager.findRegionAtLocation(block.getLocation())
                                     .filter(Region::hasGuild)
-                                    .flatMap(Region::getGuildOption)
+                                    .flatMap(Region::getGuild)
                                     .filter(guild -> !guild.canBeAttacked())
                                     .isPresent());
 

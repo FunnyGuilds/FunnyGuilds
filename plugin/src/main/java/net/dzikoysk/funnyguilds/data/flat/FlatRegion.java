@@ -53,7 +53,7 @@ public class FlatRegion {
         YamlWrapper wrapper = new YamlWrapper(file);
 
         wrapper.set("name", region.getName());
-        wrapper.set("center", LocationUtils.toString(region.getCenterOption().getOrNull()));
+        wrapper.set("center", LocationUtils.toString(region.getCenter().getOrNull()));
         wrapper.set("size", region.getSize());
         wrapper.set("enlarge", region.getEnlarge());
 

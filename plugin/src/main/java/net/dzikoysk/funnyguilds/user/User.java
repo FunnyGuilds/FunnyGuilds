@@ -30,7 +30,7 @@ public class User extends AbstractMutableEntity {
     private Option<UserBan> ban = Option.none();
     private final BossBarProvider bossBarProvider;
 
-    User(UUID uuid, String name) {
+    User(@NotNull UUID uuid, @NotNull String name) {
         this.uuid = uuid;
         this.name = name;
 
@@ -42,7 +42,7 @@ public class User extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    User(Player player) {
+    User(@NotNull Player player) {
         this(player.getUniqueId(), player.getName());
     }
 
@@ -55,23 +55,27 @@ public class User extends AbstractMutableEntity {
                 .orElseGet(false);
     }
 
+    @NotNull
     public UUID getUUID() {
         return this.uuid;
     }
 
+    @NotNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
         this.name = name;
     }
 
+    @NotNull
     public UserCache getCache() {
         return this.cache;
     }
 
+    @NotNull
     public UserRank getRank() {
         return this.rank;
     }

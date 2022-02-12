@@ -42,7 +42,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         }
 
         if (config.regionsEnabled) {
-            guild.getRegionOption().peek(region -> {
+            guild.getRegion().peek(region -> {
                 if (this.dataModel instanceof FlatDataModel) {
                     FlatDataModel dataModel = (FlatDataModel) this.dataModel;
                     dataModel.getRegionFile(region).delete();

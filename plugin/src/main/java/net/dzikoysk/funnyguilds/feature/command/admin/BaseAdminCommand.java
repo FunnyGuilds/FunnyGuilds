@@ -27,7 +27,7 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
         Guild guild = userToTeleport.getGuildOption().get();
 
         when(!guild.hasHome(), messages.adminGuildHasNoHome);
-        Location guildHome = guild.getHomeOption().get();
+        Location guildHome = guild.getHome().get();
 
         Formatter formatter = new Formatter()
                 .register("{ADMIN}", sender.getName())

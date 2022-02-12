@@ -33,7 +33,7 @@ public class PlayerRespawn extends AbstractFunnyListener {
         if (!guild.hasHome()) {
             return;
         }
-        Location home = guild.getHomeOption().get();
+        Location home = guild.getHome().get();
 
         event.setRespawnLocation(home);
 
@@ -43,7 +43,7 @@ public class PlayerRespawn extends AbstractFunnyListener {
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             this.regionManager.findRegionAtLocation(home)
-                    .flatMap(Region::getGuildOption)
+                    .flatMap(Region::getGuild)
                     .peek(guildPeek -> GuildEntityHelper.spawnGuildHeart(guildPeek, player));
         });
     }

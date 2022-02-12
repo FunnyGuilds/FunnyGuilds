@@ -25,7 +25,7 @@ public class Region extends AbstractMutableEntity {
     private Location firstCorner;
     private Location secondCorner;
 
-    public Region(String name) {
+    public Region(@NotNull String name) {
         this.name = name;
     }
 
@@ -94,18 +94,19 @@ public class Region extends AbstractMutableEntity {
         return false;
     }
 
+    @NotNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
         this.name = name;
         super.markChanged();
     }
 
     @NotNull
-    public Option<Guild> getGuildOption() {
+    public Option<Guild> getGuild() {
         return this.guild;
     }
 
@@ -119,7 +120,7 @@ public class Region extends AbstractMutableEntity {
     }
 
     @NotNull
-    public Option<World> getWorldOption() {
+    public Option<World> getWorld() {
         return this.world;
     }
 
@@ -128,7 +129,7 @@ public class Region extends AbstractMutableEntity {
     }
 
     @NotNull
-    public Option<Location> getCenterOption() {
+    public Option<Location> getCenter() {
         return this.center;
     }
 
@@ -138,13 +139,13 @@ public class Region extends AbstractMutableEntity {
 
     @NotNull
     public Option<Location> getHeartOption() {
-        return this.getHeartBlockOption()
+        return this.getHeartBlock()
                 .map(Block::getLocation);
     }
 
     @NotNull
-    public Option<Block> getHeartBlockOption() {
-        return this.getCenterOption()
+    public Option<Block> getHeartBlock() {
+        return this.getCenter()
                 .map(Location::getBlock)
                 .map(block -> block.getRelative(BlockFace.DOWN));
     }

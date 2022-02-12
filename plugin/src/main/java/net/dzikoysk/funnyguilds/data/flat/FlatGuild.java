@@ -99,7 +99,7 @@ public class FlatGuild {
         Location home = null;
 
         if (region != null) {
-            home = region.getCenterOption().getOrNull();
+            home = region.getCenter().getOrNull();
 
             if (hs != null) {
                 home = LocationUtils.parseLocation(hs);
@@ -178,9 +178,9 @@ public class FlatGuild {
         wrapper.set("name", guild.getName());
         wrapper.set("tag", guild.getTag());
         wrapper.set("owner", guild.getOwner().getName());
-        wrapper.set("home", LocationUtils.toString(guild.getHomeOption().getOrNull()));
+        wrapper.set("home", LocationUtils.toString(guild.getHome().getOrNull()));
         wrapper.set("members", new ArrayList<>(Entity.names(guild.getMembers())));
-        wrapper.set("region", RegionUtils.toString(guild.getRegionOption().getOrNull()));
+        wrapper.set("region", RegionUtils.toString(guild.getRegion().getOrNull()));
         wrapper.set("regions", null);
         wrapper.set("allies", new ArrayList<>(Entity.names(guild.getAllies())));
         wrapper.set("enemies", new ArrayList<>(Entity.names(guild.getEnemies())));

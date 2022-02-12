@@ -34,7 +34,7 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
                 DatabaseGuild.save(guild);
 
                 if (this.config.regionsEnabled) {
-                    guild.getRegionOption().peek(DatabaseRegion::save);
+                    guild.getRegion().peek(DatabaseRegion::save);
                 }
 
                 Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(DatabaseUser::save);
@@ -46,7 +46,7 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
                 flatGuild.serialize((FlatDataModel) this.dataModel);
 
                 if (this.config.regionsEnabled) {
-                    guild.getRegionOption()
+                    guild.getRegion()
                             .map(FlatRegion::new)
                             .peek(flatRegion -> flatRegion.serialize((FlatDataModel) this.dataModel));
                 }

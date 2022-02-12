@@ -61,12 +61,12 @@ public final class MoveCommand extends AbstractFunnyCommand {
             region = new Region(guild, location, config.regionSize);
         }
         else {
-            region = guild.getRegionOption().get();
+            region = guild.getRegion().get();
             if (heart.createEntityType != null) {
                 GuildEntityHelper.despawnGuildHeart(guild);
             }
             else if (heart.createMaterial != null && heart.createMaterial.getLeft() != Material.AIR) {
-                region.getCenterOption()
+                region.getCenter()
                         .map(center -> center.getBlock().getRelative(BlockFace.DOWN))
                         .peek(block ->
                                 Bukkit.getScheduler().runTask(this.plugin, () -> {

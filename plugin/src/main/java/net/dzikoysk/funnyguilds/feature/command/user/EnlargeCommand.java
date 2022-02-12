@@ -29,14 +29,14 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         when(!config.regionsEnabled, messages.regionsDisabled);
 
         when(!guild.hasRegion(), messages.regionsDisabled);
-        Region region = guild.getRegionOption().get();
+        Region region = guild.getRegion().get();
 
         int enlarge = region.getEnlarge();
         when(enlarge > config.enlargeItems.size() - 1, messages.enlargeMaxSize);
 
         ItemStack need = config.enlargeItems.get(enlarge);
         when(!player.getInventory().containsAtLeast(need, need.getAmount()), messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
-        when(this.regionManager.isNearRegion(region.getCenterOption()), messages.enlargeIsNear);
+        when(this.regionManager.isNearRegion(region.getCenter()), messages.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, guild))) {
             return;
