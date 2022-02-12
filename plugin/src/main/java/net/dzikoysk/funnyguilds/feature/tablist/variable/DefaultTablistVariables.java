@@ -145,8 +145,7 @@ public final class DefaultTablistVariables {
 
         FUNNY_VARIABLES.put("g-name", GuildDependentTablistVariable.ofGuild("G-NAME", Guild::getName, user -> messages.gNameNoValue));
         FUNNY_VARIABLES.put("g-tag", GuildDependentTablistVariable.ofGuild("G-TAG", Guild::getTag, user -> messages.gTagNoValue));
-        FUNNY_VARIABLES.put("g-owner", GuildDependentTablistVariable.ofGuild("G-OWNER", guild ->
-                guild.getOwnerOption().map(User::getName).orElseGet("Brak"), user -> messages.gOwnerNoValue));
+        FUNNY_VARIABLES.put("g-owner", GuildDependentTablistVariable.ofGuild("G-OWNER", guild -> guild.getOwner().getName(), user -> messages.gOwnerNoValue));
 
         FUNNY_VARIABLES.put("g-deputies", GuildDependentTablistVariable.ofGuild("G-DEPUTIES",
                 guild -> guild.getDeputies().isEmpty()
@@ -202,7 +201,7 @@ public final class DefaultTablistVariables {
                 user -> messages.minMembersToIncludeNoValue);
 
         putGuild("g-region-size", "G-REGION-SIZE",
-                user ->  {
+                user -> {
                     Guild guild = user.getGuildOption().get();
                     return FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && guild.hasRegion()
                             ? String.valueOf(guild.getRegionOption().get().getSize())

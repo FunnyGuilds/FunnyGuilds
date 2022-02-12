@@ -187,7 +187,7 @@ public class User extends AbstractMutableEntity {
         }
 
         return this.guild
-                .flatMap(Guild::getOwnerOption)
+                .map(Guild::getOwner)
                 .map(owner -> owner.equals(this))
                 .orElseGet(false);
     }

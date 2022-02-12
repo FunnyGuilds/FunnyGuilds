@@ -85,8 +85,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         player.sendMessage(formatter.format(messages.joinToMember));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
 
-        guild.getOwnerOption()
-                .peek(owner -> owner.sendMessage(formatter.format(messages.joinToOwner)));
+        guild.getOwner().sendMessage(formatter.format(messages.joinToOwner));
     }
 
 }

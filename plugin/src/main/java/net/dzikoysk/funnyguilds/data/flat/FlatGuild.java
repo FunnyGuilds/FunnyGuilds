@@ -161,7 +161,7 @@ public class FlatGuild {
             return false;
         }
 
-        if (guild.getOwnerOption().isEmpty()) {
+        if (guild.getOwner() == null) {
             FunnyGuilds.getPluginLogger().error("[Serialize] Cannot serialize guild: " + guild.getName() + "! Caused by: owner is null");
             return false;
         }
@@ -177,7 +177,7 @@ public class FlatGuild {
         wrapper.set("uuid", guild.getUUID().toString());
         wrapper.set("name", guild.getName());
         wrapper.set("tag", guild.getTag());
-        wrapper.set("owner", guild.getOwnerOption().map(User::getName).getOrNull());
+        wrapper.set("owner", guild.getOwner().getName());
         wrapper.set("home", LocationUtils.toString(guild.getHomeOption().getOrNull()));
         wrapper.set("members", new ArrayList<>(Entity.names(guild.getMembers())));
         wrapper.set("region", RegionUtils.toString(guild.getRegionOption().getOrNull()));

@@ -16,7 +16,6 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.ChatColor;
 import panda.std.Pair;
@@ -56,7 +55,7 @@ public class Placeholders<T> {
         GUILD_ALL = new Placeholders<Guild>()
                 .property("GUILD", Guild::getName)
                 .property("TAG", Guild::getTag)
-                .property("OWNER", guild -> guild.getOwnerOption().map(User::getName).orElseGet("Brak"))
+                .property("OWNER", guild -> guild.getOwner().getName())
                 .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
                 .property("MEMBERS-ALL", guild -> guild.getMembers().size())
                 .property("DEPUTIES", guild -> joinOrDefault.apply(Entity.names(guild.getDeputies()), "Brak"))

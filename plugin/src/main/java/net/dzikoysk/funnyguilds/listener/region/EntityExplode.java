@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
@@ -58,60 +57,64 @@ public class EntityExplode extends AbstractFunnyListener {
         });
 
         if (config.explodeShouldAffectOnlyGuild) {
-            explodedBlocks.removeIf(block -> {
-                Region region = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
-                return (region == null || region.getGuild() == null) && block.getType() != Material.TNT;
-            });
+            explodedBlocks.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
+                    .filter(region -> region.getGuildOption().isEmpty())
+                    .filter(region -> block.getType() != Material.TNT)
+                    .isEmpty());
 
-            blocksInSphere.removeIf(block -> {
-                Region region = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
-                return region == null || region.getGuild() == null;
-            });
+            blocksInSphere.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
+                    .filter(region -> region.getGuildOption().isEmpty())
+                    .isEmpty());
         }
 
         Option<Region> regionOption = this.regionManager.findRegionAtLocation(explodeLocation);
 
         if (regionOption.isPresent()) {
             Region region = regionOption.get();
-            Guild guild = region.getGuild();
+            region.getGuildOption()
+                    .peek(guild -> {
+                        if (config.warTntProtection && !guild.canBeAttacked()) {
+                            event.setCancelled(true);
 
-            if (config.warTntProtection && !guild.canBeAttacked()) {
-                event.setCancelled(true);
+                            if (explosionEntity instanceof TNTPrimed) {
+                                TNTPrimed entityTnt = (TNTPrimed) explosionEntity;
+                                Entity explosionSource = entityTnt.getSource();
 
-                if (explosionEntity instanceof TNTPrimed) {
-                    TNTPrimed entityTnt = (TNTPrimed) explosionEntity;
-                    Entity explosionSource = entityTnt.getSource();
+                                if (explosionSource instanceof Player) {
+                                    Player explosionPlayer = (Player) explosionSource;
+                                    explosionPlayer.sendMessage(messages.regionExplosionHasProtection);
+                                }
+                            }
 
-                    if (explosionSource instanceof Player) {
-                        Player explosionPlayer = (Player) explosionSource;
-                        explosionPlayer.sendMessage(messages.regionExplosionHasProtection);
-                    }
-                }
+                            return;
+                        }
 
-                return;
-            }
+                        Location guildHeartLocation = region.getHeartOption().getOrNull();
+                        explodedBlocks.removeIf(block -> block.getLocation().equals(guildHeartLocation));
+                        blocksInSphere.removeIf(block -> block.getLocation().equals(guildHeartLocation));
 
-            Location guildHeartLocation = region.getHeartOption().getOrNull();
-            explodedBlocks.removeIf(block -> block.getLocation().equals(guildHeartLocation));
-            blocksInSphere.removeIf(block -> block.getLocation().equals(guildHeartLocation));
-
-            for (User user : guild.getMembers()) {
-                Player player = user.getPlayer();
-
-                if (player != null && !informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                    player.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
-                }
-            }
+                        for (User user : guild.getMembers()) {
+                            Option<Player> playerOption = user.getPlayerOption();
+                            if (playerOption.isPresent() && !informationMessageCooldowns.cooldown(playerOption.get(), TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                                user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
+                            }
+                        }
+                    });
         }
 
         if (config.warTntProtection) {
-            boolean anyRemoved = explodedBlocks.removeIf(block -> {
-                Region regionAtExplosion = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
-                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && !regionAtExplosion.getGuild().canBeAttacked();
-            }) || blocksInSphere.removeIf(block -> {
-                Region regionAtExplosion = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
-                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && !regionAtExplosion.getGuild().canBeAttacked();
-            });
+            boolean anyRemoved = explodedBlocks.removeIf(block ->
+                    this.regionManager.findRegionAtLocation(block.getLocation())
+                            .filter(Region::hasGuild)
+                            .flatMap(Region::getGuildOption)
+                            .filter(guild -> !guild.canBeAttacked())
+                            .isPresent()) ||
+                    blocksInSphere.removeIf(block ->
+                            this.regionManager.findRegionAtLocation(block.getLocation())
+                                    .filter(Region::hasGuild)
+                                    .flatMap(Region::getGuildOption)
+                                    .filter(guild -> !guild.canBeAttacked())
+                                    .isPresent());
 
             if (anyRemoved) {
                 if (explosionEntity instanceof TNTPrimed) {

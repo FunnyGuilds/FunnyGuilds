@@ -175,7 +175,7 @@ public class SQLDataModel implements DataModel {
         });
 
         for (Guild guild : guildManager.getGuilds()) {
-            if (!guild.hasOwner()) {
+            if (guild.getOwner() == null) {
                 continue;
             }
 

@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.Material;
@@ -52,48 +51,49 @@ public class PlayerInteract extends AbstractFunnyListener {
                 event.setCancelled(true);
             }
 
-            Guild guild = region.getGuild();
+            region.getGuildOption()
+                    .peek(guild -> {
+                        if (SecuritySystem.onHitCrystal(player, guild)) {
+                            return;
+                        }
 
-            if (SecuritySystem.onHitCrystal(player, guild)) {
-                return;
-            }
+                        event.setCancelled(true);
 
-            event.setCancelled(true);
+                        if (eventAction == Action.LEFT_CLICK_BLOCK) {
+                            WarSystem.getInstance().attack(player, guild);
+                            return;
+                        }
 
-            if (eventAction == Action.LEFT_CLICK_BLOCK) {
-                WarSystem.getInstance().attack(player, guild);
-                return;
-            }
-
-            if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                try {
-                    infoExecutor.execute(player, new String[] {guild.getTag()});
-                }
-                catch (ValidationException validatorException) {
-                    validatorException.getValidationMessage().peek(player::sendMessage);
-                }
-            }
-
+                        if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                            try {
+                                infoExecutor.execute(player, new String[] {guild.getTag()});
+                            }
+                            catch (ValidationException validatorException) {
+                                validatorException.getValidationMessage().peek(player::sendMessage);
+                            }
+                        }
+                    });
             return;
         }
 
         if (eventAction == Action.RIGHT_CLICK_BLOCK) {
-            Guild guild = region.getGuild();
+            region.getGuildOption()
+                    .peek(guild -> {
+                        if (guild.getName() == null) {
+                            return;
+                        }
 
-            if (guild == null || guild.getName() == null) {
-                return;
-            }
+                        this.userManager.findByPlayer(player).peek(user -> {
+                            boolean blocked = config.blockedInteract.contains(clicked.getType());
 
-            this.userManager.findByPlayer(player).peek(user -> {
-                boolean blocked = config.blockedInteract.contains(clicked.getType());
-
-                if (guild.getMembers().contains(user)) {
-                    event.setCancelled(blocked && config.regionExplodeBlockInteractions && !guild.canBuild());
-                }
-                else {
-                    event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));
-                }
-            });
+                            if (guild.getMembers().contains(user)) {
+                                event.setCancelled(blocked && config.regionExplodeBlockInteractions && !guild.canBuild());
+                            }
+                            else {
+                                event.setCancelled(blocked && !player.hasPermission("funnyguilds.admin.interact"));
+                            }
+                        });
+                    });
         }
 
     }

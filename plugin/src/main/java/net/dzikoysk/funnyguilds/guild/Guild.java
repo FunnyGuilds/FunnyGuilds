@@ -34,7 +34,7 @@ public class Guild extends AbstractMutableEntity {
     private Option<Region> region = Option.none();
     private Option<Location> home = Option.none();
 
-    private Option<User> owner = Option.none();
+    private User owner;
     private Set<User> members = ConcurrentHashMap.newKeySet();
     private Set<User> deputies = ConcurrentHashMap.newKeySet();
     private Set<Guild> allies = ConcurrentHashMap.newKeySet();
@@ -79,7 +79,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void deserializationUpdate() {
-        this.owner.peek(user -> user.setGuild(this));
+        owner.setGuild(this);
         this.members.forEach(user -> user.setGuild(this));
     }
 
@@ -217,31 +217,12 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    /**
-     * @return owner of the guild
-     */
-    @NotNull
-    public Option<User> getOwnerOption() {
+    public User getOwner() {
         return this.owner;
     }
 
-    /**
-     * @return owner of the guild
-     * @deprecated for removal in the future, in favour of {@link Guild#getOwnerOption()}}
-     */
-    @Nullable
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public User getOwner() {
-        return this.owner.getOrNull();
-    }
-
-    public boolean hasOwner() {
-        return this.owner.isPresent();
-    }
-
     public void setOwner(@NotNull User user) {
-        this.owner = Option.of(user);
+        this.owner = user;
         this.addMember(user);
         this.markChanged();
     }
