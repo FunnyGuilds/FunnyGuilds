@@ -52,12 +52,12 @@ public final class SecuritySystem {
                 return;
             }
 
-            if(!guild.hasRegion()) {
+            if (!guild.hasRegion()) {
                 return;
             }
             Region region = guild.getRegionOption().get();
 
-            if(!region.hasCenter()) {
+            if (!region.hasCenter()) {
                 return;
             }
             Location center = guild.getRegionOption()
@@ -81,7 +81,7 @@ public final class SecuritySystem {
             Vector hitPoint = rayTraceResult == null
                     ? center.toVector()
                     : rayTraceResult.getHitPosition();
-            
+
             double distance = hitPoint.distance(origin);
 
             SecurityFreeCam.on(player, origin, hitPoint, distance);

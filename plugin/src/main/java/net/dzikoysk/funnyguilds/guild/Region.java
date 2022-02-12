@@ -77,7 +77,7 @@ public class Region extends AbstractMutableEntity {
             return false;
         }
 
-        if(this.world.isEmpty()) {
+        if (this.world.isEmpty()) {
             return false;
         }
 
