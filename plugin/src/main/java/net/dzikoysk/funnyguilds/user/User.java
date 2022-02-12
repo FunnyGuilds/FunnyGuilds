@@ -13,6 +13,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import panda.std.Option;
 
 public class User extends AbstractMutableEntity {
 
@@ -22,8 +26,8 @@ public class User extends AbstractMutableEntity {
     private final UserCache cache;
     private final UserRank rank;
     private WeakReference<Player> playerRef;
-    private Guild guild;
-    private UserBan ban;
+    private Option<Guild> guild = Option.none();
+    private Option<UserBan> ban = Option.none();
     private final BossBarProvider bossBarProvider;
 
     User(UUID uuid, String name) {
@@ -43,14 +47,12 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean sendMessage(String message) {
-        Player player = getPlayer();
-
-        if (player == null) {
-            return false;
-        }
-
-        player.sendMessage(message);
-        return true;
+        return this.getPlayerOption()
+                .map(player -> {
+                    player.sendMessage(message);
+                    return true;
+                })
+                .orElseGet(false);
     }
 
     public UUID getUUID() {
@@ -78,30 +80,37 @@ public class User extends AbstractMutableEntity {
         return Bukkit.getOfflinePlayer(this.uuid);
     }
 
-    public Player getPlayer() {
+    /**
+     * @return bukkit player
+     */
+    public Option<Player> getPlayerOption() {
         if (!isOnline()) {
-            return null;
+            return Option.none();
         }
 
         Player player = this.playerRef.get();
-
         if (player != null) {
-            return player;
+            return Option.of(player);
         }
 
         player = Bukkit.getPlayer(this.uuid);
-
         if (player != null) {
             this.playerRef = new WeakReference<>(player);
-            return player;
+            return Option.of(player);
         }
 
-        return null;
+        return Option.none();
     }
 
-    public void updateReference(Player player) {
-        Validate.notNull(player, "you can't update reference with null player!");
+    @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    public Player getPlayer() {
+        return this.getPlayerOption().getOrNull();
+    }
 
+    public void updateReference(@NotNull Player player) {
+        Validate.notNull(player, "you can't update reference with null player!");
         this.playerRef = new WeakReference<>(player);
     }
 
@@ -119,34 +128,44 @@ public class User extends AbstractMutableEntity {
         }
 
         // Should work with VanishNoPacket, SuperVanish and PremiumVanish
-        for (MetadataValue meta : getPlayer().getMetadata("vanished")) {
-            if (meta.asBoolean()) {
-                return true;
-            }
-        }
-
-        return false;
+        return getPlayerOption()
+                .map(player -> player.getMetadata("vanished"))
+                .map(metadata -> metadata.stream().anyMatch(MetadataValue::asBoolean))
+                .orElseGet(false);
     }
 
     public int getPing() {
-        return PingUtils.getPing(getPlayer());
+        return getPlayerOption()
+                .map(PingUtils::getPing)
+                .orElseGet(0);
     }
 
-    public Guild getGuild() {
+    /**
+     * @return user's guild
+     */
+    @NotNull
+    public Option<Guild> getGuildOption() {
         return this.guild;
     }
 
-    public boolean hasGuild() {
-        return this.guild != null;
+    @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    public Guild getGuild() {
+        return this.guild.getOrNull();
     }
 
-    public void setGuild(Guild guild) {
-        this.guild = guild;
+    public boolean hasGuild() {
+        return this.guild.isPresent();
+    }
+
+    public void setGuild(@Nullable Guild guild) {
+        this.guild = Option.of(guild);
         this.markChanged();
     }
 
     public void removeGuild() {
-        this.guild = null;
+        this.guild = Option.none();
         this.markChanged();
     }
 
@@ -159,7 +178,10 @@ public class User extends AbstractMutableEntity {
             return false;
         }
 
-        return this.guild.getOwner().equals(this);
+        return this.guild
+                .flatMap(Guild::getOwnerOption)
+                .map(owner -> owner.equals(this))
+                .orElseGet(false);
     }
 
     public boolean isDeputy() {
@@ -167,19 +189,28 @@ public class User extends AbstractMutableEntity {
             return false;
         }
 
-        return this.guild.getDeputies().contains(this);
+        return this.guild
+                .map(Guild::getDeputies)
+                .map(deputies -> deputies.contains(this))
+                .orElseGet(false);
     }
 
-    public UserBan getBan() {
-        return ban;
+    /**
+     * @return user's ban
+     */
+    @NotNull
+    public Option<UserBan> getBan() {
+        return this.ban;
     }
 
     public boolean isBanned() {
-        return this.ban != null && this.ban.isBanned();
+        return this.ban
+                .map(UserBan::isBanned)
+                .orElseGet(false);
     }
 
-    public void setBan(UserBan ban) {
-        this.ban = ban;
+    public void setBan(@Nullable UserBan ban) {
+        this.ban = Option.of(ban);
     }
 
     public BossBarProvider getBossBar() {

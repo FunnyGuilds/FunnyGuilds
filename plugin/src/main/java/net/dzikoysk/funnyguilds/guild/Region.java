@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 public class Region extends AbstractMutableEntity {
 
@@ -26,12 +27,12 @@ public class Region extends AbstractMutableEntity {
         this.name = name;
     }
 
-    public Region(Guild guild, Location location, int size) {
+    public Region(@NotNull Guild guild, @NotNull Location center, int size) {
         this(guild.getName());
 
         this.guild = guild;
-        this.world = location.getWorld();
-        this.center = location;
+        this.world = center.getWorld();
+        this.center = center;
         this.size = size;
 
         this.update();
@@ -162,6 +163,14 @@ public class Region extends AbstractMutableEntity {
 
     public int getLowerZ() {
         return compareCoordinates(false, firstCorner.getBlockZ(), secondCorner.getBlockZ());
+    }
+
+    public Location getUpperCorner() {
+        return new Location(this.world, this.getUpperX(), this.getUpperY(), this.getUpperZ());
+    }
+
+    public Location getLowerCorner() {
+        return new Location(this.world, this.getLowerX(), this.getLowerY(), this.getLowerZ());
     }
 
     public Location getFirstCorner() {

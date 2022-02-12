@@ -47,7 +47,7 @@ public final class BanUtils {
             return;
         }
 
-        if (System.currentTimeMillis() > user.getBan().getBanTime()) {
+        if (System.currentTimeMillis() > user.getBan().get().getBanTime()) {
             user.setBan(null);
         }
     }
@@ -59,7 +59,7 @@ public final class BanUtils {
             return StringUtils.EMPTY;
         }
 
-        UserBan userBan = user.getBan();
+        UserBan userBan = user.getBan().get();
         message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
         message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getMessageConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
         message = StringUtils.replace(message, "{REASON}", userBan.getReason());

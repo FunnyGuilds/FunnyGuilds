@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 public class IndividualPlayerList {
 
@@ -111,7 +112,8 @@ public class IndividualPlayerList {
         String preparedHeader = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT];
         String preparedFooter = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1];
 
-        this.playerList.send(this.user.getPlayer(), preparedCells, preparedHeader, preparedFooter, this.cellPing);
+        this.user.getPlayerOption()
+                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, this.cellPing));
     }
 
     private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
@@ -136,10 +138,11 @@ public class IndividualPlayerList {
     private String putVars(String cell) {
         String formatted = cell;
 
-        Player player = this.user.getPlayer();
-        if (player == null) {
+        Option<Player> playerOption = this.user.getPlayerOption();
+        if (playerOption.isEmpty()) {
             return formatted;
         }
+        Player player = playerOption.get();
 
         VariableParsingResult result = this.variableParser.createResultFor(this.user);
         formatted = result.replaceInString(formatted);

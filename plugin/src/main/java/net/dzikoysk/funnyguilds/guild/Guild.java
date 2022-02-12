@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -11,15 +12,13 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.rank.RankManager;
-import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
 public class Guild extends AbstractMutableEntity {
@@ -32,10 +31,10 @@ public class Guild extends AbstractMutableEntity {
     private final GuildRank rank;
     private int lives;
 
-    private Region region;
-    private Location home;
+    private Option<Region> region;
+    private Option<Location> home;
 
-    private User owner;
+    private Option<User> owner = Option.none();
     private Set<User> members = ConcurrentHashMap.newKeySet();
     private Set<User> deputies = ConcurrentHashMap.newKeySet();
     private Set<Guild> allies = ConcurrentHashMap.newKeySet();
@@ -76,17 +75,11 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void broadcast(String message) {
-        for (User user : this.getOnlineMembers()) {
-            if (user.getPlayer() == null) {
-                continue;
-            }
-
-            user.getPlayer().sendMessage(message);
-        }
+        this.getOnlineMembers().forEach(user -> user.sendMessage(message));
     }
 
     public void deserializationUpdate() {
-        this.owner.setGuild(this);
+        this.owner.peek(user -> user.setGuild(this));
         this.members.forEach(user -> user.setGuild(this));
     }
 
@@ -140,25 +133,42 @@ public class Guild extends AbstractMutableEntity {
         this.setLives(update.apply(this.lives));
     }
 
-    public Region getRegion() {
-        return region;
+    /**
+     * @return region of the guild.
+     */
+    @NotNull
+    public Option<Region> getRegionOption() {
+        return this.region;
     }
 
-    public void setRegion(Region region) {
-        this.region = region;
-        this.region.setGuild(this);
+    @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    public Region getRegion() {
+        return this.region.getOrNull();
+    }
 
-        Location center = region.getCenter();
+    public boolean hasRegion() {
+        return this.region.isPresent();
+    }
 
-        if (this.home == null) {
-            this.home = center.clone();
-        }
+    public void setRegion(@Nullable Region region) {
+        this.region = Option.of(region);
+
+        this.region.peek(peekRegion -> {
+            peekRegion.setGuild(this);
+            Location center = peekRegion.getCenter();
+            if (this.home.isEmpty()) {
+                this.home = Option.of(center.clone());
+            }
+        });
 
         this.markChanged();
     }
 
+    @NotNull
     public Option<Location> getCenter() {
-        return Option.of(this.region)
+        return this.region
                 .map(Region::getCenter)
                 .map(Location::clone);
     }
@@ -167,26 +177,53 @@ public class Guild extends AbstractMutableEntity {
         return this.getCenter().map(location -> location.add(0.5D, -1.0D, 0.5D));
     }
 
+    /**
+     * @return if someone is in guild region
+     * @deprecated for removal in the future, in favour of {@link RegionManager#isAnyUserInRegion(Region, Collection)}}
+     */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public boolean isSomeoneInRegion() {
         return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(region, new HashSet<>(members));
     }
 
-    public Location getHome() {
+    /**
+     * @return home location of the guild
+     */
+    @NotNull
+    public Option<Location> getHomeOption() {
         return this.home;
     }
 
-    public void setHome(Location home) {
-        this.home = home;
+    @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    public Location getHome() {
+        return this.home.getOrNull();
+    }
+
+    public void setHome(@Nullable Location home) {
+        this.home = Option.of(home);
         this.markChanged();
     }
 
-    public User getOwner() {
+    /**
+     * @return owner of the guild
+     */
+    @NotNull
+    public Option<User> getOwnerOption() {
         return this.owner;
     }
 
-    public void setOwner(User user) {
-        this.owner = user;
+    @Nullable
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
+    public User getOwner() {
+        return this.owner.getOrNull();
+    }
+
+    public void setOwner(@NotNull User user) {
+        this.owner = Option.of(user);
         this.addMember(user);
         this.markChanged();
     }

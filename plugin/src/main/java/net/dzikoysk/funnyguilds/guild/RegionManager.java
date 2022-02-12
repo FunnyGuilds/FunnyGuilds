@@ -128,6 +128,11 @@ public class RegionManager {
         return isAnyPlayerInRegion(region, users.stream().map(User::getUUID).collect(Collectors.toSet()));
     }
 
+    public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> users) {
+        return regionOption.map(region -> isAnyUserInRegion(region, users))
+                .orElseGet(false);
+    }
+
     /**
      * Checks if there is any region in area (used to check if it's possible to create a new guild in given location).
      *
