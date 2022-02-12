@@ -51,7 +51,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
             if (!guild.hasHome()) {
                 return;
             }
-            player.teleport(guild.getHome().get());
+            guild.teleportHome(player);
             player.sendMessage(messages.baseTeleport);
             return;
         }
@@ -82,7 +82,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
             if (Duration.between(teleportStart, Instant.now()).compareTo(time) > 0) {
                 cache.getTeleportation().cancel();
                 player.sendMessage(messages.baseTeleport);
-                guild.getHome().peek(player::teleport);
+                guild.teleportHome(player);
                 cache.setTeleportation(null);
             }
         }, 0L, 10L));

@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -186,6 +187,14 @@ public class Guild extends AbstractMutableEntity {
     public void setHome(@Nullable Location home) {
         this.home = Option.of(home);
         this.markChanged();
+    }
+
+    public void teleportHome(@NotNull Player player) {
+        this.home.peek(player::teleport);
+    }
+
+    public void teleportHome(Option<Player> playerOption) {
+        playerOption.peek(this::teleportHome);
     }
 
     public User getOwner() {

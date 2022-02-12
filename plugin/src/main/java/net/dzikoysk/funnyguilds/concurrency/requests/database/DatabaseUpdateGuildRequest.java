@@ -51,7 +51,7 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
                             .peek(flatRegion -> flatRegion.serialize((FlatDataModel) this.dataModel));
                 }
 
-                Stream.concat(guild.getMembers().stream(),  Stream.of(guild.getOwner()))
+                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner()))
                         .map(FlatUser::new)
                         .forEach(flatUser -> flatUser.serialize((FlatDataModel) this.dataModel));
             }
