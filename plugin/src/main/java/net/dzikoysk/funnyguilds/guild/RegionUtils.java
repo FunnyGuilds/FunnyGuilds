@@ -129,4 +129,8 @@ public final class RegionUtils {
         return region != null ? region.getName() : "null";
     }
 
+    public static String toString(Option<Region> region) {
+        return toString(region.getOrNull());
+    }
+
 }

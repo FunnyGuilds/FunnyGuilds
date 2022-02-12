@@ -83,6 +83,7 @@ public class Guild extends AbstractMutableEntity {
         this.members.forEach(user -> user.setGuild(this));
     }
 
+    @NotNull
     public UUID getUUID() {
         return this.uuid;
     }
@@ -92,7 +93,7 @@ public class Guild extends AbstractMutableEntity {
         return this.name;
     }
 
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
         this.name = name;
         this.markChanged();
     }
@@ -101,7 +102,7 @@ public class Guild extends AbstractMutableEntity {
         return this.tag;
     }
 
-    public void setTag(String tag) {
+    public void setTag(@NotNull String tag) {
         this.tag = tag;
         this.markChanged();
     }

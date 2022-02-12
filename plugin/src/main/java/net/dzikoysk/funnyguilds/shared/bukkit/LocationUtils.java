@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 public final class LocationUtils {
 
@@ -62,6 +63,10 @@ public final class LocationUtils {
                 location.getBlockY() +
                 "," +
                 location.getBlockZ();
+    }
+
+    public static String toString(Option<Location> location) {
+        return toString(location.getOrNull());
     }
 
     public static int getMinHeight(World world) {

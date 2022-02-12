@@ -130,8 +130,8 @@ public class DatabaseGuild {
         statement.set("name", guild.getName());
         statement.set("tag", guild.getTag());
         statement.set("owner", guild.getOwner().getName());
-        statement.set("home", LocationUtils.toString(guild.getHome().getOrNull()));
-        statement.set("region", RegionUtils.toString(guild.getRegion().getOrNull()));
+        statement.set("home", LocationUtils.toString(guild.getHome()));
+        statement.set("region", RegionUtils.toString(guild.getRegion()));
         statement.set("regions", "#abandoned");
         statement.set("members", members);
         statement.set("deputy", deputies);
