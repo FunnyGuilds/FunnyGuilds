@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityFreeCam;
 import net.dzikoysk.funnyguilds.feature.security.cheat.SecurityReach;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.user.User;
@@ -51,7 +52,13 @@ public final class SecuritySystem {
                 return;
             }
 
-            Location center = guild.getRegion().getCenter();
+            if(!guild.hasRegion()) {
+                return;
+            }
+
+            Location center = guild.getRegionOption()
+                    .map(Region::getCenter)
+                    .get();
 
             double x = center.getX() + 0.5;
             double y = center.getY();

@@ -60,7 +60,7 @@ public class Placeholders<T> {
                 .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
                 .property("MEMBERS-ALL", guild -> guild.getMembers().size())
                 .property("DEPUTIES", guild -> joinOrDefault.apply(Entity.names(guild.getDeputies()), "Brak"))
-                .property("REGION-SIZE", guild -> config.regionsEnabled ? guild.getRegion().getSize() : messages.gRegionSizeNoValue)
+                .property("REGION-SIZE", guild -> config.regionsEnabled && guild.hasRegion() ? guild.getRegionOption().get().getSize() : messages.gRegionSizeNoValue)
                 .property("GUILD-PROTECTION", bindGuildProtection)
                 .property("POINTS-FORMAT", guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
                 .property("POINTS", guild -> guild.getRank().getAveragePoints())

@@ -125,7 +125,9 @@ public class RegionManager {
     }
 
     public boolean isAnyUserInRegion(Region region, Collection<User> users) {
-        return isAnyPlayerInRegion(region, users.stream().map(User::getUUID).collect(Collectors.toSet()));
+        return isAnyPlayerInRegion(region, users.stream()
+                .map(User::getUUID)
+                .collect(Collectors.toSet()));
     }
 
     public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> users) {

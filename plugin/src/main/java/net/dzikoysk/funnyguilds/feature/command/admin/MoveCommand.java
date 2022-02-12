@@ -57,12 +57,12 @@ public final class MoveCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Region region = guild.getRegion();
-
-        if (region == null) {
+        Region region;
+        if (!guild.hasRegion()) {
             region = new Region(guild, location, config.regionSize);
         }
         else {
+            region = guild.getRegionOption().get();
             if (heart.createEntityType != null) {
                 GuildEntityHelper.despawnGuildHeart(guild);
             }

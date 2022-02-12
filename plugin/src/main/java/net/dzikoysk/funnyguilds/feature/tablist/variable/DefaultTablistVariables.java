@@ -202,9 +202,12 @@ public final class DefaultTablistVariables {
                 user -> messages.minMembersToIncludeNoValue);
 
         putGuild("g-region-size", "G-REGION-SIZE",
-                user -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled
-                        ? String.valueOf(user.getGuild().getRegion().getSize())
-                        : messages.gRegionSizeNoValue,
+                user ->  {
+                    Guild guild = user.getGuildOption().get();
+                    return FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && guild.hasRegion()
+                            ? String.valueOf(guild.getRegionOption().get().getSize())
+                            : messages.gRegionSizeNoValue;
+                },
                 user -> messages.gRegionSizeNoValue);
     }
 
