@@ -52,7 +52,7 @@ public class DatabaseRegion {
         SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabRegions);
 
         statement.set("name", region.getName());
-        statement.set("center", LocationUtils.toString(region.getCenter()));
+        statement.set("center", LocationUtils.toString(region.getCenterOption().getOrNull()));
         statement.set("size", region.getSize());
         statement.set("enlarge", region.getEnlarge());
         statement.executeUpdate();

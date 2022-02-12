@@ -31,8 +31,8 @@ public class Guild extends AbstractMutableEntity {
     private final GuildRank rank;
     private int lives;
 
-    private Option<Region> region;
-    private Option<Location> home;
+    private Option<Region> region = Option.none();
+    private Option<Location> home = Option.none();
 
     private Option<User> owner = Option.none();
     private Set<User> members = ConcurrentHashMap.newKeySet();
@@ -161,10 +161,8 @@ public class Guild extends AbstractMutableEntity {
 
         this.region.peek(peekRegion -> {
             peekRegion.setGuild(this);
-            Location center = peekRegion.getCenter();
-            if (this.home.isEmpty()) {
-                this.home = Option.of(center.clone());
-            }
+            peekRegion.getCenterOption()
+                    .peek(center -> this.home = Option.of(center.clone()));
         });
 
         this.markChanged();
@@ -173,7 +171,7 @@ public class Guild extends AbstractMutableEntity {
     @NotNull
     public Option<Location> getCenter() {
         return this.region
-                .map(Region::getCenter)
+                .flatMap(Region::getCenterOption)
                 .map(Location::clone);
     }
 

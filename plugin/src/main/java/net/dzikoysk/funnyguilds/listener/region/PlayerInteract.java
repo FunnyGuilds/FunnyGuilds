@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,8 +46,7 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
         Region region = regionOption.get();
 
-        Block heart = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-
+        Block heart = region.getHeartBlockOption().getOrNull();
         if (clicked.equals(heart)) {
             if (heart.getType() == Material.DRAGON_EGG) {
                 event.setCancelled(true);

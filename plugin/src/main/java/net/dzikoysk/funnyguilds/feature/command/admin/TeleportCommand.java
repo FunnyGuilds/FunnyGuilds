@@ -25,10 +25,10 @@ public final class TeleportCommand extends AbstractFunnyCommand {
 
         when(!guild.hasRegion(), messages.adminNoRegionFound);
         Region region = guild.getRegionOption().get();
-        when(region.getCenter() == null, messages.adminNoRegionFound);
+        when(!region.hasCenter(), messages.adminNoRegionFound);
 
         player.sendMessage(messages.baseTeleport);
-        player.teleport(region.getCenter());
+        player.teleport(region.getCenterOption().get());
     }
 
 }

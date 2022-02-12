@@ -36,7 +36,7 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
 
         ItemStack need = config.enlargeItems.get(enlarge);
         when(!player.getInventory().containsAtLeast(need, need.getAmount()), messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
-        when(this.regionManager.isNearRegion(region.getCenter()), messages.enlargeIsNear);
+        when(this.regionManager.isNearRegion(region.getCenterOption()), messages.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, guild))) {
             return;

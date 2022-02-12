@@ -91,7 +91,7 @@ public class EntityExplode extends AbstractFunnyListener {
                 return;
             }
 
-            Location guildHeartLocation = region.getHeart();
+            Location guildHeartLocation = region.getHeartOption().getOrNull();
             explodedBlocks.removeIf(block -> block.getLocation().equals(guildHeartLocation));
             blocksInSphere.removeIf(block -> block.getLocation().equals(guildHeartLocation));
 

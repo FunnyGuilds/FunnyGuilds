@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -155,12 +154,16 @@ public class RegionManager {
         int requiredDistance = (2 * size) + this.pluginConfiguration.regionMinDistance;
 
         return PandaStream.of(this.regionsMap.values())
-                .map(Region::getCenter)
-                .filter(Objects::nonNull)
+                .flatMap(Region::getCenterOption)
                 .filterNot(regionCenter -> regionCenter.equals(center))
                 .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
                 .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
                 .isPresent();
+    }
+
+    public boolean isNearRegion(Option<Location> center) {
+        return center.map(this::isNearRegion)
+                .orElseGet(false);
     }
 
     /**
@@ -177,7 +180,7 @@ public class RegionManager {
 
         Location blockLocation = block.getLocation();
         return this.findRegionAtLocation(blockLocation)
-                .map(region -> blockLocation.equals(region.getHeart()))
+                .map(region -> blockLocation.equals(region.getHeartOption().getOrNull()))
                 .orElseGet(false);
     }
 

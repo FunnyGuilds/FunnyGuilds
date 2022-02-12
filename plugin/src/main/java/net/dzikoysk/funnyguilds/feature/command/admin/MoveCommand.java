@@ -16,7 +16,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
@@ -67,13 +66,14 @@ public final class MoveCommand extends AbstractFunnyCommand {
                 GuildEntityHelper.despawnGuildHeart(guild);
             }
             else if (heart.createMaterial != null && heart.createMaterial.getLeft() != Material.AIR) {
-                Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    if (block.getLocation().getBlockY() > 1) {
-                        block.setType(Material.AIR);
-                    }
-                });
+                region.getCenterOption()
+                        .map(center -> center.getBlock().getRelative(BlockFace.DOWN))
+                        .peek(block ->
+                                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                                    if (block.getLocation().getBlockY() > 1) {
+                                        block.setType(Material.AIR);
+                                    }
+                                }));
             }
 
             region.setCenter(location);

@@ -234,16 +234,17 @@ public class GuildManager {
                         if (this.pluginConfiguration.heart.createEntityType != null) {
                             GuildEntityHelper.despawnGuildHeart(guild);
                         }
-                        else if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
-                            Location centerLocation = region.getCenter().clone();
+                        else if (this.pluginConfiguration.heart.createMaterial != null &&
+                                this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
+                            region.getCenterOption()
+                                    .map(Location::clone)
+                                    .peek(center -> Bukkit.getScheduler().runTask(plugin, () -> {
+                                        Block block = center.getBlock().getRelative(BlockFace.DOWN);
 
-                            Bukkit.getScheduler().runTask(plugin, () -> {
-                                Block block = centerLocation.getBlock().getRelative(BlockFace.DOWN);
-
-                                if (block.getLocation().getBlockY() > 1) {
-                                    block.setType(Material.AIR);
-                                }
-                            });
+                                        if (block.getLocation().getBlockY() > 1) {
+                                            block.setType(Material.AIR);
+                                        }
+                                    }));
                         }
 
                         plugin.getRegionManager().deleteRegion(plugin.getDataModel(), region);
@@ -302,11 +303,11 @@ public class GuildManager {
     public void spawnHeart(Guild guild) {
         if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
             guild.getRegionOption()
-                    .peek(region -> {
-                        Block heart = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-                        heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
-                        BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
-                    });
+                    .peek(region -> region.getHeartBlockOption()
+                            .peek(heart -> {
+                                heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
+                                BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
+                            }));
         }
         else if (this.pluginConfiguration.heart.createEntityType != null) {
             GuildEntityHelper.spawnGuildHeart(guild);

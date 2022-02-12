@@ -51,7 +51,7 @@ public final class ProtectionSystem {
             return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
         }
 
-        if (location.equals(region.getHeart())) {
+        if (location.equals(region.getHeartOption().getOrNull())) {
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             Pair<Material, Byte> heartMaterial = config.heart.createMaterial;
             return Option.when(heartMaterial != null && heartMaterial.getLeft() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
