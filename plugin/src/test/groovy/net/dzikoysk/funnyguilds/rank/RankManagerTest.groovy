@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import org.junit.jupiter.api.Test
 
-import static org.junit.jupiter.api.Assertions.assertEquals
+import static panda.std.OptionAssertions.assertOptionEquals
 
 @CompileStatic
 class RankManagerTest extends FunnyGuildsSpec {
@@ -31,12 +31,12 @@ class RankManagerTest extends FunnyGuildsSpec {
 
         rankRecalculationTask.run()
 
-        assertEquals user1, rankManager.getUser(1).getOrNull()
-        assertEquals user2, rankManager.getUser(2).getOrNull()
-        assertEquals user3, rankManager.getUser(3).getOrNull()
-        assertEquals guild1, rankManager.getGuild(1).getOrNull()
-        assertEquals guild2, rankManager.getGuild(2).getOrNull()
-        assertEquals guild3, rankManager.getGuild(3).getOrNull()
+        assertOptionEquals user1, rankManager.getUser(1)
+        assertOptionEquals user2, rankManager.getUser(2)
+        assertOptionEquals user3, rankManager.getUser(3)
+        assertOptionEquals guild1, rankManager.getGuild(1)
+        assertOptionEquals guild2, rankManager.getGuild(2)
+        assertOptionEquals guild3, rankManager.getGuild(3)
 
         user1.rank.points = 100
         user2.rank.points = 150
@@ -44,12 +44,12 @@ class RankManagerTest extends FunnyGuildsSpec {
 
         rankRecalculationTask.run()
 
-        assertEquals user3, rankManager.getUser(1).getOrNull()
-        assertEquals user2, rankManager.getUser(2).getOrNull()
-        assertEquals user1, rankManager.getUser(3).getOrNull()
-        assertEquals guild3, rankManager.getGuild(1).getOrNull()
-        assertEquals guild2, rankManager.getGuild(2).getOrNull()
-        assertEquals guild1, rankManager.getGuild(3).getOrNull()
+        assertOptionEquals user3, rankManager.getUser(1)
+        assertOptionEquals user2, rankManager.getUser(2)
+        assertOptionEquals user1, rankManager.getUser(3)
+        assertOptionEquals guild3, rankManager.getGuild(1)
+        assertOptionEquals guild2, rankManager.getGuild(2)
+        assertOptionEquals guild1, rankManager.getGuild(3)
     }
 
 }
