@@ -48,7 +48,8 @@ public final class AddCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", userToAdd.getName());
 
         userToAdd.sendMessage(formatter.format(messages.joinToMember));
-        guild.getOwner().sendMessage(formatter.format(messages.joinToOwner));
+        guild.getOwnerOption()
+                .peek(owner -> owner.sendMessage(formatter.format(messages.joinToOwner)));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
     }
 

@@ -37,7 +37,7 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
                     DatabaseRegion.save(guild.getRegion());
                 }
 
-                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(DatabaseUser::save);
+                Stream.concat(guild.getMembers().stream(), guild.getOwnerOption().toJavaStream()).forEach(DatabaseUser::save);
                 return;
             }
 
@@ -50,7 +50,7 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
                     flatRegion.serialize((FlatDataModel) this.dataModel);
                 }
 
-                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner()))
+                Stream.concat(guild.getMembers().stream(), guild.getOwnerOption().toJavaStream())
                         .map(FlatUser::new)
                         .forEach(flatUser -> flatUser.serialize((FlatDataModel) this.dataModel));
             }

@@ -53,11 +53,10 @@ public final class BreakCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Player owner = oppositeGuild.getOwner().getPlayer();
-
-        if (owner != null) {
-            owner.sendMessage(messages.breakIDone.replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
-        }
+        oppositeGuild.getOwnerOption()
+                .peek(owner -> owner.sendMessage(messages.breakIDone
+                        .replace("{GUILD}", guild.getName())
+                        .replace("{TAG}", guild.getTag())));
 
         guild.removeAlly(oppositeGuild);
         oppositeGuild.removeAlly(guild);

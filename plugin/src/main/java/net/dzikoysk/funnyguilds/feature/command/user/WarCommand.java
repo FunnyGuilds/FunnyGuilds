@@ -48,8 +48,6 @@ public final class WarCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Player enemyOwner = enemyGuild.getOwner().getPlayer();
-
         guild.addEnemy(enemyGuild);
 
         String allyDoneMessage = messages.enemyDone;
@@ -57,12 +55,12 @@ public final class WarCommand extends AbstractFunnyCommand {
         allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", enemyGuild.getTag());
         player.sendMessage(allyDoneMessage);
 
-        if (enemyOwner != null) {
+        enemyGuild.getOwnerOption().peek(enemyOwner -> {
             String allyIDoneMessage = messages.enemyIDone;
             allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
             allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
             enemyOwner.sendMessage(allyIDoneMessage);
-        }
+        });
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 

@@ -238,6 +238,10 @@ public class Guild extends AbstractMutableEntity {
         return this.owner.getOrNull();
     }
 
+    public boolean hasOwner() {
+        return this.owner.isPresent();
+    }
+
     public void setOwner(@NotNull User user) {
         this.owner = Option.of(user);
         this.addMember(user);

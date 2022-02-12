@@ -27,7 +27,7 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
         User user = UserValidation.requireUserByName(args[1]);
 
         when(!guild.getMembers().contains(user), messages.adminUserNotMemberOf);
-        when(guild.getOwner().equals(user), messages.adminAlreadyLeader);
+        when(guild.hasOwner() && guild.getOwnerOption().get().equals(user), messages.adminAlreadyLeader);
 
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(AdminUtils.getCause(admin), admin, guild, user))) {
@@ -42,7 +42,7 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
         String message = messages.leaderMembers.replace("{PLAYER}", user.getName());
 
         for (User member : guild.getOnlineMembers()) {
-            member.getPlayer().sendMessage(message);
+            member.sendMessage(message);
         }
     }
 
