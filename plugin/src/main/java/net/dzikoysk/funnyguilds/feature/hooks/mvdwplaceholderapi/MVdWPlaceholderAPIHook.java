@@ -1,16 +1,17 @@
 package net.dzikoysk.funnyguilds.feature.hooks.mvdwplaceholderapi;
 
 import be.maximvdw.placeholderapi.PlaceholderAPI;
-import java.util.Map.Entry;
+import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
+import net.dzikoysk.funnyguilds.guild.top.GuildTop;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.user.top.UserTop;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import panda.utilities.StringUtils;
@@ -30,24 +31,26 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         UserManager userManager = this.plugin.getUserManager();
         RankManager rankManager = this.plugin.getRankManager();
 
-        for (Entry<String, TablistVariable> variable : DefaultTablistVariables.getFunnyVariables().entrySet()) {
-            PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + variable.getKey(), event -> {
-                OfflinePlayer target = event.getOfflinePlayer();
-                if (target == null) {
-                    return StringUtils.EMPTY;
-                }
+        DefaultTablistVariables.getFunnyVariables()
+                .forEach((id, variable) -> PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + id, event -> {
+                    OfflinePlayer target = event.getOfflinePlayer();
+                    if (target == null) {
+                        return StringUtils.EMPTY;
+                    }
 
-                return userManager.findByUuid(target.getUniqueId())
-                        .map(user -> variable.getValue().get(user))
-                        .orElseGet("none");
-            });
-        }
+                    return userManager.findByUuid(target.getUniqueId())
+                            .map(variable::get)
+                            .orElseGet("none");
+                }));
+
+        Map<String, UserTop> userTopMap = rankManager.getUserTopMap();
+        Map<String, GuildTop> guildTopMap = rankManager.getGuildTopMap();
 
         // User TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
             final int index = i;
 
-            rankManager.getUserTopMap().forEach((id, top) -> {
+            userTopMap.forEach((id, top) -> {
                 PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + id + "-" + index, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
                     return RankUtils.parseTop(user, "{PTOP-" + id.toUpperCase() + "-" + index + "}");
@@ -66,7 +69,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         for (int i = 1; i <= 100; i++) {
             final int index = i;
 
-            rankManager.getGuildTopMap().forEach((id, top) -> {
+            guildTopMap.forEach((id, top) -> {
                 PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + id + "-" + index, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
                     return RankUtils.parseTop(user, "{GTOP-" + id.toUpperCase() + "-" + index + "}");
@@ -81,14 +84,14 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
             }
         }
 
-        rankManager.getUserTopMap().forEach((id, top) -> {
+        userTopMap.forEach((id, top) -> {
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_position-" + id, event -> {
                 User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
                 return RankUtils.parseTopPosition(user, "{POSITION-" + id.toUpperCase() + "}");
             });
         });
 
-        rankManager.getGuildTopMap().forEach((id, top) -> {
+        guildTopMap.forEach((id, top) -> {
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_g-position-" + id, event -> {
                 User user = userManager.findByPlayer(event.getPlayer()).getOrNull();
                 return RankUtils.parseTopPosition(user, "{G-POSITION-" + id.toUpperCase() + "}");
