@@ -15,6 +15,8 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTablistVariable;
+import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTablistVariable.MemberResolver;
+import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTablistVariable.StandaloneUserResolver;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.TimeFormattedVariable;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -202,7 +204,7 @@ public final class DefaultTablistVariables {
         FUNNY_VARIABLES.put(variable, new SimpleTablistVariable(placeholder, function));
     }
 
-    private static void putGuild(String variable, String placeholder, GuildDependentTablistVariable.MemberResolver whenInGuild, GuildDependentTablistVariable.StandaloneUserResolver whenNotInGuild) {
+    private static void putGuild(String variable, String placeholder, MemberResolver whenInGuild, StandaloneUserResolver whenNotInGuild) {
         FUNNY_VARIABLES.put(variable, new GuildDependentTablistVariable(placeholder, whenInGuild, whenNotInGuild));
     }
 
