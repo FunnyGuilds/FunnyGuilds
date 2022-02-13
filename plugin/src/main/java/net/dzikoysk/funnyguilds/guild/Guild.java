@@ -232,8 +232,8 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void removeMember(User user) {
-        this.deputies.remove(user);
         this.members.remove(user);
+        this.deputies.remove(user);
         this.markChanged();
     }
 

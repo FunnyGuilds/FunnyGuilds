@@ -28,7 +28,7 @@ public class PlayerRespawn extends AbstractFunnyListener {
         if (!user.hasGuild()) {
             return;
         }
-        Guild guild = user.getGuildOption().get();
+        Guild guild = user.getGuild().get();
 
         if (!guild.hasHome()) {
             return;

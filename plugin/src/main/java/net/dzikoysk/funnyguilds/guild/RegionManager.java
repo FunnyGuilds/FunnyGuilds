@@ -123,14 +123,14 @@ public class RegionManager {
         return isAnyPlayerInRegion(region, Collections.emptySet());
     }
 
-    public boolean isAnyUserInRegion(Region region, Collection<User> users) {
-        return isAnyPlayerInRegion(region, users.stream()
+    public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
+        return isAnyPlayerInRegion(region, ignoredUsers.stream()
                 .map(User::getUUID)
                 .collect(Collectors.toSet()));
     }
 
-    public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> users) {
-        return regionOption.map(region -> isAnyUserInRegion(region, users))
+    public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
+        return regionOption.map(region -> isAnyUserInRegion(region, ignoredUsers))
                 .orElseGet(false);
     }
 

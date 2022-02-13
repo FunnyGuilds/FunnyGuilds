@@ -62,7 +62,7 @@ public class RankUtils {
                 guildTag = StringUtils.replace(config.prefixOther.getValue(), "{TAG}", guild.getTag());
 
                 if (targetUser != null && targetUser.hasGuild()) {
-                    Guild sourceGuild = targetUser.getGuildOption().get();
+                    Guild sourceGuild = targetUser.getGuild().get();
 
                     if (sourceGuild.getAllies().contains(guild)) {
                         guildTag = StringUtils.replace(config.prefixAllies.getValue(), "{TAG}", guild.getTag());

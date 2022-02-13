@@ -46,7 +46,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Guild guild = user.getGuildOption().get();
+        Guild guild = user.getGuild().get();
         when(guild.equals(region.getGuild()), messages.escapeOnYourRegion);
 
         if (time >= 1) {

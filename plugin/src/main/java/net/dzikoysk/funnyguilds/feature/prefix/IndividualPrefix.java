@@ -27,7 +27,7 @@ public class IndividualPrefix {
                 .peek(byName -> {
                     Scoreboard scoreboard = getScoreboard();
                     Team team = scoreboard.getEntryTeam(player);
-                    Guild guild = byName.getGuildOption().get();
+                    Guild guild = byName.getGuild().get();
 
                     if (team != null) {
                         team.removeEntry(player);
@@ -62,7 +62,7 @@ public class IndividualPrefix {
         Scoreboard scoreboard = getScoreboard();
 
         if (user.hasGuild()) {
-            Guild guild = user.getGuildOption().get();
+            Guild guild = user.getGuild().get();
             if (guild.equals(to)) {
                 initialize();
                 return;
@@ -144,7 +144,7 @@ public class IndividualPrefix {
         Scoreboard scoreboard = getScoreboard();
 
         if (user.hasGuild()) {
-            Guild guild = user.getGuildOption().get();
+            Guild guild = user.getGuild().get();
             guilds.remove(guild);
 
             PluginConfiguration config = plugin.getPluginConfiguration();

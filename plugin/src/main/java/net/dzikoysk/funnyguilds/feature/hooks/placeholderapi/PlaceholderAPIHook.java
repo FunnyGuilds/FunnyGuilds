@@ -83,8 +83,8 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             User userTwo = userTwoOption.get();
 
             if (identifier.equalsIgnoreCase("prefix")) {
-                Option<Guild> guildOneOption = userOne.getGuildOption();
-                Option<Guild> guildTwoOption = userTwo.getGuildOption();
+                Option<Guild> guildOneOption = userOne.getGuild();
+                Option<Guild> guildTwoOption = userTwo.getGuild();
                 if (guildTwoOption.isEmpty() || guildTwoOption.map(Guild::getTag).getOrNull() == null) {
                     return null;
                 }

@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
@@ -147,19 +146,8 @@ public class User extends AbstractMutableEntity {
      * @return user's guild
      */
     @NotNull
-    public Option<Guild> getGuildOption() {
+    public Option<Guild> getGuild() {
         return this.guild;
-    }
-
-    /**
-     * @return user's guild
-     * @deprecated for removal in the future, in favour of {@link User#getGuildOption()}
-     */
-    @Nullable
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public Guild getGuild() {
-        return this.guild.getOrNull();
     }
 
     public boolean hasGuild() {

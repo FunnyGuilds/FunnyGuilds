@@ -30,7 +30,7 @@ public class EntityDamage extends AbstractFunnyListener {
             if (config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
                 this.regionManager.findRegionAtLocation(victim.getLocation())
                         .map(Region::getGuild)
-                        .filterNot(guild -> guild.equals(attackerUser.getGuildOption().get()))
+                        .filterNot(guild -> guild.equals(attackerUser.getGuild().get()))
                         .peek(guild -> event.setCancelled(true));
 
                 return;
@@ -50,8 +50,8 @@ public class EntityDamage extends AbstractFunnyListener {
                     return;
                 }
 
-                Guild victimGuild = victimUser.getGuildOption().get();
-                Guild attackerGuild = attackerUser.getGuildOption().get();
+                Guild victimGuild = victimUser.getGuild().get();
+                Guild attackerGuild = attackerUser.getGuild().get();
 
                 if (victimGuild.equals(attackerGuild)) {
                     if (!victimGuild.getPvP()) {

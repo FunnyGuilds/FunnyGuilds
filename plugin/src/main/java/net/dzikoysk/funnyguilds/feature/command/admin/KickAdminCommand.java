@@ -28,7 +28,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         User user = UserValidation.requireUserByName(args[0]);
         when(!user.hasGuild(), messages.generalPlayerHasNoGuild);
         when(user.isOwner(), messages.adminGuildOwner);
-        Guild guild = user.getGuildOption().get();
+        Guild guild = user.getGuild().get();
         User admin = AdminUtils.getAdminUser(sender);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(AdminUtils.getCause(admin), admin, guild, user))) {

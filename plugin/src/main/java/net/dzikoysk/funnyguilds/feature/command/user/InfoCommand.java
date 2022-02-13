@@ -34,7 +34,7 @@ public final class InfoCommand extends AbstractFunnyCommand {
                         .is(Player.class)
                         .flatMap(userManager::findByPlayer)
                         .filter(User::hasGuild)
-                        .flatMap(User::getGuildOption)
+                        .flatMap(User::getGuild)
                         .map(Guild::getTag))
                 .orThrow(() -> new ValidationException(messages.infoTag));
 

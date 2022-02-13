@@ -45,7 +45,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
 
         for (String messageLine : baseMessage) {
             if (infoUser.hasGuild()) {
-                Guild guild = infoUser.getGuildOption().get();
+                Guild guild = infoUser.getGuild().get();
                 messageLine = StringUtils.replace(messageLine, "{GUILD}", guild.getName());
                 messageLine = StringUtils.replace(messageLine, "{TAG}", guild.getTag());
             }

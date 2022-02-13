@@ -24,7 +24,7 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
         User userToTeleport = UserValidation.requireUserByName(args[0]);
         when(!userToTeleport.isOnline(), messages.generalNotOnline);
         when(!userToTeleport.hasGuild(), messages.generalPlayerHasNoGuild);
-        Guild guild = userToTeleport.getGuildOption().get();
+        Guild guild = userToTeleport.getGuild().get();
 
         when(!guild.hasHome(), messages.adminGuildHasNoHome);
         Location guildHome = guild.getHome().get();

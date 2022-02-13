@@ -162,7 +162,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 return;
                             }
 
-                            if (!config.regionEnterNotificationGuildMember && user.hasGuild() && guild.getTag().equals(user.getGuildOption().get().getTag())) {
+                            if (!config.regionEnterNotificationGuildMember && user.hasGuild() && guild.getTag().equals(user.getGuild().get().getTag())) {
                                 return;
                             }
 
