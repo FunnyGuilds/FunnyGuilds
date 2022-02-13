@@ -22,8 +22,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
     @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     @Override
     public int getPosition() {
-        return this.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP)
-                .orElseGet(0);
+        return this.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP);
     }
 
     /**

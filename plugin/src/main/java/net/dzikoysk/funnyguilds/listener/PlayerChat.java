@@ -45,7 +45,7 @@ public class PlayerChat extends AbstractFunnyListener {
         int points = user.getRank().getPoints();
         String format = event.getFormat();
 
-        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(config.chatRank.getValue(), "{RANK}", String.valueOf(user.getRank().getPosition(DefaultTops.USER_POINTS_TOP).get())));
+        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(config.chatRank.getValue(), "{RANK}", String.valueOf(user.getRank().getPosition(DefaultTops.USER_POINTS_TOP))));
         format = StringUtils.replace(format, "{POINTS}", config.chatPoints.getValue());
         format = StringUtils.replace(format, "{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));

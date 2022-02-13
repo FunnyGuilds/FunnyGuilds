@@ -278,8 +278,7 @@ public class RankUtils {
                 if (targetUser == null) {
                     return StringUtils.replace(text, "{POSITION}", "0");
                 }
-                return StringUtils.replace(text, "{POSITION-" + comparatorType + "}", Integer.toString(targetUser.getRank().getPosition(comparatorType)
-                        .orElseGet(0)));
+                return StringUtils.replace(text, "{POSITION-" + comparatorType + "}", Integer.toString(targetUser.getRank().getPosition(comparatorType)));
             }
             else if (positionType.equalsIgnoreCase("G-POSITION")) {
                 if (targetUser == null) {
@@ -292,7 +291,7 @@ public class RankUtils {
                 }
 
                 return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", guildRankManager.isRankedGuild(guild)
-                        ? Integer.toString(guild.getRank().getPosition(comparatorType).orElseGet(0))
+                        ? Integer.toString(guild.getRank().getPosition(comparatorType))
                         : messages.minMembersToIncludeNoValue);
             }
         }

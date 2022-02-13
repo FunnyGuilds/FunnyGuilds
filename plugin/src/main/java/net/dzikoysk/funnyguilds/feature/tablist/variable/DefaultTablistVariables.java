@@ -122,7 +122,7 @@ public final class DefaultTablistVariables {
         putSimple("users", "USERS", user -> UserUtils.getUsers().size());
         putSimple("ping", "PING", User::getPing);
         putSimple("points", "POINTS", user -> user.getRank().getPoints());
-        putSimple("position", "POSITION", user -> user.getRank().getPosition(DefaultTops.USER_POINTS_TOP).get());
+        putSimple("position", "POSITION", user -> user.getRank().getPosition(DefaultTops.USER_POINTS_TOP));
         putSimple("kills", "KILLS", user -> user.getRank().getKills());
         putSimple("deaths", "DEATHS", user -> user.getRank().getDeaths());
         putSimple("assists", "ASSISTS", user -> user.getRank().getAssists());
@@ -190,7 +190,7 @@ public final class DefaultTablistVariables {
 
         putGuild("g-position", "G-POSITION",
                 user -> user.getGuild().isRanked()
-                        ? String.valueOf(user.getGuild().getRank().getPosition(DefaultTops.GUILD_AVG_POINTS_TOP).get())
+                        ? String.valueOf(user.getGuild().getRank().getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
                         : messages.minMembersToIncludeNoValue,
                 user -> messages.minMembersToIncludeNoValue);
 

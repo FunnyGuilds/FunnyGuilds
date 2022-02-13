@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
-import panda.std.Option;
 
 public abstract class Rank<T extends MutableEntity> {
 
@@ -27,8 +26,11 @@ public abstract class Rank<T extends MutableEntity> {
         return this.entity.getName();
     }
 
-    public Option<Integer> getPosition(String top) {
-        return Option.of(this.position.getOrDefault(top.toLowerCase(), 0));
+    /**
+     * @return position in which the player is in the top, return 0 if the player is not in the top
+     */
+    public int getPosition(String top) {
+        return this.position.getOrDefault(top.toLowerCase(), 0);
     }
 
     public void setPosition(String top, int position) {

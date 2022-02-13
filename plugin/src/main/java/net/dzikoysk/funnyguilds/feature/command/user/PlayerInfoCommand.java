@@ -61,7 +61,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             messageLine = StringUtils.replace(messageLine, "{ASSISTS}", Integer.toString(rank.getAssists()));
             messageLine = StringUtils.replace(messageLine, "{LOGOUTS}", Integer.toString(rank.getLogouts()));
             messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()));
-            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(rank.getPosition(DefaultTops.USER_POINTS_TOP).get()));
+            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(rank.getPosition(DefaultTops.USER_POINTS_TOP)));
 
             messageTarget.sendMessage(messageLine);
         }
