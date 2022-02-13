@@ -180,7 +180,7 @@ public class RegionManager {
 
         Location blockLocation = block.getLocation();
         return this.findRegionAtLocation(blockLocation)
-                .map(region -> blockLocation.equals(region.getHeart()))
+                .map(region -> blockLocation.equals(region.getHeart().get()))
                 .orElseGet(false);
     }
 

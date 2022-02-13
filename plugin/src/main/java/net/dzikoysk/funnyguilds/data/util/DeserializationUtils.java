@@ -69,9 +69,8 @@ public final class DeserializationUtils {
         String regionName = (String) values[0];
 
         Region region = regionManager.findByName(regionName)
-                        .orElseGet(new Region(regionName));
+                        .orElseGet(new Region(regionName, (Location) values[1]));
 
-        region.setCenter((Location) values[1]);
         region.setSize((int) values[2]);
         region.setEnlarge((int) values[3]);
         region.update();

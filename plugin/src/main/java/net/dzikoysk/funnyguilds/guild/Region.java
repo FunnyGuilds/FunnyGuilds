@@ -24,16 +24,18 @@ public class Region extends AbstractMutableEntity {
     private Location firstCorner;
     private Location secondCorner;
 
-    public Region(String name) {
+    public Region(String name, Location center) {
         this.name = name;
+        if (center != null) {
+            this.world = center.getWorld();
+            this.center = center;
+        }
     }
 
     public Region(Guild guild, Location center, int size) {
-        this(guild.getName());
+        this(guild.getName(), center);
 
         this.guild = guild;
-        this.world = center.getWorld();
-        this.center = center;
         this.size = size;
 
         this.update();
