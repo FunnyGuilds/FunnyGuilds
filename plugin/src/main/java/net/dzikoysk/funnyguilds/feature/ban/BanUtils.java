@@ -39,10 +39,6 @@ public final class BanUtils {
     }
 
     public static void checkIfBanShouldExpire(User user) {
-        if (!user.isBanned()) {
-            return;
-        }
-
         user.getBan()
                 .map(UserBan::getBanTime)
                 .filter(time -> System.currentTimeMillis() > time)
