@@ -33,6 +33,10 @@ public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
         return Option.of(this.topMap.get(id.toLowerCase()));
     }
 
+    public void addTop(String id, T top) {
+        this.topMap.put(id.toLowerCase(), top);
+    }
+
     public void recalculateTops() {
         this.topMap.forEach((id, top) -> top.recalculate(id));
     }

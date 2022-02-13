@@ -28,7 +28,7 @@ public class GuildRankManager extends RankManager<GuildTop, GuildRank> {
                 .isEmpty()) {
             return;
         }
-        this.addUserTop(id, guildTop);
+        this.addTop(id, guildTop);
     }
 
     public void register(Map<String, GuildTop> topsToRegister) {

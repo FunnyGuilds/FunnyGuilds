@@ -18,13 +18,13 @@ public class UserRankManager extends RankManager<UserTop, UserRank> {
                 .flatMap(top -> top.getUser(place));
     }
 
-    public void register(String id, UserTop top) {
+    public void register(String id, UserTop userTop) {
         if (PandaStream.of(this.pluginConfiguration.top.enabledUserTops)
                 .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
                 .isEmpty()) {
             return;
         }
-        this.addUserTop(id, top);
+        this.addTop(id, userTop);
     }
 
     public void register(Map<String, UserTop> topsToRegister) {
