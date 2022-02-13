@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
 public class Region extends AbstractMutableEntity {
@@ -103,27 +104,36 @@ public class Region extends AbstractMutableEntity {
         super.markChanged();
     }
 
+    @Nullable
     public Guild getGuild() {
         return this.guild;
     }
 
-    public void setGuild(Guild guild) {
+    public void setGuild(@NotNull Guild guild) {
         this.guild = guild;
         super.markChanged();
     }
 
+    @Nullable
     public World getWorld() {
         return this.world;
     }
 
+    @Nullable
     public Location getCenter() {
         return this.center;
     }
 
+    @Nullable
     public Location getHeart() {
+        Block heart = this.getHeartBlock();
+        if(heart == null) {
+            return null;
+        }
         return this.getHeartBlock().getLocation();
     }
 
+    @Nullable
     public Block getHeartBlock() {
         return Option.of(this.getCenter())
                 .map(Location::getBlock)
@@ -131,7 +141,7 @@ public class Region extends AbstractMutableEntity {
                 .getOrNull();
     }
 
-    public void setCenter(Location location) {
+    public void setCenter(@NotNull Location location) {
         this.center = location;
         this.world = location.getWorld();
         this.update();
