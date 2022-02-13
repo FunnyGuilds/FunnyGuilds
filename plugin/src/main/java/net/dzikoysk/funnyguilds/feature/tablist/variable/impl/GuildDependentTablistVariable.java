@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.tablist.variable.impl;
 
 import java.util.Objects;
-import java.util.function.Function;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
@@ -9,14 +8,14 @@ import net.dzikoysk.funnyguilds.user.User;
 public final class GuildDependentTablistVariable implements TablistVariable {
 
     private final String[] names;
-    private final GuildFunction whenInGuild;
-    private final Function<User, Object> whenNotInGuild;
+    private final MemberResolver whenInGuild;
+    private final StandaloneUserResolver whenNotInGuild;
 
-    public GuildDependentTablistVariable(String name, GuildFunction whenInGuild, Function<User, Object> whenNotInGuild) {
+    public GuildDependentTablistVariable(String name, MemberResolver whenInGuild, StandaloneUserResolver whenNotInGuild) {
         this(new String[] {name}, whenInGuild, whenNotInGuild);
     }
 
-    public GuildDependentTablistVariable(String[] names, GuildFunction whenInGuild, Function<User, Object> whenNotInGuild) {
+    public GuildDependentTablistVariable(String[] names, MemberResolver whenInGuild, StandaloneUserResolver whenNotInGuild) {
         this.names = names.clone();
         this.whenInGuild = whenInGuild;
         this.whenNotInGuild = whenNotInGuild;
@@ -29,17 +28,19 @@ public final class GuildDependentTablistVariable implements TablistVariable {
 
     @Override
     public String get(User user) {
-        return user.getGuild()
-                .map(guild -> this.whenInGuild.apply(user, guild))
-                .orElse(this.whenNotInGuild.apply(user))
-                .map(Objects::toString)
-                .get();
+        return Objects.toString(user.getGuild()
+                .map(guild -> this.whenInGuild.resolve(user, guild))
+                .orElseGet(this.whenNotInGuild.resolve(user)));
     }
 
-    public interface GuildFunction {
+    @FunctionalInterface
+    public interface MemberResolver {
+        Object resolve(User user, Guild guild);
+    }
 
-        Object apply(User user, Guild guild);
-
+    @FunctionalInterface
+    public interface StandaloneUserResolver {
+        Object resolve(User user);
     }
 
 }

@@ -202,7 +202,7 @@ public final class DefaultTablistVariables {
         FUNNY_VARIABLES.put(variable, new SimpleTablistVariable(placeholder, function));
     }
 
-    private static void putGuild(String variable, String placeholder, GuildDependentTablistVariable.GuildFunction whenInGuild, Function<User, Object> whenNotInGuild) {
+    private static void putGuild(String variable, String placeholder, GuildDependentTablistVariable.MemberResolver whenInGuild, GuildDependentTablistVariable.StandaloneUserResolver whenNotInGuild) {
         FUNNY_VARIABLES.put(variable, new GuildDependentTablistVariable(placeholder, whenInGuild, whenNotInGuild));
     }
 
