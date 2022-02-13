@@ -6,6 +6,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
@@ -45,8 +46,9 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
 
         for (String messageLine : baseMessage) {
             if (infoUser.hasGuild()) {
-                messageLine = StringUtils.replace(messageLine, "{GUILD}", infoUser.getGuild().getName());
-                messageLine = StringUtils.replace(messageLine, "{TAG}", infoUser.getGuild().getTag());
+                Guild guild = infoUser.getGuild().get();
+                messageLine = StringUtils.replace(messageLine, "{GUILD}", guild.getName());
+                messageLine = StringUtils.replace(messageLine, "{TAG}", guild.getTag());
             }
             else {
                 messageLine = StringUtils.replace(messageLine, "{GUILD}", messages.gNameNoValue);

@@ -21,7 +21,7 @@ class FunnyBoxTest extends BukkitSpec {
         Vector centerOfWorld = new Vector(0, 0, 0);
 
         Location centerOfGuild = new Location(null, 2500, 100, 2500);
-        Guild guild = new Guild("Name of guild")
+        Guild guild = new Guild('guild', 'TEST')
         Region region = new Region(guild, centerOfGuild, 100);
 
         FunnyBox bbox = FunnyBox.of(centerOfWorld, radius - createMinDistanceFromBorder, 256, radius - createMinDistanceFromBorder)

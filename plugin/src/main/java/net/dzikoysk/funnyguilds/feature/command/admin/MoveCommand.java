@@ -16,8 +16,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -34,12 +32,12 @@ public final class MoveCommand extends AbstractFunnyCommand {
         when(!config.regionsEnabled, messages.regionsDisabled);
         when(args.length < 1, messages.generalNoTagGiven);
 
-        HeartConfiguration heart = config.heart;
+        HeartConfiguration heartConfig = config.heart;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         Location location = player.getLocation();
 
-        if (!heart.usePlayerPositionForCenterY) {
-            location.setY(heart.createCenterY);
+        if (!heartConfig.usePlayerPositionForCenterY) {
+            location.setY(heartConfig.createCenterY);
         }
 
         int distance = config.regionSize + config.createDistance;
@@ -57,29 +55,22 @@ public final class MoveCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Region region = guild.getRegion();
-
-        if (region == null) {
-            region = new Region(guild, location, config.regionSize);
-        }
-        else {
-            if (heart.createEntityType != null) {
-                GuildEntityHelper.despawnGuildHeart(guild);
-            }
-            else if (heart.createMaterial != null && heart.createMaterial.getLeft() != Material.AIR) {
-                Block block = region.getCenter().getBlock().getRelative(BlockFace.DOWN);
-
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    if (block.getLocation().getBlockY() > 1) {
-                        block.setType(Material.AIR);
+        Region region = guild.getRegion()
+                .peek(peekRegion -> {
+                    if (heartConfig.createEntityType != null) {
+                        GuildEntityHelper.despawnGuildHeart(guild);
                     }
-                });
-            }
+                    else if (heartConfig.createMaterial != null && heartConfig.createMaterial.getLeft() != Material.AIR) {
+                        peekRegion.getHeartBlock()
+                                .filter(heart -> heart.getLocation().getBlockY() > 1)
+                                .peek(heart -> Bukkit.getScheduler().runTask(this.plugin, () -> heart.setType(Material.AIR)));
+                    }
 
-            region.setCenter(location);
-        }
+                    peekRegion.setCenter(location);
+                })
+                .orElseGet(() -> new Region(guild, location, config.regionSize));
 
-        if (heart.createCenterSphere) {
+        if (heartConfig.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);
 
             for (Location locationInSphere : sphere) {

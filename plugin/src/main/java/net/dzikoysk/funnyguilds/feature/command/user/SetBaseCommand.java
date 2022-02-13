@@ -40,11 +40,11 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
 
         guild.setHome(location);
 
-        if (guild.getHome().getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
-            for (int y = guild.getHome().getBlockY(); y > 0; y--) {
-                guild.getHome().setY(y);
+        if (location.getBlock().getRelative(BlockFace.DOWN).getType() == Material.AIR) {
+            for (int y = location.getBlockY(); y > 0; y--) {
+                location.setY(y);
 
-                if (guild.getHome().getBlock().getType() != Material.AIR) {
+                if (location.getBlock().getType() != Material.AIR) {
                     break;
                 }
             }

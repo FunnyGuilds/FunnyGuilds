@@ -209,7 +209,7 @@ public class GuildManager {
     }
 
     /**
-     * Remove guild from storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#deleteGuild(Guild)}.
+     * Remove guild from storage. If you think you should use this method you probably shouldn't - instead use {@link GuildManager#deleteGuild(FunnyGuilds, Guild)}.
      *
      * @param guild guild to remove
      */
@@ -229,26 +229,26 @@ public class GuildManager {
         }
 
         if (this.pluginConfiguration.regionsEnabled) {
-            Region region = guild.getRegion();
-
-            if (region != null) {
-                if (this.pluginConfiguration.heart.createEntityType != null) {
-                    GuildEntityHelper.despawnGuildHeart(guild);
-                }
-                else if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
-                    Location centerLocation = region.getCenter().clone();
-
-                    Bukkit.getScheduler().runTask(plugin, () -> {
-                        Block block = centerLocation.getBlock().getRelative(BlockFace.DOWN);
-
-                        if (block.getLocation().getBlockY() > 1) {
-                            block.setType(Material.AIR);
+            guild.getRegion()
+                    .peek(region -> {
+                        if (this.pluginConfiguration.heart.createEntityType != null) {
+                            GuildEntityHelper.despawnGuildHeart(guild);
                         }
-                    });
-                }
-            }
+                        else if (this.pluginConfiguration.heart.createMaterial != null &&
+                                this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
+                            Location center = region.getCenter().clone();
 
-            plugin.getRegionManager().deleteRegion(plugin.getDataModel(), guild.getRegion());
+                            Bukkit.getScheduler().runTask(plugin, () -> {
+                                Block block = center.getBlock().getRelative(BlockFace.DOWN);
+
+                                if (block.getLocation().getBlockY() > 1) {
+                                    block.setType(Material.AIR);
+                                }
+                            });
+                        }
+
+                        plugin.getRegionManager().deleteRegion(plugin.getDataModel(), region);
+                    });
         }
 
         plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(guild));
@@ -302,10 +302,12 @@ public class GuildManager {
      */
     public void spawnHeart(Guild guild) {
         if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
-            Block heart = guild.getRegion().getCenter().getBlock().getRelative(BlockFace.DOWN);
-
-            heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
-            BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
+            guild.getRegion()
+                    .flatMap(Region::getHeartBlock)
+                    .peek(heart -> {
+                        heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
+                        BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
+                    });
         }
         else if (this.pluginConfiguration.heart.createEntityType != null) {
             GuildEntityHelper.spawnGuildHeart(guild);

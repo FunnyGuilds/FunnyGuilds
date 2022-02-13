@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public final class BanUtils {
 
@@ -18,12 +17,9 @@ public final class BanUtils {
         guild.setBan(time + System.currentTimeMillis());
 
         for (User user : guild.getMembers()) {
-            Player player = user.getPlayer();
             ban(user, time, reason);
-
-            if (player != null && player.isOnline()) {
-                player.kickPlayer(getBanMessage(user));
-            }
+            user.getPlayer()
+                    .peek(player -> player.kickPlayer(getBanMessage(user)));
         }
     }
 
@@ -43,29 +39,23 @@ public final class BanUtils {
     }
 
     public static void checkIfBanShouldExpire(User user) {
-        if (!user.isBanned()) {
-            return;
-        }
-
-        if (System.currentTimeMillis() > user.getBan().getBanTime()) {
-            user.setBan(null);
-        }
+        user.getBan()
+                .map(UserBan::getBanTime)
+                .filter(time -> System.currentTimeMillis() > time)
+                .peek(time -> user.setBan(null));
     }
 
     public static String getBanMessage(User user) {
-        String message = FunnyGuilds.getInstance().getMessageConfiguration().banMessage;
-
-        if (!user.isBanned()) {
-            return StringUtils.EMPTY;
-        }
-
-        UserBan userBan = user.getBan();
-        message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
-        message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getMessageConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
-        message = StringUtils.replace(message, "{REASON}", userBan.getReason());
-        message = StringUtils.replace(message, "{PLAYER}", user.getName());
-
-        return ChatUtils.colored(message);
+        return user.getBan()
+                .map(ban -> {
+                    String message = FunnyGuilds.getInstance().getMessageConfiguration().banMessage;
+                    message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
+                    message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getMessageConfiguration().dateFormat.format(new Date(ban.getBanTime())));
+                    message = StringUtils.replace(message, "{REASON}", ban.getReason());
+                    message = StringUtils.replace(message, "{PLAYER}", user.getName());
+                    return ChatUtils.colored(message);
+                })
+                .orElseGet("");
     }
 
 }

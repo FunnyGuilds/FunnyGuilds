@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -29,7 +30,10 @@ public class EntityDamage extends AbstractFunnyListener {
             if (config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
                 this.regionManager.findRegionAtLocation(victim.getLocation())
                         .map(Region::getGuild)
-                        .filterNot(guild -> guild.equals(attackerUser.getGuild()))
+                        .filterNot(guild ->
+                                attackerUser.getGuild()
+                                        .map(it -> it.equals(guild))
+                                        .orElseGet(false))
                         .peek(guild -> event.setCancelled(true));
 
                 return;
@@ -49,20 +53,23 @@ public class EntityDamage extends AbstractFunnyListener {
                     return;
                 }
 
-                if (victimUser.getGuild().equals(attackerUser.getGuild())) {
-                    if (!victimUser.getGuild().getPvP()) {
+                Guild victimGuild = victimUser.getGuild().get();
+                Guild attackerGuild = attackerUser.getGuild().get();
+
+                if (victimGuild.equals(attackerGuild)) {
+                    if (!victimGuild.getPvP()) {
                         event.setCancelled(true);
                         return;
                     }
                 }
 
-                if (victimUser.getGuild().getAllies().contains(attackerUser.getGuild())) {
+                if (victimGuild.getAllies().contains(attackerGuild)) {
                     if (!config.damageAlly) {
                         event.setCancelled(true);
                         return;
                     }
 
-                    if (!(attackerUser.getGuild().getPvP(victimUser.getGuild()) && victimUser.getGuild().getPvP(attackerUser.getGuild()))) {
+                    if (!(attackerGuild.getPvP(victimGuild) && victimGuild.getPvP(attackerGuild))) {
                         event.setCancelled(true);
                         return;
                     }

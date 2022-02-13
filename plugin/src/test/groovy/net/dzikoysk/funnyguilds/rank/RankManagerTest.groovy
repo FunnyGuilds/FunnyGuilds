@@ -17,9 +17,9 @@ class RankManagerTest extends FunnyGuildsSpec {
         def user1 = userManager.create(UUID.randomUUID(), 'user1')
         def user2 = userManager.create(UUID.randomUUID(), 'user2')
         def user3 = userManager.create(UUID.randomUUID(), 'user3')
-        def guild1 = guildManager.addGuild(new Guild('OnlyPanda1'))
-        def guild2 = guildManager.addGuild(new Guild('OnlyPanda2'))
-        def guild3 = guildManager.addGuild(new Guild('OnlyPanda3'))
+        def guild1 = guildManager.addGuild(new Guild('OnlyPanda1', 'OP1'))
+        def guild2 = guildManager.addGuild(new Guild('OnlyPanda2', 'OP2'))
+        def guild3 = guildManager.addGuild(new Guild('OnlyPanda3', 'OP3'))
 
         user1.rank.points = 200
         user2.rank.points = 150

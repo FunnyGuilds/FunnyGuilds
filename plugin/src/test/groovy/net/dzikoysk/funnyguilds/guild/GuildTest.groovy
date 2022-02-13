@@ -13,10 +13,10 @@ final class GuildTest extends FunnyGuildsSpec {
     void 'guild should implement proper equals & hashcode'() {
         User user1 = userManager.create(UUID.nameUUIDFromBytes("user1".getBytes()), "user1")
         User user2 = userManager.create(UUID.nameUUIDFromBytes("user2".getBytes()), "user2")
-        Guild guild1 = new Guild("guild1")
-        Guild guild2 = new Guild("guild2")
-        Region region1 = new Region("region1")
-        Region region2 = new Region("region2")
+        Guild guild1 = new Guild('guild1', 'TEST1')
+        Guild guild2 = new Guild('guild2', 'TEST2')
+        Region region1 = new Region("region1", new Location(null, 0, 0, 0))
+        Region region2 = new Region("region2", new Location(null, 0, 0, 0))
 
         EqualsVerifier.forClass(Guild.class)
                 .usingGetClass()

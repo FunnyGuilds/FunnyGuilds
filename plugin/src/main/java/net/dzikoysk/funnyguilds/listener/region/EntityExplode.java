@@ -58,15 +58,14 @@ public class EntityExplode extends AbstractFunnyListener {
         });
 
         if (config.explodeShouldAffectOnlyGuild) {
-            explodedBlocks.removeIf(block -> {
-                Region region = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
-                return (region == null || region.getGuild() == null) && block.getType() != Material.TNT;
-            });
+            explodedBlocks.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
+                    .filterNot(region -> region.getGuild() == null)
+                    .filter(region -> block.getType() != Material.TNT)
+                    .isEmpty());
 
-            blocksInSphere.removeIf(block -> {
-                Region region = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
-                return region == null || region.getGuild() == null;
-            });
+            blocksInSphere.removeIf(block -> this.regionManager.findRegionAtLocation(block.getLocation())
+                    .filterNot(region -> region.getGuild() == null)
+                    .isEmpty());
         }
 
         Option<Region> regionOption = this.regionManager.findRegionAtLocation(explodeLocation);
@@ -91,29 +90,33 @@ public class EntityExplode extends AbstractFunnyListener {
                 return;
             }
 
-            Location guildHeartLocation = region.getHeart();
-            explodedBlocks.removeIf(block -> block.getLocation().equals(guildHeartLocation));
-            blocksInSphere.removeIf(block -> block.getLocation().equals(guildHeartLocation));
+            region.getHeart()
+                    .peek(heart -> {
+                        explodedBlocks.removeIf(block -> block.getLocation().equals(heart));
+                        blocksInSphere.removeIf(block -> block.getLocation().equals(heart));
+                    });
 
             for (User user : guild.getMembers()) {
-                Player player = user.getPlayer();
-
-                if (player != null && !informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                    player.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
-                }
+                user.getPlayer()
+                        .filter(player -> !informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown))
+                        .peek(player -> player.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
             }
         }
 
         if (config.warTntProtection) {
-            boolean anyRemoved = explodedBlocks.removeIf(block -> {
-                Region regionAtExplosion = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
-                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && !regionAtExplosion.getGuild().canBeAttacked();
-            }) || blocksInSphere.removeIf(block -> {
-                Region regionAtExplosion = this.regionManager.findRegionAtLocation(block.getLocation()).getOrNull();
-                return regionAtExplosion != null && regionAtExplosion.getGuild() != null && !regionAtExplosion.getGuild().canBeAttacked();
-            });
+            // Remove block if protected
+            boolean anyBlockRemovedInSphere = blocksInSphere.removeIf(block ->
+                    this.regionManager.findRegionAtLocation(block.getLocation())
+                            .map(Region::getGuild)
+                            .filterNot(Guild::canBeAttacked)
+                            .isPresent());
+            boolean anyBlockRemovedInExplosion = explodedBlocks.removeIf(block ->
+                    this.regionManager.findRegionAtLocation(block.getLocation())
+                            .map(Region::getGuild)
+                            .filterNot(Guild::canBeAttacked)
+                            .isPresent());
 
-            if (anyRemoved) {
+            if (anyBlockRemovedInSphere || anyBlockRemovedInExplosion) {
                 if (explosionEntity instanceof TNTPrimed) {
                     TNTPrimed entityTnt = (TNTPrimed) explosionEntity;
                     Entity explosionSource = entityTnt.getSource();

@@ -285,10 +285,11 @@ public class RankUtils {
                     return StringUtils.replace(text, "{POSITION}", messages.minMembersToIncludeNoValue);
                 }
 
-                Guild guild = targetUser.getGuild();
-                if (guild == null) {
+                Option<Guild> guildOption = targetUser.getGuild();
+                if (guildOption.isEmpty()) {
                     return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", messages.minMembersToIncludeNoValue);
                 }
+                Guild guild = guildOption.get();
 
                 return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", guildRankManager.isRankedGuild(guild)
                         ? Integer.toString(guild.getRank().getPosition(comparatorType))
@@ -313,7 +314,7 @@ public class RankUtils {
         if (tablistConfig.playerListUseRelationshipColors) {
             guildTag = StringUtils.replace(config.prefixOther.getValue(), "{TAG}", guild.getTag());
             if (targetUser != null && targetUser.hasGuild()) {
-                Guild sourceGuild = targetUser.getGuild();
+                Guild sourceGuild = targetUser.getGuild().get();
 
                 if (sourceGuild.getAllies().contains(guild)) {
                     guildTag = StringUtils.replace(config.prefixAllies.getValue(), "{TAG}", guild.getTag());

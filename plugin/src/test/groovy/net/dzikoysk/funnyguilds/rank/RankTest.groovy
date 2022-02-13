@@ -27,8 +27,8 @@ final class RankTest extends FunnyGuildsSpec {
 
     @Test
     void 'guild should implement proper equals & hashcode'() {
-        Guild guild1 = new Guild("guild1")
-        Guild guild2 = new Guild("guild2")
+        Guild guild1 = new Guild('guild1', 'TEST1')
+        Guild guild2 = new Guild('guild2', 'TEST2')
 
         EqualsVerifier.forClass(Rank.class)
                 .usingGetClass()

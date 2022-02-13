@@ -78,7 +78,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 return;
             }
 
-            playerAttacker = lastAttacker.getPlayer();
+            playerAttacker = lastAttacker.getPlayer().get();
         }
 
         Option<User> attackerOption = this.userManager.findByPlayer(playerAttacker);
@@ -239,13 +239,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         if (config.dataModel == DataModel.MYSQL) {
-            if (victim.hasGuild()) {
-                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild()));
-            }
-
-            if (attacker.hasGuild()) {
-                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(attacker.getGuild()));
-            }
+            victim.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
+            attacker.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
 
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
@@ -267,12 +262,12 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
                 .register("{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)))
-                .register("{VTAG}", victim.hasGuild()
-                        ? StringUtils.replace(config.chatGuild.getValue(), "{TAG}", victim.getGuild().getTag())
-                        : "")
-                .register("{ATAG}", attacker.hasGuild()
-                        ? StringUtils.replace(config.chatGuild.getValue(), "{TAG}", attacker.getGuild().getTag())
-                        : "")
+                .register("{VTAG}", victim.getGuild()
+                        .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .orElse(""))
+                .register("{ATAG}", attacker.getGuild()
+                        .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .orElse(""))
                 .register("{ASSISTS}", config.assistEnable && !assistEntries.isEmpty()
                         ? StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))
                         : "");
@@ -306,9 +301,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             event.setDeathMessage(null);
 
             for (User fighter : messageReceivers) {
-                if (fighter.isOnline()) {
-                    fighter.getPlayer().sendMessage(deathMessage);
-                }
+                fighter.sendMessage(deathMessage);
             }
         }
 

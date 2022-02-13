@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserBan;
 
 public class DatabaseUser {
 
@@ -57,8 +58,8 @@ public class DatabaseUser {
         statement.set("deaths", user.getRank().getDeaths());
         statement.set("assists", user.getRank().getAssists());
         statement.set("logouts", user.getRank().getLogouts());
-        statement.set("ban", user.isBanned() ? user.getBan().getBanTime() : 0);
-        statement.set("reason", (user.isBanned() ? user.getBan().getReason() : null));
+        statement.set("ban", user.getBan().map(UserBan::getBanTime).orElseGet(0L));
+        statement.set("reason", user.getBan().map(UserBan::getReason).getOrNull());
         statement.executeUpdate();
     }
 

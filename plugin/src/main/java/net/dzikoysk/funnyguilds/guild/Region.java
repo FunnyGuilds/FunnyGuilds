@@ -6,8 +6,10 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.util.Vector;
+import panda.std.Option;
 
 public class Region extends AbstractMutableEntity {
 
@@ -22,16 +24,16 @@ public class Region extends AbstractMutableEntity {
     private Location firstCorner;
     private Location secondCorner;
 
-    public Region(String name) {
+    public Region(String name, Location center) {
         this.name = name;
+        this.world = center.getWorld();
+        this.center = center;
     }
 
-    public Region(Guild guild, Location location, int size) {
-        this(guild.getName());
+    public Region(Guild guild, Location center, int size) {
+        this(guild.getName(), center);
 
         this.guild = guild;
-        this.world = location.getWorld();
-        this.center = location;
         this.size = size;
 
         this.update();
@@ -62,8 +64,8 @@ public class Region extends AbstractMutableEntity {
             Vector l = new Vector(lx, LocationUtils.getMinHeight(this.world), lz);
             Vector p = new Vector(px, this.world.getMaxHeight(), pz);
 
-            this.firstCorner = l.toLocation(this.world);
-            this.secondCorner = p.toLocation(this.world);
+            this.firstCorner = l.toLocation(world);
+            this.secondCorner = p.toLocation(world);
         }
     }
 
@@ -72,7 +74,11 @@ public class Region extends AbstractMutableEntity {
             return false;
         }
 
-        if (!this.center.getWorld().equals(location.getWorld())) {
+        if (this.world == null) {
+            return false;
+        }
+
+        if (!this.world.equals(location.getWorld())) {
             return false;
         }
 
@@ -112,8 +118,14 @@ public class Region extends AbstractMutableEntity {
         return this.center;
     }
 
-    public Location getHeart() {
-        return getCenter().getBlock().getRelative(BlockFace.DOWN).getLocation();
+    public Option<Location> getHeart() {
+        return this.getHeartBlock().map(Block::getLocation);
+    }
+
+    public Option<Block> getHeartBlock() {
+        return Option.of(this.getCenter())
+                .map(Location::getBlock)
+                .map(block -> block.getRelative(BlockFace.DOWN));
     }
 
     public void setCenter(Location location) {
@@ -162,6 +174,14 @@ public class Region extends AbstractMutableEntity {
 
     public int getLowerZ() {
         return compareCoordinates(false, firstCorner.getBlockZ(), secondCorner.getBlockZ());
+    }
+
+    public Location getUpperCorner() {
+        return new Location(this.world, this.getUpperX(), this.getUpperY(), this.getUpperZ());
+    }
+
+    public Location getLowerCorner() {
+        return new Location(this.world, this.getLowerX(), this.getLowerY(), this.getLowerZ());
     }
 
     public Location getFirstCorner() {

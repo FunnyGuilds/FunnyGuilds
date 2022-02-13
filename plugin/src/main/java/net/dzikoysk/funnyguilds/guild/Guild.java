@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -14,7 +15,9 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
 public class Guild extends AbstractMutableEntity {
@@ -27,8 +30,8 @@ public class Guild extends AbstractMutableEntity {
     private final GuildRank rank;
     private int lives;
 
-    private Region region;
-    private Location home;
+    private Option<Region> region = Option.none();
+    private Option<Location> home = Option.none();
 
     private User owner;
     private Set<User> members = ConcurrentHashMap.newKeySet();
@@ -46,42 +49,25 @@ public class Guild extends AbstractMutableEntity {
 
     private boolean pvp;
 
-    public Guild(UUID uuid) {
-        this.uuid = uuid;
+    public Guild(UUID uuid, String name, String tag) {
+        this.uuid = uuid != null ? uuid : UUID.randomUUID();
+        this.name = name;
+        this.tag = tag;
 
         this.rank = new GuildRank(this);
         this.born = System.currentTimeMillis();
     }
 
-    public Guild(String name) {
-        this(UUID.randomUUID());
-        this.name = name;
-    }
-
     public Guild(String name, String tag) {
-        this(UUID.randomUUID());
-        this.name = name;
-        this.tag = tag;
-    }
-
-    public Guild(UUID uuid, String name, String tag) {
-        this(uuid);
-        this.name = name;
-        this.tag = tag;
+        this(null, name, tag);
     }
 
     public void broadcast(String message) {
-        for (User user : this.getOnlineMembers()) {
-            if (user.getPlayer() == null) {
-                continue;
-            }
-
-            user.getPlayer().sendMessage(message);
-        }
+        this.getMembers().forEach(user -> user.sendMessage(message));
     }
 
     public void deserializationUpdate() {
-        this.owner.setGuild(this);
+        owner.setGuild(this);
         this.members.forEach(user -> user.setGuild(this));
     }
 
@@ -135,25 +121,30 @@ public class Guild extends AbstractMutableEntity {
         this.setLives(update.apply(this.lives));
     }
 
-    public Region getRegion() {
-        return region;
+    /**
+     * @return region of the guild.
+     */
+    public Option<Region> getRegion() {
+        return this.region;
     }
 
-    public void setRegion(Region region) {
-        this.region = region;
-        this.region.setGuild(this);
+    public boolean hasRegion() {
+        return this.region.isPresent();
+    }
 
-        Location center = region.getCenter();
+    public void setRegion(@Nullable Region region) {
+        this.region = Option.of(region);
 
-        if (this.home == null) {
-            this.home = center.clone();
-        }
+        this.region.peek(peekRegion -> {
+            peekRegion.setGuild(this);
+            this.home = Option.of(peekRegion.getCenter().clone());
+        });
 
         this.markChanged();
     }
 
     public Option<Location> getCenter() {
-        return Option.of(this.region)
+        return this.region
                 .map(Region::getCenter)
                 .map(Location::clone);
     }
@@ -162,18 +153,34 @@ public class Guild extends AbstractMutableEntity {
         return this.getCenter().map(location -> location.add(0.5D, -1.0D, 0.5D));
     }
 
+    /**
+     * @return if someone is in guild region
+     * @deprecated for removal in the future, in favour of {@link RegionManager#isAnyUserInRegion(Region, Collection)}}
+     */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public boolean isSomeoneInRegion() {
         return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(region, new HashSet<>(members));
     }
 
-    public Location getHome() {
+    /**
+     * @return home location of the guild
+     */
+    public Option<Location> getHome() {
         return this.home;
     }
 
-    public void setHome(Location home) {
-        this.home = home;
+    public boolean hasHome() {
+        return this.home.isPresent();
+    }
+
+    public void setHome(@Nullable Location home) {
+        this.home = Option.of(home);
         this.markChanged();
+    }
+
+    public void teleportHome(Player player) {
+        this.home.peek(player::teleport);
     }
 
     public User getOwner() {
@@ -212,8 +219,8 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void removeMember(User user) {
-        this.deputies.remove(user);
         this.members.remove(user);
+        this.deputies.remove(user);
         this.markChanged();
     }
 

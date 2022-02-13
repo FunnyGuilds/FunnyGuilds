@@ -4,13 +4,16 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.jetbrains.annotations.Nullable;
+import panda.std.Option;
 
 public class ValidityUtils {
 
     private ValidityUtils() {}
 
-    public static void broadcast(Guild guild) {
-        if (guild == null || guild.getName() == null) {
+    public static void broadcast(@Nullable Guild guild) {
+        if (guild == null) {
             return;
         }
 
@@ -19,13 +22,13 @@ public class ValidityUtils {
                 .replace("{TAG}", guild.getTag())
                 .replace("{GUILD}", guild.getName());
 
-        Region region = guild.getRegion();
-
-        if (region != null && region.getCenter() != null) {
+        Option<Region> regionOption = guild.getRegion();
+        if (guild.hasRegion() && regionOption.get().getCenter() != null) {
+            Location center = regionOption.get().getCenter();
             message = message
-                    .replace("{X}", Integer.toString(region.getCenter().getBlockX()))
-                    .replace("{Y}", Integer.toString(region.getCenter().getBlockY()))
-                    .replace("{Z}", Integer.toString(region.getCenter().getBlockZ()));
+                    .replace("{X}", Integer.toString(center.getBlockX()))
+                    .replace("{Y}", Integer.toString(center.getBlockY()))
+                    .replace("{Z}", Integer.toString(center.getBlockZ()));
         }
         else {
             message = message

@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -27,23 +27,15 @@ public class PlayerRespawn extends AbstractFunnyListener {
         if (!user.hasGuild()) {
             return;
         }
+        Guild guild = user.getGuild().get();
 
-        Location home = user.getGuild().getHome();
-
-        if (home == null) {
-            return;
-        }
-
-        event.setRespawnLocation(home);
-
-        if (config.heart.createEntityType == null) {
-            return;
-        }
-
-        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            this.regionManager.findRegionAtLocation(home)
-                    .map(Region::getGuild)
-                    .peek(guild -> GuildEntityHelper.spawnGuildHeart(guild, player));
-        });
+        guild.getHome()
+                .peek(event::setRespawnLocation)
+                .filter(heart -> config.heart.createEntityType != null)
+                .peek(home -> Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () ->
+                        this.regionManager.findRegionAtLocation(home)
+                                .map(Region::getGuild)
+                                .peek(guildAtRegion -> GuildEntityHelper.spawnGuildHeart(guildAtRegion, player))
+                ));
     }
 }

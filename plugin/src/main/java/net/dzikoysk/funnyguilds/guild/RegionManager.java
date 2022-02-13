@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -124,8 +123,15 @@ public class RegionManager {
         return isAnyPlayerInRegion(region, Collections.emptySet());
     }
 
-    public boolean isAnyUserInRegion(Region region, Collection<User> users) {
-        return isAnyPlayerInRegion(region, users.stream().map(User::getUUID).collect(Collectors.toSet()));
+    public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
+        return isAnyPlayerInRegion(region, ignoredUsers.stream()
+                .map(User::getUUID)
+                .collect(Collectors.toSet()));
+    }
+
+    public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
+        return regionOption.map(region -> isAnyUserInRegion(region, ignoredUsers))
+                .orElseGet(false);
     }
 
     /**
@@ -149,11 +155,15 @@ public class RegionManager {
 
         return PandaStream.of(this.regionsMap.values())
                 .map(Region::getCenter)
-                .filter(Objects::nonNull)
                 .filterNot(regionCenter -> regionCenter.equals(center))
                 .filter(regionCenter -> regionCenter.getWorld().equals(center.getWorld()))
                 .find(regionCenter -> LocationUtils.flatDistance(regionCenter, center) < requiredDistance)
                 .isPresent();
+    }
+
+    public boolean isNearRegion(Option<Location> center) {
+        return center.map(this::isNearRegion)
+                .orElseGet(false);
     }
 
     /**
@@ -170,7 +180,7 @@ public class RegionManager {
 
         Location blockLocation = block.getLocation();
         return this.findRegionAtLocation(blockLocation)
-                .map(region -> blockLocation.equals(region.getHeart()))
+                .map(region -> region.getHeart().contentEquals(blockLocation))
                 .orElseGet(false);
     }
 

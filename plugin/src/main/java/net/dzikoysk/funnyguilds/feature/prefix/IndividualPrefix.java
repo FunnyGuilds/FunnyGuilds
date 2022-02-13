@@ -27,15 +27,16 @@ public class IndividualPrefix {
                 .peek(byName -> {
                     Scoreboard scoreboard = getScoreboard();
                     Team team = scoreboard.getEntryTeam(player);
+                    Guild guild = byName.getGuild().get();
 
                     if (team != null) {
                         team.removeEntry(player);
                     }
 
-                    team = scoreboard.getTeam(byName.getGuild().getTag());
+                    team = scoreboard.getTeam(guild.getTag());
                     if (team == null) {
-                        addGuild(byName.getGuild());
-                        team = scoreboard.getTeam(byName.getGuild().getTag());
+                        addGuild(guild);
+                        team = scoreboard.getTeam(guild.getTag());
                     }
 
                     if (team == null) {
@@ -44,8 +45,8 @@ public class IndividualPrefix {
                     }
 
                     if (this.user.hasGuild()) {
-                        if (this.user.equals(byName) || this.user.getGuild().getMembers().contains(byName)) {
-                            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur.getValue(), byName.getGuild()));
+                        if (this.user.equals(byName) || guild.getMembers().contains(byName)) {
+                            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur.getValue(), guild));
                         }
                     }
 
@@ -59,9 +60,9 @@ public class IndividualPrefix {
         }
 
         Scoreboard scoreboard = getScoreboard();
-        Guild guild = user.getGuild();
 
-        if (guild != null) {
+        if (user.hasGuild()) {
+            Guild guild = user.getGuild().get();
             if (guild.equals(to)) {
                 initialize();
                 return;
@@ -141,9 +142,9 @@ public class IndividualPrefix {
     public void initialize() {
         Set<Guild> guilds = plugin.getGuildManager().getGuilds();
         Scoreboard scoreboard = getScoreboard();
-        Guild guild = user.getGuild();
 
-        if (guild != null) {
+        if (user.hasGuild()) {
+            Guild guild = user.getGuild().get();
             guilds.remove(guild);
 
             PluginConfiguration config = plugin.getPluginConfiguration();

@@ -6,7 +6,6 @@ import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.panda_lang.utilities.inject.Resources;
 
@@ -23,15 +22,10 @@ final class GuildBind implements Bind {
 
     @Override
     public void accept(Resources injectorResources) {
-        injectorResources.on(Guild.class).assignHandler((property, annotation, args) -> {
-            User user = this.userBind.fetchUser(CommandUtils.getContext(args));
-
-            if (!user.hasGuild()) {
-                throw new ValidationException(this.messages.generalHasNoGuild);
-            }
-
-            return user.getGuild();
-        });
+        injectorResources.on(Guild.class).assignHandler((property, annotation, args) ->
+                this.userBind.fetchUser(CommandUtils.getContext(args))
+                        .getGuild()
+                        .orThrow(() -> new ValidationException(this.messages.generalHasNoGuild)));
     }
 
 }

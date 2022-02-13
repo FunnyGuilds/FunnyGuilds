@@ -38,9 +38,6 @@ public final class ProtectionSystem {
         Region region = regionOption.get();
 
         Guild guild = region.getGuild();
-        if (guild == null || guild.getName() == null) {
-            return Option.none();
-        }
 
         User user = UserUtils.get(player.getUniqueId());
         if (!guild.getMembers().contains(user)) {
@@ -51,7 +48,7 @@ public final class ProtectionSystem {
             return Option.of(Triple.of(player, guild, ProtectionType.LOCKED));
         }
 
-        if (location.equals(region.getHeart())) {
+        if (region.getHeart().contentEquals(location)) {
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             Pair<Material, Byte> heartMaterial = config.heart.createMaterial;
             return Option.when(heartMaterial != null && heartMaterial.getLeft() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));

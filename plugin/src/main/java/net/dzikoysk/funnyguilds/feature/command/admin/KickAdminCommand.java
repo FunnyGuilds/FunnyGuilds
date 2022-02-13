@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -29,8 +28,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         User user = UserValidation.requireUserByName(args[0]);
         when(!user.hasGuild(), messages.generalPlayerHasNoGuild);
         when(user.isOwner(), messages.adminGuildOwner);
-
-        Guild guild = user.getGuild();
+        Guild guild = user.getGuild().get();
         User admin = AdminUtils.getAdminUser(sender);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(AdminUtils.getCause(admin), admin, guild, user))) {
@@ -39,7 +37,6 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
 
         this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
 
-        Player player = user.getPlayer();
         guild.removeMember(user);
         user.removeGuild();
 
@@ -48,13 +45,11 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        if (player != null) {
-            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
-            player.sendMessage(formatter.format(messages.kickToPlayer));
-        }
-
         sender.sendMessage(formatter.format(messages.kickToOwner));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
+        user.sendMessage(formatter.format(messages.kickToPlayer));
+
+        user.getPlayer().peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player)));
     }
 
 }

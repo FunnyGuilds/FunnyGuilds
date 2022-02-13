@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
@@ -42,9 +41,7 @@ public final class NameCommand extends AbstractFunnyCommand {
             return;
         }
 
-        if (config.regionsEnabled) {
-            Region region = guild.getRegion();
-
+        guild.getRegion().peek(region -> {
             if (this.dataModel instanceof FlatDataModel) {
                 FlatDataModel dataModel = (FlatDataModel) this.dataModel;
                 dataModel.getRegionFile(region).delete();
@@ -55,7 +52,7 @@ public final class NameCommand extends AbstractFunnyCommand {
             }
 
             region.setName(args[1]);
-        }
+        });
 
         if (this.dataModel instanceof FlatDataModel) {
             FlatDataModel dataModel = (FlatDataModel) this.dataModel;

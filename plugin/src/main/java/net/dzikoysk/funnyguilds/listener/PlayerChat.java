@@ -30,7 +30,7 @@ public class PlayerChat extends AbstractFunnyListener {
         User user = userOption.get();
 
         if (user.hasGuild()) {
-            Guild guild = user.getGuild();
+            Guild guild = user.getGuild().get();
             String message = event.getMessage();
 
             if (sendGuildMessage(event, message, player, guild)) {
@@ -51,7 +51,7 @@ public class PlayerChat extends AbstractFunnyListener {
         format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
 
         if (user.hasGuild()) {
-            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().getTag()));
+            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().get().getTag()));
             format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(user, config)));
         }
         else {
@@ -173,16 +173,11 @@ public class PlayerChat extends AbstractFunnyListener {
             return;
         }
 
-        for (User onlineMember : guild.getOnlineMembers()) {
-            Player member = onlineMember.getPlayer();
-
-            if (member == null) {
-                continue;
-            }
-
-            if (!member.equals(player) || !onlineMember.getCache().isSpy()) {
-                member.sendMessage(message);
-            }
+        for (User member : guild.getMembers()) {
+            member.getPlayer()
+                    .filterNot(filterPlayer -> filterPlayer.equals(player))
+                    .filterNot(filterPlayer -> member.getCache().isSpy())
+                    .peek(peekPlayer -> peekPlayer.sendMessage(message));
         }
     }
 

@@ -45,7 +45,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
             String message = formatter.format(messages.deputyNoLongerMembers);
 
             for (User member : guild.getOnlineMembers()) {
-                member.getPlayer().sendMessage(message);
+                member.sendMessage(message);
             }
 
             return;
@@ -58,7 +58,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         String message = formatter.format(messages.deputyMembers);
 
         for (User member : guild.getOnlineMembers()) {
-            member.getPlayer().sendMessage(message);
+            member.sendMessage(message);
         }
     }
 

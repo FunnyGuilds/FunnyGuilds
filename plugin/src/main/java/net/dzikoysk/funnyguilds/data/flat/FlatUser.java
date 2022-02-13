@@ -65,10 +65,10 @@ public class FlatUser {
         wrapper.set("assists", user.getRank().getAssists());
         wrapper.set("logouts", user.getRank().getLogouts());
 
-        if (user.isBanned()) {
-            wrapper.set("ban", user.getBan().getBanTime());
-            wrapper.set("reason", user.getBan().getReason());
-        }
+        user.getBan().peek(ban -> {
+            wrapper.set("ban", ban.getBanTime());
+            wrapper.set("reason", ban.getReason());
+        });
 
         wrapper.save();
         return true;

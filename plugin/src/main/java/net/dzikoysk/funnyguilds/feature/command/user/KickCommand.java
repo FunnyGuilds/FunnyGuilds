@@ -35,7 +35,7 @@ public final class KickCommand extends AbstractFunnyCommand {
 
         User formerUser = UserValidation.requireUserByName(args[0]);
         when(!formerUser.hasGuild(), messages.generalPlayerHasNoGuild);
-        when(!guild.equals(formerUser.getGuild()), messages.kickOtherGuild);
+        when(!guild.equals(formerUser.getGuild().get()), messages.kickOtherGuild);
         when(formerUser.isOwner(), messages.kickOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
@@ -59,11 +59,7 @@ public final class KickCommand extends AbstractFunnyCommand {
         player.sendMessage(formatter.format(messages.kickToOwner));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
 
-        Player formerPlayer = formerUser.getPlayer();
-
-        if (formerPlayer != null) {
-            formerPlayer.sendMessage(formatter.format(messages.kickToPlayer));
-        }
+        formerUser.sendMessage(formatter.format(messages.kickToPlayer));
     }
 
 }
