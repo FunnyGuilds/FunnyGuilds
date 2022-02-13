@@ -22,9 +22,8 @@ public class ValidityUtils {
                 .replace("{GUILD}", guild.getName());
 
         Option<Region> regionOption = guild.getRegion();
-        if (guild.hasRegion() && regionOption.get().hasCenter()) {
-            Region region = regionOption.get();
-            Location center = region.getCenter().get();
+        if (guild.hasRegion() && regionOption.get().getCenter() != null) {
+            Location center = regionOption.get().getCenter();
             message = message
                     .replace("{X}", Integer.toString(center.getBlockX()))
                     .replace("{Y}", Integer.toString(center.getBlockY()))

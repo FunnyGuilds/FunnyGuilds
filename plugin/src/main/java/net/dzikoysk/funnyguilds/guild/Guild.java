@@ -144,8 +144,7 @@ public class Guild extends AbstractMutableEntity {
 
         this.region.peek(peekRegion -> {
             peekRegion.setGuild(this);
-            peekRegion.getCenter()
-                    .peek(center -> this.home = Option.of(center.clone()));
+            this.home = Option.of(peekRegion.getCenter().clone());
         });
 
         this.markChanged();
@@ -154,7 +153,7 @@ public class Guild extends AbstractMutableEntity {
     @NotNull
     public Option<Location> getCenter() {
         return this.region
-                .flatMap(Region::getCenter)
+                .map(Region::getCenter)
                 .map(Location::clone);
     }
 

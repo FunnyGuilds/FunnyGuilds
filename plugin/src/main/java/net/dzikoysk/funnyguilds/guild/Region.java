@@ -15,10 +15,10 @@ import panda.std.Option;
 public class Region extends AbstractMutableEntity {
 
     private String name;
-    private Option<Guild> guild = Option.none();
+    private Guild guild;
 
-    private Option<World> world = Option.none();
-    private Option<Location> center = Option.none();
+    private World world;
+    private Location center;
     private int size;
     private int enlarge;
 
@@ -32,9 +32,9 @@ public class Region extends AbstractMutableEntity {
     public Region(@NotNull Guild guild, @NotNull Location center, int size) {
         this(guild.getName());
 
-        this.guild = Option.of(guild);
-        this.world = Option.of(center.getWorld());
-        this.center = Option.of(center);
+        this.guild = guild;
+        this.world = center.getWorld();
+        this.center = center;
         this.size = size;
 
         this.update();
@@ -43,29 +43,27 @@ public class Region extends AbstractMutableEntity {
     public synchronized void update() {
         super.markChanged();
 
-        if (this.center.isEmpty()) {
+        if (this.center == null) {
             return;
         }
-        Location center = this.center.get();
 
         if (this.size < 1) {
             return;
         }
 
-        if (this.world.isEmpty()) {
-            this.world = Option.of(Bukkit.getWorlds().get(0));
+        if (this.world == null) {
+            this.world = Bukkit.getWorlds().get(0);
         }
-        World world = this.world.get();
 
         if (this.world != null) {
-            int lx = center.getBlockX() + this.size;
-            int lz = center.getBlockZ() + this.size;
+            int lx = this.center.getBlockX() + this.size;
+            int lz = this.center.getBlockZ() + this.size;
 
-            int px = center.getBlockX() - this.size;
-            int pz = center.getBlockZ() - this.size;
+            int px = this.center.getBlockX() - this.size;
+            int pz = this.center.getBlockZ() - this.size;
 
-            Vector l = new Vector(lx, LocationUtils.getMinHeight(world), lz);
-            Vector p = new Vector(px, world.getMaxHeight(), pz);
+            Vector l = new Vector(lx, LocationUtils.getMinHeight(this.world), lz);
+            Vector p = new Vector(px, this.world.getMaxHeight(), pz);
 
             this.firstCorner = l.toLocation(world);
             this.secondCorner = p.toLocation(world);
@@ -77,11 +75,11 @@ public class Region extends AbstractMutableEntity {
             return false;
         }
 
-        if (this.world.isEmpty()) {
+        if (this.world == null) {
             return false;
         }
 
-        if (!this.world.get().equals(location.getWorld())) {
+        if (!this.world.equals(location.getWorld())) {
             return false;
         }
 
@@ -105,54 +103,37 @@ public class Region extends AbstractMutableEntity {
         super.markChanged();
     }
 
-    @NotNull
-    public Option<Guild> getGuild() {
+    public Guild getGuild() {
         return this.guild;
     }
 
-    public boolean hasGuild() {
-        return this.guild.isPresent();
-    }
-
     public void setGuild(Guild guild) {
-        this.guild = Option.of(guild);
+        this.guild = guild;
         super.markChanged();
     }
 
-    @NotNull
-    public Option<World> getWorld() {
+    public World getWorld() {
         return this.world;
     }
 
-    public boolean hasWorld() {
-        return this.world.isPresent();
-    }
-
-    @NotNull
-    public Option<Location> getCenter() {
+    public Location getCenter() {
         return this.center;
     }
 
-    public boolean hasCenter() {
-        return this.center.isPresent();
+    public Location getHeart() {
+        return this.getHeartBlock().getLocation();
     }
 
-    @NotNull
-    public Option<Location> getHeartOption() {
-        return this.getHeartBlock()
-                .map(Block::getLocation);
-    }
-
-    @NotNull
-    public Option<Block> getHeartBlock() {
-        return this.getCenter()
+    public Block getHeartBlock() {
+        return Option.of(this.getCenter())
                 .map(Location::getBlock)
-                .map(block -> block.getRelative(BlockFace.DOWN));
+                .map(block -> block.getRelative(BlockFace.DOWN))
+                .getOrNull();
     }
 
     public void setCenter(Location location) {
-        this.center = Option.of(location);
-        this.world = Option.of(location.getWorld());
+        this.center = location;
+        this.world = location.getWorld();
         this.update();
     }
 
@@ -199,11 +180,11 @@ public class Region extends AbstractMutableEntity {
     }
 
     public Location getUpperCorner() {
-        return new Location(this.world.getOrNull(), this.getUpperX(), this.getUpperY(), this.getUpperZ());
+        return new Location(this.world, this.getUpperX(), this.getUpperY(), this.getUpperZ());
     }
 
     public Location getLowerCorner() {
-        return new Location(this.world.getOrNull(), this.getLowerX(), this.getLowerY(), this.getLowerZ());
+        return new Location(this.world, this.getLowerX(), this.getLowerY(), this.getLowerZ());
     }
 
     public Location getFirstCorner() {

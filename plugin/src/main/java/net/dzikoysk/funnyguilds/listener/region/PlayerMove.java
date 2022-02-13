@@ -57,7 +57,7 @@ public class PlayerMove extends AbstractFunnyListener {
                 cache.setEnter(false);
 
                 this.regionManager.findRegionAtLocation(from)
-                        .flatMap(Region::getGuild)
+                        .map(Region::getGuild)
                         .peek(guild -> {
                             if (!SimpleEventHandler.handle(new GuildRegionLeaveEvent(EventCause.USER, user, guild))) {
                                 event.setCancelled(true);
@@ -103,7 +103,7 @@ public class PlayerMove extends AbstractFunnyListener {
                         });
             }
             else if (!cache.getEnter()) {
-                regionToOption.flatMap(Region::getGuild)
+                regionToOption.map(Region::getGuild)
                         .peek(guild -> {
                             if (guild.getName() == null) {
                                 return;

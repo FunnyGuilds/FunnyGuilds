@@ -99,7 +99,7 @@ public class FlatGuild {
         Location home = null;
 
         if (region != null) {
-            home = region.getCenter().getOrNull();
+            home = region.getCenter();
 
             if (hs != null) {
                 home = LocationUtils.parseLocation(hs);

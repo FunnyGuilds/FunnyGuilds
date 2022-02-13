@@ -16,7 +16,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -33,12 +33,12 @@ public final class MoveCommand extends AbstractFunnyCommand {
         when(!config.regionsEnabled, messages.regionsDisabled);
         when(args.length < 1, messages.generalNoTagGiven);
 
-        HeartConfiguration heart = config.heart;
+        HeartConfiguration heartConfig = config.heart;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         Location location = player.getLocation();
 
-        if (!heart.usePlayerPositionForCenterY) {
-            location.setY(heart.createCenterY);
+        if (!heartConfig.usePlayerPositionForCenterY) {
+            location.setY(heartConfig.createCenterY);
         }
 
         int distance = config.regionSize + config.createDistance;
@@ -62,24 +62,23 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
         else {
             region = guild.getRegion().get();
-            if (heart.createEntityType != null) {
+            if (heartConfig.createEntityType != null) {
                 GuildEntityHelper.despawnGuildHeart(guild);
             }
-            else if (heart.createMaterial != null && heart.createMaterial.getLeft() != Material.AIR) {
-                region.getCenter()
-                        .map(center -> center.getBlock().getRelative(BlockFace.DOWN))
-                        .peek(block ->
-                                Bukkit.getScheduler().runTask(this.plugin, () -> {
-                                    if (block.getLocation().getBlockY() > 1) {
-                                        block.setType(Material.AIR);
-                                    }
-                                }));
+            else if (heartConfig.createMaterial != null && heartConfig.createMaterial.getLeft() != Material.AIR) {
+                Block heart = region.getHeartBlock();
+
+                Bukkit.getScheduler().runTask(this.plugin, () -> {
+                    if (heart.getLocation().getBlockY() > 1) {
+                        heart.setType(Material.AIR);
+                    }
+                });
             }
 
             region.setCenter(location);
         }
 
-        if (heart.createCenterSphere) {
+        if (heartConfig.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);
 
             for (Location locationInSphere : sphere) {
