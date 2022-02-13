@@ -46,7 +46,7 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
         Region region = regionOption.get();
 
-        Block heart = region.getHeartBlock();
+        Block heart = region.getHeartBlock().getOrNull();
         if (clicked.equals(heart)) {
             if (heart.getType() == Material.DRAGON_EGG) {
                 event.setCancelled(true);

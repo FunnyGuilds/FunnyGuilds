@@ -303,9 +303,8 @@ public class GuildManager {
     public void spawnHeart(Guild guild) {
         if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
             guild.getRegion()
-                    .peek(region -> {
-                        Block heart = region.getHeartBlock();
-
+                    .flatMap(Region::getHeartBlock)
+                    .peek(heart -> {
                         heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
                         BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
                     });
