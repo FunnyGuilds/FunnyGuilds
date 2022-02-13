@@ -5,12 +5,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 
 public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
 
-    protected  final PluginConfiguration pluginConfiguration;
+    protected final PluginConfiguration pluginConfiguration;
 
     protected final Map<String, T> topMap = new HashMap<>();
 
@@ -34,7 +33,7 @@ public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
         return Option.of(this.topMap.get(id.toLowerCase()));
     }
 
-    public void addUserTop(String id, @NotNull T top) {
+    public void addUserTop(String id, T top) {
         this.topMap.put(id, top);
     }
 
