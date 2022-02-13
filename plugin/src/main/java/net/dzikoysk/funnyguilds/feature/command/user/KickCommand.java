@@ -59,11 +59,7 @@ public final class KickCommand extends AbstractFunnyCommand {
         player.sendMessage(formatter.format(messages.kickToOwner));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
 
-        Player formerPlayer = formerUser.getPlayer();
-
-        if (formerPlayer != null) {
-            formerPlayer.sendMessage(formatter.format(messages.kickToPlayer));
-        }
+        formerUser.sendMessage(formatter.format(messages.kickToPlayer));
     }
 
 }

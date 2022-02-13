@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 
 public final class BanUtils {
 
@@ -18,12 +17,14 @@ public final class BanUtils {
         guild.setBan(time + System.currentTimeMillis());
 
         for (User user : guild.getMembers()) {
-            Player player = user.getPlayer();
-            ban(user, time, reason);
+            user.getPlayer()
+                    .peek(player -> {
+                        ban(user, time, reason);
 
-            if (player != null && player.isOnline()) {
-                player.kickPlayer(getBanMessage(user));
-            }
+                        if (player != null && player.isOnline()) {
+                            player.kickPlayer(getBanMessage(user));
+                        }
+                    });
         }
     }
 

@@ -78,7 +78,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 return;
             }
 
-            playerAttacker = lastAttacker.getPlayer();
+            playerAttacker = lastAttacker.getPlayer().get();
         }
 
         Option<User> attackerOption = this.userManager.findByPlayer(playerAttacker);
@@ -306,9 +306,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             event.setDeathMessage(null);
 
             for (User fighter : messageReceivers) {
-                if (fighter.isOnline()) {
-                    fighter.getPlayer().sendMessage(deathMessage);
-                }
+                fighter.sendMessage(deathMessage);
             }
         }
 

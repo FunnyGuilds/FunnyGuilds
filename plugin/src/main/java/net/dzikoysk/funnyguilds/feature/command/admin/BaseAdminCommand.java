@@ -33,7 +33,7 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
                 .register("{ADMIN}", sender.getName())
                 .register("{PLAYER}", userToTeleport.getName());
 
-        userToTeleport.getPlayerOption().peek(player -> player.teleport(guildHome));
+        userToTeleport.getPlayer().peek(player -> player.teleport(guildHome));
         userToTeleport.sendMessage(formatter.format(messages.adminTeleportedToBase));
         sender.sendMessage(formatter.format(messages.adminTargetTeleportedToBase));
     }

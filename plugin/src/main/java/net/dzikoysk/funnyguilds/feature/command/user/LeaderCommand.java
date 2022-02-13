@@ -37,13 +37,9 @@ public final class LeaderCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Player leaderPlayer = leaderUser.getPlayer();
         guild.setOwner(leaderUser);
         player.sendMessage(messages.leaderSet);
-
-        if (leaderPlayer != null) {
-            leaderPlayer.sendMessage(messages.leaderOwner);
-        }
+        leaderUser.sendMessage(messages.leaderOwner);
     }
 
 }

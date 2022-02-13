@@ -79,19 +79,11 @@ public class WarSystem {
         }
         else {
             for (User member : attacker.getMembers()) {
-                Player memberPlayer = member.getPlayer();
-
-                if (memberPlayer != null) {
-                    WarUtils.message(memberPlayer, 3, guild);
-                }
+                member.getPlayer().peek(memberPlayer -> WarUtils.message(memberPlayer, 3, guild));
             }
 
             for (User member : guild.getMembers()) {
-                Player memberPlayer = member.getPlayer();
-
-                if (memberPlayer != null) {
-                    WarUtils.message(memberPlayer, 4, attacker);
-                }
+                member.getPlayer().peek(memberPlayer -> WarUtils.message(memberPlayer, 4, attacker));
             }
         }
     }
@@ -105,21 +97,13 @@ public class WarSystem {
         String message = WarUtils.getWinMessage(conqueror, loser);
 
         for (User user : conqueror.getMembers()) {
-            Player player = user.getPlayer();
-
-            if (player != null) {
-                player.sendMessage(message);
-            }
+            user.sendMessage(message);
         }
 
         message = WarUtils.getLoseMessage(conqueror, loser);
 
         for (User user : loser.getMembers()) {
-            Player player = user.getPlayer();
-
-            if (player != null) {
-                player.sendMessage(message);
-            }
+            user.sendMessage(message);
         }
 
         FunnyGuilds.getInstance().getGuildManager().deleteGuild(FunnyGuilds.getInstance(), loser);

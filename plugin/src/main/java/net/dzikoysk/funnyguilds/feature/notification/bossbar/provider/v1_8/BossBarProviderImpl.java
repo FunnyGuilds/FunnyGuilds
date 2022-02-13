@@ -92,30 +92,21 @@ public class BossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void sendNotification(String text, BossBarOptions options, int timeout) {
-        Player player = user.getPlayer();
+        user.getPlayer()
+                .peek(player -> {
+                    if (this.bossBarHandleTask != null) {
+                        this.bossBarHandleTask.cancel();
+                        this.removeBossBar(player);
+                        this.currentSecond.set(0);
+                    }
 
-        if (player == null) {
-            return;
-        }
-
-        if (this.bossBarHandleTask != null) {
-            this.bossBarHandleTask.cancel();
-            this.removeBossBar(player);
-            this.currentSecond.set(0);
-        }
-
-        this.createBossBar(player, text, timeout);
+                    this.createBossBar(player, text, timeout);
+                });
     }
 
     @Override
     public void removeNotification() {
-        Player player = user.getPlayer();
-
-        if (player == null) {
-            return;
-        }
-
-        this.removeBossBar(player);
+        user.getPlayer().peek(this::removeBossBar);
     }
 
     private void createBossBar(Player player, String text, int timeout) {

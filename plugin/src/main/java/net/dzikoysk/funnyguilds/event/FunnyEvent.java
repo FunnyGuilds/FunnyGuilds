@@ -55,8 +55,8 @@ public abstract class FunnyEvent extends Event implements Cancellable {
     }
 
     public void notifyDoer() {
-        if (this.doer != null && this.doer.isOnline()) {
-            this.doer.getPlayer().sendMessage(getCancelMessage());
+        if (this.doer != null) {
+            this.doer.sendMessage(getCancelMessage());
         }
     }
 

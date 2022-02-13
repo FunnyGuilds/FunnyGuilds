@@ -112,7 +112,7 @@ public class IndividualPlayerList {
         String preparedHeader = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT];
         String preparedFooter = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1];
 
-        this.user.getPlayerOption()
+        this.user.getPlayer()
                 .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, this.cellPing));
     }
 
@@ -138,7 +138,7 @@ public class IndividualPlayerList {
     private String putVars(String cell) {
         String formatted = cell;
 
-        Option<Player> playerOption = this.user.getPlayerOption();
+        Option<Player> playerOption = this.user.getPlayer();
         if (playerOption.isEmpty()) {
             return formatted;
         }

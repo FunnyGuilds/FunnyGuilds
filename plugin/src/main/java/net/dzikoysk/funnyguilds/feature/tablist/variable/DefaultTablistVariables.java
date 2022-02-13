@@ -25,7 +25,9 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 import panda.utilities.StringUtils;
 import panda.utilities.text.Joiner;
 
@@ -68,25 +70,17 @@ public final class DefaultTablistVariables {
             }
         }));
 
-        parser.add(new SimpleTablistVariable("WORLD", user -> {
-            Player userPlayer = user.getPlayer();
+        parser.add(new SimpleTablistVariable("WORLD", user ->
+                user.getPlayer()
+                        .map(Player::getWorld)
+                        .map(World::getName)
+                        .orElseGet("")));
 
-            if (userPlayer == null) {
-                return "";
-            }
-
-            return userPlayer.getWorld().getName();
-        }));
-
-        parser.add(new SimpleTablistVariable("ONLINE", user -> {
-            Player userPlayer = user.getPlayer();
-
-            if (userPlayer == null) {
-                return "";
-            }
-
-            return Bukkit.getOnlinePlayers().stream().filter(userPlayer::canSee).count();
-        }));
+        parser.add(new SimpleTablistVariable("ONLINE", user ->
+                user.getPlayer()
+                        .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
+                        .map(Object::toString)
+                        .orElseGet("")));
 
         for (TablistVariable variable : getFunnyVariables().values()) {
             parser.add(variable);
@@ -108,13 +102,10 @@ public final class DefaultTablistVariables {
 
         if (HookManager.VAULT.isPresent() && VaultHook.isEconomyHooked()) {
             parser.add(new SimpleTablistVariable("VAULT-MONEY", user -> {
-                Player userPlayer = user.getPlayer();
-
-                if (userPlayer == null) {
-                    return "";
-                }
-
-                return VaultHook.accountBalance(userPlayer);
+                return user.getPlayer()
+                        .map(player -> VaultHook.accountBalance(player))
+                        .map(Object::toString)
+                        .orElseGet("");
             }));
         }
     }
@@ -219,11 +210,16 @@ public final class DefaultTablistVariables {
     }
 
     private static List<String> getWorldGuardRegionNames(User user) {
-        if (user == null || user.getPlayer() == null) {
+        if (user == null) {
             return Collections.emptyList();
         }
 
-        Location location = user.getPlayer().getLocation();
+        Option<Player> playerOption = user.getPlayer();
+        if (playerOption.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Location location = playerOption.get().getLocation();
         List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location))
                 .getOrNull();
 

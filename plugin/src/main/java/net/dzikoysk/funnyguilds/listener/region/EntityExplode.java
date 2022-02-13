@@ -94,7 +94,7 @@ public class EntityExplode extends AbstractFunnyListener {
                         blocksInSphere.removeIf(block -> block.getLocation().equals(guildHeartLocation));
 
                         for (User user : guild.getMembers()) {
-                            Option<Player> playerOption = user.getPlayerOption();
+                            Option<Player> playerOption = user.getPlayer();
                             if (playerOption.isPresent() && !informationMessageCooldowns.cooldown(playerOption.get(), TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                                 user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
                             }

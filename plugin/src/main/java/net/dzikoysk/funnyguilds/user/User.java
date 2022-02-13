@@ -47,11 +47,17 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean sendMessage(String message) {
-        return this.getPlayerOption()
+        return this.getPlayer()
                 .map(player -> {
                     player.sendMessage(message);
                     return true;
                 })
+                .orElseGet(false);
+    }
+
+    public boolean hasPermission(String permission) {
+        return this.getPlayer()
+                .map(player -> player.hasPermission(permission))
                 .orElseGet(false);
     }
 
@@ -87,7 +93,7 @@ public class User extends AbstractMutableEntity {
     /**
      * @return bukkit player
      */
-    public Option<Player> getPlayerOption() {
+    public Option<Player> getPlayer() {
         if (!isOnline()) {
             return Option.none();
         }
@@ -104,17 +110,6 @@ public class User extends AbstractMutableEntity {
         }
 
         return Option.none();
-    }
-
-    /**
-     * @return bukkit player or null if offline
-     * @deprecated for removal in the future, in favour of {@link User#getPlayerOption()}
-     */
-    @Nullable
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
-    public Player getPlayer() {
-        return this.getPlayerOption().getOrNull();
     }
 
     public void updateReference(@NotNull Player player) {
@@ -136,14 +131,14 @@ public class User extends AbstractMutableEntity {
         }
 
         // Should work with VanishNoPacket, SuperVanish and PremiumVanish
-        return getPlayerOption()
+        return getPlayer()
                 .map(player -> player.getMetadata("vanished"))
                 .map(metadata -> metadata.stream().anyMatch(MetadataValue::asBoolean))
                 .orElseGet(false);
     }
 
     public int getPing() {
-        return getPlayerOption()
+        return getPlayer()
                 .map(PingUtils::getPing)
                 .orElseGet(0);
     }
