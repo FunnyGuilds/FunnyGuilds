@@ -46,34 +46,38 @@ public class PlayerInteract extends AbstractFunnyListener {
         }
         Region region = regionOption.get();
 
-        Block heart = region.getHeartBlock().getOrNull();
-        if (clicked.equals(heart)) {
-            if (heart.getType() == Material.DRAGON_EGG) {
-                event.setCancelled(true);
-            }
+        boolean returnMethod = region.getHeartBlock()
+                .filter(heart -> heart.equals(clicked))
+                .peek(heart -> {
+                    if (heart.getType() == Material.DRAGON_EGG) {
+                        event.setCancelled(true);
+                    }
 
-            Guild guild = region.getGuild();
+                    Guild guild = region.getGuild();
 
-            if (SecuritySystem.onHitCrystal(player, guild)) {
-                return;
-            }
+                    if (SecuritySystem.onHitCrystal(player, guild)) {
+                        return;
+                    }
 
-            event.setCancelled(true);
+                    event.setCancelled(true);
 
-            if (eventAction == Action.LEFT_CLICK_BLOCK) {
-                WarSystem.getInstance().attack(player, guild);
-                return;
-            }
+                    if (eventAction == Action.LEFT_CLICK_BLOCK) {
+                        WarSystem.getInstance().attack(player, guild);
+                        return;
+                    }
 
-            if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                try {
-                    infoExecutor.execute(player, new String[] {guild.getTag()});
-                }
-                catch (ValidationException validatorException) {
-                    validatorException.getValidationMessage().peek(player::sendMessage);
-                }
-            }
+                    if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                        try {
+                            infoExecutor.execute(player, new String[] {guild.getTag()});
+                        }
+                        catch (ValidationException validatorException) {
+                            validatorException.getValidationMessage().peek(player::sendMessage);
+                        }
+                    }
+                })
+                .isPresent();
 
+        if (returnMethod) {
             return;
         }
 
