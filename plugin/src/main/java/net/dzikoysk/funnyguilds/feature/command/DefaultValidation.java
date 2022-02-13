@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.feature.command;
 import java.util.Objects;
 import java.util.function.Supplier;
 import net.dzikoysk.funnycommands.resources.ValidationException;
+import panda.std.Option;
 
 public final class DefaultValidation {
 
@@ -24,6 +25,13 @@ public final class DefaultValidation {
         if (flag) {
             throw new ValidationException(message);
         }
+    }
+
+    public static <T> T when(Option<T> option, String message) {
+        if (option.isEmpty()) {
+            throw new ValidationException(message);
+        }
+        return option.get();
     }
 
     public static void when(boolean flag, Supplier<Object> message) {

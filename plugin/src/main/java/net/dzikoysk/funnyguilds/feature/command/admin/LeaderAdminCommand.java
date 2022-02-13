@@ -41,7 +41,7 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
 
         String message = messages.leaderMembers.replace("{PLAYER}", user.getName());
 
-        for (User member : guild.getOnlineMembers()) {
+        for (User member : guild.getMembers()) {
             member.sendMessage(message);
         }
     }

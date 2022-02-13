@@ -37,9 +37,6 @@ public final class ProtectionSystem {
         }
         Region region = regionOption.get();
 
-        if (region.getGuild() != null) {
-            return Option.none();
-        }
         Guild guild = region.getGuild();
 
         User user = UserUtils.get(player.getUniqueId());

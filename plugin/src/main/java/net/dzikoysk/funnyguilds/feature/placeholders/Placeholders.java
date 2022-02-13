@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.ChatColor;
@@ -59,7 +60,7 @@ public class Placeholders<T> {
                 .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
                 .property("MEMBERS-ALL", guild -> guild.getMembers().size())
                 .property("DEPUTIES", guild -> joinOrDefault.apply(Entity.names(guild.getDeputies()), "Brak"))
-                .property("REGION-SIZE", guild -> config.regionsEnabled && guild.hasRegion() ? guild.getRegion().get().getSize() : messages.gRegionSizeNoValue)
+                .property("REGION-SIZE", guild -> guild.getRegion().map(Region::getSize).map(value -> Integer.toString(value)).orElseGet(messages.gRegionSizeNoValue))
                 .property("GUILD-PROTECTION", bindGuildProtection)
                 .property("POINTS-FORMAT", guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
                 .property("POINTS", guild -> guild.getRank().getAveragePoints())

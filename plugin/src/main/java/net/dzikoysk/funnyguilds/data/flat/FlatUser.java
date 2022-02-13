@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserBan;
 
 public class FlatUser {
 
@@ -67,9 +66,10 @@ public class FlatUser {
         wrapper.set("logouts", user.getRank().getLogouts());
 
         if (user.isBanned()) {
-            UserBan ban = user.getBan().get();
-            wrapper.set("ban", ban.getBanTime());
-            wrapper.set("reason", ban.getReason());
+            user.getBan().peek(ban -> {
+                wrapper.set("ban", ban.getBanTime());
+                wrapper.set("reason", ban.getReason());
+            });
         }
 
         wrapper.save();

@@ -18,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -56,27 +57,25 @@ public final class MoveCommand extends AbstractFunnyCommand {
             return;
         }
 
-        Region region;
-        if (!guild.hasRegion()) {
-            region = new Region(guild, location, config.regionSize);
-        }
-        else {
-            region = guild.getRegion().get();
-            if (heartConfig.createEntityType != null) {
-                GuildEntityHelper.despawnGuildHeart(guild);
-            }
-            else if (heartConfig.createMaterial != null && heartConfig.createMaterial.getLeft() != Material.AIR) {
-                Block heart = region.getHeartBlock();
-
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    if (heart.getLocation().getBlockY() > 1) {
-                        heart.setType(Material.AIR);
+        Region region = guild.getRegion()
+                .peek(peekRegion -> {
+                    if (heartConfig.createEntityType != null) {
+                        GuildEntityHelper.despawnGuildHeart(guild);
                     }
-                });
-            }
+                    else if (heartConfig.createMaterial != null && heartConfig.createMaterial.getLeft() != Material.AIR) {
+                        Block heart = peekRegion.getHeartBlock();
 
-            region.setCenter(location);
-        }
+                        Bukkit.getScheduler().runTask(this.plugin, () -> {
+                            if (heart.getLocation().getBlockY() > 1) {
+                                heart.setType(Material.AIR);
+                            }
+                        });
+                    }
+
+                    peekRegion.setCenter(location);
+                })
+                .orElse(() -> Option.of(new Region(guild, location, config.regionSize)))
+                .get();
 
         if (heartConfig.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);

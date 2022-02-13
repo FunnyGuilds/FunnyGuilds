@@ -220,9 +220,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         this.guildManager.addGuild(guild);
         user.setGuild(guild);
 
-        if (config.regionsEnabled) {
-            guild.getRegion().peek(region -> this.regionManager.addRegion(region));
-        }
+        guild.getRegion().peek(region -> this.regionManager.addRegion(region));
 
         this.concurrencyManager.postRequests(
                 new PrefixGlobalAddGuildRequest(guild),

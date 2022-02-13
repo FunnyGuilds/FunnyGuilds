@@ -41,20 +41,18 @@ public final class NameCommand extends AbstractFunnyCommand {
             return;
         }
 
-        if (config.regionsEnabled) {
-            guild.getRegion().peek(region -> {
-                if (this.dataModel instanceof FlatDataModel) {
-                    FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-                    dataModel.getRegionFile(region).delete();
-                }
+        guild.getRegion().peek(region -> {
+            if (this.dataModel instanceof FlatDataModel) {
+                FlatDataModel dataModel = (FlatDataModel) this.dataModel;
+                dataModel.getRegionFile(region).delete();
+            }
 
-                if (this.dataModel instanceof SQLDataModel) {
-                    DatabaseRegion.delete(region);
-                }
+            if (this.dataModel instanceof SQLDataModel) {
+                DatabaseRegion.delete(region);
+            }
 
-                region.setName(args[1]);
-            });
-        }
+            region.setName(args[1]);
+        });
 
         if (this.dataModel instanceof FlatDataModel) {
             FlatDataModel dataModel = (FlatDataModel) this.dataModel;

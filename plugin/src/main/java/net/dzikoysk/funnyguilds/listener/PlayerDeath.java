@@ -239,13 +239,8 @@ public class PlayerDeath extends AbstractFunnyListener {
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
         if (config.dataModel == DataModel.MYSQL) {
-            if (victim.hasGuild()) {
-                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(victim.getGuild().get()));
-            }
-
-            if (attacker.hasGuild()) {
-                taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(attacker.getGuild().get()));
-            }
+            victim.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
+            attacker.getGuild().peek(guild -> taskBuilder.delegate(new DatabaseUpdateGuildPointsRequest(guild)));
 
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(victim));
             taskBuilder.delegate(new DatabaseUpdateUserPointsRequest(attacker));
@@ -267,12 +262,12 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
                 .register("{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)))
-                .register("{VTAG}", victim.hasGuild()
-                        ? StringUtils.replace(config.chatGuild.getValue(), "{TAG}", victim.getGuild().get().getTag())
-                        : "")
-                .register("{ATAG}", attacker.hasGuild()
-                        ? StringUtils.replace(config.chatGuild.getValue(), "{TAG}", attacker.getGuild().get().getTag())
-                        : "")
+                .register("{VTAG}", victim.getGuild()
+                        .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .orElse(""))
+                .register("{ATAG}", attacker.getGuild()
+                        .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
+                        .orElse(""))
                 .register("{ASSISTS}", config.assistEnable && !assistEntries.isEmpty()
                         ? StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))
                         : "");

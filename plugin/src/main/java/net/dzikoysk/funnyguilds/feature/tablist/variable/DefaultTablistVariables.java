@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -18,7 +17,6 @@ import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.TimeFormattedVariable;
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
@@ -81,7 +79,7 @@ public final class DefaultTablistVariables {
         parser.add(new SimpleTablistVariable("ONLINE", user ->
                 user.getPlayer()
                         .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
-                        .map(Object::toString)
+                        .map(value -> Long.toString(value))
                         .orElseGet("")));
 
         for (TablistVariable variable : getFunnyVariables().values()) {
@@ -105,8 +103,8 @@ public final class DefaultTablistVariables {
         if (HookManager.VAULT.isPresent() && VaultHook.isEconomyHooked()) {
             parser.add(new SimpleTablistVariable("VAULT-MONEY", user -> {
                 return user.getPlayer()
-                        .map(player -> VaultHook.accountBalance(player))
-                        .map(Object::toString)
+                        .map(VaultHook::accountBalance)
+                        .map(value -> Double.toString(value))
                         .orElseGet("");
             }));
         }
@@ -208,7 +206,7 @@ public final class DefaultTablistVariables {
         FUNNY_VARIABLES.put(variable, new SimpleTablistVariable(placeholder, function));
     }
 
-    private static void putGuild(String variable, String placeholder, BiFunction<User, Guild, Object> whenInGuild, Function<User, Object> whenNotInGuild) {
+    private static void putGuild(String variable, String placeholder, GuildDependentTablistVariable.GuildFunction whenInGuild, Function<User, Object> whenNotInGuild) {
         FUNNY_VARIABLES.put(variable, new GuildDependentTablistVariable(placeholder, whenInGuild, whenNotInGuild));
     }
 

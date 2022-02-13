@@ -48,9 +48,6 @@ public final class BaseCommand extends AbstractFunnyCommand {
         player.getInventory().removeItem(items);
 
         if (config.baseDelay.isZero()) {
-            if (!guild.hasHome()) {
-                return;
-            }
             guild.teleportHome(player);
             player.sendMessage(messages.baseTeleport);
             return;

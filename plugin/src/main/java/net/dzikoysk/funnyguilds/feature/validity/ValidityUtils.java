@@ -5,13 +5,14 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
 public class ValidityUtils {
 
     private ValidityUtils() {}
 
-    public static void broadcast(Guild guild) {
+    public static void broadcast(@Nullable Guild guild) {
         if (guild == null) {
             return;
         }

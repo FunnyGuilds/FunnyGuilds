@@ -18,7 +18,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
@@ -51,7 +50,7 @@ public class Guild extends AbstractMutableEntity {
 
     private boolean pvp;
 
-    public Guild(UUID uuid, @NotNull String name, @NotNull String tag) {
+    public Guild(UUID uuid, String name, String tag) {
         this.uuid = uuid != null ? uuid : UUID.randomUUID();
         this.name = name;
         this.tag = tag;
@@ -60,12 +59,12 @@ public class Guild extends AbstractMutableEntity {
         this.born = System.currentTimeMillis();
     }
 
-    public Guild(@NotNull String name, @NotNull String tag) {
+    public Guild(String name, String tag) {
         this(null, name, tag);
     }
 
     public void broadcast(String message) {
-        this.getOnlineMembers().forEach(user -> user.sendMessage(message));
+        this.getMembers().forEach(user -> user.sendMessage(message));
     }
 
     public void deserializationUpdate() {
@@ -73,33 +72,29 @@ public class Guild extends AbstractMutableEntity {
         this.members.forEach(user -> user.setGuild(this));
     }
 
-    @NotNull
     public UUID getUUID() {
         return this.uuid;
     }
 
-    @NotNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    public void setName(@NotNull String name) {
+    public void setName(String name) {
         this.name = name;
         this.markChanged();
     }
 
-    @NotNull
     public String getTag() {
         return this.tag;
     }
 
-    public void setTag(@NotNull String tag) {
+    public void setTag(String tag) {
         this.tag = tag;
         this.markChanged();
     }
 
-    @NotNull
     public GuildRank getRank() {
         return this.rank;
     }
@@ -130,7 +125,6 @@ public class Guild extends AbstractMutableEntity {
     /**
      * @return region of the guild.
      */
-    @NotNull
     public Option<Region> getRegion() {
         return this.region;
     }
@@ -150,7 +144,6 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    @NotNull
     public Option<Location> getCenter() {
         return this.region
                 .map(Region::getCenter)
@@ -174,7 +167,6 @@ public class Guild extends AbstractMutableEntity {
     /**
      * @return home location of the guild
      */
-    @NotNull
     public Option<Location> getHome() {
         return this.home;
     }
@@ -188,7 +180,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public void teleportHome(@NotNull Player player) {
+    public void teleportHome(Player player) {
         this.home.peek(player::teleport);
     }
 
@@ -200,7 +192,7 @@ public class Guild extends AbstractMutableEntity {
         return this.owner;
     }
 
-    public void setOwner(@NotNull User user) {
+    public void setOwner(User user) {
         this.owner = user;
         this.addMember(user);
         this.markChanged();

@@ -30,7 +30,10 @@ public class EntityDamage extends AbstractFunnyListener {
             if (config.animalsProtection && (victim instanceof Animals || victim instanceof Villager)) {
                 this.regionManager.findRegionAtLocation(victim.getLocation())
                         .map(Region::getGuild)
-                        .filterNot(guild -> guild.equals(attackerUser.getGuild().get()))
+                        .filterNot(guild ->
+                                attackerUser.getGuild()
+                                        .map(it -> it.equals(guild))
+                                        .orElseGet(false))
                         .peek(guild -> event.setCancelled(true));
 
                 return;

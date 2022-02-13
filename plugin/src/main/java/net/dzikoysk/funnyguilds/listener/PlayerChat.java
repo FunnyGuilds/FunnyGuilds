@@ -172,7 +172,7 @@ public class PlayerChat extends AbstractFunnyListener {
             return;
         }
 
-        for (User onlineMember : guild.getOnlineMembers()) {
+        for (User onlineMember : guild.getMembers()) {
             onlineMember.getPlayer()
                     .filterNot(filterPlayer -> filterPlayer.equals(player))
                     .filterNot(filterPlayer -> onlineMember.getCache().isSpy())

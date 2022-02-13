@@ -46,11 +46,10 @@ public final class DefaultBossBarProvider implements BossBarProvider {
 
     @Override
     public void removeNotification() {
-        user.getPlayer()
-                .peek(player -> {
-                    this.bossBar.removePlayer(player);
-                    this.bossBar.setVisible(false);
-                });
+        user.getPlayer().peek(player -> {
+            this.bossBar.removePlayer(player);
+            this.bossBar.setVisible(false);
+        });
     }
 
     public BossBar getBossBar() {

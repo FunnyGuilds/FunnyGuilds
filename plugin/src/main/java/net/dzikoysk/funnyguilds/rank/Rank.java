@@ -2,28 +2,24 @@ package net.dzikoysk.funnyguilds.rank;
 
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class Rank<T extends MutableEntity> {
 
     protected final T entity;
     protected int position;
 
-    public Rank(@NotNull T entity) {
+    public Rank(T entity) {
         this.entity = entity;
     }
 
-    @NotNull
     public MutableEntity getEntity() {
         return this.entity;
     }
 
-    @NotNull
     public EntityType getType() {
         return this.entity.getType();
     }
 
-    @NotNull
     public String getIdentityName() {
         return this.entity.getName();
     }

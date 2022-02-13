@@ -17,14 +17,9 @@ public final class BanUtils {
         guild.setBan(time + System.currentTimeMillis());
 
         for (User user : guild.getMembers()) {
+            ban(user, time, reason);
             user.getPlayer()
-                    .peek(player -> {
-                        ban(user, time, reason);
-
-                        if (player != null && player.isOnline()) {
-                            player.kickPlayer(getBanMessage(user));
-                        }
-                    });
+                    .peek(player -> player.kickPlayer(getBanMessage(user)));
         }
     }
 

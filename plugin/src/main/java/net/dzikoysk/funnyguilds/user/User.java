@@ -13,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
@@ -29,7 +28,7 @@ public class User extends AbstractMutableEntity {
     private Option<UserBan> ban = Option.none();
     private final BossBarProvider bossBarProvider;
 
-    User(@NotNull UUID uuid, @NotNull String name) {
+    User(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
 
@@ -41,17 +40,14 @@ public class User extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    User(@NotNull Player player) {
+    User(Player player) {
         this(player.getUniqueId(), player.getName());
     }
 
     public boolean sendMessage(String message) {
         return this.getPlayer()
-                .map(player -> {
-                    player.sendMessage(message);
-                    return true;
-                })
-                .orElseGet(false);
+                .peek(player -> player.sendMessage(message))
+                .isPresent();
     }
 
     public boolean hasPermission(String permission) {
@@ -60,27 +56,23 @@ public class User extends AbstractMutableEntity {
                 .orElseGet(false);
     }
 
-    @NotNull
     public UUID getUUID() {
         return this.uuid;
     }
 
-    @NotNull
     @Override
     public String getName() {
         return this.name;
     }
 
-    public void setName(@NotNull String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
-    @NotNull
     public UserCache getCache() {
         return this.cache;
     }
 
-    @NotNull
     public UserRank getRank() {
         return this.rank;
     }
@@ -93,10 +85,6 @@ public class User extends AbstractMutableEntity {
      * @return bukkit player
      */
     public Option<Player> getPlayer() {
-        if (!isOnline()) {
-            return Option.none();
-        }
-
         Player player = this.playerRef.get();
         if (player != null) {
             return Option.of(player);
@@ -111,7 +99,7 @@ public class User extends AbstractMutableEntity {
         return Option.none();
     }
 
-    public void updateReference(@NotNull Player player) {
+    public void updateReference(Player player) {
         Validate.notNull(player, "you can't update reference with null player!");
         this.playerRef = new WeakReference<>(player);
     }
@@ -145,7 +133,6 @@ public class User extends AbstractMutableEntity {
     /**
      * @return user's guild
      */
-    @NotNull
     public Option<Guild> getGuild() {
         return this.guild;
     }
@@ -193,7 +180,6 @@ public class User extends AbstractMutableEntity {
     /**
      * @return user's ban
      */
-    @NotNull
     public Option<UserBan> getBan() {
         return this.ban;
     }

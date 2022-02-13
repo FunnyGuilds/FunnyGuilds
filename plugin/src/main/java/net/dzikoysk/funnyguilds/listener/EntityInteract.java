@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
+import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -51,7 +52,8 @@ public class EntityInteract extends AbstractFunnyListener {
 
         if (config.regionExplodeBlockInteractions && clickedEntity instanceof InventoryHolder) {
             this.userManager.findByPlayer(eventCaller)
-                    .filter(user -> user.hasGuild() && !user.getGuild().get().canBuild())
+                    //.filter(user -> user.hasGuild() && !user.getGuild().get().canBuild())
+                    .filter(user -> user.getGuild().map(Guild::canBuild).isEmpty())
                     .peek(user -> event.setCancelled(true));
         }
     }

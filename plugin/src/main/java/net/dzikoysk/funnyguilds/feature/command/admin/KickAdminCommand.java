@@ -37,23 +37,19 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
 
         this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
 
-        user.getPlayer().peek(player -> {
-            guild.removeMember(user);
-            user.removeGuild();
+        guild.removeMember(user);
+        user.removeGuild();
 
-            Formatter formatter = new Formatter()
-                    .register("{GUILD}", guild.getName())
-                    .register("{TAG}", guild.getTag())
-                    .register("{PLAYER}", user.getName());
+        Formatter formatter = new Formatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag())
+                .register("{PLAYER}", user.getName());
 
-            if (player != null) {
-                this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
-                player.sendMessage(formatter.format(messages.kickToPlayer));
-            }
+        sender.sendMessage(formatter.format(messages.kickToOwner));
+        Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
+        user.sendMessage(formatter.format(messages.kickToPlayer));
 
-            sender.sendMessage(formatter.format(messages.kickToOwner));
-            Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
-        });
+        user.getPlayer().peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player)));
     }
 
 }

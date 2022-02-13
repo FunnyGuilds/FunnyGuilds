@@ -56,13 +56,7 @@ public final class SecuritySystem {
                 return;
             }
             Region region = guild.getRegion().get();
-
-            if (region.getCenter() != null) {
-                return;
-            }
-            Location center = guild.getRegion()
-                    .map(Region::getCenter)
-                    .get();
+            Location center = region.getCenter();
 
             double x = center.getX() + 0.5;
             double y = center.getY();

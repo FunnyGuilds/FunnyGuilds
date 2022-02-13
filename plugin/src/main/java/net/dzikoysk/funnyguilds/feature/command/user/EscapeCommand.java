@@ -56,8 +56,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
                     .replace("{X}", Integer.toString(playerLocation.getBlockX())).replace("{Y}", Integer.toString(playerLocation.getBlockY()))
                     .replace("{Z}", Integer.toString(playerLocation.getBlockZ()));
 
-            region.getGuild().getOnlineMembers()
-                    .forEach(member -> member.sendMessage(msg));
+            region.getGuild().broadcast(msg);
         }
 
         guild.getHome().peek(home -> scheduleTeleportation(player, user, home, time, () ->
