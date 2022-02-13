@@ -102,18 +102,19 @@ public class EntityExplode extends AbstractFunnyListener {
         }
 
         if (config.warTntProtection) {
-            boolean anyRemoved = explodedBlocks.removeIf(block ->
+            // Remove block if protected
+            boolean anyBlockRemovedInSphere = blocksInSphere.removeIf(block ->
                     this.regionManager.findRegionAtLocation(block.getLocation())
                             .map(Region::getGuild)
-                            .filter(guild -> !guild.canBeAttacked())
-                            .isPresent()) ||
-                    blocksInSphere.removeIf(block ->
-                            this.regionManager.findRegionAtLocation(block.getLocation())
-                                    .map(Region::getGuild)
-                                    .filter(guild -> !guild.canBeAttacked())
-                                    .isPresent());
+                            .filterNot(Guild::canBeAttacked)
+                            .isPresent());
+            boolean anyBlockRemovedInExplosion = explodedBlocks.removeIf(block ->
+                    this.regionManager.findRegionAtLocation(block.getLocation())
+                            .map(Region::getGuild)
+                            .filterNot(Guild::canBeAttacked)
+                            .isPresent());
 
-            if (anyRemoved) {
+            if (anyBlockRemovedInSphere || anyBlockRemovedInExplosion) {
                 if (explosionEntity instanceof TNTPrimed) {
                     TNTPrimed entityTnt = (TNTPrimed) explosionEntity;
                     Entity explosionSource = entityTnt.getSource();

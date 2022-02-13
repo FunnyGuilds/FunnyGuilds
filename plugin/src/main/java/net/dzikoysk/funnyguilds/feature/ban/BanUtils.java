@@ -43,9 +43,10 @@ public final class BanUtils {
             return;
         }
 
-        if (System.currentTimeMillis() > user.getBan().get().getBanTime()) {
-            user.setBan(null);
-        }
+        user.getBan()
+                .map(UserBan::getBanTime)
+                .filter(time -> System.currentTimeMillis() > time)
+                .peek(time -> user.setBan(null));
     }
 
     public static String getBanMessage(User user) {
