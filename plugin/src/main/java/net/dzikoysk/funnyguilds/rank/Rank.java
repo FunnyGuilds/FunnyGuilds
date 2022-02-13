@@ -28,7 +28,7 @@ public abstract class Rank<T extends MutableEntity> {
     }
 
     public Option<Integer> getPosition(String top) {
-        return Option.of(this.position.get(top.toLowerCase()));
+        return Option.of(this.position.getOrDefault(top.toLowerCase(), 0));
     }
 
     public void setPosition(String top, int position) {

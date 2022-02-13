@@ -7,6 +7,7 @@ import java.util.Set;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.top.GuildTop;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
+import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 
 public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
@@ -38,7 +39,7 @@ public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
         return Option.of(this.topMap.get(id.toLowerCase()));
     }
 
-    public void addUserTop(String id, T top) {
+    public void addUserTop(String id, @NotNull T top) {
         this.topMap.put(id, top);
     }
 

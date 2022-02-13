@@ -4,6 +4,7 @@ import java.util.Map;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.top.GuildTop;
 import net.dzikoysk.funnyguilds.rank.RankManager;
+import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
@@ -22,7 +23,7 @@ public class GuildRankManager extends RankManager<GuildTop, GuildRank> {
         return guild.getMembers().size() >= pluginConfiguration.minMembersToInclude;
     }
 
-    public void register(String id, GuildTop guildTop) {
+    public void register(String id, @NotNull GuildTop guildTop) {
         if (PandaStream.of(this.pluginConfiguration.top.enabledGuildTops)
                 .find(enabledTop -> enabledTop.equalsIgnoreCase(id))
                 .isEmpty()) {
@@ -31,7 +32,7 @@ public class GuildRankManager extends RankManager<GuildTop, GuildRank> {
         this.addUserTop(id, guildTop);
     }
 
-    public void register(Map<String, GuildTop> topsToRegister) {
+    public void register(@NotNull Map<String, GuildTop> topsToRegister) {
         topsToRegister.forEach(this::register);
     }
 

@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.ChatColor;
@@ -82,7 +83,7 @@ public class Placeholders<T> {
                     }
                 })
                 .property("LIVES-SYMBOL-ALL", guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full.getValue()))
-                .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
+                .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition(DefaultTops.GUILD_AVG_POINTS_TOP).get() : messages.minMembersToIncludeNoValue)
                 .property("ALLIES", guild -> joinOrDefault.apply(Entity.names(guild.getAllies()), messages.alliesNoValue))
                 .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
                 .property("ENEMIES", guild -> joinOrDefault.apply(Entity.names(guild.getEnemies()), messages.enemiesNoValue))
