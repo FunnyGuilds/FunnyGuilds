@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.rank.PointsChangeEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
@@ -48,7 +48,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
         user.getRank().setPoints(finalPoints);
 
         String message = messages.adminPointsChanged.replace("{PLAYER}", user.getName());
-        message = message.replace("{POINTS-FORMAT}", IntegerRange.inRangeToString(finalPoints, config.pointsFormat));
+        message = message.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, config.pointsFormat));
         message = message.replace("{POINTS}", String.valueOf(finalPoints));
 
         sender.sendMessage(message);

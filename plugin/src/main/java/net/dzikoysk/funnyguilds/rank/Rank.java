@@ -1,12 +1,14 @@
 package net.dzikoysk.funnyguilds.rank;
 
+import java.util.HashMap;
+import java.util.Map;
 import net.dzikoysk.funnyguilds.Entity.EntityType;
 import net.dzikoysk.funnyguilds.data.MutableEntity;
 
 public abstract class Rank<T extends MutableEntity> {
 
     protected final T entity;
-    protected int position;
+    protected Map<String, Integer> position = new HashMap<>();
 
     public Rank(T entity) {
         this.entity = entity;
@@ -24,13 +26,22 @@ public abstract class Rank<T extends MutableEntity> {
         return this.entity.getName();
     }
 
-    public int getPosition() {
-        return this.position;
+    /**
+     * @return position in which the player is in the top, return 0 if the player is not in the top
+     */
+    public int getPosition(String top) {
+        return this.position.getOrDefault(top.toLowerCase(), 0);
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    public void setPosition(String top, int position) {
+        this.position.put(top.toLowerCase(), position);
     }
+
+    @Deprecated
+    public abstract int getPosition();
+
+    @Deprecated
+    public abstract void setPosition(int position);
 
     public abstract int getPoints();
 
@@ -77,6 +88,18 @@ public abstract class Rank<T extends MutableEntity> {
     @Override
     public String toString() {
         return Integer.toString(this.getPoints());
+    }
+
+    public static int compareName(Rank<?> o1, Rank<?> o2) {
+        if (o1.getIdentityName() == null) {
+            return -1;
+        }
+
+        if (o2.getIdentityName() == null) {
+            return 1;
+        }
+
+        return o1.getIdentityName().compareTo(o2.getIdentityName());
     }
 
 }

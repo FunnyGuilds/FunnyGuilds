@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 import net.dzikoysk.funnyguilds.config.transformer.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.FunnyTimeTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.MaterialTransformer;
+import net.dzikoysk.funnyguilds.config.transformer.RangeFormattingTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.RawStringTransformer;
 import net.dzikoysk.funnyguilds.config.transformer.SimpleDateFormatTransformer;
 
@@ -35,6 +36,7 @@ public final class ConfigurationFactory {
                 registry.register(new RawStringTransformer());
                 registry.register(new MaterialTransformer());
                 registry.register(new FunnyTimeTransformer());
+                registry.register(new RangeFormattingTransformer());
             });
             it.withBindFile(pluginConfigurationFile);
             it.saveDefaults();

@@ -1,6 +1,9 @@
 package net.dzikoysk.funnyguilds.guild;
 
+import net.dzikoysk.funnyguilds.guild.top.GuildComparator;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.Rank;
+import org.jetbrains.annotations.ApiStatus;
 
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
@@ -10,6 +13,26 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     public Guild getGuild() {
         return entity;
+    }
+
+    /**
+     * @deprecated for removal in the future, in favour of {@link Rank#getPosition(String)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
+    @Override
+    public int getPosition() {
+        return this.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP);
+    }
+
+    /**
+     * @deprecated for removal in the future, in favour of {@link Rank#setPosition(String, int)}
+     */
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
+    @Override
+    public void setPosition(int position) {
+        this.setPosition(DefaultTops.GUILD_AVG_POINTS_TOP, position);
     }
 
     @Override
@@ -83,21 +106,7 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
     @Override
     public int compareTo(GuildRank rank) {
-        int result = Integer.compare(this.getAveragePoints(), rank.getAveragePoints());
-
-        if (result == 0) {
-            if (getIdentityName() == null) {
-                return -1;
-            }
-
-            if (rank.getIdentityName() == null) {
-                return 1;
-            }
-
-            result = getIdentityName().compareTo(rank.getIdentityName());
-        }
-
-        return result;
+        return GuildComparator.AVG_POINTS_COMPARATOR.compare(this, rank);
     }
 
     private int calculateAverage(int value) {

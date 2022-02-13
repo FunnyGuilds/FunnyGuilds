@@ -9,8 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
@@ -18,7 +18,9 @@ import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.GuildDependentTabl
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.SimpleTablistVariable;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.impl.TimeFormattedVariable;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.rank.RankManager;
+import net.dzikoysk.funnyguilds.guild.GuildRankManager;
+import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -61,14 +63,7 @@ public final class DefaultTablistVariables {
         parser.add(new TimeFormattedVariable("MONTH_NUMBER", (user, time) -> time.getMonthValue()));
         parser.add(new TimeFormattedVariable("YEAR", (user, time) -> time.getYear()));
 
-        parser.add(new SimpleTablistVariable("TPS", user -> {
-            try {
-                return MinecraftServerUtils.getFormattedTPS();
-            }
-            catch (IntegerRange.MissingFormatException missingFormatException) {
-                return "0";
-            }
-        }));
+        parser.add(new SimpleTablistVariable("TPS", user -> MinecraftServerUtils.getFormattedTPS()));
 
         parser.add(new SimpleTablistVariable("WORLD", user ->
                 user.getPlayer()
@@ -116,14 +111,14 @@ public final class DefaultTablistVariables {
 
         UserManager userManager = FunnyGuilds.getInstance().getUserManager();
         GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
-        RankManager rankManager = FunnyGuilds.getInstance().getRankManager();
+        GuildRankManager guildRankManager = FunnyGuilds.getInstance().getGuildRankManager();
 
         putSimple("player", "PLAYER", User::getName);
         putSimple("users", "USERS", user -> userManager.countUsers());
         putSimple("guilds", "GUILDS", user -> guildManager.countGuilds());
         putSimple("ping", "PING", User::getPing);
         putSimple("points", "POINTS", user -> user.getRank().getPoints());
-        putSimple("position", "POSITION", user -> user.getRank().getPosition());
+        putSimple("position", "POSITION", user -> user.getRank().getPosition(DefaultTops.USER_POINTS_TOP));
         putSimple("kills", "KILLS", user -> user.getRank().getKills());
         putSimple("deaths", "DEATHS", user -> user.getRank().getDeaths());
         putSimple("assists", "ASSISTS", user -> user.getRank().getAssists());
@@ -131,11 +126,11 @@ public final class DefaultTablistVariables {
         putSimple("kdr", "KDR", user -> String.format(Locale.US, "%.2f", user.getRank().getKDR()));
 
         putSimple("ping-format", "PING-FORMAT", user ->
-                IntegerRange.inRangeToString(user.getPing(), config.pingFormat)
+                NumberRange.inRangeToString(user.getPing(), config.pingFormat)
                         .replace("{PING}", String.valueOf(user.getPing())));
 
         putSimple("points-format", "POINTS-FORMAT", user ->
-                IntegerRange.inRangeToString(user.getRank().getPoints(), config.pointsFormat)
+                NumberRange.inRangeToString(user.getRank().getPoints(), config.pointsFormat)
                         .replace("{POINTS}", String.valueOf(user.getRank().getPoints())));
 
         putGuild("g-name", "G-NAME", (user, guild) -> guild.getName(), user -> messages.gNameNoValue);
@@ -184,21 +179,22 @@ public final class DefaultTablistVariables {
                 user -> messages.gValidityNoValue);
 
         putGuild("g-points-format", "G-POINTS-FORMAT",
-                (user, guild) -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat)
+                (user, guild) -> NumberRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat)
                         .replace("{POINTS}", String.valueOf(guild.getRank().getAveragePoints())),
-                user -> IntegerRange.inRangeToString(0, config.pointsFormat)
+                user -> NumberRange.inRangeToString(0, config.pointsFormat)
                         .replace("{POINTS}", "0"));
 
         putGuild("g-position", "G-POSITION",
-                (user, guild) -> rankManager.isRankedGuild(guild)
-                        ? String.valueOf(guild.getRank().getPosition())
+                (user, guild) -> guildRankManager.isRankedGuild(guild)
+                        ? String.valueOf(guild.getRank().getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
                         : messages.minMembersToIncludeNoValue,
                 user -> messages.minMembersToIncludeNoValue);
 
         putGuild("g-region-size", "G-REGION-SIZE",
-                (user, guild) -> FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled && guild.hasRegion()
-                        ? String.valueOf(guild.getRegion().get().getSize())
-                        : messages.gRegionSizeNoValue,
+                (user, guild) -> guild.getRegion()
+                        .map(Region::getSize)
+                        .map(value -> Integer.toString(value))
+                        .orElseGet(messages.gRegionSizeNoValue),
                 user -> messages.gRegionSizeNoValue);
     }
 

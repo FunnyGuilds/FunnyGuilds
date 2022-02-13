@@ -5,14 +5,14 @@ import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import org.junit.jupiter.api.Test
 
-import static org.junit.jupiter.api.Assertions.assertEquals
+import static panda.std.OptionAssertions.assertOptionEquals
 
 @CompileStatic
 class RankManagerTest extends FunnyGuildsSpec {
 
     @Test
     void 'should correctly update the guilds and users ranking'() {
-        def rankRecalculationTask = new RankRecalculationTask(config, rankManager, userManager, guildManager);
+        def rankRecalculationTask = new RankRecalculationTask(funnyGuilds);
 
         def user1 = userManager.create(UUID.randomUUID(), 'user1')
         def user2 = userManager.create(UUID.randomUUID(), 'user2')
@@ -31,12 +31,12 @@ class RankManagerTest extends FunnyGuildsSpec {
 
         rankRecalculationTask.run()
 
-        assertEquals user1, rankManager.getUser(1)
-        assertEquals user2, rankManager.getUser(2)
-        assertEquals user3, rankManager.getUser(3)
-        assertEquals guild1, rankManager.getGuild(1)
-        assertEquals guild2, rankManager.getGuild(2)
-        assertEquals guild3, rankManager.getGuild(3)
+        assertOptionEquals user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1)
+        assertOptionEquals user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2)
+        assertOptionEquals user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3)
+        assertOptionEquals guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1)
+        assertOptionEquals guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2)
+        assertOptionEquals guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3)
 
         user1.rank.points = 100
         user2.rank.points = 150
@@ -44,12 +44,12 @@ class RankManagerTest extends FunnyGuildsSpec {
 
         rankRecalculationTask.run()
 
-        assertEquals user3, rankManager.getUser(1)
-        assertEquals user2, rankManager.getUser(2)
-        assertEquals user1, rankManager.getUser(3)
-        assertEquals guild3, rankManager.getGuild(1)
-        assertEquals guild2, rankManager.getGuild(2)
-        assertEquals guild1, rankManager.getGuild(3)
+        assertOptionEquals user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1)
+        assertOptionEquals user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2)
+        assertOptionEquals user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3)
+        assertOptionEquals guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1)
+        assertOptionEquals guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2)
+        assertOptionEquals guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3)
     }
 
 }

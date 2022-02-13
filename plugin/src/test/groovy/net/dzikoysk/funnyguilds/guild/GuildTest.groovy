@@ -18,7 +18,6 @@ final class GuildTest extends FunnyGuildsSpec {
         Region region1 = new Region("region1")
         Region region2 = new Region("region2")
 
-
         EqualsVerifier.forClass(Guild.class)
                 .usingGetClass()
                 .withNonnullFields("uuid")

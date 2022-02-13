@@ -10,12 +10,14 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.ChatColor;
@@ -35,6 +37,7 @@ public class Placeholders<T> {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         MessageConfiguration messages = plugin.getMessageConfiguration();
         PluginConfiguration config = plugin.getPluginConfiguration();
+        GuildRankManager guildRankManager = plugin.getGuildRankManager();
 
         ONLINE = new Placeholders<String>()
                 .raw("<online>", () -> ChatColor.GREEN)
@@ -60,9 +63,12 @@ public class Placeholders<T> {
                 .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
                 .property("MEMBERS-ALL", guild -> guild.getMembers().size())
                 .property("DEPUTIES", guild -> joinOrDefault.apply(Entity.names(guild.getDeputies()), "Brak"))
-                .property("REGION-SIZE", guild -> guild.getRegion().map(Region::getSize).map(value -> Integer.toString(value)).orElseGet(messages.gRegionSizeNoValue))
+                .property("REGION-SIZE", guild -> guild.getRegion()
+                        .map(Region::getSize)
+                        .map(value -> Integer.toString(value))
+                        .orElseGet(messages.gRegionSizeNoValue))
                 .property("GUILD-PROTECTION", bindGuildProtection)
-                .property("POINTS-FORMAT", guild -> IntegerRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
+                .property("POINTS-FORMAT", guild -> NumberRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
                 .property("POINTS", guild -> guild.getRank().getAveragePoints())
                 .property("KILLS", guild -> guild.getRank().getKills())
                 .property("DEATHS", guild -> guild.getRank().getDeaths())
@@ -83,7 +89,9 @@ public class Placeholders<T> {
                     }
                 })
                 .property("LIVES-SYMBOL-ALL", guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full.getValue()))
-                .property("RANK", guild -> guild.isRanked() ? guild.getRank().getPosition() : messages.minMembersToIncludeNoValue)
+                .property("RANK", guild -> guildRankManager.isRankedGuild(guild)
+                        ? guild.getRank().getPosition(DefaultTops.GUILD_AVG_POINTS_TOP)
+                        : messages.minMembersToIncludeNoValue)
                 .property("ALLIES", guild -> joinOrDefault.apply(Entity.names(guild.getAllies()), messages.alliesNoValue))
                 .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
                 .property("ENEMIES", guild -> joinOrDefault.apply(Entity.names(guild.getEnemies()), messages.enemiesNoValue))

@@ -1,69 +1,44 @@
 package net.dzikoysk.funnyguilds.rank;
 
-import com.google.common.collect.Iterables;
-import java.util.Collections;
-import java.util.NavigableSet;
-import java.util.TreeSet;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildRank;
-import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserRank;
+import panda.std.Option;
 
-public class RankManager {
+public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
 
-    private final PluginConfiguration pluginConfiguration;
+    protected final PluginConfiguration pluginConfiguration;
 
-    protected NavigableSet<UserRank> usersRank = new TreeSet<>(Collections.reverseOrder());
-    protected NavigableSet<GuildRank> guildsRank = new TreeSet<>(Collections.reverseOrder());
+    protected final Map<String, T> topMap = new HashMap<>();
 
-    @Deprecated
-    private static RankManager INSTANCE;
-
-    public RankManager(PluginConfiguration pluginConfiguration) {
+    protected RankManager(PluginConfiguration pluginConfiguration) {
         this.pluginConfiguration = pluginConfiguration;
-
-        INSTANCE = this;
     }
 
-    public User getUser(int place) {
-        if (place - 1 < this.usersRank.size()) {
-            return Iterables.get(this.usersRank, place - 1).getUser();
-        }
-
-        return null;
+    public Map<String, T> getTopMap() {
+        return new HashMap<>(this.topMap);
     }
 
-    public Guild getGuild(int place) {
-        if (place - 1 < this.guildsRank.size()) {
-            return Iterables.get(this.guildsRank, place - 1).getGuild();
-        }
-
-        return null;
+    public Set<String> getTopIds() {
+        return this.topMap.keySet();
     }
 
-    public int countUsers() {
-        return this.usersRank.size();
+    public Set<T> getTops() {
+        return new HashSet<>(this.topMap.values());
     }
 
-    public int countGuilds() {
-        return this.guildsRank.size();
+    public Option<T> getTop(String id) {
+        return Option.of(this.topMap.get(id.toLowerCase()));
     }
 
-    public boolean isRankedGuild(Guild guild) {
-        return guild.getMembers().size() >= pluginConfiguration.minMembersToInclude;
+    public void addTop(String id, T top) {
+        this.topMap.put(id.toLowerCase(), top);
     }
 
-    /**
-     * Gets the rank manager.
-     *
-     * @return the rank manager
-     * @deprecated for removal in the future, in favour of {@link FunnyGuilds#getRankManager()}
-     */
-    @Deprecated
-    public static RankManager getInstance() {
-        return INSTANCE;
+    public void recalculateTops() {
+        this.topMap.forEach((id, top) -> top.recalculate(id));
     }
 
 }

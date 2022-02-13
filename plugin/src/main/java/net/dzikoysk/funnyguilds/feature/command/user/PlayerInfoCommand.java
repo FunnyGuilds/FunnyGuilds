@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Locale;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.config.IntegerRange;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import net.dzikoysk.funnyguilds.user.UserUtils;
@@ -55,14 +56,14 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             }
 
             messageLine = StringUtils.replace(messageLine, "{PLAYER}", infoUser.getName());
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", IntegerRange.inRangeToString(rank.getPoints(), config.pointsFormat));
+            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", NumberRange.inRangeToString(rank.getPoints(), config.pointsFormat));
             messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
             messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
             messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));
             messageLine = StringUtils.replace(messageLine, "{ASSISTS}", Integer.toString(rank.getAssists()));
             messageLine = StringUtils.replace(messageLine, "{LOGOUTS}", Integer.toString(rank.getLogouts()));
             messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()));
-            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(rank.getPosition()));
+            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(rank.getPosition(DefaultTops.USER_POINTS_TOP)));
 
             messageTarget.sendMessage(messageLine);
         }

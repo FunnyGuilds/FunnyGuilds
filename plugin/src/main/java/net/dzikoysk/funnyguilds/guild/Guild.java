@@ -13,7 +13,6 @@ import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
-import net.dzikoysk.funnyguilds.rank.RankManager;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -101,12 +100,12 @@ public class Guild extends AbstractMutableEntity {
 
     /**
      * @return true if guild is ranked; false if guild is not ranked.
-     * @deprecated for removal in the future, in favour of {@link RankManager#isRankedGuild(Guild)}}
+     * @deprecated for removal in the future, in favour of {@link GuildRankManager#isRankedGuild(Guild)}}
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public boolean isRanked() {
-        return RankManager.getInstance().isRankedGuild(this);
+        return FunnyGuilds.getInstance().getGuildRankManager().isRankedGuild(this);
     }
 
     public int getLives() {
