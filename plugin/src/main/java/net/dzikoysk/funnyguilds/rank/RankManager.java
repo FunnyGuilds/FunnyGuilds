@@ -5,17 +5,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.guild.top.GuildTop;
-import net.dzikoysk.funnyguilds.user.top.UserTop;
 import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 
 public abstract class RankManager<T extends Top<R>, R extends Rank<?>> {
 
     protected  final PluginConfiguration pluginConfiguration;
-
-    protected final Map<String, UserTop> userTopMap = new HashMap<>();
-    protected final Map<String, GuildTop> guildTopMap = new HashMap<>();
 
     protected final Map<String, T> topMap = new HashMap<>();
 
