@@ -9,7 +9,7 @@ import me.robin.leaderheads.datacollectors.DataCollector;
 import me.robin.leaderheads.objects.BoardType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
-import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 
 public class LeaderHeadsHook extends AbstractPluginHook {
 
@@ -47,12 +47,10 @@ public class LeaderHeadsHook extends AbstractPluginHook {
         @Override
         public List<Entry<?, Double>> requestAll() {
             List<Entry<?, Double>> topUsers = new ArrayList<>();
-
-            for (int i = 1; i <= 10; i++) {
-                User user = this.plugin.getRankManager().getUser(i);
-                topUsers.add(Maps.immutableEntry(user.getName(), ((double) user.getRank().getPoints())));
+            for (int position = 1; position <= 10; position++) {
+                this.plugin.getUserRankManager().getUser(DefaultTops.USER_POINTS_TOP, position)
+                        .peek(user -> topUsers.add(Maps.immutableEntry(user.getName(), ((double) user.getRank().getPoints()))));
             }
-
             return topUsers;
         }
 

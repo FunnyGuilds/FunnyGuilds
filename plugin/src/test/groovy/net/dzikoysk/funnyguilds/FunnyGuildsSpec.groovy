@@ -1,15 +1,17 @@
 package net.dzikoysk.funnyguilds
 
 import groovy.transform.CompileStatic
-import net.dzikoysk.funnyguilds.config.IntegerRange
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
+import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
 import net.dzikoysk.funnyguilds.guild.GuildManager
+import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
-import net.dzikoysk.funnyguilds.rank.RankManager
+import net.dzikoysk.funnyguilds.rank.DefaultTops
 import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
+import net.dzikoysk.funnyguilds.user.UserRankManager
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -35,9 +37,10 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected PluginConfiguration config = new PluginConfiguration()
     protected MessageConfiguration messages = new MessageConfiguration()
 
-    protected RankManager rankManager
     protected UserManager userManager
     protected GuildManager guildManager
+    protected UserRankManager userRankManager
+    protected GuildRankManager guildRankManager
     protected RegionManager regionManager
 
     @BeforeAll
@@ -51,14 +54,18 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getPluginConfiguration()).thenReturn(config)
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
 
-        rankManager = new RankManager(config)
         userManager = new UserManager()
         guildManager = new GuildManager(config);
+        userRankManager = new UserRankManager(config);
+        userRankManager.register(DefaultTops.defaultUserTops(config, userManager))
+        guildRankManager = new GuildRankManager(config);
+        guildRankManager.register(DefaultTops.defaultGuildTops(guildManager))
         regionManager = new RegionManager(config);
 
-        lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
         lenient().when(funnyGuilds.getGuildManager()).thenReturn(guildManager)
+        lenient().when(funnyGuilds.getUserRankManager()).thenReturn(userRankManager)
+        lenient().when(funnyGuilds.getGuildRankManager()).thenReturn(guildRankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)
@@ -67,9 +74,9 @@ class FunnyGuildsSpec extends BukkitSpec {
 
     @BeforeEach
     void preparePluginConfiguration() {
-        Map<IntegerRange, Integer> parsedData = new HashMap<>()
+        Map<NumberRange, Integer> parsedData = new HashMap<>()
 
-        IntegerRange.parseIntegerRange(config.eloConstants_, false)
+        NumberRange.parseIntegerRange(config.eloConstants_, false)
                 .forEach((range, number) -> parsedData.put(range, Integer.parseInt(number)))
 
         config.eloConstants = parsedData

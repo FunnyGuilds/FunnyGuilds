@@ -36,13 +36,14 @@ import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.TntProtectionConfiguration;
+import net.dzikoysk.funnyguilds.config.sections.TopConfiguration;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
 import net.dzikoysk.funnyguilds.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
+import net.dzikoysk.funnyguilds.shared.LegacyUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
@@ -586,7 +587,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
 
     @Exclude
-    public Map<IntegerRange, Integer> eloConstants;
+    public Map<NumberRange, Integer> eloConstants;
 
     @Positive
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
@@ -686,19 +687,22 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Mozesz tu takze uzyc znacznika {POINTS-FORMAT}")
     public RawString chatPoints = new RawString("&b{POINTS} ");
 
+    public TopConfiguration top = new TopConfiguration();
+
     @Comment("Wyglad znacznika {POINTS-FORMAT} i {G-POINTS-FORMAT} w zaleznosci od wartosci punktow")
     @Comment("{G-POINTS-FORMAT}, tak samo jak {G-POINTS} jest uzywane jedynie na liscie graczy")
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
     @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank wyglad\", np.: \"0-750 &4{POINTS}\"")
     @Comment("Pamietaj, aby kazdy mozliwy ranking mial ustalony format!")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"1500-* &6&l{POINTS}\"")
-    @CustomKey("points-format")
-    public List<String> pointsFormat_ = Arrays.asList("0-749 &4{POINTS}", "750-999 &c{POINTS}", "1000-1499 &a{POINTS}", "1500-* &6&l{POINTS}");
+    public List<RangeFormatting> pointsFormat = Arrays.asList(
+            new RangeFormatting(0, 749, "&4{POINTS}"),
+            new RangeFormatting(750, 999, "&c{POINTS}"),
+            new RangeFormatting(1000, 1499, "&a{POINTS}"),
+            new RangeFormatting(1500, Integer.MAX_VALUE, "&6&l{POINTS}")
+    );
 
-    @Exclude
-    public Map<IntegerRange, String> pointsFormat;
-
-    @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x} i {ONLINE-PTOP-x}")
+    @Comment("Znacznik z punktami dodawany do zmiennej {PTOP-x}")
     @Comment("Uzywaj zmiennych {POINTS} i {POINTS-FORMAT}")
     @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam nick - nie podawaj tu nic")
     public RawString ptopPoints = new RawString(" &7[{POINTS}&7]");
@@ -712,10 +716,12 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
     @Comment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minPing w gore, np.: \"301-* &c{PING}\"")
-    @CustomKey("ping-format")
-    public List<String> pingFormat_ = Arrays.asList("0-75 &a{PING}", "76-150 &e{PING}", "151-300 &c{PING}", "301-* &c{PING}");
-    @Exclude
-    public Map<IntegerRange, String> pingFormat;
+    public List<RangeFormatting> pingFormat = Arrays.asList(
+            new RangeFormatting(0, 75, "&a{PING}"),
+            new RangeFormatting(76, 150, "&e{PING}"),
+            new RangeFormatting(151, 300, "&c{PING}"),
+            new RangeFormatting(301, Integer.MAX_VALUE, "&c{PING}")
+    );
 
     @NotBlank
     @Comment("Symbol od ktorego zaczyna sie wiadomosc do gildii")
@@ -1013,16 +1019,14 @@ public class PluginConfiguration extends OkaeriConfig {
             ItemStack item = null;
 
             if (var.contains("GUI-")) {
-                int index = RankUtils.getIndex(var);
-
+                int index = LegacyUtils.getIndex(var);
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
                 }
             }
             else if (var.contains("VIPITEM-")) {
                 try {
-                    int index = RankUtils.getIndex(var);
-
+                    int index = LegacyUtils.getIndex(var);
                     if (index > 0 && index <= createItemsVip.size()) {
                         item = createItemsVip.get(index - 1);
                     }
@@ -1033,8 +1037,7 @@ public class PluginConfiguration extends OkaeriConfig {
             }
             else if (var.contains("ITEM-")) {
                 try {
-                    int index = RankUtils.getIndex(var);
-
+                    int index = LegacyUtils.getIndex(var);
                     if (index > 0 && index <= createItems.size()) {
                         item = createItems.get(index - 1);
                     }
@@ -1095,9 +1098,9 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         if (this.rankSystem == RankSystem.Type.ELO) {
-            Map<IntegerRange, Integer> parsedData = new HashMap<>();
+            Map<NumberRange, Integer> parsedData = new HashMap<>();
 
-            for (Entry<IntegerRange, String> entry : IntegerRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
+            for (Entry<NumberRange, String> entry : NumberRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
                 try {
                     parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
                 }
@@ -1161,9 +1164,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.joinItems = this.loadItemStackList(this.joinItems_);
         this.baseItems = this.loadItemStackList(this.baseItems_);
-
-        this.pointsFormat = IntegerRange.parseIntegerRange(this.pointsFormat_, true);
-        this.pingFormat = IntegerRange.parseIntegerRange(this.pingFormat_, true);
 
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }

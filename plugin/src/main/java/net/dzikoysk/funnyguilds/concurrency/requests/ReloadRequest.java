@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.concurrency.requests;
 
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.hologram.HologramUpdateLocationHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
@@ -34,6 +35,7 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new HologramUpdateLocationHandler(plugin));
 
         if (this.plugin.getTablistConfiguration().playerListEnable) {
+            PluginConfiguration config = this.plugin.getPluginConfiguration();
             TablistConfiguration tablistConfig = this.plugin.getTablistConfiguration();
             UserManager userManager = this.plugin.getUserManager();
 
@@ -48,7 +50,8 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
                                 tablistConfig.playerListHeader, tablistConfig.playerListFooter,
                                 tablistConfig.pages,
                                 tablistConfig.playerListPing,
-                                tablistConfig.playerListFillCells
+                                tablistConfig.playerListFillCells,
+                                config.top.enableLegacyPlaceholders
                         );
 
                         user.getCache().setPlayerList(playerList);
