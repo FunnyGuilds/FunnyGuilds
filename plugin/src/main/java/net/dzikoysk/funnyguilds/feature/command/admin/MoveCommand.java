@@ -16,9 +16,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -63,19 +61,14 @@ public final class MoveCommand extends AbstractFunnyCommand {
                         GuildEntityHelper.despawnGuildHeart(guild);
                     }
                     else if (heartConfig.createMaterial != null && heartConfig.createMaterial.getLeft() != Material.AIR) {
-                        Block heart = peekRegion.getHeartBlock();
-
-                        Bukkit.getScheduler().runTask(this.plugin, () -> {
-                            if (heart.getLocation().getBlockY() > 1) {
-                                heart.setType(Material.AIR);
-                            }
-                        });
+                        peekRegion.getHeartBlock()
+                                .filter(heart -> heart.getLocation().getBlockY() > 1)
+                                .peek(heart -> Bukkit.getScheduler().runTask(this.plugin, () -> heart.setType(Material.AIR)));
                     }
 
                     peekRegion.setCenter(location);
                 })
-                .orElse(() -> Option.of(new Region(guild, location, config.regionSize)))
-                .get();
+                .orElseGet(() -> new Region(guild, location, config.regionSize));
 
         if (heartConfig.createCenterSphere) {
             List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);

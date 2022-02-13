@@ -28,10 +28,7 @@ public final class DefaultValidation {
     }
 
     public static <T> T when(Option<T> option, String message) {
-        if (option.isEmpty()) {
-            throw new ValidationException(message);
-        }
-        return option.get();
+        return option.orThrow(() -> new ValidationException(message));
     }
 
     public static void when(boolean flag, Supplier<Object> message) {

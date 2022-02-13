@@ -173,10 +173,10 @@ public class PlayerChat extends AbstractFunnyListener {
             return;
         }
 
-        for (User onlineMember : guild.getMembers()) {
-            onlineMember.getPlayer()
+        for (User member : guild.getMembers()) {
+            member.getPlayer()
                     .filterNot(filterPlayer -> filterPlayer.equals(player))
-                    .filterNot(filterPlayer -> onlineMember.getCache().isSpy())
+                    .filterNot(filterPlayer -> member.getCache().isSpy())
                     .peek(peekPlayer -> peekPlayer.sendMessage(message));
         }
     }

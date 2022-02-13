@@ -46,19 +46,16 @@ public final class BanUtils {
     }
 
     public static String getBanMessage(User user) {
-        String message = FunnyGuilds.getInstance().getMessageConfiguration().banMessage;
-
-        if (!user.isBanned()) {
-            return StringUtils.EMPTY;
-        }
-
-        UserBan userBan = user.getBan().get();
-        message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
-        message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getMessageConfiguration().dateFormat.format(new Date(userBan.getBanTime())));
-        message = StringUtils.replace(message, "{REASON}", userBan.getReason());
-        message = StringUtils.replace(message, "{PLAYER}", user.getName());
-
-        return ChatUtils.colored(message);
+        return user.getBan()
+                .map(ban -> {
+                    String message = FunnyGuilds.getInstance().getMessageConfiguration().banMessage;
+                    message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
+                    message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getMessageConfiguration().dateFormat.format(new Date(ban.getBanTime())));
+                    message = StringUtils.replace(message, "{REASON}", ban.getReason());
+                    message = StringUtils.replace(message, "{PLAYER}", user.getName());
+                    return ChatUtils.colored(message);
+                })
+                .orElseGet("");
     }
 
 }

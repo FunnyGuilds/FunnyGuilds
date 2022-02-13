@@ -183,10 +183,6 @@ public class Guild extends AbstractMutableEntity {
         this.home.peek(player::teleport);
     }
 
-    public void teleportHome(Option<Player> playerOption) {
-        playerOption.peek(this::teleportHome);
-    }
-
     public User getOwner() {
         return this.owner;
     }

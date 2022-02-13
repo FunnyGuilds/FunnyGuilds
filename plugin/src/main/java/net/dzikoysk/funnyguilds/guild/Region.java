@@ -118,19 +118,14 @@ public class Region extends AbstractMutableEntity {
         return this.center;
     }
 
-    public Location getHeart() {
-        Block heart = this.getHeartBlock();
-        if (heart == null) {
-            return null;
-        }
-        return this.getHeartBlock().getLocation();
+    public Option<Location> getHeart() {
+        return this.getHeartBlock().map(Block::getLocation);
     }
 
-    public Block getHeartBlock() {
+    public Option<Block> getHeartBlock() {
         return Option.of(this.getCenter())
                 .map(Location::getBlock)
-                .map(block -> block.getRelative(BlockFace.DOWN))
-                .getOrNull();
+                .map(block -> block.getRelative(BlockFace.DOWN));
     }
 
     public void setCenter(Location location) {
