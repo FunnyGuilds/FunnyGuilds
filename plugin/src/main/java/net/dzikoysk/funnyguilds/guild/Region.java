@@ -127,7 +127,7 @@ public class Region extends AbstractMutableEntity {
     @Nullable
     public Location getHeart() {
         Block heart = this.getHeartBlock();
-        if(heart == null) {
+        if (heart == null) {
             return null;
         }
         return this.getHeartBlock().getLocation();
