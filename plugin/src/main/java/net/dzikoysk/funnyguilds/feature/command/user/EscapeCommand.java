@@ -60,7 +60,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         }
 
         guild.getHome().peek(home -> scheduleTeleportation(player, user, home, time, () ->
-                region.getGuild().getOnlineMembers()
+                region.getGuild().getMembers()
                         .forEach(member -> member.sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName())))));
     }
 

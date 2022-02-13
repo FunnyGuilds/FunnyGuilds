@@ -23,9 +23,7 @@ public final class TeleportCommand extends AbstractFunnyCommand {
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
-        when(!guild.hasRegion(), messages.adminNoRegionFound);
-        Region region = guild.getRegion().get();
-        when(region.getCenter() != null, messages.adminNoRegionFound);
+        Region region = when(guild.getRegion(), messages.adminNoRegionFound);
 
         player.sendMessage(messages.baseTeleport);
         player.teleport(region.getCenter());

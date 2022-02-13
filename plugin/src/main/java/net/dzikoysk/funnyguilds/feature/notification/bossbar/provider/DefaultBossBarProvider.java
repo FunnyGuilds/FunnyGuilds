@@ -21,27 +21,26 @@ public final class DefaultBossBarProvider implements BossBarProvider {
 
     @Override
     public void sendNotification(String text, BossBarOptions options, int timeout) {
-        user.getPlayer()
-                .peek(player -> {
-                    this.bossBar.setTitle(text);
-                    this.bossBar.setColor(options.getColor());
-                    this.bossBar.setStyle(options.getStyle());
-                    options.getFlags().forEach(this.bossBar::addFlag);
-                    this.bossBar.setVisible(true);
+        user.getPlayer().peek(player -> {
+            this.bossBar.setTitle(text);
+            this.bossBar.setColor(options.getColor());
+            this.bossBar.setStyle(options.getStyle());
+            options.getFlags().forEach(this.bossBar::addFlag);
+            this.bossBar.setVisible(true);
 
-                    if (!this.bossBar.getPlayers().contains(player)) {
-                        this.bossBar.addPlayer(player);
-                    }
+            if (!this.bossBar.getPlayers().contains(player)) {
+                this.bossBar.addPlayer(player);
+            }
 
-                    if (this.hideBossBarTask != null) {
-                        this.hideBossBarTask.cancel();
-                    }
+            if (this.hideBossBarTask != null) {
+                this.hideBossBarTask.cancel();
+            }
 
-                    this.hideBossBarTask = Bukkit.getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
-                        this.bossBar.removePlayer(player);
-                        this.bossBar.setVisible(false);
-                    }, 20L * timeout);
-                });
+            this.hideBossBarTask = Bukkit.getScheduler().runTaskLaterAsynchronously(FunnyGuilds.getInstance(), () -> {
+                this.bossBar.removePlayer(player);
+                this.bossBar.setVisible(false);
+            }, 20L * timeout);
+        });
     }
 
     @Override
