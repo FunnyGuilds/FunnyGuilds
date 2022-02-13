@@ -6,10 +6,12 @@ import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
 import net.dzikoysk.funnyguilds.guild.GuildManager
+import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
-import net.dzikoysk.funnyguilds.rank.RankManager
+import net.dzikoysk.funnyguilds.rank.DefaultTops
 import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
+import net.dzikoysk.funnyguilds.user.UserRankManager
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -37,7 +39,8 @@ class FunnyGuildsSpec extends BukkitSpec {
 
     protected UserManager userManager
     protected GuildManager guildManager
-    protected RankManager rankManager
+    protected UserRankManager userRankManager
+    protected GuildRankManager guildRankManager
     protected RegionManager regionManager
 
     @BeforeAll
@@ -53,14 +56,16 @@ class FunnyGuildsSpec extends BukkitSpec {
 
         userManager = new UserManager()
         guildManager = new GuildManager(config);
-        rankManager = new RankManager(config)
-        rankManager.registerDefaultUserTops(userManager)
-        rankManager.registerDefaultGuildTops(guildManager)
+        userRankManager = new UserRankManager(config);
+        userRankManager.register(DefaultTops.defaultUserTops(config, userManager))
+        guildRankManager = new GuildRankManager(config);
+        guildRankManager.register(DefaultTops.defaultGuildTops(guildManager))
         regionManager = new RegionManager(config);
 
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
         lenient().when(funnyGuilds.getGuildManager()).thenReturn(guildManager)
-        lenient().when(funnyGuilds.getRankManager()).thenReturn(rankManager)
+        lenient().when(funnyGuilds.getUserRankManager()).thenReturn(userRankManager)
+        lenient().when(funnyGuilds.getGuildRankManager()).thenReturn(guildRankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)

@@ -22,6 +22,7 @@ import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.listener.BlockFlow;
 import net.dzikoysk.funnyguilds.listener.EntityDamage;
@@ -64,7 +65,7 @@ import net.dzikoysk.funnyguilds.nms.v1_17R1.V1_17R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_18R1.V1_18R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
-import net.dzikoysk.funnyguilds.rank.RankManager;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
@@ -72,6 +73,7 @@ import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -106,7 +108,8 @@ public class FunnyGuilds extends JavaPlugin {
     private HookManager hookManager;
     private UserManager userManager;
     private GuildManager guildManager;
-    private RankManager rankManager;
+    private UserRankManager userRankManager;
+    private GuildRankManager guildRankManager;
     private RegionManager regionManager;
     private NmsAccessor nmsAccessor;
 
@@ -182,9 +185,10 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.userManager = new UserManager();
         this.guildManager = new GuildManager(this.pluginConfiguration);
-        this.rankManager = new RankManager(this.pluginConfiguration);
-        this.rankManager.registerDefaultUserTops(this.userManager);
-        this.rankManager.registerDefaultGuildTops(this.guildManager);
+        this.userRankManager = new UserRankManager(this.pluginConfiguration);
+        this.userRankManager.register(DefaultTops.defaultUserTops(this.pluginConfiguration, this.userManager));
+        this.guildRankManager = new GuildRankManager(this.pluginConfiguration);
+        this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
         try {
@@ -214,7 +218,8 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(ConcurrencyManager.class).assignInstance(this.concurrencyManager);
             resources.on(UserManager.class).assignInstance(this.userManager);
             resources.on(GuildManager.class).assignInstance(this.guildManager);
-            resources.on(RankManager.class).assignInstance(this.rankManager);
+            resources.on(UserRankManager.class).assignInstance(this.userRankManager);
+            resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(DataModel.class).assignInstance(this.dataModel);
@@ -449,8 +454,12 @@ public class FunnyGuilds extends JavaPlugin {
         return guildManager;
     }
 
-    public RankManager getRankManager() {
-        return rankManager;
+    public UserRankManager getUserRankManager() {
+        return userRankManager;
+    }
+
+    public GuildRankManager getGuildRankManager() {
+        return guildRankManager;
     }
 
     public RegionManager getRegionManager() {

@@ -31,12 +31,12 @@ class RankManagerTest extends FunnyGuildsSpec {
 
         rankRecalculationTask.run()
 
-        assertOptionEquals user1, rankManager.getUser(1)
-        assertOptionEquals user2, rankManager.getUser(2)
-        assertOptionEquals user3, rankManager.getUser(3)
-        assertOptionEquals guild1, rankManager.getGuild(1)
-        assertOptionEquals guild2, rankManager.getGuild(2)
-        assertOptionEquals guild3, rankManager.getGuild(3)
+        assertOptionEquals user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1)
+        assertOptionEquals user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2)
+        assertOptionEquals user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3)
+        assertOptionEquals guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1)
+        assertOptionEquals guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2)
+        assertOptionEquals guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3)
 
         user1.rank.points = 100
         user2.rank.points = 150
@@ -44,12 +44,12 @@ class RankManagerTest extends FunnyGuildsSpec {
 
         rankRecalculationTask.run()
 
-        assertOptionEquals user3, rankManager.getUser(1)
-        assertOptionEquals user2, rankManager.getUser(2)
-        assertOptionEquals user1, rankManager.getUser(3)
-        assertOptionEquals guild3, rankManager.getGuild(1)
-        assertOptionEquals guild2, rankManager.getGuild(2)
-        assertOptionEquals guild1, rankManager.getGuild(3)
+        assertOptionEquals user3, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 1)
+        assertOptionEquals user2, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 2)
+        assertOptionEquals user1, userRankManager.getUser(DefaultTops.USER_POINTS_TOP, 3)
+        assertOptionEquals guild3, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 1)
+        assertOptionEquals guild2, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 2)
+        assertOptionEquals guild1, guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, 3)
     }
 
 }

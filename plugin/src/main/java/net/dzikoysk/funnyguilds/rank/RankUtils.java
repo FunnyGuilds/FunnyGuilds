@@ -10,8 +10,10 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.RangeFormatting;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.top.GuildTop;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
 import org.apache.commons.lang3.StringUtils;
 import panda.std.Option;
@@ -34,7 +36,8 @@ public class RankUtils {
                 FunnyGuilds.getInstance().getPluginConfiguration(),
                 FunnyGuilds.getInstance().getTablistConfiguration(),
                 FunnyGuilds.getInstance().getMessageConfiguration(),
-                FunnyGuilds.getInstance().getRankManager(),
+                FunnyGuilds.getInstance().getUserRankManager(),
+                FunnyGuilds.getInstance().getGuildRankManager(),
                 targetUser,
                 text
         );
@@ -51,7 +54,8 @@ public class RankUtils {
             PluginConfiguration config,
             TablistConfiguration tablistConfig,
             MessageConfiguration messages,
-            RankManager rankManager,
+            UserRankManager userRankManager,
+            GuildRankManager guildRankManager,
             User targetUser,
             String text
     ) {
@@ -84,7 +88,7 @@ public class RankUtils {
             }
 
             if (topType.equalsIgnoreCase("PTOP")) {
-                Option<UserTop> userTopOption = rankManager.getUserTop(comparatorType);
+                Option<UserTop> userTopOption = userRankManager.getTop(comparatorType);
                 if (userTopOption.isEmpty()) {
                     return StringUtils.replace(text, "{PTOP-" + comparatorType + "-" + index + "}", messages.ptopNoValue);
                 }
@@ -109,7 +113,7 @@ public class RankUtils {
                 return formatUserRank(config, text, "{PTOP-" + comparatorType + "-" + index + "}", targetUser, user, topFormat);
             }
             else if (topType.equalsIgnoreCase("GTOP")) {
-                Option<GuildTop> guildTopOption = rankManager.getGuildTop(comparatorType);
+                Option<GuildTop> guildTopOption = guildRankManager.getTop(comparatorType);
                 if (guildTopOption.isEmpty()) {
                     return StringUtils.replace(text, "{GTOP-" + comparatorType + "-" + index + "}", messages.gtopNoValue);
                 }
@@ -149,7 +153,8 @@ public class RankUtils {
                 FunnyGuilds.getInstance().getPluginConfiguration(),
                 FunnyGuilds.getInstance().getTablistConfiguration(),
                 FunnyGuilds.getInstance().getMessageConfiguration(),
-                FunnyGuilds.getInstance().getRankManager(),
+                FunnyGuilds.getInstance().getUserRankManager(),
+                FunnyGuilds.getInstance().getGuildRankManager(),
                 targetUser,
                 text
         );
@@ -167,7 +172,8 @@ public class RankUtils {
             PluginConfiguration config,
             TablistConfiguration tablistConfig,
             MessageConfiguration messages,
-            RankManager rankManager,
+            UserRankManager userRankManager,
+            GuildRankManager guildRankManager,
             User targetUser,
             String text
     ) {
@@ -199,7 +205,7 @@ public class RankUtils {
             }
 
             if (topType.equalsIgnoreCase("PTOP")) {
-                Option<User> userOption = rankManager.getUser(index);
+                Option<User> userOption = userRankManager.getUser(DefaultTops.USER_POINTS_TOP, index);
                 if (userOption.isEmpty()) {
                     return StringUtils.replace(text, "{PTOP-" + index + "}", messages.ptopNoValue);
                 }
@@ -215,7 +221,7 @@ public class RankUtils {
                 return formatUserRank(config, text, "{PTOP-" + index + "}", targetUser, user, pointsFormat);
             }
             else if (topType.equalsIgnoreCase("GTOP")) {
-                Option<Guild> guildOption = rankManager.getGuild(index);
+                Option<Guild> guildOption = guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, index);
                 if (guildOption.isEmpty()) {
                     return StringUtils.replace(text, "{GTOP-" + index + "}", messages.gtopNoValue);
                 }
@@ -242,7 +248,7 @@ public class RankUtils {
         return parseTopPosition(
                 FunnyGuilds.getInstance().getPluginConfiguration(),
                 FunnyGuilds.getInstance().getMessageConfiguration(),
-                FunnyGuilds.getInstance().getRankManager(),
+                FunnyGuilds.getInstance().getGuildRankManager(),
                 targetUser,
                 text
         );
@@ -251,7 +257,7 @@ public class RankUtils {
     public static String parseTopPosition(
             PluginConfiguration config,
             MessageConfiguration messages,
-            RankManager rankManager,
+            GuildRankManager guildRankManager,
             User targetUser,
             String text
     ) {
@@ -285,7 +291,7 @@ public class RankUtils {
                     return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", messages.minMembersToIncludeNoValue);
                 }
 
-                return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", rankManager.isRankedGuild(guild)
+                return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", guildRankManager.isRankedGuild(guild)
                         ? Integer.toString(guild.getRank().getPosition(comparatorType).orElseGet(0))
                         : messages.minMembersToIncludeNoValue);
             }

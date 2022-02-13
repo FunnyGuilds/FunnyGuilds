@@ -1,8 +1,9 @@
 package net.dzikoysk.funnyguilds.guild;
 
 import net.dzikoysk.funnyguilds.guild.top.GuildComparator;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.Rank;
-import net.dzikoysk.funnyguilds.rank.RankManager;
+import org.jetbrains.annotations.ApiStatus;
 
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
@@ -14,17 +15,25 @@ public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
         return entity;
     }
 
+    /**
+     * @deprecated for removal in the future, in favour of {@link Rank#getPosition(String)}
+     */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     @Override
     public int getPosition() {
-        return this.getPosition(RankManager.GUILD_AVG_POINTS_TOP)
+        return this.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP)
                 .orElseGet(0);
     }
 
+    /**
+     * @deprecated for removal in the future, in favour of {@link Rank#setPosition(String, int)}
+     */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     @Override
     public void setPosition(int position) {
-        this.setPosition(RankManager.GUILD_AVG_POINTS_TOP, position);
+        this.setPosition(DefaultTops.GUILD_AVG_POINTS_TOP, position);
     }
 
     @Override

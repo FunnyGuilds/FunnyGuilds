@@ -29,7 +29,7 @@ class RankUtilsTest extends FunnyGuildsSpec {
         config.pointsFormat = [ new RangeFormatting(0, Integer.MAX_VALUE, '{POINTS}') ]
 
         // when: the GTOP placeholder is requested to parse
-        def rank = RankUtils.parseRank(config, new TablistConfiguration(), messages, rankManager, user, '{GTOP-1}')
+        def rank = RankUtils.parseRank(config, new TablistConfiguration(), messages, userRankManager, guildRankManager, user, '{GTOP-1}')
 
         // then: the result should match the configured pattern
         assertEquals 'OP 1000', rank
