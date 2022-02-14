@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
-import net.dzikoysk.funnyguilds.event.guild.GuildConquerEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildHeartAttackEvent;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -41,7 +41,7 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
 
             User user = userOption.get();
 
-            if (!SimpleEventHandler.handle(new GuildConquerEvent(EventCause.SYSTEM, user, guild))) {
+            if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.SYSTEM, user, guild))) {
                 return;
             }
 
