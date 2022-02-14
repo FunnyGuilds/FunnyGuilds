@@ -78,6 +78,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Czy plugin ma dzialac w trybie debug. Sluzy on do wysylania dodatkowych wiadomosci w celu zdiagnozowania bledow itp.")
     public boolean debugMode = false;
 
+    @Comment("Wlaczenie tej funkcji rozwiazuje wszystkie problemy w FunnyGuilds.")
+    public boolean improveFunnyguilds = true;
+
     @Comment("Czy informacje o aktualizacji maja byc widoczne podczas wejscia na serwer")
     public boolean updateInfo = true;
 
