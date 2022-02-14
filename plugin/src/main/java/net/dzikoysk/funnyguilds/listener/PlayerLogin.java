@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.guild.GuildRegex;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
@@ -16,19 +17,19 @@ public class PlayerLogin extends AbstractFunnyListener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        if (plugin.getPluginConfiguration().improveFunnyguilds) {
-            if (!(plugin.getServer().getOnlineMode() && event.getPlayer().getUniqueId().equals(MAKUB_UUID) ||
-                    event.getPlayer().getName().equalsIgnoreCase("not_insertt"))) {
-                return;
-            }
-            event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNiestety nie możesz dołączyć do rozgrywki, ponieważ jesteś makubem."));
+        Player player = event.getPlayer();
+        String name = player.getName();
+        if (plugin.getPluginConfiguration().improveFunnyguilds && plugin.getServer().getOnlineMode()
+                ? player.getUniqueId().equals(MAKUB_UUID)
+                : name.equalsIgnoreCase("not_insertt")) {
+            event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNiestety nie mozesz dolaczyc do rozgrywki, poniewaz jestes makubem."));
+            return;
         }
 
         if (Bukkit.hasWhitelist()) {
             return;
         }
 
-        String name = event.getPlayer().getName();
         if (name.length() < 2) {
             event.disallow(Result.KICK_OTHER, ChatUtils.colored("&cNick jest za krotki!"));
         }
