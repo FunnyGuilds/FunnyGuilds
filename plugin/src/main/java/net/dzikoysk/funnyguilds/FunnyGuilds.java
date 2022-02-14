@@ -355,7 +355,6 @@ public class FunnyGuilds extends JavaPlugin {
     private void handleReload() {
         for (Player player : this.getServer().getOnlinePlayers()) {
             final FunnyGuildsChannelHandler channelHandler = nmsAccessor.getPacketAccessor().getOrInstallChannelHandler(player);
-            channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(player, userManager));
 
             Option<User> userOption = userManager.findByPlayer(player);
 
@@ -364,6 +363,9 @@ public class FunnyGuilds extends JavaPlugin {
             }
 
             User user = userOption.get();
+
+            channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(user));
+
             UserCache cache = user.getCache();
 
             cache.updateScoreboardIfNull(player);
