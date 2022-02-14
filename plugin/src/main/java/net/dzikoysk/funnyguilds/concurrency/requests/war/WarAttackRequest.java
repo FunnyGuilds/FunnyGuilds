@@ -1,13 +1,20 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
 import java.util.Map;
+
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildConquerEvent;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 public class WarAttackRequest extends DefaultConcurrencyRequest {
 
@@ -27,6 +34,17 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
             }
 
             Guild guild = entry.getKey();
+
+            Option<User> userOption = FunnyGuilds.getInstance().getUserManager().findByPlayer(player);
+            if (userOption.isEmpty()) {
+                return;
+            }
+
+            User user = userOption.get();
+
+            if (!SimpleEventHandler.handle(new GuildConquerEvent(EventCause.SYSTEM, user, guild))) {
+                return;
+            }
 
             if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;

@@ -3,12 +3,16 @@ package net.dzikoysk.funnyguilds.listener.region;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.GuildConquerEvent;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -54,6 +58,17 @@ public class PlayerInteract extends AbstractFunnyListener {
                     }
 
                     Guild guild = region.getGuild();
+
+                    Option<User> userOption = this.userManager.findByPlayer(player);
+                    if (userOption.isEmpty()) {
+                        return;
+                    }
+
+                    User user = userOption.get();
+
+                    if (!SimpleEventHandler.handle(new GuildConquerEvent(EventCause.USER, user, guild))) {
+                        return;
+                    }
 
                     if (SecuritySystem.onHitCrystal(player, guild)) {
                         return;
