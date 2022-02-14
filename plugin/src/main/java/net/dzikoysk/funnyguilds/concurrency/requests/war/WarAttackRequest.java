@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
 import java.util.Map;
-
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
