@@ -59,6 +59,10 @@ public class PlayerInteract extends AbstractFunnyListener {
 
                     Guild guild = region.getGuild();
 
+                    if (SecuritySystem.onHitCrystal(player, guild)) {
+                        return;
+                    }
+
                     Option<User> userOption = this.userManager.findByPlayer(player);
                     if (userOption.isEmpty()) {
                         return;
@@ -67,10 +71,6 @@ public class PlayerInteract extends AbstractFunnyListener {
                     User user = userOption.get();
 
                     if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, user, guild))) {
-                        return;
-                    }
-
-                    if (SecuritySystem.onHitCrystal(player, guild)) {
                         return;
                     }
 

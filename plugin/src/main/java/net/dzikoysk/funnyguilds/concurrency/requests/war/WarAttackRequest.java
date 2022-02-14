@@ -34,6 +34,10 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
 
             Guild guild = entry.getKey();
 
+            if (SecuritySystem.onHitCrystal(player, guild)) {
+                return;
+            }
+
             Option<User> userOption = FunnyGuilds.getInstance().getUserManager().findByPlayer(player);
             if (userOption.isEmpty()) {
                 return;
@@ -42,10 +46,6 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
             User user = userOption.get();
 
             if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.SYSTEM, user, guild))) {
-                return;
-            }
-
-            if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;
             }
 
