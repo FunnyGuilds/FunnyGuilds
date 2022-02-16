@@ -264,10 +264,10 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .register("{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)))
                 .register("{VTAG}", victim.getGuild()
                         .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
-                        .orElse(""))
+                        .orElseGet(""))
                 .register("{ATAG}", attacker.getGuild()
                         .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
-                        .orElse(""))
+                        .orElseGet(""))
                 .register("{ASSISTS}", config.assistEnable && !assistEntries.isEmpty()
                         ? StringUtils.replace(messages.rankAssistMessage, "{ASSISTS}", String.join(messages.rankAssistDelimiter, assistEntries))
                         : "");
