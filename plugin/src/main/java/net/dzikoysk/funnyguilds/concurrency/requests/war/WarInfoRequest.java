@@ -12,16 +12,18 @@ import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 public class WarInfoRequest extends DefaultConcurrencyRequest {
 
     private InfoCommand infoExecutor;
 
-    private final Player player;
+    private final User user;
     private final int entityId;
 
-    public WarInfoRequest(FunnyGuilds plugin, Player player, int entityId) {
+    public WarInfoRequest(FunnyGuilds plugin, User user, int entityId) {
         try {
             this.infoExecutor = plugin.getInjector().newInstanceWithFields(InfoCommand.class);
         }
@@ -29,7 +31,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             FunnyGuilds.getPluginLogger().error("An error occurred while creating war info request", throwable);
         }
 
-        this.player = player;
+        this.user = user;
         this.entityId = entityId;
     }
 
@@ -41,6 +43,13 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             }
 
             Guild guild = entry.getKey();
+
+            Option<Player> playerOption = this.user.getPlayer();
+            if (playerOption.isEmpty()) {
+                return;
+            }
+
+            Player player = playerOption.get();
 
             if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;

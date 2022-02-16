@@ -57,7 +57,7 @@ public class PlayerJoin extends AbstractFunnyListener {
         );
 
         final FunnyGuildsChannelHandler channelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallChannelHandler(player);
-        channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(player));
+        channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(user));
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             this.plugin.getVersion().isNewAvailable(player, false);
