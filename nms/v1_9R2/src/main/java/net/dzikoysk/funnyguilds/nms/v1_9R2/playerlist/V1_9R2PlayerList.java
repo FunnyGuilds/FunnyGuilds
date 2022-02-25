@@ -96,20 +96,25 @@ public class V1_9R2PlayerList implements PlayerList {
             PLAYER_INFO_DATA_ACCESSOR.set(updatePlayerPacket, updatePlayerList);
             packets.add(updatePlayerPacket);
 
-            IChatBaseComponent headerComponent = EMPTY_COMPONENT;
-            IChatBaseComponent footerComponent = EMPTY_COMPONENT;
+            boolean headerNotEmpty = !header.isEmpty();
+            boolean footerNotEmpty = !footer.isEmpty();
 
-            if (!header.isEmpty()) {
-                headerComponent = CraftChatMessage.fromString(header, true)[0];
+            if (headerNotEmpty || footerNotEmpty) {
+                IChatBaseComponent headerComponent = EMPTY_COMPONENT;
+                IChatBaseComponent footerComponent = EMPTY_COMPONENT;
+
+                if (headerNotEmpty) {
+                    headerComponent = CraftChatMessage.fromString(header, true)[0];
+                }
+
+                if (footerNotEmpty) {
+                    footerComponent = CraftChatMessage.fromString(footer, true)[0];
+                }
+
+                PacketPlayOutPlayerListHeaderFooter headerFooterPacket = new PacketPlayOutPlayerListHeaderFooter(headerComponent);
+                FOOTER_ACCESSOR.set(headerFooterPacket, footerComponent);
+                packets.add(headerFooterPacket);
             }
-
-            if (!footer.isEmpty()) {
-                footerComponent = CraftChatMessage.fromString(footer, true)[0];
-            }
-
-            PacketPlayOutPlayerListHeaderFooter headerFooterPacket = new PacketPlayOutPlayerListHeaderFooter(headerComponent);
-            FOOTER_ACCESSOR.set(headerFooterPacket, footerComponent);
-            packets.add(headerFooterPacket);
 
             for (Packet<?> packet : packets) {
                 ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
