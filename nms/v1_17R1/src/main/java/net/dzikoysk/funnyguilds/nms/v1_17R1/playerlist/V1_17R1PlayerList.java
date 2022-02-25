@@ -77,19 +77,24 @@ public class V1_17R1PlayerList implements PlayerList {
             updatePlayerPacket.b().addAll(updatePlayerList);
             packets.add(updatePlayerPacket);
 
-            IChatBaseComponent headerComponent = EMPTY_COMPONENT;
-            IChatBaseComponent footerComponent = EMPTY_COMPONENT;
+            boolean headerNotEmpty = !header.isEmpty();
+            boolean footerNotEmpty = !footer.isEmpty();
 
-            if (!header.isEmpty()) {
-                headerComponent = CraftChatMessage.fromStringOrNull(header, true);
+            if (headerNotEmpty || footerNotEmpty) {
+                IChatBaseComponent headerComponent = EMPTY_COMPONENT;
+                IChatBaseComponent footerComponent = EMPTY_COMPONENT;
+
+                if (headerNotEmpty) {
+                    headerComponent = CraftChatMessage.fromStringOrNull(header, true);
+                }
+
+                if (footerNotEmpty) {
+                    footerComponent = CraftChatMessage.fromStringOrNull(footer, true);
+                }
+
+                PacketPlayOutPlayerListHeaderFooter headerFooterPacket = new PacketPlayOutPlayerListHeaderFooter(headerComponent, footerComponent);
+                packets.add(headerFooterPacket);
             }
-
-            if (!footer.isEmpty()) {
-                footerComponent = CraftChatMessage.fromStringOrNull(footer, true);
-            }
-
-            PacketPlayOutPlayerListHeaderFooter headerFooterPacket = new PacketPlayOutPlayerListHeaderFooter(headerComponent, footerComponent);
-            packets.add(headerFooterPacket);
 
             for (Packet<?> packet : packets) {
                 ((CraftPlayer) player).getHandle().b.sendPacket(packet);
