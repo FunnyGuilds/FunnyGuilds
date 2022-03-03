@@ -49,7 +49,7 @@ public final class ItemUtils {
                 continue;
             }
 
-            if(messages.createItems.isEmpty()) {
+            if (messages.createItems.isEmpty()) {
                 return false;
             }
 
