@@ -55,8 +55,6 @@ public class Dummy {
             return;
         }
 
-
-
         if (user.hasPermission("funnyguilds.admin.disabledummy")) {
             return;
         }

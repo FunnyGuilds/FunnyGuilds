@@ -118,7 +118,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 msg = StringUtils.replace(msg, "{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
                 msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
 
-                player.sendMessage(msg);
+                user.sendMessage(msg);
                 return;
             }
         }
@@ -130,14 +130,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
         if (player.getTotalExperience() < requiredExperience) {
             String msg = messages.createExperience;
             msg = StringUtils.replace(msg, "{EXP}", String.valueOf(requiredExperience));
-            player.sendMessage(msg);
+            user.sendMessage(msg);
             return;
         }
 
         if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
             String notEnoughMoneyMessage = messages.createMoney;
             notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
-            player.sendMessage(notEnoughMoneyMessage);
+            user.sendMessage(notEnoughMoneyMessage);
             return;
         }
 
@@ -167,7 +167,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             if (!bbox.contains(gbox)) {
                 String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
                 notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
-                player.sendMessage(notEnoughDistanceMessage);
+                user.sendMessage(notEnoughDistanceMessage);
                 return;
             }
 
@@ -191,7 +191,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             if (heart.pasteSchematicOnCreation) {
                 HookManager.WORLD_EDIT.peek(worldEdit -> {
                     if (worldEdit.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
-                        player.sendMessage(messages.createGuildCouldNotPasteSchematic);
+                        user.sendMessage(messages.createGuildCouldNotPasteSchematic);
                     }
                 });
             }
@@ -234,7 +234,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", name)
                 .register("{TAG}", tag)
                 .register("{PLAYER}", player.getName());
-        player.sendMessage(formatter.format(messages.createGuild));
+        user.sendMessage(formatter.format(messages.createGuild));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastCreate));
 
         if (!config.giveRewardsForFirstGuild) {

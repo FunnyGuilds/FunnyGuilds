@@ -32,12 +32,12 @@ public final class PvPCommand extends AbstractFunnyCommand {
             when(!guild.getAllies().contains(targetAlliedGuild), guildTagFormatter.format(messages.allyDoesntExist));
 
             guild.setPvP(targetAlliedGuild, !guild.getPvP(targetAlliedGuild));
-            player.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messages.pvpAllyOn : messages.pvpAllyOff));
+            user.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messages.pvpAllyOn : messages.pvpAllyOff));
             return;
         }
 
         guild.setPvP(!guild.getPvP());
-        player.sendMessage(guild.getPvP() ? messages.pvpOn : messages.pvpOff);
+        user.sendMessage(guild.getPvP() ? messages.pvpOn : messages.pvpOff);
     }
 
 }

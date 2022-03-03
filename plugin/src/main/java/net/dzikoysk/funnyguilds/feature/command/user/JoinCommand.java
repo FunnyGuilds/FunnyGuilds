@@ -44,7 +44,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(player), false);
 
             for (String msg : messages.joinInvitationList) {
-                player.sendMessage(msg.replace("{GUILDS}", guildNames));
+                user.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
 
             return;
@@ -82,7 +82,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(formatter.format(messages.joinToMember));
+        user.sendMessage(formatter.format(messages.joinToMember));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
 
         guild.getOwner().sendMessage(formatter.format(messages.joinToOwner));

@@ -39,13 +39,13 @@ public final class DeputyCommand extends AbstractFunnyCommand {
 
         if (deputyUser.isDeputy()) {
             guild.removeDeputy(deputyUser);
-            player.sendMessage(messages.deputyRemove);
+            owner.sendMessage(messages.deputyRemove);
             deputyUser.sendMessage(messages.deputyMember);
             return;
         }
 
         guild.addDeputy(deputyUser);
-        player.sendMessage(messages.deputySet);
+        owner.sendMessage(messages.deputySet);
         deputyUser.sendMessage(messages.deputyOwner);
     }
 

@@ -44,7 +44,7 @@ public final class WarCommand extends AbstractFunnyCommand {
                     .register("{TAG}", enemyGuild.getTag())
                     .register("{AMOUNT}", config.maxEnemiesBetweenGuilds);
 
-            player.sendMessage(formatter.format(messages.enemyMaxTargetAmount));
+            user.sendMessage(formatter.format(messages.enemyMaxTargetAmount));
             return;
         }
 
@@ -53,7 +53,7 @@ public final class WarCommand extends AbstractFunnyCommand {
         String allyDoneMessage = messages.enemyDone;
         allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", enemyGuild.getName());
         allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", enemyGuild.getTag());
-        player.sendMessage(allyDoneMessage);
+        user.sendMessage(allyDoneMessage);
 
         String allyIDoneMessage = messages.enemyIDone;
         allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());

@@ -50,7 +50,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         when(guild.equals(region.getGuild()), messages.escapeOnYourRegion);
 
         if (time >= 1) {
-            player.sendMessage(messages.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
+            user.sendMessage(messages.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
 
             String msg = messages.escapeStartedOpponents.replace("{TIME}", Integer.toString(time)).replace("{PLAYER}", player.getName())
                     .replace("{X}", Integer.toString(playerLocation.getBlockX())).replace("{Y}", Integer.toString(playerLocation.getBlockY()))
@@ -78,7 +78,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
 
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                player.sendMessage(messages.escapeCancelled);
+                user.sendMessage(messages.escapeCancelled);
                 cache.setTeleportation(null);
                 return;
             }
@@ -86,7 +86,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             if (timeCounter.getAndIncrement() > time) {
                 cache.getTeleportation().cancel();
                 player.teleport(destination);
-                player.sendMessage(messages.escapeSuccessfulUser);
+                user.sendMessage(messages.escapeSuccessfulUser);
                 onSuccess.run();
                 cache.setTeleportation(null);
             }

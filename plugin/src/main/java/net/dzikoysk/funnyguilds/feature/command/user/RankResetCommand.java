@@ -36,7 +36,7 @@ public final class RankResetCommand extends AbstractFunnyCommand {
         resetMessage = StringUtils.replace(resetMessage, "{LAST-RANK}", String.valueOf(lastRank));
         resetMessage = StringUtils.replace(resetMessage, "{CURRENT-RANK}", String.valueOf(user.getRank().getPoints()));
 
-        player.sendMessage(resetMessage);
+        user.sendMessage(resetMessage);
     }
 
 }
