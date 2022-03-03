@@ -50,9 +50,7 @@ public class User extends AbstractMutableEntity {
         }
 
         this.getPlayer()
-                .peek(player -> {
-                    player.sendMessage(message);
-                });
+                .peek(player -> player.sendMessage(message));
     }
 
     public boolean hasPermission(String permission) {

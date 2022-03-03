@@ -56,7 +56,7 @@ public final class BanCommand extends AbstractFunnyCommand {
                 .register("{TIME}", args[1])
                 .register("{REASON}", ChatUtils.colored(reason));
 
-        sender.sendMessage(formatter.format(messages.adminGuildBan));
+        sendMessage(sender, formatter.format(messages.adminGuildBan));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastBan));
     }
 
