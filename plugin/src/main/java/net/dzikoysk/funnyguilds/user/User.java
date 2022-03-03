@@ -46,7 +46,12 @@ public class User extends AbstractMutableEntity {
 
     public boolean sendMessage(String message) {
         return this.getPlayer()
-                .peek(player -> player.sendMessage(message))
+                .peek(player -> {
+                    if(message == null || message.isEmpty()) {
+                        return;
+                    }
+                    player.sendMessage(message);
+                })
                 .isPresent();
     }
 
