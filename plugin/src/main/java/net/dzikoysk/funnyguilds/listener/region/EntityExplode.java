@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
@@ -83,7 +84,7 @@ public class EntityExplode extends AbstractFunnyListener {
 
                     if (explosionSource instanceof Player) {
                         Player explosionPlayer = (Player) explosionSource;
-                        explosionPlayer.sendMessage(messages.regionExplosionHasProtection);
+                        ChatUtils.sendMessage(explosionPlayer, messages.regionExplosionHasProtection);
                     }
                 }
 
@@ -99,7 +100,7 @@ public class EntityExplode extends AbstractFunnyListener {
             for (User user : guild.getMembers()) {
                 user.getPlayer()
                         .filter(player -> !informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown))
-                        .peek(player -> player.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
+                        .peek(player -> user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
             }
         }
 
@@ -123,7 +124,7 @@ public class EntityExplode extends AbstractFunnyListener {
 
                     if (explosionSource instanceof Player) {
                         Player explosionPlayer = (Player) explosionSource;
-                        explosionPlayer.sendMessage(messages.regionExplosionHasProtection);
+                        ChatUtils.sendMessage(explosionPlayer, messages.regionExplosionHasProtection);
                     }
                 }
             }

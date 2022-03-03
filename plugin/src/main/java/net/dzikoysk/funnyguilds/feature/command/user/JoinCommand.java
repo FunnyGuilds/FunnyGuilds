@@ -15,7 +15,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import panda.utilities.text.Formatter;
@@ -83,7 +82,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", player.getName());
 
         user.sendMessage(formatter.format(messages.joinToMember));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
+        broadcastMessage(formatter.format(messages.broadcastJoin));
 
         guild.getOwner().sendMessage(formatter.format(messages.joinToOwner));
     }

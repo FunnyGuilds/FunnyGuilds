@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.feature.war.WarSystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -86,7 +87,7 @@ public class PlayerInteract extends AbstractFunnyListener {
                             infoExecutor.execute(player, new String[] {guild.getTag()});
                         }
                         catch (ValidationException validatorException) {
-                            validatorException.getValidationMessage().peek(player::sendMessage);
+                            validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
                         }
                     }
                 })

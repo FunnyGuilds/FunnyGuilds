@@ -26,7 +26,6 @@ import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -235,7 +234,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .register("{TAG}", tag)
                 .register("{PLAYER}", player.getName());
         user.sendMessage(formatter.format(messages.createGuild));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastCreate));
+        broadcastMessage(formatter.format(messages.broadcastCreate));
 
         if (!config.giveRewardsForFirstGuild) {
             return;

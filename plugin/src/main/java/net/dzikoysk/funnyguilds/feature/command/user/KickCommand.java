@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
 
@@ -57,7 +56,7 @@ public final class KickCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag());
 
         user.sendMessage(formatter.format(messages.kickToOwner));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
+        broadcastMessage(formatter.format(messages.broadcastKick));
 
         formerUser.sendMessage(formatter.format(messages.kickToPlayer));
     }

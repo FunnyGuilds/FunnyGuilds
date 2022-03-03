@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.Bukkit;
@@ -86,7 +87,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
-                                player.sendMessage(formatter.format(messages.notificationChatLeaveGuildRegion));
+                                ChatUtils.sendMessage(player, formatter.format(messages.notificationChatLeaveGuildRegion));
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
@@ -139,7 +140,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
-                                player.sendMessage(formatter.format(messages.notificationChatEnterGuildRegion));
+                                user.sendMessage(formatter.format(messages.notificationChatEnterGuildRegion));
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
@@ -187,7 +188,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                             }
 
                                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
-                                                peekPlayer.sendMessage(formatter.format(messages.notificationChatIntruderEnterGuildRegion));
+                                                memberUser.sendMessage(formatter.format(messages.notificationChatIntruderEnterGuildRegion));
                                             }
 
                                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {

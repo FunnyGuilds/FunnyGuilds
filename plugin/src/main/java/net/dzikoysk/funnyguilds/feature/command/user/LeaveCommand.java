@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsMember;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
 
@@ -46,7 +45,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", user.getName());
 
         user.sendMessage(formatter.format(messages.leaveToUser));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastLeave));
+        broadcastMessage(formatter.format(messages.broadcastLeave));
     }
 
 }

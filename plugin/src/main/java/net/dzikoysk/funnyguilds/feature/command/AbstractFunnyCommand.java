@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.bukkit.command.CommandSender;
@@ -32,10 +33,11 @@ public abstract class AbstractFunnyCommand {
     @Inject public RegionManager regionManager;
 
     protected void sendMessage(CommandSender sender, String message) {
-        if (message == null || message.isEmpty()) {
-            return;
-        }
-        sender.sendMessage(message);
+        ChatUtils.sendMessage(sender, message);
+    }
+
+    protected void broadcastMessage(String message) {
+        ChatUtils.broadcastMessage(message);
     }
 
 }
