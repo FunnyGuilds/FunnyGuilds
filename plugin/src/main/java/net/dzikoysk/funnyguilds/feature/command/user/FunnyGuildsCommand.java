@@ -46,14 +46,14 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 post(sender, args);
                 break;
             case "help":
-                this.sendMessage(sender, (ChatColor.AQUA + "FunnyGuilds Help:"));
-                this.sendMessage(sender, (ChatColor.GRAY + "/funnyguilds (reload|rl) - przeladuj plugin"));
-                this.sendMessage(sender, (ChatColor.GRAY + "/funnyguilds (update|check) - sprawdz dostepnosc aktualizacji"));
-                this.sendMessage(sender, (ChatColor.GRAY + "/funnyguilds save-all - zapisz wszystko"));
-                this.sendMessage(sender, (ChatColor.GRAY + "/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)"));
+                sender.sendMessage(ChatColor.AQUA + "FunnyGuilds Help:");
+                sender.sendMessage(ChatColor.GRAY + "/funnyguilds (reload|rl) - przeladuj plugin");
+                sender.sendMessage(ChatColor.GRAY + "/funnyguilds (update|check) - sprawdz dostepnosc aktualizacji");
+                sender.sendMessage(ChatColor.GRAY + "/funnyguilds save-all - zapisz wszystko");
+                sender.sendMessage(ChatColor.GRAY + "/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)");
                 break;
             default:
-                this.sendMessage(sender, (ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + plugin.getVersion().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team"));
+                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + plugin.getVersion().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
                 break;
         }
 
@@ -62,14 +62,14 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     private void reload(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.reload"), messages.permission);
 
-        this.sendMessage(sender, (ChatColor.GRAY + "Przeladowywanie..."));
+        sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
         this.plugin.getConcurrencyManager().postRequests(new ReloadRequest(this.plugin, sender));
     }
 
     private void saveAll(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.admin"), messages.permission);
 
-        this.sendMessage(sender, (ChatColor.GRAY + "Zapisywanie..."));
+        sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
         long currentTime = System.currentTimeMillis();
 
         DataModel dataModel = this.dataModel;
@@ -83,7 +83,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.sendMessage(sender, (ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - currentTime) / 1000.0F + "s" + ChatColor.GRAY + ")!"));
+        sender.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - currentTime) / 1000.0F + "s" + ChatColor.GRAY + ")!");
     }
 
     private void post(CommandSender sender, String[] args) {
@@ -95,12 +95,12 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.sendMessage(sender, (ChatColor.RED + "Uzycie: "));
-        this.sendMessage(sender, (ChatColor.RED + "/fg funnybin - domyslnie wysyla FunnyGuilds/config.yml i logs/latest.log"));
-        this.sendMessage(sender, (ChatColor.RED + "/fg funnybin config - wysyla FunnyGuilds/config.yml"));
-        this.sendMessage(sender, (ChatColor.RED + "/fg funnybin log - wysyla logs/latest.log"));
-        this.sendMessage(sender, (ChatColor.RED + "/fg funnybin custom <path> - wysyla dowolny plik z folderu serwera na funnybina"));
-        this.sendMessage(sender, (ChatColor.RED + "/fg funnybin bundle <file1> <fileN...> - wysyla dowolne pliki z folderu serwera na funnybina"));
+        sender.sendMessage(ChatColor.RED + "Uzycie: ");
+        sender.sendMessage(ChatColor.RED + "/fg funnybin - domyslnie wysyla FunnyGuilds/config.yml i logs/latest.log");
+        sender.sendMessage(ChatColor.RED + "/fg funnybin config - wysyla FunnyGuilds/config.yml");
+        sender.sendMessage(ChatColor.RED + "/fg funnybin log - wysyla logs/latest.log");
+        sender.sendMessage(ChatColor.RED + "/fg funnybin custom <path> - wysyla dowolny plik z folderu serwera na funnybina");
+        sender.sendMessage(ChatColor.RED + "/fg funnybin bundle <file1> <fileN...> - wysyla dowolne pliki z folderu serwera na funnybina");
     }
 
 }
