@@ -44,7 +44,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
 
             for (String msg : messages.allyInvitationList) {
-                player.sendMessage(msg.replace("{GUILDS}", guildNames));
+                user.sendMessage(msg.replace("{GUILDS}", guildNames));
             }
 
             return;
@@ -62,7 +62,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             String allyDoneMessage = messages.enemyEnd;
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
-            player.sendMessage(allyDoneMessage);
+            user.sendMessage(allyDoneMessage);
 
             String allyIDoneMessage = messages.enemyIEnd;
             allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
@@ -78,7 +78,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
                     .register("{TAG}", invitedGuild.getTag())
                     .register("{AMOUNT}", config.maxAlliesBetweenGuilds);
 
-            player.sendMessage(formatter.format(messages.inviteAllyTargetAmount));
+            user.sendMessage(formatter.format(messages.inviteAllyTargetAmount));
             return;
         }
 
@@ -96,7 +96,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             String allyDoneMessage = messages.allyDone;
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
             allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
-            player.sendMessage(allyDoneMessage);
+            user.sendMessage(allyDoneMessage);
 
             String allyIDoneMessage = messages.allyIDone;
             allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
@@ -127,7 +127,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             String allyReturnMessage = messages.allyReturn;
             allyReturnMessage = StringUtils.replace(allyReturnMessage, "{GUILD}", invitedGuild.getName());
             allyReturnMessage = StringUtils.replace(allyReturnMessage, "{TAG}", invitedGuild.getTag());
-            player.sendMessage(allyReturnMessage);
+            user.sendMessage(allyReturnMessage);
 
             String allyIReturnMessage = messages.allyIReturn;
             allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{GUILD}", guild.getName());
@@ -146,7 +146,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
         String allyInviteDoneMessage = messages.allyInviteDone;
         allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{GUILD}", invitedGuild.getName());
         allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{TAG}", invitedGuild.getTag());
-        player.sendMessage(allyInviteDoneMessage);
+        user.sendMessage(allyInviteDoneMessage);
 
         String allyToInvitedMessage = messages.allyToInvited;
         allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{GUILD}", guild.getName());

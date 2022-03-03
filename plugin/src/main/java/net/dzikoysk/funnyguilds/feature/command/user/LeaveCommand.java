@@ -45,7 +45,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        player.sendMessage(formatter.format(messages.leaveToUser));
+        user.sendMessage(formatter.format(messages.leaveToUser));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastLeave));
     }
 

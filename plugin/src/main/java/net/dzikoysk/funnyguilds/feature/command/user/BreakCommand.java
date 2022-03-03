@@ -40,7 +40,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
             String iss = ChatUtils.toString(Entity.names(guild.getAllies()), true);
 
             for (String msg : list) {
-                player.sendMessage(msg.replace("{GUILDS}", iss));
+                user.sendMessage(msg.replace("{GUILDS}", iss));
             }
 
             return;
@@ -73,7 +73,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
         ConcurrencyTask task = taskBuilder.build();
         this.concurrencyManager.postTask(task);
 
-        player.sendMessage(messages.breakDone.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", oppositeGuild.getTag()));
+        user.sendMessage(messages.breakDone.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", oppositeGuild.getTag()));
     }
 
 }

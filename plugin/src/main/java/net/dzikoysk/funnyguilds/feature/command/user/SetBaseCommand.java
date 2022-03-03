@@ -50,7 +50,7 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             }
         }
 
-        player.sendMessage(messages.setbaseDone);
+        user.sendMessage(messages.setbaseDone);
     }
 
 }

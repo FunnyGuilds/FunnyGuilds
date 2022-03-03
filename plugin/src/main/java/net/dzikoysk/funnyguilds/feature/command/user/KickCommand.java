@@ -56,7 +56,7 @@ public final class KickCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        player.sendMessage(formatter.format(messages.kickToOwner));
+        user.sendMessage(formatter.format(messages.kickToOwner));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
 
         formerUser.sendMessage(formatter.format(messages.kickToPlayer));

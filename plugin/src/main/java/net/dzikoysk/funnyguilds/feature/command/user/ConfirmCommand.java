@@ -44,7 +44,7 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(formatter.format(messages.deleteSuccessful));
+        user.sendMessage(formatter.format(messages.deleteSuccessful));
         Bukkit.getServer().broadcastMessage(formatter.format(messages.broadcastDelete));
     }
 

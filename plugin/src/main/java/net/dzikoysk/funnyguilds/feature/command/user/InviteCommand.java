@@ -42,7 +42,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
             }
 
             InvitationList.expireInvitation(guild, invitedUser);
-            player.sendMessage(messages.inviteCancelled);
+            user.sendMessage(messages.inviteCancelled);
             when(invitedPlayerOption.isPresent(), messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             return;
         }
@@ -56,7 +56,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
         }
 
         InvitationList.createInvitation(guild, invitedPlayer);
-        player.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
+        user.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
         invitedPlayer.sendMessage(messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }
 

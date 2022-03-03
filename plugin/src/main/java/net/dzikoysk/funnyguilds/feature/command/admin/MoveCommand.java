@@ -28,7 +28,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             acceptsExceeded = true,
             playerOnly = true
     )
-    public void execute(Player player, String[] args) {
+    public void execute(Player player, User admin, String[] args) {
         when(!config.regionsEnabled, messages.regionsDisabled);
         when(args.length < 1, messages.generalNoTagGiven);
 
@@ -50,7 +50,6 @@ public final class MoveCommand extends AbstractFunnyCommand {
                 messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
         when(this.regionManager.isNearRegion(location), messages.createIsNear);
 
-        User admin = AdminUtils.getAdminUser(player);
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
             return;
         }
@@ -81,7 +80,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         this.guildManager.spawnHeart(guild);
-        player.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
+        admin.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
 
 }
