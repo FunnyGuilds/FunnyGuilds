@@ -44,15 +44,15 @@ public class User extends AbstractMutableEntity {
         this(player.getUniqueId(), player.getName());
     }
 
-    public boolean sendMessage(String message) {
-        return this.getPlayer()
+    public void sendMessage(String message) {
+        if (message == null || message.isEmpty()) {
+            return;
+        }
+
+        this.getPlayer()
                 .peek(player -> {
-                    if(message == null || message.isEmpty()) {
-                        return;
-                    }
                     player.sendMessage(message);
-                })
-                .isPresent();
+                });
     }
 
     public boolean hasPermission(String permission) {
