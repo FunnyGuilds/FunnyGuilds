@@ -35,7 +35,7 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
             protectionDate = PROTECTION_DATE_FORMAT.parse(protectionDateAsString);
         }
         catch (ParseException e) {
-            sender.sendMessage(messages.adminInvalidProtectionDate);
+            this.sendMessage(sender, (messages.adminInvalidProtectionDate));
             return;
         }
 
@@ -46,6 +46,6 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
                 .register("{DATE}", protectionDateAsString);
 
 
-        sender.sendMessage(formatter.format(messages.adminProtectionSetSuccessfully));
+        this.sendMessage(sender, (formatter.format(messages.adminProtectionSetSuccessfully)));
     }
 }

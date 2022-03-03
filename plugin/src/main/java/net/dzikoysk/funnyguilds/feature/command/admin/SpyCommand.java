@@ -19,11 +19,11 @@ public final class SpyCommand extends AbstractFunnyCommand {
 
         if (cache.isSpy()) {
             cache.setSpy(false);
-            sender.sendMessage(messages.adminStopSpy);
+            this.sendMessage(sender, (messages.adminStopSpy));
         }
         else {
             cache.setSpy(true);
-            sender.sendMessage(messages.adminStartSpy);
+            this.sendMessage(sender, (messages.adminStartSpy));
         }
     }
 

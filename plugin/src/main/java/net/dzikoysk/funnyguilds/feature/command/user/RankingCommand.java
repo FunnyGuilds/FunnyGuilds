@@ -19,7 +19,7 @@ public final class RankingCommand extends AbstractFunnyCommand {
     public void execute(CommandSender sender) {
         for (String messageLine : messages.rankingList) {
             String parsedRank = RankUtils.parseRank(null, messageLine);
-            sender.sendMessage(parsedRank == null ? messageLine : parsedRank);
+            this.sendMessage(sender, (parsedRank == null ? messageLine : parsedRank));
         }
     }
 

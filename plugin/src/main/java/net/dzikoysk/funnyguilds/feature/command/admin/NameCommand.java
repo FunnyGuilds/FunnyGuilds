@@ -64,7 +64,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         }
 
         guild.setName(args[1]);
-        sender.sendMessage(messages.adminNameChanged.replace("{GUILD}", guild.getName()));
+        this.sendMessage(sender, (messages.adminNameChanged.replace("{GUILD}", guild.getName())));
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }

@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
+import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
 public abstract class AbstractFunnyCommand {
@@ -29,5 +30,12 @@ public abstract class AbstractFunnyCommand {
     @Inject public UserRankManager userRankManager;
     @Inject public GuildRankManager guildRankManager;
     @Inject public RegionManager regionManager;
+
+    protected void sendMessage(CommandSender sender, String message) {
+        if (message == null || message.isEmpty()) {
+            return;
+        }
+        sender.sendMessage(message);
+    }
 
 }

@@ -43,7 +43,7 @@ public final class DeathsCommand extends AbstractFunnyCommand {
         int finalDeaths = user.getRank().getDeaths() + change;
         user.getRank().setDeaths(finalDeaths);
 
-        sender.sendMessage(messages.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(finalDeaths)));
+        this.sendMessage(sender, (messages.adminDeathsChanged.replace("{PLAYER}", user.getName()).replace("{DEATHS}", Integer.toString(finalDeaths))));
     }
 
 }
