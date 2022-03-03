@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import panda.utilities.text.Formatter;
 
@@ -49,7 +48,7 @@ public final class AddCommand extends AbstractFunnyCommand {
 
         userToAdd.sendMessage(formatter.format(messages.joinToMember));
         guild.getOwner().sendMessage(formatter.format(messages.joinToOwner));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastJoin));
+        broadcastMessage(formatter.format(messages.broadcastJoin));
     }
 
 }

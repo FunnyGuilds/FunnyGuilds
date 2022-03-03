@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import panda.utilities.text.Formatter;
 
@@ -57,7 +56,7 @@ public final class BanCommand extends AbstractFunnyCommand {
                 .register("{REASON}", ChatUtils.colored(reason));
 
         sendMessage(sender, formatter.format(messages.adminGuildBan));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastBan));
+        broadcastMessage(formatter.format(messages.broadcastBan));
     }
 
 }

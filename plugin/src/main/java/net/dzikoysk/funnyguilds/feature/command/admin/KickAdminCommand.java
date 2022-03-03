@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import panda.utilities.text.Formatter;
 
@@ -46,7 +45,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", user.getName());
 
         sendMessage(sender, (formatter.format(messages.kickToOwner)));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastKick));
+        broadcastMessage(formatter.format(messages.broadcastKick));
         user.sendMessage(formatter.format(messages.kickToPlayer));
 
         user.getPlayer().peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player)));

@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import panda.utilities.text.Formatter;
 
@@ -40,7 +39,7 @@ public final class UnbanCommand extends AbstractFunnyCommand {
                 .register("{ADMIN}", sender.getName());
 
         sendMessage(sender, (formatter.format(messages.adminGuildUnban)));
-        Bukkit.broadcastMessage(formatter.format(messages.broadcastUnban));
+        broadcastMessage(formatter.format(messages.broadcastUnban));
     }
 
 }
