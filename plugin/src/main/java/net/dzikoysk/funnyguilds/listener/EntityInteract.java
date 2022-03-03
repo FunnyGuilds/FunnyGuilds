@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -41,7 +42,7 @@ public class EntityInteract extends AbstractFunnyListener {
                     playerExecutor.execute(eventCaller, new String[] {clickedPlayer.getName()});
                 }
                 catch (ValidationException validatorException) {
-                    validatorException.getValidationMessage().peek(eventCaller::sendMessage);
+                    validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(eventCaller, message));
                 }
             }
             else {

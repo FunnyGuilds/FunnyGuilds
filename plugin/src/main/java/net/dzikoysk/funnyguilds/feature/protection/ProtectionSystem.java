@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -62,12 +63,12 @@ public final class ProtectionSystem {
             ProtectionSystem.sendRegionExplodeMessage(result.getLeft(), result.getMiddle());
         }
         else {
-            result.getLeft().sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
+            ChatUtils.sendMessage(result.getLeft(), FunnyGuilds.getInstance().getMessageConfiguration().regionOther);
         }
     }
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
-        player.sendMessage(FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract
+        ChatUtils.sendMessage(player, FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract
                 .replace("{TIME}", Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis())))
         );
     }

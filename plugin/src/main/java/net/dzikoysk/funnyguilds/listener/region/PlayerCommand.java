@@ -42,7 +42,7 @@ public class PlayerCommand extends AbstractFunnyListener {
                         .filterNot(user -> guild.getMembers().contains(user))
                         .peek(user -> {
                             event.setCancelled(true);
-                            player.sendMessage(messages.regionCommand);
+                            user.sendMessage(messages.regionCommand);
                         }));
     }
 

@@ -107,8 +107,8 @@ public class PlayerDeath extends AbstractFunnyListener {
 
             if (attackTimestamp != null) {
                 if (attackTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
-                    playerVictim.sendMessage(messages.rankLastVictimV);
-                    playerAttacker.sendMessage(messages.rankLastVictimA);
+                    ChatUtils.sendMessage(playerVictim, messages.rankLastVictimV);
+                    ChatUtils.sendMessage(playerAttacker, messages.rankLastVictimA);
 
                     victimCache.clearDamage();
                     event.setDeathMessage(null);
@@ -118,8 +118,8 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
             else if (victimTimestamp != null) {
                 if (victimTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
-                    playerVictim.sendMessage(messages.rankLastAttackerV);
-                    playerAttacker.sendMessage(messages.rankLastAttackerA);
+                    ChatUtils.sendMessage(playerVictim, messages.rankLastAttackerV);
+                    ChatUtils.sendMessage(playerAttacker, messages.rankLastAttackerA);
 
                     victimCache.clearDamage();
                     event.setDeathMessage(null);
@@ -133,8 +133,8 @@ public class PlayerDeath extends AbstractFunnyListener {
             String attackerIP = playerAttacker.getAddress().getHostString();
 
             if (attackerIP != null && attackerIP.equalsIgnoreCase(playerVictim.getAddress().getHostString())) {
-                playerVictim.sendMessage(messages.rankIPVictim);
-                playerAttacker.sendMessage(messages.rankIPAttacker);
+                ChatUtils.sendMessage(playerVictim, messages.rankIPVictim);
+                ChatUtils.sendMessage(playerAttacker, messages.rankIPAttacker);
 
                 victimCache.clearDamage();
                 event.setDeathMessage(null);
@@ -290,7 +290,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             if (config.ignoreDisabledDeathMessages) {
                 for (Player player : event.getEntity().getWorld().getPlayers()) {
                     event.setDeathMessage(null);
-                    player.sendMessage(deathMessage);
+                    ChatUtils.sendMessage(player, deathMessage);
                 }
             }
             else {

@@ -81,7 +81,7 @@ public class PlayerChat extends AbstractFunnyListener {
             this.userManager.findByPlayer(looped)
                     .filter(user -> user.getCache().isSpy())
                     .peek(user -> {
-                        looped.sendMessage(spyMessage);
+                        user.sendMessage(spyMessage);
                     });
         }
     }
@@ -177,7 +177,7 @@ public class PlayerChat extends AbstractFunnyListener {
             member.getPlayer()
                     .filterNot(filterPlayer -> filterPlayer.equals(player))
                     .filterNot(filterPlayer -> member.getCache().isSpy())
-                    .peek(peekPlayer -> peekPlayer.sendMessage(message));
+                    .peek(peekPlayer -> member.sendMessage(message));
         }
     }
 

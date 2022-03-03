@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import panda.std.Option;
@@ -68,7 +69,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
                 return;
             }
             catch (ValidationException validatorException) {
-                validatorException.getValidationMessage().peek(player::sendMessage);
+                validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
             }
         }
     }

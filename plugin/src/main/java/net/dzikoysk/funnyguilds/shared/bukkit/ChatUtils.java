@@ -6,7 +6,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import panda.utilities.StringUtils;
 
 public final class ChatUtils {
@@ -88,6 +90,20 @@ public final class ChatUtils {
 
     public static String getPercent(double fraction) {
         return String.format(Locale.US, "%.1f", 100.0D * fraction);
+    }
+
+    public static void sendMessage(CommandSender sender, String message) {
+        if (message == null || message.isEmpty()) {
+            return;
+        }
+        sender.sendMessage(message);
+    }
+
+    public static void broadcastMessage(String message) {
+        if (message == null || message.isEmpty()) {
+            return;
+        }
+        Bukkit.broadcastMessage(message);
     }
 
 }

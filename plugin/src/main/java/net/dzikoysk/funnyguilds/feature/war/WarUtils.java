@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 
@@ -41,7 +42,7 @@ public final class WarUtils {
                 throw new IllegalArgumentException("Unknown magic number " + i);
         }
 
-        player.sendMessage(message);
+        ChatUtils.sendMessage(player, message);
     }
 
     public static String getWinMessage(Guild conqueror, Guild loser) {

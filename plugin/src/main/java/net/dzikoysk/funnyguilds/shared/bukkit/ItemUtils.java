@@ -49,6 +49,10 @@ public final class ItemUtils {
                 continue;
             }
 
+            if(messages.createItems.isEmpty()) {
+                return false;
+            }
+
             if (config.enableItemComponent) {
                 player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
             }
