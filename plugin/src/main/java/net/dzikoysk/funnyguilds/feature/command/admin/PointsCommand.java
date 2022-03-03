@@ -28,7 +28,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
             points = Integer.parseInt(args[1]);
         }
         catch (NumberFormatException numberFormatException) {
-            this.sendMessage(sender, (messages.adminErrorInNumber.replace("{ERROR}", args[1])));
+            sendMessage(sender, (messages.adminErrorInNumber.replace("{ERROR}", args[1])));
             return;
         }
 
@@ -51,7 +51,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
         message = message.replace("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, config.pointsFormat));
         message = message.replace("{POINTS}", String.valueOf(finalPoints));
 
-        this.sendMessage(sender, (message));
+        sendMessage(sender, (message));
     }
 
 }

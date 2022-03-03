@@ -47,7 +47,7 @@ public final class InfoCommand extends AbstractFunnyCommand {
             messageLine = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
                     .format(messageLine, Pair.of(ChatUtils.getLastColorBefore(messageLine, "<online>"), guild));
 
-            this.sendMessage(sender, (messageLine));
+            sendMessage(sender, (messageLine));
         }
     }
 

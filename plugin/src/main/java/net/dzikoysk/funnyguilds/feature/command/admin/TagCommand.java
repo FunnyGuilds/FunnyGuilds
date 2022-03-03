@@ -36,7 +36,7 @@ public final class TagCommand extends AbstractFunnyCommand {
 
         guild.setTag(tag);
 
-        this.sendMessage(sender, (messages.adminTagChanged
+        sendMessage(sender, (messages.adminTagChanged
                 .replace("{OLD_TAG}", oldTag)
                 .replace("{TAG}", guild.getTag())));
 

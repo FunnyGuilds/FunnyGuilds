@@ -39,7 +39,7 @@ public final class UnbanCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getName())
                 .register("{ADMIN}", sender.getName());
 
-        this.sendMessage(sender, (formatter.format(messages.adminGuildUnban)));
+        sendMessage(sender, (formatter.format(messages.adminGuildUnban)));
         Bukkit.broadcastMessage(formatter.format(messages.broadcastUnban));
     }
 

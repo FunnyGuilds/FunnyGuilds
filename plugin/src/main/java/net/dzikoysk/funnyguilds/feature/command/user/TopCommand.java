@@ -22,7 +22,7 @@ public final class TopCommand extends AbstractFunnyCommand {
 
         for (String messageLine : messages.topList) {
             String parsedRank = RankUtils.parseRank(user, messageLine);
-            this.sendMessage(sender, (parsedRank == null ? messageLine : parsedRank));
+            sendMessage(sender, (parsedRank == null ? messageLine : parsedRank));
         }
     }
 

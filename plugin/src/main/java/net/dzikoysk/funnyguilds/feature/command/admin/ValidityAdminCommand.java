@@ -29,7 +29,7 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
 
         long time = TimeUtils.parseTime(args[1]);
         if (time < 1) {
-            this.sendMessage(sender, (messages.adminTimeError));
+            sendMessage(sender, (messages.adminTimeError));
             return;
         }
 
@@ -47,7 +47,7 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         guild.setValidity(validity);
 
         String date = messages.dateFormat.format(new Date(validity));
-        this.sendMessage(sender, (messages.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", date)));
+        sendMessage(sender, (messages.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", date)));
     }
 
 }

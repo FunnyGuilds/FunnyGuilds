@@ -13,7 +13,7 @@ public final class MainCommand extends AbstractFunnyCommand {
     )
     public void execute(CommandSender sender) {
         for (String line : messages.adminHelpList) {
-            this.sendMessage(sender, (line));
+            sendMessage(sender, (line));
         }
     }
 

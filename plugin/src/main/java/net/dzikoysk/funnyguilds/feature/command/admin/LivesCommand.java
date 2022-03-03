@@ -29,7 +29,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
             lives = Integer.parseInt(args[1]);
         }
         catch (NumberFormatException e) {
-            this.sendMessage(sender, (messages.adminErrorInNumber.replace("{ERROR}", args[1])));
+            sendMessage(sender, (messages.adminErrorInNumber.replace("{ERROR}", args[1])));
             return;
         }
 
@@ -39,7 +39,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
         }
 
         guild.setLives(lives);
-        this.sendMessage(sender, (messages.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives))));
+        sendMessage(sender, (messages.adminLivesChanged.replace("{GUILD}", guild.getTag()).replace("{LIVES}", Integer.toString(lives))));
     }
 
 }
