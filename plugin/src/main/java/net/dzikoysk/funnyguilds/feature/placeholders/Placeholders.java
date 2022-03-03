@@ -41,7 +41,7 @@ public class Placeholders<T> {
 
         ONLINE = new Placeholders<String>()
                 .raw("<online>", () -> ChatColor.GREEN)
-                .raw("</online>", end -> end);
+                .raw("</online>", () -> ChatColor.GRAY);
 
         GUILD = new Placeholders<Guild>()
                 .property("GUILD", Guild::getName)

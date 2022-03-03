@@ -38,6 +38,10 @@ public final class InfoCommand extends AbstractFunnyCommand {
                         .map(Guild::getTag))
                 .orThrow(() -> new ValidationException(messages.infoTag));
 
+        if (!config.guildTagKeepCase) {
+            tag = config.guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
+        }
+
         Guild guild = GuildValidation.requireGuildByTag(tag);
         Formatter formatter = Placeholders.GUILD_ALL
                 .toFormatter(guild);
