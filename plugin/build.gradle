@@ -33,7 +33,7 @@ dependencies {
     shadow "org.apache.logging.log4j:log4j-core:2.17.2"
 
     // integrations
-    shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.5"
+    shadow "com.sk89q.worldguard:worldguard-bukkit:7.0.7"
     shadow "net.milkbowl.vault:VaultAPI:1.7"
     shadow "codecrafter47.bungeetablistplus:bungeetablistplus-api-bukkit:3.4.4"
     shadow("be.maximvdw:MVdWPlaceholderAPI:3.1.1-SNAPSHOT") {
