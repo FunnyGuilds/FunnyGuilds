@@ -15,7 +15,7 @@ public final class FunnyGuildsVersion {
 
     private static final String GH_COMMITS_URL = "https://api.github.com/repos/FunnyGuilds/FunnyGuilds/commits";
     private static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
-    private static final String NIGHTLY_VERSION_FILE_URL = "https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/master/updater.txt";
+    private static final String NIGHTLY_VERSION_FILE_URL = "https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/master/updater-nightly.txt";
     private static final String GITHUB_URL = "https://github.com/funnyguilds/funnyguilds";
     private static final String DISCORD_URL = "https://discord.com/invite/CYvyq3u";
 
