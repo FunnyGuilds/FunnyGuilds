@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
@@ -16,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class PlayerChat extends AbstractFunnyListener {
 
@@ -80,9 +82,7 @@ public class PlayerChat extends AbstractFunnyListener {
         for (Player looped : Bukkit.getOnlinePlayers()) {
             this.userManager.findByPlayer(looped)
                     .filter(user -> user.getCache().isSpy())
-                    .peek(user -> {
-                        user.sendMessage(spyMessage);
-                    });
+                    .peek(user -> user.sendMessage(spyMessage));
         }
     }
 
@@ -97,6 +97,8 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
                     StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
+
+            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
             String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
@@ -122,6 +124,8 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
                     StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
+
+            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
@@ -152,6 +156,8 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
                     StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player).getOrNull(), config)));
 
+            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
+
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
 
@@ -173,12 +179,9 @@ public class PlayerChat extends AbstractFunnyListener {
             return;
         }
 
-        for (User member : guild.getMembers()) {
-            member.getPlayer()
-                    .filterNot(filterPlayer -> filterPlayer.equals(player))
-                    .filterNot(filterPlayer -> member.getCache().isSpy())
-                    .peek(peekPlayer -> member.sendMessage(message));
-        }
+        PandaStream.of(guild.getMembers())
+                .filterNot(member -> member.getCache().isSpy())
+                .forEach(member -> member.sendMessage(message));
     }
 
     private String getPositionString(@Nullable User user, PluginConfiguration config) {
