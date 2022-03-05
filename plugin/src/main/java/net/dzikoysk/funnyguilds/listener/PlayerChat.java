@@ -98,13 +98,10 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
                     StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
 
-            resultMessage = HookUtils.replacePlaceholdersWithPlaceholderAPI(player, resultMessage);
-            resultMessage = HookUtils.replacePlaceholdersWithMVdWPlaceholderAPI(player, resultMessage);
+            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
             String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
-
-            System.out.println(resultMessage);
 
             this.spy(player, messageWithoutPrefix);
             this.sendMessageToGuild(guild, player, resultMessage);
@@ -128,8 +125,7 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
                     StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
 
-            resultMessage = HookUtils.replacePlaceholdersWithPlaceholderAPI(player, resultMessage);
-            resultMessage = HookUtils.replacePlaceholdersWithMVdWPlaceholderAPI(player, resultMessage);
+            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
@@ -160,8 +156,7 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
                     StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player).getOrNull(), config)));
 
-            resultMessage = HookUtils.replacePlaceholdersWithPlaceholderAPI(player, resultMessage);
-            resultMessage = HookUtils.replacePlaceholdersWithMVdWPlaceholderAPI(player, resultMessage);
+            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
             String subMessage = event.getMessage().substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
