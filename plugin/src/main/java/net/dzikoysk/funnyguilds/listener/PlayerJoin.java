@@ -40,6 +40,7 @@ public class PlayerJoin extends AbstractFunnyListener {
                 tablistConfig.playerListFillCells,
                 config.top.enableLegacyPlaceholders
         );
+        individualPlayerList.send();
 
         cache.setPlayerList(individualPlayerList);
         cache.updateScoreboardIfNull(player);
