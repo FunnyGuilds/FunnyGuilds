@@ -42,7 +42,7 @@ public class HologramUpdateHandler implements Runnable {
                         .map(formatter::format)
                         .map(ChatUtils::colored)
                         .map(line -> Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
-                                .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "<online>"), guild)))
+                                .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "\\{MEMBERS\\}"), guild)))
                         .toList();
 
                 Bukkit.getScheduler().runTask(plugin, () -> hologramManager.getOrCreateHologram(guild).peek(hologram -> {

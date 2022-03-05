@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import panda.utilities.StringUtils;
 
 public final class ChatUtils {
 
@@ -35,10 +34,6 @@ public final class ChatUtils {
     }
 
     public static String getLastColorBefore(String text, String before) {
-        if (!text.contains(before)) {
-            return StringUtils.EMPTY;
-        }
-
         return ChatColor.getLastColors(text.split(before)[0]);
     }
 
