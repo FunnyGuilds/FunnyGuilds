@@ -38,7 +38,7 @@ public class V1_18EntityAccessor implements EntityAccessor {
             spawnEntityPacket = new PacketPlayOutSpawnEntity(entity);
         }
 
-        return new FakeEntity(entity.ae(), spawnEntityPacket); // ae() zwraca aT czyli chyba getId
+        return new FakeEntity(entityType, location, entity.ae(), spawnEntityPacket); // ae() zwraca aT czyli chyba getId
     }
 
     @Override

@@ -16,12 +16,7 @@ import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-public class
-
-
-
-
-V1_12R1EntityAccessor implements EntityAccessor {
+public class V1_12R1EntityAccessor implements EntityAccessor {
 
     @Override
     public FakeEntity createFakeEntity(EntityType entityType, Location location) {
@@ -45,7 +40,7 @@ V1_12R1EntityAccessor implements EntityAccessor {
             spawnEntityPacket = new PacketPlayOutSpawnEntity(entity, ObjectType.getIdFor(entityType));
         }
 
-        return new FakeEntity(entity.getId(), spawnEntityPacket);
+        return new FakeEntity(entityType, location, entity.getId(), spawnEntityPacket);
     }
 
     @Override

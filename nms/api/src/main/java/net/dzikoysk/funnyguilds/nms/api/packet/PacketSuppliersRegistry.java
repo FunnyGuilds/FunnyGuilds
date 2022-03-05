@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
-import panda.std.Pair;
+import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 
 public class PacketSuppliersRegistry implements PacketSuppliers {
 
@@ -17,8 +15,8 @@ public class PacketSuppliersRegistry implements PacketSuppliers {
     }
 
     @Override
-    public Set<Pair<Location, EntityType>> supplyFakeEntities() {
-        Set<Pair<Location, EntityType>> suppliedEntities = new HashSet<>();
+    public Set<FakeEntity> supplyFakeEntities() {
+        Set<FakeEntity> suppliedEntities = new HashSet<>();
         for (PacketSuppliers packetSupplier : this.packetSuppliers) {
             suppliedEntities.addAll(packetSupplier.supplyFakeEntities());
         }

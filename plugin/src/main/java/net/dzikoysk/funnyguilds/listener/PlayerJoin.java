@@ -70,7 +70,7 @@ public class PlayerJoin extends AbstractFunnyListener {
             if (config.heart.createEntityType != null) {
                 this.regionManager.findRegionAtLocation(player.getLocation())
                         .map(Region::getGuild)
-                        .peek(guild -> GuildEntityHelper.spawnGuildHeart(guild, player));
+                        .peek(GuildEntityHelper::createGuildHeart);
             }
         }, 30L);
     }

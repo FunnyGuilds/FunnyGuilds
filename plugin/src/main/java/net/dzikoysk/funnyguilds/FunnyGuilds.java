@@ -393,7 +393,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         for (Guild guild : this.guildManager.getGuilds()) {
             if (this.pluginConfiguration.heart.createEntityType != null) {
-                GuildEntityHelper.spawnGuildHeart(guild);
+                GuildEntityHelper.createGuildHeart(guild);
             }
         }
     }

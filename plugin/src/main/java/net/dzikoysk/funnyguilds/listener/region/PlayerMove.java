@@ -66,7 +66,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             if (config.heart.createEntityType != null) {
-                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> GuildEntityHelper.despawnGuildHeart(guild, player), 40L);
+                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> GuildEntityHelper.createGuildHeart(guild), 40L);
                             }
 
                             Formatter formatter = new Formatter()
@@ -118,7 +118,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             cache.setEnter(true);
 
                             if (config.heart.createEntityType != null) {
-                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> GuildEntityHelper.spawnGuildHeart(guild, player), 40L);
+                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> GuildEntityHelper.createGuildHeart(guild), 40L);
                             }
 
                             Formatter formatter = new Formatter()

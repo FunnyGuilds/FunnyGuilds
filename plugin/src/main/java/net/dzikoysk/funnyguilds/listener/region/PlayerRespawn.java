@@ -35,7 +35,7 @@ public class PlayerRespawn extends AbstractFunnyListener {
                 .peek(home -> Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () ->
                         this.regionManager.findRegionAtLocation(home)
                                 .map(Region::getGuild)
-                                .peek(guildAtRegion -> GuildEntityHelper.spawnGuildHeart(guildAtRegion, player))
+                                .peek(GuildEntityHelper::createGuildHeart)
                 ));
     }
 }

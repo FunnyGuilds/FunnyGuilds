@@ -310,7 +310,7 @@ public class GuildManager {
                     });
         }
         else if (this.pluginConfiguration.heart.createEntityType != null) {
-            GuildEntityHelper.spawnGuildHeart(guild);
+            GuildEntityHelper.createGuildHeart(guild);
         }
     }
 
