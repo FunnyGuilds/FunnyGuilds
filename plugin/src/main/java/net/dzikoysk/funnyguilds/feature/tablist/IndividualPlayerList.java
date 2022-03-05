@@ -156,7 +156,8 @@ public class IndividualPlayerList {
         formatted = result.replaceInString(formatted);
         formatted = ChatUtils.colored(formatted);
 
-        formatted = HookUtils.replacePlaceholders(player, formatted);
+        formatted = HookUtils.replacePlaceholdersWithPlaceholderAPI(player, formatted);
+        formatted = HookUtils.replacePlaceholdersWithMVdWPlaceholderAPI(player, formatted);
 
         return formatted;
     }
