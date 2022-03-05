@@ -54,7 +54,7 @@ public final class FunnyGuildsVersion {
         });
     }
 
-    private Result<Version, VersionError> getLatestVersion() {
+    private Result<Version, String> getLatestVersion() {
         String latestRelease = IOUtils.getContent(VERSION_FILE_URL);
 
         if (funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
@@ -63,7 +63,7 @@ public final class FunnyGuildsVersion {
                 JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
 
                 if (ghCommits.size() == 0) {
-                    return Result.error(VersionError.NO_COMMITS);
+                    return Result.error("No commits found");
                 }
 
                 JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
@@ -82,12 +82,17 @@ public final class FunnyGuildsVersion {
             catch (Throwable th) {
                 FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
                 FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
-                return Result.error(VersionError.UNKNOWN_LATEST_NIGHTLY);
+                return Result.error("Unknown Nightly version");
             }
         }
         else {
             if (latestRelease == null) {
-                return Result.error(VersionError.UNKNOWN_LATEST_RELEASE);
+                return Result.error("Unknown latest release");
+            }
+
+            if (latestRelease.contains("Warning:")) {
+                FunnyGuilds.getPluginLogger().warning(latestRelease);
+                return Result.error(latestRelease);
             }
 
             if (mainVersion.equalsIgnoreCase(latestRelease)) {
