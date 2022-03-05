@@ -4,14 +4,14 @@ import org.bukkit.entity.Player;
 
 public final class HookUtils {
 
-    private HookUtils() { }
+    private HookUtils() {}
 
     public static String replacePlaceholders(Player userOne, Player userTwo, String message) {
         String finalMessage = message;
         message = HookManager.PLACEHOLDER_API
                 .map(api -> {
                     String replaceMessage = api.replacePlaceholders(userOne, finalMessage);
-                    if(userTwo != null) {
+                    if (userTwo != null) {
                         replaceMessage = api.replacePlaceholders(userOne, userTwo, replaceMessage);
                     }
                     return replaceMessage;
