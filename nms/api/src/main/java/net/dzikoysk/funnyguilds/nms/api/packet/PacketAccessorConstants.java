@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.nms.api.packet;
 
 public class PacketAccessorConstants {
-    public static final String FUNNY_GUILDS_HANDLER_ID = "FunnyGuilds";
+    public static final String FUNNY_GUILDS_IN_HANDLER_ID = "FunnyGuildsIn";
+    public static final String FUNNY_GUILDS_OUT_HANDLER_ID = "FunnyGuildsOut";
 }

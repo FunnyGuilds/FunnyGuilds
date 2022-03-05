@@ -1,5 +1,5 @@
 package net.dzikoysk.funnyguilds.nms.api.packet;
 
-public interface FunnyGuildsChannelHandler {
+public interface FunnyGuildsInboundChannelHandler {
     PacketCallbacksRegistry getPacketCallbacksRegistry();
 }

@@ -3,12 +3,12 @@ package net.dzikoysk.funnyguilds.nms.v1_10R1.packet;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.lang.reflect.Field;
-import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
 import net.minecraft.server.v1_10_R1.EnumHand;
 import net.minecraft.server.v1_10_R1.PacketPlayInUseEntity;
 
-public class V1_10R1FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsChannelHandler {
+public class V1_10R1FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
     private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
 
     private static final Field ENTITY_ID;

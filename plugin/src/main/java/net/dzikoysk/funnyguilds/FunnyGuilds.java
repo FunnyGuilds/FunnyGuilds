@@ -53,7 +53,8 @@ import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
-import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.v1_10R1.V1_10R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_11R1.V1_11R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_12R1.V1_12R1NmsAccessor;
@@ -354,7 +355,8 @@ public class FunnyGuilds extends JavaPlugin {
 
     private void handleReload() {
         for (Player player : this.getServer().getOnlinePlayers()) {
-            final FunnyGuildsChannelHandler channelHandler = nmsAccessor.getPacketAccessor().getOrInstallChannelHandler(player);
+            final FunnyGuildsInboundChannelHandler inboundChannelHandler = nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
+            final FunnyGuildsOutboundChannelHandler outboundChannelHandler = nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
 
             Option<User> userOption = userManager.findByPlayer(player);
 
@@ -364,7 +366,7 @@ public class FunnyGuilds extends JavaPlugin {
 
             User user = userOption.get();
 
-            channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(user));
+            inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(user));
 
             UserCache cache = user.getCache();
 

@@ -1,3 +1,6 @@
 dependencies {
+    // funnyguilds & panda utilities
+    api "org.panda-lang:expressible:1.1.16"
+
     shadow "org.spigotmc:spigot-api:1.8-R0.1-SNAPSHOT"
 }

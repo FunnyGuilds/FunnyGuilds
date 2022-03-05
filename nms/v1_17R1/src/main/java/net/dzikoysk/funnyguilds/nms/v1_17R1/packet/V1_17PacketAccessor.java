@@ -2,19 +2,19 @@ package net.dzikoysk.funnyguilds.nms.v1_17R1.packet;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelPipeline;
-import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_8R3.packet.GenericChannelHandlerInstaller;
+import net.dzikoysk.funnyguilds.nms.v1_8R3.packet.GenericInboundChannelHandlerInstaller;
 import net.minecraft.server.level.EntityPlayer;
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 public class V1_17PacketAccessor implements PacketAccessor {
 
-    private final GenericChannelHandlerInstaller channelHandlerInstaller = new GenericChannelHandlerInstaller(V1_17R1FunnyGuildsChannelHandler::new);
+    private final GenericInboundChannelHandlerInstaller channelHandlerInstaller = new GenericInboundChannelHandlerInstaller(V1_17R1FunnyGuildsChannelHandler::new);
 
     @Override
-    public FunnyGuildsChannelHandler getOrInstallChannelHandler(Player player) {
+    public FunnyGuildsInboundChannelHandler getOrInstallInboundChannelHandler(Player player) {
 
         final EntityPlayer entityPlayer = ((CraftPlayer) player).getHandle();
 
