@@ -35,10 +35,10 @@ public final class ChatUtils {
     }
 
     public static String getLastColorBefore(String text, String before) {
-        if (!text.matches(".*" + before + ".*")) {
+        if (!text.contains(before)) {
             return StringUtils.EMPTY;
         }
-        return ChatColor.getLastColors(text.split(before)[0]);
+        return ChatColor.getLastColors(StringUtils.split(text, before)[0]);
     }
 
     public static String toString(Collection<String> list, boolean send) {

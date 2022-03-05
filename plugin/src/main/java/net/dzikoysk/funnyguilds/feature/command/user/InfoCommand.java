@@ -49,7 +49,7 @@ public final class InfoCommand extends AbstractFunnyCommand {
         for (String messageLine : messages.infoList) {
             messageLine = formatter.format(messageLine);
             messageLine = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
-                    .format(messageLine, Pair.of(ChatUtils.getLastColorBefore(messageLine, "\\{MEMBERS\\}"), guild));
+                    .format(messageLine, Pair.of(ChatUtils.getLastColorBefore(messageLine, "{MEMBERS}"), guild));
 
             sendMessage(sender, (messageLine));
         }
