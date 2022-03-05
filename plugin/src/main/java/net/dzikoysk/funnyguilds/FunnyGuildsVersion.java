@@ -82,7 +82,7 @@ public final class FunnyGuildsVersion {
             catch (Throwable th) {
                 FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
                 FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
-                return Result.error("Unknown Nightly version");
+                return Result.error("Unknown latest Nightly");
             }
         }
         else {
