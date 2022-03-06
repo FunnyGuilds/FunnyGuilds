@@ -5,7 +5,6 @@ import io.netty.channel.ChannelPipeline;
 import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 
-import static net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessorConstants.FUNNY_GUILDS_IN_HANDLER_ID;
 import static net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessorConstants.FUNNY_GUILDS_OUT_HANDLER_ID;
 
 public class GenericOutboundChannelHandlerInstaller<T extends ChannelHandler & FunnyGuildsOutboundChannelHandler> {
@@ -31,7 +30,7 @@ public class GenericOutboundChannelHandlerInstaller<T extends ChannelHandler & F
 
         // this case handles /reload
         final T newChannelHandler = this.channelHandlerSupplier.get();
-        pipeline.replace(FUNNY_GUILDS_IN_HANDLER_ID, FUNNY_GUILDS_IN_HANDLER_ID, newChannelHandler);
+        pipeline.replace(FUNNY_GUILDS_OUT_HANDLER_ID, FUNNY_GUILDS_OUT_HANDLER_ID, newChannelHandler);
 
         return newChannelHandler;
     }

@@ -17,19 +17,15 @@ public class V1_12R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
         if (msg instanceof PacketPlayOutMapChunk) {
             PacketPlayOutMapChunk chunkPacket = (PacketPlayOutMapChunk) msg;
 
-            Field chunkXField = chunkPacket.getClass().getDeclaredField("a");
-            Field chunkZField = chunkPacket.getClass().getDeclaredField("b");
-            chunkXField.setAccessible(true);
-            chunkZField.setAccessible(true);
-            int xChunk = (int) chunkXField.get(chunkPacket);
-            int zChunk = (int) chunkZField.get(chunkPacket);
+            int[] mapChunkCoordinates = chunkCoordinates(chunkPacket);
 
             for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities()) {
                 Object spawnPacket = fakeEntity.getSpawnPacket();
 
-                int[] chunkCoordinates = fakeEntity.getChunkCoordinates();
+                int[] spawnChunkCoordinates = fakeEntity.getChunkCoordinates();
 
-                if(chunkCoordinates[0] != xChunk || chunkCoordinates[1] != zChunk) {
+                if(spawnChunkCoordinates[0] != mapChunkCoordinates[0]
+                        || spawnChunkCoordinates[1] != mapChunkCoordinates[1]) {
                     continue;
                 }
 
@@ -39,8 +35,20 @@ public class V1_12R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
         super.write(ctx, msg, promise);
     }
 
+    private int[] chunkCoordinates(PacketPlayOutMapChunk chunkPacket) throws NoSuchFieldException, IllegalAccessException {
+        Field chunkXField = chunkPacket.getClass().getDeclaredField("a");
+        Field chunkZField = chunkPacket.getClass().getDeclaredField("b");
+        chunkXField.setAccessible(true);
+        chunkZField.setAccessible(true);
+        int xChunk = (int) chunkXField.get(chunkPacket);
+        int zChunk = (int) chunkZField.get(chunkPacket);
+
+        return new int[] {xChunk, zChunk};
+    }
+
     @Override
     public PacketSuppliersRegistry getPacketSuppliersRegistry() {
         return packetSuppliersRegistry;
     }
+
 }
