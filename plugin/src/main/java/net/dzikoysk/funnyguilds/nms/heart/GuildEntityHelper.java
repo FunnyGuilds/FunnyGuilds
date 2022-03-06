@@ -28,7 +28,7 @@ public class GuildEntityHelper {
     }
 
     public void createGuildEntity(Guild guild) {
-        if(this.pluginConfiguration.heart.createEntityType == null) {
+        if (this.pluginConfiguration.heart.createEntityType == null) {
             return;
         }
 
