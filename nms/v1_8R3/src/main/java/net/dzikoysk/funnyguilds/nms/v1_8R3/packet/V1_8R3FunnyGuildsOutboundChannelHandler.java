@@ -61,8 +61,8 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
 
             int[] spawnChunkCoordinates = fakeEntity.getChunkCoordinates();
 
-            if (spawnChunkCoordinates[0] != chunkCoordinates[0]
-                    || spawnChunkCoordinates[1] != chunkCoordinates[1]) {
+            if (spawnChunkCoordinates[0] != chunkCoordinates[0] ||
+                    spawnChunkCoordinates[1] != chunkCoordinates[1]) {
                 continue;
             }
 

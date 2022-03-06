@@ -2,25 +2,21 @@ package net.dzikoysk.funnyguilds.nms.api.entity;
 
 import java.util.Objects;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
 
 public class FakeEntity {
 
-    private final EntityType entityType;
-    private final Location location;
-
     private final int id;
+    private final Location location;
     private final Object spawnPacket;
 
-    public FakeEntity(EntityType entityType, Location location, int id, Object spawnPacket) {
-        this.entityType = entityType;
-        this.location = location;
+    public FakeEntity(int id, Location location, Object spawnPacket) {
         this.id = id;
+        this.location = location;
         this.spawnPacket = spawnPacket;
     }
 
-    public EntityType getEntityType() {
-        return entityType;
+    public int getId() {
+        return this.id;
     }
 
     public Location getLocation() {
@@ -29,10 +25,6 @@ public class FakeEntity {
 
     public int[] getChunkCoordinates() {
         return new int[] {location.getBlockX() >> 4, location.getBlockZ() >> 4};
-    }
-
-    public int getId() {
-        return this.id;
     }
 
     public Object getSpawnPacket() {
