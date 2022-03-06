@@ -1,14 +1,13 @@
-package net.dzikoysk.funnyguilds.nms.v1_13R2.packet;
+package net.dzikoysk.funnyguilds.nms.v1_8R3.packet;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.lang.reflect.Field;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
-import net.minecraft.server.v1_13_R2.EnumHand;
-import net.minecraft.server.v1_13_R2.PacketPlayInUseEntity;
+import net.minecraft.server.v1_8_R3.PacketPlayInUseEntity;
 
-public class V1_13R2FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
+public class V1_8R3FunnyGuildsInboundChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
     private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
 
     private static final Field ENTITY_ID;
@@ -20,7 +19,7 @@ public class V1_13R2FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapt
 
         }
         catch (final NoSuchFieldException e) {
-            throw new RuntimeException("Failed to initialise V1_13R2FunnyGuildsChannelHandler", e);
+            throw new RuntimeException("Failed to initialise V1_8R3FunnyGuildsChannelHandler", e);
         }
     }
 
@@ -31,13 +30,12 @@ public class V1_13R2FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapt
 
             final int entityId = (int) ENTITY_ID.get(packetPlayInUseEntity);
 
-            final PacketPlayInUseEntity.EnumEntityUseAction action = packetPlayInUseEntity.b();
+            final PacketPlayInUseEntity.EnumEntityUseAction action = packetPlayInUseEntity.a();
             if (action == PacketPlayInUseEntity.EnumEntityUseAction.ATTACK) {
                 this.packetCallbacksRegistry.handleAttackEntity(entityId, true);
             }
             else if (action == PacketPlayInUseEntity.EnumEntityUseAction.INTERACT_AT) {
-                final boolean isMainHand = packetPlayInUseEntity.c() == EnumHand.MAIN_HAND;
-                this.packetCallbacksRegistry.handleRightClickEntity(entityId, isMainHand);
+                this.packetCallbacksRegistry.handleRightClickEntity(entityId, true);
             }
         }
 

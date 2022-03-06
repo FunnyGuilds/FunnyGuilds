@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
 import net.minecraft.server.v1_14_R1.EnumHand;
 import net.minecraft.server.v1_14_R1.PacketPlayInUseEntity;
 
-public class V1_14R1FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
+public class V1_14R1FunnyGuildsInboundChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
     private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
 
     private static final Field ENTITY_ID;

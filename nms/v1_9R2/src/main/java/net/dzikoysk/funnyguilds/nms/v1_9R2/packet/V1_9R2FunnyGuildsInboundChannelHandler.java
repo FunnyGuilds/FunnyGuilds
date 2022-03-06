@@ -1,14 +1,14 @@
-package net.dzikoysk.funnyguilds.nms.v1_11R1.packet;
+package net.dzikoysk.funnyguilds.nms.v1_9R2.packet;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import java.lang.reflect.Field;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketCallbacksRegistry;
-import net.minecraft.server.v1_11_R1.EnumHand;
-import net.minecraft.server.v1_11_R1.PacketPlayInUseEntity;
+import net.minecraft.server.v1_9_R2.EnumHand;
+import net.minecraft.server.v1_9_R2.PacketPlayInUseEntity;
 
-public class V1_11R1FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
+public class V1_9R2FunnyGuildsInboundChannelHandler extends ChannelInboundHandlerAdapter implements FunnyGuildsInboundChannelHandler {
     private final PacketCallbacksRegistry packetCallbacksRegistry = new PacketCallbacksRegistry();
 
     private static final Field ENTITY_ID;
@@ -20,7 +20,7 @@ public class V1_11R1FunnyGuildsChannelHandler extends ChannelInboundHandlerAdapt
 
         }
         catch (final NoSuchFieldException e) {
-            throw new RuntimeException("Failed to initialise V1_11R1FunnyGuildsChannelHandler", e);
+            throw new RuntimeException("Failed to initialise V1_9R1FunnyGuildsChannelHandler", e);
         }
     }
 

@@ -11,8 +11,8 @@ import org.bukkit.entity.Player;
 
 public class V1_8R3PacketAccessor implements PacketAccessor {
 
-    private final GenericInboundChannelHandlerInstaller channelHandlerInstaller = new GenericInboundChannelHandlerInstaller(V1_8R3FunnyGuildsChannelHandler::new);
-    private final GenericOutboundChannelHandlerInstaller channelHandlerInstallerOut = new GenericOutboundChannelHandlerInstaller(V1_8R3FunnyGuildsChannelHandler::new);
+    private final GenericInboundChannelHandlerInstaller inboundChannelHandlerInstaller = new GenericInboundChannelHandlerInstaller(V1_8R3FunnyGuildsInboundChannelHandler::new);
+    private final GenericOutboundChannelHandlerInstaller outboundChannelHandlerInstaller = new GenericOutboundChannelHandlerInstaller(V1_8R3FunnyGuildsOutboundChannelHandler::new);
 
     @Override
     public FunnyGuildsInboundChannelHandler getOrInstallInboundChannelHandler(Player player) {
@@ -21,7 +21,7 @@ public class V1_8R3PacketAccessor implements PacketAccessor {
         final Channel channel = entityPlayer.playerConnection.networkManager.channel;
         final ChannelPipeline pipeline = channel.pipeline();
 
-        return this.channelHandlerInstaller.installChannelHandlerInPipeline(pipeline);
+        return this.inboundChannelHandlerInstaller.installChannelHandlerPipeline(pipeline);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class V1_8R3PacketAccessor implements PacketAccessor {
         final Channel channel = entityPlayer.playerConnection.networkManager.channel;
         final ChannelPipeline pipeline = channel.pipeline();
 
-        return null;
+        return this.outboundChannelHandlerInstaller.installChannelHandlerPipeline(pipeline);
     }
 
 }
