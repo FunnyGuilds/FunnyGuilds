@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketSuppliersRegistry;
 import net.minecraft.server.v1_12_R1.PacketPlayOutMapChunk;
-import org.bukkit.Chunk;
 
 public class V1_12R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHandlerAdapter implements FunnyGuildsOutboundChannelHandler {
     private final PacketSuppliersRegistry packetSuppliersRegistry = new PacketSuppliersRegistry();
@@ -27,9 +26,10 @@ public class V1_12R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
 
             for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities()) {
                 Object spawnPacket = fakeEntity.getSpawnPacket();
-                Chunk spawnChunk = fakeEntity.getLocation().getChunk();
 
-                if(spawnChunk.getX() != xChunk || spawnChunk.getZ() != zChunk) {
+                int[] chunkCoordinates = fakeEntity.getChunkCoordinates();
+
+                if(chunkCoordinates[0] != xChunk || chunkCoordinates[1] != zChunk) {
                     continue;
                 }
 

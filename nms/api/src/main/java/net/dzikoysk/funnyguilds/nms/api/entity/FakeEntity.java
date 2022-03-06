@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 
 public class FakeEntity {
+
     private final EntityType entityType;
     private final Location location;
 
@@ -24,6 +25,10 @@ public class FakeEntity {
 
     public Location getLocation() {
         return location;
+    }
+
+    public int[] getChunkCoordinates() {
+        return new int[] {location.getBlockX() >> 4, location.getBlockZ() >> 4};
     }
 
     public int getId() {
@@ -50,4 +55,5 @@ public class FakeEntity {
     public int hashCode() {
         return Objects.hash(this.id);
     }
+
 }
