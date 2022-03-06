@@ -10,8 +10,8 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
+import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
@@ -21,16 +21,19 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
 
     private InfoCommand infoExecutor;
 
+    private final GuildEntityHelper guildEntityHelper;
+
     private final User user;
     private final int entityId;
 
-    public WarInfoRequest(FunnyGuilds plugin, User user, int entityId) {
+    public WarInfoRequest(FunnyGuilds plugin, GuildEntityHelper guildEntityHelper, User user, int entityId) {
         try {
             this.infoExecutor = plugin.getInjector().newInstanceWithFields(InfoCommand.class);
         }
         catch (Throwable throwable) {
             FunnyGuilds.getPluginLogger().error("An error occurred while creating war info request", throwable);
         }
+        this.guildEntityHelper = guildEntityHelper;
 
         this.user = user;
         this.entityId = entityId;
@@ -38,7 +41,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        for (Map.Entry<Guild, FakeEntity> entry : GuildEntityHelper.getGuildEntities().entrySet()) {
+        for (Map.Entry<Guild, FakeEntity> entry : this.guildEntityHelper.getGuildEntities().entrySet()) {
             if (entry.getValue().getId() != entityId) {
                 continue;
             }

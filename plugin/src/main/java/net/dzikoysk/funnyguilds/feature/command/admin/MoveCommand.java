@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -57,7 +56,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         Region region = guild.getRegion()
                 .peek(peekRegion -> {
                     if (heartConfig.createEntityType != null) {
-                        GuildEntityHelper.despawnGuildHeart(guild);
+                        plugin.getGuildEntityHelper().despawnGuildEntity(guild);
                     }
                     else if (heartConfig.createMaterial != null && heartConfig.createMaterial.getLeft() != Material.AIR) {
                         peekRegion.getHeartBlock()
@@ -79,7 +78,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             }
         }
 
-        this.guildManager.spawnHeart(guild);
+        plugin.getGuildEntityHelper().createGuildEntity(guild);
         admin.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
 

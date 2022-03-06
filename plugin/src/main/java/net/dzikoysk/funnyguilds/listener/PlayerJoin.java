@@ -5,11 +5,9 @@ import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePl
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
-import net.dzikoysk.funnyguilds.nms.HeartSupplier;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
+import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.entity.Player;
@@ -60,18 +58,12 @@ public class PlayerJoin extends AbstractFunnyListener {
         );
 
         final FunnyGuildsInboundChannelHandler inboundChannelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallInboundChannelHandler(player);
-        inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(user));
+        inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
         final FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallOutboundChannelHandler(player);
-        outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new HeartSupplier());
+        outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.plugin.getGuildEntityHelper()));
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             this.plugin.getVersion().isNewAvailable(player, false);
-
-            if (config.heart.createEntityType != null) {
-                this.regionManager.findRegionAtLocation(player.getLocation())
-                        .map(Region::getGuild)
-                        .peek(GuildEntityHelper::createGuildHeart);
-            }
         }, 30L);
     }
 

@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -65,10 +64,6 @@ public class PlayerMove extends AbstractFunnyListener {
                                 return;
                             }
 
-                            if (config.heart.createEntityType != null) {
-                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> GuildEntityHelper.createGuildHeart(guild), 40L);
-                            }
-
                             Formatter formatter = new Formatter()
                                     .register("{GUILD}", guild.getName())
                                     .register("{TAG}", guild.getTag());
@@ -116,10 +111,6 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             cache.setEnter(true);
-
-                            if (config.heart.createEntityType != null) {
-                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> GuildEntityHelper.createGuildHeart(guild), 40L);
-                            }
 
                             Formatter formatter = new Formatter()
                                     .register("{GUILD}", guild.getName())

@@ -20,7 +20,6 @@ import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
@@ -48,13 +47,13 @@ import net.dzikoysk.funnyguilds.listener.region.HangingPlace;
 import net.dzikoysk.funnyguilds.listener.region.PlayerCommand;
 import net.dzikoysk.funnyguilds.listener.region.PlayerInteract;
 import net.dzikoysk.funnyguilds.listener.region.PlayerMove;
-import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
 import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
+import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
 import net.dzikoysk.funnyguilds.nms.v1_10R1.V1_10R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_11R1.V1_11R1NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_12R1.V1_12R1NmsAccessor;
@@ -112,7 +111,9 @@ public class FunnyGuilds extends JavaPlugin {
     private UserRankManager userRankManager;
     private GuildRankManager guildRankManager;
     private RegionManager regionManager;
+
     private NmsAccessor nmsAccessor;
+    private GuildEntityHelper guildEntityHelper;
 
     private DataModel dataModel;
     private DataPersistenceHandler dataPersistenceHandler;
@@ -149,8 +150,6 @@ public class FunnyGuilds extends JavaPlugin {
             this.getDataFolder().mkdir();
         }
 
-        this.nmsAccessor = this.prepareNmsAccessor();
-
         try {
             ConfigurationFactory configurationFactory = new ConfigurationFactory();
             this.messageConfiguration = configurationFactory.createMessageConfiguration(messageConfigurationFile);
@@ -162,6 +161,9 @@ public class FunnyGuilds extends JavaPlugin {
             shutdown("Critical error has been encountered!");
             return;
         }
+
+        this.nmsAccessor = this.prepareNmsAccessor();
+        this.guildEntityHelper = new GuildEntityHelper(this.pluginConfiguration, this.nmsAccessor);
 
         DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
         descriptionChanger.rename(pluginConfiguration.pluginName);
@@ -289,7 +291,6 @@ public class FunnyGuilds extends JavaPlugin {
 
             this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, this.injector.newInstanceWithFields(PlayerMove.class));
             this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, this.injector.newInstanceWithFields(BlockPhysics.class));
-            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, this.injector.newInstanceWithFields(PlayerRespawn.class));
             this.dynamicListenerManager.reloadAll();
         }
         catch (Throwable throwable) {
@@ -321,7 +322,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.funnyCommands.dispose();
         this.dynamicListenerManager.unregisterAll();
-        GuildEntityHelper.despawnGuildHearts();
+        this.guildEntityHelper.despawnGuildEntities(this.guildManager);
 
         this.guildValidationTask.cancel();
         this.tablistBroadcastTask.cancel();
@@ -359,14 +360,13 @@ public class FunnyGuilds extends JavaPlugin {
             final FunnyGuildsOutboundChannelHandler outboundChannelHandler = nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
 
             Option<User> userOption = userManager.findByPlayer(player);
-
             if (userOption.isEmpty()) {
                 continue;
             }
-
             User user = userOption.get();
 
-            inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(user));
+            inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
+            outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
             UserCache cache = user.getCache();
 
@@ -391,11 +391,7 @@ public class FunnyGuilds extends JavaPlugin {
             cache.setPlayerList(individualPlayerList);
         }
 
-        for (Guild guild : this.guildManager.getGuilds()) {
-            if (this.pluginConfiguration.heart.createEntityType != null) {
-                GuildEntityHelper.createGuildHeart(guild);
-            }
-        }
+        this.guildEntityHelper.createGuildsEntities(this.guildManager);
     }
 
     public boolean isDisabling() {
@@ -472,6 +468,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public NmsAccessor getNmsAccessor() {
         return this.nmsAccessor;
+    }
+
+    public GuildEntityHelper getGuildEntityHelper() {
+        return guildEntityHelper;
     }
 
     public Injector getInjector() {
