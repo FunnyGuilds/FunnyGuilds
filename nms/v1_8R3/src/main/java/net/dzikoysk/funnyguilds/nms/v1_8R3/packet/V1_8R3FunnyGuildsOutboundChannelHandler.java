@@ -20,7 +20,8 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
         if (msg instanceof PacketPlayOutMapChunk) {
             writeFakeEntities(ctx, chunkCoordinates((PacketPlayOutMapChunk) msg));
-        } else if (msg instanceof PacketPlayOutMapChunkBulk) {
+        }
+        else if (msg instanceof PacketPlayOutMapChunkBulk) {
             for (int[] chunkCoordinates : chunksCoordinates((PacketPlayOutMapChunkBulk) msg)) {
                 writeFakeEntities(ctx, chunkCoordinates);
             }
@@ -44,8 +45,8 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
         Field chunksZField = chunkBulkPacket.getClass().getDeclaredField("b");
         chunksXField.setAccessible(true);
         chunksZField.setAccessible(true);
-        int[]xChunks = (int[]) chunksXField.get(chunkBulkPacket);
-        int[]zChunks = (int[]) chunksZField.get(chunkBulkPacket);
+        int[] xChunks = (int[]) chunksXField.get(chunkBulkPacket);
+        int[] zChunks = (int[]) chunksZField.get(chunkBulkPacket);
 
         HashSet<int[]> chunksCoordinates = new HashSet<>();
         for (int i = 0; i < xChunks.length; i++) {
@@ -60,7 +61,7 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
 
             int[] spawnChunkCoordinates = fakeEntity.getChunkCoordinates();
 
-            if(spawnChunkCoordinates[0] != chunkCoordinates[0]
+            if (spawnChunkCoordinates[0] != chunkCoordinates[0]
                     || spawnChunkCoordinates[1] != chunkCoordinates[1]) {
                 continue;
             }
