@@ -308,10 +308,10 @@ public class GuildManager {
                         heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
                         BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
                     });
+            return;
         }
-        else {
-            guildEntityHelper.createGuildEntity(guild);
-        }
+
+        guildEntityHelper.createGuildEntity(guild);
     }
 
 }
