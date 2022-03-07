@@ -134,12 +134,7 @@ public class Guild extends AbstractMutableEntity {
 
     public void setRegion(@Nullable Region region) {
         this.region = Option.of(region);
-
-        this.region.peek(peekRegion -> {
-            peekRegion.setGuild(this);
-            this.home = Option.of(peekRegion.getCenter().clone());
-        });
-
+        this.region.peek(peekRegion -> peekRegion.setGuild(this));
         this.markChanged();
     }
 
