@@ -35,6 +35,10 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return PlaceholderAPI.setPlaceholders(user, base);
     }
 
+    public String replacePlaceholders(Player userOne, Player userTwo, String base) {
+        return PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base);
+    }
+
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
 
         private final FunnyGuilds plugin;
