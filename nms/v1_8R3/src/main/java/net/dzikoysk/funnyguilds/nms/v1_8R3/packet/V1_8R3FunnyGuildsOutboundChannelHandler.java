@@ -56,17 +56,8 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
     }
 
     private void writeFakeEntities(ChannelHandlerContext ctx, int[] chunkCoordinates) {
-        for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities()) {
-            Object spawnPacket = fakeEntity.getSpawnPacket();
-
-            int[] spawnChunkCoordinates = fakeEntity.getChunkCoordinates();
-
-            if (spawnChunkCoordinates[0] != chunkCoordinates[0] ||
-                    spawnChunkCoordinates[1] != chunkCoordinates[1]) {
-                continue;
-            }
-
-            ctx.write(spawnPacket);
+        for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunkCoordinates)) {
+            ctx.write(fakeEntity.getSpawnPacket());
         }
     }
 

@@ -15,11 +15,12 @@ public class PacketSuppliersRegistry implements PacketSuppliers {
     }
 
     @Override
-    public Set<FakeEntity> supplyFakeEntities() {
+    public Set<FakeEntity> supplyFakeEntities(int[] chunkCoordinates) {
         Set<FakeEntity> suppliedEntities = new HashSet<>();
         for (PacketSuppliers packetSupplier : this.packetSuppliers) {
-            suppliedEntities.addAll(packetSupplier.supplyFakeEntities());
+            suppliedEntities.addAll(packetSupplier.supplyFakeEntities(chunkCoordinates));
         }
         return suppliedEntities;
     }
+
 }

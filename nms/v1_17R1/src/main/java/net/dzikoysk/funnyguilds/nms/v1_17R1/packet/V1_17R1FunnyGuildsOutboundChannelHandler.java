@@ -18,19 +18,8 @@ public class V1_17R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
         if (msg instanceof PacketPlayOutMapChunk) {
             PacketPlayOutMapChunk chunkPacket = (PacketPlayOutMapChunk) msg;
 
-            int[] mapChunkCoordinates = chunkCoordinates(chunkPacket);
-
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities()) {
-                Object spawnPacket = fakeEntity.getSpawnPacket();
-
-                int[] spawnChunkCoordinates = fakeEntity.getChunkCoordinates();
-
-                if (spawnChunkCoordinates[0] != mapChunkCoordinates[0] ||
-                        spawnChunkCoordinates[1] != mapChunkCoordinates[1]) {
-                    continue;
-                }
-
-                ctx.write(spawnPacket);
+            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunkCoordinates(chunkPacket))) {
+                ctx.write(fakeEntity.getSpawnPacket());
             }
         }
         super.write(ctx, msg, promise);

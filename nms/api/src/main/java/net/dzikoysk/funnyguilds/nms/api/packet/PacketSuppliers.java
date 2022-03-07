@@ -5,6 +5,6 @@ import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 
 public interface PacketSuppliers {
 
-    Collection<FakeEntity> supplyFakeEntities();
+    Collection<FakeEntity> supplyFakeEntities(int[] chunkCoordinates);
 
 }
