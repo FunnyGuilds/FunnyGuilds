@@ -15,7 +15,7 @@ public class GenericOutboundChannelHandlerInstaller<T extends ChannelHandler & F
         this.channelHandlerSupplier = channelHandlerSupplier;
     }
 
-    public FunnyGuildsOutboundChannelHandler installChannelHandlerPipeline(ChannelPipeline pipeline) {
+    public FunnyGuildsOutboundChannelHandler installChannelHandlerOutPipeline(ChannelPipeline pipeline) {
         final ChannelHandler oldChannelHandler = pipeline.get(FUNNY_GUILDS_OUT_HANDLER_ID);
         if (oldChannelHandler == null) {
             final T newChannelHandler = this.channelHandlerSupplier.get();

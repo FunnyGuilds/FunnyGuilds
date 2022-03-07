@@ -21,7 +21,7 @@ public class V1_8R3PacketAccessor implements PacketAccessor {
         final Channel channel = entityPlayer.playerConnection.networkManager.channel;
         final ChannelPipeline pipeline = channel.pipeline();
 
-        return this.inboundChannelHandlerInstaller.installChannelHandlerPipeline(pipeline);
+        return this.inboundChannelHandlerInstaller.installChannelHandlerInPipeline(pipeline);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class V1_8R3PacketAccessor implements PacketAccessor {
         final Channel channel = entityPlayer.playerConnection.networkManager.channel;
         final ChannelPipeline pipeline = channel.pipeline();
 
-        return this.outboundChannelHandlerInstaller.installChannelHandlerPipeline(pipeline);
+        return this.outboundChannelHandlerInstaller.installChannelHandlerOutPipeline(pipeline);
     }
 
 }
