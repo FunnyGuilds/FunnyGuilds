@@ -4,8 +4,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashSet;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketSuppliersRegistry;
@@ -16,49 +14,53 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
 
     private final PacketSuppliersRegistry packetSuppliersRegistry = new PacketSuppliersRegistry();
 
+    private static final Field CHUNK_X_FIELD;
+    private static final Field CHUNK_Z_FIELD;
+    private static final Field CHUNK_X_BULK_FIELD;
+    private static final Field CHUNK_Z_BULK_FIELD;
+
+    static {
+        try {
+            CHUNK_X_FIELD = PacketPlayOutMapChunk.class.getDeclaredField("a");
+            CHUNK_X_FIELD.setAccessible(true);
+            CHUNK_Z_FIELD = PacketPlayOutMapChunk.class.getDeclaredField("b");
+            CHUNK_Z_FIELD.setAccessible(true);
+            CHUNK_X_BULK_FIELD = PacketPlayOutMapChunkBulk.class.getDeclaredField("a");
+            CHUNK_X_BULK_FIELD.setAccessible(true);
+            CHUNK_Z_BULK_FIELD = PacketPlayOutMapChunkBulk.class.getDeclaredField("b");
+            CHUNK_Z_BULK_FIELD.setAccessible(true);
+        }
+        catch (NoSuchFieldException ex) {
+            throw new RuntimeException("Failed to initialise V1_9R2FunnyGuildsOutboundChannelHandler", ex);
+        }
+    }
+
+
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
         if (msg instanceof PacketPlayOutMapChunk) {
-            writeFakeEntities(ctx, chunkCoordinates((PacketPlayOutMapChunk) msg));
+            PacketPlayOutMapChunk chunkPacket = (PacketPlayOutMapChunk) msg;
+
+            int xChunk = (int) CHUNK_X_FIELD.get(chunkPacket);
+            int zChunk = (int) CHUNK_Z_FIELD.get(chunkPacket);
+
+            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(new int[] {xChunk, zChunk})) {
+                ctx.write(fakeEntity.getSpawnPacket());
+            }
         }
         else if (msg instanceof PacketPlayOutMapChunkBulk) {
-            for (int[] chunkCoordinates : chunksCoordinates((PacketPlayOutMapChunkBulk) msg)) {
-                writeFakeEntities(ctx, chunkCoordinates);
+            PacketPlayOutMapChunkBulk chunkPacket = (PacketPlayOutMapChunkBulk) msg;
+
+            int[] xChunks = (int[]) CHUNK_X_BULK_FIELD.get(chunkPacket);
+            int[] zChunks = (int[]) CHUNK_Z_BULK_FIELD.get(chunkPacket);
+
+            for (int i = 0; i < xChunks.length; i++) {
+                for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(new int[]{xChunks[i], zChunks[i]})) {
+                    ctx.write(fakeEntity.getSpawnPacket());
+                }
             }
         }
         super.write(ctx, msg, promise);
-    }
-
-    private int[] chunkCoordinates(PacketPlayOutMapChunk chunkPacket) throws NoSuchFieldException, IllegalAccessException {
-        Field chunkXField = chunkPacket.getClass().getDeclaredField("a");
-        Field chunkZField = chunkPacket.getClass().getDeclaredField("b");
-        chunkXField.setAccessible(true);
-        chunkZField.setAccessible(true);
-        int xChunk = (int) chunkXField.get(chunkPacket);
-        int zChunk = (int) chunkZField.get(chunkPacket);
-
-        return new int[] {xChunk, zChunk};
-    }
-
-    private Collection<int[]> chunksCoordinates(PacketPlayOutMapChunkBulk chunkBulkPacket) throws NoSuchFieldException, IllegalAccessException {
-        Field chunksXField = chunkBulkPacket.getClass().getDeclaredField("a");
-        Field chunksZField = chunkBulkPacket.getClass().getDeclaredField("b");
-        chunksXField.setAccessible(true);
-        chunksZField.setAccessible(true);
-        int[] xChunks = (int[]) chunksXField.get(chunkBulkPacket);
-        int[] zChunks = (int[]) chunksZField.get(chunkBulkPacket);
-
-        HashSet<int[]> chunksCoordinates = new HashSet<>();
-        for (int i = 0; i < xChunks.length; i++) {
-            chunksCoordinates.add(new int[] {xChunks[i], zChunks[i]});
-        }
-        return chunksCoordinates;
-    }
-
-    private void writeFakeEntities(ChannelHandlerContext ctx, int[] chunkCoordinates) {
-        for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunkCoordinates)) {
-            ctx.write(fakeEntity.getSpawnPacket());
-        }
     }
 
     @Override

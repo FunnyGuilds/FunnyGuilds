@@ -13,27 +13,34 @@ public class V1_11R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
 
     private final PacketSuppliersRegistry packetSuppliersRegistry = new PacketSuppliersRegistry();
 
+    private static final Field CHUNK_X_FIELD;
+    private static final Field CHUNK_Z_FIELD;
+
+    static {
+        try {
+            CHUNK_X_FIELD = PacketPlayOutMapChunk.class.getDeclaredField("a");
+            CHUNK_X_FIELD.setAccessible(true);
+            CHUNK_Z_FIELD = PacketPlayOutMapChunk.class.getDeclaredField("b");
+            CHUNK_Z_FIELD.setAccessible(true);
+        }
+        catch (NoSuchFieldException ex) {
+            throw new RuntimeException("Failed to initialise V1_11R1FunnyGuildsOutboundChannelHandler", ex);
+        }
+    }
+
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
         if (msg instanceof PacketPlayOutMapChunk) {
             PacketPlayOutMapChunk chunkPacket = (PacketPlayOutMapChunk) msg;
 
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunkCoordinates(chunkPacket))) {
+            int xChunk = (int) CHUNK_X_FIELD.get(chunkPacket);
+            int zChunk = (int) CHUNK_Z_FIELD.get(chunkPacket);
+
+            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(new int[] {xChunk, zChunk})) {
                 ctx.write(fakeEntity.getSpawnPacket());
             }
         }
         super.write(ctx, msg, promise);
-    }
-
-    private int[] chunkCoordinates(PacketPlayOutMapChunk chunkPacket) throws NoSuchFieldException, IllegalAccessException {
-        Field chunkXField = chunkPacket.getClass().getDeclaredField("a");
-        Field chunkZField = chunkPacket.getClass().getDeclaredField("b");
-        chunkXField.setAccessible(true);
-        chunkZField.setAccessible(true);
-        int xChunk = (int) chunkXField.get(chunkPacket);
-        int zChunk = (int) chunkZField.get(chunkPacket);
-
-        return new int[] {xChunk, zChunk};
     }
 
     @Override
