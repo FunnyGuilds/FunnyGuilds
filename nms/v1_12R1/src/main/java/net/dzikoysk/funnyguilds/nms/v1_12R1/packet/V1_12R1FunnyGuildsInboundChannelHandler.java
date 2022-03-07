@@ -32,7 +32,6 @@ public class V1_12R1FunnyGuildsInboundChannelHandler extends ChannelInboundHandl
             final int entityId = (int) ENTITY_ID.get(packetPlayInUseEntity);
 
             final PacketPlayInUseEntity.EnumEntityUseAction action = packetPlayInUseEntity.a();
-
             if (action == PacketPlayInUseEntity.EnumEntityUseAction.ATTACK) {
                 this.packetCallbacksRegistry.handleAttackEntity(entityId, true);
             }
