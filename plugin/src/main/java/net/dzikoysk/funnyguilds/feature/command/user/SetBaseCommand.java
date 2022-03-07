@@ -44,7 +44,7 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
             for (int y = location.getBlockY(); y > 0; y--) {
                 location.setY(y);
 
-                if (location.getBlock().getType() != Material.AIR) {
+                if (location.getBlock().getRelative(BlockFace.DOWN).getType() != Material.AIR) {
                     break;
                 }
             }
