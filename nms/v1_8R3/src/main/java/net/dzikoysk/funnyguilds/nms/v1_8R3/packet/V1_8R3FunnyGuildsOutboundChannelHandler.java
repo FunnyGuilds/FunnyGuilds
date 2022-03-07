@@ -44,7 +44,7 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
             int xChunk = (int) CHUNK_X_FIELD.get(chunkPacket);
             int zChunk = (int) CHUNK_Z_FIELD.get(chunkPacket);
 
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(new int[] {xChunk, zChunk})) {
+            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(xChunk, zChunk)) {
                 ctx.write(fakeEntity.getSpawnPacket());
             }
         }
@@ -55,7 +55,7 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
             int[] zChunks = (int[]) CHUNK_Z_BULK_FIELD.get(chunkPacket);
 
             for (int i = 0; i < xChunks.length; i++) {
-                for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(new int[]{xChunks[i], zChunks[i]})) {
+                for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(xChunks[i], zChunks[i])) {
                     ctx.write(fakeEntity.getSpawnPacket());
                 }
             }

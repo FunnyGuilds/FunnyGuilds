@@ -24,7 +24,7 @@ public class V1_18R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
             CHUNK_Z_FIELD.setAccessible(true);
         }
         catch (NoSuchFieldException ex) {
-            throw new RuntimeException("Failed to initialise V1_18R1FunnyGuildsOutboundChannelHandler", ex);
+            throw new RuntimeException("Failed to initialise V1_18R1FunnyGuildsOutboundChanneler", ex);
         }
     }
 
@@ -36,7 +36,7 @@ public class V1_18R1FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
             int xChunk = (int) CHUNK_X_FIELD.get(chunkPacket);
             int zChunk = (int) CHUNK_Z_FIELD.get(chunkPacket);
 
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(new int[] {xChunk, zChunk})) {
+            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(xChunk, zChunk)) {
                 ctx.write(fakeEntity.getSpawnPacket());
             }
         }

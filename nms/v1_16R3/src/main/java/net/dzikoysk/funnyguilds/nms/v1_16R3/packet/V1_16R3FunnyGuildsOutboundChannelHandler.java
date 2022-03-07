@@ -36,7 +36,7 @@ public class V1_16R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
             int xChunk = (int) CHUNK_X_FIELD.get(chunkPacket);
             int zChunk = (int) CHUNK_Z_FIELD.get(chunkPacket);
 
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(new int[] {xChunk, zChunk})) {
+            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(xChunk, zChunk)) {
                 ctx.write(fakeEntity.getSpawnPacket());
             }
         }
