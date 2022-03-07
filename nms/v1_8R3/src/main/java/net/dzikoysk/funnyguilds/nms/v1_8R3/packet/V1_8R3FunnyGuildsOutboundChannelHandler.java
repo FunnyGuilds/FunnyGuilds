@@ -31,7 +31,7 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
             CHUNK_Z_BULK_FIELD.setAccessible(true);
         }
         catch (NoSuchFieldException ex) {
-            throw new RuntimeException("Failed to initialise V1_9R2FunnyGuildsOutboundChannelHandler", ex);
+            throw new RuntimeException("Failed to initialise V1_8R3FunnyGuildsOutboundChannelHandler", ex);
         }
     }
 
