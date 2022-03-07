@@ -154,10 +154,4 @@ public final class FunnyGuildsVersion {
 
     }
 
-    private enum VersionError {
-        UNKNOWN_LATEST_RELEASE,
-        UNKNOWN_LATEST_NIGHTLY,
-        NO_COMMITS;
-    }
-
 }
