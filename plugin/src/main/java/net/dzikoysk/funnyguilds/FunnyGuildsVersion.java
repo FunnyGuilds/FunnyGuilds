@@ -42,16 +42,15 @@ public final class FunnyGuildsVersion {
             return;
         }
 
-        this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
-            this.getLatestVersion()
-                    .peek(version -> {
-                        if (version.isLatest()) {
-                            return;
-                        }
+        this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () ->
+                this.getLatestVersion()
+                        .peek(version -> {
+                            if (version.isLatest()) {
+                                return;
+                            }
 
-                        printNewVersionAvailable(sender, version.getVersion(), version.isNightly());
-                    });
-        });
+                            printNewVersionAvailable(sender, version.getVersion(), version.isNightly());
+                        }));
     }
 
     private Result<Version, String> getLatestVersion() {
