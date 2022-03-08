@@ -41,21 +41,21 @@ public class V1_8R3FunnyGuildsOutboundChannelHandler extends ChannelOutboundHand
         if (msg instanceof PacketPlayOutMapChunk) {
             PacketPlayOutMapChunk chunkPacket = (PacketPlayOutMapChunk) msg;
 
-            int xChunk = (int) CHUNK_X_FIELD.get(chunkPacket);
-            int zChunk = (int) CHUNK_Z_FIELD.get(chunkPacket);
+            int chunkX = (int) CHUNK_X_FIELD.get(chunkPacket);
+            int chunkZ = (int) CHUNK_Z_FIELD.get(chunkPacket);
 
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(xChunk, zChunk)) {
+            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunkX, chunkZ)) {
                 ctx.write(fakeEntity.getSpawnPacket());
             }
         }
         else if (msg instanceof PacketPlayOutMapChunkBulk) {
             PacketPlayOutMapChunkBulk chunkPacket = (PacketPlayOutMapChunkBulk) msg;
 
-            int[] xChunks = (int[]) CHUNK_X_BULK_FIELD.get(chunkPacket);
-            int[] zChunks = (int[]) CHUNK_Z_BULK_FIELD.get(chunkPacket);
+            int[] chunksX = (int[]) CHUNK_X_BULK_FIELD.get(chunkPacket);
+            int[] chunksZ = (int[]) CHUNK_Z_BULK_FIELD.get(chunkPacket);
 
-            for (int i = 0; i < xChunks.length; i++) {
-                for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(xChunks[i], zChunks[i])) {
+            for (int i = 0; i < chunksX.length; i++) {
+                for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunksX[i], chunksZ[i])) {
                     ctx.write(fakeEntity.getSpawnPacket());
                 }
             }
