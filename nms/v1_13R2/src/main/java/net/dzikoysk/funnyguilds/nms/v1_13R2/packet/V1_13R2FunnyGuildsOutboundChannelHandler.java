@@ -33,10 +33,10 @@ public class V1_13R2FunnyGuildsOutboundChannelHandler extends ChannelOutboundHan
         if (msg instanceof PacketPlayOutMapChunk) {
             PacketPlayOutMapChunk chunkPacket = (PacketPlayOutMapChunk) msg;
 
-            int xChunk = (int) CHUNK_X_FIELD.get(chunkPacket);
-            int zChunk = (int) CHUNK_Z_FIELD.get(chunkPacket);
+            int chunkX = (int) CHUNK_X_FIELD.get(chunkPacket);
+            int chunkZ = (int) CHUNK_Z_FIELD.get(chunkPacket);
 
-            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(xChunk, zChunk)) {
+            for (FakeEntity fakeEntity : packetSuppliersRegistry.supplyFakeEntities(chunkX, chunkZ)) {
                 ctx.write(fakeEntity.getSpawnPacket());
             }
         }
