@@ -14,13 +14,11 @@ public class GuildEntitySupplier implements PacketSuppliers {
     }
 
     @Override
-    public Collection<FakeEntity> supplyFakeEntities(int xChunk, int zChunk) {
+    public Collection<FakeEntity> supplyFakeEntities(int chunkX, int chunkZ) {
         return this.helper.getGuildEntities().values()
                 .stream()
-                .filter(entity -> {
-                    int[] entityChunkCoordinates = entity.getChunkCoordinates();
-                    return entityChunkCoordinates[0] == xChunk && entityChunkCoordinates[1] == zChunk;
-                })
+                .filter(entity -> entity.getChunkX() == chunkX)
+                .filter(entity -> entity.getChunkZ() == chunkZ)
                 .collect(Collectors.toSet());
     }
 

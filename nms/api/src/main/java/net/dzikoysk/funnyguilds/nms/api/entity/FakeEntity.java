@@ -23,8 +23,12 @@ public class FakeEntity {
         return location;
     }
 
-    public int[] getChunkCoordinates() {
-        return new int[] {location.getBlockX() >> 4, location.getBlockZ() >> 4};
+    public int getChunkX() {
+        return location.getBlockX() >> 4;
+    }
+
+    public int getChunkZ() {
+        return location.getBlockZ() >> 4;
     }
 
     public Object getSpawnPacket() {
