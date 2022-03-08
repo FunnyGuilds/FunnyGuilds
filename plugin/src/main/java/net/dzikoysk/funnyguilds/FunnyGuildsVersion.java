@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import net.dzikoysk.funnyguilds.shared.IOUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import panda.std.Result;
 
 public final class FunnyGuildsVersion {
 
@@ -42,65 +41,48 @@ public final class FunnyGuildsVersion {
             return;
         }
 
-        this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () ->
-                this.getLatestVersion()
-                        .peek(version -> {
-                            if (version.isLatest()) {
-                                return;
-                            }
+        this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
+            if (funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
+                try {
+                    String ghResponse = IOUtils.getContent(GH_COMMITS_URL);
+                    JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
 
-                            printNewVersionAvailable(sender, version.getVersion(), version.isNightly());
-                        }));
-    }
+                    if (ghCommits.size() == 0) {
+                        return;
+                    }
 
-    private Result<Version, String> getLatestVersion() {
-        String latestRelease = IOUtils.getContent(VERSION_FILE_URL);
+                    String latestNightlyVersion = IOUtils.getContent(NIGHTLY_VERSION_FILE_URL);
+                    JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
+                    String latestCommitHash = latestCommit.get("sha").getAsString().substring(0, 7);
 
-        if (funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
-            try {
-                String ghResponse = IOUtils.getContent(GH_COMMITS_URL);
-                JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
+                    String latestNightly = latestNightlyVersion + "-" + latestCommitHash;
 
-                if (ghCommits.size() == 0) {
-                    return Result.error("No commits found");
+                    if (!commitHash.equalsIgnoreCase(latestCommitHash)) {
+                        printNewVersionAvailable(sender, latestNightly, true);
+                    }
                 }
-
-                JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
-                String latestCommitHash = latestCommit.get("sha").getAsString().substring(0, 7);
-                String latestNightlyVersion = IOUtils.getContent(NIGHTLY_VERSION_FILE_URL);
-
-                String latestVersion = latestNightlyVersion + "-" + latestCommitHash;
-
-                if (commitHash.equalsIgnoreCase(latestCommitHash)) {
-                    return Result.ok(new Version(latestVersion, true, true));
+                catch (Throwable th) {
+                    FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
+                    FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
                 }
-                else {
-                    return Result.ok(new Version(latestVersion, true, false));
-                }
-            }
-            catch (Throwable th) {
-                FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
-                FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
-                return Result.error("Unknown latest Nightly");
-            }
-        }
-        else {
-            if (latestRelease == null) {
-                return Result.error("Unknown latest release");
-            }
-
-            if (latestRelease.contains("Warning:")) {
-                FunnyGuilds.getPluginLogger().warning(latestRelease);
-                return Result.error(latestRelease);
-            }
-
-            if (mainVersion.equalsIgnoreCase(latestRelease)) {
-                return Result.ok(new Version(latestRelease, false, true));
             }
             else {
-                return Result.ok(new Version(latestRelease, false, false));
+                String latestRelease = IOUtils.getContent(VERSION_FILE_URL);
+
+                if (latestRelease == null) {
+                    return;
+                }
+
+                if (latestRelease.contains("Warning:")) {
+                    FunnyGuilds.getPluginLogger().warning(latestRelease);
+                    return;
+                }
+
+                if (!mainVersion.equalsIgnoreCase(latestRelease)) {
+                    printNewVersionAvailable(sender, latestRelease, false);
+                }
             }
-        }
+        });
     }
 
     private void printNewVersionAvailable(CommandSender sender, String latest, boolean isNightly) {
@@ -125,32 +107,6 @@ public final class FunnyGuildsVersion {
 
     public String getCommitHash() {
         return commitHash;
-    }
-
-    private static class Version {
-
-        private final String version;
-        private final boolean nightly;
-        private final boolean latest;
-
-        public Version(String version, boolean nightly, boolean latest) {
-            this.version = version;
-            this.nightly = nightly;
-            this.latest = latest;
-        }
-
-        public String getVersion() {
-            return this.version;
-        }
-
-        public boolean isNightly() {
-            return nightly;
-        }
-
-        public boolean isLatest() {
-            return latest;
-        }
-
     }
 
 }
