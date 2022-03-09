@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import panda.std.Option;
 
 public class GuildEntityHelper {
@@ -52,6 +53,15 @@ public class GuildEntityHelper {
     public void createGuildsEntities(GuildManager guildManager) {
         guildManager.getGuilds()
                 .forEach(this::createGuildEntity);
+    }
+
+    public void spawnGuildEntity(Guild guild, Player player) {
+        FakeEntity guildHeartEntity = entityMap.get(guild);
+        if (guildHeartEntity == null) {
+            return;
+        }
+
+        nmsAccessor.getEntityAccessor().spawnFakeEntityFor(guildHeartEntity, player);
     }
 
     public void despawnGuildEntity(Guild guild) {

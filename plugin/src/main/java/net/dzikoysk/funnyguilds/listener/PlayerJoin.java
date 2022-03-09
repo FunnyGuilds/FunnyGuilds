@@ -32,7 +32,7 @@ public class PlayerJoin extends AbstractFunnyListener {
 
         IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                 user,
-                plugin.getNmsAccessor().getPlayerListAccessor(),
+                this.nmsAccessor.getPlayerListAccessor(),
                 tablistConfig.playerList,
                 tablistConfig.playerListHeader, tablistConfig.playerListFooter,
                 tablistConfig.pages,
@@ -57,9 +57,9 @@ public class PlayerJoin extends AbstractFunnyListener {
                 new DummyGlobalUpdateUserRequest(user)
         );
 
-        final FunnyGuildsInboundChannelHandler inboundChannelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallInboundChannelHandler(player);
+        final FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
         inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
-        final FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallOutboundChannelHandler(player);
+        final FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
         outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.plugin.getGuildEntityHelper()));
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {

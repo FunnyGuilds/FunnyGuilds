@@ -69,7 +69,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                     .register("{TAG}", guild.getTag());
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                this.plugin.getNmsAccessor().getMessageAccessor()
+                                this.nmsAccessor.getMessageAccessor()
                                         .sendActionBarMessage(formatter.format(messages.notificationActionbarLeaveGuildRegion), player);
                             }
 
@@ -94,7 +94,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                         .fadeOutDuration(config.notificationTitleFadeOut)
                                         .build();
 
-                                plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, player);
+                                this.nmsAccessor.getMessageAccessor().sendTitleMessage(titleMessage, player);
                             }
                         });
             }
@@ -112,13 +112,17 @@ public class PlayerMove extends AbstractFunnyListener {
 
                             cache.setEnter(true);
 
+                            if (config.heart.createEntityType != null) {
+                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> plugin.getGuildEntityHelper().spawnGuildEntity(guild, player), 40L);
+                            }
+
                             Formatter formatter = new Formatter()
                                     .register("{GUILD}", guild.getName())
                                     .register("{TAG}", guild.getTag())
                                     .register("{PLAYER}", player.getName());
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                plugin.getNmsAccessor().getMessageAccessor()
+                                this.nmsAccessor.getMessageAccessor()
                                         .sendActionBarMessage(formatter.format(messages.notificationActionbarEnterGuildRegion), player);
                             }
 
@@ -143,7 +147,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                         .fadeOutDuration(config.notificationTitleFadeOut)
                                         .build();
 
-                                plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, player);
+                                this.nmsAccessor.getMessageAccessor().sendTitleMessage(titleMessage, player);
                             }
 
                             if (player.hasPermission("funnyguilds.admin.notification")) {
@@ -166,7 +170,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 memberUser.getPlayer()
                                         .peek(peekPlayer -> {
                                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                                plugin.getNmsAccessor().getMessageAccessor()
+                                                this.nmsAccessor.getMessageAccessor()
                                                         .sendActionBarMessage(formatter.format(messages.notificationActionbarIntruderEnterGuildRegion), peekPlayer);
                                             }
 
@@ -191,7 +195,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                                         .fadeOutDuration(config.notificationTitleFadeOut)
                                                         .build();
 
-                                                this.plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, peekPlayer);
+                                                this.nmsAccessor.getMessageAccessor().sendTitleMessage(titleMessage, peekPlayer);
                                             }
                                         });
                             }

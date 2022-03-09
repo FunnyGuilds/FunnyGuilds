@@ -281,7 +281,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                     .fadeOutDuration(config.notificationTitleFadeOut)
                     .build();
 
-            plugin.getNmsAccessor().getMessageAccessor().sendTitleMessage(titleMessage, playerAttacker);
+            this.nmsAccessor.getMessageAccessor().sendTitleMessage(titleMessage, playerAttacker);
         }
 
         String deathMessage = killFormatter.format(messages.rankDeathMessage);
