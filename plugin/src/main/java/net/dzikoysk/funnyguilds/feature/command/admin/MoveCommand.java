@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -34,9 +35,14 @@ public final class MoveCommand extends AbstractFunnyCommand {
         HeartConfiguration heartConfig = config.heart;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         Location location = player.getLocation().getBlock().getLocation();
+        World world = player.getWorld();
 
         if (!heartConfig.usePlayerPositionForCenterY) {
             location.setY(heartConfig.createCenterY);
+        }
+
+        if (heartConfig.createEntityType != null && location.getBlockY() < (world.getMaxHeight() - 2)) {
+            location.setY(location.getBlockY() + 2);
         }
 
         int distance = config.regionSize + config.createDistance;
@@ -65,6 +71,10 @@ public final class MoveCommand extends AbstractFunnyCommand {
                     }
 
                     peekRegion.setCenter(location);
+                    guild.getEnderCrystal()
+                            .map(Location::clone)
+                            .map(homeLocation -> homeLocation.subtract(0.0D, 1.0D, 0.0D))
+                            .peek(guild::setHome);
                 })
                 .orElseGet(() -> new Region(guild, location, config.regionSize));
 
