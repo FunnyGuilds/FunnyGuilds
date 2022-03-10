@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.dzikoysk.funnyguilds.shared.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -15,12 +14,14 @@ public final class FunnyGuildsVersion {
 
     private static final String GH_COMMITS_URL = "https://api.github.com/repos/FunnyGuilds/FunnyGuilds/commits";
     private static final String VERSION_FILE_URL = "https://funnyguilds.dzikoysk.net/latest.info";
+    private static final String NIGHTLY_VERSION_FILE_URL = "https://raw.githubusercontent.com/FunnyGuilds/FunnyGuilds/master/updater-nightly.txt";
     private static final String GITHUB_URL = "https://github.com/funnyguilds/funnyguilds";
     private static final String DISCORD_URL = "https://discord.com/invite/CYvyq3u";
 
     private final FunnyGuilds funnyGuilds;
     private final String fullVersion;
     private final String mainVersion;
+    private final String commitHash;
 
     public FunnyGuildsVersion(FunnyGuilds funnyGuilds) {
         this.funnyGuilds = funnyGuilds;
@@ -28,6 +29,7 @@ public final class FunnyGuildsVersion {
         String version = funnyGuilds.getDescription().getVersion();
         this.fullVersion = version;
         this.mainVersion = version.substring(0, version.lastIndexOf('-'));
+        this.commitHash = version.substring(version.lastIndexOf('-') + 1);
     }
 
     public void isNewAvailable(CommandSender sender, boolean force) {
@@ -40,24 +42,7 @@ public final class FunnyGuildsVersion {
         }
 
         this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
-            String latest = IOUtils.getContent(VERSION_FILE_URL);
-
-            if (latest == null) {
-                return;
-            }
-
-            if (latest.contains("Warning:")) {
-                FunnyGuilds.getPluginLogger().warning(latest);
-                return;
-            }
-
-            String currentNightlyHash = getCurrentNightlyHash(latest);
-
-            if (StringUtils.isNotBlank(currentNightlyHash)) {
-                if (!this.funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
-                    return;
-                }
-
+            if (funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
                 try {
                     String ghResponse = IOUtils.getContent(GH_COMMITS_URL);
                     JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
@@ -66,23 +51,36 @@ public final class FunnyGuildsVersion {
                         return;
                     }
 
+                    String latestNightlyVersion = IOUtils.getContent(NIGHTLY_VERSION_FILE_URL);
                     JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
-                    String commitHash = latestCommit.get("sha").getAsString().substring(0, 7);
+                    String latestCommitHash = latestCommit.get("sha").getAsString().substring(0, 7);
 
-                    if (!commitHash.equals(currentNightlyHash)) {
-                        printNewVersionAvailable(sender, latest + "-" + commitHash, true);
+                    String latestNightly = latestNightlyVersion + "-" + latestCommitHash;
+
+                    if (!commitHash.equalsIgnoreCase(latestCommitHash)) {
+                        printNewVersionAvailable(sender, latestNightly, true);
                     }
                 }
                 catch (Throwable th) {
                     FunnyGuilds.getPluginLogger().update("Could not retrieve latest nightly version!");
                     FunnyGuilds.getPluginLogger().update(Throwables.getStackTraceAsString(th));
                 }
-
-                return;
             }
+            else {
+                String latestRelease = IOUtils.getContent(VERSION_FILE_URL);
 
-            if (!latest.equalsIgnoreCase(this.fullVersion)) {
-                printNewVersionAvailable(sender, latest, false);
+                if (latestRelease == null) {
+                    return;
+                }
+
+                if (latestRelease.contains("Warning:")) {
+                    FunnyGuilds.getPluginLogger().warning(latestRelease);
+                    return;
+                }
+
+                if (!mainVersion.equalsIgnoreCase(latestRelease)) {
+                    printNewVersionAvailable(sender, latestRelease, false);
+                }
             }
         });
     }
@@ -99,23 +97,16 @@ public final class FunnyGuildsVersion {
         sender.sendMessage("");
     }
 
-    private String getCurrentNightlyHash(String latest) {
-        String remainder = StringUtils.replace(this.fullVersion, latest, "").trim();
-
-        // hyphen + short commit hash
-        if (remainder.length() != 8 || !remainder.startsWith("-")) {
-            return "";
-        }
-
-        return StringUtils.replace(remainder, "-", "");
-    }
-
     public String getFullVersion() {
         return this.fullVersion;
     }
 
     public String getMainVersion() {
         return this.mainVersion;
+    }
+
+    public String getCommitHash() {
+        return commitHash;
     }
 
 }
