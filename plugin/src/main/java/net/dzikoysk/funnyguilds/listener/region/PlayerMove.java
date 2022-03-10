@@ -113,7 +113,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             cache.setEnter(true);
 
                             if (config.heart.createEntityType != null) {
-                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> plugin.getGuildEntityHelper().spawnGuildEntity(guild, player), 40L);
+                                Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> this.guildEntityHelper.spawnGuildEntity(guild, player), 40L);
                             }
 
                             Formatter formatter = new Formatter()
