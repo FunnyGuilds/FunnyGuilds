@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_17R1.entity;
+package net.dzikoysk.funnyguilds.nms.v1_18R1.entity;
 
 import com.google.common.base.Preconditions;
 import net.dzikoysk.funnyguilds.nms.api.entity.EntityAccessor;
@@ -9,12 +9,12 @@ import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntity;
 import net.minecraft.network.protocol.game.PacketPlayOutSpawnEntityLiving;
 import net.minecraft.world.entity.EntityLiving;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_17_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_18_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_18_R1.entity.CraftPlayer;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-public class V1_17EntityAccessor implements EntityAccessor {
+public class V1_18R1EntityAccessor implements EntityAccessor {
 
     @Override
     public FakeEntity createFakeEntity(EntityType entityType, Location location) {
@@ -38,13 +38,13 @@ public class V1_17EntityAccessor implements EntityAccessor {
             spawnEntityPacket = new PacketPlayOutSpawnEntity(entity);
         }
 
-        return new FakeEntity(entity.getId(), location, spawnEntityPacket);
+        return new FakeEntity(entity.ae(), location, spawnEntityPacket); // ae() zwraca aT czyli chyba getId
     }
 
     @Override
     public void spawnFakeEntityFor(FakeEntity entity, Player... players) {
         for (Player player : players) {
-            ((CraftPlayer) player).getHandle().b.sendPacket((Packet<?>) entity.getSpawnPacket());
+            ((CraftPlayer) player).getHandle().b.a((Packet<?>) entity.getSpawnPacket()); // sendPacket -> a
         }
     }
 
@@ -53,7 +53,7 @@ public class V1_17EntityAccessor implements EntityAccessor {
         PacketPlayOutEntityDestroy destroyEntityPacket = new PacketPlayOutEntityDestroy(entity.getId());
 
         for (Player player : players) {
-            ((CraftPlayer) player).getHandle().b.sendPacket(destroyEntityPacket);
+            ((CraftPlayer) player).getHandle().b.a(destroyEntityPacket); // sendPacket -> a
         }
     }
 }

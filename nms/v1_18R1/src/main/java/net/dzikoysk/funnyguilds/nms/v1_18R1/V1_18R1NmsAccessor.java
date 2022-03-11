@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.statistics.StatisticsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_18R1.entity.V1_18EntityAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_18R1.entity.V1_18R1EntityAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_18R1.message.V1_18R1MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_18R1.packet.V1_18R1PacketAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_18R1.playerlist.V1_18R1PlayerListAccessor;
@@ -31,7 +31,7 @@ public class V1_18R1NmsAccessor implements NmsAccessor {
 
     @Override
     public EntityAccessor getEntityAccessor() {
-        return new V1_18EntityAccessor();
+        return new V1_18R1EntityAccessor();
     }
 
     @Override

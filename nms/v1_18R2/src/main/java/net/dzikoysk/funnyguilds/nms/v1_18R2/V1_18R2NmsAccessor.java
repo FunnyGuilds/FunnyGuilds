@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.nms.v1_17R1;
+package net.dzikoysk.funnyguilds.nms.v1_18R2;
 
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.api.entity.EntityAccessor;
@@ -6,35 +6,36 @@ import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.PacketAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.statistics.StatisticsAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_17R1.entity.V1_17R1EntityAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_17R1.message.V1_17R1MessageAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_17R1.packet.V1_17R1PacketAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_17R1.playerlist.V1_17R1PlayerListAccessor;
-import net.dzikoysk.funnyguilds.nms.v1_17R1.statistics.V1_17R1StatisticsAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_18R2.entity.V1_18R2EntityAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_18R2.message.V1_18R2MessageAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_18R2.packet.V1_18R2PacketAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_18R2.playerlist.V1_18R2PlayerListAccessor;
+import net.dzikoysk.funnyguilds.nms.v1_18R2.statistics.V1_18R2StatisticsAccessor;
 
-public class V1_17R1NmsAccessor implements NmsAccessor {
+public class V1_18R2NmsAccessor implements NmsAccessor {
+
     @Override
     public PacketAccessor getPacketAccessor() {
-        return new V1_17R1PacketAccessor();
+        return new V1_18R2PacketAccessor();
     }
 
     @Override
     public PlayerListAccessor getPlayerListAccessor() {
-        return new V1_17R1PlayerListAccessor();
+        return new V1_18R2PlayerListAccessor();
     }
 
     @Override
     public StatisticsAccessor getStatisticsAccessor() {
-        return new V1_17R1StatisticsAccessor();
+        return new V1_18R2StatisticsAccessor();
     }
 
     @Override
     public EntityAccessor getEntityAccessor() {
-        return new V1_17R1EntityAccessor();
+        return new V1_18R2EntityAccessor();
     }
 
     @Override
     public MessageAccessor getMessageAccessor() {
-        return new V1_17R1MessageAccessor();
+        return new V1_18R2MessageAccessor();
     }
 }
