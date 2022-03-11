@@ -5,9 +5,9 @@ import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdatePl
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
-import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsChannelHandler;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
+import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
+import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.entity.Player;
@@ -32,7 +32,7 @@ public class PlayerJoin extends AbstractFunnyListener {
 
         IndividualPlayerList individualPlayerList = new IndividualPlayerList(
                 user,
-                plugin.getNmsAccessor().getPlayerListAccessor(),
+                this.nmsAccessor.getPlayerListAccessor(),
                 tablistConfig.playerList,
                 tablistConfig.playerListHeader, tablistConfig.playerListFooter,
                 tablistConfig.pages,
@@ -57,17 +57,13 @@ public class PlayerJoin extends AbstractFunnyListener {
                 new DummyGlobalUpdateUserRequest(user)
         );
 
-        final FunnyGuildsChannelHandler channelHandler = this.plugin.getNmsAccessor().getPacketAccessor().getOrInstallChannelHandler(player);
-        channelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(user));
+        final FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
+        inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
+        final FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
+        outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 
         this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             this.plugin.getVersion().isNewAvailable(player, false);
-
-            if (config.heart.createEntityType != null) {
-                this.regionManager.findRegionAtLocation(player.getLocation())
-                        .map(Region::getGuild)
-                        .peek(guild -> GuildEntityHelper.spawnGuildHeart(guild, player));
-            }
         }, 30L);
     }
 

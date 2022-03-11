@@ -40,7 +40,7 @@ public class V1_13R2EntityAccessor implements EntityAccessor {
             spawnEntityPacket = new PacketPlayOutSpawnEntity(entity, ObjectType.getIdFor(entityType));
         }
 
-        return new FakeEntity(entity.getId(), spawnEntityPacket);
+        return new FakeEntity(entity.getId(), location, spawnEntityPacket);
     }
 
     @Override

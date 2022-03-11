@@ -85,14 +85,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
             when(!GuildUtils.validateTag(config, tag), messages.restrictedGuildTag);
         }
 
-        HeartConfiguration heart = config.heart;
+        HeartConfiguration heartConfig = config.heart;
 
         if (config.regionsEnabled) {
-            if (!heart.usePlayerPositionForCenterY) {
-                guildLocation.setY(heart.createCenterY);
+            if (!heartConfig.usePlayerPositionForCenterY) {
+                guildLocation.setY(heartConfig.createCenterY);
             }
 
-            if (heart.createEntityType != null && guildLocation.getBlockY() < (world.getMaxHeight() - 2)) {
+            if (heartConfig.createEntityType != null && guildLocation.getBlockY() < (world.getMaxHeight() - 2)) {
                 guildLocation.setY(guildLocation.getBlockY() + 2);
             }
 
@@ -151,7 +151,10 @@ public final class CreateCommand extends AbstractFunnyCommand {
         guild.setValidity(Instant.now().plus(config.validityStart).toEpochMilli());
         guild.setProtection(Instant.now().plus(config.warProtection).toEpochMilli());
         guild.setPvP(config.damageGuild);
-        guild.setHome(guildLocation);
+
+        Location home = guildLocation.clone()
+                .add(0.5D, -2.0D, 0.5D);
+        guild.setHome(home);
 
         if (config.regionsEnabled) {
             Region region = new Region(guild, guildLocation, config.regionSize);
@@ -187,14 +190,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         if (config.regionsEnabled) {
-            if (heart.pasteSchematicOnCreation) {
+            if (heartConfig.pasteSchematicOnCreation) {
                 HookManager.WORLD_EDIT.peek(worldEdit -> {
-                    if (worldEdit.pasteSchematic(heart.guildSchematicFile, guildLocation, heart.pasteSchematicWithAir)) {
+                    if (worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir)) {
                         user.sendMessage(messages.createGuildCouldNotPasteSchematic);
                     }
                 });
             }
-            else if (heart.createCenterSphere) {
+            else if (heartConfig.createCenterSphere) {
                 for (Location locationInSphere : SpaceUtils.sphere(guildLocation, 4, 4, false, true, 0)) {
                     if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
                         locationInSphere.getBlock().setType(Material.AIR);
@@ -212,8 +215,9 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 }
             }
 
-            this.guildManager.spawnHeart(guild);
-            player.teleport(guildLocation);
+            this.guildManager.spawnHeart(plugin.getGuildEntityHelper(), guild);
+            //player.teleport(guildLocation);
+            guild.teleportHome(player);
         }
 
         this.guildManager.addGuild(guild);

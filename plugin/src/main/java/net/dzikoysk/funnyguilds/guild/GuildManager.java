@@ -15,7 +15,7 @@ import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.nms.BlockDataChanger;
-import net.dzikoysk.funnyguilds.nms.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -232,7 +232,7 @@ public class GuildManager {
             guild.getRegion()
                     .peek(region -> {
                         if (this.pluginConfiguration.heart.createEntityType != null) {
-                            GuildEntityHelper.despawnGuildHeart(guild);
+                            plugin.getGuildEntityHelper().despawnGuildEntity(guild);
                         }
                         else if (this.pluginConfiguration.heart.createMaterial != null &&
                                 this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
@@ -300,7 +300,7 @@ public class GuildManager {
      *
      * @param guild the guild for which heart should be spawned
      */
-    public void spawnHeart(Guild guild) {
+    public void spawnHeart(GuildEntityHelper guildEntityHelper, Guild guild) {
         if (this.pluginConfiguration.heart.createMaterial != null && this.pluginConfiguration.heart.createMaterial.getLeft() != Material.AIR) {
             guild.getRegion()
                     .flatMap(Region::getHeartBlock)
@@ -308,10 +308,10 @@ public class GuildManager {
                         heart.setType(this.pluginConfiguration.heart.createMaterial.getLeft());
                         BlockDataChanger.applyChanges(heart, this.pluginConfiguration.heart.createMaterial.getRight());
                     });
+            return;
         }
-        else if (this.pluginConfiguration.heart.createEntityType != null) {
-            GuildEntityHelper.spawnGuildHeart(guild);
-        }
+
+        guildEntityHelper.createGuildEntity(guild);
     }
 
 }
