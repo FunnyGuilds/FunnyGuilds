@@ -97,7 +97,7 @@ public class UserManager {
      */
     public Option<User> findByPlayer(@NotNull Player player) {
         if (player.getUniqueId().version() == 2) {
-            return Option.of(new User(player));
+            return Option.of(new User(player.getUniqueId(), player.getName()));
         }
 
         return findByUuid(player.getUniqueId());
@@ -126,24 +126,11 @@ public class UserManager {
         Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
 
         User user = new User(uuid, name);
-        addUser(user);
+        this.addUser(user);
 
         return user;
     }
 
-    /**
-     * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByPlayer(Player)}.
-     *
-     * @return the user
-     */
-    public User create(Player player) {
-        Validate.notNull(player, "player can't be null!");
-
-        User user = new User(player);
-        addUser(user);
-
-        return user;
-    }
 
     /**
      * Add user to storage. If you think you should use this method you probably shouldn't.

@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
+import net.dzikoysk.funnyguilds.user.BukkitUserProfile;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class PlayerJoin extends AbstractFunnyListener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        User user = this.userManager.findByPlayer(player).orElseGet(() -> userManager.create(player));
+        User user = this.userManager.findByPlayer(player).orElseGet(() -> userManager.create(player.getUniqueId(), player.getName()));
 
         String playerName = player.getName();
 
@@ -27,6 +28,7 @@ public class PlayerJoin extends AbstractFunnyListener {
             this.userManager.updateUsername(user, playerName);
         }
 
+        user.setProfile(new BukkitUserProfile(player.getUniqueId(), this.server));
         user.updateReference(player);
         UserCache cache = user.getCache();
 

@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.listener;
 
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.UserProfile;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -33,6 +34,8 @@ public class PlayerQuit extends AbstractFunnyListener {
         if (cache.isInCombat()) {
             user.getRank().updateLogouts(currentValue -> currentValue + 1);
         }
+
+        user.setProfile(UserProfile.NONE);
 
         cache.setIndividualPrefix(null);
         cache.setScoreboard(null);

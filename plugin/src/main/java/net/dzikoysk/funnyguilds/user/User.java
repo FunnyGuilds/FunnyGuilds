@@ -7,12 +7,10 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
@@ -28,6 +26,8 @@ public class User extends AbstractMutableEntity {
     private Option<UserBan> ban = Option.none();
     private final BossBarProvider bossBarProvider;
 
+    private UserProfile profile = UserProfile.NONE;
+
     User(UUID uuid, String name) {
         this.uuid = uuid;
         this.name = name;
@@ -38,25 +38,6 @@ public class User extends AbstractMutableEntity {
         this.bossBarProvider = BossBarProvider.getBossBar(this);
 
         this.markChanged();
-    }
-
-    User(Player player) {
-        this(player.getUniqueId(), player.getName());
-    }
-
-    public void sendMessage(String message) {
-        if (message == null || message.isEmpty()) {
-            return;
-        }
-
-        this.getPlayer()
-                .peek(player -> player.sendMessage(message));
-    }
-
-    public boolean hasPermission(String permission) {
-        return this.getPlayer()
-                .map(player -> player.hasPermission(permission))
-                .orElseGet(false);
     }
 
     public UUID getUUID() {
@@ -72,6 +53,11 @@ public class User extends AbstractMutableEntity {
         this.name = name;
     }
 
+    @Override
+    public EntityType getType() {
+        return EntityType.USER;
+    }
+
     public UserCache getCache() {
         return this.cache;
     }
@@ -80,62 +66,27 @@ public class User extends AbstractMutableEntity {
         return this.rank;
     }
 
-    public OfflinePlayer getOfflinePlayer() {
-        return Bukkit.getOfflinePlayer(this.uuid);
-    }
-
-    /**
-     * @return bukkit player
-     */
-    public Option<Player> getPlayer() {
-        Player player = this.playerRef.get();
-        if (player != null) {
-            return Option.of(player);
-        }
-
-        player = Bukkit.getPlayer(this.uuid);
-        if (player != null) {
-            this.playerRef = new WeakReference<>(player);
-            return Option.of(player);
-        }
-
-        return Option.none();
-    }
-
-    public void updateReference(Player player) {
-        Validate.notNull(player, "you can't update reference with null player!");
-        this.playerRef = new WeakReference<>(player);
-    }
-
     public boolean isOnline() {
-        if (this.name == null) {
-            return false;
-        }
-
-        return Bukkit.getPlayer(this.uuid) != null;
+        return this.profile.isOnline();
     }
 
     public boolean isVanished() {
-        if (!isOnline()) {
-            return false;
-        }
+        return this.profile.isVanished();
+    }
 
-        // Should work with VanishNoPacket, SuperVanish and PremiumVanish
-        return getPlayer()
-                .map(player -> player.getMetadata("vanished"))
-                .map(metadata -> metadata.stream().anyMatch(MetadataValue::asBoolean))
-                .orElseGet(false);
+    public boolean hasPermission(String permission) {
+        return this.profile.hasPermission(permission);
     }
 
     public int getPing() {
-        return getPlayer()
-                .map(PingUtils::getPing)
-                .orElseGet(0);
+        return this.profile.getPing();
     }
 
-    /**
-     * @return user's guild
-     */
+    public void sendMessage(String message) {
+        this.profile.sendMessage(message);
+    }
+
+
     public Option<Guild> getGuild() {
         return this.guild;
     }
@@ -180,9 +131,6 @@ public class User extends AbstractMutableEntity {
                 .orElseGet(false);
     }
 
-    /**
-     * @return user's ban
-     */
     public Option<UserBan> getBan() {
         return this.ban;
     }
@@ -201,9 +149,44 @@ public class User extends AbstractMutableEntity {
         return this.bossBarProvider;
     }
 
-    @Override
-    public EntityType getType() {
-        return EntityType.USER;
+    public UserProfile getProfile() {
+        return this.profile;
+    }
+
+    public void setProfile(UserProfile profile) {
+        this.profile = profile;
+    }
+
+    // Deprecated methods
+    //  - use UserGameProfile
+    //  - add methods to UserGameProfile and use them
+    //  - get Player/OfflinePlayer in the another way
+
+    @Deprecated
+    public OfflinePlayer getOfflinePlayer() {
+        return Bukkit.getOfflinePlayer(this.uuid);
+    }
+
+    @Deprecated
+    public Option<Player> getPlayer() {
+        Player player = this.playerRef.get();
+        if (player != null) {
+            return Option.of(player);
+        }
+
+        player = Bukkit.getPlayer(this.uuid);
+        if (player != null) {
+            this.playerRef = new WeakReference<>(player);
+            return Option.of(player);
+        }
+
+        return Option.none();
+    }
+
+    @Deprecated
+    public void updateReference(Player player) {
+        Validate.notNull(player, "you can't update reference with null player!");
+        this.playerRef = new WeakReference<>(player);
     }
 
     @Override
@@ -228,7 +211,10 @@ public class User extends AbstractMutableEntity {
 
     @Override
     public String toString() {
-        return this.name;
+        return "User{" +
+                "uuid=" + this.uuid +
+                ", name='" + this.name + '\'' +
+                '}';
     }
 
 }
