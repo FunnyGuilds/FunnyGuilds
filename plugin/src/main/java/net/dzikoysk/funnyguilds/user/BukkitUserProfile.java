@@ -5,9 +5,9 @@ import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
-import panda.std.Option;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
+import panda.std.Option;
 
 public class BukkitUserProfile implements UserProfile {
 
