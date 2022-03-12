@@ -76,7 +76,7 @@ public final class MaterialUtils {
         }
 
         if (config.translatedMaterials.containsKey(material)) {
-            return ChatUtils.colored(FunnyGuilds.getInstance().getPluginConfiguration().translatedMaterials.get(material));
+            return ChatUtils.colored(config.translatedMaterials.get(material));
         }
 
         return StringUtils.replaceChars(material.toString().toLowerCase(), '_', ' ');
