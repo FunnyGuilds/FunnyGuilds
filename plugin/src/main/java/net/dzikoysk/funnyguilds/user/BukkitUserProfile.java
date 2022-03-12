@@ -6,7 +6,6 @@ import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
 import panda.std.Option;
-
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 
