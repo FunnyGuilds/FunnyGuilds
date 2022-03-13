@@ -6,11 +6,11 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class IndividualPrefixManager {
 
@@ -30,7 +30,6 @@ public class IndividualPrefixManager {
         PluginConfiguration config = plugin.getPluginConfiguration();
 
         Option<User> userOption = userManager.findByPlayer(player);
-
         if (userOption.isEmpty()) {
             return;
         }
@@ -73,62 +72,42 @@ public class IndividualPrefixManager {
         });
     }
 
-    public static void addGuild(Guild to) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            User user = UserUtils.get(player.getUniqueId());
-            IndividualPrefix prefix = user.getCache().getIndividualPrefix();
-
-            if (prefix == null) {
-                continue;
-            }
-
-            prefix.addGuild(to);
-        }
+    public static void addGuild(Guild guild) {
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(onlinePlayer -> FunnyGuilds.getInstance().getUserManager().findByUuid(onlinePlayer.getUniqueId())
+                        .map(User::getCache)
+                        .map(UserCache::getIndividualPrefix))
+                .forEach(prefix -> prefix.addGuild(guild));
 
         updatePlayers();
     }
 
     public static void addPlayer(String player) {
-        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
-            User user = UserUtils.get(onlinePlayer.getUniqueId());
-            IndividualPrefix prefix = user.getCache().getIndividualPrefix();
-
-            if (prefix == null) {
-                continue;
-            }
-
-            prefix.addPlayer(player);
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(onlinePlayer -> FunnyGuilds.getInstance().getUserManager().findByUuid(onlinePlayer.getUniqueId())
+                        .map(User::getCache)
+                        .map(UserCache::getIndividualPrefix))
+                .forEach(prefix -> prefix.addPlayer(player));
 
         updatePlayers();
     }
 
     public static void removeGuild(Guild guild) {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            User user = UserUtils.get(player.getUniqueId());
-            IndividualPrefix prefix = user.getCache().getIndividualPrefix();
-
-            if (prefix == null) {
-                continue;
-            }
-
-            prefix.removeGuild(guild);
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(onlinePlayer -> FunnyGuilds.getInstance().getUserManager().findByUuid(onlinePlayer.getUniqueId())
+                        .map(User::getCache)
+                        .map(UserCache::getIndividualPrefix))
+                .forEach(prefix -> prefix.removeGuild(guild));
 
         updatePlayers();
     }
 
     public static void removePlayer(String player) {
-        for (Player ps : Bukkit.getOnlinePlayers()) {
-            User user = UserUtils.get(ps.getUniqueId());
-            IndividualPrefix prefix = user.getCache().getIndividualPrefix();
-
-            if (prefix == null) {
-                continue;
-            }
-
-            prefix.removePlayer(player);
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(onlinePlayer -> FunnyGuilds.getInstance().getUserManager().findByUuid(onlinePlayer.getUniqueId())
+                        .map(User::getCache)
+                        .map(UserCache::getIndividualPrefix))
+                .forEach(prefix -> prefix.removePlayer(player));
 
         updatePlayers();
     }

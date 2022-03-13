@@ -5,7 +5,6 @@ import com.google.common.cache.CacheBuilder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -20,6 +19,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class UserCache {
 
@@ -123,12 +123,13 @@ public class UserCache {
 
     @Nullable
     public User getLastKiller() {
-        Optional<UUID> lastAttackerUniqueId = this.killerCache.asMap().entrySet()
-                .stream()
+        Option<UUID> lastAttackerUniqueId = PandaStream.of(this.killerCache.asMap().entrySet())
                 .sorted(Entry.<UUID, Long>comparingByValue().reversed())
-                .map(Entry::getKey).findFirst();
+                .map(Entry::getKey).head();
 
-        return lastAttackerUniqueId.map(UserUtils::get).orElse(null);
+        return lastAttackerUniqueId
+                .flatMap(FunnyGuilds.getInstance().getUserManager()::findByUuid)
+                .orElseGet((User) null);
     }
 
     @Nullable
