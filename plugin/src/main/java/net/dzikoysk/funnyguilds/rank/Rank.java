@@ -39,7 +39,7 @@ public abstract class Rank<T extends MutableEntity> {
     }
 
     /**
-     * @return player position in default top
+     * @return player position in default top.
      * @deprecated for removal in the future, in favour of {@link Rank#getPosition(String)}
      */
     @Deprecated
@@ -47,7 +47,8 @@ public abstract class Rank<T extends MutableEntity> {
     public abstract int getPosition();
 
     /**
-     * Set player position in default top
+     * Set player position in default top.
+     *
      * @deprecated for removal in the future, in favour of {@link Rank#setPosition(String, int)}
      */
     @Deprecated
