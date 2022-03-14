@@ -93,7 +93,7 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player))));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
 
             resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
@@ -120,7 +120,7 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player))));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
 
             resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
@@ -151,7 +151,7 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player))));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
 
             resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
