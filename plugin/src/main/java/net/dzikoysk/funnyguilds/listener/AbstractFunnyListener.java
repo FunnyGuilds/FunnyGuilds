@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
@@ -37,6 +38,7 @@ public abstract class AbstractFunnyListener implements Listener {
     @Inject public RegionManager regionManager;
 
     @Inject public NmsAccessor nmsAccessor;
+    @Inject public MessageAccessor messageAccessor;
     @Inject public GuildEntityHelper guildEntityHelper;
 
 }

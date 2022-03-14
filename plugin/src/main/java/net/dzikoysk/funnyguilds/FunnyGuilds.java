@@ -51,6 +51,7 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
 import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
@@ -227,6 +228,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
+            resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });

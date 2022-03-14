@@ -43,8 +43,6 @@ public class PlayerMove extends AbstractFunnyListener {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-            MessageAccessor accessor = this.nmsAccessor.getMessageAccessor();
-
             Option<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
                 return;
@@ -71,7 +69,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                     .register("{TAG}", guild.getTag());
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                accessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarLeaveGuildRegion), player);
+                                this.messageAccessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarLeaveGuildRegion), player);
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
@@ -95,7 +93,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                         .fadeOutDuration(config.notificationTitleFadeOut)
                                         .build();
 
-                                accessor.sendTitleMessage(titleMessage, player);
+                                this.messageAccessor.sendTitleMessage(titleMessage, player);
                             }
                         });
             }
@@ -123,7 +121,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                     .register("{PLAYER}", player.getName());
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                accessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarEnterGuildRegion), player);
+                                this.messageAccessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarEnterGuildRegion), player);
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
@@ -147,7 +145,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                         .fadeOutDuration(config.notificationTitleFadeOut)
                                         .build();
 
-                                accessor.sendTitleMessage(titleMessage, player);
+                                this.messageAccessor.sendTitleMessage(titleMessage, player);
                             }
 
                             if (player.hasPermission("funnyguilds.admin.notification")) {
@@ -170,7 +168,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 }
 
                                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                    accessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarIntruderEnterGuildRegion), memberPlayer);
+                                    this.messageAccessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarIntruderEnterGuildRegion), memberPlayer);
                                 }
 
                                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
@@ -194,7 +192,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                             .fadeOutDuration(config.notificationTitleFadeOut)
                                             .build();
 
-                                    accessor.sendTitleMessage(titleMessage, memberPlayer);
+                                    this.messageAccessor.sendTitleMessage(titleMessage, memberPlayer);
                                 }
 
                             }
