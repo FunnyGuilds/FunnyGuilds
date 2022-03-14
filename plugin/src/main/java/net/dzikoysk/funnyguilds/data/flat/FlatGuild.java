@@ -22,7 +22,7 @@ import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import panda.std.Option;
@@ -36,6 +36,9 @@ public class FlatGuild {
     }
 
     public static Guild deserialize(File file) {
+        GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
+        UserManager userManager = FunnyGuilds.getInstance().getUserManager();
+
         PluginConfiguration configuration = FunnyGuilds.getInstance().getPluginConfiguration();
         YamlWrapper wrapper = new YamlWrapper(file);
 
@@ -68,32 +71,36 @@ public class FlatGuild {
             return null;
         }
 
-        if (regionName == null && configuration.regionsEnabled) {
-            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
-            return null;
-        }
+        Region region = null;
+        if (configuration.regionsEnabled) {
+            if (regionName == null) {
+                FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region is null");
+                return null;
+            }
 
-        Set<String> memberNames = loadSet(wrapper, "members");
-        Set<String> allyNames = loadSet(wrapper, "allies");
-        Set<String> enemyNames = loadSet(wrapper, "enemies");
+            Option<Region> regionOption = FunnyGuilds.getInstance().getRegionManager().findByName(regionName);
+            if (regionOption.isEmpty()) {
+                FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
+                return null;
+            }
 
-        Option<Region> regionOption = FunnyGuilds.getInstance().getRegionManager().findByName(regionName);
-        if (regionOption.isEmpty() && configuration.regionsEnabled) {
-            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: region (object) is null");
-            return null;
+            region = regionOption.get();
         }
-        Region region = regionOption.get();
 
         UUID uuid = UUID.randomUUID();
         if (id != null && !id.isEmpty()) {
             uuid = UUID.fromString(id);
         }
 
-        final User owner = UserUtils.get(ownerName);
+        Option<User> ownerOption = userManager.findByName(ownerName);
+        if (ownerOption.isEmpty()) {
+            FunnyGuilds.getPluginLogger().error("[Deserialize] Cannot deserialize guild: " + name + "! Caused by: owner is null");
+            return null;
+        }
 
         Set<User> deputies = ConcurrentHashMap.newKeySet(1);
         if (deputyName != null && !deputyName.isEmpty()) {
-            deputies = UserUtils.getUsersFromString(ChatUtils.fromString(deputyName));
+            deputies = userManager.findByNames(ChatUtils.fromString(deputyName));
         }
 
         Location home = null;
@@ -106,15 +113,15 @@ public class FlatGuild {
             }
         }
 
+        Set<String> memberNames = loadSet(wrapper, "members");
         if (memberNames == null || memberNames.isEmpty()) {
             memberNames = new HashSet<>();
             memberNames.add(ownerName);
         }
 
-        GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
         Set<User> members = FunnyGuilds.getInstance().getUserManager().findByNames(memberNames);
-        Set<Guild> allies = guildManager.findByNames(allyNames);
-        Set<Guild> enemies = guildManager.findByNames(enemyNames);
+        Set<Guild> allies = guildManager.findByNames(loadSet(wrapper, "allies"));
+        Set<Guild> enemies = guildManager.findByNames(loadSet(wrapper, "enemies"));
 
         if (born == 0) {
             born = System.currentTimeMillis();
@@ -133,7 +140,7 @@ public class FlatGuild {
         values[0] = uuid;
         values[1] = name;
         values[2] = tag;
-        values[3] = owner;
+        values[3] = ownerOption.get();
         values[4] = home;
         values[5] = region;
         values[6] = members;
