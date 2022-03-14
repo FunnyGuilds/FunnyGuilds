@@ -34,7 +34,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(userManager, user.getName()));
 
         guild.removeMember(user);
         user.removeGuild();

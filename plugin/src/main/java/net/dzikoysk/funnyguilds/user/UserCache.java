@@ -125,11 +125,12 @@ public class UserCache {
     public User getLastKiller() {
         Option<UUID> lastAttackerUniqueId = PandaStream.of(this.killerCache.asMap().entrySet())
                 .sorted(Entry.<UUID, Long>comparingByValue().reversed())
-                .map(Entry::getKey).head();
+                .map(Entry::getKey)
+                .head();
 
         return lastAttackerUniqueId
                 .flatMap(FunnyGuilds.getInstance().getUserManager()::findByUuid)
-                .orElseGet((User) null);
+                .orNull();
     }
 
     @Nullable

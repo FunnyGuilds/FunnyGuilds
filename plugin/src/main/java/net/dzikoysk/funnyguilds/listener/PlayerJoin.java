@@ -30,19 +30,21 @@ public class PlayerJoin extends AbstractFunnyListener {
         user.updateReference(player);
         UserCache cache = user.getCache();
 
-        IndividualPlayerList individualPlayerList = new IndividualPlayerList(
-                user,
-                this.nmsAccessor.getPlayerListAccessor(),
-                tablistConfig.playerList,
-                tablistConfig.playerListHeader, tablistConfig.playerListFooter,
-                tablistConfig.pages,
-                tablistConfig.playerListPing,
-                tablistConfig.playerListFillCells,
-                config.top.enableLegacyPlaceholders
-        );
-        individualPlayerList.send();
+        if (this.tablistConfig.playerListEnable) {
+            IndividualPlayerList individualPlayerList = new IndividualPlayerList(
+                    user,
+                    this.nmsAccessor.getPlayerListAccessor(),
+                    tablistConfig.playerList,
+                    tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                    tablistConfig.pages,
+                    tablistConfig.playerListPing,
+                    tablistConfig.playerListFillCells,
+                    config.top.enableLegacyPlaceholders
+            );
+            individualPlayerList.send();
+            cache.setPlayerList(individualPlayerList);
+        }
 
-        cache.setPlayerList(individualPlayerList);
         cache.updateScoreboardIfNull(player);
 
         if (cache.getIndividualPrefix() == null && config.guildTagEnabled) {

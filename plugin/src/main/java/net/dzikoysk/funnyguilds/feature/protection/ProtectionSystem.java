@@ -40,7 +40,7 @@ public final class ProtectionSystem {
         Guild guild = region.getGuild();
 
         User user = FunnyGuilds.getInstance().getUserManager().findByUuid(player.getUniqueId())
-                .orElseGet((User) null);
+                .orNull();
 
         if (!guild.getMembers().contains(user)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
