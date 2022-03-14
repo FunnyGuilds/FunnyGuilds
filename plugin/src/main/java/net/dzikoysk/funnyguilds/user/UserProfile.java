@@ -14,4 +14,6 @@ public interface UserProfile {
 
     void sendMessage(String message);
 
+    void kick(String reason);
+
 }

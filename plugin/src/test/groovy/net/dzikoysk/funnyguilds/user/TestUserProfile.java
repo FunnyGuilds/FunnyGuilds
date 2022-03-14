@@ -3,7 +3,7 @@ package net.dzikoysk.funnyguilds.user;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TestUserProfile implements UserProfile {
+public class TestUserProfile extends UserProfileNone implements UserProfile {
 
     public static final TestUserProfile ONLINE = new TestUserProfile()
             .online(true);
@@ -43,15 +43,6 @@ public class TestUserProfile implements UserProfile {
     @Override
     public boolean hasPermission(String permission) {
         return permissions.contains(permission);
-    }
-
-    @Override
-    public int getPing() {
-        return 0;
-    }
-
-    @Override
-    public void sendMessage(String message) {
     }
 
 }

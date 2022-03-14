@@ -1,8 +1,8 @@
 package net.dzikoysk.funnyguilds.user;
 
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -70,6 +70,11 @@ public class BukkitUserProfile implements UserProfile {
         }
 
         this.getPlayer().peek(player -> player.sendMessage(ChatUtils.colored(message)));
+    }
+
+    @Override
+    public void kick(String reason) {
+        this.getPlayer().peek(player -> player.kickPlayer(reason));
     }
 
 }

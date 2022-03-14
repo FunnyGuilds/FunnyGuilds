@@ -26,4 +26,8 @@ class UserProfileNone implements UserProfile {
     public void sendMessage(String message) {
     }
 
+    @Override
+    public void kick(String reason) {
+    }
+
 }
