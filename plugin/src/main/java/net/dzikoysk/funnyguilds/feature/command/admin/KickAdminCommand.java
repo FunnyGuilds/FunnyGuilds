@@ -19,6 +19,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.kick.name}",
             permission = "funnyguilds.admin",
+            completer = "online-players:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

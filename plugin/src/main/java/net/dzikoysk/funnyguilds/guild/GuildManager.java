@@ -282,7 +282,7 @@ public class GuildManager {
      * @return if guild with given name exists
      */
     public boolean nameExists(String name) {
-        return this.findByName(name).isPresent();
+        return this.findByName(name, true).isPresent();
     }
 
     /**
@@ -292,7 +292,7 @@ public class GuildManager {
      * @return if guild with given tag exists
      */
     public boolean tagExists(String tag) {
-        return this.findByTag(tag).isPresent();
+        return this.findByTag(tag, true).isPresent();
     }
 
     /**

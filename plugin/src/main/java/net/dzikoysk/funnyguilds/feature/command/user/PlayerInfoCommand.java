@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,8 +34,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
                 ? sender.getName()
                 : args[0];
 
-        User user = UserUtils.get(name, config.playerLookupIgnorecase);
-        when(user == null, messages.generalNotPlayedBefore);
+        User user = when(userManager.findByName(name, config.playerLookupIgnorecase), messages.generalNotPlayedBefore);
 
         sendInfoMessage(messages.playerInfoList, user, sender);
     }

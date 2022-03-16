@@ -19,6 +19,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.delete.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

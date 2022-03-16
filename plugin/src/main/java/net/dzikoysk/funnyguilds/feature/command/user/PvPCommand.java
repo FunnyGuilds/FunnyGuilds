@@ -20,6 +20,7 @@ public final class PvPCommand extends AbstractFunnyCommand {
             description = "${user.pvp.description}",
             aliases = "${user.pvp.aliases}",
             permission = "funnyguilds.pvp",
+            completer = "allies:3",
             acceptsExceeded = true,
             playerOnly = true
     )

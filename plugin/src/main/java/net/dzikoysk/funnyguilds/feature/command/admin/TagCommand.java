@@ -17,6 +17,7 @@ public final class TagCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.tag.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

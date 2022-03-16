@@ -18,6 +18,7 @@ public final class KillsCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.kills.name}",
             permission = "funnyguilds.admin",
+            completer = "online-players:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
