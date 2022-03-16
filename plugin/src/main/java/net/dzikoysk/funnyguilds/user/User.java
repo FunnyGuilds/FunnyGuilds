@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarPro
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;

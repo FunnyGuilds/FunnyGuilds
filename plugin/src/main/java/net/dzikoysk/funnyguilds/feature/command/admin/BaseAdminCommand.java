@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -34,7 +35,12 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
                 .register("{ADMIN}", sender.getName())
                 .register("{PLAYER}", userToTeleport.getName());
 
-        userToTeleport.getPlayer().peek(player -> player.teleport(guildHome));
+        Player player = server.getPlayer(userToTeleport.getUUID());
+
+        if (player != null) {
+            player.teleport(guildHome);
+        }
+
         userToTeleport.sendMessage(formatter.format(messages.adminTeleportedToBase));
         sendMessage(sender, formatter.format(messages.adminTargetTeleportedToBase));
     }
