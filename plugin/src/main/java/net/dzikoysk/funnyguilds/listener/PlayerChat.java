@@ -1,14 +1,11 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,7 +51,7 @@ public class PlayerChat extends AbstractFunnyListener {
 
         if (user.hasGuild()) {
             format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().get().getTag()));
-            format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(user, config)));
+            format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player))));
         }
         else {
             format = StringUtils.replace(format, "{TAG}", "");
@@ -65,15 +62,15 @@ public class PlayerChat extends AbstractFunnyListener {
     }
 
     private boolean sendGuildMessage(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
-        if (sendMessageToAllGuilds(event, message, config, player, guild)) {
+        if (sendMessageToAllGuilds(event, message, player, guild)) {
             return true;
         }
 
-        if (sendMessageToGuildAllies(event, message, config, player, guild)) {
+        if (sendMessageToGuildAllies(event, message, player, guild)) {
             return true;
         }
 
-        return sendMessageToGuildMembers(event, message, config, player, guild);
+        return sendMessageToGuildMembers(event, message, player, guild);
     }
 
     private void spy(Player player, String message) {
@@ -86,7 +83,7 @@ public class PlayerChat extends AbstractFunnyListener {
         }
     }
 
-    private boolean sendMessageToGuildMembers(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
+    private boolean sendMessageToGuildMembers(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
         String guildPrefix = config.chatPriv;
         int prefixLength = guildPrefix.length();
 
@@ -96,7 +93,7 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
 
             resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
@@ -113,7 +110,7 @@ public class PlayerChat extends AbstractFunnyListener {
         return false;
     }
 
-    private boolean sendMessageToGuildAllies(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
+    private boolean sendMessageToGuildAllies(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
         String allyPrefix = config.chatAlly;
         int prefixLength = allyPrefix.length();
 
@@ -123,7 +120,7 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(UserUtils.get(player.getUniqueId()), config)));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
 
             resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
@@ -144,7 +141,7 @@ public class PlayerChat extends AbstractFunnyListener {
         return false;
     }
 
-    private boolean sendMessageToAllGuilds(AsyncPlayerChatEvent event, String message, PluginConfiguration config, Player player, Guild guild) {
+    private boolean sendMessageToAllGuilds(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
         String allGuildsPrefix = config.chatGlobal;
         int prefixLength = allGuildsPrefix.length();
 
@@ -154,7 +151,7 @@ public class PlayerChat extends AbstractFunnyListener {
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
             resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player).getOrNull(), config)));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
 
             resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
@@ -184,10 +181,11 @@ public class PlayerChat extends AbstractFunnyListener {
                 .forEach(member -> member.sendMessage(message));
     }
 
-    private String getPositionString(@Nullable User user, PluginConfiguration config) {
-        if (user == null) {
+    private String getPositionString(Option<User> userOption) {
+        if (userOption.isEmpty()) {
             return "";
         }
+        User user = userOption.get();
 
         if (user.isOwner()) {
             return config.chatPositionLeader;

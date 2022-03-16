@@ -37,7 +37,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
         guild.removeMember(user);
         user.removeGuild();
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()), new PrefixGlobalUpdatePlayer(player));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()), new PrefixGlobalUpdatePlayer(individualPrefixManager, player));
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())
