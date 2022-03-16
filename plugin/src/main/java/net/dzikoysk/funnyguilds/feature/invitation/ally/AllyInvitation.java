@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.invitation.guild;
+package net.dzikoysk.funnyguilds.feature.invitation.ally;
 
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.invitation.Invitation;
