@@ -8,7 +8,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
@@ -124,6 +123,13 @@ public final class InvitationList {
                 .collect(Collectors.toList());
     }
 
+    public static List<Invitation> getInvitationsFor(UUID player) {
+        return INVITATION_LIST
+                .stream()
+                .filter(inv -> inv.isToGuild() && inv.getFor().equals(player))
+                .collect(Collectors.toList());
+    }
+
     public static List<Invitation> getInvitationsFrom(Guild guild) {
         return INVITATION_LIST
                 .stream()
@@ -160,6 +166,18 @@ public final class InvitationList {
         }
 
         return guildNames;
+    }
+
+    public static List<String> getInvitationGuildTags(UUID player) {
+        List<String> guildTags = new ArrayList<>();
+
+        for (Invitation invitation : INVITATION_LIST) {
+            if (invitation.isToGuild() && invitation.getFor().equals(player)) {
+                invitation.wrapFrom().peek(result -> guildTags.add(result.getTag()));
+            }
+        }
+
+        return guildTags;
     }
 
     public static final class Invitation {
@@ -202,7 +220,6 @@ public final class InvitationList {
             return to;
         }
 
-        @Nullable
         private Option<Guild> wrapFrom() {
             return FunnyGuilds.getInstance().getGuildManager().findByUuid(from);
         }

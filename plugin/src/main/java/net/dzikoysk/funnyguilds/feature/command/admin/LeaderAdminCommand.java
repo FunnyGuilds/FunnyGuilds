@@ -17,6 +17,7 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.leader.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3 online-players:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

@@ -28,7 +28,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
             description = "${user.break.description}",
             aliases = "${user.break.aliases}",
             permission = "funnyguilds.break",
-            completer = "guilds:3",
+            completer = "allies:3",
             acceptsExceeded = true,
             playerOnly = true
     )

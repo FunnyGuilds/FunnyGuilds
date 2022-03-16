@@ -25,6 +25,7 @@ public final class NameCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.name.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

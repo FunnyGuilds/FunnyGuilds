@@ -17,6 +17,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.points.name}",
             permission = "funnyguilds.admin",
+            completer = "online-players:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

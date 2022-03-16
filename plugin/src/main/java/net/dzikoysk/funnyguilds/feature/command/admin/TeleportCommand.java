@@ -15,6 +15,7 @@ public final class TeleportCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.teleport.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3",
             acceptsExceeded = true,
             playerOnly = true
     )
