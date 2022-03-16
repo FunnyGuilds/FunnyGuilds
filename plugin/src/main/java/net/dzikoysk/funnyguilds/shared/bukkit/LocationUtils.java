@@ -40,7 +40,7 @@ public final class LocationUtils {
             world = Bukkit.getWorlds().get(0);
         }
 
-        return new Location(world, Integer.parseInt(shs[1]), Integer.parseInt(shs[2]), Integer.parseInt(shs[3]));
+        return new Location(world, Float.parseFloat(shs[1]), Float.parseFloat(shs[2]), Float.parseFloat(shs[3]));
     }
 
     public static boolean equals(Location location, Location to) {
@@ -58,11 +58,11 @@ public final class LocationUtils {
 
         return location.getWorld().getName() +
                 "," +
-                location.getBlockX() +
+                (float) location.getX() +
                 "," +
-                location.getBlockY() +
+                (float) location.getY() +
                 "," +
-                location.getBlockZ();
+                (float) location.getZ();
     }
 
     public static String toString(Option<Location> location) {

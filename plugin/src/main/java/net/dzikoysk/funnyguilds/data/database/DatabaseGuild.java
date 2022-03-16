@@ -13,15 +13,15 @@ import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.util.DeserializationUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import panda.std.Option;
 
-public class DatabaseGuild {
+public final class DatabaseGuild {
 
     public static Guild deserialize(ResultSet rs) {
         if (rs == null) {
@@ -61,22 +61,19 @@ public class DatabaseGuild {
             }
 
             Option<User> ownerOption = userManager.findByName(os);
-
             if (ownerOption.isEmpty()) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
                 return null;
             }
 
-            User owner = ownerOption.get();
-
             Set<User> deputies = new HashSet<>();
             if (dp != null && !dp.isEmpty()) {
-                deputies = UserUtils.getUsersFromString(ChatUtils.fromString(dp));
+                deputies = userManager.findByNames(ChatUtils.fromString(dp));
             }
 
             Set<User> members = new HashSet<>();
-            if (membersString != null && !membersString.equals("")) {
-                members = UserUtils.getUsersFromString(ChatUtils.fromString(membersString));
+            if (membersString != null && !membersString.isEmpty()) {
+                members = userManager.findByNames(ChatUtils.fromString(membersString));
             }
 
             if (born == 0) {
@@ -96,9 +93,9 @@ public class DatabaseGuild {
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
-            values[3] = owner;
+            values[3] = ownerOption.get();
             values[4] = LocationUtils.parseLocation(home);
-            values[5] = plugin.getRegionManager().findByName(regionName).getOrNull();
+            values[5] = plugin.getRegionManager().findByName(regionName).orElseGet((Region) null);
             values[6] = members;
             values[7] = Sets.newHashSet();
             values[8] = Sets.newHashSet();

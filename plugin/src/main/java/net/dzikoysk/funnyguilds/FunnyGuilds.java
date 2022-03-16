@@ -242,7 +242,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             FunnyCommandsConfiguration commandsConfiguration = new FunnyCommandsConfiguration();
-            this.funnyCommands = commandsConfiguration.createFunnyCommands(this.getServer(), this);
+            this.funnyCommands = commandsConfiguration.createFunnyCommands(this);
         }
         catch (Exception exception) {
             logger.error("Could not register commands", exception);
