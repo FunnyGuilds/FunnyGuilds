@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.event.rank;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
+import org.jetbrains.annotations.ApiStatus;
 
 public abstract class AbstractRankEvent extends FunnyEvent {
 
@@ -22,6 +23,7 @@ public abstract class AbstractRankEvent extends FunnyEvent {
      * @deprecated for removal in the future, in favour of {@link AbstractRankEvent#getAffected()} and then {@link User#getRank()}
      */
     @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public UserRank getRank() {
         return this.affected.getRank();
     }

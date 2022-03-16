@@ -95,7 +95,7 @@ public class SQLDataModel implements DataModel {
         loadGuilds();
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest());
+        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest(FunnyGuilds.getInstance().getIndividualPrefixManager()));
     }
 
     public void loadUsers() {

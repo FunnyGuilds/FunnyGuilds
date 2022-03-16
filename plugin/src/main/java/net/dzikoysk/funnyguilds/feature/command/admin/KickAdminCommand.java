@@ -35,7 +35,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()));
 
         guild.removeMember(user);
         user.removeGuild();
@@ -49,7 +49,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         broadcastMessage(formatter.format(messages.broadcastKick));
         user.sendMessage(formatter.format(messages.kickToPlayer));
 
-        user.getPlayer().peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player)));
+        user.getPlayer().peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player)));
     }
 
 }

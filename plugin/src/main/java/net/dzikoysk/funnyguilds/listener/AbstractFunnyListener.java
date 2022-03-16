@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
+import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
@@ -34,6 +35,7 @@ public abstract class AbstractFunnyListener implements Listener {
     @Inject public UserRankManager userRankManager;
     @Inject public GuildRankManager guildRankManager;
     @Inject public RegionManager regionManager;
+    @Inject public IndividualPrefixManager individualPrefixManager;
 
     @Inject public GuildInvitationList guildInvitationList;
     @Inject public AllyInvitationList allyInvitationList;
