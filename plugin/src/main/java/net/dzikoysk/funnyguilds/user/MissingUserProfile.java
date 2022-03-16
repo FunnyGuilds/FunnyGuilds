@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.user;
 
+import net.dzikoysk.funnyguilds.shared.Position;
+
 class MissingUserProfile implements UserProfile {
 
     @Override
@@ -28,6 +30,15 @@ class MissingUserProfile implements UserProfile {
 
     @Override
     public void kick(String reason) {
+    }
+
+    @Override
+    public void teleport(Position position) {
+    }
+
+    @Override
+    public Position getPosition() {
+        return Position.ZERO;
     }
 
 }

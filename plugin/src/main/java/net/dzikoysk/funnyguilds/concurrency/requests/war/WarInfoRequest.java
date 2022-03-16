@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import panda.std.Option;
 
 public class WarInfoRequest extends DefaultConcurrencyRequest {
 
@@ -22,13 +23,13 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
 
     private final GuildEntityHelper guildEntityHelper;
 
-    private final Server server;
+    private final FunnyGuilds plugin;
     private final User user;
     private final int entityId;
 
     public WarInfoRequest(FunnyGuilds plugin, GuildEntityHelper guildEntityHelper, User user, int entityId) {
         this.user = user;
-        this.server = plugin.getServer();
+        this.plugin = plugin;
         try {
             this.infoExecutor = plugin.getInjector().newInstanceWithFields(InfoCommand.class);
         }
@@ -47,12 +48,13 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
                 continue;
             }
 
-            Player player = server.getPlayer(user.getUUID());
+            Option<Player> playerOption = plugin.getFunnyServer().getPlayer(user.getUUID());
 
-            if (player == null) {
+            if (playerOption.isEmpty()) {
                 return;
             }
 
+            Player player = playerOption.get();
             Guild guild = entry.getKey();
 
             if (SecuritySystem.onHitCrystal(player, guild)) {

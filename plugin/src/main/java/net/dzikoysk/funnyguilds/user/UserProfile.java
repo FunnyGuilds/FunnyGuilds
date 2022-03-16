@@ -1,5 +1,7 @@
 package net.dzikoysk.funnyguilds.user;
 
+import net.dzikoysk.funnyguilds.shared.Position;
+
 public interface UserProfile {
 
     UserProfile NONE = new MissingUserProfile();
@@ -15,5 +17,9 @@ public interface UserProfile {
     void sendMessage(String message);
 
     void kick(String reason);
+
+    void teleport(Position position);
+
+    Position getPosition();
 
 }
