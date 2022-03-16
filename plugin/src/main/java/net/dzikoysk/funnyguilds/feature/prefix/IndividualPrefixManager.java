@@ -14,20 +14,26 @@ import panda.std.stream.PandaStream;
 
 public class IndividualPrefixManager {
 
-    public static void updatePlayers() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            updatePlayer(player);
-        }
+    private final FunnyGuilds plugin;
+
+    private final PluginConfiguration pluginConfiguration;
+    private final UserManager userManager;
+
+    public IndividualPrefixManager(FunnyGuilds plugin) {
+        this.plugin = plugin;
+
+        this.pluginConfiguration = plugin.getPluginConfiguration();
+        this.userManager = plugin.getUserManager();
     }
 
-    public static void updatePlayer(Player player) {
+    public void updatePlayers() {
+        Bukkit.getOnlinePlayers().forEach(this::updatePlayer);
+    }
+
+    public void updatePlayer(Player player) {
         if (!player.isOnline()) {
             return;
         }
-
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        UserManager userManager = plugin.getUserManager();
-        PluginConfiguration config = plugin.getPluginConfiguration();
 
         Option<User> userOption = userManager.findByPlayer(player);
         if (userOption.isEmpty()) {
@@ -50,7 +56,7 @@ public class IndividualPrefixManager {
 
             Bukkit.getScheduler().runTask(plugin, () -> {
                 Scoreboard scoreboard;
-                if (config.useSharedScoreboard) {
+                if (pluginConfiguration.useSharedScoreboard) {
                     scoreboard = player.getScoreboard();
                 }
                 else {
@@ -60,7 +66,7 @@ public class IndividualPrefixManager {
 
                 cache.setScoreboard(scoreboard);
 
-                if (config.guildTagEnabled) {
+                if (pluginConfiguration.guildTagEnabled) {
                     IndividualPrefix prefix = new IndividualPrefix(user);
                     prefix.initialize();
 
@@ -72,7 +78,7 @@ public class IndividualPrefixManager {
         });
     }
 
-    public static void addGuild(UserManager userManager, Guild guild) {
+    public void addGuild(Guild guild) {
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .map(Player::getUniqueId)
                 .flatMap(userManager::findByUuid)
@@ -83,7 +89,7 @@ public class IndividualPrefixManager {
         updatePlayers();
     }
 
-    public static void addPlayer(UserManager userManager, String player) {
+    public void addPlayer(String player) {
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .map(Player::getUniqueId)
                 .flatMap(userManager::findByUuid)
@@ -94,7 +100,7 @@ public class IndividualPrefixManager {
         updatePlayers();
     }
 
-    public static void removeGuild(UserManager userManager, Guild guild) {
+    public void removeGuild(Guild guild) {
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .map(Player::getUniqueId)
                 .flatMap(userManager::findByUuid)
@@ -105,7 +111,7 @@ public class IndividualPrefixManager {
         updatePlayers();
     }
 
-    public static void removePlayer(UserManager userManager, String player) {
+    public void removePlayer(String player) {
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .map(Player::getUniqueId)
                 .flatMap(userManager::findByUuid)

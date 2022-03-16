@@ -55,7 +55,7 @@ public class PlayerJoin extends AbstractFunnyListener {
         }
 
         this.concurrencyManager.postRequests(
-                new PrefixGlobalUpdatePlayer(player),
+                new PrefixGlobalUpdatePlayer(individualPrefixManager, player),
                 new DummyGlobalUpdateUserRequest(user)
         );
 

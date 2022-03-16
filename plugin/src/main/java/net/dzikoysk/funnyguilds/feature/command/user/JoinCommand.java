@@ -74,7 +74,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         user.setGuild(guild);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
-        this.concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(userManager, user.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(individualPrefixManager, user.getName()));
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())

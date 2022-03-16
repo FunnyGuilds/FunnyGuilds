@@ -40,7 +40,7 @@ public final class AddCommand extends AbstractFunnyCommand {
 
         guild.addMember(userToAdd);
         userToAdd.setGuild(guild);
-        this.concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(userManager, userToAdd.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalAddPlayerRequest(individualPrefixManager, userToAdd.getName()));
 
         Formatter formatter = new Formatter()
                 .register("{GUILD}", guild.getName())
