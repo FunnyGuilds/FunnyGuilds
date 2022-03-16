@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
+import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
@@ -116,6 +117,7 @@ public class FunnyGuilds extends JavaPlugin {
     private GuildRankManager guildRankManager;
     private RegionManager regionManager;
     private FunnyServer funnyServer;
+    private IndividualPrefixManager individualPrefixManager;
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
@@ -200,6 +202,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
+        this.individualPrefixManager = new IndividualPrefixManager(this);
+
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
@@ -231,6 +235,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
+            resources.on(IndividualPrefixManager.class).assignInstance(this.individualPrefixManager);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
@@ -478,6 +483,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public FunnyServer getFunnyServer() {
         return funnyServer;
+    }
+
+    public IndividualPrefixManager getIndividualPrefixManager() {
+        return individualPrefixManager;
     }
 
     public NmsAccessor getNmsAccessor() {

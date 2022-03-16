@@ -251,7 +251,7 @@ public class GuildManager {
                     });
         }
 
-        plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(guild));
+        plugin.getConcurrencyManager().postRequests(new PrefixGlobalRemoveGuildRequest(plugin.getIndividualPrefixManager(), guild));
 
         guild.getMembers().forEach(User::removeGuild);
 
