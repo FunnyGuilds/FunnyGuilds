@@ -5,7 +5,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import panda.std.stream.PandaStream;
 
-public interface InvitationList<T extends Invitation<?,?>> {
+public interface InvitationList<T extends Invitation<?, ?>> {
 
     Set<T> getInvitations();
 

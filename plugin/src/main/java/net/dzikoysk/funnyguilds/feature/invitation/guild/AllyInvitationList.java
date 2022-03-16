@@ -33,7 +33,7 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
         return this.getInvitationsFor(to.getUUID());
     }
 
-    public boolean hasInvitation(Guild from , Guild to) {
+    public boolean hasInvitation(Guild from, Guild to) {
         return this.hasInvitation(from.getUUID(), to.getUUID());
     }
 
