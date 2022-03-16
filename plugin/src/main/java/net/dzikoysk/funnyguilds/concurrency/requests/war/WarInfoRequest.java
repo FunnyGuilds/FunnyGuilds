@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
@@ -14,8 +13,8 @@ import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 
 public class WarInfoRequest extends DefaultConcurrencyRequest {
 
@@ -23,10 +22,13 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
 
     private final GuildEntityHelper guildEntityHelper;
 
+    private final Server server;
     private final User user;
     private final int entityId;
 
     public WarInfoRequest(FunnyGuilds plugin, GuildEntityHelper guildEntityHelper, User user, int entityId) {
+        this.user = user;
+        this.server = plugin.getServer();
         try {
             this.infoExecutor = plugin.getInjector().newInstanceWithFields(InfoCommand.class);
         }
@@ -35,7 +37,6 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
         }
         this.guildEntityHelper = guildEntityHelper;
 
-        this.user = user;
         this.entityId = entityId;
     }
 
@@ -46,14 +47,13 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
                 continue;
             }
 
-            Guild guild = entry.getKey();
+            Player player = server.getPlayer(user.getUUID());
 
-            Option<Player> playerOption = this.user.getPlayer();
-            if (playerOption.isEmpty()) {
+            if (player == null) {
                 return;
             }
 
-            Player player = playerOption.get();
+            Guild guild = entry.getKey();
 
             if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;
@@ -61,7 +61,6 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
 
             FunnyGuilds plugin = FunnyGuilds.getInstance();
             PluginConfiguration config = plugin.getPluginConfiguration();
-            MessageConfiguration messages = plugin.getMessageConfiguration();
 
             if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                 return;

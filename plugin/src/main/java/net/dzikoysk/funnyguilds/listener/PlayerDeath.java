@@ -78,7 +78,8 @@ public class PlayerDeath extends AbstractFunnyListener {
                 return;
             }
 
-            playerAttacker = lastAttacker.getPlayer().get();
+
+            playerAttacker = server.getPlayer(lastAttacker.getUUID());
         }
 
         Option<User> attackerOption = this.userManager.findByPlayer(playerAttacker);

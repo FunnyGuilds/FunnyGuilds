@@ -163,11 +163,6 @@ public class User extends AbstractMutableEntity {
     //  - get Player/OfflinePlayer in the another way
 
     @Deprecated
-    public OfflinePlayer getOfflinePlayer() {
-        return Bukkit.getOfflinePlayer(this.uuid);
-    }
-
-    @Deprecated
     public Option<Player> getPlayer() {
         Player player = this.playerRef.get();
         if (player != null) {

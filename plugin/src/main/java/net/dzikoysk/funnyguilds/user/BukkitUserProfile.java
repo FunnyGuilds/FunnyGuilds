@@ -2,8 +2,10 @@ package net.dzikoysk.funnyguilds.user;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
+import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.metadata.MetadataValue;
@@ -13,12 +15,14 @@ public class BukkitUserProfile implements UserProfile {
 
     private final UUID uuid;
     private final Server server;
+    private final OfflinePlayer offlinePlayer;
     private WeakReference<Player> playerRef;
 
     public BukkitUserProfile(UUID uuid, Server server) {
         this.uuid = uuid;
         this.server = server;
         this.playerRef = new WeakReference<>(server.getPlayer(this.uuid));
+        this.offlinePlayer = server.getOfflinePlayer(this.uuid);
     }
 
     private Option<Player> getPlayer() {
@@ -53,7 +57,7 @@ public class BukkitUserProfile implements UserProfile {
     public boolean hasPermission(String permission) {
         return this.getPlayer()
                 .map(player -> player.hasPermission(permission))
-                .orElseGet(false);
+                .orElseGet(offlinePlayer.isOp() || (VaultHook.isPermissionHooked() && VaultHook.hasPermission(offlinePlayer, permission)));
     }
 
     @Override

@@ -11,14 +11,14 @@ public class WarPacketCallbacks implements PacketCallbacks {
     private final FunnyGuilds plugin;
     private final User user;
 
-    public WarPacketCallbacks(FunnyGuilds plugin, final User user) {
+    public WarPacketCallbacks(FunnyGuilds plugin, User user) {
         this.plugin = plugin;
         this.user = user;
     }
 
     @Override
     public void handleRightClickEntity(int entityId, boolean isMainHand) {
-        plugin.getConcurrencyManager().postRequests(new WarInfoRequest(plugin, this.plugin.getGuildEntityHelper(), this.user, entityId));
+        plugin.getConcurrencyManager().postRequests(new WarInfoRequest(plugin, this.plugin.getGuildEntityHelper(), user, entityId));
     }
 
     @Override
@@ -27,6 +27,6 @@ public class WarPacketCallbacks implements PacketCallbacks {
             return;
         }
 
-        plugin.getConcurrencyManager().postRequests(new WarAttackRequest(plugin.getGuildEntityHelper(), this.user, entityId));
+        plugin.getConcurrencyManager().postRequests(new WarAttackRequest(plugin.getGuildEntityHelper(), plugin.getServer(), user, entityId));
     }
 }

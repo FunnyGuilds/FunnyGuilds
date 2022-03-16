@@ -11,18 +11,20 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
-import panda.std.Option;
 
 public class WarAttackRequest extends DefaultConcurrencyRequest {
 
     private final GuildEntityHelper guildEntityHelper;
+    private final Server server;
 
     private final User user;
     private final int entityId;
 
-    public WarAttackRequest(GuildEntityHelper guildEntityHelper, final User user, final int entityId) {
+    public WarAttackRequest(GuildEntityHelper guildEntityHelper, Server server, User user, final int entityId) {
         this.guildEntityHelper = guildEntityHelper;
+        this.server = server;
         this.user = user;
         this.entityId = entityId;
     }
@@ -34,14 +36,13 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
                 continue;
             }
 
-            Guild guild = entry.getKey();
+            Player player = server.getPlayer(user.getUUID());
 
-            Option<Player> playerOption = this.user.getPlayer();
-            if (playerOption.isEmpty()) {
+            if (player == null) {
                 return;
             }
 
-            Player player = playerOption.get();
+            Guild guild = entry.getKey();
 
             if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;
