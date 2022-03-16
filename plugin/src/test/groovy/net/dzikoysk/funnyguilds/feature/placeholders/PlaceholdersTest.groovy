@@ -46,10 +46,8 @@ class PlaceholdersTest extends FunnyGuildsSpec {
     void 'test GUILD_MEMBERS_COLOR_CONTEXT placeholder' () {
         def guild = guildManager.addGuild(new Guild('guild', 'TEST'))
         def user1 = userManager.create(UUID.randomUUID(), 'user1')
-        def user2 = userManager.create(UUID.randomUUID(), 'user2')
+        def user2 = userManager.create(UUID.randomUUID(), 'user2', TestUserProfile.ONLINE)
         def user3 = userManager.create(UUID.randomUUID(), 'user3')
-
-        user2.setProfile(TestUserProfile.ONLINE)
 
         guild.addMember(user1)
         guild.addMember(user2)

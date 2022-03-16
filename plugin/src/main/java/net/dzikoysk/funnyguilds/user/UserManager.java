@@ -131,6 +131,27 @@ public class UserManager {
         return user;
     }
 
+    /**
+     * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByUuid(UUID)}, {@link UserManager#findByName(String)} etc.
+     *
+     * @param uuid the universally unique identifier which will be assigned to user
+     * @param name the nickname which will be assigned to User
+     * @param userProfile the user profile which will be assigned to User
+     * @return the user
+     */
+    public User create(UUID uuid, String name, UserProfile userProfile) {
+        Validate.notNull(uuid, "uuid can't be null!");
+        Validate.notNull(name, "name can't be null!");
+        Validate.notBlank(name, "name can't be blank!");
+        Validate.notNull(userProfile, "userProfile can't be null!");
+        Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
+
+        User user = new User(uuid, name);
+        user.setProfile(userProfile);
+        this.addUser(user);
+
+        return user;
+    }
 
     /**
      * Add user to storage. If you think you should use this method you probably shouldn't.

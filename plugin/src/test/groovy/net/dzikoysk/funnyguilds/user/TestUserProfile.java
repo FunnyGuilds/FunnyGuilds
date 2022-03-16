@@ -1,33 +1,27 @@
 package net.dzikoysk.funnyguilds.user;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TestUserProfile extends UserProfileNone implements UserProfile {
+public class TestUserProfile extends MissingUserProfile implements UserProfile {
 
-    public static final TestUserProfile ONLINE = new TestUserProfile()
-            .online(true);
+    public static final TestUserProfile ONLINE = new TestUserProfile(true, false);
 
-    public static final TestUserProfile VANISHED = new TestUserProfile()
-            .vanished(true);
+    public static final TestUserProfile VANISHED = new TestUserProfile(false, true);
 
     private final Set<String> permissions = new HashSet<>();
-    private boolean online = false;
-    private boolean vanished = false;
+    private final boolean online;
+    private final boolean vanished;
 
-    public TestUserProfile online(boolean online) {
+    public TestUserProfile(boolean online, boolean vanished, String... permissions) {
         this.online = online;
-        return this;
-    }
-
-    public TestUserProfile vanished(boolean vanished) {
         this.vanished = vanished;
-        return this;
+        this.permissions.addAll(Arrays.asList(permissions));
     }
 
-    public TestUserProfile permission(String permission) {
+    public void addPermission(String permission) {
         permissions.add(permission);
-        return this;
     }
 
     @Override

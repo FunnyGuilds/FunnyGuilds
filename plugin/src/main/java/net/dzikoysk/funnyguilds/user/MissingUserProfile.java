@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.user;
 
-class UserProfileNone implements UserProfile {
+class MissingUserProfile implements UserProfile {
 
     @Override
     public boolean isOnline() {

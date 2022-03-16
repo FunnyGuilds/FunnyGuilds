@@ -2,7 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 public interface UserProfile {
 
-    UserProfile NONE = new UserProfileNone();
+    UserProfile NONE = new MissingUserProfile();
 
     boolean isOnline();
 

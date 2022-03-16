@@ -35,8 +35,6 @@ public class PlayerQuit extends AbstractFunnyListener {
             user.getRank().updateLogouts(currentValue -> currentValue + 1);
         }
 
-        user.setProfile(UserProfile.NONE);
-
         cache.setIndividualPrefix(null);
         cache.setScoreboard(null);
         cache.setDummy(null);
