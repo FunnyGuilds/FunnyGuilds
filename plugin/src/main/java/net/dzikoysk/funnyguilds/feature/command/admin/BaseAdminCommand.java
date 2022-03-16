@@ -16,6 +16,7 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.base.name}",
             permission = "funnyguilds.admin",
+            completer = "online-players:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

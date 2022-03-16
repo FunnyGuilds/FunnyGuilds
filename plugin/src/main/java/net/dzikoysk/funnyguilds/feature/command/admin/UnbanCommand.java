@@ -18,6 +18,7 @@ public final class UnbanCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.unban.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

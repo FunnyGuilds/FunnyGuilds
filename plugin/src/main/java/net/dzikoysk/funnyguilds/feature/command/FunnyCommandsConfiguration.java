@@ -8,6 +8,8 @@ import java.util.function.Function;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnycommands.resources.types.PlayerType;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.command.admin.AddCommand;
 import net.dzikoysk.funnyguilds.feature.command.admin.BanCommand;
@@ -57,16 +59,25 @@ import net.dzikoysk.funnyguilds.feature.command.user.TntCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.TopCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.ValidityCommand;
 import net.dzikoysk.funnyguilds.feature.command.user.WarCommand;
+import net.dzikoysk.funnyguilds.guild.GuildManager;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Server;
 import panda.utilities.text.Joiner;
 
 public final class FunnyCommandsConfiguration {
 
-    public FunnyCommands createFunnyCommands(Server server, FunnyGuilds plugin) {
-        CommandsConfiguration commands = plugin.getPluginConfiguration().commands;
+    public FunnyCommands createFunnyCommands(FunnyGuilds plugin) {
+        Server server = plugin.getServer();
 
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
+
+        CommandsConfiguration commands = config.commands;
         CommandsConfiguration.FunnyCommand enlargeCommand = commands.enlarge;
-        enlargeCommand.enabled = enlargeCommand.enabled && plugin.getPluginConfiguration().enlargeEnable;
+        enlargeCommand.enabled = enlargeCommand.enabled && config.enlargeEnable;
+
+        UserManager userManager = plugin.getUserManager();
+        GuildManager guildManager = plugin.getGuildManager();
 
         CommandComponents userCommands = new CommandComponents("user")
                 .command("ally", commands.ally, AllyCommand.class)
@@ -126,14 +137,16 @@ public final class FunnyCommandsConfiguration {
                 .placeholders(adminCommands.placeholders)
                 .injector(plugin.getInjector().fork(resources -> {
                 }))
-                .bind(new UserBind(plugin.getUserManager()))
-                .bind(new GuildBind(plugin.getMessageConfiguration(), plugin.getUserManager()))
+                .bind(new UserBind(userManager))
+                .bind(new GuildBind(messages, userManager))
                 .type(new PlayerType(server))
-                .completer(new GuildsCompleter())
-                .completer(new MembersCompleter(plugin.getUserManager()))
-                .validator(new MemberValidator(plugin.getMessageConfiguration()))
-                .validator(new ManageValidator(plugin.getMessageConfiguration()))
-                .validator(new OwnerValidator(plugin.getMessageConfiguration()))
+                .completer(new MembersCompleter(userManager))
+                .completer(new GuildsCompleter(guildManager))
+                .completer(new AlliesCompleter(userManager))
+                .completer(new GuildInvitationsCompleter(userManager))
+                .validator(new MemberValidator(messages))
+                .validator(new ManageValidator(messages))
+                .validator(new OwnerValidator(messages))
                 .commands(userCommands.commands)
                 .commands(adminCommands.commands)
                 .exceptionHandler(new FunnyGuildsExceptionHandler(FunnyGuilds.getPluginLogger()))

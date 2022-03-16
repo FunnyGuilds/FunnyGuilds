@@ -20,6 +20,7 @@ public final class BanCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.ban.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3",
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {

@@ -29,7 +29,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
             description = "${user.join.description}",
             aliases = "${user.join.aliases}",
             permission = "funnyguilds.join",
-            completer = "guilds:3",
+            completer = "guild-invitations:3",
             acceptsExceeded = true,
             playerOnly = true
     )

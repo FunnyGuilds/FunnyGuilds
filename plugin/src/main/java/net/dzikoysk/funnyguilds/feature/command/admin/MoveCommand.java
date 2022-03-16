@@ -25,6 +25,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.move.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3",
             acceptsExceeded = true,
             playerOnly = true
     )

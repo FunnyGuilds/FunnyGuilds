@@ -19,6 +19,7 @@ public final class AddCommand extends AbstractFunnyCommand {
     @FunnyCommand(
             name = "${admin.add.name}",
             permission = "funnyguilds.admin",
+            completer = "guilds:3 online-players:3",
             acceptsExceeded = true,
             playerOnly = true
     )
