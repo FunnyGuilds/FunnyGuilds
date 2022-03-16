@@ -16,6 +16,8 @@ import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.AllyInvitationList;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
@@ -114,6 +116,9 @@ public class FunnyGuilds extends JavaPlugin {
     private GuildRankManager guildRankManager;
     private RegionManager regionManager;
 
+    private GuildInvitationList guildInvitationList;
+    private AllyInvitationList allyInvitationList;
+
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
 
@@ -196,6 +201,9 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
+        this.guildInvitationList = new GuildInvitationList(this.getServer(), this.guildManager);
+        this.allyInvitationList = new AllyInvitationList(this.guildManager);
+
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
@@ -226,6 +234,8 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
+            resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
+            resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
             resources.on(DataModel.class).assignInstance(this.dataModel);
@@ -468,6 +478,14 @@ public class FunnyGuilds extends JavaPlugin {
 
     public RegionManager getRegionManager() {
         return regionManager;
+    }
+
+    public GuildInvitationList getGuildInvitationList() {
+        return guildInvitationList;
+    }
+
+    public AllyInvitationList getAllyInvitationList() {
+        return allyInvitationList;
     }
 
     public NmsAccessor getNmsAccessor() {

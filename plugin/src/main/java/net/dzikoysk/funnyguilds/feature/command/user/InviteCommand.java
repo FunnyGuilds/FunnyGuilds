@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberInviteEvent;
@@ -36,12 +35,12 @@ public final class InviteCommand extends AbstractFunnyCommand {
         User invitedUser = UserValidation.requireUserByName(args[0]);
         Option<Player> invitedPlayerOption = invitedUser.getPlayer();
 
-        if (InvitationList.hasInvitationFrom(invitedUser, guild)) {
+        if (guildInvitationList.hasInvitation(guild, invitedUser)) {
             if (!SimpleEventHandler.handle(new GuildMemberRevokeInviteEvent(EventCause.USER, user, guild, invitedUser))) {
                 return;
             }
 
-            InvitationList.expireInvitation(guild, invitedUser);
+            guildInvitationList.expireInvitation(guild, invitedUser);
             user.sendMessage(messages.inviteCancelled);
             when(invitedPlayerOption.isPresent(), messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             return;
@@ -55,7 +54,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
             return;
         }
 
-        InvitationList.createInvitation(guild, invitedPlayer);
+        guildInvitationList.createInvitation(guild, invitedPlayer);
         user.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
         sendMessage(invitedPlayer, messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }

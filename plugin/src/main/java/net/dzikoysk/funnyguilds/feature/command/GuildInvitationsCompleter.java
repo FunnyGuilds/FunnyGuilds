@@ -7,7 +7,7 @@ import net.dzikoysk.funnycommands.commands.CommandUtils;
 import net.dzikoysk.funnycommands.resources.Completer;
 import net.dzikoysk.funnycommands.resources.Context;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.data.util.InvitationList;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 
@@ -15,16 +15,18 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 final class GuildInvitationsCompleter implements Completer {
 
     private final UserManager userManager;
+    private final GuildInvitationList guildInvitationList;
 
-    GuildInvitationsCompleter(UserManager userManager) {
+    GuildInvitationsCompleter(UserManager userManager, GuildInvitationList guildInvitationList) {
         this.userManager = userManager;
+        this.guildInvitationList = guildInvitationList;
     }
 
     @Override
     public List<String> apply(Context context, String prefix, Integer limit) {
         return this.userManager.findByName(context.getCommandSender().getName())
                 .map(User::getUUID)
-                .map(uuid -> CommandUtils.collectCompletions(InvitationList.getInvitationGuildTags(uuid), prefix, limit, ArrayList::new, (guildName) -> guildName))
+                .map(uuid -> CommandUtils.collectCompletions(guildInvitationList.getInvitationGuildTags(uuid), prefix, limit, ArrayList::new, (guildName) -> guildName))
                 .orElseGet(Collections.emptyList());
     }
 

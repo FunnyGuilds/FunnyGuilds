@@ -1,12 +1,11 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import java.util.List;
+import java.util.Set;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTask;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyTaskBuilder;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixUpdateGuildRequest;
-import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.ally.GuildAcceptAllyInvitationEvent;
@@ -15,6 +14,7 @@ import net.dzikoysk.funnyguilds.event.guild.ally.GuildSendAllyInvitationEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.AllyInvitation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -37,11 +37,11 @@ public final class AllyCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
-        List<InvitationList.Invitation> invitations = InvitationList.getInvitationsFor(guild);
+        Set<AllyInvitation> invitations = allyInvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
             when(invitations.size() == 0, messages.allyHasNotInvitation);
-            String guildNames = ChatUtils.toString(InvitationList.getInvitationGuildNames(guild), false);
+            String guildNames = ChatUtils.toString(allyInvitationList.getInvitationGuildNames(guild), false);
 
             for (String msg : messages.allyInvitationList) {
                 user.sendMessage(msg.replace("{GUILDS}", guildNames));
@@ -83,12 +83,12 @@ public final class AllyCommand extends AbstractFunnyCommand {
         }
 
 
-        if (InvitationList.hasInvitationFrom(guild, invitedGuild)) {
+        if (allyInvitationList.hasInvitation(guild, invitedGuild)) {
             if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
                 return;
             }
 
-            InvitationList.expireInvitation(invitedGuild, guild);
+            allyInvitationList.expireInvitation(invitedGuild, guild);
 
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
@@ -117,12 +117,12 @@ public final class AllyCommand extends AbstractFunnyCommand {
             return;
         }
 
-        if (InvitationList.hasInvitationFrom(invitedGuild, guild)) {
+        if (allyInvitationList.hasInvitation(invitedGuild, guild)) {
             if (!SimpleEventHandler.handle(new GuildRevokeAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
                 return;
             }
 
-            InvitationList.expireInvitation(guild, invitedGuild);
+            allyInvitationList.expireInvitation(guild, invitedGuild);
 
             String allyReturnMessage = messages.allyReturn;
             allyReturnMessage = StringUtils.replace(allyReturnMessage, "{GUILD}", invitedGuild.getName());
@@ -141,7 +141,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             return;
         }
 
-        InvitationList.createInvitation(guild, invitedGuild);
+        allyInvitationList.createInvitation(guild, invitedGuild);
 
         String allyInviteDoneMessage = messages.allyInviteDone;
         allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{GUILD}", invitedGuild.getName());
