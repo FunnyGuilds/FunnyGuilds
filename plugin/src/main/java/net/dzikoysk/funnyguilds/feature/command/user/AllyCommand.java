@@ -82,7 +82,6 @@ public final class AllyCommand extends AbstractFunnyCommand {
             return;
         }
 
-
         if (allyInvitationList.hasInvitation(invitedGuild, guild)) {
             if (!SimpleEventHandler.handle(new GuildAcceptAllyInvitationEvent(EventCause.USER, user, guild, invitedGuild))) {
                 return;
