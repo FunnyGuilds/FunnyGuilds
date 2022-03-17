@@ -97,7 +97,7 @@ public class UserManager {
      */
     public Option<User> findByPlayer(@NotNull Player player) {
         if (player.getUniqueId().version() == 2) {
-            return Option.of(new User(player.getUniqueId(), player.getName()));
+            return Option.of(new User(player.getUniqueId(), player.getName(), new NPCUserProfile()));
         }
 
         return findByUuid(player.getUniqueId());
@@ -112,23 +112,12 @@ public class UserManager {
         return findByUuid(offlinePlayer.getUniqueId());
     }
 
-    /**
-     * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByUuid(UUID)}, {@link UserManager#findByName(String)} etc.
-     *
-     * @param uuid the universally unique identifier which will be assigned to user
-     * @param name the nickname which will be assigned to User
-     * @return the user
-     */
-    public User create(UUID uuid, String name) {
-        Validate.notNull(uuid, "uuid can't be null!");
-        Validate.notNull(name, "name can't be null!");
-        Validate.notBlank(name, "name can't be blank!");
-        Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
+    public User createFake(UUID uuid, String name) {
+        return create(uuid, name, FakeUserProfile.offline());
+    }
 
-        User user = new User(uuid, name);
-        this.addUser(user);
-
-        return user;
+    public User createFake(UUID uuid, String name, FakeUserProfile profile) {
+        return create(uuid, name, profile);
     }
 
     /**
@@ -146,8 +135,7 @@ public class UserManager {
         Validate.notNull(userProfile, "userProfile can't be null!");
         Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
 
-        User user = new User(uuid, name);
-        user.setProfile(userProfile);
+        User user = new User(uuid, name, userProfile);
         this.addUser(user);
 
         return user;

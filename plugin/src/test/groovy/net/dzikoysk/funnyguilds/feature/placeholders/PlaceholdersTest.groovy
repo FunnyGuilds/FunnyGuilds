@@ -4,7 +4,7 @@ import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils
-import net.dzikoysk.funnyguilds.user.TestUserProfile
+import net.dzikoysk.funnyguilds.user.FakeUserProfile
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.junit.jupiter.api.BeforeEach
@@ -45,9 +45,9 @@ class PlaceholdersTest extends FunnyGuildsSpec {
     @Test
     void 'test GUILD_MEMBERS_COLOR_CONTEXT placeholder' () {
         def guild = guildManager.addGuild(new Guild('guild', 'TEST'))
-        def user1 = userManager.create(UUID.randomUUID(), 'user1')
-        def user2 = userManager.create(UUID.randomUUID(), 'user2', TestUserProfile.ONLINE)
-        def user3 = userManager.create(UUID.randomUUID(), 'user3')
+        def user1 = userManager.createFake(UUID.randomUUID(), 'user1', FakeUserProfile.offline())
+        def user2 = userManager.createFake(UUID.randomUUID(), 'user2', FakeUserProfile.online())
+        def user3 = userManager.createFake(UUID.randomUUID(), 'user3', FakeUserProfile.offline())
 
         guild.addMember(user1)
         guild.addMember(user2)

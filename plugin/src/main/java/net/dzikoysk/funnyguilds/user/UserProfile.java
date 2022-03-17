@@ -4,13 +4,17 @@ import net.dzikoysk.funnyguilds.shared.Position;
 
 public interface UserProfile {
 
-    UserProfile NONE = new MissingUserProfile();
+    default boolean isOnline() {
+        return false;
+    }
 
-    boolean isOnline();
+    default boolean isVanished() {
+        return false;
+    }
 
-    boolean isVanished();
-
-    boolean hasPermission(String permission);
+    default boolean hasPermission(String permission) {
+        return false;
+    }
 
     default int getPing() {
         return - 1;

@@ -25,11 +25,12 @@ public class User extends AbstractMutableEntity {
     private Option<UserBan> ban = Option.none();
     private final BossBarProvider bossBarProvider;
 
-    private UserProfile profile = UserProfile.NONE;
+    private final UserProfile profile;
 
-    User(UUID uuid, String name) {
+    User(UUID uuid, String name, UserProfile profile) {
         this.uuid = uuid;
         this.name = name;
+        this.profile = profile;
 
         this.cache = new UserCache(this);
         this.rank = new UserRank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
@@ -150,10 +151,6 @@ public class User extends AbstractMutableEntity {
 
     public UserProfile getProfile() {
         return this.profile;
-    }
-
-    public void setProfile(UserProfile profile) {
-        this.profile = profile;
     }
 
     // Deprecated methods

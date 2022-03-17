@@ -91,4 +91,8 @@ public final class Position {
         return new Position(this.x / x, this.y / y, this.z / z, this.pitch, this.yaw, this.world);
     }
 
+    public Position changeWorld(String world) {
+        return new Position(this.x, this.y, this.z, this.pitch, this.yaw, world);
+    }
+
 }

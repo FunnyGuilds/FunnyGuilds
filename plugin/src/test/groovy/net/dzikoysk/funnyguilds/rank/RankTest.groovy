@@ -13,8 +13,8 @@ final class RankTest extends FunnyGuildsSpec {
 
     @Test
     void 'user should implement proper equals & hashcode'() {
-        User user1 = userManager.create(UUID.nameUUIDFromBytes("user1".getBytes()), "user1")
-        User user2 = userManager.create(UUID.nameUUIDFromBytes("user2".getBytes()), "user2")
+        User user1 = userManager.createFake(UUID.nameUUIDFromBytes("user1".getBytes()), "user1")
+        User user2 = userManager.createFake(UUID.nameUUIDFromBytes("user2".getBytes()), "user2")
 
         EqualsVerifier.forClass(Rank.class)
                 .usingGetClass()
