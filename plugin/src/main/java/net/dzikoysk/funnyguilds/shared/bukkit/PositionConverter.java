@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-public class FunnyAdapter {
+public class PositionConverter {
 
     public static Position adapt(Location location) {
         World world = location.getWorld();

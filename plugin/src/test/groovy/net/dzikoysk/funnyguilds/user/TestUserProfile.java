@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TestUserProfile extends MissingUserProfile implements UserProfile {
+public class TestUserProfile implements UserProfile {
 
     public static final TestUserProfile ONLINE = new TestUserProfile(true, false);
 

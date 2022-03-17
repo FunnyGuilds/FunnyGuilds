@@ -5,7 +5,7 @@ import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
 import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.FunnyAdapter;
+import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
 import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
@@ -85,14 +85,14 @@ public class BukkitUserProfile implements UserProfile {
 
     @Override
     public void teleport(Position position) {
-        this.getPlayer().peek(player -> player.teleport(FunnyAdapter.adapt(position)));
+        this.getPlayer().peek(player -> player.teleport(PositionConverter.adapt(position)));
     }
 
     @Override
     public Position getPosition() {
         return this.getPlayer()
                 .map(Player::getLocation)
-                .map(FunnyAdapter::adapt)
+                .map(PositionConverter::adapt)
                 .orElseGet(Position.ZERO);
     }
 

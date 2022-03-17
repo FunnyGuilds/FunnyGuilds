@@ -12,14 +12,21 @@ public interface UserProfile {
 
     boolean hasPermission(String permission);
 
-    int getPing();
+    default int getPing() {
+        return - 1;
+    }
 
-    void sendMessage(String message);
+    default void sendMessage(String message) {
+    }
 
-    void kick(String reason);
+    default void kick(String reason) {
+    }
 
-    void teleport(Position position);
+    default void teleport(Position position) {
+    }
 
-    Position getPosition();
+    default Position getPosition() {
+        return Position.ZERO;
+    }
 
 }

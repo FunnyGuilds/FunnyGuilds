@@ -34,7 +34,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
         when(guild.getMembers().size() >= config.maxMembersInGuild, messages.inviteAmount.replace("{AMOUNT}", Integer.toString(config.maxMembersInGuild)));
 
         User invitedUser = UserValidation.requireUserByName(args[0]);
-        Player invitedPlayer = server.getPlayer(invitedUser.getUUID());
+        Option<Player> invitedPlayerOption = funnyServer.getPlayer(invitedUser.getUUID());
 
         if (InvitationList.hasInvitationFrom(invitedUser, guild)) {
             if (!SimpleEventHandler.handle(new GuildMemberRevokeInviteEvent(EventCause.USER, user, guild, invitedUser))) {
@@ -43,17 +43,18 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
             InvitationList.expireInvitation(guild, invitedUser);
             user.sendMessage(messages.inviteCancelled);
-            when(invitedPlayer != null, messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+            when(invitedPlayerOption.isPresent(), messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             return;
         }
 
-        when(invitedPlayer == null, messages.invitePlayerExists);
+        when(invitedPlayerOption.isEmpty(), messages.invitePlayerExists);
         when(invitedUser.hasGuild(), messages.generalUserHasGuild);
 
         if (!SimpleEventHandler.handle(new GuildMemberInviteEvent(EventCause.USER, user, guild, invitedUser))) {
             return;
         }
 
+        Player invitedPlayer = invitedPlayerOption.get();
         InvitationList.createInvitation(guild, invitedPlayer);
         user.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
         sendMessage(invitedPlayer, messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
