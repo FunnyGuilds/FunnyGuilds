@@ -37,11 +37,11 @@ public final class JoinCommand extends AbstractFunnyCommand {
     public void execute(Player player, User user, String[] args) {
         when(user.hasGuild(), messages.joinHasGuild);
 
-        Set<GuildInvitation> invitations = guildInvitationList.getInvitationsFor(player);
+        Set<GuildInvitation> invitations = guildInvitationList.getInvitationsFor(user);
         when(invitations.size() == 0, messages.joinHasNotInvitation);
 
         if (args.length < 1) {
-            String guildNames = ChatUtils.toString(guildInvitationList.getInvitationGuildNames(player), false);
+            String guildNames = ChatUtils.toString(guildInvitationList.getInvitationGuildNames(user), false);
 
             for (String msg : messages.joinInvitationList) {
                 user.sendMessage(msg.replace("{GUILDS}", guildNames));
@@ -51,7 +51,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         }
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(!guildInvitationList.hasInvitation(guild, player), messages.joinHasNotInvitationTo);
+        when(!guildInvitationList.hasInvitation(guild, user), messages.joinHasNotInvitationTo);
 
         List<ItemStack> requiredItems = config.joinItems;
 
@@ -65,7 +65,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
             return;
         }
 
-        guildInvitationList.expireInvitation(guild, player);
+        guildInvitationList.expireInvitation(guild, user);
 
         if (!SimpleEventHandler.handle(new GuildMemberJoinEvent(EventCause.USER, user, guild, user))) {
             return;

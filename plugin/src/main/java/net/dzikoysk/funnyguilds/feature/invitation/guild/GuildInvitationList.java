@@ -9,19 +9,18 @@ import net.dzikoysk.funnyguilds.feature.invitation.InvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import panda.std.stream.PandaStream;
 
 public class GuildInvitationList implements InvitationList<GuildInvitation> {
 
     private final Set<GuildInvitation> invitations = new HashSet<>();
 
-    private final Server server;
+    private final UserManager userManager;
     private final GuildManager guildManager;
 
-    public GuildInvitationList(Server server, GuildManager guildManager) {
-        this.server = server;
+    public GuildInvitationList(UserManager userManager, GuildManager guildManager) {
+        this.userManager = userManager;
         this.guildManager = guildManager;
     }
 
@@ -34,16 +33,8 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
         return this.getInvitationsFrom(from.getUUID());
     }
 
-    public Set<GuildInvitation> getInvitationsFor(Player to) {
-        return this.getInvitationsFor(to.getUniqueId());
-    }
-
     public Set<GuildInvitation> getInvitationsFor(User to) {
         return this.getInvitationsFor(to.getUUID());
-    }
-
-    public boolean hasInvitation(Guild from, Player to) {
-        return this.hasInvitation(from.getUUID(), to.getUniqueId());
     }
 
     public boolean hasInvitation(Guild from, User to) {
@@ -58,10 +49,6 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
 
     }
 
-    public Set<String> getInvitationGuildNames(Player to) {
-        return this.getInvitationGuildNames(to.getUniqueId());
-    }
-
     public Set<String> getInvitationGuildNames(User to) {
         return this.getInvitationGuildNames(to.getUUID());
     }
@@ -73,10 +60,6 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
                 .collect(Collectors.toSet());
     }
 
-    public Set<String> getInvitationGuildTags(Player to) {
-        return this.getInvitationGuildTags(to.getUniqueId());
-    }
-
     public Set<String> getInvitationGuildTags(User to) {
         return this.getInvitationGuildTags(to.getUUID());
     }
@@ -84,10 +67,6 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
     @Override
     public void createInvitation(UUID from, UUID to) {
         invitations.add(new GuildInvitation(from, to));
-    }
-
-    public void createInvitation(Guild from, Player to) {
-        this.createInvitation(from.getUUID(), to.getUniqueId());
     }
 
     public void createInvitation(Guild from, User to) {
@@ -99,10 +78,6 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
         PandaStream.of(this.getInvitationsFrom(from))
                 .filter(invitation -> invitation.getTo().equals(to))
                 .forEach(this.invitations::remove);
-    }
-
-    public void expireInvitation(Guild from, Player to) {
-        this.expireInvitation(from.getUUID(), to.getUniqueId());
     }
 
     public void expireInvitation(Guild from, User to) {

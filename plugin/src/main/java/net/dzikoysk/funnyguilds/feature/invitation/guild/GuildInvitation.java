@@ -4,11 +4,11 @@ import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.invitation.Invitation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import org.bukkit.Server;
-import org.bukkit.entity.Player;
+import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import panda.std.Option;
 
-public class GuildInvitation extends Invitation<Guild, Player> {
+public class GuildInvitation extends Invitation<Guild, User> {
 
     GuildInvitation(UUID from, UUID to) {
         super(from, to);
@@ -18,8 +18,8 @@ public class GuildInvitation extends Invitation<Guild, Player> {
         return guildManager.findByUuid(from);
     }
 
-    public Option<Player> wrapTo(Server server) {
-        return Option.of(server.getPlayer(to));
+    public Option<User> wrapTo(UserManager userManager) {
+        return userManager.findByUuid(to);
     }
 
 }

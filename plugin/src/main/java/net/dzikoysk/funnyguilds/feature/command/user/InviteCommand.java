@@ -54,7 +54,7 @@ public final class InviteCommand extends AbstractFunnyCommand {
             return;
         }
 
-        guildInvitationList.createInvitation(guild, invitedPlayer);
+        guildInvitationList.createInvitation(guild, invitedUser);
         user.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
         sendMessage(invitedPlayer, messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }

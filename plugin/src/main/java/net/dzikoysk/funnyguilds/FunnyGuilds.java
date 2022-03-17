@@ -205,7 +205,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.individualPrefixManager = new IndividualPrefixManager(this);
 
-        this.guildInvitationList = new GuildInvitationList(this.getServer(), this.guildManager);
+        this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
 
         try {
