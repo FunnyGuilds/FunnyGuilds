@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildLivesChangeEvent;
+import net.dzikoysk.funnyguilds.feature.war.WarUtils.Message;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -43,7 +44,7 @@ public class WarSystem {
         User user = userOp.get();
 
         if (!user.hasGuild()) {
-            WarUtils.message(player, 0);
+            user.sendMessage(WarUtils.getMessage(Message.NO_HAS_GUILD));
             return;
         }
 
@@ -54,17 +55,17 @@ public class WarSystem {
         }
 
         if (attacker.getAllies().contains(guild)) {
-            WarUtils.message(player, 1);
+            user.sendMessage(WarUtils.getMessage(Message.ALLY));
             return;
         }
 
         if (!config.warEnabled) {
-            WarUtils.message(player, 5);
+            user.sendMessage(WarUtils.getMessage(Message.DISABLED));
             return;
         }
 
         if (!guild.canBeAttacked()) {
-            WarUtils.message(player, 2, guild.getProtection() - System.currentTimeMillis());
+            user.sendMessage(WarUtils.getMessage(Message.WAIT, guild.getProtection() - System.currentTimeMillis()));
             return;
         }
 
@@ -78,12 +79,15 @@ public class WarSystem {
             conquer(attacker, guild, user);
         }
         else {
+            String messageForAttacker = WarUtils.getMessage(Message.ATTACKER, guild);
+            String messageForAttacked = WarUtils.getMessage(Message.ATTACKED, attacker);
+
             for (User member : attacker.getMembers()) {
-                member.getPlayer().peek(memberPlayer -> WarUtils.message(memberPlayer, 3, guild));
+                member.sendMessage(messageForAttacker);
             }
 
             for (User member : guild.getMembers()) {
-                member.getPlayer().peek(memberPlayer -> WarUtils.message(memberPlayer, 4, attacker));
+                member.sendMessage(messageForAttacked);
             }
         }
     }

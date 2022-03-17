@@ -11,8 +11,10 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
@@ -20,6 +22,8 @@ public abstract class AbstractFunnyCommand {
 
     @Inject public FunnyGuilds plugin;
     @Inject public FunnyGuildsLogger logger;
+    @Inject public Server server;
+    @Inject public FunnyServer funnyServer;
 
     @Inject public PluginConfiguration config;
     @Inject public MessageConfiguration messages;

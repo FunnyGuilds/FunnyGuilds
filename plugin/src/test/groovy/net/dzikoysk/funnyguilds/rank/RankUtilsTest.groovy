@@ -20,7 +20,7 @@ class RankUtilsTest extends FunnyGuildsSpec {
         // given: a guild on top of the ranking
         def guild = guildManager.addGuild(new Guild('OnlyPanda', 'OP'))
 
-        def user = userManager.create(UUID.randomUUID(), 'name')
+        def user = userManager.createFake(UUID.randomUUID(), 'name')
         guild.addMember(user)
 
         rankRecalculationTask.run()

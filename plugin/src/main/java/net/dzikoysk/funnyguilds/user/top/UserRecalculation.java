@@ -5,7 +5,6 @@ import java.util.TreeSet;
 import java.util.function.BiFunction;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.rank.TopComparator;
-import net.dzikoysk.funnyguilds.shared.bukkit.PermissionUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRank;
@@ -26,8 +25,7 @@ public class UserRecalculation implements BiFunction<String, TopComparator<UserR
         NavigableSet<UserRank> usersRank = new TreeSet<>(topComparator);
 
         PandaStream.of(userManager.getUsers())
-                .filterNot(user -> this.pluginConfiguration.skipPrivilegedPlayersInRankPositions &&
-                        PermissionUtils.isPrivileged(user, "funnyguilds.ranking.exempt"))
+                .filterNot(user -> this.pluginConfiguration.skipPrivilegedPlayersInRankPositions && user.hasPermission("funnyguilds.ranking.exempt"))
                 .map(User::getRank)
                 .forEach(usersRank::add);
 

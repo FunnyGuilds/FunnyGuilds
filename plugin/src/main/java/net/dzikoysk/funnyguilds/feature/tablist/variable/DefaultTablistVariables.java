@@ -108,12 +108,13 @@ public final class DefaultTablistVariables {
     }
 
     private static void createFunnyVariables() {
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+        MessageConfiguration messages = plugin.getMessageConfiguration();
 
-        UserManager userManager = FunnyGuilds.getInstance().getUserManager();
-        GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
-        GuildRankManager guildRankManager = FunnyGuilds.getInstance().getGuildRankManager();
+        UserManager userManager = plugin.getUserManager();
+        GuildManager guildManager = plugin.getGuildManager();
+        GuildRankManager guildRankManager = plugin.getGuildRankManager();
 
         putSimple("player", "PLAYER", User::getName);
         putSimple("users", "USERS", user -> userManager.countUsers());
@@ -214,13 +215,14 @@ public final class DefaultTablistVariables {
         }
 
         Option<Player> playerOption = user.getPlayer();
+
         if (playerOption.isEmpty()) {
             return Collections.emptyList();
         }
 
         Location location = playerOption.get().getLocation();
         List<String> regionNames = HookManager.WORLD_GUARD.map(worldGuard -> worldGuard.getRegionNames(location))
-                .getOrNull();
+                .orNull();
 
         if (regionNames != null && !regionNames.isEmpty()) {
             return regionNames;
