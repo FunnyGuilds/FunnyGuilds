@@ -4,45 +4,54 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.bukkit.entity.Player;
 
 public final class WarUtils {
 
     private WarUtils() {}
 
-    public static void message(Player player, int i, Object... values) {
+    @Deprecated // TODO: to remove
+    public static String getMessage(Message type, Object... values) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        String message = null;
+        String message;
 
-        switch (i) {
-            case 0:
+        switch (type) {
+            case NO_HAS_GUILD:
                 message = messages.warHasNotGuild;
                 break;
-            case 1:
+            case ALLY:
                 message = messages.warAlly;
                 break;
-            case 2:
+            case WAIT:
                 message = messages.warWait;
                 message = StringUtils.replace(message, "{TIME}", TimeUtils.getDurationBreakdown((long) values[0]));
                 break;
-            case 3:
+            case ATTACKER:
                 message = messages.warAttacker;
                 message = StringUtils.replace(message, "{ATTACKED}", ((Guild) values[0]).getTag());
                 break;
-            case 4:
+            case ATTACKED:
                 message = messages.warAttacked;
                 message = StringUtils.replace(message, "{ATTACKER}", ((Guild) values[0]).getTag());
                 break;
-            case 5:
+            case DISABLED:
                 message = messages.warDisabled;
                 break;
             default:
-                throw new IllegalArgumentException("Unknown magic number " + i);
+                throw new IllegalArgumentException("Unknown message type " + type);
         }
 
-        ChatUtils.sendMessage(player, message);
+        return message;
+    }
+
+    @Deprecated // TODO: to remove
+    public enum Message {
+        NO_HAS_GUILD,
+        ALLY,
+        WAIT,
+        ATTACKER,
+        ATTACKED,
+        DISABLED
     }
 
     public static String getWinMessage(Guild conqueror, Guild loser) {

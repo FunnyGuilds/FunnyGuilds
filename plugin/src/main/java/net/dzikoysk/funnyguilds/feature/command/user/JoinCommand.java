@@ -12,18 +12,22 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberJoinEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class JoinCommand extends AbstractFunnyCommand {
+
+    @Inject public GuildInvitationList guildInvitationList;
 
     @FunnyCommand(
             name = "${user.join.name}",

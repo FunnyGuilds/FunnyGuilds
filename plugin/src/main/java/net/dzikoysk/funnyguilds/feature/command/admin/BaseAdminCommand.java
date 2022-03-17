@@ -4,6 +4,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -34,7 +35,7 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
                 .register("{ADMIN}", sender.getName())
                 .register("{PLAYER}", userToTeleport.getName());
 
-        userToTeleport.getPlayer().peek(player -> player.teleport(guildHome));
+        userToTeleport.getProfile().teleport(PositionConverter.adapt(guildHome));
         userToTeleport.sendMessage(formatter.format(messages.adminTeleportedToBase));
         sendMessage(sender, formatter.format(messages.adminTargetTeleportedToBase));
     }

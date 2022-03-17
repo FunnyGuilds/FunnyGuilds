@@ -49,7 +49,8 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         broadcastMessage(formatter.format(messages.broadcastKick));
         user.sendMessage(formatter.format(messages.kickToPlayer));
 
-        user.getPlayer().peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player)));
+        this.funnyServer.getPlayer(user.getUUID())
+                .peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player)));
     }
 
 }

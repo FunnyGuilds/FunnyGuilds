@@ -6,16 +6,16 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
-import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
-import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
+import org.bukkit.Server;
 import org.bukkit.event.Listener;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
@@ -23,6 +23,8 @@ public abstract class AbstractFunnyListener implements Listener {
 
     @Inject public FunnyGuilds plugin;
     @Inject public FunnyGuildsLogger logger;
+
+    @Inject public Server server;
 
     @Inject public PluginConfiguration config;
     @Inject public MessageConfiguration messages;
@@ -37,10 +39,8 @@ public abstract class AbstractFunnyListener implements Listener {
     @Inject public RegionManager regionManager;
     @Inject public IndividualPrefixManager individualPrefixManager;
 
-    @Inject public GuildInvitationList guildInvitationList;
-    @Inject public AllyInvitationList allyInvitationList;
-
     @Inject public NmsAccessor nmsAccessor;
+    @Inject public MessageAccessor messageAccessor;
     @Inject public GuildEntityHelper guildEntityHelper;
 
 }

@@ -97,7 +97,7 @@ public class UserManager {
      */
     public Option<User> findByPlayer(@NotNull Player player) {
         if (player.getUniqueId().version() == 2) {
-            return Option.of(new User(player));
+            return Option.of(new User(player.getUniqueId(), player.getName(), new NPCUserProfile()));
         }
 
         return findByUuid(player.getUniqueId());
@@ -112,35 +112,31 @@ public class UserManager {
         return findByUuid(offlinePlayer.getUniqueId());
     }
 
+    public User createFake(UUID uuid, String name) {
+        return create(uuid, name, FakeUserProfile.offline());
+    }
+
+    public User createFake(UUID uuid, String name, FakeUserProfile profile) {
+        return create(uuid, name, profile);
+    }
+
     /**
      * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByUuid(UUID)}, {@link UserManager#findByName(String)} etc.
      *
      * @param uuid the universally unique identifier which will be assigned to user
      * @param name the nickname which will be assigned to User
+     * @param userProfile the user profile which will be assigned to User
      * @return the user
      */
-    public User create(UUID uuid, String name) {
+    public User create(UUID uuid, String name, UserProfile userProfile) {
         Validate.notNull(uuid, "uuid can't be null!");
         Validate.notNull(name, "name can't be null!");
         Validate.notBlank(name, "name can't be blank!");
+        Validate.notNull(userProfile, "userProfile can't be null!");
         Validate.isTrue(UserUtils.validateUsername(name), "name is not valid!");
 
-        User user = new User(uuid, name);
-        addUser(user);
-
-        return user;
-    }
-
-    /**
-     * Create the user and add it to storage. If you think you should use this method you probably shouldn't - instead use {@link UserManager#findByPlayer(Player)}.
-     *
-     * @return the user
-     */
-    public User create(Player player) {
-        Validate.notNull(player, "player can't be null!");
-
-        User user = new User(player);
-        addUser(user);
+        User user = new User(uuid, name, userProfile);
+        this.addUser(user);
 
         return user;
     }
