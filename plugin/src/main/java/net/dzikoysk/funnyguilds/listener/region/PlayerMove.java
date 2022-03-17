@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRegionLeaveEvent;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
+import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -42,7 +43,6 @@ public class PlayerMove extends AbstractFunnyListener {
         }
 
         Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
-
             Option<User> userOption = this.userManager.findByPlayer(player);
             if (userOption.isEmpty()) {
                 return;
@@ -69,32 +69,31 @@ public class PlayerMove extends AbstractFunnyListener {
                                     .register("{TAG}", guild.getTag());
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                this.nmsAccessor.getMessageAccessor()
-                                        .sendActionBarMessage(formatter.format(messages.notificationActionbarLeaveGuildRegion), player);
+                                this.messageAccessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarLeaveGuildRegion), player);
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
                                 user.getBossBar().sendNotification(
-                                        formatter.format(messages.notificationBossbarLeaveGuildRegion),
+                                        formatter.format(this.messages.notificationBossbarLeaveGuildRegion),
                                         config.bossBarOptions_,
                                         config.regionNotificationTime
                                 );
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
-                                ChatUtils.sendMessage(player, formatter.format(messages.notificationChatLeaveGuildRegion));
+                                ChatUtils.sendMessage(player, formatter.format(this.messages.notificationChatLeaveGuildRegion));
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
                                 TitleMessage titleMessage = TitleMessage.builder()
-                                        .text(formatter.format(messages.notificationTitleLeaveGuildRegion))
-                                        .subText(formatter.format(messages.notificationSubtitleLeaveGuildRegion))
+                                        .text(formatter.format(this.messages.notificationTitleLeaveGuildRegion))
+                                        .subText(formatter.format(this.messages.notificationSubtitleLeaveGuildRegion))
                                         .fadeInDuration(config.notificationTitleFadeIn)
                                         .stayDuration(config.notificationTitleStay)
                                         .fadeOutDuration(config.notificationTitleFadeOut)
                                         .build();
 
-                                this.nmsAccessor.getMessageAccessor().sendTitleMessage(titleMessage, player);
+                                this.messageAccessor.sendTitleMessage(titleMessage, player);
                             }
                         });
             }
@@ -122,32 +121,31 @@ public class PlayerMove extends AbstractFunnyListener {
                                     .register("{PLAYER}", player.getName());
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                this.nmsAccessor.getMessageAccessor()
-                                        .sendActionBarMessage(formatter.format(messages.notificationActionbarEnterGuildRegion), player);
+                                this.messageAccessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarEnterGuildRegion), player);
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
                                 user.getBossBar().sendNotification(
-                                        formatter.format(messages.notificationBossbarEnterGuildRegion),
+                                        formatter.format(this.messages.notificationBossbarEnterGuildRegion),
                                         config.bossBarOptions_,
                                         config.regionNotificationTime
                                 );
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
-                                user.sendMessage(formatter.format(messages.notificationChatEnterGuildRegion));
+                                user.sendMessage(formatter.format(this.messages.notificationChatEnterGuildRegion));
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
                                 TitleMessage titleMessage = TitleMessage.builder()
-                                        .text(formatter.format(messages.notificationTitleEnterGuildRegion))
-                                        .subText(formatter.format(messages.notificationSubtitleEnterGuildRegion))
+                                        .text(formatter.format(this.messages.notificationTitleEnterGuildRegion))
+                                        .subText(formatter.format(this.messages.notificationSubtitleEnterGuildRegion))
                                         .fadeInDuration(config.notificationTitleFadeIn)
                                         .stayDuration(config.notificationTitleStay)
                                         .fadeOutDuration(config.notificationTitleFadeOut)
                                         .build();
 
-                                this.nmsAccessor.getMessageAccessor().sendTitleMessage(titleMessage, player);
+                                this.messageAccessor.sendTitleMessage(titleMessage, player);
                             }
 
                             if (player.hasPermission("funnyguilds.admin.notification")) {
@@ -163,41 +161,40 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             for (User memberUser : guild.getOnlineMembers()) {
-                                if (memberUser == null) {
+                                Player memberPlayer = server.getPlayer(memberUser.getUUID());
+
+                                if (memberPlayer == null) {
                                     continue;
                                 }
 
-                                memberUser.getPlayer()
-                                        .peek(peekPlayer -> {
-                                            if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
-                                                this.nmsAccessor.getMessageAccessor()
-                                                        .sendActionBarMessage(formatter.format(messages.notificationActionbarIntruderEnterGuildRegion), peekPlayer);
-                                            }
+                                if (config.regionEnterNotificationStyle.contains(NotificationStyle.ACTIONBAR)) {
+                                    this.messageAccessor.sendActionBarMessage(formatter.format(this.messages.notificationActionbarIntruderEnterGuildRegion), memberPlayer);
+                                }
 
-                                            if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                                                memberUser.getBossBar().sendNotification(
-                                                        formatter.format(messages.notificationBossbarIntruderEnterGuildRegion),
-                                                        config.bossBarOptions_,
-                                                        config.regionNotificationTime
-                                                );
-                                            }
+                                if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
+                                    memberUser.getBossBar().sendNotification(
+                                            formatter.format(this.messages.notificationBossbarIntruderEnterGuildRegion),
+                                            config.bossBarOptions_,
+                                            config.regionNotificationTime
+                                    );
+                                }
 
-                                            if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
-                                                memberUser.sendMessage(formatter.format(messages.notificationChatIntruderEnterGuildRegion));
-                                            }
+                                if (config.regionEnterNotificationStyle.contains(NotificationStyle.CHAT)) {
+                                    memberUser.sendMessage(formatter.format(this.messages.notificationChatIntruderEnterGuildRegion));
+                                }
 
-                                            if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
-                                                TitleMessage titleMessage = TitleMessage.builder()
-                                                        .text(formatter.format(messages.notificationTitleIntruderEnterGuildRegion))
-                                                        .subText(formatter.format(messages.notificationSubtitleIntruderEnterGuildRegion))
-                                                        .fadeInDuration(config.notificationTitleFadeIn)
-                                                        .stayDuration(config.notificationTitleStay)
-                                                        .fadeOutDuration(config.notificationTitleFadeOut)
-                                                        .build();
+                                if (config.regionEnterNotificationStyle.contains(NotificationStyle.TITLE)) {
+                                    TitleMessage titleMessage = TitleMessage.builder()
+                                            .text(formatter.format(this.messages.notificationTitleIntruderEnterGuildRegion))
+                                            .subText(formatter.format(this.messages.notificationSubtitleIntruderEnterGuildRegion))
+                                            .fadeInDuration(config.notificationTitleFadeIn)
+                                            .stayDuration(config.notificationTitleStay)
+                                            .fadeOutDuration(config.notificationTitleFadeOut)
+                                            .build();
 
-                                                this.nmsAccessor.getMessageAccessor().sendTitleMessage(titleMessage, peekPlayer);
-                                            }
-                                        });
+                                    this.messageAccessor.sendTitleMessage(titleMessage, memberPlayer);
+                                }
+
                             }
 
                             cache.setNotificationTime(System.currentTimeMillis() + 1000L * config.regionNotificationCooldown);

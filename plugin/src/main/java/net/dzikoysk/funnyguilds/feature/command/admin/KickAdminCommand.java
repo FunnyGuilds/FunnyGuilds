@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -35,7 +36,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(user.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()));
 
         guild.removeMember(user);
         user.removeGuild();
@@ -49,7 +50,8 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         broadcastMessage(formatter.format(messages.broadcastKick));
         user.sendMessage(formatter.format(messages.kickToPlayer));
 
-        user.getPlayer().peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player)));
+        this.funnyServer.getPlayer(user.getUUID())
+                .peek(player -> this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player)));
     }
 
 }

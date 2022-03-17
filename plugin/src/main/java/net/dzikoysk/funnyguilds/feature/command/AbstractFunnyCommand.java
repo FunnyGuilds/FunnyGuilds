@@ -6,12 +6,15 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
+import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
@@ -19,6 +22,8 @@ public abstract class AbstractFunnyCommand {
 
     @Inject public FunnyGuilds plugin;
     @Inject public FunnyGuildsLogger logger;
+    @Inject public Server server;
+    @Inject public FunnyServer funnyServer;
 
     @Inject public PluginConfiguration config;
     @Inject public MessageConfiguration messages;
@@ -31,6 +36,7 @@ public abstract class AbstractFunnyCommand {
     @Inject public UserRankManager userRankManager;
     @Inject public GuildRankManager guildRankManager;
     @Inject public RegionManager regionManager;
+    @Inject public IndividualPrefixManager individualPrefixManager;
 
     protected void sendMessage(CommandSender sender, String message) {
         ChatUtils.sendMessage(sender, message);

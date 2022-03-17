@@ -41,13 +41,13 @@ public final class KickCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(formerUser.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, formerUser.getName()));
 
         guild.removeMember(formerUser);
         formerUser.removeGuild();
 
         if (formerUser.isOnline()) {
-            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(player));
+            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player));
         }
 
         Formatter formatter = new Formatter()

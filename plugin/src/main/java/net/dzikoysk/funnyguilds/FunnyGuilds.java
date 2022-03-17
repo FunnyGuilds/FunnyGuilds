@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
+import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
@@ -51,6 +52,7 @@ import net.dzikoysk.funnyguilds.listener.region.PlayerRespawn;
 import net.dzikoysk.funnyguilds.nms.DescriptionChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
+import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
@@ -70,6 +72,7 @@ import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.telemetry.metrics.MetricsCollector;
 import net.dzikoysk.funnyguilds.user.User;
@@ -113,6 +116,8 @@ public class FunnyGuilds extends JavaPlugin {
     private UserRankManager userRankManager;
     private GuildRankManager guildRankManager;
     private RegionManager regionManager;
+    private FunnyServer funnyServer;
+    private IndividualPrefixManager individualPrefixManager;
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
@@ -135,6 +140,7 @@ public class FunnyGuilds extends JavaPlugin {
         plugin = this;
         logger = new FunnyGuildsLogger(this);
         this.version = new FunnyGuildsVersion(this);
+        this.funnyServer = new FunnyServer(this.getServer());
 
         try {
             Class.forName("net.md_5.bungee.api.ChatColor");
@@ -196,6 +202,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildRankManager.register(DefaultTops.defaultGuildTops(this.guildManager));
         this.regionManager = new RegionManager(this.pluginConfiguration);
 
+        this.individualPrefixManager = new IndividualPrefixManager(this);
+
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
@@ -215,6 +223,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.injector = DependencyInjection.createInjector(resources -> {
             resources.on(Server.class).assignInstance(this.getServer());
+            resources.on(FunnyServer.class).assignInstance(this.getFunnyServer());
             resources.on(FunnyGuilds.class).assignInstance(this);
             resources.on(FunnyGuildsLogger.class).assignInstance(FunnyGuilds::getPluginLogger);
             resources.on(PluginConfiguration.class).assignInstance(this.pluginConfiguration);
@@ -226,7 +235,9 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(UserRankManager.class).assignInstance(this.userRankManager);
             resources.on(GuildRankManager.class).assignInstance(this.guildRankManager);
             resources.on(RegionManager.class).assignInstance(this.regionManager);
+            resources.on(IndividualPrefixManager.class).assignInstance(this.individualPrefixManager);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
+            resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
@@ -468,6 +479,14 @@ public class FunnyGuilds extends JavaPlugin {
 
     public RegionManager getRegionManager() {
         return regionManager;
+    }
+
+    public FunnyServer getFunnyServer() {
+        return funnyServer;
+    }
+
+    public IndividualPrefixManager getIndividualPrefixManager() {
+        return individualPrefixManager;
     }
 
     public NmsAccessor getNmsAccessor() {

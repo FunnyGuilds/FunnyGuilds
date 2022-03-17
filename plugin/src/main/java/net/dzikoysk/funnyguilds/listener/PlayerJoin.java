@@ -8,8 +8,10 @@ import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsInboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.api.packet.FunnyGuildsOutboundChannelHandler;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntitySupplier;
+import net.dzikoysk.funnyguilds.user.BukkitUserProfile;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
+import net.dzikoysk.funnyguilds.user.UserProfile;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -19,7 +21,8 @@ public class PlayerJoin extends AbstractFunnyListener {
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        User user = this.userManager.findByPlayer(player).orElseGet(() -> userManager.create(player));
+        UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.server);
+        User user = this.userManager.findByPlayer(player).orElseGet(() -> userManager.create(player.getUniqueId(), player.getName(), profile));
 
         String playerName = player.getName();
 
@@ -30,19 +33,21 @@ public class PlayerJoin extends AbstractFunnyListener {
         user.updateReference(player);
         UserCache cache = user.getCache();
 
-        IndividualPlayerList individualPlayerList = new IndividualPlayerList(
-                user,
-                this.nmsAccessor.getPlayerListAccessor(),
-                tablistConfig.playerList,
-                tablistConfig.playerListHeader, tablistConfig.playerListFooter,
-                tablistConfig.pages,
-                tablistConfig.playerListPing,
-                tablistConfig.playerListFillCells,
-                config.top.enableLegacyPlaceholders
-        );
-        individualPlayerList.send();
+        if (this.tablistConfig.playerListEnable) {
+            IndividualPlayerList individualPlayerList = new IndividualPlayerList(
+                    user,
+                    this.nmsAccessor.getPlayerListAccessor(),
+                    tablistConfig.playerList,
+                    tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                    tablistConfig.pages,
+                    tablistConfig.playerListPing,
+                    tablistConfig.playerListFillCells,
+                    config.top.enableLegacyPlaceholders
+            );
+            individualPlayerList.send();
+            cache.setPlayerList(individualPlayerList);
+        }
 
-        cache.setPlayerList(individualPlayerList);
         cache.updateScoreboardIfNull(player);
 
         if (cache.getIndividualPrefix() == null && config.guildTagEnabled) {
@@ -53,12 +58,13 @@ public class PlayerJoin extends AbstractFunnyListener {
         }
 
         this.concurrencyManager.postRequests(
-                new PrefixGlobalUpdatePlayer(player),
+                new PrefixGlobalUpdatePlayer(individualPrefixManager, player),
                 new DummyGlobalUpdateUserRequest(user)
         );
 
         final FunnyGuildsInboundChannelHandler inboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallInboundChannelHandler(player);
         inboundChannelHandler.getPacketCallbacksRegistry().registerPacketCallback(new WarPacketCallbacks(plugin, user));
+
         final FunnyGuildsOutboundChannelHandler outboundChannelHandler = this.nmsAccessor.getPacketAccessor().getOrInstallOutboundChannelHandler(player);
         outboundChannelHandler.getPacketSuppliersRegistry().registerPacketSupplier(new GuildEntitySupplier(this.guildEntityHelper));
 

@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.listener.region;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -27,7 +28,7 @@ import panda.std.Option;
 
 public class EntityExplode extends AbstractFunnyListener {
 
-    private final Cooldown<Player> informationMessageCooldowns = new Cooldown<>();
+    private final Cooldown<UUID> informationMessageCooldowns = new Cooldown<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void preNormalExplosionHandler(EntityExplodeEvent event) {
@@ -98,9 +99,11 @@ public class EntityExplode extends AbstractFunnyListener {
                     });
 
             for (User user : guild.getMembers()) {
-                user.getPlayer()
-                        .filter(player -> !informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown))
-                        .peek(player -> user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
+                if (informationMessageCooldowns.cooldown(user.getUUID(), TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                    continue;
+                }
+
+                user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
             }
         }
 

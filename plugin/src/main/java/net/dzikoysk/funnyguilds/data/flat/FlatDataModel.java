@@ -302,9 +302,9 @@ public class FlatDataModel implements DataModel {
         }
 
         ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest());
+        concurrencyManager.postRequests(new DatabaseFixAlliesRequest(), new PrefixGlobalUpdateRequest(FunnyGuilds.getInstance().getIndividualPrefixManager()));
 
-        FunnyGuilds.getPluginLogger().info("Loaded guilds: " + GuildUtils.getGuilds().size());
+        FunnyGuilds.getPluginLogger().info("Loaded guilds: " + FunnyGuilds.getInstance().getGuildManager().countGuilds());
     }
 
 }

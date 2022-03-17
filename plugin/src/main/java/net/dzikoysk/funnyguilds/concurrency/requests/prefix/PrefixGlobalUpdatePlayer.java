@@ -6,15 +6,18 @@ import org.bukkit.entity.Player;
 
 public class PrefixGlobalUpdatePlayer extends DefaultConcurrencyRequest {
 
+    private final IndividualPrefixManager individualPrefixManager;
+
     private final Player player;
 
-    public PrefixGlobalUpdatePlayer(Player player) {
+    public PrefixGlobalUpdatePlayer(IndividualPrefixManager individualPrefixManager, Player player) {
+        this.individualPrefixManager = individualPrefixManager;
         this.player = player;
     }
 
     @Override
     public void execute() throws Exception {
-        IndividualPrefixManager.updatePlayer(player);
+        this.individualPrefixManager.updatePlayer(player);
     }
 
 }

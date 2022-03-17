@@ -8,9 +8,12 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.user.BukkitUserProfile;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import net.dzikoysk.funnyguilds.user.UserManager;
+import net.dzikoysk.funnyguilds.user.UserProfile;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public final class DeserializationUtils {
@@ -82,7 +85,8 @@ public final class DeserializationUtils {
         UUID playerUniqueId = UUID.fromString((String) values[0]);
         String playerName = (String) values[1];
 
-        User user = userManager.create(playerUniqueId, playerName);
+        UserProfile profile = new BukkitUserProfile(playerUniqueId, Bukkit.getServer()); // :(
+        User user = userManager.create(playerUniqueId, playerName, profile);
 
         user.getRank().setPoints((int) values[2]);
         user.getRank().setKills((int) values[3]);

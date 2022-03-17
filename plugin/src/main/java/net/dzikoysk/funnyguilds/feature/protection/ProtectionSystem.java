@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.bukkit.Location;
@@ -40,7 +39,9 @@ public final class ProtectionSystem {
 
         Guild guild = region.getGuild();
 
-        User user = UserUtils.get(player.getUniqueId());
+        User user = FunnyGuilds.getInstance().getUserManager().findByUuid(player.getUniqueId())
+                .orNull();
+
         if (!guild.getMembers().contains(user)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }

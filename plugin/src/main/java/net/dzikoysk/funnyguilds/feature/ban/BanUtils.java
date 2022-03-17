@@ -18,8 +18,7 @@ public final class BanUtils {
 
         for (User user : guild.getMembers()) {
             ban(user, time, reason);
-            user.getPlayer()
-                    .peek(player -> player.kickPlayer(getBanMessage(user)));
+            user.getProfile().kick(getBanMessage(user));
         }
     }
 

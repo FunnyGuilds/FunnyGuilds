@@ -12,8 +12,8 @@ final class UserTest extends FunnyGuildsSpec {
 
     @Test
     void 'user should implement proper equals & hashcode'() {
-        User user1 = userManager.create(UUID.nameUUIDFromBytes("user1".getBytes()), "user1")
-        User user2 = userManager.create(UUID.nameUUIDFromBytes("user2".getBytes()), "user2")
+        User user1 = userManager.createFake(UUID.nameUUIDFromBytes("user1".getBytes()), "user1")
+        User user2 = userManager.createFake(UUID.nameUUIDFromBytes("user2".getBytes()), "user2")
         Guild guild1 = new Guild('guild1', 'TEST1')
         Guild guild2 = new Guild('guild2', 'TEST2')
 
@@ -24,7 +24,7 @@ final class UserTest extends FunnyGuildsSpec {
                 .withPrefabValues(UserCache.class, user1.getCache(), user2.getCache())
                 .withPrefabValues(MutableEntity.class, user1, user2)
                 .withPrefabValues(WeakReference.class, new WeakReference<>(null), new WeakReference<>(null))
-                .withIgnoredFields("name", "cache", "rank", "playerRef", "guild", "ban", "bossBarProvider", "wasChanged")
+                .withIgnoredFields("name", "cache", "rank", "playerRef", "guild", "ban", "profile", "bossBarProvider", "wasChanged")
                 .verify()
     }
 

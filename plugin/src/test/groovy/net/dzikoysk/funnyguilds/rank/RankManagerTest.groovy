@@ -14,9 +14,9 @@ class RankManagerTest extends FunnyGuildsSpec {
     void 'should correctly update the guilds and users ranking'() {
         def rankRecalculationTask = new RankRecalculationTask(funnyGuilds);
 
-        def user1 = userManager.create(UUID.randomUUID(), 'user1')
-        def user2 = userManager.create(UUID.randomUUID(), 'user2')
-        def user3 = userManager.create(UUID.randomUUID(), 'user3')
+        def user1 = userManager.createFake(UUID.randomUUID(), 'user1')
+        def user2 = userManager.createFake(UUID.randomUUID(), 'user2')
+        def user3 = userManager.createFake(UUID.randomUUID(), 'user3')
         def guild1 = guildManager.addGuild(new Guild('OnlyPanda1', 'OP1'))
         def guild2 = guildManager.addGuild(new Guild('OnlyPanda2', 'OP2'))
         def guild3 = guildManager.addGuild(new Guild('OnlyPanda3', 'OP3'))
