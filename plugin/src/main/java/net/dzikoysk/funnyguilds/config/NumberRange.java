@@ -40,14 +40,23 @@ public final class NumberRange {
                 .map(Map.Entry::getValue);
     }
 
-    public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap) {
+    public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap, boolean color) {
         return inRange(value, rangeMap)
                 .map(Objects::toString)
+                .map(string -> color ? ChatUtils.colored(string) : string)
                 .orElseGet(value.toString());
     }
 
+    public static <V> String inRangeToString(Number value, Map<NumberRange, V> rangeMap) {
+        return inRangeToString(value, rangeMap, false);
+    }
+
+    public static <V> String inRangeToString(Number value, List<RangeFormatting> numberFormatting, boolean color) {
+        return inRangeToString(value, RangeFormatting.toRangeMap(numberFormatting), color);
+    }
+
     public static <V> String inRangeToString(Number value, List<RangeFormatting> numberFormatting) {
-        return inRangeToString(value, RangeFormatting.toRangeMap(numberFormatting));
+        return inRangeToString(value, numberFormatting, false);
     }
 
     public static Map<NumberRange, String> parseIntegerRange(List<String> rangeEntries, boolean color) {

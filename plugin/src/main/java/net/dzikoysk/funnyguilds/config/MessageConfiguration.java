@@ -43,8 +43,8 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
-    @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7(&a+{+}&7) zabil {VTAG}&b{VICTIM} &7(&c-{-}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
+    @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
+    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
     public String rankKillTitle = "&cZabiles gracza {VICTIM}";
     public String rankKillSubtitle = "&7+{+}";
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
