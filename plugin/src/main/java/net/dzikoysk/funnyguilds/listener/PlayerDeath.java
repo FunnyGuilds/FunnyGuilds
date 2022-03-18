@@ -35,7 +35,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
 import panda.utilities.text.Formatter;
 
-public class  PlayerDeath extends AbstractFunnyListener {
+public class PlayerDeath extends AbstractFunnyListener {
 
     private final RankSystem rankSystem;
 
