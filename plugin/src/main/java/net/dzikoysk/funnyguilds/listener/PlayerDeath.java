@@ -35,7 +35,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
 import panda.utilities.text.Formatter;
 
-public class PlayerDeath extends AbstractFunnyListener {
+public class  PlayerDeath extends AbstractFunnyListener {
 
     private final RankSystem rankSystem;
 
@@ -252,12 +252,19 @@ public class PlayerDeath extends AbstractFunnyListener {
                 .delegate(new DummyGlobalUpdateUserRequest(attacker))
                 .build());
 
+        int attackerPointsChange = attackerPointsChangeEvent.getPointsChange();
+        int victimPointsChange = Math.min(victimPointsBeforeChange, victimPointsChangeEvent.getPointsChange());
+
         Formatter killFormatter = new Formatter()
                 .register("{ATTACKER}", attacker.getName())
                 .register("{VICTIM}", victim.getName())
-                .register("{+}", Integer.toString(attackerPointsChangeEvent.getPointsChange()))
-                .register("{-}", Math.min(victimPointsBeforeChange, victimPointsChangeEvent.getPointsChange()))
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(victimPoints, config.pointsFormat))
+                .register("{+}", Integer.toString(attackerPointsChange))
+                .register("{-}", Integer.toString(victimPointsChange))
+                .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(attackerPointsChange, config.killPointsChangeFormat, true)
+                        .replace("{CHANGE}", Integer.toString(Math.abs(attackerPointsChange))))
+                .register("{MINUS-FORMATTED}", NumberRange.inRangeToString(victimPointsChange, config.killPointsChangeFormat, true)
+                        .replace("{CHANGE}", Integer.toString(Math.abs(victimPointsChange))))
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(victimPoints, config.pointsFormat, true))
                 .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
                 .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
