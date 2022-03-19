@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.feature.invitation.InvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import panda.std.Option;
 import panda.std.stream.PandaStream;
 
 public class AllyInvitationList implements InvitationList<AllyInvitation> {
@@ -37,18 +38,9 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
         return this.hasInvitation(from.getUUID(), to.getUUID());
     }
 
-    @Override
-    public void createInvitation(UUID from, UUID to) {
-        this.invitations.add(new AllyInvitation(from, to));
-    }
-
-    public void createInvitation(Guild from, Guild to) {
-        this.createInvitation(from.getUUID(), to.getUUID());
-    }
-
     public Set<String> getInvitationGuildNames(UUID to) {
         return PandaStream.of(this.getInvitationsFor(to))
-                .flatMap(invitation -> invitation.wrapFrom(guildManager))
+                .map(AllyInvitation::getFrom)
                 .map(Guild::getName)
                 .collect(Collectors.toSet());
 
@@ -60,7 +52,7 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
 
     public Set<String> getInvitationGuildTags(UUID to) {
         return PandaStream.of(this.getInvitationsFor(to))
-                .flatMap(invitation -> invitation.wrapFrom(guildManager))
+                .map(AllyInvitation::getFrom)
                 .map(Guild::getTag)
                 .collect(Collectors.toSet());
     }
@@ -70,9 +62,23 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     }
 
     @Override
+    public void createInvitation(UUID from, UUID to) {
+        Option<Guild> fromOption = this.guildManager.findByUuid(from);
+        Option<Guild> toOption = this.guildManager.findByUuid(to);
+        if (fromOption.isEmpty() || toOption.isEmpty()) {
+            return;
+        }
+        this.invitations.add(new AllyInvitation(fromOption.get(), toOption.get()));
+    }
+
+    public void createInvitation(Guild from, Guild to) {
+        this.invitations.add(new AllyInvitation(from, to));
+    }
+
+    @Override
     public void expireInvitation(UUID from, UUID to) {
         PandaStream.of(this.getInvitationsFrom(from))
-                .filter(invitation -> invitation.getTo().equals(to))
+                .filter(invitation -> invitation.getToUUID().equals(to))
                 .forEach(this.invitations::remove);
     }
 

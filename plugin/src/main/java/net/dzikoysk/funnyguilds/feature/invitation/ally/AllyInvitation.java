@@ -3,21 +3,20 @@ package net.dzikoysk.funnyguilds.feature.invitation.ally;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.feature.invitation.Invitation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildManager;
-import panda.std.Option;
 
 public class AllyInvitation extends Invitation<Guild, Guild> {
 
-    AllyInvitation(UUID from, UUID to) {
+    AllyInvitation(Guild from, Guild to) {
         super(from, to);
     }
 
-    public Option<Guild> wrapFrom(GuildManager guildManager) {
-        return guildManager.findByUuid(from);
+    @Override
+    public UUID getFromUUID() {
+        return this.from.getUUID();
     }
 
-    public Option<Guild> wrapTo(GuildManager guildManager) {
-        return guildManager.findByUuid(to);
+    @Override
+    public UUID getToUUID() {
+        return this.to.getUUID();
     }
-
 }

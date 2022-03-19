@@ -5,8 +5,9 @@ import java.util.List;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
-import net.dzikoysk.funnyguilds.feature.invitation.Invitation;
+import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -62,13 +63,13 @@ public class InvitationPersistenceHandler {
 
         for (Guild guild : this.guildManager.getGuilds()) {
             List<String> guildInvitations = PandaStream.of(this.guildInvitationList.getInvitationsFrom(guild))
-                    .map(Invitation::getTo)
+                    .map(GuildInvitation::getToUUID)
                     .map(UUID::toString)
                     .toList();
             wrapper.set(guild.getUUID().toString() + ".players", guildInvitations);
 
             List<String> allyInvitations = PandaStream.of(this.allyInvitationList.getInvitationsFrom(guild))
-                    .map(Invitation::getTo)
+                    .map(AllyInvitation::getToUUID)
                     .map(UUID::toString)
                     .toList();
             wrapper.set(guild.getUUID().toString() + ".guilds", allyInvitations);

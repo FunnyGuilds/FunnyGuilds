@@ -11,19 +11,19 @@ public interface InvitationList<T extends Invitation<?, ?>> {
 
     default Set<T> getInvitationsFrom(UUID from) {
         return PandaStream.of(this.getInvitations())
-                .filter(invitation -> invitation.getFrom().equals(from))
+                .filter(invitation -> invitation.getFromUUID().equals(from))
                 .collect(Collectors.toSet());
     }
 
     default Set<T> getInvitationsFor(UUID to) {
         return PandaStream.of(this.getInvitations())
-                .filter(invitation -> invitation.getTo().equals(to))
+                .filter(invitation -> invitation.getToUUID().equals(to))
                 .collect(Collectors.toSet());
     }
 
     default boolean hasInvitation(UUID from, UUID to) {
         return PandaStream.of(this.getInvitationsFrom(from))
-                .find(invitation -> invitation.getTo().equals(to))
+                .find(invitation -> invitation.getToUUID().equals(to))
                 .isPresent();
     }
 
