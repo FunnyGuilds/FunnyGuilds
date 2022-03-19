@@ -712,6 +712,17 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Jesli nie chcesz wyswietlac punktow, tylko sam tag - nie podawaj tu nic")
     public RawString gtopPoints = new RawString(" &7[&b{POINTS-FORMAT}&7]");
 
+    @Comment("Wyglad znacznika {MINUS-FORMATTED} i {PLUS-FORMATTED) w zaleznosci od wartosci zmiany w rankingu")
+    @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
+    @Comment("Elementy listy powinny byc postaci: \"minChange-maxChange wyglad\", np.: \"0-50 &a+{CHANGE}\"")
+    @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minChange w gore, np.: \"50-* &2+{CHANGE}\" lub")
+    @Comment("  wszystkie wartosci do danego maxChange w dol, np.: \"*-50 &4-{CHANGE}\"")
+    public List<RangeFormatting> killPointsChangeFormat = Arrays.asList(
+            new RangeFormatting(Integer.MIN_VALUE, 1, "&c-{CHANGE}"),
+            new RangeFormatting(0, 0, "&7{CHANGE}"),
+            new RangeFormatting(1, Integer.MAX_VALUE, "&a+{CHANGE}")
+    );
+
     @Comment("Wyglad znacznika {PING-FORMAT} w zaleznosci od wartosci pingu")
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych wartosci i zawierac tylko liczby naturalne, z zerem wlacznie")
     @Comment("Elementy listy powinny byc postaci: \"minPing-maxPing wyglad\", np.: \"0-75 &a{PING}\"")
