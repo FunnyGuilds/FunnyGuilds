@@ -1,6 +1,6 @@
 name: FunnyGuilds
 main: net.dzikoysk.funnyguilds.FunnyGuilds
-version: '@funnyGuildsVersion@ Tribute-@funnyGuildsCommit@'
+version: '@funnyGuildsVersion@ Snowdrop-@funnyGuildsCommit@'
 author: 'FunnyGuilds Team'
 website: https://github.com/FunnyGuilds
 softdepend: [WorldEdit, WorldGuard, Vault, PlaceholderAPI, FunnyTab, BungeeTabListPlus, MVdWPlaceholderAPI, HolographicDisplays]
