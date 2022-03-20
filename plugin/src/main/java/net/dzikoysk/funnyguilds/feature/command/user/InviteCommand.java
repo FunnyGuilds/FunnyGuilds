@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
-import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberInviteEvent;
@@ -10,15 +9,19 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberRevokeInviteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
+import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 @FunnyComponent
 public final class InviteCommand extends AbstractFunnyCommand {
+
+    @Inject public GuildInvitationList guildInvitationList;
 
     @FunnyCommand(
             name = "${user.invite.name}",
@@ -36,12 +39,12 @@ public final class InviteCommand extends AbstractFunnyCommand {
         User invitedUser = UserValidation.requireUserByName(args[0]);
         Option<Player> invitedPlayerOption = funnyServer.getPlayer(invitedUser.getUUID());
 
-        if (InvitationList.hasInvitationFrom(invitedUser, guild)) {
+        if (guildInvitationList.hasInvitation(guild, invitedUser)) {
             if (!SimpleEventHandler.handle(new GuildMemberRevokeInviteEvent(EventCause.USER, user, guild, invitedUser))) {
                 return;
             }
 
-            InvitationList.expireInvitation(guild, invitedUser);
+            guildInvitationList.expireInvitation(guild, invitedUser);
             user.sendMessage(messages.inviteCancelled);
             when(invitedPlayerOption.isPresent(), messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
             return;
@@ -54,8 +57,9 @@ public final class InviteCommand extends AbstractFunnyCommand {
             return;
         }
 
+        guildInvitationList.createInvitation(guild, invitedUser);
+
         Player invitedPlayer = invitedPlayerOption.get();
-        InvitationList.createInvitation(guild, invitedPlayer);
         user.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
         sendMessage(invitedPlayer, messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
     }

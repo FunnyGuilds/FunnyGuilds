@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 

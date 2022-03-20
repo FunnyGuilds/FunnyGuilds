@@ -1,22 +1,28 @@
 package net.dzikoysk.funnyguilds.data;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.util.InvitationList;
 import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitation;
+import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitation;
+import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
+import panda.std.stream.PandaStream;
 
 public class InvitationPersistenceHandler {
 
     private final FunnyGuilds plugin;
 
     private final GuildManager guildManager;
+
+    private final GuildInvitationList guildInvitationList;
+    private final AllyInvitationList allyInvitationList;
 
     private final File invitationsFile;
     private volatile BukkitTask invitationPersistenceHandlerTask;
@@ -25,6 +31,9 @@ public class InvitationPersistenceHandler {
         this.plugin = plugin;
 
         this.guildManager = plugin.getGuildManager();
+
+        this.guildInvitationList = plugin.getGuildInvitationList();
+        this.allyInvitationList = plugin.getAllyInvitationList();
 
         this.invitationsFile = new File(plugin.getPluginDataFolder(), "invitations.yml");
     }
@@ -53,22 +62,17 @@ public class InvitationPersistenceHandler {
         YamlWrapper wrapper = new YamlWrapper(this.invitationsFile);
 
         for (Guild guild : this.guildManager.getGuilds()) {
-            List<InvitationList.Invitation> invitationList = InvitationList.getInvitationsFrom(guild);
+            List<String> guildInvitations = PandaStream.of(this.guildInvitationList.getInvitationsFrom(guild))
+                    .map(GuildInvitation::getToUUID)
+                    .map(UUID::toString)
+                    .toList();
+            wrapper.set(guild.getUUID().toString() + ".players", guildInvitations);
 
-            for (InvitationList.Invitation invitation : invitationList) {
-                List<String> allyInvitations = new ArrayList<>();
-                List<String> playerInvitations = new ArrayList<>();
-
-                if (invitation.isToGuild()) {
-                    playerInvitations.add(invitation.getFor().toString());
-                }
-                else if (invitation.isToAlly()) {
-                    allyInvitations.add(invitation.getFor().toString());
-                }
-
-                wrapper.set(invitation.getFrom().toString() + ".guilds", allyInvitations);
-                wrapper.set(invitation.getFrom().toString() + ".players", playerInvitations);
-            }
+            List<String> allyInvitations = PandaStream.of(this.allyInvitationList.getInvitationsFrom(guild))
+                    .map(AllyInvitation::getToUUID)
+                    .map(UUID::toString)
+                    .toList();
+            wrapper.set(guild.getUUID().toString() + ".guilds", allyInvitations);
         }
 
         wrapper.save();
@@ -88,11 +92,11 @@ public class InvitationPersistenceHandler {
 
                 for (String ally : allyInvitations) {
                     this.guildManager.findByUuid(UUID.fromString(ally))
-                            .peek(allyGuild -> InvitationList.createInvitation(guild, allyGuild));
+                            .peek(allyGuild -> this.allyInvitationList.createInvitation(guild, allyGuild));
                 }
 
                 for (String player : playerInvitations) {
-                    InvitationList.createInvitation(guild, UUID.fromString(player));
+                    this.guildInvitationList.createInvitation(guild.getUUID(), UUID.fromString(player));
                 }
             });
         }
