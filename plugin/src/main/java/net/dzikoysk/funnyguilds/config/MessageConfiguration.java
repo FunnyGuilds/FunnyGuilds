@@ -429,7 +429,7 @@ public class MessageConfiguration extends OkaeriConfig {
             "&7Twoja gildia nawiazala sojusz z &a{GUILDS}",
             "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]");
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String breakAllyExists = "&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7&c{GUILD}&7)!";
+    public String breakAllyExists = "&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7, &c{GUILD}&7)!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String breakDone = "&7Rozwiazano sojusz z gildia &c{GUILD}&7!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")

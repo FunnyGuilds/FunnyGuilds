@@ -25,7 +25,7 @@ final class AlliesCompleter implements Completer {
         return this.userManager.findByName(context.getCommandSender().getName())
                 .filter(User::hasGuild)
                 .flatMap(User::getGuild)
-                .map(guild -> CommandUtils.collectCompletions(guild.getAllies(), prefix, limit, ArrayList::new, Guild::getName))
+                .map(guild -> CommandUtils.collectCompletions(guild.getAllies(), prefix, limit, ArrayList::new, Guild::getTag))
                 .orElseGet(Collections.emptyList());
     }
 
