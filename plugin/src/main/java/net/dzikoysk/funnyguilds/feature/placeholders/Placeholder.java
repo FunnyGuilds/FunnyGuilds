@@ -10,7 +10,9 @@ public interface Placeholder<T> {
         return Objects.toString(this.getRaw(object), this.getFallback(object));
     }
 
-    Object getRawFallback(T object);
+    default Object getRawFallback(T object) {
+        return "";
+    }
 
     default String getFallback(T object) {
         return Objects.toString(this.getRawFallback(object));

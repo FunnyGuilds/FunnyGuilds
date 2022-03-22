@@ -7,15 +7,9 @@ import net.dzikoysk.funnyguilds.user.User;
 public class UserPlaceholder implements Placeholder<User> {
 
     private final UserResolver userResolver;
-    private final UserResolver fallBackResolver;
-
-    public UserPlaceholder(UserResolver userResolver, UserResolver fallBackResolver) {
-        this.userResolver = userResolver;
-        this.fallBackResolver = fallBackResolver;
-    }
 
     public UserPlaceholder(UserResolver userResolver) {
-        this(userResolver, user -> "Brak");
+        this.userResolver = userResolver;
     }
 
     @Override
@@ -23,8 +17,4 @@ public class UserPlaceholder implements Placeholder<User> {
         return this.userResolver.resolve(user);
     }
 
-    @Override
-    public Object getRawFallback(User user) {
-        return this.fallBackResolver.resolve(user);
-    }
 }

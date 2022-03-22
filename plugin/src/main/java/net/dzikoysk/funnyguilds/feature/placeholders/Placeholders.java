@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,6 +19,11 @@ public class Placeholders<T, P extends Placeholder<T>> {
 
     public Placeholders<T, P> register(String name, P placeholder) {
         this.placeholders.put(name, placeholder);
+        return this;
+    }
+
+    public Placeholders<T, P> register(Collection<String> names, P placeholder) {
+        names.forEach(name -> this.placeholders.put(name, placeholder));
         return this;
     }
 
