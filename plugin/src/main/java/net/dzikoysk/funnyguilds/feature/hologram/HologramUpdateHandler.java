@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
-import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
+import net.dzikoysk.funnyguilds.feature.placeholders.legacy.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.Bukkit;
