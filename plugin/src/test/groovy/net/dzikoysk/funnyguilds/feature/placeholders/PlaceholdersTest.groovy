@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.placeholders
 
 import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
+import net.dzikoysk.funnyguilds.feature.placeholders.legacy.Placeholders
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils
 import net.dzikoysk.funnyguilds.user.FakeUserProfile
