@@ -47,7 +47,7 @@ public class PlayerPlaceholders extends Placeholders<User, PlayerPlaceholder> {
     }
 
     private static List<String> getWorldGuardRegionNames(Player player) {
-        if(player == null) {
+        if (player == null) {
             return Collections.emptyList();
         }
 

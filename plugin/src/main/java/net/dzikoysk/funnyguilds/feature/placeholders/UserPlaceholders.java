@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.Arrays;
+import java.util.Locale;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -28,7 +29,7 @@ public class UserPlaceholders extends Placeholders<User, UserPlaceholder> {
                                 .replace("{POINTS}", String.valueOf(rank.getPoints()))))
                 .register("kills", new UserRankPlaceholder((user, rank) -> rank.getKills()))
                 .register("deaths", new UserRankPlaceholder((user, rank) -> rank.getDeaths()))
-                .register("kdr", new UserRankPlaceholder((user, rank) -> rank.getKDR()))
+                .register("kdr", new UserRankPlaceholder((user, rank) -> String.format(Locale.US, "%.2f", rank.getKDR())))
                 .register("assists", new UserRankPlaceholder((user, rank) -> rank.getAssists()))
                 .register("logouts", new UserRankPlaceholder((user, rank) -> rank.getLogouts()));
     }
