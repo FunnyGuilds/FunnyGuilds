@@ -12,7 +12,8 @@ public final class LocationUtils {
 
     private static final int LEGACY_MIN_HEIGHT = 0;
 
-    private LocationUtils() {}
+    private LocationUtils() {
+    }
 
     public static double flatDistance(Location a, Location b) {
         return Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getZ() - a.getZ(), 2));

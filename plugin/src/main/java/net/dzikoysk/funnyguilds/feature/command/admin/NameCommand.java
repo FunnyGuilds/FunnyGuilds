@@ -20,7 +20,8 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
 public final class NameCommand extends AbstractFunnyCommand {
 
-    @Inject public DataModel dataModel;
+    @Inject
+    public DataModel dataModel;
 
     @FunnyCommand(
             name = "${admin.name.name}",

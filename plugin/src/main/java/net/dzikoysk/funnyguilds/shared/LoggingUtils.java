@@ -6,7 +6,8 @@ import org.apache.logging.log4j.core.appender.AbstractOutputStreamAppender;
 
 public final class LoggingUtils {
 
-    private LoggingUtils() {}
+    private LoggingUtils() {
+    }
 
     public static void flushRootLogger() {
         LoggingUtils.flushLogger((Logger) LogManager.getRootLogger());

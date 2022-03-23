@@ -13,7 +13,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class IOUtils {
 
-    private IOUtils() {}
+    private IOUtils() {
+    }
 
     public static File initialize(File file, boolean b) {
         if (!file.exists()) {

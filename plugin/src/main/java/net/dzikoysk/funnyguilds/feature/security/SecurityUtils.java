@@ -13,7 +13,8 @@ public final class SecurityUtils {
 
     private static final double COMPENSATION_RATIO = 0.0056;
 
-    private SecurityUtils() {}
+    private SecurityUtils() {
+    }
 
     public static double compensationMs(double millisecond) {
         return millisecond * COMPENSATION_RATIO;

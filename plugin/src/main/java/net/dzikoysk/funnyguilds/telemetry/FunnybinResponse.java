@@ -8,7 +8,8 @@ public class FunnybinResponse {
     private String shortUrl;
     private String uuid;
 
-    public FunnybinResponse() {}
+    public FunnybinResponse() {
+    }
 
     public FunnybinResponse(String fullUrl, String shortUrl, String uuid) {
         this.fullUrl = fullUrl;

@@ -7,7 +7,8 @@ import panda.std.Option;
 
 public final class DefaultValidation {
 
-    private DefaultValidation() {}
+    private DefaultValidation() {
+    }
 
     public static void whenNull(Object value, Supplier<Object> message) {
         if (value == null) {

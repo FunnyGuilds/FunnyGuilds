@@ -29,7 +29,8 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 @FunnyComponent
 public final class AllyCommand extends AbstractFunnyCommand {
 
-    @Inject public AllyInvitationList allyInvitationList;
+    @Inject
+    public AllyInvitationList allyInvitationList;
 
     @FunnyCommand(
             name = "${user.ally.name}",

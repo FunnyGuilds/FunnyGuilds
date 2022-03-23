@@ -8,7 +8,8 @@ import panda.std.Option;
 
 public final class EntityUtils {
 
-    private EntityUtils() {}
+    private EntityUtils() {
+    }
 
     public static Option<Player> getAttacker(Entity damager) {
         if (damager instanceof Player) {

@@ -21,7 +21,8 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 @FunnyComponent
 public final class InviteCommand extends AbstractFunnyCommand {
 
-    @Inject public GuildInvitationList guildInvitationList;
+    @Inject
+    public GuildInvitationList guildInvitationList;
 
     @FunnyCommand(
             name = "${user.invite.name}",

@@ -271,6 +271,7 @@ public final class Reflections {
         }
     }
 
-    private Reflections() {}
+    private Reflections() {
+    }
 
 }

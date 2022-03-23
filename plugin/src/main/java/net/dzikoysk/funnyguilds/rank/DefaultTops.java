@@ -65,6 +65,7 @@ public final class DefaultTops {
                 .build();
     }
 
-    private DefaultTops() {}
+    private DefaultTops() {
+    }
 
 }

@@ -12,35 +12,60 @@ public class CommandsConfiguration extends OkaeriConfig {
 
     public FunnyCommand funnyguilds = new FunnyCommand("funnyguilds", Collections.singletonList("fg"));
 
-    @Comment public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
-    @Comment public FunnyCommand create = new FunnyCommand("zaloz");
-    @Comment public FunnyCommand delete = new FunnyCommand("usun");
-    @Comment public FunnyCommand confirm = new FunnyCommand("potwierdz");
-    @Comment public FunnyCommand invite = new FunnyCommand("zapros");
-    @Comment public FunnyCommand join = new FunnyCommand("dolacz");
-    @Comment public FunnyCommand leave = new FunnyCommand("opusc");
-    @Comment public FunnyCommand kick = new FunnyCommand("wyrzuc");
-    @Comment public FunnyCommand base = new FunnyCommand("baza");
-    @Comment public FunnyCommand enlarge = new FunnyCommand("powieksz");
-    @Comment public FunnyCommand ally = new FunnyCommand("sojusz");
-    @Comment public FunnyCommand war = new FunnyCommand("wojna");
-    @Comment public FunnyCommand items = new FunnyCommand("przedmioty");
-    @Comment public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
-    @Comment public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
-    @Comment public FunnyCommand tnt = new FunnyCommand("tnt");
+    @Comment
+    public FunnyCommand guild = new FunnyCommand("gildia", Arrays.asList("gildie", "g"));
+    @Comment
+    public FunnyCommand create = new FunnyCommand("zaloz");
+    @Comment
+    public FunnyCommand delete = new FunnyCommand("usun");
+    @Comment
+    public FunnyCommand confirm = new FunnyCommand("potwierdz");
+    @Comment
+    public FunnyCommand invite = new FunnyCommand("zapros");
+    @Comment
+    public FunnyCommand join = new FunnyCommand("dolacz");
+    @Comment
+    public FunnyCommand leave = new FunnyCommand("opusc");
+    @Comment
+    public FunnyCommand kick = new FunnyCommand("wyrzuc");
+    @Comment
+    public FunnyCommand base = new FunnyCommand("baza");
+    @Comment
+    public FunnyCommand enlarge = new FunnyCommand("powieksz");
+    @Comment
+    public FunnyCommand ally = new FunnyCommand("sojusz");
+    @Comment
+    public FunnyCommand war = new FunnyCommand("wojna");
+    @Comment
+    public FunnyCommand items = new FunnyCommand("przedmioty");
+    @Comment
+    public FunnyCommand escape = new FunnyCommand("ucieczka", Collections.singletonList("escape"));
+    @Comment
+    public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
+    @Comment
+    public FunnyCommand tnt = new FunnyCommand("tnt");
 
     @Comment
     public FunnyCommand break_ = new FunnyCommand("rozwiaz");
 
-    @Comment public FunnyCommand info = new FunnyCommand("info");
-    @Comment public FunnyCommand player = new FunnyCommand("gracz");
-    @Comment public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
-    @Comment public FunnyCommand validity = new FunnyCommand("przedluz");
-    @Comment public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
-    @Comment public FunnyCommand deputy = new FunnyCommand("zastepca");
-    @Comment public FunnyCommand ranking = new FunnyCommand("ranking");
-    @Comment public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
-    @Comment public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
+    @Comment
+    public FunnyCommand info = new FunnyCommand("info");
+    @Comment
+    public FunnyCommand player = new FunnyCommand("gracz");
+    @Comment
+    public FunnyCommand top = new FunnyCommand("top", Collections.singletonList("top10"));
+    @Comment
+    public FunnyCommand validity = new FunnyCommand("przedluz");
+    @Comment
+    public FunnyCommand leader = new FunnyCommand("lider", Collections.singletonList("zalozyciel"));
+    @Comment
+    public FunnyCommand deputy = new FunnyCommand("zastepca");
+    @Comment
+    public FunnyCommand ranking = new FunnyCommand("ranking");
+    @Comment
+    public FunnyCommand setbase = new FunnyCommand("ustawbaze", Collections.singletonList("ustawdom"));
+    @Comment
+    public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
 
     @Comment({"", "Komendy administratora"})
     public AdminCommands admin = new CommandsConfiguration.AdminCommands();

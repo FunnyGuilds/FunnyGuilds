@@ -5,7 +5,8 @@ import org.bukkit.entity.Player;
 
 public class PingUtils {
 
-    private PingUtils() {}
+    private PingUtils() {
+    }
 
     public static int getPing(Player player) {
         return Math.max(0, FunnyGuilds.getInstance().getNmsAccessor().getStatisticsAccessor().getPlayerPing(player));

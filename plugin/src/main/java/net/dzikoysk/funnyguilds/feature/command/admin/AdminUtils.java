@@ -9,7 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 final class AdminUtils {
 
-    private AdminUtils() {}
+    private AdminUtils() {
+    }
 
     public static @Nullable User getAdminUser(CommandSender sender) {
         return (sender instanceof Player)

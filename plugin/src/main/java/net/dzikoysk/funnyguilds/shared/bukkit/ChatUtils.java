@@ -13,7 +13,8 @@ import panda.utilities.StringUtils;
 
 public final class ChatUtils {
 
-    private ChatUtils() {}
+    private ChatUtils() {
+    }
 
     public static final Pattern DECOLOR_PATTERN = Pattern.compile("(?:\u00a7)([0-9A-Fa-fK-Ok-oRXrx][^\u00a7]*)");
 

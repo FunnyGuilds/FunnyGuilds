@@ -46,6 +46,7 @@ public final class EggTypeChanger {
         }
     }
 
-    private EggTypeChanger() {}
+    private EggTypeChanger() {
+    }
 
 }

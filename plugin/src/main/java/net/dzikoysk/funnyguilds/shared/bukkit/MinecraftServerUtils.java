@@ -7,7 +7,8 @@ public final class MinecraftServerUtils {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
 
-    private MinecraftServerUtils() {}
+    private MinecraftServerUtils() {
+    }
 
     // 0 = last 1 min, 1 = last 5 min, 2 = last 15min
     public static String getFormattedTPS() {

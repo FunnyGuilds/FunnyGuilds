@@ -68,7 +68,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             }
 
             try {
-                infoExecutor.execute(player, new String[] {entry.getKey().getTag()});
+                infoExecutor.execute(player, new String[]{entry.getKey().getTag()});
                 return;
             }
             catch (ValidationException validatorException) {

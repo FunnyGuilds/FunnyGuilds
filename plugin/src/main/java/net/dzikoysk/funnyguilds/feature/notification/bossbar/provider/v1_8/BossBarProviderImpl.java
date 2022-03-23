@@ -171,7 +171,7 @@ public class BossBarProviderImpl implements BossBarProvider {
 
     private void removeBossBar(Player player) {
         try {
-            Object destroyPacket = PACKET_PLAY_OUT_ENTITY_DESTROY_CONSTRUCTOR.newInstance(new int[] {this.witherId});
+            Object destroyPacket = PACKET_PLAY_OUT_ENTITY_DESTROY_CONSTRUCTOR.newInstance(new int[]{this.witherId});
             PacketSender.sendPacket(player, destroyPacket);
             this.currentSecond.set(0);
         }

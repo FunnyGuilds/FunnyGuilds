@@ -7,7 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public final class GuildValidation {
 
-    private GuildValidation() {}
+    private GuildValidation() {
+    }
 
     public static Guild requireGuildByTag(String tag) {
         return FunnyGuilds.getInstance().getGuildManager().findByTag(tag, true).orThrow(() -> {

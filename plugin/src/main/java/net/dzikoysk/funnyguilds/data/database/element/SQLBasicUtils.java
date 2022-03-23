@@ -5,7 +5,8 @@ import panda.utilities.text.Joiner;
 
 public class SQLBasicUtils {
 
-    private SQLBasicUtils() {}
+    private SQLBasicUtils() {
+    }
 
     public static SQLNamedStatement getInsert(SQLTable table) {
         StringBuilder sb = new StringBuilder();

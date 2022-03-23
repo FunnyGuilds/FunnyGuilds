@@ -49,7 +49,8 @@ public class RankSystem {
         }
     }
 
-    public interface RankingAlgorithm extends BiFunction<Integer, Integer, RankResult> {}
+    public interface RankingAlgorithm extends BiFunction<Integer, Integer, RankResult> {
+    }
 
     public static RankSystem create(PluginConfiguration config) {
         ImmutableMap<Type, RankingAlgorithm> build = new ImmutableMap.Builder<Type, RankingAlgorithm>()

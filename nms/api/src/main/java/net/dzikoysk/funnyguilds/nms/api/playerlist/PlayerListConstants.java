@@ -6,6 +6,7 @@ public final class PlayerListConstants {
     public static final String UUID_PATTERN = "00000000-0000-%s-0000-000000000000";
     public static final String EMPTY_COMPONENT_VALUE = "{\"translate\":\"\"}";
 
-    private PlayerListConstants() {}
+    private PlayerListConstants() {
+    }
 
 }

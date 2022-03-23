@@ -38,7 +38,8 @@ public final class ItemUtils {
         }
     }
 
-    private ItemUtils() {}
+    private ItemUtils() {
+    }
 
     public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();

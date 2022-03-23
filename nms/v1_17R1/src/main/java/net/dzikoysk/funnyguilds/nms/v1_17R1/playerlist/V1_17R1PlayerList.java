@@ -18,7 +18,7 @@ import org.bukkit.craftbukkit.v1_17_R1.util.CraftChatMessage;
 import org.bukkit.entity.Player;
 
 public class V1_17R1PlayerList implements PlayerList {
-    
+
     private static final EnumGamemode DEFAULT_GAME_MODE = EnumGamemode.a;
     private static final IChatBaseComponent EMPTY_COMPONENT = IChatBaseComponent.a(PlayerListConstants.EMPTY_COMPONENT_VALUE);
 

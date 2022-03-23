@@ -12,7 +12,7 @@ public final class GuildDependentTablistVariable implements TablistVariable {
     private final StandaloneUserResolver whenNotInGuild;
 
     public GuildDependentTablistVariable(String name, MemberResolver whenInGuild, StandaloneUserResolver whenNotInGuild) {
-        this(new String[] {name}, whenInGuild, whenNotInGuild);
+        this(new String[]{name}, whenInGuild, whenNotInGuild);
     }
 
     public GuildDependentTablistVariable(String[] names, MemberResolver whenInGuild, StandaloneUserResolver whenNotInGuild) {
