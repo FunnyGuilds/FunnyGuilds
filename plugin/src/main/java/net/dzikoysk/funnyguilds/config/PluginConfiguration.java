@@ -718,7 +718,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minChange w gore, np.: \"50-* &2+{CHANGE}\" lub")
     @Comment("  wszystkie wartosci do danego maxChange w dol, np.: \"*-50 &4-{CHANGE}\"")
     public List<RangeFormatting> killPointsChangeFormat = Arrays.asList(
-            new RangeFormatting(Integer.MIN_VALUE, 1, "&c-{CHANGE}"),
+            new RangeFormatting(Integer.MIN_VALUE, -1, "&c-{CHANGE}"),
             new RangeFormatting(0, 0, "&7{CHANGE}"),
             new RangeFormatting(1, Integer.MAX_VALUE, "&a+{CHANGE}")
     );
