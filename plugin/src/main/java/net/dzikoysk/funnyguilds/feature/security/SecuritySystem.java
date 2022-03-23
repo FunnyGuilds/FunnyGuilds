@@ -21,7 +21,8 @@ public final class SecuritySystem {
     private static final double ADDITIONAL_SNEAKING_HEIGHT_CURSOR = 0.35;
     private static final Map<User, Integer> PLAYERS_VIOLATION_LEVEL = new HashMap<>();
 
-    private SecuritySystem() {}
+    private SecuritySystem() {
+    }
 
     public static boolean onHitCrystal(Player player, Guild guild) {
         scan(player, SecurityType.GUILD, guild);

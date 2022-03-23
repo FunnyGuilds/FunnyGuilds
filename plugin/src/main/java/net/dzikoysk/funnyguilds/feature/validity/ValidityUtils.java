@@ -10,7 +10,8 @@ import panda.std.Option;
 
 public class ValidityUtils {
 
-    private ValidityUtils() {}
+    private ValidityUtils() {
+    }
 
     public static void broadcast(@Nullable Guild guild) {
         if (guild == null) {

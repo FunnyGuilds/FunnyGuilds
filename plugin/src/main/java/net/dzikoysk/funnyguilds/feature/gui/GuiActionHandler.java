@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 public class GuiActionHandler extends AbstractFunnyListener {
-    
+
     @EventHandler
     public void onClick(final InventoryClickEvent event) {
         Inventory inventory = event.getInventory();

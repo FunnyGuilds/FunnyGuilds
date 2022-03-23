@@ -31,8 +31,8 @@ public final class DeserializationUtils {
         String guildTag = pluginConfiguration.guildTagKeepCase
                 ? rawGuildTag
                 : pluginConfiguration.guildTagUppercase
-                    ? rawGuildTag.toUpperCase()
-                    : rawGuildTag.toLowerCase();
+                ? rawGuildTag.toUpperCase()
+                : rawGuildTag.toLowerCase();
 
         Guild guild = guildManager.findByUuid(guildUuid)
                 .orElseGet(() -> {
@@ -72,7 +72,7 @@ public final class DeserializationUtils {
         String regionName = (String) values[0];
 
         Region region = regionManager.findByName(regionName)
-                        .orElseGet(new Region(regionName, (Location) values[1]));
+                .orElseGet(new Region(regionName, (Location) values[1]));
 
         region.setSize((int) values[2]);
         region.setEnlarge((int) values[3]);

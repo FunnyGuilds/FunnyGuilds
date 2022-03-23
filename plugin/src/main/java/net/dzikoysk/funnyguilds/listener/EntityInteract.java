@@ -39,7 +39,7 @@ public class EntityInteract extends AbstractFunnyListener {
 
             if (config.infoPlayerCommand) {
                 try {
-                    playerExecutor.execute(eventCaller, new String[] {clickedPlayer.getName()});
+                    playerExecutor.execute(eventCaller, new String[]{clickedPlayer.getName()});
                 }
                 catch (ValidationException validatorException) {
                     validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(eventCaller, message));

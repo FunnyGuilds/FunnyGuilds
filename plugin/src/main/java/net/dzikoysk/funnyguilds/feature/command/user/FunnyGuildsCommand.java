@@ -17,7 +17,8 @@ import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 @FunnyComponent
 public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
-    @Inject public DataModel dataModel;
+    @Inject
+    public DataModel dataModel;
 
     @FunnyCommand(
             name = "${user.funnyguilds.name}",

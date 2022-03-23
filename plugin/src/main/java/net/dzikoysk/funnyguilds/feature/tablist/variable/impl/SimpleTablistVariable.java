@@ -11,7 +11,7 @@ public final class SimpleTablistVariable implements TablistVariable {
     private final Function<User, Object> function;
 
     public SimpleTablistVariable(String name, Function<User, Object> function) {
-        this(new String[] {name}, function);
+        this(new String[]{name}, function);
     }
 
     public SimpleTablistVariable(String[] names, Function<User, Object> function) {

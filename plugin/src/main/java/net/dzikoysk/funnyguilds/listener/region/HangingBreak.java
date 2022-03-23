@@ -7,13 +7,13 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 
 public class HangingBreak extends AbstractFunnyListener {
-    
+
     @EventHandler
     public void onBreak(HangingBreakByEntityEvent event) {
         if (!(event.getRemover() instanceof Player)) {
             return;
         }
-        
+
         Player player = (Player) event.getRemover();
 
         ProtectionSystem.isProtected(player, event.getEntity().getLocation(), false)
@@ -21,5 +21,5 @@ public class HangingBreak extends AbstractFunnyListener {
                 .peek(ProtectionSystem::defaultResponse);
 
     }
-    
+
 }

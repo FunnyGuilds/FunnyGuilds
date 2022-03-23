@@ -22,7 +22,8 @@ import static java.util.stream.Collectors.toList;
 
 public class SecurityFreeCam {
 
-    private SecurityFreeCam() {}
+    private SecurityFreeCam() {
+    }
 
     public static void on(Player player, Vector origin, Vector hitPoint, double distance) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();

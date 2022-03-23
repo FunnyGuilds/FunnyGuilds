@@ -11,7 +11,8 @@ import org.bukkit.ChatColor;
 
 public final class BanUtils {
 
-    private BanUtils() {}
+    private BanUtils() {
+    }
 
     public static void ban(Guild guild, long time, String reason) {
         guild.setBan(time + System.currentTimeMillis());

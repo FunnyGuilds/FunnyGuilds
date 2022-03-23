@@ -4,7 +4,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class SafeUtils {
 
-    private SafeUtils() {}
+    private SafeUtils() {
+    }
 
     private static void reportUnsafe(Throwable th) {
         FunnyGuilds.getPluginLogger().error("Something went wrong while handling unsafe", th);

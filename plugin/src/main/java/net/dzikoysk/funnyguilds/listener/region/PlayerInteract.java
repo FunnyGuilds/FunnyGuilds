@@ -84,7 +84,7 @@ public class PlayerInteract extends AbstractFunnyListener {
 
                     if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
                         try {
-                            infoExecutor.execute(player, new String[] {guild.getTag()});
+                            infoExecutor.execute(player, new String[]{guild.getTag()});
                         }
                         catch (ValidationException validatorException) {
                             validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));

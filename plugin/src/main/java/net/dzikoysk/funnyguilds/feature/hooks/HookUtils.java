@@ -4,7 +4,8 @@ import org.bukkit.entity.Player;
 
 public final class HookUtils {
 
-    private HookUtils() {}
+    private HookUtils() {
+    }
 
     public static String replacePlaceholders(Player userOne, Player userTwo, String message) {
         message = replacePlaceholdersWithPlaceholderAPI(userOne, userTwo, message);

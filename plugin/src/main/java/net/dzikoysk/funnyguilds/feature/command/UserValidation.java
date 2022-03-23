@@ -6,7 +6,8 @@ import net.dzikoysk.funnyguilds.user.User;
 
 public final class UserValidation {
 
-    private UserValidation() {}
+    private UserValidation() {
+    }
 
     public static User requireUserByName(String name) {
         FunnyGuilds plugin = FunnyGuilds.getInstance();

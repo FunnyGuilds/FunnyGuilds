@@ -12,7 +12,8 @@ import panda.std.function.QuadFunction;
 
 public final class SpaceUtils {
 
-    private SpaceUtils() {}
+    private SpaceUtils() {
+    }
 
     public static boolean chance(double chance) {
         return chance >= 100 || chance > ThreadLocalRandom.current().nextDouble(0, 100);

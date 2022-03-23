@@ -4,6 +4,11 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
     id 'checkstyle'
+    id 'org.openrewrite.rewrite' version '5.17.0'
+}
+
+rewrite {
+    activeRecipe("org.openrewrite.java.format.AutoFormat")
 }
 
 allprojects {
@@ -17,9 +22,7 @@ allprojects {
     java {
         withSourcesJar()
     }
-}
 
-subprojects {
     repositories {
         mavenLocal()
         mavenCentral()
@@ -35,7 +38,9 @@ subprojects {
         maven { url "https://repo.mvdw-software.com/content/groups/public" }
         maven { url "https://repo.codemc.io/repository/maven-public" }
     }
+}
 
+subprojects {
     apply plugin: 'groovy'
     apply plugin: 'com.github.johnrengelman.shadow'
 

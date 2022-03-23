@@ -19,7 +19,8 @@ public class SecurityReach {
     private static final double IMPORTANCE_OF_PING = 0.93;
     private static final double IMPORTANCE_OF_TPS = 10.0;
 
-    private SecurityReach() {}
+    private SecurityReach() {
+    }
 
     public static void on(Player player, double distance) {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();

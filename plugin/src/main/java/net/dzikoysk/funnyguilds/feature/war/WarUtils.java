@@ -8,7 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public final class WarUtils {
 
-    private WarUtils() {}
+    private WarUtils() {
+    }
 
     @Deprecated // TODO: to remove
     public static String getMessage(Message type, Object... values) {

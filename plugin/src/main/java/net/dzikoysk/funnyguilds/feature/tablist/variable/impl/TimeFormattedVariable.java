@@ -13,7 +13,7 @@ public class TimeFormattedVariable implements TablistVariable {
     private LocalDateTime currentTime;
 
     public TimeFormattedVariable(String name, BiFunction<User, LocalDateTime, Object> function) {
-        this(new String[] {name}, function);
+        this(new String[]{name}, function);
     }
 
     public TimeFormattedVariable(String[] names, BiFunction<User, LocalDateTime, Object> function) {

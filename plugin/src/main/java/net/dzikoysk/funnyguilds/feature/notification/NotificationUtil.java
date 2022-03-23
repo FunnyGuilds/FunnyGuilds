@@ -31,5 +31,6 @@ public final class NotificationUtil {
         }
     }
 
-    private NotificationUtil() {}
+    private NotificationUtil() {
+    }
 }

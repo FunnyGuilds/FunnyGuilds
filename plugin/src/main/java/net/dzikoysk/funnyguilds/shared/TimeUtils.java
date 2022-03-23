@@ -6,7 +6,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class TimeUtils {
 
-    private TimeUtils() {}
+    private TimeUtils() {
+    }
 
     public static long parseTime(String string) {
         if (string == null || string.isEmpty()) {

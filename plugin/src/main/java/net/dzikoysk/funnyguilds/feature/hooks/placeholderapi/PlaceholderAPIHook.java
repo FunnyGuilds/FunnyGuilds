@@ -125,7 +125,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             return null;
         }
 
-        
+
         @Override
         public String getAuthor() {
             return "FunnyGuilds Team";

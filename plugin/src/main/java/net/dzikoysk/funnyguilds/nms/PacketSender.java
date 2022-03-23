@@ -67,6 +67,7 @@ public final class PacketSender {
         }
     }
 
-    private PacketSender() {}
+    private PacketSender() {
+    }
 
 }

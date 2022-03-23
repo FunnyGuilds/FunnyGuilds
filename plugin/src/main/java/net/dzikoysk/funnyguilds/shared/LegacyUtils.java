@@ -4,7 +4,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public final class LegacyUtils {
 
-    private LegacyUtils() {}
+    private LegacyUtils() {
+    }
 
     /**
      * Used to get x from placeholders like {PLACEHOLDER-x}

@@ -16,7 +16,8 @@ import net.dzikoysk.funnyguilds.shared.IOUtils;
  */
 public class FunnyTelemetry {
 
-    private FunnyTelemetry() {}
+    private FunnyTelemetry() {
+    }
 
     private static final Gson gson = new Gson();
     public static final String URL = "https://funnytelemetry.dzikoysk.net";
