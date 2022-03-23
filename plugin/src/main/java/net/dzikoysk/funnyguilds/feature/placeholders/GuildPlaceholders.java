@@ -53,7 +53,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
 
                             return protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now);
                         }, () -> "Brak"))
-                .property("owner", new GuildPlaceholder(Guild::getOwner, () -> messages.gOwnerNoValue))
+                .property("owner", new GuildPlaceholder(guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue))
                 .property("deputies", new GuildPlaceholder(guild ->
                                 guild.getDeputies().isEmpty()
                                         ? messages.gDeputiesNoValue
