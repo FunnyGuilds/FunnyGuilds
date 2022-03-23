@@ -8,9 +8,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.impl.TimePlaceholder;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import panda.utilities.text.Formatter;
 
@@ -23,6 +25,8 @@ public class Placeholders<T, P extends Placeholder<T>> {
     private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
 
     static {
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+
         TIME = new Placeholders<LocalDateTime, TimePlaceholder>()
                 .property("hour", new TimePlaceholder(LocalDateTime::getHour))
                 .property("minute", new TimePlaceholder(LocalDateTime::getMinute))
@@ -34,7 +38,10 @@ public class Placeholders<T, P extends Placeholder<T>> {
                 .property("year", new TimePlaceholder(LocalDateTime::getYear));
 
         SIMPLE = new Placeholders<Object, Placeholder<Object>>()
-                .property("tps", object -> MinecraftServerUtils.getFormattedTPS());
+                .property("tps", object -> MinecraftServerUtils.getFormattedTPS())
+                .property("online", object -> Bukkit.getOnlinePlayers().size())
+                .property("users", object -> plugin.getUserManager().countUsers())
+                .property("guilds", object -> plugin.getGuildManager().countGuilds());
 
         ONLINE = new Placeholders<String, Placeholder<String>>()
                 .raw("<online>", end -> ChatColor.GREEN)
@@ -51,12 +58,12 @@ public class Placeholders<T, P extends Placeholder<T>> {
         return this.placeholders.get(name);
     }
 
-    public Placeholders<T, P> raw(String name, P placeholder){
+    public Placeholders<T, P> raw(String name, P placeholder) {
         this.placeholders.put(name, placeholder);
         return this;
     }
 
-    public Placeholders<T, P> raw(Collection<String> names, P placeholder){
+    public Placeholders<T, P> raw(Collection<String> names, P placeholder) {
         names.forEach(name -> this.raw(name, placeholder));
         return this;
     }

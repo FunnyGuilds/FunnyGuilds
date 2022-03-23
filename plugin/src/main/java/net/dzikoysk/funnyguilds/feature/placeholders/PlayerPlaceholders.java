@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PlayerResolver.Opt
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import panda.utilities.text.Joiner;
 
@@ -20,9 +21,12 @@ public class PlayerPlaceholders extends Placeholders<User, PlayerPlaceholder> {
     static {
         PLAYER = new PlayerPlaceholders()
                 .property("world", new PlayerPlaceholder((OptionResolver) playerOption -> playerOption
+                        .map(Player::getWorld)
+                        .map(World::getName)
+                        .orElseGet("")))
+                .property("online", new PlayerPlaceholder((OptionResolver) playerOption -> playerOption
                         .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
-                        .map(value -> Long.toString(value))
-                        .orElseGet("")));
+                        .orElseGet(0L)));
 
         if (HookManager.WORLD_GUARD.isPresent()) {
             String wgRegionNoValue = FunnyGuilds.getInstance().getMessageConfiguration().wgRegionNoValue;

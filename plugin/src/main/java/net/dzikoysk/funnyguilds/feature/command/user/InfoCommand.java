@@ -5,7 +5,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
-import net.dzikoysk.funnyguilds.feature.placeholders.legacy.Placeholders;
+import net.dzikoysk.funnyguilds.feature.placeholders.GuildPlaceholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -39,12 +39,13 @@ public final class InfoCommand extends AbstractFunnyCommand {
                 .orThrow(() -> new ValidationException(messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
-        Formatter formatter = Placeholders.GUILD_ALL
+        Formatter formatter = GuildPlaceholders.GUILD_ALL
                 .toFormatter(guild);
 
         for (String messageLine : messages.infoList) {
             messageLine = formatter.format(messageLine);
-            messageLine = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+            messageLine = GuildPlaceholders.GUILD_ALLIES_ENEMIES_ALL.format(messageLine, guild);
+            messageLine = GuildPlaceholders.GUILD_MEMBERS_COLOR_CONTEXT
                     .format(messageLine, Pair.of(ChatUtils.getLastColorBefore(messageLine, "{MEMBERS}"), guild));
 
             sendMessage(sender, (messageLine));

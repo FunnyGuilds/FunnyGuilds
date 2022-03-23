@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.placeholders
 
 import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
-import net.dzikoysk.funnyguilds.feature.placeholders.legacy.Placeholders
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils
 import net.dzikoysk.funnyguilds.user.FakeUserProfile
@@ -34,7 +33,7 @@ class PlaceholdersTest extends FunnyGuildsSpec {
     }
 
     @Test
-    void 'test ONLINE placeholder' () {
+    void 'test ONLINE placeholder'() {
         def text = "§7offline - <online>online</online> - offline - <online>online</online> - offline"
         def formatter = Placeholders.ONLINE.toFormatter(ChatUtils.getLastColorBefore(text, "<online>"))
 
@@ -44,7 +43,7 @@ class PlaceholdersTest extends FunnyGuildsSpec {
     }
 
     @Test
-    void 'test GUILD_MEMBERS_COLOR_CONTEXT placeholder' () {
+    void 'test GUILD_MEMBERS_COLOR_CONTEXT placeholder'() {
         def guild = guildManager.addGuild(new Guild('guild', 'TEST'))
         def user1 = userManager.createFake(UUID.randomUUID(), 'user1', FakeUserProfile.offline())
         def user2 = userManager.createFake(UUID.randomUUID(), 'user2', FakeUserProfile.online())
@@ -55,19 +54,19 @@ class PlaceholdersTest extends FunnyGuildsSpec {
         guild.addMember(user3)
 
         def text1 = "§7{MEMBERS}"
-        text1 = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+        text1 = GuildPlaceholders.GUILD_MEMBERS_COLOR_CONTEXT
                 .format(text1, Pair.of(ChatUtils.getLastColorBefore(text1, "{MEMBERS}"), guild))
 
         assertEquals '§7user1, §auser2§7, user3', text1
 
         def text2 = "§c{MEMBERS}"
-        text2 = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+        text2 = GuildPlaceholders.GUILD_MEMBERS_COLOR_CONTEXT
                 .format(text2, Pair.of(ChatUtils.getLastColorBefore(text2, "{MEMBERS}"), guild))
 
         assertEquals '§cuser1, §auser2§c, user3', text2
 
         def text3 = "§a{MEMBERS}"
-        text3 = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+        text3 = GuildPlaceholders.GUILD_MEMBERS_COLOR_CONTEXT
                 .format(text3, Pair.of(ChatUtils.getLastColorBefore(text3, "{MEMBERS}"), guild))
 
         assertEquals '§auser1, §auser2§a, user3', text3

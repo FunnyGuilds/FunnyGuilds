@@ -43,7 +43,7 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("{G-LIVES} - liczba zyc gildii")
     @Comment("{G-LIVES-SYMBOL - liczba zyc gildii w postaci powtarzajacego sie symbolu (do ustawienia w lives-repeating-symbol.full w config.yml) z pustymi serduszkami jesli zyc brakuje (do ustawienia w lives-repeating-symbol.empty w config.yml)")
     @Comment("{G-LIVES-SYMBOL-ALL} - liczba wszystkich zyc gildii w postaci powtarzajacego sie symbolu (do ustawienia w lives-repeating-symbol.full w config.yml)")
-    @Comment("{G-ALLIES} - liczba sojusznikow gildii")
+    @Comment("{G-ALLIES-ALL} - liczba sojusznikow gildii")
     @Comment("{G-POINTS} - punkty gildii")
     @Comment("{G-POINTS-FORMAT} - punkty gildii z formatowaniem")
     @Comment("{G-POSITION} - pozycja gildii gracza w rankingu")

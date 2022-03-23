@@ -22,7 +22,7 @@ public class TablistPlaceholders extends Placeholders<User, UserPlaceholder> {
         UserPlaceholders.USER.getPlaceholders().forEach(TABLIST::raw);
 
         GuildPlaceholders.GUILD_ALL.getPlaceholders().forEach((name, placeholder) ->
-                TABLIST.raw("{G-" + (name.replaceFirst("\\{", "")),
+                TABLIST.raw("{G-" + (name.replace("{", "")),
                         new MemberPlaceholder(
                                 (user, guild) -> placeholder.getRaw(guild),
                                 user -> placeholder.getRawFallback(null)

@@ -5,7 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 
-public interface PlayerResolver extends UserResolver{
+public interface PlayerResolver extends UserResolver {
     Object resolve(Player player);
 
     @Override

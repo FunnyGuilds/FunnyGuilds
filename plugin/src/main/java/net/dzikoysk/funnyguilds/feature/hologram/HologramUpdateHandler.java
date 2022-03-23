@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
-import net.dzikoysk.funnyguilds.feature.placeholders.legacy.Placeholders;
+import net.dzikoysk.funnyguilds.feature.placeholders.GuildPlaceholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.Bukkit;
@@ -37,11 +37,12 @@ public class HologramUpdateHandler implements Runnable {
         ItemStack item = new ItemStack(hologramConfig.item);
         HookManager.HOLOGRAPHIC_DISPLAYS.peek(hologramManager -> {
             for (Guild guild : plugin.getGuildManager().getGuilds()) {
-                Formatter formatter = Placeholders.GUILD_ALL.toFormatter(guild);
+                Formatter formatter = GuildPlaceholders.GUILD_ALL.toFormatter(guild);
                 List<String> lines = PandaStream.of(hologramConfig.displayedLines)
                         .map(formatter::format)
                         .map(ChatUtils::colored)
-                        .map(line -> Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
+                        .map(line -> GuildPlaceholders.GUILD_ALLIES_ENEMIES_ALL.format(line, guild))
+                        .map(line -> GuildPlaceholders.GUILD_MEMBERS_COLOR_CONTEXT
                                 .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild)))
                         .toList();
 

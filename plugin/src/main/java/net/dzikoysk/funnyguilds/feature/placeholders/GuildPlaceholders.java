@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -54,9 +55,9 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
                         }, () -> "Brak"))
                 .property("owner", new GuildPlaceholder(Guild::getOwner, () -> messages.gOwnerNoValue))
                 .property("deputies", new GuildPlaceholder(guild ->
-                        guild.getDeputies().isEmpty()
-                                ? messages.gDeputiesNoValue
-                                : Joiner.on(", ").join(Entity.names(guild.getDeputies())),
+                                guild.getDeputies().isEmpty()
+                                        ? messages.gDeputiesNoValue
+                                        : Joiner.on(", ").join(Entity.names(guild.getDeputies())),
                         () -> messages.gDeputiesNoValue))
                 .property("deputy", new GuildPlaceholder(
                         guild -> guild.getDeputies().isEmpty()
@@ -108,8 +109,8 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
                 .property("avg-assists", new GuildRankPlaceholder((guild, rank) -> rank.getAverageAssists(), () -> 0))
                 .property("logouts", new GuildRankPlaceholder((guild, rank) -> rank.getLogouts(), () -> 0))
                 .property("avg-logouts", new GuildRankPlaceholder((guild, rank) -> rank.getAverageLogouts(), () -> 0))
-                .property("kdr", new GuildRankPlaceholder((guild, rank) -> rank.getKDR(), () -> 0))
-                .property("avg-kdr", new GuildRankPlaceholder((guild, rank) -> rank.getAverageKDR(), () -> 0));
+                .property("kdr", new GuildRankPlaceholder((guild, rank) -> String.format(Locale.US, "%.2f", rank.getKDR()), () -> 0.0))
+                .property("avg-kdr", new GuildRankPlaceholder((guild, rank) -> String.format(Locale.US, "%.2f", rank.getAverageKDR()), () -> 0.0));
 
         GUILD_ALLIES_ENEMIES_ALL = new GuildPlaceholders()
                 .property("allies", new GuildPlaceholder(
