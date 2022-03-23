@@ -37,11 +37,11 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
         GuildRankManager guildRankManager = plugin.getGuildRankManager();
 
         GUILD = new GuildPlaceholders()
-                .property("name", new GuildPlaceholder(Guild::getName, () -> messages.gNameNoValue))
+                .property(Arrays.asList("name", "guild"), new GuildPlaceholder(Guild::getName, () -> messages.gNameNoValue))
                 .property("tag", new GuildPlaceholder(Guild::getTag, () -> messages.gTagNoValue));
 
         GUILD_ALL = new GuildPlaceholders()
-                .property("name", new GuildPlaceholder(Guild::getName, () -> messages.gNameNoValue))
+                .property(Arrays.asList("name", "guild"), new GuildPlaceholder(Guild::getName, () -> messages.gNameNoValue))
                 .property("tag", new GuildPlaceholder(Guild::getTag, () -> messages.gTagNoValue))
                 .property("validity", new GuildPlaceholder(
                         guild -> messages.dateFormat.format(new Date(guild.getValidity())),
