@@ -6,18 +6,23 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.impl.guild.GuildPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.impl.guild.GuildRankPlaceholder;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
+import net.dzikoysk.funnyguilds.user.UserUtils;
+import panda.std.Pair;
 import panda.utilities.StringUtils;
 import panda.utilities.text.Joiner;
 
 public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
 
-    public static final GuildPlaceholders GUILD_PLACEHOLDERS = new GuildPlaceholders();
+    public static final Placeholders<Guild, GuildPlaceholder> GUILD;
+    public static final Placeholders<Guild, GuildPlaceholder> GUILD_ALL;
+    public static final Placeholders<Pair<String, Guild>, Placeholder<Pair<String, Guild>>> GUILD_MEMBERS_COLOR_CONTEXT;
 
     static {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
@@ -25,7 +30,11 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
         MessageConfiguration messages = plugin.getMessageConfiguration();
         GuildRankManager guildRankManager = plugin.getGuildRankManager();
 
-        GUILD_PLACEHOLDERS
+        GUILD = new GuildPlaceholders()
+                .property("name", new GuildPlaceholder(Guild::getName, () -> messages.gNameNoValue))
+                .property("tag", new GuildPlaceholder(Guild::getTag, () -> messages.gTagNoValue));
+
+        GUILD_ALL = new GuildPlaceholders()
                 .property("name", new GuildPlaceholder(Guild::getName, () -> messages.gNameNoValue))
                 .property("tag", new GuildPlaceholder(Guild::getTag, () -> messages.gTagNoValue))
                 .property("owner", new GuildPlaceholder(Guild::getOwner, () -> messages.gOwnerNoValue))
@@ -66,7 +75,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
                 .property("lives-symbol-all", new GuildPlaceholder(
                         guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full.getValue()),
                         () -> messages.livesNoValue))
-                .property("position", new GuildRankPlaceholder(
+                .property(Arrays.asList("position", "rank"), new GuildRankPlaceholder(
                         (guild, rank) -> guildRankManager.isRankedGuild(guild)
                                 ? String.valueOf(guild.getRank().getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
                                 : messages.minMembersToIncludeNoValue,
@@ -88,6 +97,15 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
                 .property("avg-logouts", new GuildRankPlaceholder((guild, rank) -> rank.getAverageLogouts(), () -> 0))
                 .property("kdr", new GuildRankPlaceholder((guild, rank) -> rank.getKDR(), () -> 0))
                 .property("avg-kdr", new GuildRankPlaceholder((guild, rank) -> rank.getAverageKDR(), () -> 0));
+
+        GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>, Placeholder<Pair<String, Guild>>>()
+                .property("members", pair -> {
+                    String text = Joiner.on(", ").join(UserUtils.getOnlineNames(pair.getSecond().getMembers())).toString();
+
+                    return !text.contains("<online>")
+                            ? text
+                            : ONLINE.toFormatter(pair.getFirst()).format(text);
+                });
     }
 
 }

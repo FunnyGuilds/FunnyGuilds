@@ -12,13 +12,13 @@ import net.dzikoysk.funnyguilds.user.User;
 
 public class UserPlaceholders extends Placeholders<User, UserPlaceholder> {
 
-    public static final UserPlaceholders USER_PLACEHOLDERS = new UserPlaceholders();
+    public static final Placeholders<User, UserPlaceholder> USER;
 
     static {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
         PluginConfiguration config = plugin.getPluginConfiguration();
 
-        USER_PLACEHOLDERS
+        USER = new UserPlaceholders()
                 .property(Arrays.asList("player", "name"), new UserPlaceholder(User::getName))
                 .property("ping", new UserPlaceholder(User::getPing))
                 .property("ping-format", new UserPlaceholder(user ->

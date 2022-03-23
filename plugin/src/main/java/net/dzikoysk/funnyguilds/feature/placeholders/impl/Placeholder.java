@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public interface Placeholder<T> {
 
-    Object getRaw(T object);
+    Object getRaw(T data);
 
-    default String get(T object) {
-        return Objects.toString(this.getRaw(object));
+    default String get(T data) {
+        return Objects.toString(this.getRaw(data));
     }
 
 }

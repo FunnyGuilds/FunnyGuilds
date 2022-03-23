@@ -5,10 +5,10 @@ import org.jetbrains.annotations.Nullable;
 
 public interface FallbackPlaceholder<T> {
 
-    Object getRawFallback(@Nullable T object);
+    Object getRawFallback(@Nullable T data);
 
-    default String getFallback(@Nullable T object) {
-        return Objects.toString(this.getRawFallback(object));
+    default String getFallback(@Nullable T data) {
+        return Objects.toString(this.getRawFallback(data));
     }
 
 }

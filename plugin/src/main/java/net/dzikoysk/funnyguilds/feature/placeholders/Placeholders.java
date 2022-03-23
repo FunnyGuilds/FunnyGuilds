@@ -12,17 +12,18 @@ import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.impl.TimePlaceholder;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import org.bukkit.ChatColor;
+import panda.utilities.text.Formatter;
 
 public class Placeholders<T, P extends Placeholder<T>> {
 
-    public static final Placeholders<LocalDateTime, TimePlaceholder> TIME_PLACEHOLDERS = new Placeholders<>();
-    public static final Placeholders<Object, Placeholder<Object>> SIMPLE_PLACEHOLDERS = new Placeholders<>();
-    public static final Placeholders<String, Placeholder<String>> ONLINE_PLACEHOLDERS = new Placeholders<>();
+    public static final Placeholders<LocalDateTime, TimePlaceholder> TIME;
+    public static final Placeholders<Object, Placeholder<Object>> SIMPLE;
+    public static final Placeholders<String, Placeholder<String>> ONLINE;
 
     private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
 
     static {
-        TIME_PLACEHOLDERS
+        TIME = new Placeholders<LocalDateTime, TimePlaceholder>()
                 .property("hour", new TimePlaceholder(LocalDateTime::getHour))
                 .property("minute", new TimePlaceholder(LocalDateTime::getMinute))
                 .property("second", new TimePlaceholder(LocalDateTime::getSecond))
@@ -32,10 +33,10 @@ public class Placeholders<T, P extends Placeholder<T>> {
                 .property("month_number", new TimePlaceholder(LocalDateTime::getMonthValue))
                 .property("year", new TimePlaceholder(LocalDateTime::getYear));
 
-        SIMPLE_PLACEHOLDERS
+        SIMPLE = new Placeholders<Object, Placeholder<Object>>()
                 .property("tps", object -> MinecraftServerUtils.getFormattedTPS());
 
-        ONLINE_PLACEHOLDERS
+        ONLINE = new Placeholders<String, Placeholder<String>>()
                 .raw("<online>", end -> ChatColor.GREEN)
                 .raw("</online>", end -> end);
     }
@@ -55,6 +56,12 @@ public class Placeholders<T, P extends Placeholder<T>> {
         return this;
     }
 
+    public Placeholders<T, P> raw(Collection<String> names, P placeholder){
+        names.forEach(name -> this.placeholders.put(name, placeholder));
+        return this;
+    }
+
+
     public Placeholders<T, P> property(String name, P placeholder) {
         return this.raw("{" + name.toUpperCase() + "}", placeholder);
     }
@@ -64,11 +71,17 @@ public class Placeholders<T, P extends Placeholder<T>> {
         return this;
     }
 
-    public String parse(String text, T object) {
+    public String format(String text, T data) {
         for (Entry<String, P> placeholder : placeholders.entrySet()) {
-            text = text.replace(placeholder.getKey(), placeholder.getValue().get(object));
+            text = text.replace(placeholder.getKey(), placeholder.getValue().get(data));
         }
         return text;
+    }
+
+    public Formatter toFormatter(T data) {
+        Formatter formatter = new Formatter();
+        placeholders.forEach((key, placeholder) -> formatter.register(key, placeholder.get(data)));
+        return formatter;
     }
 
 }

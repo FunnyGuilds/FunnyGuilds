@@ -15,10 +15,10 @@ import panda.utilities.text.Joiner;
 
 public class PlayerPlaceholders extends Placeholders<User, PlayerPlaceholder> {
 
-    public static final PlayerPlaceholders PLAYER_PLACEHOLDERS = new PlayerPlaceholders();
+    public static final Placeholders<User, PlayerPlaceholder> PLAYER_PLACEHOLDERS;
 
     static {
-        PLAYER_PLACEHOLDERS
+        PLAYER_PLACEHOLDERS = new PlayerPlaceholders()
                 .property("world", new PlayerPlaceholder((OptionResolver) playerOption -> playerOption
                         .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
                         .map(value -> Long.toString(value))
