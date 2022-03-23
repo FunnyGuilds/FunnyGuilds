@@ -74,7 +74,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
                                 .map(value -> Integer.toString(value))
                                 .orElseGet(messages.gRegionSizeNoValue),
                         () -> messages.gRegionSizeNoValue))
-                .property("lives", new GuildPlaceholder((Guild::getLives), () -> 0))
+                .property("lives", new GuildPlaceholder(Guild::getLives, () -> 0))
                 .property("lives-symbol", new GuildPlaceholder(guild -> {
                     int lives = guild.getLives();
                     if (lives <= config.warLives) {
