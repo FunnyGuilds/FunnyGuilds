@@ -1,17 +1,17 @@
 package net.dzikoysk.funnyguilds.feature.placeholders.impl.user;
 
 import net.dzikoysk.funnyguilds.feature.placeholders.impl.FallbackPlaceholder;
-import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MemberResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.UserResolver;
 import net.dzikoysk.funnyguilds.user.User;
 
-public class MemberPlaceholder implements Placeholder<User>, FallbackPlaceholder<User> {
+public class MemberPlaceholder extends UserPlaceholder implements FallbackPlaceholder<User> {
 
     private final MemberResolver whenInGuild;
     private final UserResolver whenNotInGuild;
 
     public MemberPlaceholder(MemberResolver whenInGuild, UserResolver whenNotInGuild) {
+        super(whenNotInGuild);
         this.whenInGuild = whenInGuild;
         this.whenNotInGuild = whenNotInGuild;
     }

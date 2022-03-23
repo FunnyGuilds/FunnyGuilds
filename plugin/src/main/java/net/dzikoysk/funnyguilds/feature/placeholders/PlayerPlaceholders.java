@@ -15,10 +15,10 @@ import panda.utilities.text.Joiner;
 
 public class PlayerPlaceholders extends Placeholders<User, PlayerPlaceholder> {
 
-    public static final Placeholders<User, PlayerPlaceholder> PLAYER_PLACEHOLDERS;
+    public static final Placeholders<User, PlayerPlaceholder> PLAYER;
 
     static {
-        PLAYER_PLACEHOLDERS = new PlayerPlaceholders()
+        PLAYER = new PlayerPlaceholders()
                 .property("world", new PlayerPlaceholder((OptionResolver) playerOption -> playerOption
                         .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
                         .map(value -> Long.toString(value))
@@ -27,19 +27,19 @@ public class PlayerPlaceholders extends Placeholders<User, PlayerPlaceholder> {
         if (HookManager.WORLD_GUARD.isPresent()) {
             String wgRegionNoValue = FunnyGuilds.getInstance().getMessageConfiguration().wgRegionNoValue;
 
-            PLAYER_PLACEHOLDERS.property("wg-region", new PlayerPlaceholder(player -> {
+            PLAYER.property("wg-region", new PlayerPlaceholder(player -> {
                 List<String> regionNames = getWorldGuardRegionNames(player);
                 return !regionNames.isEmpty() ? regionNames.get(0) : wgRegionNoValue;
             }));
 
-            PLAYER_PLACEHOLDERS.property("wg-regions", new PlayerPlaceholder(player -> {
+            PLAYER.property("wg-regions", new PlayerPlaceholder(player -> {
                 List<String> regionNames = getWorldGuardRegionNames(player);
                 return !regionNames.isEmpty() ? Joiner.on(", ").join(regionNames) : wgRegionNoValue;
             }));
         }
 
         if (HookManager.VAULT.isPresent() && VaultHook.isEconomyHooked()) {
-            PLAYER_PLACEHOLDERS.property("vault-money", new PlayerPlaceholder((OptionResolver) playerOption -> playerOption
+            PLAYER.property("vault-money", new PlayerPlaceholder((OptionResolver) playerOption -> playerOption
                     .map(VaultHook::accountBalance)
                     .map(value -> Double.toString(value))
                     .orElseGet("")));

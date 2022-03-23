@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
+import net.dzikoysk.funnyguilds.feature.placeholders.TablistPlaceholders;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariablesParser;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.VariableParsingResult;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
@@ -152,8 +152,9 @@ public class IndividualPlayerList {
         }
         Player player = playerOption.get();
 
-        VariableParsingResult result = this.variableParser.createResultFor(this.user);
-        formatted = result.replaceInString(formatted);
+        //VariableParsingResult result = this.variableParser.createResultFor(this.user);
+        //formatted = result.replaceInString(formatted);
+        formatted = TablistPlaceholders.TABLIST.format(formatted, this.user);
         formatted = ChatUtils.colored(formatted);
 
         formatted = HookUtils.replacePlaceholders(player, formatted);

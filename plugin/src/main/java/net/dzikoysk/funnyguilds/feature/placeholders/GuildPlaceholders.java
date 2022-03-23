@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.Arrays;
+import java.util.Date;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -11,8 +12,10 @@ import net.dzikoysk.funnyguilds.feature.placeholders.impl.guild.GuildPlaceholder
 import net.dzikoysk.funnyguilds.feature.placeholders.impl.guild.GuildRankPlaceholder;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
+import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.UserUtils;
 import panda.std.Pair;
 import panda.utilities.StringUtils;
@@ -22,6 +25,8 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
 
     public static final Placeholders<Guild, GuildPlaceholder> GUILD;
     public static final Placeholders<Guild, GuildPlaceholder> GUILD_ALL;
+    public static final Placeholders<Guild, GuildPlaceholder> GUILD_ALLIES_ENEMIES_ALL;
+
     public static final Placeholders<Pair<String, Guild>, Placeholder<Pair<String, Guild>>> GUILD_MEMBERS_COLOR_CONTEXT;
 
     static {
@@ -37,10 +42,17 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
         GUILD_ALL = new GuildPlaceholders()
                 .property("name", new GuildPlaceholder(Guild::getName, () -> messages.gNameNoValue))
                 .property("tag", new GuildPlaceholder(Guild::getTag, () -> messages.gTagNoValue))
-                .property("owner", new GuildPlaceholder(Guild::getOwner, () -> messages.gOwnerNoValue))
                 .property("validity", new GuildPlaceholder(
-                        guild -> messages.dateFormat.format(guild.getValidityDate()),
+                        guild -> messages.dateFormat.format(new Date(guild.getValidity())),
                         () -> messages.gValidityNoValue))
+                .property(Arrays.asList("protection", "guild-protection"), new GuildPlaceholder(
+                        guild -> {
+                            long now = System.currentTimeMillis();
+                            long protectionEndTime = guild.getProtection();
+
+                            return protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now);
+                        }, () -> "Brak"))
+                .property("owner", new GuildPlaceholder(Guild::getOwner, () -> messages.gOwnerNoValue))
                 .property("deputies", new GuildPlaceholder(guild ->
                         guild.getDeputies().isEmpty()
                                 ? messages.gDeputiesNoValue
@@ -53,7 +65,8 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
                         () -> messages.gDeputiesNoValue))
                 .property("members-online", new GuildPlaceholder(guild -> guild.getOnlineMembers().size(), () -> 0))
                 .property("members-all", new GuildPlaceholder(guild -> guild.getMembers().size(), () -> 0))
-                .property("allies", new GuildPlaceholder(guild -> guild.getAllies().size(), () -> 0))
+                .property("allies-all", new GuildPlaceholder(guild -> guild.getAllies().size(), () -> 0))
+                .property("enemies-all", new GuildPlaceholder(guild -> guild.getEnemies().size(), () -> 0))
                 .property("region-size", new GuildPlaceholder(
                         guild -> guild.getRegion()
                                 .map(Region::getSize)
@@ -97,6 +110,28 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholder> {
                 .property("avg-logouts", new GuildRankPlaceholder((guild, rank) -> rank.getAverageLogouts(), () -> 0))
                 .property("kdr", new GuildRankPlaceholder((guild, rank) -> rank.getKDR(), () -> 0))
                 .property("avg-kdr", new GuildRankPlaceholder((guild, rank) -> rank.getAverageKDR(), () -> 0));
+
+        GUILD_ALLIES_ENEMIES_ALL = new GuildPlaceholders()
+                .property("allies", new GuildPlaceholder(
+                        guild -> guild.getAllies().isEmpty()
+                                ? messages.alliesNoValue
+                                : Joiner.on(", ").join(Entity.names(guild.getAllies())),
+                        () -> messages.alliesNoValue))
+                .property("allies-tags", new GuildPlaceholder(
+                        guild -> guild.getAllies().isEmpty()
+                                ? messages.alliesNoValue
+                                : Joiner.on(", ").join(GuildUtils.getTags(guild.getAllies())),
+                        () -> messages.alliesNoValue))
+                .property("enemies", new GuildPlaceholder(
+                        guild -> guild.getEnemies().isEmpty()
+                                ? messages.enemiesNoValue
+                                : Joiner.on(", ").join(Entity.names(guild.getEnemies())),
+                        () -> messages.enemiesNoValue))
+                .property("enemies-tags", new GuildPlaceholder(
+                        guild -> guild.getEnemies().isEmpty()
+                                ? messages.enemiesNoValue
+                                : Joiner.on(", ").join(GuildUtils.getTags(guild.getEnemies())),
+                        () -> messages.enemiesNoValue));
 
         GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>, Placeholder<Pair<String, Guild>>>()
                 .property("members", pair -> {
