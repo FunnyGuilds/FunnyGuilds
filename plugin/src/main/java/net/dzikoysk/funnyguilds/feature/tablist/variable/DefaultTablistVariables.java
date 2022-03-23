@@ -152,8 +152,6 @@ public final class DefaultTablistVariables {
                         : guild.getDeputies().iterator().next().getName(),
                 user -> messages.gDeputyNoValue);
 
-        //FUNNY_VARIABLES.put("g-deputy", GuildDependentTablistVariable.ofGuild("G-DEPUTY", guild -> guild.getDeputies().isEmpty() ? messages.gDeputyNoValue : guild.getDeputies().iterator().next(RandomUtils.RANDOM_INSTANCE.nextInt(guild.getDeputies().size())).getName(), user -> messages.gDeputyNoValue));
-
         putGuild("g-lives", "G-LIVES", (user, guild) -> guild.getLives(), user -> "0");
         putGuild("g-lives-symbol", "G-LIVES-SYMBOL", (user, guild) -> {
             int lives = guild.getLives();

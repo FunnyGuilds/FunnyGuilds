@@ -1,7 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.placeholders.impl;
 
 import java.time.LocalDateTime;
-import net.dzikoysk.funnyguilds.feature.placeholders.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.TimeResolver;
 
 public class TimePlaceholder implements Placeholder<LocalDateTime> {

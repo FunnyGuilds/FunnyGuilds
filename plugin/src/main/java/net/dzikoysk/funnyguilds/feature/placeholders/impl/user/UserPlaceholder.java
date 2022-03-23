@@ -1,6 +1,6 @@
-package net.dzikoysk.funnyguilds.feature.placeholders.impl;
+package net.dzikoysk.funnyguilds.feature.placeholders.impl.user;
 
-import net.dzikoysk.funnyguilds.feature.placeholders.Placeholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.UserResolver;
 import net.dzikoysk.funnyguilds.user.User;
 

@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.placeholders.impl;
+package net.dzikoysk.funnyguilds.feature.placeholders.impl.guild;
 
 import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.GuildResolver.RankResolver;
@@ -9,7 +9,7 @@ public class GuildRankPlaceholder extends GuildPlaceholder{
         super(guildResolver, fallbackSupplier);
     }
 
-    public GuildRankPlaceholder(RankResolver  guildResolver) {
+    public GuildRankPlaceholder(RankResolver guildResolver) {
         super(guildResolver);
     }
 

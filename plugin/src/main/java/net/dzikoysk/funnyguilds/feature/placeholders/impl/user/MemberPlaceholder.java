@@ -1,11 +1,12 @@
-package net.dzikoysk.funnyguilds.feature.placeholders.impl;
+package net.dzikoysk.funnyguilds.feature.placeholders.impl.user;
 
-import net.dzikoysk.funnyguilds.feature.placeholders.Placeholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.impl.FallbackPlaceholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MemberResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.UserResolver;
 import net.dzikoysk.funnyguilds.user.User;
 
-public class MemberPlaceholder implements Placeholder<User> {
+public class MemberPlaceholder implements Placeholder<User>, FallbackPlaceholder<User> {
 
     private final MemberResolver whenInGuild;
     private final UserResolver whenNotInGuild;
@@ -24,6 +25,9 @@ public class MemberPlaceholder implements Placeholder<User> {
 
     @Override
     public Object getRawFallback(User user) {
+        if (user == null) {
+            return null;
+        }
         return this.whenNotInGuild.resolve(user);
     }
 
