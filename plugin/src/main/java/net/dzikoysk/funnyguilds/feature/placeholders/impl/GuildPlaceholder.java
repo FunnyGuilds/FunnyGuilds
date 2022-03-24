@@ -1,24 +1,18 @@
-package net.dzikoysk.funnyguilds.feature.placeholders.impl.guild;
+package net.dzikoysk.funnyguilds.feature.placeholders.impl;
 
 import java.util.function.Supplier;
-import net.dzikoysk.funnyguilds.feature.placeholders.impl.FallbackPlaceholder;
-import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.GuildResolver;
+import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.jetbrains.annotations.Nullable;
 
 public class GuildPlaceholder implements Placeholder<Guild>, FallbackPlaceholder<Guild> {
 
-    private final GuildResolver guildResolver;
+    private final MonoResolver<Guild> guildResolver;
     private final Supplier<Object> fallbackSupplier;
 
-    public GuildPlaceholder(GuildResolver guildResolver, Supplier<Object> fallbackSupplier) {
+    public GuildPlaceholder(MonoResolver<Guild> guildResolver, Supplier<Object> fallbackSupplier) {
         this.guildResolver = guildResolver;
         this.fallbackSupplier = fallbackSupplier;
-    }
-
-    public GuildPlaceholder(GuildResolver guildResolver) {
-        this(guildResolver, () -> "");
     }
 
     @Override

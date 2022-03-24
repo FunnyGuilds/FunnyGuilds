@@ -10,7 +10,8 @@ import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
-import net.dzikoysk.funnyguilds.feature.placeholders.impl.TimePlaceholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
+import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,31 +19,14 @@ import panda.utilities.text.Formatter;
 
 public class Placeholders<T, P extends Placeholder<T>> {
 
-    public static final Placeholders<LocalDateTime, TimePlaceholder> TIME;
-    public static final Placeholders<Object, Placeholder<Object>> SIMPLE;
     public static final Placeholders<String, Placeholder<String>> ONLINE;
+
+    public static SimplePlaceholders SIMPLE;
+    public static TimePlaceholders TIME;
 
     private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
 
     static {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-
-        TIME = new Placeholders<LocalDateTime, TimePlaceholder>()
-                .property("hour", new TimePlaceholder(LocalDateTime::getHour))
-                .property("minute", new TimePlaceholder(LocalDateTime::getMinute))
-                .property("second", new TimePlaceholder(LocalDateTime::getSecond))
-                .property("day_of_week", new TimePlaceholder(time -> time.getDayOfWeek().getDisplayName(TextStyle.FULL, POLISH_LOCALE)))
-                .property("day_of_month", new TimePlaceholder(LocalDateTime::getDayOfMonth))
-                .property("month", new TimePlaceholder(time -> time.getMonth().getDisplayName(TextStyle.FULL, POLISH_LOCALE)))
-                .property("month_number", new TimePlaceholder(LocalDateTime::getMonthValue))
-                .property("year", new TimePlaceholder(LocalDateTime::getYear));
-
-        SIMPLE = new Placeholders<Object, Placeholder<Object>>()
-                .property("tps", object -> MinecraftServerUtils.getFormattedTPS())
-                .property("online", object -> Bukkit.getOnlinePlayers().size())
-                .property("users", object -> plugin.getUserManager().countUsers())
-                .property("guilds", object -> plugin.getGuildManager().countGuilds());
-
         ONLINE = new Placeholders<String, Placeholder<String>>()
                 .raw("<online>", end -> ChatColor.GREEN)
                 .raw("</online>", end -> end);
@@ -58,22 +42,21 @@ public class Placeholders<T, P extends Placeholder<T>> {
         return this.placeholders.get(name);
     }
 
-    public Placeholders<T, P> raw(String name, P placeholder) {
+    protected Placeholders<T, P> raw(String name, P placeholder) {
         this.placeholders.put(name, placeholder);
         return this;
     }
 
-    public Placeholders<T, P> raw(Collection<String> names, P placeholder) {
+    protected Placeholders<T, P> raw(Collection<String> names, P placeholder) {
         names.forEach(name -> this.raw(name, placeholder));
         return this;
     }
 
-
-    public Placeholders<T, P> property(String name, P placeholder) {
+    protected Placeholders<T, P> property(String name, P placeholder) {
         return this.raw("{" + name.toUpperCase() + "}", placeholder);
     }
 
-    public Placeholders<T, P> property(Collection<String> names, P placeholder) {
+    protected Placeholders<T, P> property(Collection<String> names, P placeholder) {
         names.forEach(name -> this.property(name, placeholder));
         return this;
     }
@@ -89,6 +72,46 @@ public class Placeholders<T, P extends Placeholder<T>> {
         Formatter formatter = new Formatter();
         placeholders.forEach((key, placeholder) -> formatter.register(key, placeholder.get(data)));
         return formatter;
+    }
+
+    public static class SimplePlaceholders extends Placeholders<Object, Placeholder<Object>> {
+
+        static {
+            FunnyGuilds plugin = FunnyGuilds.getInstance();
+
+            SIMPLE = new SimplePlaceholders()
+                    .simpleProperty("tps", MinecraftServerUtils::getFormattedTPS)
+                    .simpleProperty("online", () -> Bukkit.getOnlinePlayers().size())
+                    .simpleProperty("users", () -> plugin.getUserManager().countUsers())
+                    .simpleProperty("guilds", () -> plugin.getGuildManager().countGuilds());
+        }
+
+        protected SimplePlaceholders simpleProperty(String name, SimpleResolver resolver) {
+            this.property(name, object -> resolver.resolve());
+            return this;
+        }
+
+    }
+
+    public static class TimePlaceholders extends Placeholders<LocalDateTime, Placeholder<LocalDateTime>> {
+
+        static {
+            TIME = new TimePlaceholders()
+                    .timeProperty("hour", LocalDateTime::getHour)
+                    .timeProperty("minute", LocalDateTime::getMinute)
+                    .timeProperty("second", LocalDateTime::getSecond)
+                    .timeProperty("day_of_week", time -> time.getDayOfWeek().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
+                    .timeProperty("day_of_month", LocalDateTime::getDayOfMonth)
+                    .timeProperty("month", time -> time.getMonth().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
+                    .timeProperty("month_number", LocalDateTime::getMonthValue)
+                    .timeProperty("year", LocalDateTime::getYear);
+        }
+
+        protected TimePlaceholders timeProperty(String name, MonoResolver<LocalDateTime> resolver) {
+            this.property(name, resolver::resolve);
+            return this;
+        }
+
     }
 
 }

@@ -1,13 +1,11 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import java.util.Arrays;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.placeholders.GuildPlaceholders;
-import net.dzikoysk.funnyguilds.feature.placeholders.impl.guild.GuildPlaceholder;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
@@ -37,8 +35,10 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
         this.guildManager.deleteGuild(plugin, guild);
 
         Formatter formatter = GuildPlaceholders.GUILD
-                .property(Arrays.asList("admin", "player"), new GuildPlaceholder(guildResolver -> sender.getName()))
                 .toFormatter(guild);
+
+        formatter.register("{ADMIN}", sender.getName());
+        formatter.register("{PLAYER}", sender.getName());
 
         guild.getOwner().sendMessage(formatter.format(messages.adminGuildBroken));
         sendMessage(sender, (formatter.format(messages.deleteSuccessful)));
