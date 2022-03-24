@@ -1,12 +1,21 @@
 package net.dzikoysk.funnyguilds.feature.placeholders.placeholder;
 
 import java.util.Objects;
+import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 
-public interface Placeholder<T> {
+public class Placeholder<T> {
 
-    Object getRaw(T data);
+    private final MonoResolver<T> resolver;
 
-    default String get(T data) {
+    public Placeholder(MonoResolver<T> resolver) {
+        this.resolver = resolver;
+    }
+
+    public Object getRaw(T data) {
+        return this.resolver.resolve(data);
+    }
+
+    public String get(T data) {
         return Objects.toString(this.getRaw(data));
     }
 

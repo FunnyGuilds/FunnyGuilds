@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
-import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.UserPlaceholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PairResolver;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
@@ -23,7 +23,7 @@ import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.utilities.text.Joiner;
 
-public class UserPlaceholders extends Placeholders<User, UserPlaceholder> {
+public class UserPlaceholders extends Placeholders<User> {
 
     public static final UserPlaceholders USER;
     public static final UserPlaceholders PLAYER;
@@ -33,21 +33,21 @@ public class UserPlaceholders extends Placeholders<User, UserPlaceholder> {
         PluginConfiguration config = plugin.getPluginConfiguration();
 
         USER = new UserPlaceholders()
-                .userProperty(Arrays.asList("player", "name"), User::getName)
-                .userProperty("ping", User::getPing)
-                .userProperty("ping-format", user ->
+                .property(Arrays.asList("player", "name"), User::getName)
+                .property("ping", User::getPing)
+                .property("ping-format", user ->
                         NumberRange.inRangeToString(user.getPing(), config.pingFormat)
                                 .replace("{PING}", String.valueOf(user.getPing())))
-                .userProperty("position", (user, rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
-                .userProperty("points", (user, rank) -> rank.getPoints())
-                .userProperty("points-format", (user, rank) ->
+                .property("position", (user, rank) -> rank.getPosition(DefaultTops.USER_POINTS_TOP))
+                .property("points", (user, rank) -> rank.getPoints())
+                .property("points-format", (user, rank) ->
                         NumberRange.inRangeToString(rank.getPoints(), config.pointsFormat)
                                 .replace("{POINTS}", String.valueOf(rank.getPoints())))
-                .userProperty("kills", (user, rank) -> rank.getKills())
-                .userProperty("deaths", (user, rank) -> rank.getDeaths())
-                .userProperty("kdr", (user, rank) -> String.format(Locale.US, "%.2f", rank.getKDR()))
-                .userProperty("assists", (user, rank) -> rank.getAssists())
-                .userProperty("logouts", (user, rank) -> rank.getLogouts());
+                .property("kills", (user, rank) -> rank.getKills())
+                .property("deaths", (user, rank) -> rank.getDeaths())
+                .property("kdr", (user, rank) -> String.format(Locale.US, "%.2f", rank.getKDR()))
+                .property("assists", (user, rank) -> rank.getAssists())
+                .property("logouts", (user, rank) -> rank.getLogouts());
 
         PLAYER = new UserPlaceholders()
                 .playerOptionProperty("world", playerOption -> playerOption
@@ -80,28 +80,30 @@ public class UserPlaceholders extends Placeholders<User, UserPlaceholder> {
         }
     }
 
-    protected UserPlaceholders userProperty(String name, MonoResolver<User> resolver) {
-        this.property(name, new UserPlaceholder(resolver));
+    @Override
+    protected UserPlaceholders property(String name, MonoResolver<User> resolver) {
+        super.property(name, resolver);
         return this;
     }
 
-    protected UserPlaceholders userProperty(Collection<String> names, MonoResolver<User> resolver) {
-        names.forEach(name -> this.userProperty(name, resolver));
+    @Override
+    protected UserPlaceholders property(Collection<String> names, MonoResolver<User> resolver) {
+        super.property(names, resolver);
         return this;
     }
 
-    protected UserPlaceholders userProperty(String name, PairResolver<User, UserRank> resolver) {
-        this.property(name, new UserPlaceholder((user) -> resolver.resolve(user, user.getRank())));
+    protected UserPlaceholders property(String name, PairResolver<User, UserRank> resolver) {
+        this.property(name, new Placeholder<>((user) -> resolver.resolve(user, user.getRank())));
         return this;
     }
 
-    protected UserPlaceholders userProperty(Collection<String> names, PairResolver<User, UserRank> resolver) {
-        names.forEach(name -> this.userProperty(name, resolver));
+    protected UserPlaceholders property(Collection<String> names, PairResolver<User, UserRank> resolver) {
+        names.forEach(name -> this.property(name, resolver));
         return this;
     }
 
     protected UserPlaceholders playerProperty(String name, MonoResolver<Player> resolver) {
-        this.userProperty(name, (user) -> resolver.resolve(Bukkit.getPlayer(user.getUUID())));
+        this.property(name, (user) -> resolver.resolve(Bukkit.getPlayer(user.getUUID())));
         return this;
     }
 
@@ -111,7 +113,7 @@ public class UserPlaceholders extends Placeholders<User, UserPlaceholder> {
     }
 
     protected UserPlaceholders playerOptionProperty(String name, MonoResolver<Option<Player>> resolver) {
-        this.userProperty(name, (user) -> resolver.resolve(Option.of(Bukkit.getPlayer(user.getUUID()))));
+        this.property(name, (user) -> resolver.resolve(Option.of(Bukkit.getPlayer(user.getUUID()))));
         return this;
     }
 
