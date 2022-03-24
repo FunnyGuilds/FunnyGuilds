@@ -5,6 +5,7 @@ import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
+import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.feature.placeholders.TablistPlaceholders;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
@@ -32,7 +33,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         GuildRankManager guildRankManager = this.plugin.getGuildRankManager();
 
         TablistPlaceholders.TABLIST.getPlaceholders().forEach((name, placeholder) -> {
-            String rawName = name.replace("{", "").replace("}", "");
+            String rawName = Placeholders.getRawName(name);
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + rawName, event -> {
                 OfflinePlayer target = event.getOfflinePlayer();
                 if (target == null) {
