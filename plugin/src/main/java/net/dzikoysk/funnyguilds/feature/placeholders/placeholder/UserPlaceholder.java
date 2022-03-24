@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.placeholders.impl;
+package net.dzikoysk.funnyguilds.feature.placeholders.placeholder;
 
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.user.User;

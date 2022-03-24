@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
-import net.dzikoysk.funnyguilds.feature.placeholders.impl.UserPlaceholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.UserPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PairResolver;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;

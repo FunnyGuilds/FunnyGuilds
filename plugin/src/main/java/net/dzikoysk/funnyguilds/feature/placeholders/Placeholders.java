@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.feature.placeholders.impl.Placeholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
@@ -20,9 +20,6 @@ import panda.utilities.text.Formatter;
 public class Placeholders<T, P extends Placeholder<T>> {
 
     public static final Placeholders<String, Placeholder<String>> ONLINE;
-
-    public static SimplePlaceholders SIMPLE;
-    public static TimePlaceholders TIME;
 
     private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
 
@@ -76,6 +73,8 @@ public class Placeholders<T, P extends Placeholder<T>> {
 
     public static class SimplePlaceholders extends Placeholders<Object, Placeholder<Object>> {
 
+        public static SimplePlaceholders SIMPLE;
+
         static {
             FunnyGuilds plugin = FunnyGuilds.getInstance();
 
@@ -94,6 +93,8 @@ public class Placeholders<T, P extends Placeholder<T>> {
     }
 
     public static class TimePlaceholders extends Placeholders<LocalDateTime, Placeholder<LocalDateTime>> {
+
+        public static TimePlaceholders TIME;
 
         static {
             TIME = new TimePlaceholders()

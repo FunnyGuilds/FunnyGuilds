@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.time.LocalDateTime;
-import net.dzikoysk.funnyguilds.feature.placeholders.impl.UserPlaceholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.UserPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PairResolver;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -14,11 +14,11 @@ public class TablistPlaceholders extends Placeholders<User, UserPlaceholder> {
     static {
         TABLIST = new TablistPlaceholders();
 
-        Placeholders.TIME.getPlaceholders().forEach((name, placeholder) ->
-                TABLIST.raw(name, new UserPlaceholder(user -> placeholder.getRaw(LocalDateTime.now()))));
-
-        Placeholders.SIMPLE.getPlaceholders().forEach((name, placeholder) ->
+        SimplePlaceholders.SIMPLE.getPlaceholders().forEach((name, placeholder) ->
                 TABLIST.raw(name, new UserPlaceholder(user -> placeholder.getRaw(null))));
+
+        TimePlaceholders.TIME.getPlaceholders().forEach((name, placeholder) ->
+                TABLIST.raw(name, new UserPlaceholder(user -> placeholder.getRaw(LocalDateTime.now()))));
 
         UserPlaceholders.USER.getPlaceholders().forEach(TABLIST::raw);
         UserPlaceholders.PLAYER.getPlaceholders().forEach(TABLIST::raw);

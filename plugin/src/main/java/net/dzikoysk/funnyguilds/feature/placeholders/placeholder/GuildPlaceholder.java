@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.placeholders.impl;
+package net.dzikoysk.funnyguilds.feature.placeholders.placeholder;
 
 import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
