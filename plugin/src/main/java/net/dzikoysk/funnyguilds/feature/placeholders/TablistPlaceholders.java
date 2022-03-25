@@ -15,10 +15,10 @@ public class TablistPlaceholders extends Placeholders<User> {
     static {
         TABLIST = new TablistPlaceholders();
 
-        SimplePlaceholders.SIMPLE.getPlaceholders().forEach((name, placeholder) ->
+        Placeholders.SIMPLE.getPlaceholders().forEach((name, placeholder) ->
                 TABLIST.raw(name, new Placeholder<>(user -> placeholder.getRaw(null))));
 
-        TimePlaceholders.TIME.getPlaceholders().forEach((name, placeholder) ->
+        Placeholders.TIME.getPlaceholders().forEach((name, placeholder) ->
                 TABLIST.raw(name, new Placeholder<>(user -> placeholder.getRaw(LocalDateTime.now()))));
 
         UserPlaceholders.USER.getPlaceholders().forEach(TABLIST::raw);
@@ -27,19 +27,19 @@ public class TablistPlaceholders extends Placeholders<User> {
         GuildPlaceholders.GUILD_ALL.getPlaceholders().forEach((name, placeholder) ->
                 TABLIST.raw("{G-" + (name.replace("{", "")),
                         (user, guild) -> placeholder.getRaw(guild),
-                        user -> {
-                            return placeholder instanceof FallbackPlaceholder
-                                    ? ((FallbackPlaceholder<?>) placeholder).getRawFallback()
-                                    : "";
-                        }
+                        user -> placeholder instanceof FallbackPlaceholder
+                                ? ((FallbackPlaceholder<?>) placeholder).getRawFallback()
+                                : ""
                 ));
     }
 
-    protected TablistPlaceholders raw(String name, PairResolver<User, Guild> whenInGuild, MonoResolver<User> whenNotInGuild) {
-        this.raw(name, new Placeholder<>(user -> user.getGuild()
+    public TablistPlaceholders raw(String name, PairResolver<User, Guild> whenInGuild, MonoResolver<User> whenNotInGuild) {
+        TablistPlaceholders copy = new TablistPlaceholders();
+        copy.placeholders.putAll(this.placeholders);
+        copy.raw(name, new Placeholder<>(user -> user.getGuild()
                 .map(guild -> whenInGuild.resolve(user, guild))
                 .orElseGet(whenNotInGuild.resolve(user))));
-        return this;
+        return copy;
     }
 
 }

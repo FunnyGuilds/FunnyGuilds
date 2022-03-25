@@ -1,10 +1,9 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -33,7 +32,8 @@ public class UserPlaceholders extends Placeholders<User> {
         PluginConfiguration config = plugin.getPluginConfiguration();
 
         USER = new UserPlaceholders()
-                .property(Arrays.asList("player", "name"), User::getName)
+                .property("name", User::getName)
+                .property("player", User::getName)
                 .property("ping", User::getPing)
                 .property("ping-format", user ->
                         NumberRange.inRangeToString(user.getPing(), config.pingFormat)
@@ -81,45 +81,33 @@ public class UserPlaceholders extends Placeholders<User> {
     }
 
     @Override
-    protected UserPlaceholders property(String name, MonoResolver<User> resolver) {
-        super.property(name, resolver);
-        return this;
+    public UserPlaceholders property(String name, Placeholder<User> placeholder) {
+        return this.copy(copy -> copy.property(name, placeholder));
     }
 
     @Override
-    protected UserPlaceholders property(Collection<String> names, MonoResolver<User> resolver) {
-        super.property(names, resolver);
-        return this;
+    public UserPlaceholders property(String name, MonoResolver<User> resolver) {
+        return this.copy(copy -> copy.property(name, resolver));
     }
 
-    protected UserPlaceholders property(String name, PairResolver<User, UserRank> resolver) {
-        this.property(name, new Placeholder<>((user) -> resolver.resolve(user, user.getRank())));
-        return this;
+    public UserPlaceholders property(String name, PairResolver<User, UserRank> resolver) {
+        return this.property(name, (user) -> resolver.resolve(user, user.getRank()));
     }
 
-    protected UserPlaceholders property(Collection<String> names, PairResolver<User, UserRank> resolver) {
-        names.forEach(name -> this.property(name, resolver));
-        return this;
+    public UserPlaceholders playerProperty(String name, MonoResolver<Player> resolver) {
+        return this.property(name, (user) -> resolver.resolve(Bukkit.getPlayer(user.getUUID())));
     }
 
-    protected UserPlaceholders playerProperty(String name, MonoResolver<Player> resolver) {
-        this.property(name, (user) -> resolver.resolve(Bukkit.getPlayer(user.getUUID())));
-        return this;
+    public UserPlaceholders playerOptionProperty(String name, MonoResolver<Option<Player>> resolver) {
+        return this.playerProperty(name, (player) -> resolver.resolve(Option.of(player)));
     }
 
-    protected UserPlaceholders playerProperty(Collection<String> names, MonoResolver<Player> resolver) {
-        names.forEach(name -> this.playerProperty(name, resolver));
-        return this;
-    }
-
-    protected UserPlaceholders playerOptionProperty(String name, MonoResolver<Option<Player>> resolver) {
-        this.property(name, (user) -> resolver.resolve(Option.of(Bukkit.getPlayer(user.getUUID()))));
-        return this;
-    }
-
-    protected UserPlaceholders playerOptionProperty(Collection<String> names, MonoResolver<Option<Player>> resolver) {
-        names.forEach(name -> this.playerOptionProperty(name, resolver));
-        return this;
+    @Override
+    public UserPlaceholders copy(Consumer<Placeholders<User>> andThen) {
+        UserPlaceholders copy = new UserPlaceholders();
+        copy.placeholders.putAll(this.placeholders);
+        andThen.accept(copy);
+        return copy;
     }
 
     private static List<String> getWorldGuardRegionNames(Player player) {

@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
@@ -39,28 +40,34 @@ public class GuildPlaceholders extends Placeholders<Guild> {
         MessageConfiguration messages = plugin.getMessageConfiguration();
         GuildRankManager guildRankManager = plugin.getGuildRankManager();
 
+        BiFunction<Collection<String>, String, Object> joinOrDefault = (list, listNoValue) -> list.isEmpty()
+                ? listNoValue
+                : Joiner.on(", ")
+                .join(list);
+
+        Function<Guild, Object> guildProtection = guild -> {
+            long now = System.currentTimeMillis();
+            long protectionEndTime = guild.getProtection();
+
+            return protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now);
+        };
+
         GUILD = new GuildPlaceholders()
-                .property(Arrays.asList("name", "guild"), Guild::getName, () -> messages.gNameNoValue)
+                .property("name", Guild::getName, () -> messages.gNameNoValue)
+                .property("guild", Guild::getName, () -> messages.gNameNoValue)
                 .property("tag", Guild::getTag, () -> messages.gTagNoValue);
 
         GUILD_ALL = new GuildPlaceholders()
-                .property(Arrays.asList("name", "guild"), Guild::getName, () -> messages.gNameNoValue)
-                .property("tag", Guild::getTag, () -> messages.gTagNoValue)
+                .property("name", Guild::getName, () -> messages.gNameNoValue)
+                .property("guild", Guild::getName, () -> messages.gNameNoValue)
                 .property("validity",
                         guild -> messages.dateFormat.format(new Date(guild.getValidity())),
                         () -> messages.gValidityNoValue)
-                .property(Arrays.asList("protection", "guild-protection"),
-                        guild -> {
-                            long now = System.currentTimeMillis();
-                            long protectionEndTime = guild.getProtection();
-
-                            return protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now);
-                        }, () -> "Brak")
+                .property("protection", guildProtection::apply, () -> "Brak")
+                .property("guild-protection", guildProtection::apply, () -> "Brak")
                 .property("owner", guild -> guild.getOwner().getName(), () -> messages.gOwnerNoValue)
-                .property("deputies", guild ->
-                                guild.getDeputies().isEmpty()
-                                        ? messages.gDeputiesNoValue
-                                        : Joiner.on(", ").join(Entity.names(guild.getDeputies())),
+                .property("deputies",
+                        guild -> joinOrDefault.apply(Entity.names(guild.getDeputies()), messages.gDeputiesNoValue),
                         () -> messages.gDeputiesNoValue)
                 .property("deputy",
                         guild -> guild.getDeputies().isEmpty()
@@ -93,13 +100,19 @@ public class GuildPlaceholders extends Placeholders<Guild> {
                 .property("lives-symbol-all",
                         guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full.getValue()),
                         () -> messages.livesNoValue)
-                .property(Arrays.asList("position", "rank"),
+                .property("position",
+                        (guild, rank) -> guildRankManager.isRankedGuild(guild)
+                                ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
+                                : messages.minMembersToIncludeNoValue,
+                        () -> messages.minMembersToIncludeNoValue)
+                .property("rank",
                         (guild, rank) -> guildRankManager.isRankedGuild(guild)
                                 ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
                                 : messages.minMembersToIncludeNoValue,
                         () -> messages.minMembersToIncludeNoValue)
                 .property("total-points", (guild, rank) -> rank.getPoints(), () -> 0)
-                .property(Arrays.asList("avg-points", "points"), (guild, rank) -> rank.getAveragePoints(), () -> 0)
+                .property("avg-points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
+                .property("points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
                 .property("points-format",
                         (guild, rank) -> NumberRange.inRangeToString(rank.getAveragePoints(), config.pointsFormat)
                                 .replace("{POINTS}", String.valueOf(guild.getRank().getAveragePoints())),
@@ -118,24 +131,16 @@ public class GuildPlaceholders extends Placeholders<Guild> {
 
         GUILD_ALLIES_ENEMIES_ALL = new GuildPlaceholders()
                 .property("allies",
-                        guild -> guild.getAllies().isEmpty()
-                                ? messages.alliesNoValue
-                                : Joiner.on(", ").join(Entity.names(guild.getAllies())),
+                        guild -> joinOrDefault.apply(Entity.names(guild.getAllies()), messages.alliesNoValue),
                         () -> messages.alliesNoValue)
                 .property("allies-tags",
-                        guild -> guild.getAllies().isEmpty()
-                                ? messages.alliesNoValue
-                                : Joiner.on(", ").join(GuildUtils.getTags(guild.getAllies())),
+                        guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue),
                         () -> messages.alliesNoValue)
                 .property("enemies",
-                        guild -> guild.getEnemies().isEmpty()
-                                ? messages.enemiesNoValue
-                                : Joiner.on(", ").join(Entity.names(guild.getEnemies())),
+                        guild -> joinOrDefault.apply(Entity.names(guild.getEnemies()), messages.enemiesNoValue),
                         () -> messages.enemiesNoValue)
                 .property("enemies-tags",
-                        guild -> guild.getEnemies().isEmpty()
-                                ? messages.enemiesNoValue
-                                : Joiner.on(", ").join(GuildUtils.getTags(guild.getEnemies())),
+                        guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue),
                         () -> messages.enemiesNoValue);
 
         GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>>()
@@ -148,24 +153,15 @@ public class GuildPlaceholders extends Placeholders<Guild> {
                 });
     }
 
-    protected GuildPlaceholders property(String name, MonoResolver<Guild> resolver, SimpleResolver fallbackResolver) {
-        this.property(name, new FallbackPlaceholder<>(resolver, fallbackResolver));
-        return this;
+    public GuildPlaceholders property(String name, MonoResolver<Guild> resolver, SimpleResolver fallbackResolver) {
+        GuildPlaceholders copy = new GuildPlaceholders();
+        copy.placeholders.putAll(this.placeholders);
+        copy.property(name, new FallbackPlaceholder<>(resolver, fallbackResolver));
+        return copy;
     }
 
-    protected GuildPlaceholders property(Collection<String> names, MonoResolver<Guild> resolver, SimpleResolver fallbackResolver) {
-        names.forEach(name -> this.property(name, resolver, fallbackResolver));
-        return this;
-    }
-
-    protected GuildPlaceholders property(String name, PairResolver<Guild, GuildRank> resolver, SimpleResolver fallbackResolver) {
-        this.property(name, new FallbackPlaceholder<>((guild) -> resolver.resolve(guild, guild.getRank()), fallbackResolver));
-        return this;
-    }
-
-    protected GuildPlaceholders property(Collection<String> names, PairResolver<Guild, GuildRank> resolver, SimpleResolver fallbackResolver) {
-        names.forEach(name -> this.property(name, resolver, fallbackResolver));
-        return this;
+    public GuildPlaceholders property(String name, PairResolver<Guild, GuildRank> resolver, SimpleResolver fallbackResolver) {
+        return this.property(name, guild -> resolver.resolve(guild, guild.getRank()), fallbackResolver);
     }
 
 }
