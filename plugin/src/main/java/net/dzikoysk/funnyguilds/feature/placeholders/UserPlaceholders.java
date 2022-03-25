@@ -91,15 +91,15 @@ public class UserPlaceholders extends Placeholders<User> {
     }
 
     public UserPlaceholders property(String name, PairResolver<User, UserRank> resolver) {
-        return this.property(name, (user) -> resolver.resolve(user, user.getRank()));
+        return this.property(name, user -> resolver.resolve(user, user.getRank()));
     }
 
     public UserPlaceholders playerProperty(String name, MonoResolver<Player> resolver) {
-        return this.property(name, (user) -> resolver.resolve(Bukkit.getPlayer(user.getUUID())));
+        return this.property(name, user -> resolver.resolve(Bukkit.getPlayer(user.getUUID())));
     }
 
     public UserPlaceholders playerOptionProperty(String name, MonoResolver<Option<Player>> resolver) {
-        return this.playerProperty(name, (player) -> resolver.resolve(Option.of(player)));
+        return this.playerProperty(name, player -> resolver.resolve(Option.of(player)));
     }
 
     @Override
