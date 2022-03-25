@@ -35,10 +35,9 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
         this.guildManager.deleteGuild(plugin, guild);
 
         Formatter formatter = GuildPlaceholders.GUILD
+                .property("admin", sender::getName)
+                .property("player", sender::getName)
                 .toFormatter(guild);
-
-        formatter.register("{ADMIN}", sender.getName());
-        formatter.register("{PLAYER}", sender.getName());
 
         guild.getOwner().sendMessage(formatter.format(messages.adminGuildBroken));
         sendMessage(sender, (formatter.format(messages.deleteSuccessful)));
