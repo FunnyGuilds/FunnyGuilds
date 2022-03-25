@@ -45,7 +45,7 @@ public class Placeholders<T> {
                 .property("year", LocalDateTime::getYear);
 
         ONLINE = new Placeholders<String>()
-                .raw("<online>", end -> ChatColor.GREEN)
+                .raw("<online>", () -> ChatColor.GREEN)
                 .raw("</online>", end -> end);
     }
 
