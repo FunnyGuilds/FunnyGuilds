@@ -82,12 +82,12 @@ public class UserPlaceholders extends Placeholders<User> {
 
     @Override
     public UserPlaceholders property(String name, Placeholder<User> placeholder) {
-        return this.copy(copy -> copy.property(name, placeholder));
+        return this.copy(copy -> copy.placeholders.put("{" + name.toUpperCase() + "}", placeholder));
     }
 
     @Override
     public UserPlaceholders property(String name, MonoResolver<User> resolver) {
-        return this.copy(copy -> copy.property(name, resolver));
+        return this.property(name, new Placeholder<>(resolver));
     }
 
     public UserPlaceholders property(String name, PairResolver<User, UserRank> resolver) {

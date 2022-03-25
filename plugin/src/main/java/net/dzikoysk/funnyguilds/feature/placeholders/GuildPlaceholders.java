@@ -60,6 +60,7 @@ public class GuildPlaceholders extends Placeholders<Guild> {
         GUILD_ALL = new GuildPlaceholders()
                 .property("name", Guild::getName, () -> messages.gNameNoValue)
                 .property("guild", Guild::getName, () -> messages.gNameNoValue)
+                .property("tag", Guild::getTag, () -> messages.gTagNoValue)
                 .property("validity",
                         guild -> messages.dateFormat.format(new Date(guild.getValidity())),
                         () -> messages.gValidityNoValue)
@@ -156,7 +157,7 @@ public class GuildPlaceholders extends Placeholders<Guild> {
     public GuildPlaceholders property(String name, MonoResolver<Guild> resolver, SimpleResolver fallbackResolver) {
         GuildPlaceholders copy = new GuildPlaceholders();
         copy.placeholders.putAll(this.placeholders);
-        copy.property(name, new FallbackPlaceholder<>(resolver, fallbackResolver));
+        copy.placeholders.put("{" + name.toUpperCase() + "}", new FallbackPlaceholder<>(resolver, fallbackResolver));
         return copy;
     }
 

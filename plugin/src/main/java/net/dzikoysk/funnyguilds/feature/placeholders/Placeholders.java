@@ -84,7 +84,7 @@ public class Placeholders<T> {
     }
 
     public String format(String text, T data) {
-        for (Entry<String, Placeholder<T>> placeholder : placeholders.entrySet()) {
+        for (Entry<String, Placeholder<T>> placeholder : this.placeholders.entrySet()) {
             text = text.replace(placeholder.getKey(), placeholder.getValue().get(data));
         }
         return text;

@@ -1,44 +1,42 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.FallbackPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
-import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PairResolver;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
+import panda.std.stream.PandaStream;
 
 public class TablistPlaceholders extends Placeholders<User> {
 
     public static final TablistPlaceholders TABLIST;
 
     static {
-        TABLIST = new TablistPlaceholders();
-
-        Placeholders.SIMPLE.getPlaceholders().forEach((name, placeholder) ->
-                TABLIST.raw(name, new Placeholder<>(user -> placeholder.getRaw(null))));
-
-        Placeholders.TIME.getPlaceholders().forEach((name, placeholder) ->
-                TABLIST.raw(name, new Placeholder<>(user -> placeholder.getRaw(LocalDateTime.now()))));
-
-        UserPlaceholders.USER.getPlaceholders().forEach(TABLIST::raw);
-        UserPlaceholders.PLAYER.getPlaceholders().forEach(TABLIST::raw);
-
-        GuildPlaceholders.GUILD_ALL.getPlaceholders().forEach((name, placeholder) ->
-                TABLIST.raw("{G-" + (name.replace("{", "")),
-                        (user, guild) -> placeholder.getRaw(guild),
-                        user -> placeholder instanceof FallbackPlaceholder
-                                ? ((FallbackPlaceholder<?>) placeholder).getRawFallback()
-                                : ""
-                ));
+        TABLIST = new TablistPlaceholders()
+                .raw(PandaStream.of(Placeholders.SIMPLE.getPlaceholders().entrySet())
+                        .toMap(Entry::getKey, entry -> new Placeholder<>(user -> entry.getValue().getRaw(null))))
+                .raw(PandaStream.of(Placeholders.TIME.getPlaceholders().entrySet())
+                        .toMap(Entry::getKey, entry -> new Placeholder<>(user -> entry.getValue().getRaw(LocalDateTime.now()))))
+                .raw(UserPlaceholders.USER.getPlaceholders())
+                .raw(UserPlaceholders.PLAYER.getPlaceholders())
+                .raw(PandaStream.of(GuildPlaceholders.GUILD_ALL.getPlaceholders().entrySet())
+                        .toMap(entry -> "{G-" + (entry.getKey().replace("{", "")),
+                                entry -> {
+                                    Placeholder<Guild> placeholder = entry.getValue();
+                                    return new Placeholder<>(user -> user.getGuild()
+                                            .map(placeholder::getRaw)
+                                            .orElseGet(() -> placeholder instanceof FallbackPlaceholder
+                                                    ? ((FallbackPlaceholder<?>) placeholder).getRawFallback()
+                                                    : ""));
+                                }));
     }
 
-    public TablistPlaceholders raw(String name, PairResolver<User, Guild> whenInGuild, MonoResolver<User> whenNotInGuild) {
+    public TablistPlaceholders raw(Map<String, Placeholder<User>> placeholders) {
         TablistPlaceholders copy = new TablistPlaceholders();
         copy.placeholders.putAll(this.placeholders);
-        copy.raw(name, new Placeholder<>(user -> user.getGuild()
-                .map(guild -> whenInGuild.resolve(user, guild))
-                .orElseGet(whenNotInGuild.resolve(user))));
+        copy.placeholders.putAll(placeholders);
         return copy;
     }
 
