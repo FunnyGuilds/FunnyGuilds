@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.feature.placeholders;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -82,7 +81,7 @@ public class UserPlaceholders extends Placeholders<User> {
 
     @Override
     public UserPlaceholders property(String name, Placeholder<User> placeholder) {
-        return this.copy(copy -> copy.placeholders.put("{" + name.toUpperCase() + "}", placeholder));
+        return this.copyAndRaw("{" + name.toUpperCase() + "}", placeholder);
     }
 
     @Override
@@ -103,10 +102,10 @@ public class UserPlaceholders extends Placeholders<User> {
     }
 
     @Override
-    public UserPlaceholders copy(Consumer<Placeholders<User>> andThen) {
+    public UserPlaceholders copyAndRaw(String name, Placeholder<User> placeholder) {
         UserPlaceholders copy = new UserPlaceholders();
         copy.placeholders.putAll(this.placeholders);
-        andThen.accept(copy);
+        copy.placeholders.put(name, placeholder);
         return copy;
     }
 

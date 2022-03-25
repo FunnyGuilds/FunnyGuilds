@@ -7,7 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
@@ -60,7 +59,7 @@ public class Placeholders<T> {
     }
 
     public Placeholders<T> raw(String name, Placeholder<T> placeholder) {
-        return this.copy(copy -> copy.placeholders.put(name, placeholder));
+        return this.copyAndRaw(name, placeholder);
     }
 
     public Placeholders<T> raw(String name, MonoResolver<T> resolver) {
@@ -96,10 +95,10 @@ public class Placeholders<T> {
         return formatter;
     }
 
-    public Placeholders<T> copy(Consumer<Placeholders<T>> andThen) {
+    public Placeholders<T> copyAndRaw(String name, Placeholder<T> placeholder) {
         Placeholders<T> copy = new Placeholders<>();
         copy.placeholders.putAll(this.placeholders);
-        andThen.accept(copy);
+        copy.placeholders.put(name, placeholder);
         return copy;
     }
 
