@@ -23,6 +23,10 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         return this.placeholders.get(name);
     }
 
+    public Placeholder<T> getPlaceholderByProperty(String name) {
+        return this.placeholders.get(rawToProperty(name));
+    }
+
     public P raw(String name, Placeholder<T> placeholder) {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
