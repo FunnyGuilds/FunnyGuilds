@@ -48,7 +48,8 @@ public class SimplePlaceholders<T> extends Placeholders<T, SimplePlaceholders<T>
             LocalDateTime time;
             if (data instanceof LocalDateTime) {
                 time = (LocalDateTime) data;
-            } else {
+            }
+            else {
                 time = LocalDateTime.now();
             }
             return ChatUtils.appendDigit(Objects.toString(timeResolver.resolve(time)));
