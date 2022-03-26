@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
-import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.PairResolver;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
@@ -21,7 +20,7 @@ import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.utilities.text.Joiner;
 
-public class UserPlaceholders extends Placeholders<User> {
+public class UserPlaceholders extends Placeholders<User, UserPlaceholders> {
 
     public static final UserPlaceholders USER;
     public static final UserPlaceholders PLAYER;
@@ -79,16 +78,6 @@ public class UserPlaceholders extends Placeholders<User> {
         }
     }
 
-    @Override
-    public UserPlaceholders property(String name, Placeholder<User> placeholder) {
-        return this.copyAndRaw("{" + name.toUpperCase() + "}", placeholder);
-    }
-
-    @Override
-    public UserPlaceholders property(String name, MonoResolver<User> resolver) {
-        return this.property(name, new Placeholder<>(resolver));
-    }
-
     public UserPlaceholders property(String name, PairResolver<User, UserRank> resolver) {
         return this.property(name, user -> resolver.resolve(user, user.getRank()));
     }
@@ -102,11 +91,8 @@ public class UserPlaceholders extends Placeholders<User> {
     }
 
     @Override
-    public UserPlaceholders copyAndRaw(String name, Placeholder<User> placeholder) {
-        UserPlaceholders copy = new UserPlaceholders();
-        copy.placeholders.putAll(this.placeholders);
-        copy.placeholders.put(name, placeholder);
-        return copy;
+    public UserPlaceholders create() {
+        return new UserPlaceholders();
     }
 
     private static List<String> getWorldGuardRegionNames(Player player) {

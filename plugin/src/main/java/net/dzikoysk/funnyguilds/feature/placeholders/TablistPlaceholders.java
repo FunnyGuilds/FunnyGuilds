@@ -9,20 +9,18 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import panda.std.stream.PandaStream;
 
-public class TablistPlaceholders extends Placeholders<User> {
+public class TablistPlaceholders extends Placeholders<User, TablistPlaceholders> {
 
     public static final TablistPlaceholders TABLIST;
 
     static {
         TABLIST = new TablistPlaceholders()
-                .raw(PandaStream.of(Placeholders.SIMPLE.getPlaceholders().entrySet())
-                        .toMap(Entry::getKey, entry -> new Placeholder<>(user -> entry.getValue().getRaw(null))))
-                .raw(PandaStream.of(Placeholders.TIME.getPlaceholders().entrySet())
-                        .toMap(Entry::getKey, entry -> new Placeholder<>(user -> entry.getValue().getRaw(LocalDateTime.now()))))
+                .raw(mapPlaceholders(SimplePlaceholders.SIMPLE.getPlaceholders(), null))
+                .raw(mapPlaceholders(SimplePlaceholders.TIME.getPlaceholders(), LocalDateTime.now()))
                 .raw(UserPlaceholders.USER.getPlaceholders())
                 .raw(UserPlaceholders.PLAYER.getPlaceholders())
                 .raw(PandaStream.of(GuildPlaceholders.GUILD_ALL.getPlaceholders().entrySet())
-                        .toMap(entry -> "{G-" + (entry.getKey().replace("{", "")),
+                        .toMap(entry -> "{G-" + (entry.getKey().substring(1)),
                                 entry -> {
                                     Placeholder<Guild> placeholder = entry.getValue();
                                     return new Placeholder<>(user -> user.getGuild()
@@ -33,11 +31,14 @@ public class TablistPlaceholders extends Placeholders<User> {
                                 }));
     }
 
-    public TablistPlaceholders raw(Map<String, Placeholder<User>> placeholders) {
-        TablistPlaceholders copy = new TablistPlaceholders();
-        copy.placeholders.putAll(this.placeholders);
-        copy.placeholders.putAll(placeholders);
-        return copy;
+    @Override
+    public TablistPlaceholders create() {
+        return new TablistPlaceholders();
+    }
+
+    private static <T> Map<String, Placeholder<User>> mapPlaceholders(Map<String, Placeholder<T>> placeholders, T data) {
+        return PandaStream.of(placeholders.entrySet())
+                .toMap(Entry::getKey, entry -> new Placeholder<>(user -> entry.getValue().getRaw(data)));
     }
 
 }

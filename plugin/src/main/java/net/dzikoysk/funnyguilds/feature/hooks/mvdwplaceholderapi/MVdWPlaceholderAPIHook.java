@@ -33,7 +33,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         GuildRankManager guildRankManager = this.plugin.getGuildRankManager();
 
         TablistPlaceholders.TABLIST.getPlaceholders().forEach((name, placeholder) -> {
-            String rawName = Placeholders.getRawName(name);
+            String rawName = Placeholders.propertyToRaw(name);
             PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + rawName, event -> {
                 OfflinePlayer target = event.getOfflinePlayer();
                 if (target == null) {

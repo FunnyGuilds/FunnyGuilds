@@ -26,13 +26,13 @@ import panda.std.Pair;
 import panda.utilities.StringUtils;
 import panda.utilities.text.Joiner;
 
-public class GuildPlaceholders extends Placeholders<Guild> {
+public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
 
     public static final GuildPlaceholders GUILD;
     public static final GuildPlaceholders GUILD_ALL;
     public static final GuildPlaceholders GUILD_ALLIES_ENEMIES_ALL;
 
-    public static final Placeholders<Pair<String, Guild>> GUILD_MEMBERS_COLOR_CONTEXT;
+    public static final SimplePlaceholders<Pair<String, Guild>> GUILD_MEMBERS_COLOR_CONTEXT;
 
     static {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
@@ -144,25 +144,27 @@ public class GuildPlaceholders extends Placeholders<Guild> {
                         guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue),
                         () -> messages.enemiesNoValue);
 
-        GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>>()
+        GUILD_MEMBERS_COLOR_CONTEXT = new SimplePlaceholders<Pair<String, Guild>>()
                 .property("members", pair -> {
                     String text = Joiner.on(", ").join(UserUtils.getOnlineNames(pair.getSecond().getMembers())).toString();
 
                     return !text.contains("<online>")
                             ? text
-                            : ONLINE.toFormatter(pair.getFirst()).format(text);
+                            : SimplePlaceholders.ONLINE.toFormatter(pair.getFirst()).format(text);
                 });
     }
 
     public GuildPlaceholders property(String name, MonoResolver<Guild> resolver, SimpleResolver fallbackResolver) {
-        GuildPlaceholders copy = new GuildPlaceholders();
-        copy.placeholders.putAll(this.placeholders);
-        copy.placeholders.put("{" + name.toUpperCase() + "}", new FallbackPlaceholder<>(resolver, fallbackResolver));
-        return copy;
+        return this.property(name, new FallbackPlaceholder<>(resolver, fallbackResolver));
     }
 
     public GuildPlaceholders property(String name, PairResolver<Guild, GuildRank> resolver, SimpleResolver fallbackResolver) {
         return this.property(name, guild -> resolver.resolve(guild, guild.getRank()), fallbackResolver);
+    }
+
+    @Override
+    public GuildPlaceholders create() {
+        return new GuildPlaceholders();
     }
 
 }

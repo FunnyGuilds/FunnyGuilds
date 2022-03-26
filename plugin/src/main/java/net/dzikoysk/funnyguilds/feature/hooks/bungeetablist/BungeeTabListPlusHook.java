@@ -34,7 +34,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
         GuildRankManager guildRankManager = this.plugin.getGuildRankManager();
 
         TablistPlaceholders.TABLIST.getPlaceholders().forEach((name, placeholder) -> {
-            String rawName = Placeholders.getRawName(name);
+            String rawName = Placeholders.propertyToRaw(name);
             BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable(rawName, player ->
                     userManager.findByPlayer(player)
                             .map(placeholder::get)
