@@ -45,13 +45,10 @@ public class SimplePlaceholders<T> extends Placeholders<T, SimplePlaceholders<T>
 
     public SimplePlaceholders<T> timeProperty(String name, MonoResolver<LocalDateTime> timeResolver) {
         return this.property(name, (data) -> {
-            LocalDateTime time;
-            if (data instanceof LocalDateTime) {
-                time = (LocalDateTime) data;
+            if (!(data instanceof LocalDateTime)) {
+                return "";
             }
-            else {
-                time = LocalDateTime.now();
-            }
+            LocalDateTime time = (LocalDateTime) data;
             return ChatUtils.appendDigit(Objects.toString(timeResolver.resolve(time)));
         });
     }
