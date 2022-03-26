@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
@@ -17,7 +17,7 @@ public class TablistPlaceholders extends Placeholders<User, TablistPlaceholders>
     static {
         TABLIST = new TablistPlaceholders()
                 .raw(mapPlaceholders(SimplePlaceholders.SIMPLE.getPlaceholders(), () -> null))
-                .raw(mapPlaceholders(SimplePlaceholders.TIME.getPlaceholders(), LocalDateTime::now))
+                .raw(mapPlaceholders(SimplePlaceholders.TIME.getPlaceholders(), OffsetDateTime::now))
                 .raw(UserPlaceholders.USER.getPlaceholders())
                 .raw(UserPlaceholders.PLAYER.getPlaceholders())
                 .raw(PandaStream.of(GuildPlaceholders.GUILD_ALL.getPlaceholders().entrySet())
