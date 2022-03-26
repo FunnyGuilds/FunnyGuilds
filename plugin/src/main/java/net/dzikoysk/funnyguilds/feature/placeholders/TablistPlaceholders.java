@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds.feature.placeholders;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.FallbackPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -15,8 +16,8 @@ public class TablistPlaceholders extends Placeholders<User, TablistPlaceholders>
 
     static {
         TABLIST = new TablistPlaceholders()
-                .raw(mapPlaceholders(SimplePlaceholders.SIMPLE.getPlaceholders(), null))
-                .raw(mapPlaceholders(SimplePlaceholders.TIME.getPlaceholders(), LocalDateTime.now()))
+                .raw(mapPlaceholders(SimplePlaceholders.SIMPLE.getPlaceholders(), () -> null))
+                .raw(mapPlaceholders(SimplePlaceholders.TIME.getPlaceholders(), LocalDateTime::now))
                 .raw(UserPlaceholders.USER.getPlaceholders())
                 .raw(UserPlaceholders.PLAYER.getPlaceholders())
                 .raw(PandaStream.of(GuildPlaceholders.GUILD_ALL.getPlaceholders().entrySet())
@@ -36,9 +37,9 @@ public class TablistPlaceholders extends Placeholders<User, TablistPlaceholders>
         return new TablistPlaceholders();
     }
 
-    private static <T> Map<String, Placeholder<User>> mapPlaceholders(Map<String, Placeholder<T>> placeholders, T data) {
+    private static <T> Map<String, Placeholder<User>> mapPlaceholders(Map<String, Placeholder<T>> placeholders, Supplier<T> dataSupplier) {
         return PandaStream.of(placeholders.entrySet())
-                .toMap(Entry::getKey, entry -> new Placeholder<>(user -> entry.getValue().getRaw(data)));
+                .toMap(Entry::getKey, entry -> new Placeholder<>(user -> entry.getValue().getRaw(dataSupplier.get())));
     }
 
 }

@@ -3,7 +3,10 @@ package net.dzikoysk.funnyguilds.feature.placeholders;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Objects;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,18 +29,30 @@ public class SimplePlaceholders<T> extends Placeholders<T, SimplePlaceholders<T>
                 .property("guilds", () -> plugin.getGuildManager().countGuilds());
 
         TIME = new SimplePlaceholders<LocalDateTime>()
-                .property("hour", LocalDateTime::getHour)
-                .property("minute", LocalDateTime::getMinute)
-                .property("second", LocalDateTime::getSecond)
-                .property("day_of_week", time -> time.getDayOfWeek().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
-                .property("day_of_month", LocalDateTime::getDayOfMonth)
-                .property("month", time -> time.getMonth().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
-                .property("month_number", LocalDateTime::getMonthValue)
-                .property("year", LocalDateTime::getYear);
+                .timeProperty("hour", LocalDateTime::getHour)
+                .timeProperty("minute", LocalDateTime::getMinute)
+                .timeProperty("second", LocalDateTime::getSecond)
+                .timeProperty("day_of_week", time -> time.getDayOfWeek().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
+                .timeProperty("day_of_month", LocalDateTime::getDayOfMonth)
+                .timeProperty("month", time -> time.getMonth().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
+                .timeProperty("month_number", LocalDateTime::getMonthValue)
+                .timeProperty("year", LocalDateTime::getYear);
 
         ONLINE = new SimplePlaceholders<String>()
                 .raw("<online>", () -> ChatColor.GREEN)
                 .raw("</online>", end -> end);
+    }
+
+    public SimplePlaceholders<T> timeProperty(String name, MonoResolver<LocalDateTime> timeResolver) {
+        return this.property(name, (data) -> {
+            LocalDateTime time;
+            if (data instanceof LocalDateTime) {
+                time = (LocalDateTime) data;
+            } else {
+                time = LocalDateTime.now();
+            }
+            return ChatUtils.appendDigit(Objects.toString(timeResolver.resolve(time)));
+        });
     }
 
     @Override
