@@ -57,10 +57,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                 .property("guild", Guild::getName, () -> messages.gNameNoValue)
                 .property("tag", Guild::getTag, () -> messages.gTagNoValue);
 
-        GUILD_ALL = new GuildPlaceholders()
-                .property("name", Guild::getName, () -> messages.gNameNoValue)
-                .property("guild", Guild::getName, () -> messages.gNameNoValue)
-                .property("tag", Guild::getTag, () -> messages.gTagNoValue)
+        GUILD_ALL = GUILD
                 .property("validity",
                         guild -> messages.dateFormat.format(new Date(guild.getValidity())),
                         () -> messages.gValidityNoValue)
