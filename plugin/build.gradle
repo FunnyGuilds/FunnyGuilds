@@ -12,9 +12,9 @@ dependencies {
     implementation "net.dzikoysk:funnycommands:0.5.2"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:3.4.2"
-    implementation "eu.okaeri:okaeri-configs-serdes-commons:3.4.2"
-    implementation "eu.okaeri:okaeri-configs-validator-okaeri:3.4.2"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.0-beta12"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.0-beta12"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.0-beta12"
 
     // general stuff
     //noinspection GradlePackageUpdate
