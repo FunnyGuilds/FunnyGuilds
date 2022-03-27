@@ -4,6 +4,8 @@ import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.FallbackPlaceholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -15,9 +17,13 @@ public class TablistPlaceholders extends Placeholders<User, TablistPlaceholders>
     public static final TablistPlaceholders TABLIST;
 
     static {
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
+        PluginConfiguration config = plugin.getPluginConfiguration();
+
         TABLIST = new TablistPlaceholders()
                 .raw(mapPlaceholders(SimplePlaceholders.SIMPLE.getPlaceholders(), () -> null))
-                .raw(mapPlaceholders(SimplePlaceholders.TIME.getPlaceholders(), OffsetDateTime::now))
+                .raw(mapPlaceholders(SimplePlaceholders.TIME.getPlaceholders(),
+                        () -> OffsetDateTime.now().plusHours(config.timeOffset)))
                 .raw(UserPlaceholders.USER.getPlaceholders())
                 .raw(UserPlaceholders.PLAYER.getPlaceholders())
                 .raw(PandaStream.of(GuildPlaceholders.GUILD_ALL.getPlaceholders().entrySet())
