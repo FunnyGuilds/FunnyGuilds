@@ -9,6 +9,16 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 
+import static eu.okaeri.configs.migrate.ConfigMigrationDsl.when;
+
+/**
+ * The migration moves old config.yml tablist config entries into
+ * the new separate tablist.yml file whilst preserving the behavior
+ * of static (non-animated) tablist.
+ *
+ * New users are not affected by this migration and will have
+ * the tablist animations enabled by default.
+ */
 public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
 
     private static final ConfigurationFactory CONFIGURATION_FACTORY = new ConfigurationFactory();
@@ -16,7 +26,13 @@ public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
     public P0004_Migrate_tablist_into_separate_file() {
         super(
                 "Migrate old config.yml tablist into tablist.yml",
-                moveToTablistConfig("player-list"),
+                when(
+                        moveToTablistConfig("player-list"),
+                        (config, view) -> {
+                            updateTablistConfig("player-list-animated", false);
+                            return true;
+                        }
+                ),
                 moveToTablistConfig("player-list-header"),
                 moveToTablistConfig("player-list-footer"),
                 moveToTablistConfig("player-list-ping"),
@@ -36,17 +52,21 @@ public class P0004_Migrate_tablist_into_separate_file extends NamedMigration {
             if (!view.exists(localKey)) {
                 return false;
             }
-
-            File tablistConfigurationFile = FunnyGuilds.getInstance().getTablistConfigurationFile();
-            TablistConfiguration tablistConfig = CONFIGURATION_FACTORY.createTablistConfiguration(tablistConfigurationFile);
-            RawConfigView tablistView = new RawConfigView(tablistConfig);
-
             Object targetValue = view.remove(localKey);
-            Object oldValue = tablistView.set(tablistKey, targetValue);
-
-            tablistConfig.save();
-
+            Object oldValue = updateTablistConfig(tablistKey, targetValue);
             return !Objects.equals(targetValue, oldValue);
         };
+    }
+
+    private static Object updateTablistConfig(String key, Object value) {
+
+        File tablistConfigurationFile = FunnyGuilds.getInstance().getTablistConfigurationFile();
+        TablistConfiguration tablistConfig = CONFIGURATION_FACTORY.createTablistConfiguration(tablistConfigurationFile);
+        RawConfigView tablistView = new RawConfigView(tablistConfig);
+
+        Object oldValue = tablistView.set(key, value);
+        tablistConfig.save();
+
+        return oldValue;
     }
 }
