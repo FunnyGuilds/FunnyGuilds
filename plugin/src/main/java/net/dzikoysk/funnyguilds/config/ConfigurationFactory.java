@@ -5,6 +5,13 @@ import eu.okaeri.configs.serdes.commons.SerdesCommons;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import java.io.File;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.migration.P0001_Fix_freecam_compensation_key_case;
+import net.dzikoysk.funnyguilds.config.migration.P0002_Migrate_old_heart_configuration;
+import net.dzikoysk.funnyguilds.config.migration.P0003_Migrate_old_tnt_protection_configuration;
+import net.dzikoysk.funnyguilds.config.migration.P0004_Migrate_tablist_into_separate_file;
+import net.dzikoysk.funnyguilds.config.migration.P0005_Fix_heart_configuration_centery_key;
+import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
 import net.dzikoysk.funnyguilds.config.transformer.DecolorTransformer;
@@ -39,8 +46,16 @@ public final class ConfigurationFactory {
                 registry.register(new RangeFormattingTransformer());
             });
             it.withBindFile(pluginConfigurationFile);
+            it.withLogger(FunnyGuilds.getInstance().getLogger());
             it.saveDefaults();
             it.load(true);
+            it.migrate(
+                    new P0001_Fix_freecam_compensation_key_case(),
+                    new P0002_Migrate_old_heart_configuration(),
+                    new P0003_Migrate_old_tnt_protection_configuration(),
+                    new P0004_Migrate_tablist_into_separate_file(),
+                    new P0005_Fix_heart_configuration_centery_key()
+            );
         });
     }
 
@@ -51,6 +66,9 @@ public final class ConfigurationFactory {
             it.withBindFile(tablistConfigurationFile);
             it.saveDefaults();
             it.load(true);
+            it.migrate(
+                    new T0001_Update_player_list_animated()
+            );
         });
     }
 

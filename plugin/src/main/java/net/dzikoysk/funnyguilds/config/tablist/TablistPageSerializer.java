@@ -5,16 +5,17 @@ import eu.okaeri.configs.serdes.DeserializationData;
 import eu.okaeri.configs.serdes.ObjectSerializer;
 import eu.okaeri.configs.serdes.SerializationData;
 import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 public class TablistPageSerializer implements ObjectSerializer<TablistPage> {
 
     @Override
-    public boolean supports(Class<? super TablistPage> type) {
+    public boolean supports(@NotNull Class<? super TablistPage> type) {
         return TablistPage.class.isAssignableFrom(type);
     }
 
     @Override
-    public void serialize(TablistPage page, SerializationData data) {
+    public void serialize(TablistPage page, SerializationData data, @NotNull GenericsDeclaration generics) {
         data.add("cycles", page.cycles);
 
         if (page.playerList != null) {
@@ -31,7 +32,7 @@ public class TablistPageSerializer implements ObjectSerializer<TablistPage> {
     }
 
     @Override
-    public TablistPage deserialize(DeserializationData data, GenericsDeclaration generics) {
+    public TablistPage deserialize(DeserializationData data, @NotNull GenericsDeclaration generics) {
         int cycles = data.get("cycles", Integer.class);
 
         Map<Integer, String> playerList = data.containsKey("player-list")

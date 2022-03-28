@@ -967,7 +967,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(0)
     @Comment("Margines sprawdzania przez ile bloków uderzył gracz w serce gildii")
-    @CustomKey("freeCam-compensation")
+    @CustomKey("freecam-compensation")
     public int freeCamCompensation = 0;
 
     @Min(1)

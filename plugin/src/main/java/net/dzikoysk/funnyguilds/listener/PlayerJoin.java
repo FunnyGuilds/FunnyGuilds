@@ -39,6 +39,7 @@ public class PlayerJoin extends AbstractFunnyListener {
                     this.nmsAccessor.getPlayerListAccessor(),
                     tablistConfig.playerList,
                     tablistConfig.playerListHeader, tablistConfig.playerListFooter,
+                    tablistConfig.playerListAnimated,
                     tablistConfig.pages,
                     tablistConfig.playerListPing,
                     tablistConfig.playerListFillCells,
