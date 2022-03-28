@@ -17,7 +17,7 @@ public class T0001_Update_player_list_animated extends NamedMigration {
         super(
                 "Preserve behavior of empty tablist pages by updating player-list-animated",
                 when(
-                        match("pages", (Collection<?> value) -> value.isEmpty()),
+                        match("pages", v -> v instanceof Collection && ((Collection<?>) v).isEmpty()),
                         update("player-list-animated", (old) -> false)
                 )
         );
