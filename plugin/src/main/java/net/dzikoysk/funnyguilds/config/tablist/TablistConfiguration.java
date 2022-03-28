@@ -126,7 +126,9 @@ public class TablistConfiguration extends OkaeriConfig {
     @CustomKey("player-list-footer")
     public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!";
 
-    @Comment("Aby wylaczyc animowana tabliste ustaw sekcje pages na []")
+    @Comment("Czy animowana tablista ma byc wlaczona?")
+    public boolean playerListAnimated = true;
+
     @Comment("Wartosc cycles to liczba cykli przez ktore widac dana strone na tabliscie. (1 cykl = 1 wyslanie tablisty, czestotliwosc wysylania tablisty mozna zmienic ustawiajac wartosc playerListUpdateInterval)")
     @Comment("Sekcje player-list konfiguruje sie w ten sam sposob co zwykla. Ustawia sie w niej wszystkie komorki, ktore maja sie zmieniac (nadpisujac zwykla konfiguracje).")
     @Comment("Sekcje player-list-header konfiguruje sie w ten sam sposob co zwykla.")

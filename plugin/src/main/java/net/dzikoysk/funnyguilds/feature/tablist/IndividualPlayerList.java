@@ -32,6 +32,7 @@ public class IndividualPlayerList {
     private final String footer;
     private final int cellPing;
 
+    private final boolean animated;
     private final List<TablistPage> pages;
     private final int pagesCount;
 
@@ -44,6 +45,7 @@ public class IndividualPlayerList {
                                 PlayerListAccessor playerListAccessor,
                                 Map<Integer, String> unformattedCells,
                                 String header, String footer,
+                                boolean animated,
                                 List<TablistPage> pages,
                                 int cellPing,
                                 boolean fillCells,
@@ -54,6 +56,7 @@ public class IndividualPlayerList {
         this.unformattedCells = new HashMap<>(unformattedCells);
         this.header = header;
         this.footer = footer;
+        this.animated = animated;
         this.pages = pages;
         this.pagesCount = pages.size();
         this.cellPing = cellPing;
@@ -84,7 +87,7 @@ public class IndividualPlayerList {
         String header = this.header;
         String footer = this.footer;
 
-        if (this.pagesCount > 0) {
+        if (this.animated) {
             this.cycle++;
 
             int pageCycles = this.pages.get(this.currentPage).cycles;
