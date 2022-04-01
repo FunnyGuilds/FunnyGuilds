@@ -26,6 +26,7 @@ public class TablistConfiguration extends OkaeriConfig {
     @Comment("{POINTS} - punkty gracza")
     @Comment("{POINTS-FORMAT} - punkty gracza z formatowaniem")
     @Comment("{POSITION} - pozycja gracza w rankingu")
+    @Comment("{POSITION-<typ>} - pozycja gracza w rankingu dla danego typu rankingu")
     @Comment("{KILLS} - liczba zabojstw gracza")
     @Comment("{DEATHS} - liczba smierci gracza")
     @Comment("{ASSISTS} - liczba asyst gracza")
