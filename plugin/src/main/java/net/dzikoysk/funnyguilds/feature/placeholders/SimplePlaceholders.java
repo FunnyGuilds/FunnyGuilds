@@ -13,30 +13,14 @@ import org.bukkit.ChatColor;
 
 public class SimplePlaceholders<T> extends Placeholders<T, SimplePlaceholders<T>> {
 
-    public static final SimplePlaceholders<Object> SIMPLE;
-    public static final SimplePlaceholders<OffsetDateTime> TIME;
-    public static final SimplePlaceholders<String> ONLINE;
+    private static SimplePlaceholders<Object> SIMPLE;
+    private static SimplePlaceholders<OffsetDateTime> TIME;
+    private static SimplePlaceholders<String> ONLINE;
 
     private static final Locale POLISH_LOCALE = new Locale("pl", "PL");
 
     static {
         FunnyGuilds plugin = FunnyGuilds.getInstance();
-
-        SIMPLE = new SimplePlaceholders<>()
-                .property("tps", MinecraftServerUtils::getFormattedTPS)
-                .property("online", () -> Bukkit.getOnlinePlayers().size())
-                .property("users", () -> plugin.getUserManager().countUsers())
-                .property("guilds", () -> plugin.getGuildManager().countGuilds());
-
-        TIME = new SimplePlaceholders<OffsetDateTime>()
-                .timeProperty("hour", OffsetDateTime::getHour)
-                .timeProperty("minute", OffsetDateTime::getMinute)
-                .timeProperty("second", OffsetDateTime::getSecond)
-                .timeProperty("day_of_week", time -> time.getDayOfWeek().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
-                .timeProperty("day_of_month", OffsetDateTime::getDayOfMonth)
-                .timeProperty("month", time -> time.getMonth().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
-                .timeProperty("month_number", OffsetDateTime::getMonthValue)
-                .timeProperty("year", OffsetDateTime::getYear);
 
         ONLINE = new SimplePlaceholders<String>()
                 .raw("<online>", () -> ChatColor.GREEN)
@@ -56,6 +40,41 @@ public class SimplePlaceholders<T> extends Placeholders<T, SimplePlaceholders<T>
     @Override
     public SimplePlaceholders<T> create() {
         return new SimplePlaceholders<>();
+    }
+
+    public static SimplePlaceholders<Object> getOrInstallSimplePlaceholders(FunnyGuilds plugin) {
+        if (SIMPLE == null) {
+            SIMPLE = new SimplePlaceholders<>()
+                    .property("tps", MinecraftServerUtils::getFormattedTPS)
+                    .property("online", () -> Bukkit.getOnlinePlayers().size())
+                    .property("users", () -> plugin.getUserManager().countUsers())
+                    .property("guilds", () -> plugin.getGuildManager().countGuilds());
+        }
+        return SIMPLE;
+    }
+
+    public static SimplePlaceholders<OffsetDateTime> getOrInstallTimePlaceholders() {
+        if (TIME == null) {
+            TIME = new SimplePlaceholders<OffsetDateTime>()
+                    .timeProperty("hour", OffsetDateTime::getHour)
+                    .timeProperty("minute", OffsetDateTime::getMinute)
+                    .timeProperty("second", OffsetDateTime::getSecond)
+                    .timeProperty("day_of_week", time -> time.getDayOfWeek().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
+                    .timeProperty("day_of_month", OffsetDateTime::getDayOfMonth)
+                    .timeProperty("month", time -> time.getMonth().getDisplayName(TextStyle.FULL, POLISH_LOCALE))
+                    .timeProperty("month_number", OffsetDateTime::getMonthValue)
+                    .timeProperty("year", OffsetDateTime::getYear);
+        }
+        return TIME;
+    }
+
+    public static SimplePlaceholders<String> getOrInstallOnlinePlaceholders() {
+        if (ONLINE == null) {
+            ONLINE = new SimplePlaceholders<String>()
+                    .raw("<online>", () -> ChatColor.GREEN)
+                    .raw("</online>", end -> end);
+        }
+        return ONLINE;
     }
 
 }

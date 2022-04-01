@@ -14,33 +14,36 @@ import panda.std.stream.PandaStream;
 
 public class TablistPlaceholders extends Placeholders<User, TablistPlaceholders> {
 
-    public static final TablistPlaceholders TABLIST;
-
-    static {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        PluginConfiguration config = plugin.getPluginConfiguration();
-
-        TABLIST = new TablistPlaceholders()
-                .raw(mapPlaceholders(SimplePlaceholders.SIMPLE.getPlaceholders(), () -> null))
-                .raw(mapPlaceholders(SimplePlaceholders.TIME.getPlaceholders(),
-                        () -> OffsetDateTime.now().plusHours(config.timeOffset)))
-                .raw(UserPlaceholders.USER.getPlaceholders())
-                .raw(UserPlaceholders.PLAYER.getPlaceholders())
-                .raw(PandaStream.of(GuildPlaceholders.GUILD_ALL.getPlaceholders().entrySet())
-                        .toMap(entry -> "{G-" + (entry.getKey().substring(1)),
-                                entry -> {
-                                    Placeholder<Guild> placeholder = entry.getValue();
-                                    return new Placeholder<>(user -> user.getGuild()
-                                            .map(placeholder::getRaw)
-                                            .orElseGet(() -> placeholder instanceof FallbackPlaceholder
-                                                    ? ((FallbackPlaceholder<?>) placeholder).getRawFallback()
-                                                    : ""));
-                                }));
-    }
+    private static TablistPlaceholders TABLIST;
 
     @Override
     public TablistPlaceholders create() {
         return new TablistPlaceholders();
+    }
+
+    public static TablistPlaceholders getOrInstallTablistPlaceholders(FunnyGuilds plugin) {
+        if (TABLIST == null) {
+            PluginConfiguration config = plugin.getPluginConfiguration();
+
+            TABLIST = new TablistPlaceholders()
+                    .raw(mapPlaceholders(SimplePlaceholders.getOrInstallSimplePlaceholders(plugin).getPlaceholders(), () -> null))
+                    .raw(mapPlaceholders(SimplePlaceholders.getOrInstallTimePlaceholders().getPlaceholders(),
+                            () -> OffsetDateTime.now().plusHours(config.timeOffset)))
+                    .raw(UserPlaceholders.getOrInstallUserPlaceholders(plugin).getPlaceholders())
+                    .raw(UserPlaceholders.getOrInstallPlayerPlaceholders(plugin).getPlaceholders())
+                    .raw(PandaStream.of(GuildPlaceholders.getOrInstallAllPlaceholders(plugin).getPlaceholders().entrySet())
+                            .toMap(entry -> "{G-" + (entry.getKey().substring(1)),
+                                    entry -> {
+                                        Placeholder<Guild> placeholder = entry.getValue();
+                                        return new Placeholder<>(user -> user.getGuild()
+                                                .map(placeholder::getRaw)
+                                                .orElseGet(() -> placeholder instanceof FallbackPlaceholder
+                                                        ? ((FallbackPlaceholder<?>) placeholder).getRawFallback()
+                                                        : ""));
+                                    }));
+        }
+
+        return TABLIST;
     }
 
     private static <T> Map<String, Placeholder<User>> mapPlaceholders(Map<String, Placeholder<T>> placeholders, Supplier<T> dataSupplier) {

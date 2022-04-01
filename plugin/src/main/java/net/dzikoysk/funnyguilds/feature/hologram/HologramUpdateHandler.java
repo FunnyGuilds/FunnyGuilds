@@ -37,12 +37,12 @@ public class HologramUpdateHandler implements Runnable {
         ItemStack item = new ItemStack(hologramConfig.item);
         HookManager.HOLOGRAPHIC_DISPLAYS.peek(hologramManager -> {
             for (Guild guild : plugin.getGuildManager().getGuilds()) {
-                Formatter formatter = GuildPlaceholders.GUILD_ALL.toFormatter(guild);
+                Formatter formatter = GuildPlaceholders.getOrInstallAllPlaceholders(this.plugin).toFormatter(guild);
                 List<String> lines = PandaStream.of(hologramConfig.displayedLines)
                         .map(formatter::format)
                         .map(ChatUtils::colored)
-                        .map(line -> GuildPlaceholders.GUILD_ALLIES_ENEMIES_ALL.format(line, guild))
-                        .map(line -> GuildPlaceholders.GUILD_MEMBERS_COLOR_CONTEXT
+                        .map(line -> GuildPlaceholders.getOrInstallAlliesEnemies(this.plugin).format(line, guild))
+                        .map(line -> GuildPlaceholders.getOrInstallGuildMembers(this.plugin)
                                 .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild)))
                         .toList();
 

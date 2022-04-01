@@ -39,13 +39,13 @@ public final class InfoCommand extends AbstractFunnyCommand {
                 .orThrow(() -> new ValidationException(messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
-        Formatter formatter = GuildPlaceholders.GUILD_ALL
+        Formatter formatter = GuildPlaceholders.getOrInstallAllPlaceholders(this.plugin)
                 .toFormatter(guild);
 
         for (String messageLine : messages.infoList) {
             messageLine = formatter.format(messageLine);
-            messageLine = GuildPlaceholders.GUILD_ALLIES_ENEMIES_ALL.format(messageLine, guild);
-            messageLine = GuildPlaceholders.GUILD_MEMBERS_COLOR_CONTEXT
+            messageLine = GuildPlaceholders.getOrInstallAlliesEnemies(this.plugin).format(messageLine, guild);
+            messageLine = GuildPlaceholders.getOrInstallGuildMembers(this.plugin)
                     .format(messageLine, Pair.of(ChatUtils.getLastColorBefore(messageLine, "{MEMBERS}"), guild));
 
             sendMessage(sender, (messageLine));
