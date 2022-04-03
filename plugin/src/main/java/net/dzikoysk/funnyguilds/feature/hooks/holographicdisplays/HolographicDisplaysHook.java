@@ -38,7 +38,6 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
 
     @Override
     public HookInitResult init() {
-
         Runnable updateTask = () -> this.plugin.getGuildManager().getGuilds().forEach(this::update);
         long updateInterval = config.heart.hologram.updateInterval;
 
@@ -50,7 +49,6 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
 
     @Override
     public void update(@NotNull Guild guild) {
-
         HologramConfiguration holoConfig = this.config.heart.hologram;
         if (!holoConfig.enabled) {
             return;
@@ -82,11 +80,9 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
 
     @Override
     public void configUpdated() {
-
         if (config.heart.hologram.enabled) {
             return;
         }
-
         this.holograms.values().forEach(Holo::delete);
         this.holograms.clear();
     }
@@ -94,6 +90,9 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
     @EventHandler
     public void handleGuildDelete(GuildDeleteEvent event) {
         Holo holo = this.holograms.remove(event.getGuild());
+        if (holo == null) {
+            return;
+        }
         holo.delete();
     }
 
