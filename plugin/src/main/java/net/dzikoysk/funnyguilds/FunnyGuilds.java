@@ -16,6 +16,7 @@ import net.dzikoysk.funnyguilds.data.database.Database;
 import net.dzikoysk.funnyguilds.feature.command.FunnyCommandsConfiguration;
 import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
+import net.dzikoysk.funnyguilds.feature.hooks.PluginHook;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
@@ -524,6 +525,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.pluginConfiguration.load();
         this.tablistConfiguration.load();
         this.messageConfiguration.load();
+        this.hookManager.callConfigUpdated();
     }
 
     public static FunnyGuilds getInstance() {

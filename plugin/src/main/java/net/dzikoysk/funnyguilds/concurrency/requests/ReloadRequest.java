@@ -4,7 +4,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
-import net.dzikoysk.funnyguilds.feature.hologram.HologramUpdateLocationHandler;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -31,8 +30,6 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
         this.plugin.reloadConfiguration();
         this.plugin.getDataPersistenceHandler().reloadHandler();
         this.plugin.getDynamicListenerManager().reloadAll();
-
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new HologramUpdateLocationHandler(plugin));
 
         if (this.plugin.getTablistConfiguration().playerListEnable) {
             PluginConfiguration config = this.plugin.getPluginConfiguration();

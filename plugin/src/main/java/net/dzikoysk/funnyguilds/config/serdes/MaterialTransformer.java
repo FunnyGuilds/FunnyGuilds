@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.config.transformer;
+package net.dzikoysk.funnyguilds.config.serdes;
 
 import eu.okaeri.configs.schema.GenericsPair;
 import eu.okaeri.configs.serdes.BidirectionalTransformer;
