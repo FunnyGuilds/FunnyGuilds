@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 public class FunnyTime {
 
-    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("H:mm");
 
     private final LocalTime time;
     private final String formattedTime;
