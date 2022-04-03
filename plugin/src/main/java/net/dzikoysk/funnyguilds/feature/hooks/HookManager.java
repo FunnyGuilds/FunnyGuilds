@@ -202,7 +202,7 @@ public class HookManager {
                 completableHook.configUpdated();
             }
             catch (Throwable throwable) {
-                FunnyGuilds.getPluginLogger().error("Failed to configUpdate() for " + pluginName + " plugin hook", throwable);
+                FunnyGuilds.getPluginLogger().error("Failed to invoke configUpdated() for " + pluginName + " plugin hook", throwable);
             }
         });
     }
