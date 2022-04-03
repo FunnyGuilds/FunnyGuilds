@@ -12,6 +12,9 @@ public interface PluginHook {
         return HookInitResult.UNUSED;
     }
 
+    default void configUpdated() throws Throwable {
+    }
+
     enum HookInitResult {
         SUCCESS, FAILURE, UNUSED
     }

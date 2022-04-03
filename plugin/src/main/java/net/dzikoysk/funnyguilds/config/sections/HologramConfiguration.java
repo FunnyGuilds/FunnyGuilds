@@ -8,6 +8,7 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.util.List;
 import org.bukkit.Material;
+import org.bukkit.util.Vector;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class HologramConfiguration extends OkaeriConfig {
@@ -35,6 +36,6 @@ public class HologramConfiguration extends OkaeriConfig {
             .build();
 
     @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji.")
-    public LocationConfiguration locationCorrection = new LocationConfiguration(0.5, 2.5, 0.5);
+    public Vector locationCorrection = new Vector(0.5, 2.5, 0.5);
 
 }

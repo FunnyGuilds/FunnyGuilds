@@ -172,10 +172,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 user.sendMessage(notEnoughDistanceMessage);
                 return;
             }
-
-            HookManager.HOLOGRAPHIC_DISPLAYS.peek(hologramManager -> hologramManager.getCorrectedLocation(guild)
-                    .peek(location -> hologramManager.getOrCreateHologram(guild)
-                            .peek(hologram -> hologram.setLocation(location))));
         }
 
         if (!SimpleEventHandler.handle(new GuildPreCreateEvent(EventCause.USER, user, guild))) {

@@ -12,14 +12,15 @@ import net.dzikoysk.funnyguilds.config.migration.P0003_Migrate_old_tnt_protectio
 import net.dzikoysk.funnyguilds.config.migration.P0004_Migrate_tablist_into_separate_file;
 import net.dzikoysk.funnyguilds.config.migration.P0005_Fix_heart_configuration_centery_key;
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
+import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.RawStringTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.SimpleDateFormatTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
-import net.dzikoysk.funnyguilds.config.transformer.DecolorTransformer;
-import net.dzikoysk.funnyguilds.config.transformer.FunnyTimeTransformer;
-import net.dzikoysk.funnyguilds.config.transformer.MaterialTransformer;
-import net.dzikoysk.funnyguilds.config.transformer.RangeFormattingTransformer;
-import net.dzikoysk.funnyguilds.config.transformer.RawStringTransformer;
-import net.dzikoysk.funnyguilds.config.transformer.SimpleDateFormatTransformer;
 
 public final class ConfigurationFactory {
 
@@ -44,6 +45,7 @@ public final class ConfigurationFactory {
                 registry.register(new MaterialTransformer());
                 registry.register(new FunnyTimeTransformer());
                 registry.register(new RangeFormattingTransformer());
+                registry.register(new VectorSerializer());
             });
             it.withBindFile(pluginConfigurationFile);
             it.withLogger(FunnyGuilds.getInstance().getLogger());
