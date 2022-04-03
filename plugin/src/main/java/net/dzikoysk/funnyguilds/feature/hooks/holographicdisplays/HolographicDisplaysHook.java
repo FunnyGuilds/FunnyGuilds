@@ -77,7 +77,7 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
                         .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild)))
                 .toList());
 
-        Bukkit.getScheduler().runTask(this.plugin, holo::update);
+        holo.update();
     }
 
     @Override
