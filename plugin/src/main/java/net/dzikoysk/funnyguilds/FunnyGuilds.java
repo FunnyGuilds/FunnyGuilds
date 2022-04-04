@@ -524,6 +524,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.pluginConfiguration.load();
         this.tablistConfiguration.load();
         this.messageConfiguration.load();
+        this.hookManager.callConfigUpdated();
     }
 
     public static FunnyGuilds getInstance() {

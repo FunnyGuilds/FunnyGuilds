@@ -21,6 +21,10 @@ public class CompletableHook<T extends PluginHook> {
         return hook.init();
     }
 
+    public void configUpdated() throws Throwable {
+        hook.configUpdated();
+    }
+
     public void markAsCompleted() {
         completableHook.complete(Option.of(hook));
     }

@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.bungeetablist.BungeeTabListPlusHook;
 import net.dzikoysk.funnyguilds.feature.hooks.funnytab.FunnyTabHook;
-import net.dzikoysk.funnyguilds.feature.hooks.hologram.HologramHook;
-import net.dzikoysk.funnyguilds.feature.hooks.hologram.HolographicDisplaysHook;
+import net.dzikoysk.funnyguilds.feature.hooks.holographicdisplays.HolographicDisplaysHook;
 import net.dzikoysk.funnyguilds.feature.hooks.leaderheads.LeaderHeadsHook;
 import net.dzikoysk.funnyguilds.feature.hooks.mvdwplaceholderapi.MVdWPlaceholderAPIHook;
 import net.dzikoysk.funnyguilds.feature.hooks.placeholderapi.PlaceholderAPIHook;
@@ -34,7 +34,7 @@ public class HookManager {
     public static Option<MVdWPlaceholderAPIHook> MVDW_PLACEHOLDER_API;
     public static Option<PlaceholderAPIHook> PLACEHOLDER_API;
     public static Option<LeaderHeadsHook> LEADER_HEADS;
-    public static Option<HologramHook> HOLOGRAPHIC_DISPLAYS;
+    public static Option<HologramsHook> HOLOGRAMS;
 
     private final FunnyGuilds plugin;
     private final Map<String, CompletableHook<?>> pluginHooks = new HashMap<>();
@@ -95,8 +95,8 @@ public class HookManager {
         this.setupHook("LeaderHeads", true, pluginName -> new LeaderHeadsHook(pluginName, plugin), true)
                 .subscribe(hook -> LEADER_HEADS = hook);
 
-        this.<HologramHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, plugin), true)
-                .subscribe(hook -> HOLOGRAPHIC_DISPLAYS = hook);
+        this.<HologramsHook>setupHook("HolographicDisplays", true, pluginName -> new HolographicDisplaysHook(pluginName, plugin), true)
+                .subscribe(hook -> HOLOGRAMS = hook);
     }
 
     public <T extends PluginHook> Completable<Option<T>> setupHook(String pluginName, boolean requireEnabled,
@@ -192,4 +192,18 @@ public class HookManager {
         });
     }
 
+    public void callConfigUpdated() {
+        pluginHooks.forEach((pluginName, completableHook) -> {
+            if (!completableHook.isCompleted()) {
+                return;
+            }
+
+            try {
+                completableHook.configUpdated();
+            }
+            catch (Throwable throwable) {
+                FunnyGuilds.getPluginLogger().error("Failed to invoke configUpdated() for " + pluginName + " plugin hook", throwable);
+            }
+        });
+    }
 }

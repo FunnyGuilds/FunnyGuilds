@@ -42,7 +42,6 @@ public class TablistPlaceholders extends Placeholders<User, TablistPlaceholders>
                                                         : ""));
                                     }));
         }
-
         return TABLIST;
     }
 
