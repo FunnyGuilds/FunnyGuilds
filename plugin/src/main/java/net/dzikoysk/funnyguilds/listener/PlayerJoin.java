@@ -27,7 +27,7 @@ public class PlayerJoin extends AbstractFunnyListener {
         String playerName = player.getName();
 
         if (!user.getName().equals(playerName)) {
-            this.userManager.updateUsername(user, playerName);
+            user.setName(playerName);
         }
 
         user.updateReference(player);
