@@ -47,7 +47,8 @@ public final class InfoCommand extends AbstractFunnyCommand {
                 .map(formatter::format)
                 .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().format(line, guild))
                 .map(line -> placeholdersService.getGuildMembersPlaceholders()
-                        .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild)))
+                        .toFormatter(Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild))
+                        .format(line))
                 .forEach(sender::sendMessage);
     }
 

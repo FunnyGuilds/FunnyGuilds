@@ -58,21 +58,21 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
 
         userManager = new UserManager()
-        guildManager = new GuildManager(config);
-        userRankManager = new UserRankManager(config);
+        guildManager = new GuildManager(config)
+        userRankManager = new UserRankManager(config)
         userRankManager.register(DefaultTops.defaultUserTops(config, userManager))
-        guildRankManager = new GuildRankManager(config);
+        guildRankManager = new GuildRankManager(config)
         guildRankManager.register(DefaultTops.defaultGuildTops(guildManager))
-        regionManager = new RegionManager(config);
-
-        placeholdersService = new PlaceholdersService(funnyGuilds)
-        placeholdersService.installPlaceholders()
+        regionManager = new RegionManager(config)
 
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
         lenient().when(funnyGuilds.getGuildManager()).thenReturn(guildManager)
         lenient().when(funnyGuilds.getUserRankManager()).thenReturn(userRankManager)
         lenient().when(funnyGuilds.getGuildRankManager()).thenReturn(guildRankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
+
+        placeholdersService = new PlaceholdersService(funnyGuilds)
+        placeholdersService.installPlaceholders()
 
         lenient().when(funnyGuilds.getPlaceholdersService()).thenReturn(placeholdersService)
 

@@ -26,15 +26,15 @@ import panda.std.stream.PandaStream;
 
 public class HookManager {
 
-    public static Option<WorldGuardHook> WORLD_GUARD;
-    public static Option<WorldEditHook> WORLD_EDIT;
-    public static Option<FunnyTabHook> FUNNY_TAB;
-    public static Option<VaultHook> VAULT;
-    public static Option<BungeeTabListPlusHook> BUNGEE_TAB_LIST_PLUS;
-    public static Option<MVdWPlaceholderAPIHook> MVDW_PLACEHOLDER_API;
-    public static Option<PlaceholderAPIHook> PLACEHOLDER_API;
-    public static Option<LeaderHeadsHook> LEADER_HEADS;
-    public static Option<HologramsHook> HOLOGRAMS;
+    public static Option<WorldGuardHook> WORLD_GUARD = Option.none();
+    public static Option<WorldEditHook> WORLD_EDIT = Option.none();
+    public static Option<FunnyTabHook> FUNNY_TAB = Option.none();
+    public static Option<VaultHook> VAULT = Option.none();
+    public static Option<BungeeTabListPlusHook> BUNGEE_TAB_LIST_PLUS = Option.none();
+    public static Option<MVdWPlaceholderAPIHook> MVDW_PLACEHOLDER_API = Option.none();
+    public static Option<PlaceholderAPIHook> PLACEHOLDER_API = Option.none();
+    public static Option<LeaderHeadsHook> LEADER_HEADS = Option.none();
+    public static Option<HologramsHook> HOLOGRAMS = Option.none();
 
     private final FunnyGuilds plugin;
     private final Map<String, CompletableHook<?>> pluginHooks = new HashMap<>();
@@ -100,7 +100,7 @@ public class HookManager {
     }
 
     public <T extends PluginHook> Completable<Option<T>> setupHook(String pluginName, boolean requireEnabled,
-                                            Function<String, T> hookSupplier, boolean notifyIfMissing) {
+                                                                   Function<String, T> hookSupplier, boolean notifyIfMissing) {
         if (hookSupplier == null) {
             return Completable.completed(Option.none());
         }

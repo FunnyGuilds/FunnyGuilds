@@ -78,7 +78,8 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
                 .map(formatter::format)
                 .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().format(line, guild))
                 .map(line -> placeholdersService.getGuildMembersPlaceholders()
-                        .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild)))
+                        .toFormatter(Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild))
+                        .format(line))
                 .toList());
 
         holo.update();

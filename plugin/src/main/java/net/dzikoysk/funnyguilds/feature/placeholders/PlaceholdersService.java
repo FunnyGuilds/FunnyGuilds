@@ -40,8 +40,6 @@ import panda.utilities.text.Joiner;
 
 public class PlaceholdersService {
 
-    private final FunnyGuilds plugin;
-
     private final PluginConfiguration config;
     private final MessageConfiguration messages;
 
@@ -72,8 +70,6 @@ public class PlaceholdersService {
             : Joiner.on(", ").join(list).toString();
 
     public PlaceholdersService(FunnyGuilds plugin) {
-        this.plugin = plugin;
-
         this.config = plugin.getPluginConfiguration();
         this.messages = plugin.getMessageConfiguration();
 
@@ -355,7 +351,7 @@ public class PlaceholdersService {
 
                     return !text.contains("<online>")
                             ? text
-                            : this.onlinePlaceholders.format(pair.getFirst(), text);
+                            : this.onlinePlaceholders.toFormatter(pair.getFirst()).format(text);
                 });
     }
 
