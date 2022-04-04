@@ -35,7 +35,7 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
 
         TablistPlaceholders.getOrInstallTablistPlaceholders(this.plugin).getPlaceholders()
                 .forEach((name, placeholder) -> {
-                    String rawName = Placeholders.propertyToRaw(name);
+                    String rawName = Placeholders.propertyToRaw(name).toLowerCase();
                     BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_" + rawName, player ->
                             userManager.findByPlayer(player)
                                     .map(placeholder::get)
