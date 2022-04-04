@@ -32,8 +32,7 @@ public class RankUtils {
      * @param text       text to parse
      * @return parsed text
      */
-    public static String parseTop(@Nullable User targetUser, String text) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
+    public static String parseTop(FunnyGuilds plugin, @Nullable User targetUser, String text) {
         return parseTop(
                 plugin.getPluginConfiguration(),
                 plugin.getTablistConfiguration(),
@@ -150,8 +149,7 @@ public class RankUtils {
      * @return parsed text
      */
     @Deprecated
-    public static String parseRank(@Nullable User targetUser, String text) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
+    public static String parseRank(FunnyGuilds plugin, @Nullable User targetUser, String text) {
         return parseRank(
                 plugin.getPluginConfiguration(),
                 plugin.getTablistConfiguration(),
@@ -221,7 +219,7 @@ public class RankUtils {
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
-                return formatUserRank(config, text, "{PTOP-" + index + "}", targetUser, user, pointsFormat);
+                return formatUserRank(config, text, "{PTOP-" + index + "}", user, pointsFormat);
             }
             else if (topType.equalsIgnoreCase("GTOP")) {
                 Option<Guild> guildOption = guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, index);
@@ -245,10 +243,10 @@ public class RankUtils {
     }
 
     public static String parseTopPosition(
+            FunnyGuilds plugin,
             @Nullable User targetUser,
             String text
     ) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
         return parseTopPosition(
                 plugin.getPluginConfiguration(),
                 plugin.getMessageConfiguration(),

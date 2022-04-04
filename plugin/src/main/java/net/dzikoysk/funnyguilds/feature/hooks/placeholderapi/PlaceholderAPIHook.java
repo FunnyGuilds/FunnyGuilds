@@ -67,12 +67,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             if (identifier.toLowerCase().contains("position-")) {
-                return RankUtils.parseTopPosition(user, "{" + identifier.toUpperCase() + "}");
+                return RankUtils.parseTopPosition(plugin, user, "{" + identifier.toUpperCase() + "}");
             }
             else if (identifier.toLowerCase().contains("top-")) {
-                String temp = RankUtils.parseTop(user, "{" + identifier.toUpperCase() + "}");
+                String temp = RankUtils.parseTop(plugin, user, "{" + identifier.toUpperCase() + "}");
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
-                    temp = RankUtils.parseRank(user, temp);
+                    temp = RankUtils.parseRank(plugin, user, temp);
                 }
                 return temp;
             }

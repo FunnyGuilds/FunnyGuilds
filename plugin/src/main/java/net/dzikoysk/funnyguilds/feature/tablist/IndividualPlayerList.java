@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
@@ -136,11 +137,13 @@ public class IndividualPlayerList {
     }
 
     private String putTop(String cell) {
-        String temp = RankUtils.parseTopPosition(this.user, cell);
+        FunnyGuilds plugin = FunnyGuilds.getInstance();
 
-        temp = RankUtils.parseTop(this.user, temp);
+        String temp = RankUtils.parseTopPosition(plugin, this.user, cell);
+
+        temp = RankUtils.parseTop(plugin, this.user, temp);
         if (enableLegacyPlaceholders) {
-            temp = RankUtils.parseRank(this.user, temp);
+            temp = RankUtils.parseRank(plugin, this.user, temp);
         }
 
         return temp;

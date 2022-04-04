@@ -49,13 +49,13 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
             userTopIds.forEach(id ->
                     BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_ptop-" + id + "-" + position, player -> {
                         User user = userManager.findByPlayer(player).getOrNull();
-                        return RankUtils.parseTop(user, "{PTOP-" + id.toUpperCase() + "-" + position + "}");
+                        return RankUtils.parseTop(plugin, user, "{PTOP-" + id.toUpperCase() + "-" + position + "}");
                     })));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
                 BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_ptop-" + position, player -> {
                     User user = userManager.findByPlayer(player).getOrNull();
-                    return RankUtils.parseRank(user, "{PTOP-" + position + "}");
+                    return RankUtils.parseRank(plugin, user, "{PTOP-" + position + "}");
                 }));
             }
         }
@@ -67,13 +67,13 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
             guildTopIds.forEach(id ->
                     BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_gtop_" + id + "-" + position, player -> {
                         User user = userManager.findByPlayer(player).getOrNull();
-                        return RankUtils.parseTop(user, "{GTOP-" + id.toUpperCase() + "-" + position + "}");
+                        return RankUtils.parseTop(plugin, user, "{GTOP-" + id.toUpperCase() + "-" + position + "}");
                     })));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
                 BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_gtop_" + position, player -> {
                     User user = userManager.findByPlayer(player).getOrNull();
-                    return RankUtils.parseRank(user, "{GTOP-" + position + "}");
+                    return RankUtils.parseRank(plugin, user, "{GTOP-" + position + "}");
                 }));
             }
         }
@@ -81,13 +81,13 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
         userTopIds.forEach(id ->
                 BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_position-" + id, player -> {
                     User user = userManager.findByPlayer(player).getOrNull();
-                    return RankUtils.parseTopPosition(user, "{POSITION-" + id.toUpperCase() + "}");
+                    return RankUtils.parseTopPosition(plugin, user, "{POSITION-" + id.toUpperCase() + "}");
                 })));
 
         guildTopIds.forEach(id ->
                 BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_g-position-" + id, player -> {
                     User user = userManager.findByPlayer(player).getOrNull();
-                    return RankUtils.parseTopPosition(user, "{G-POSITION-" + id.toUpperCase() + "}");
+                    return RankUtils.parseTopPosition(plugin, user, "{G-POSITION-" + id.toUpperCase() + "}");
                 })));
 
         return HookInitResult.SUCCESS;

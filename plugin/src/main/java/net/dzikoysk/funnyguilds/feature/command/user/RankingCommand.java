@@ -4,6 +4,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
+import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
 @FunnyComponent
@@ -17,8 +18,10 @@ public final class RankingCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
+        User targetUser = userManager.findByName(sender.getName()).orNull();
+
         for (String messageLine : messages.rankingList) {
-            String parsedRank = RankUtils.parseRank(null, messageLine);
+            String parsedRank = RankUtils.parseRank(plugin, targetUser, messageLine);
             sendMessage(sender, (parsedRank == null ? messageLine : parsedRank));
         }
     }

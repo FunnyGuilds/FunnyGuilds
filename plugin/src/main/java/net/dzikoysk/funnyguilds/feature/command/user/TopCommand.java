@@ -18,10 +18,10 @@ public final class TopCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        User user = this.userManager.findByName(sender.getName()).getOrNull();
+        User targetUser = userManager.findByName(sender.getName()).orNull();
 
         for (String messageLine : messages.topList) {
-            String parsedRank = RankUtils.parseRank(user, messageLine);
+            String parsedRank = RankUtils.parseRank(plugin, targetUser, messageLine);
             sendMessage(sender, (parsedRank == null ? messageLine : parsedRank));
         }
     }
