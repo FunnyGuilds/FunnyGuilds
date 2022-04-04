@@ -96,7 +96,6 @@ public class UserManager {
         if (player.getUniqueId().version() == 2) {
             return Option.of(new User(player.getUniqueId(), player.getName(), new NPCUserProfile()));
         }
-
         return findByUuid(player.getUniqueId());
     }
 
@@ -145,7 +144,6 @@ public class UserManager {
      */
     public void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
-
         usersMap.put(user.getUUID(), user);
     }
 
@@ -156,7 +154,6 @@ public class UserManager {
      */
     public void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
-
         usersMap.remove(user.getUUID());
     }
 
