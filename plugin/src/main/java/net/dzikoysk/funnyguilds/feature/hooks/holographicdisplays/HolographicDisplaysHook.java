@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
-import net.dzikoysk.funnyguilds.feature.placeholders.GuildPlaceholders;
+import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.Bukkit;
@@ -67,12 +67,17 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
             holo.appendItem(new ItemStack(holoConfig.item));
         }
 
-        Formatter formatter = GuildPlaceholders.getOrInstallAllPlaceholders(this.plugin).toFormatter(guild);
+        PlaceholdersService placeholdersService = this.plugin.getPlaceholdersService();
+
+        Formatter formatter = placeholdersService.getGuildPlaceholders()
+                .toFormatter(guild);
+
         holo.appendTexts(PandaStream.of(holoConfig.displayedLines)
                 .map(formatter::format)
                 .map(ChatUtils::colored)
-                .map(line -> GuildPlaceholders.getOrInstallAlliesEnemies(this.plugin).format(line, guild))
-                .map(line -> GuildPlaceholders.getOrInstallGuildMembers(this.plugin)
+                .map(formatter::format)
+                .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().format(line, guild))
+                .map(line -> placeholdersService.getGuildMembersPlaceholders()
                         .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild)))
                 .toList());
 

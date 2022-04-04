@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
-import net.dzikoysk.funnyguilds.feature.placeholders.TablistPlaceholders;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
@@ -150,7 +149,7 @@ public class IndividualPlayerList {
         }
         Player player = playerOption.get();
 
-        formatted = TablistPlaceholders.getOrInstallTablistPlaceholders(FunnyGuilds.getInstance()).format(formatted, this.user);
+        formatted = FunnyGuilds.getInstance().getPlaceholdersService().getTablistPlaceholders().format(formatted, this.user);
         formatted = ChatUtils.colored(formatted);
         formatted = HookUtils.replacePlaceholders(player, formatted);
 

@@ -18,7 +18,7 @@ public class FallbackPlaceholder<T> extends Placeholder<T> {
     }
 
     public String getFallback() {
-        return Objects.toString(this.getRawFallback());
+        return Objects.toString(this.getRawFallback(), "");
     }
 
 }

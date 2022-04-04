@@ -6,8 +6,6 @@ import me.clip.placeholderapi.expansion.Relational;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
-import net.dzikoysk.funnyguilds.feature.placeholders.TablistPlaceholders;
-import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.RankUtils;
@@ -61,10 +59,11 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
             User user = userOption.get();
 
-            Placeholder<User> placeholder = TablistPlaceholders.getOrInstallTablistPlaceholders(this.plugin)
-                    .getPlaceholderByProperty(identifier.toUpperCase());
-            String value = placeholder.get(user);
-            if (value != null && !value.equalsIgnoreCase("null")) {
+            String value = this.plugin.getPlaceholdersService().getTablistPlaceholders()
+                    .getPlaceholderByProperty(identifier.toUpperCase())
+                    .map(placeholder -> placeholder.get(user))
+                    .orNull();
+            if (value != null) {
                 return value;
             }
 

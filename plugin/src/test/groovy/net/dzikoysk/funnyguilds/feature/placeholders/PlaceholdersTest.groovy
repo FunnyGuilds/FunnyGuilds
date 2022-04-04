@@ -35,7 +35,7 @@ class PlaceholdersTest extends FunnyGuildsSpec {
     @Test
     void 'test ONLINE placeholder'() {
         def text = "§7offline - <online>online</online> - offline - <online>online</online> - offline"
-        def formatter = SimplePlaceholders.getOrInstallOnlinePlaceholders().toFormatter(ChatUtils.getLastColorBefore(text, "<online>"))
+        def formatter = placeholdersService.onlinePlaceholders.toFormatter(ChatUtils.getLastColorBefore(text, "<online>"))
 
         text = formatter.format text
 
@@ -54,19 +54,19 @@ class PlaceholdersTest extends FunnyGuildsSpec {
         guild.addMember(user3)
 
         def text1 = "§7{MEMBERS}"
-        text1 = GuildPlaceholders.getOrInstallGuildMembers(funnyGuilds)
+        text1 = placeholdersService.guildMembersPlaceholders
                 .format(text1, Pair.of(ChatUtils.getLastColorBefore(text1, "{MEMBERS}"), guild))
 
         assertEquals '§7user1, §auser2§7, user3', text1
 
         def text2 = "§c{MEMBERS}"
-        text2 = GuildPlaceholders.getOrInstallGuildMembers(funnyGuilds)
+        text2 = placeholdersService.guildMembersPlaceholders
                 .format(text2, Pair.of(ChatUtils.getLastColorBefore(text2, "{MEMBERS}"), guild))
 
         assertEquals '§cuser1, §auser2§c, user3', text2
 
         def text3 = "§a{MEMBERS}"
-        text3 = GuildPlaceholders.getOrInstallGuildMembers(funnyGuilds)
+        text3 = placeholdersService.guildMembersPlaceholders
                 .format(text3, Pair.of(ChatUtils.getLastColorBefore(text3, "{MEMBERS}"), guild))
 
         assertEquals '§auser1, §auser2§a, user3', text3

@@ -5,6 +5,7 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
+import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
@@ -43,6 +44,8 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected GuildRankManager guildRankManager
     protected RegionManager regionManager
 
+    protected PlaceholdersService placeholdersService
+
     @BeforeAll
     static void openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds.class)
@@ -62,11 +65,16 @@ class FunnyGuildsSpec extends BukkitSpec {
         guildRankManager.register(DefaultTops.defaultGuildTops(guildManager))
         regionManager = new RegionManager(config);
 
+        placeholdersService = new PlaceholdersService(funnyGuilds)
+        placeholdersService.installPlaceholders()
+
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
         lenient().when(funnyGuilds.getGuildManager()).thenReturn(guildManager)
         lenient().when(funnyGuilds.getUserRankManager()).thenReturn(userRankManager)
         lenient().when(funnyGuilds.getGuildRankManager()).thenReturn(guildRankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
+
+        lenient().when(funnyGuilds.getPlaceholdersService()).thenReturn(placeholdersService)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)
         mockedBossBarProvider.when(() -> BossBarProvider.getBossBar(any(User.class))).thenReturn(null)

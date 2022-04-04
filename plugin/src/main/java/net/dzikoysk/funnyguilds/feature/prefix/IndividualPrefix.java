@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.feature.prefix;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.feature.placeholders.GuildPlaceholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.scoreboard.Scoreboard;
@@ -246,7 +245,7 @@ public class IndividualPrefix {
     }
 
     public static String preparePrefix(String text, Guild guild) {
-        Formatter formatter = GuildPlaceholders.getOrInstallSimplePlaceholders(FunnyGuilds.getInstance()).toFormatter(guild);
+        Formatter formatter = FunnyGuilds.getInstance().getPlaceholdersService().getSimplePlaceholders().toFormatter(guild);
         String formatted = formatter.format(text);
 
         if (formatted.length() > 16) {

@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
-import net.dzikoysk.funnyguilds.feature.placeholders.GuildPlaceholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Bukkit;
@@ -34,7 +33,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
 
         this.guildManager.deleteGuild(plugin, guild);
 
-        Formatter formatter = GuildPlaceholders.getOrInstallSimplePlaceholders(plugin)
+        Formatter formatter = placeholdersService.getSimpleGuildPlaceholders()
                 .property("admin", sender::getName)
                 .property("player", sender::getName)
                 .toFormatter(guild);

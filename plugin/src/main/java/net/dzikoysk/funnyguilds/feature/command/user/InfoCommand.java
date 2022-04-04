@@ -5,7 +5,6 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
-import net.dzikoysk.funnyguilds.feature.placeholders.GuildPlaceholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -14,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 import panda.std.Pair;
+import panda.std.stream.PandaStream;
 import panda.utilities.text.Formatter;
 
 @FunnyComponent
@@ -39,17 +39,16 @@ public final class InfoCommand extends AbstractFunnyCommand {
                 .orThrow(() -> new ValidationException(messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
-        Formatter formatter = GuildPlaceholders.getOrInstallAllPlaceholders(this.plugin)
+
+        Formatter formatter = placeholdersService.getGuildPlaceholders()
                 .toFormatter(guild);
 
-        for (String messageLine : messages.infoList) {
-            messageLine = formatter.format(messageLine);
-            messageLine = GuildPlaceholders.getOrInstallAlliesEnemies(this.plugin).format(messageLine, guild);
-            messageLine = GuildPlaceholders.getOrInstallGuildMembers(this.plugin)
-                    .format(messageLine, Pair.of(ChatUtils.getLastColorBefore(messageLine, "{MEMBERS}"), guild));
-
-            sendMessage(sender, (messageLine));
-        }
+        PandaStream.of(messages.infoList)
+                .map(formatter::format)
+                .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().format(line, guild))
+                .map(line -> placeholdersService.getGuildMembersPlaceholders()
+                        .format(line, Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild)))
+                .forEach(sender::sendMessage);
     }
 
 }

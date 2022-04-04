@@ -16,7 +16,7 @@ public class Placeholder<T> {
     }
 
     public String get(T data) {
-        return Objects.toString(this.getRaw(data));
+        return Objects.toString(this.getRaw(data), "");
     }
 
 }

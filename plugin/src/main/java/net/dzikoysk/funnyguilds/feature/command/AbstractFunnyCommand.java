@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
+import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
@@ -51,6 +52,8 @@ public abstract class AbstractFunnyCommand {
     public RegionManager regionManager;
     @Inject
     public IndividualPrefixManager individualPrefixManager;
+    @Inject
+    public PlaceholdersService placeholdersService;
 
     protected void sendMessage(CommandSender sender, String message) {
         ChatUtils.sendMessage(sender, message);
