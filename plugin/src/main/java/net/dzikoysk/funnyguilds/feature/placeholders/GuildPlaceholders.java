@@ -73,7 +73,9 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                 long now = System.currentTimeMillis();
                 long protectionEndTime = guild.getProtection();
 
-                return protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now);
+                return protectionEndTime < now
+                        ? "Brak"
+                        : TimeUtils.getDurationBreakdown(protectionEndTime - now);
             };
 
             GUILD_ALL = getOrInstallSimplePlaceholders(plugin)
