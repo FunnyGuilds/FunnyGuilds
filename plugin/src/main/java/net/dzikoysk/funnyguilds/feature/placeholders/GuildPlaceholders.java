@@ -129,6 +129,7 @@ public class GuildPlaceholders extends Placeholders<Guild, GuildPlaceholders> {
                                     ? String.valueOf(rank.getPosition(DefaultTops.GUILD_AVG_POINTS_TOP))
                                     : messages.minMembersToIncludeNoValue,
                             () -> messages.minMembersToIncludeNoValue)
+                    //TODO total-points -> points (I know this will break up backwards compatibility so I'm not doing it now)
                     .property("total-points", (guild, rank) -> rank.getPoints(), () -> 0)
                     .property("avg-points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
                     .property("points", (guild, rank) -> rank.getAveragePoints(), () -> 0)
