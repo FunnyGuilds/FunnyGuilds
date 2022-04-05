@@ -49,8 +49,9 @@ public class PlaceholdersService {
     private final GuildRankManager guildRankManager;
 
     private SimplePlaceholders<Object> simplePlaceholders;
-    private SimplePlaceholders<OffsetDateTime> timePlaceholders;
     private SimplePlaceholders<String> onlinePlaceholders;
+
+    private OffsetDateTimePlaceholders timePlaceholders;
 
     private UserPlaceholders userPlaceholders;
     private UserPlaceholders playerPlaceholders;
@@ -111,15 +112,15 @@ public class PlaceholdersService {
                 .property("guilds", this.guildManager::countGuilds);
     }
 
-    public SimplePlaceholders<OffsetDateTime> getTimePlaceholders() {
+    public OffsetDateTimePlaceholders getTimePlaceholders() {
         if (this.timePlaceholders == null) {
             throw new IllegalStateException("Time placeholders are not installed");
         }
         return this.timePlaceholders;
     }
 
-    public SimplePlaceholders<OffsetDateTime> installTimePlaceholders() {
-        return this.timePlaceholders = new SimplePlaceholders<OffsetDateTime>()
+    public OffsetDateTimePlaceholders installTimePlaceholders() {
+        return this.timePlaceholders = new OffsetDateTimePlaceholders()
                 .timeProperty("hour", OffsetDateTime::getHour)
                 .timeProperty("minute", OffsetDateTime::getMinute)
                 .timeProperty("second", OffsetDateTime::getSecond)

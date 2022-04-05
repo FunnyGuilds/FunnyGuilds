@@ -10,7 +10,6 @@ import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
 import panda.std.Option;
-import panda.std.stream.PandaStream;
 import panda.utilities.text.Formatter;
 
 public abstract class Placeholders<T, P extends Placeholders<T, P>> {
@@ -68,14 +67,13 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
     public <M> P map(Placeholders<M, ?> toMap, Function<String, String> nameMapper, BiFunction<T, Placeholder<M>, Object> dataMapper) {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
-        PandaStream.of(toMap.getPlaceholders().entrySet())
-                .forEach(entry ->
-                        copy.placeholders.put(nameMapper.apply(entry.getKey()), new Placeholder<>(data -> dataMapper.apply(data, entry.getValue()))));
+        toMap.getPlaceholders().forEach((key, placeholder) ->
+                copy.placeholders.put(nameMapper.apply(key), new Placeholder<>(data -> dataMapper.apply(data, placeholder))));
         return copy;
     }
 
     public <M> P map(Placeholders<M, ?> toMap, Supplier<M> dataSupplier, Function<String, String> nameMapper) {
-        return this.map(toMap,  nameMapper, (data, placeholder) -> placeholder.getRaw(dataSupplier.get()));
+        return this.map(toMap, nameMapper, (data, placeholder) -> placeholder.getRaw(dataSupplier.get()));
     }
 
     public <M> P map(Placeholders<M, ?> toMap, Supplier<M> dataSupplier) {
