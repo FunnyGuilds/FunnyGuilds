@@ -98,7 +98,7 @@ public class PlaceholdersService {
 
     public SimplePlaceholders<Object> getSimplePlaceholders() {
         if (this.simplePlaceholders == null) {
-            throw new IllegalArgumentException("Simple placeholders are not installed");
+            throw new IllegalStateException("Simple placeholders are not installed");
         }
         return this.simplePlaceholders;
     }
@@ -113,7 +113,7 @@ public class PlaceholdersService {
 
     public SimplePlaceholders<OffsetDateTime> getTimePlaceholders() {
         if (this.timePlaceholders == null) {
-            throw new IllegalArgumentException("Time placeholders are not installed");
+            throw new IllegalStateException("Time placeholders are not installed");
         }
         return this.timePlaceholders;
     }
@@ -132,7 +132,7 @@ public class PlaceholdersService {
 
     public SimplePlaceholders<String> getOnlinePlaceholders() {
         if (this.onlinePlaceholders == null) {
-            throw new IllegalArgumentException("Online placeholders are not installed");
+            throw new IllegalStateException("Online placeholders are not installed");
         }
         return this.onlinePlaceholders;
     }
@@ -145,7 +145,7 @@ public class PlaceholdersService {
 
     public UserPlaceholders getUserPlaceholders() {
         if (this.userPlaceholders == null) {
-            throw new IllegalArgumentException("User placeholders are not installed");
+            throw new IllegalStateException("User placeholders are not installed");
         }
         return this.userPlaceholders;
     }
@@ -172,7 +172,7 @@ public class PlaceholdersService {
 
     public UserPlaceholders getPlayerPlaceholders() {
         if (this.playerPlaceholders == null) {
-            throw new IllegalArgumentException("Player placeholders are not installed");
+            throw new IllegalStateException("Player placeholders are not installed");
         }
         return this.playerPlaceholders;
     }
@@ -213,7 +213,7 @@ public class PlaceholdersService {
 
     public GuildPlaceholders getSimpleGuildPlaceholders() {
         if (this.simpleGuildPlaceholders == null) {
-            throw new IllegalArgumentException("Simple guild placeholders are not installed");
+            throw new IllegalStateException("Simple guild placeholders are not installed");
         }
         return this.simpleGuildPlaceholders;
     }
@@ -227,7 +227,7 @@ public class PlaceholdersService {
 
     public GuildPlaceholders getGuildPlaceholders() {
         if (this.guildPlaceholders == null) {
-            throw new IllegalArgumentException("Guild placeholders are not installed");
+            throw new IllegalStateException("Guild placeholders are not installed");
         }
         return this.guildPlaceholders;
     }
