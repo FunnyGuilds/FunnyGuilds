@@ -4,7 +4,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '7.1.2'
     id 'maven-publish'
     id 'checkstyle'
-    id 'org.openrewrite.rewrite' version '5.19.0'
+    id 'org.openrewrite.rewrite' version '5.19.1'
 }
 
 rewrite {
