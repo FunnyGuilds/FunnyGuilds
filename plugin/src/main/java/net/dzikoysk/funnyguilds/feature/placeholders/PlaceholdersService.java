@@ -133,8 +133,8 @@ public class PlaceholdersService {
 
     public SimplePlaceholders<String> installOnlinePlaceholders() {
         return this.onlinePlaceholders = new SimplePlaceholders<String>()
-                .raw("<online>", () -> ChatColor.GREEN)
-                .raw("</online>", end -> end);
+                .property("<online>", () -> ChatColor.GREEN)
+                .property("</online>", end -> end);
     }
 
     public UserPlaceholders getUserPlaceholders() {
@@ -339,9 +339,9 @@ public class PlaceholdersService {
         return this.tablistPlaceholders = new UserPlaceholders()
                 .map(this.simplePlaceholders, () -> null)
                 .map(this.timePlaceholders, () -> OffsetDateTime.now().plusHours(config.timeOffset))
-                .raw(this.userPlaceholders.getPlaceholders())
-                .raw(this.playerPlaceholders.getPlaceholders())
-                .map(this.guildPlaceholders, name -> "{G-" + name.substring(1), (user, placeholder) ->
+                .property(this.userPlaceholders.getPlaceholders())
+                .property(this.playerPlaceholders.getPlaceholders())
+                .map(this.guildPlaceholders, name -> "G-" + name, (user, placeholder) ->
                         user.getGuild()
                                 .map(placeholder::getRaw)
                                 .orElseGet(() -> placeholder instanceof FallbackPlaceholder

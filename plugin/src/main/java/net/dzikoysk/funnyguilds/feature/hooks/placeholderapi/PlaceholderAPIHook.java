@@ -60,7 +60,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             User user = userOption.get();
 
             String value = this.plugin.getPlaceholdersService().getTablistPlaceholders()
-                    .getPlaceholderByProperty(identifier.toUpperCase())
+                    .getPlaceholder(identifier)
                     .map(placeholder -> placeholder.get(user))
                     .orNull();
             if (value != null) {

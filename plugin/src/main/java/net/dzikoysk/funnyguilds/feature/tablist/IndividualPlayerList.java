@@ -149,7 +149,7 @@ public class IndividualPlayerList {
         }
         Player player = playerOption.get();
 
-        formatted = FunnyGuilds.getInstance().getPlaceholdersService().getTablistPlaceholders().format(formatted, this.user);
+        formatted = FunnyGuilds.getInstance().getPlaceholdersService().getTablistPlaceholders().formatVariable(formatted, this.user);
         formatted = ChatUtils.colored(formatted);
         formatted = HookUtils.replacePlaceholders(player, formatted);
 
