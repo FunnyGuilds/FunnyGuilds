@@ -4,7 +4,7 @@ import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils
-import net.dzikoysk.funnyguilds.user.FakeUserProfile
+import net.dzikoysk.funnyguilds.user.profile.FakeUserProfile
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.junit.jupiter.api.BeforeEach

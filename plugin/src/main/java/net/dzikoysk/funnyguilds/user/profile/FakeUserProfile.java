@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.user;
+package net.dzikoysk.funnyguilds.user.profile;
 
 import java.util.Arrays;
 import java.util.HashSet;
