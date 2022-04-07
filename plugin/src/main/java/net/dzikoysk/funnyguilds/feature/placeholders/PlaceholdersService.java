@@ -78,6 +78,8 @@ public class PlaceholdersService {
         this.guildManager = plugin.getGuildManager();
         this.userRankManager = plugin.getUserRankManager();
         this.guildRankManager = plugin.getGuildRankManager();
+
+        this.installPlaceholders();
     }
 
     public void installPlaceholders() {
@@ -98,9 +100,6 @@ public class PlaceholdersService {
     }
 
     public SimplePlaceholders<Object> getSimplePlaceholders() {
-        if (this.simplePlaceholders == null) {
-            throw new IllegalStateException("Simple placeholders are not installed");
-        }
         return this.simplePlaceholders;
     }
 
@@ -113,9 +112,6 @@ public class PlaceholdersService {
     }
 
     public OffsetDateTimePlaceholders getTimePlaceholders() {
-        if (this.timePlaceholders == null) {
-            throw new IllegalStateException("Time placeholders are not installed");
-        }
         return this.timePlaceholders;
     }
 
@@ -132,9 +128,6 @@ public class PlaceholdersService {
     }
 
     public SimplePlaceholders<String> getOnlinePlaceholders() {
-        if (this.onlinePlaceholders == null) {
-            throw new IllegalStateException("Online placeholders are not installed");
-        }
         return this.onlinePlaceholders;
     }
 
@@ -145,9 +138,6 @@ public class PlaceholdersService {
     }
 
     public UserPlaceholders getUserPlaceholders() {
-        if (this.userPlaceholders == null) {
-            throw new IllegalStateException("User placeholders are not installed");
-        }
         return this.userPlaceholders;
     }
 
@@ -172,9 +162,6 @@ public class PlaceholdersService {
     }
 
     public UserPlaceholders getPlayerPlaceholders() {
-        if (this.playerPlaceholders == null) {
-            throw new IllegalStateException("Player placeholders are not installed");
-        }
         return this.playerPlaceholders;
     }
 
@@ -213,9 +200,6 @@ public class PlaceholdersService {
     }
 
     public GuildPlaceholders getSimpleGuildPlaceholders() {
-        if (this.simpleGuildPlaceholders == null) {
-            throw new IllegalStateException("Simple guild placeholders are not installed");
-        }
         return this.simpleGuildPlaceholders;
     }
 
@@ -227,9 +211,6 @@ public class PlaceholdersService {
     }
 
     public GuildPlaceholders getGuildPlaceholders() {
-        if (this.guildPlaceholders == null) {
-            throw new IllegalStateException("Guild placeholders are not installed");
-        }
         return this.guildPlaceholders;
     }
 
@@ -316,9 +297,6 @@ public class PlaceholdersService {
     }
 
     public GuildPlaceholders getGuildAlliesEnemiesPlaceholders() {
-        if (this.guildAlliesEnemiesPlaceholders == null) {
-            throw new IllegalStateException("Guild enemies & allies placeholders are not installed");
-        }
         return this.guildAlliesEnemiesPlaceholders;
     }
 
@@ -339,9 +317,6 @@ public class PlaceholdersService {
     }
 
     public SimplePlaceholders<Pair<String, Guild>> getGuildMembersPlaceholders() {
-        if (this.guildMembersColorContextPlaceholders == null) {
-            throw new IllegalStateException("Guild members color context placeholders are not installed");
-        }
         return this.guildMembersColorContextPlaceholders;
     }
 
@@ -357,9 +332,6 @@ public class PlaceholdersService {
     }
 
     public UserPlaceholders getTablistPlaceholders() {
-        if (this.tablistPlaceholders == null) {
-            throw new IllegalStateException("Tablist placeholders are not installed");
-        }
         return this.tablistPlaceholders;
     }
 
