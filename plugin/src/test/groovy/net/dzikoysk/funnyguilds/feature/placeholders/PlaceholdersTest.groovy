@@ -55,19 +55,19 @@ class PlaceholdersTest extends FunnyGuildsSpec {
 
         def text1 = "§7{MEMBERS}"
         text1 = placeholdersService.guildMembersPlaceholders
-                .formatVariable(text1, Pair.of(ChatUtils.getLastColorBefore(text1, "{MEMBERS}"), guild))
+                .formatVariables(text1, Pair.of(ChatUtils.getLastColorBefore(text1, "{MEMBERS}"), guild))
 
         assertEquals '§7user1, §auser2§7, user3', text1
 
         def text2 = "§c{MEMBERS}"
         text2 = placeholdersService.guildMembersPlaceholders
-                .formatVariable(text2, Pair.of(ChatUtils.getLastColorBefore(text2, "{MEMBERS}"), guild))
+                .formatVariables(text2, Pair.of(ChatUtils.getLastColorBefore(text2, "{MEMBERS}"), guild))
 
         assertEquals '§cuser1, §auser2§c, user3', text2
 
         def text3 = "§a{MEMBERS}"
         text3 = placeholdersService.guildMembersPlaceholders
-                .formatVariable(text3, Pair.of(ChatUtils.getLastColorBefore(text3, "{MEMBERS}"), guild))
+                .formatVariables(text3, Pair.of(ChatUtils.getLastColorBefore(text3, "{MEMBERS}"), guild))
 
         assertEquals '§auser1, §auser2§a, user3', text3
     }

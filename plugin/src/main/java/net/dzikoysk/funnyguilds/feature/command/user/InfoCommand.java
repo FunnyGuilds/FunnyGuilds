@@ -41,13 +41,13 @@ public final class InfoCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(tag);
 
         Formatter formatter = placeholdersService.getGuildPlaceholders()
-                .toVariableFormatter(guild);
+                .toVariablesFormatter(guild);
 
         PandaStream.of(messages.infoList)
                 .map(formatter::format)
-                .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().formatVariable(line, guild))
+                .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().formatVariables(line, guild))
                 .map(line -> placeholdersService.getGuildMembersPlaceholders()
-                        .toVariableFormatter(Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild))
+                        .toVariablesFormatter(Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild))
                         .format(line))
                 .forEach(sender::sendMessage);
     }

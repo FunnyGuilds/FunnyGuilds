@@ -64,13 +64,27 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         return this.map(toMap, dataSupplier, name -> name);
     }
 
+    /**
+     * Format text with raw placeholders
+     *
+     * @param text text to format
+     * @param data data to use to formatting
+     * @return formatted text
+     */
     public String format(String text, T data) {
         return this.toFormatter(data)
                 .format(text);
     }
 
-    public String formatVariable(String text, T data) {
-        return this.toVariableFormatter(data)
+    /**
+     * Format text with variable format placeholders (e.g. {NAME})
+     *
+     * @param text text to format
+     * @param data data to use to formatting
+     * @return formatted text
+     */
+    public String formatVariables(String text, T data) {
+        return this.toVariablesFormatter(data)
                 .format(text);
     }
 
@@ -80,7 +94,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         return formatter;
     }
 
-    public Formatter toVariableFormatter(T data) {
+    public Formatter toVariablesFormatter(T data) {
         Formatter formatter = new Formatter();
         placeholders.forEach((key, placeholder) -> formatter.register("{" + key.toUpperCase() + "}", placeholder.get(data)));
         return formatter;

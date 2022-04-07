@@ -70,15 +70,15 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
         PlaceholdersService placeholdersService = this.plugin.getPlaceholdersService();
 
         Formatter formatter = placeholdersService.getGuildPlaceholders()
-                .toVariableFormatter(guild);
+                .toVariablesFormatter(guild);
 
         holo.appendTexts(PandaStream.of(holoConfig.displayedLines)
                 .map(formatter::format)
                 .map(ChatUtils::colored)
                 .map(formatter::format)
-                .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().formatVariable(line, guild))
+                .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().formatVariables(line, guild))
                 .map(line -> placeholdersService.getGuildMembersPlaceholders()
-                        .toVariableFormatter(Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild))
+                        .toVariablesFormatter(Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild))
                         .format(line))
                 .toList());
 
