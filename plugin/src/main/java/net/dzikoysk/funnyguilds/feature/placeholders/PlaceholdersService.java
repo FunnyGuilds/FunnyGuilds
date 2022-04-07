@@ -166,7 +166,7 @@ public class PlaceholdersService {
     }
 
     public UserPlaceholders installPlayerPlaceholders() {
-        this.playerPlaceholders = new UserPlaceholders()
+        return this.playerPlaceholders = new UserPlaceholders()
                 .playerOptionProperty("world", playerOption -> playerOption
                         .map(Player::getWorld)
                         .map(World::getName)
@@ -174,6 +174,12 @@ public class PlaceholdersService {
                 .playerOptionProperty("online", playerOption -> playerOption
                         .map(player -> Bukkit.getOnlinePlayers().stream().filter(player::canSee).count())
                         .orElseGet(0L));
+    }
+
+    public UserPlaceholders installPlayerHooksPlaceholders() {
+        if (this.playerPlaceholders == null) {
+            installPlayerPlaceholders();
+        }
 
         if (HookManager.WORLD_GUARD.isPresent()) {
             String wgRegionNoValue = messages.wgRegionNoValue;

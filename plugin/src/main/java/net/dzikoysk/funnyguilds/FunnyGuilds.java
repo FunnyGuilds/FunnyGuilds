@@ -335,7 +335,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.hookManager.setupHooks();
         this.hookManager.init();
 
-        this.placeholdersService.installPlaceholders();
+        this.placeholdersService.installPlayerHooksPlaceholders();
 
         if (MinecraftServerUtils.getReloadCount() > 0) {
             Bukkit.broadcast(ChatUtils.colored(messageConfiguration.reloadWarn), "funnyguilds.admin");

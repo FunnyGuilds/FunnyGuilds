@@ -48,6 +48,10 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         return copy;
     }
 
+    public P property(P placeholders) {
+        return this.property(placeholders.placeholders);
+    }
+
     public <M> P map(Placeholders<M, ?> toMap, Function<String, String> nameMapper, BiFunction<T, Placeholder<M>, Object> dataMapper) {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
