@@ -46,15 +46,6 @@ public abstract class Rank<T extends MutableEntity> {
     @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public abstract int getPosition();
 
-    /**
-     * Set player position in default top.
-     *
-     * @deprecated for removal in the future, in favour of {@link Rank#setPosition(String, int)}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    public abstract void setPosition(int position);
-
     public abstract int getPoints();
 
     public abstract int getKills();

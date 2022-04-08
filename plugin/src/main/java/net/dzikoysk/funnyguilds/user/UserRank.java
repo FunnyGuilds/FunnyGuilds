@@ -34,16 +34,6 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
         return this.getPosition(DefaultTops.USER_POINTS_TOP);
     }
 
-    /**
-     * @deprecated for removal in the future, in favour of {@link Rank#setPosition(String, int)}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    @Override
-    public void setPosition(int position) {
-        this.setPosition(DefaultTops.USER_POINTS_TOP, position);
-    }
-
     @Override
     public int getPoints() {
         return this.points;
