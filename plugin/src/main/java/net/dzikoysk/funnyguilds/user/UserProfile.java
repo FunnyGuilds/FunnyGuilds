@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.user.profile;
+package net.dzikoysk.funnyguilds.user;
 
 import net.dzikoysk.funnyguilds.shared.Position;
 

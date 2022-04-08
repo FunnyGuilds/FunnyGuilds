@@ -8,11 +8,11 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.user.BukkitUserProfile;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
 import net.dzikoysk.funnyguilds.user.UserManager;
-import net.dzikoysk.funnyguilds.user.profile.BukkitUserProfile;
-import net.dzikoysk.funnyguilds.user.profile.UserProfile;
+import net.dzikoysk.funnyguilds.user.UserProfile;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 

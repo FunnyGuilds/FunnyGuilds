@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.user.profile;
+package net.dzikoysk.funnyguilds.user;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
