@@ -12,6 +12,9 @@ public class Placeholder<T> {
     }
 
     public Object getRaw(T data) {
+        if (data == null) {
+            return null;
+        }
         return this.resolver.resolve(data);
     }
 

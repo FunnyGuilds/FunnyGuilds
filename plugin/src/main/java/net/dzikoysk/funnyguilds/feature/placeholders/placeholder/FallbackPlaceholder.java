@@ -13,6 +13,14 @@ public class FallbackPlaceholder<T> extends Placeholder<T> {
         this.fallbackResolver = fallbackResolver;
     }
 
+    @Override
+    public Object getRaw(T data) {
+        if (data == null) {
+            return this.getRawFallback();
+        }
+        return super.getRaw(data);
+    }
+
     public Object getRawFallback() {
         return this.fallbackResolver.resolve();
     }

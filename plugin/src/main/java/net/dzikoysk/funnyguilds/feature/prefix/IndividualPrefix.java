@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
-import panda.utilities.text.Formatter;
 
 public class IndividualPrefix {
 
@@ -245,9 +244,9 @@ public class IndividualPrefix {
     }
 
     public static String preparePrefix(String text, Guild guild) {
-        Formatter formatter = FunnyGuilds.getInstance().getPlaceholdersService().getSimpleGuildPlaceholders()
-                .toVariablesFormatter(guild);
-        String formatted = formatter.format(text);
+        String formatted = FunnyGuilds.getInstance().getGuildPlaceholdersService().getSimple()
+                .map(placeholders -> placeholders.format(text, guild))
+                .orElseGet(text);
 
         if (formatted.length() > 16) {
             formatted = formatted.substring(0, 16);

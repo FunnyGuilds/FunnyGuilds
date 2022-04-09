@@ -6,15 +6,18 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
-import net.dzikoysk.funnyguilds.feature.placeholders.LegacyPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.DefaultPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
+import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
@@ -52,8 +55,15 @@ public abstract class AbstractFunnyCommand {
     public RegionManager regionManager;
     @Inject
     public IndividualPrefixManager individualPrefixManager;
+
     @Inject
-    public LegacyPlaceholdersService placeholdersService;
+    public DefaultPlaceholdersService defaultPlaceholdersService;
+    @Inject
+    public TimePlaceholdersService timePlaceholdersService;
+    @Inject
+    public UserPlaceholdersService userPlaceholdersService;
+    @Inject
+    public GuildPlaceholdersService guildPlaceholdersService;
 
     protected void sendMessage(CommandSender sender, String message) {
         ChatUtils.sendMessage(sender, message);

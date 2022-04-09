@@ -9,14 +9,56 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.placeholders.AbstractPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.DefaultPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.SimplePlaceholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
+import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.user.UserUtils;
+import panda.std.Option;
+import panda.std.Pair;
 import panda.utilities.StringUtils;
 
 public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild, GuildPlaceholders> {
+
+    public static final SimplePlaceholders<Pair<String, Guild>> GUILD_MEMBERS_COLOR_CONTEXT = new SimplePlaceholders<Pair<String, Guild>>()
+            .property("members", pair -> {
+                String text = JOIN_OR_DEFAULT.apply(UserUtils.getOnlineNames(pair.getSecond().getMembers()), "");
+
+                return !text.contains("<online>")
+                        ? text
+                        : DefaultPlaceholdersService.ONLINE.toFormatter(pair.getFirst()).format(text);
+            });
+
+    private static Option<GuildPlaceholders> SIMPLE = Option.none();
+
+    @Override
+    public String format(String text, Guild guild) {
+        text = super.format(text, guild);
+        text = GUILD_MEMBERS_COLOR_CONTEXT.toVariablesFormatter(Pair.of(ChatUtils.getLastColorBefore(text, "{MEMBERS}"), guild))
+                .format(text);
+        return text;
+    }
+
+    public Option<GuildPlaceholders> getSimple() {
+        return SIMPLE;
+    }
+
+    public static GuildPlaceholders createSimplePlaceholders(FunnyGuilds plugin) {
+        MessageConfiguration messages = plugin.getMessageConfiguration();
+
+        GuildPlaceholders placeholders = new GuildPlaceholders()
+                .property("name", Guild::getName, () -> messages.gNameNoValue)
+                .property("guild", Guild::getName, () -> messages.gNameNoValue)
+                .property("tag", Guild::getTag, () -> messages.gTagNoValue);
+        SIMPLE = Option.of(placeholders);
+
+        return placeholders;
+    }
 
     public static GuildPlaceholders createGuildPlaceholders(FunnyGuilds plugin) {
         PluginConfiguration config = plugin.getPluginConfiguration();
@@ -102,6 +144,23 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                 .property("avg-logouts", (guild, rank) -> rank.getAverageLogouts(), () -> 0)
                 .property("kdr", (guild, rank) -> String.format(Locale.US, "%.2f", rank.getKDR()), () -> 0.0)
                 .property("avg-kdr", (guild, rank) -> String.format(Locale.US, "%.2f", rank.getAverageKDR()), () -> 0.0);
+    }
+
+    public static GuildPlaceholders createAlliesEnemiesPlaceholders(FunnyGuilds plugin) {
+        MessageConfiguration messages = plugin.getMessageConfiguration();
+        return new GuildPlaceholders()
+                .property("allies",
+                        guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getAllies()), messages.alliesNoValue),
+                        () -> messages.alliesNoValue)
+                .property("allies-tags",
+                        guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue),
+                        () -> messages.alliesNoValue)
+                .property("enemies",
+                        guild -> JOIN_OR_DEFAULT.apply(Entity.names(guild.getEnemies()), messages.enemiesNoValue),
+                        () -> messages.enemiesNoValue)
+                .property("enemies-tags",
+                        guild -> JOIN_OR_DEFAULT.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue),
+                        () -> messages.enemiesNoValue);
     }
 
 }

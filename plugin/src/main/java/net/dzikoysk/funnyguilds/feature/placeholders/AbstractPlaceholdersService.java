@@ -15,7 +15,7 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
 
     protected final Map<String, P> placeholders = new ConcurrentHashMap<>();
 
-    public void resolve(JavaPlugin plugin, String name, P placeholders) {
+    public void register(JavaPlugin plugin, String name, P placeholders) {
         this.placeholders.put(plugin.getName().toLowerCase() + "_" + name.toLowerCase(), placeholders);
     }
 
@@ -28,6 +28,9 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
     }
 
     protected String format(P placeholders, String text, T data) {
+        if (placeholders == null) {
+            return text;
+        }
         return placeholders.formatVariables(text, data);
     }
 

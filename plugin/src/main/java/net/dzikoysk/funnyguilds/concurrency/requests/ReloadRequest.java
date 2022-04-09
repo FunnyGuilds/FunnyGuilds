@@ -35,8 +35,6 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
             TablistConfiguration tablistConfig = this.plugin.getTablistConfiguration();
             UserManager userManager = this.plugin.getUserManager();
 
-            this.plugin.getPlaceholdersService().installPlaceholders();
-
             PandaStream.of(Bukkit.getOnlinePlayers())
                     .flatMap(userManager::findByPlayer)
                     .forEach(user -> {

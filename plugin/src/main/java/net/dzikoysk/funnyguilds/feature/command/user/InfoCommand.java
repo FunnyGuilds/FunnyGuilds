@@ -6,15 +6,12 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.Option;
-import panda.std.Pair;
 import panda.std.stream.PandaStream;
-import panda.utilities.text.Formatter;
 
 @FunnyComponent
 public final class InfoCommand extends AbstractFunnyCommand {
@@ -40,15 +37,8 @@ public final class InfoCommand extends AbstractFunnyCommand {
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
 
-        Formatter formatter = placeholdersService.getGuildPlaceholders()
-                .toVariablesFormatter(guild);
-
         PandaStream.of(messages.infoList)
-                .map(formatter::format)
-                .map(line -> placeholdersService.getGuildAlliesEnemiesPlaceholders().formatVariables(line, guild))
-                .map(line -> placeholdersService.getGuildMembersPlaceholders()
-                        .toVariablesFormatter(Pair.of(ChatUtils.getLastColorBefore(line, "{MEMBERS}"), guild))
-                        .format(line))
+                .map(line -> guildPlaceholdersService.format(line, guild))
                 .forEach(sender::sendMessage);
     }
 
