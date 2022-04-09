@@ -1,14 +1,22 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiFunction;
+import org.bukkit.plugin.java.JavaPlugin;
+import panda.utilities.text.Joiner;
 
 public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P>> implements PlaceholdersService<T> {
 
+    protected static final BiFunction<Collection<String>, String, String> JOIN_OR_DEFAULT = (list, listNoValue) -> list.isEmpty()
+            ? listNoValue
+            : Joiner.on(", ").join(list).toString();
+
     protected final Map<String, P> placeholders = new ConcurrentHashMap<>();
 
-    public void resolve(String text, P placeholders) {
-        this.placeholders.put(text, placeholders);
+    public void resolve(JavaPlugin plugin, String name, P placeholders) {
+        this.placeholders.put(plugin.getName().toLowerCase() + "_" + name.toLowerCase(), placeholders);
     }
 
     @Override
