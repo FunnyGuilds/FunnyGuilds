@@ -11,7 +11,7 @@ public abstract class Rank<T extends MutableEntity> {
     protected final T entity;
     protected Map<String, Integer> position = new HashMap<>();
 
-    public Rank(T entity) {
+    protected Rank(T entity) {
         this.entity = entity;
     }
 
@@ -45,15 +45,6 @@ public abstract class Rank<T extends MutableEntity> {
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public abstract int getPosition();
-
-    /**
-     * Set player position in default top.
-     *
-     * @deprecated for removal in the future, in favour of {@link Rank#setPosition(String, int)}
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    public abstract void setPosition(int position);
 
     public abstract int getPoints();
 

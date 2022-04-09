@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
@@ -12,7 +13,6 @@ import net.dzikoysk.funnyguilds.feature.tablist.variable.VariableParsingResult;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -136,14 +136,7 @@ public class IndividualPlayerList {
     }
 
     private String putTop(String cell) {
-        String temp = RankUtils.parseTopPosition(this.user, cell);
-
-        temp = RankUtils.parseTop(this.user, temp);
-        if (enableLegacyPlaceholders) {
-            temp = RankUtils.parseRank(this.user, temp);
-        }
-
-        return temp;
+        return FunnyGuilds.getInstance().getRankPlaceholdersService().format(cell, this.user);
     }
 
     private String putVars(String cell) {
