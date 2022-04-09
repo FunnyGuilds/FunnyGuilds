@@ -30,18 +30,17 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         UserRankManager userRankManager = this.plugin.getUserRankManager();
         GuildRankManager guildRankManager = this.plugin.getGuildRankManager();
 
-        this.plugin.getPlaceholdersService().getTablistPlaceholders().getPlaceholders().forEach((name, placeholder) -> {
-            PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + name.toLowerCase(), event -> {
-                OfflinePlayer target = event.getOfflinePlayer();
-                if (target == null) {
-                    return StringUtils.EMPTY;
-                }
+        this.plugin.getTablistPlaceholdersService().getPlaceholdersEntries().forEach(entry ->
+                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + entry.getKey().toLowerCase(), event -> {
+                    OfflinePlayer target = event.getOfflinePlayer();
+                    if (target == null) {
+                        return StringUtils.EMPTY;
+                    }
 
-                return userManager.findByUuid(target.getUniqueId())
-                        .map(placeholder::get)
-                        .orElseGet("none");
-            });
-        });
+                    return userManager.findByUuid(target.getUniqueId())
+                            .map(user -> entry.getValue().get(user))
+                            .orElseGet("none");
+                }));
 
         Set<String> userTopIds = userRankManager.getTopIds();
         Set<String> guildTopIds = guildRankManager.getTopIds();

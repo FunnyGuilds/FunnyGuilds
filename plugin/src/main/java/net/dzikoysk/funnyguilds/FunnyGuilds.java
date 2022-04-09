@@ -3,6 +3,7 @@ package net.dzikoysk.funnyguilds;
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
+import java.time.OffsetDateTime;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -23,6 +24,7 @@ import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
+import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.validity.GuildValidationHandler;
 import net.dzikoysk.funnyguilds.feature.war.WarPacketCallbacks;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -132,6 +134,7 @@ public class FunnyGuilds extends JavaPlugin {
     private TimePlaceholdersService timePlaceholdersService;
     private UserPlaceholdersService userPlaceholdersService;
     private GuildPlaceholdersService guildPlaceholdersService;
+    private TablistPlaceholdersService tablistPlaceholdersService;
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
@@ -221,20 +224,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
 
-        this.defaultPlaceholdersService = new DefaultPlaceholdersService();
-        this.defaultPlaceholdersService.register(this, "simple", DefaultPlaceholdersService.createSimplePlaceholders(this));
-
-        this.timePlaceholdersService = new TimePlaceholdersService();
-        this.timePlaceholdersService.register(this, "time", TimePlaceholdersService.createTimePlaceholders());
-
-        this.userPlaceholdersService = new UserPlaceholdersService();
-        this.userPlaceholdersService.register(this, "player", UserPlaceholdersService.createPlayerPlaceholders(this));
-        this.userPlaceholdersService.register(this, "user", UserPlaceholdersService.createUserPlaceholders(this));
-
-        this.guildPlaceholdersService = new GuildPlaceholdersService();
-        this.guildPlaceholdersService.register(this, "simple", GuildPlaceholdersService.createSimplePlaceholders(this));
-        this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
-        this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
+        this.setupPlaceholdersService();
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -448,6 +438,33 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildEntityHelper.createGuildsEntities(this.guildManager);
     }
 
+    public void setupPlaceholdersService() {
+        this.defaultPlaceholdersService = new DefaultPlaceholdersService();
+        this.defaultPlaceholdersService.register(this, "simple", DefaultPlaceholdersService.createSimplePlaceholders(this));
+
+        this.timePlaceholdersService = new TimePlaceholdersService();
+        this.timePlaceholdersService.register(this, "time", TimePlaceholdersService.createTimePlaceholders());
+
+        this.userPlaceholdersService = new UserPlaceholdersService();
+        this.userPlaceholdersService.register(this, "player", UserPlaceholdersService.createPlayerPlaceholders(this));
+        this.userPlaceholdersService.register(this, "user", UserPlaceholdersService.createUserPlaceholders(this));
+
+        this.guildPlaceholdersService = new GuildPlaceholdersService();
+        this.guildPlaceholdersService.register(this, "simple", GuildPlaceholdersService.createSimplePlaceholders(this));
+        this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
+        this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
+
+        this.tablistPlaceholdersService = new TablistPlaceholdersService();
+        this.tablistPlaceholdersService.register(this, "default", this.defaultPlaceholdersService.getPlaceholdersMap(),
+                name -> name, (user, placeholder) -> placeholder.getRaw(null));
+        this.tablistPlaceholdersService.register(this, "time", this.timePlaceholdersService.getPlaceholdersMap(),
+                name -> name, (user, placeholder) -> placeholder.get(OffsetDateTime.now()));
+        this.tablistPlaceholdersService.register(this, "user", this.userPlaceholdersService.getPlaceholdersMap(),
+                name -> name, (user, placeholder) -> placeholder.get(user));
+        this.tablistPlaceholdersService.register(this, "guild", this.guildPlaceholdersService.getPlaceholdersMap(),
+                name -> "g-" + name, (user, placeholder) -> placeholder.get(user.getGuild().orNull()));
+    }
+
     public boolean isDisabling() {
         return this.isDisabling;
     }
@@ -550,6 +567,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public GuildPlaceholdersService getGuildPlaceholdersService() {
         return this.guildPlaceholdersService;
+    }
+
+    public TablistPlaceholdersService getTablistPlaceholdersService() {
+        return this.tablistPlaceholdersService;
     }
 
     public NmsAccessor getNmsAccessor() {

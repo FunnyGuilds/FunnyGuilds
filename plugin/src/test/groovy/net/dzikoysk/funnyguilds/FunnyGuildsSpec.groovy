@@ -43,8 +43,6 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected GuildRankManager guildRankManager
     protected RegionManager regionManager
 
-    protected LegacyPlaceholdersService placeholdersService
-
     @BeforeAll
     static void openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds.class)
@@ -69,11 +67,6 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getUserRankManager()).thenReturn(userRankManager)
         lenient().when(funnyGuilds.getGuildRankManager()).thenReturn(guildRankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
-
-        placeholdersService = new LegacyPlaceholdersService(funnyGuilds)
-        placeholdersService.installPlaceholders()
-
-        lenient().when(funnyGuilds.getPlaceholdersService()).thenReturn(placeholdersService)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)
         mockedBossBarProvider.when(() -> BossBarProvider.getBossBar(any(User.class))).thenReturn(null)

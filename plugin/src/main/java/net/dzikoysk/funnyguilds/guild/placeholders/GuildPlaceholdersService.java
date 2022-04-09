@@ -44,7 +44,7 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
         return text;
     }
 
-    public Option<GuildPlaceholders> getSimple() {
+    public Option<GuildPlaceholders> getSimplePlaceholders() {
         return SIMPLE;
     }
 

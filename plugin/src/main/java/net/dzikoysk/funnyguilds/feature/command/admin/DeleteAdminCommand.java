@@ -33,7 +33,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
 
         this.guildManager.deleteGuild(plugin, guild);
 
-        Formatter formatter = guildPlaceholdersService.getSimple()
+        Formatter formatter = guildPlaceholdersService.getSimplePlaceholders()
                 .map(placeholders -> placeholders
                         .property("admin", sender::getName)
                         .property("player", sender::getName)

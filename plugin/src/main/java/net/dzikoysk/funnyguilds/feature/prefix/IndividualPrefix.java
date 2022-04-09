@@ -244,7 +244,7 @@ public class IndividualPrefix {
     }
 
     public static String preparePrefix(String text, Guild guild) {
-        String formatted = FunnyGuilds.getInstance().getGuildPlaceholdersService().getSimple()
+        String formatted = FunnyGuilds.getInstance().getGuildPlaceholdersService().getSimplePlaceholders()
                 .map(placeholders -> placeholders.format(text, guild))
                 .orElseGet(text);
 
