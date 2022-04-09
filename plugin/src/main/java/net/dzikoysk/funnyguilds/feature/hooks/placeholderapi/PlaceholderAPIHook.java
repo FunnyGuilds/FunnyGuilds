@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
+import net.dzikoysk.funnyguilds.rank.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
@@ -42,10 +42,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
 
         private final FunnyGuilds plugin;
+        private final RankPlaceholdersService rankPlaceholdersService;
         private final String funnyguildsVersion;
 
         private FunnyGuildsPlaceholder(FunnyGuilds plugin) {
             this.plugin = plugin;
+            this.rankPlaceholdersService = plugin.getRankPlaceholdersService();
             this.funnyguildsVersion = plugin.getDescription().getVersion();
         }
 
@@ -67,12 +69,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             if (identifier.toLowerCase().contains("position-")) {
-                return RankUtils.parseTopPosition(plugin, user, "{" + identifier.toUpperCase() + "}");
+                return rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase() + "}", user);
             }
             else if (identifier.toLowerCase().contains("top-")) {
-                String temp = RankUtils.parseTop(plugin, user, "{" + identifier.toUpperCase() + "}");
+                String temp = rankPlaceholdersService.formatTop("{" + identifier.toUpperCase() + "}", user);
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
-                    temp = RankUtils.parseRank(plugin, user, temp);
+                    temp = rankPlaceholdersService.formatRank(temp, user);
                 }
                 return temp;
             }

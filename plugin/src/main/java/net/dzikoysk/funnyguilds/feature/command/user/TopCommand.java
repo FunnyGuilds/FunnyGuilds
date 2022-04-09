@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 
@@ -21,7 +20,7 @@ public final class TopCommand extends AbstractFunnyCommand {
         User targetUser = userManager.findByName(sender.getName()).orNull();
 
         for (String messageLine : messages.topList) {
-            String parsedRank = RankUtils.parseRank(plugin, targetUser, messageLine);
+            String parsedRank = rankPlaceholdersSerivce.format(messageLine, targetUser);
             sendMessage(sender, (parsedRank == null ? messageLine : parsedRank));
         }
     }

@@ -16,50 +16,60 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
-public class RankUtils {
+public class RankPlaceholdersService {
 
     private static final Pattern TOP_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)}");
     private static final Pattern TOP_POSITION_PATTERN = Pattern.compile("\\{(POSITION|G-POSITION)-([A-Za-z_]+)}");
     private static final Pattern LEGACY_TOP_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([0-9]+)}");
 
-    /**
-     * Parse top placeholders (PTOP/GTOP-type-x) in text
-     *
-     * @param targetUser user for which text will be parsed
-     * @param text       text to parse
-     * @return parsed text
-     */
-    public static String parseTop(FunnyGuilds plugin, @Nullable User targetUser, String text) {
-        return parseTop(
-                plugin.getPluginConfiguration(),
-                plugin.getTablistConfiguration(),
-                plugin.getMessageConfiguration(),
-                plugin.getUserRankManager(),
-                plugin.getGuildRankManager(),
-                targetUser,
-                text
-        );
+    private final FunnyGuilds plugin;
+
+    private final PluginConfiguration config;
+    private final MessageConfiguration messages;
+    private final TablistConfiguration tablistConfig;
+
+    private final UserRankManager userRankManager;
+    private final GuildRankManager guildRankManager;
+
+    public RankPlaceholdersService(FunnyGuilds plugin) {
+        this.plugin = plugin;
+
+        this.config = plugin.getPluginConfiguration();
+        this.messages = plugin.getMessageConfiguration();
+        this.tablistConfig = plugin.getTablistConfiguration();
+
+        this.userRankManager = plugin.getUserRankManager();
+        this.guildRankManager = plugin.getGuildRankManager();
     }
 
     /**
-     * Parse top placeholders (PTOP/GTOP-type-x) in text
+     * Format top and top position placeholders in text.
      *
-     * @param targetUser user for which text will be parsed
-     * @param text       text to parse
-     * @return parsed text
+     * @param text       text to format
+     * @param targetUser user for which text will be formatted
+     * @return formatted text
      */
-    public static String parseTop(
-            PluginConfiguration config,
-            TablistConfiguration tablistConfig,
-            MessageConfiguration messages,
-            UserRankManager userRankManager,
-            GuildRankManager guildRankManager,
-            @Nullable User targetUser,
-            String text
-    ) {
+    public String format(String text, User targetUser) {
+        text = formatTop(text, targetUser);
+        text = formatTopPosition(text, targetUser);
+        if (config.top.enableLegacyPlaceholders) {
+            text = formatRank(text, targetUser);
+        }
+        return text;
+    }
+
+    /**
+     * Format top placeholders (PTOP/GTOP-type-x) in text.
+     *
+     * @param text       text to format
+     * @param targetUser user for which text will be formatted
+     * @return formatted text
+     */
+    public String formatTop(String text, @Nullable User targetUser) {
         if (text == null) {
             return null;
         }
@@ -111,7 +121,7 @@ public class RankUtils {
                     topFormat = topFormat.replace("{VALUE}", topValue.toString());
                 }
 
-                return formatUserRank(config, text, "{PTOP-" + comparatorType + "-" + index + "}", user, topFormat);
+                return this.formatUserRank(text, "{PTOP-" + comparatorType + "-" + index + "}", user, topFormat);
             }
             else if (topType.equalsIgnoreCase("GTOP")) {
                 Option<GuildTop> guildTopOption = guildRankManager.getTop(comparatorType);
@@ -134,7 +144,7 @@ public class RankUtils {
                         : NumberRange.inRangeToString(topValue, valueFormatting));
                 topFormat = topFormat.replace("{VALUE}", topValue.toString());
 
-                return formatGuildRank(config, tablistConfig, text, "{GTOP-" + comparatorType + "-" + index + "}", targetUser, guild, topFormat);
+                return this.formatGuildRank(text, "{GTOP-" + comparatorType + "-" + index + "}", targetUser, guild, topFormat);
             }
         }
 
@@ -142,41 +152,69 @@ public class RankUtils {
     }
 
     /**
-     * Parse legacy top placeholders (PTOP/GTOP-x) in text
+     * Format top position placeholders (POSITION/G-POSITION-type) in text.
      *
-     * @param targetUser user for which text will be parsed
-     * @param text       text to parse
-     * @return parsed text
+     * @param text       text to format
+     * @param targetUser user for which text will be formatted
+     * @return formatted text
      */
-    @Deprecated
-    public static String parseRank(FunnyGuilds plugin, @Nullable User targetUser, String text) {
-        return parseRank(
-                plugin.getPluginConfiguration(),
-                plugin.getTablistConfiguration(),
-                plugin.getMessageConfiguration(),
-                plugin.getUserRankManager(),
-                plugin.getGuildRankManager(),
-                targetUser,
-                text
-        );
+    public String formatTopPosition(
+            String text,
+            @Nullable User targetUser
+    ) {
+        if (text == null) {
+            return null;
+        }
+
+        if (!text.contains("POSITION-")) {
+            return text;
+        }
+
+        Matcher matcher = TOP_POSITION_PATTERN.matcher(text);
+        if (matcher.find()) {
+            String positionType = matcher.group(1);
+            String comparatorType = matcher.group(2);
+
+            if (positionType.equalsIgnoreCase("POSITION")) {
+                if (targetUser == null) {
+                    return StringUtils.replace(text, "{POSITION}", "0");
+                }
+                return StringUtils.replace(text, "{POSITION-" + comparatorType + "}", Integer.toString(targetUser.getRank().getPosition(comparatorType)));
+            }
+            else if (positionType.equalsIgnoreCase("G-POSITION")) {
+                if (targetUser == null) {
+                    return StringUtils.replace(text, "{POSITION}", messages.minMembersToIncludeNoValue);
+                }
+
+                Option<Guild> guildOption = targetUser.getGuild();
+                if (guildOption.isEmpty()) {
+                    return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", messages.minMembersToIncludeNoValue);
+                }
+                Guild guild = guildOption.get();
+
+                return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", guildRankManager.isRankedGuild(guild)
+                        ? Integer.toString(guild.getRank().getPosition(comparatorType))
+                        : messages.minMembersToIncludeNoValue);
+            }
+        }
+
+        return text;
     }
 
+
+    // TODO Migrate all {PTOP/GTOP-x} placeholders to new {PTOP/GTOP-type-x} and remove this method
     /**
-     * Parse legacy top placeholders (PTOP/GTOP-x) in text
+     * Format legacy top placeholders (PTOP/GTOP-x) in text
      *
-     * @param targetUser user for which text will be parsed
-     * @param text       text to parse
-     * @return parsed text
+     * @param text       text to format
+     * @param targetUser user for which text will be formatted
+     * @return formatted text
      */
     @Deprecated
-    public static String parseRank(
-            PluginConfiguration config,
-            TablistConfiguration tablistConfig,
-            MessageConfiguration messages,
-            UserRankManager userRankManager,
-            GuildRankManager guildRankManager,
-            @Nullable User targetUser,
-            String text
+    @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
+    public String formatRank(
+            String text,
+            @Nullable User targetUser
     ) {
         if (text == null) {
             return null;
@@ -219,7 +257,7 @@ public class RankUtils {
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
-                return formatUserRank(config, text, "{PTOP-" + index + "}", user, pointsFormat);
+                return formatUserRank(text, "{PTOP-" + index + "}", user, pointsFormat);
             }
             else if (topType.equalsIgnoreCase("GTOP")) {
                 Option<Guild> guildOption = guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, index);
@@ -235,74 +273,14 @@ public class RankUtils {
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
-                return formatGuildRank(config, tablistConfig, text, "{GTOP-" + index + "}", targetUser, guild, pointsFormat);
+                return formatGuildRank(text, "{GTOP-" + index + "}", targetUser, guild, pointsFormat);
             }
         }
 
         return text;
     }
 
-    public static String parseTopPosition(
-            FunnyGuilds plugin,
-            @Nullable User targetUser,
-            String text
-    ) {
-        return parseTopPosition(
-                plugin.getPluginConfiguration(),
-                plugin.getMessageConfiguration(),
-                plugin.getGuildRankManager(),
-                targetUser,
-                text
-        );
-    }
-
-    public static String parseTopPosition(
-            PluginConfiguration config,
-            MessageConfiguration messages,
-            GuildRankManager guildRankManager,
-            @Nullable User targetUser,
-            String text
-    ) {
-        if (text == null) {
-            return null;
-        }
-
-        if (!text.contains("POSITION-")) {
-            return text;
-        }
-
-        Matcher matcher = TOP_POSITION_PATTERN.matcher(text);
-        if (matcher.find()) {
-            String positionType = matcher.group(1);
-            String comparatorType = matcher.group(2);
-
-            if (positionType.equalsIgnoreCase("POSITION")) {
-                if (targetUser == null) {
-                    return StringUtils.replace(text, "{POSITION}", "0");
-                }
-                return StringUtils.replace(text, "{POSITION-" + comparatorType + "}", Integer.toString(targetUser.getRank().getPosition(comparatorType)));
-            }
-            else if (positionType.equalsIgnoreCase("G-POSITION")) {
-                if (targetUser == null) {
-                    return StringUtils.replace(text, "{POSITION}", messages.minMembersToIncludeNoValue);
-                }
-
-                Option<Guild> guildOption = targetUser.getGuild();
-                if (guildOption.isEmpty()) {
-                    return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", messages.minMembersToIncludeNoValue);
-                }
-                Guild guild = guildOption.get();
-
-                return StringUtils.replace(text, "{G-POSITION-" + comparatorType + "}", guildRankManager.isRankedGuild(guild)
-                        ? Integer.toString(guild.getRank().getPosition(comparatorType))
-                        : messages.minMembersToIncludeNoValue);
-            }
-        }
-
-        return text;
-    }
-
-    private static String formatUserRank(PluginConfiguration config, String text, String placeholder, User user, String topFormat) {
+    private String formatUserRank(String text, String placeholder, User user, String topFormat) {
         boolean online = user.isOnline();
         if (online && config.ptopRespectVanish) {
             online = !user.isVanished();
@@ -311,7 +289,7 @@ public class RankUtils {
         return StringUtils.replace(text, placeholder, (online ? config.ptopOnline : config.ptopOffline) + user.getName() + topFormat);
     }
 
-    private static String formatGuildRank(PluginConfiguration config, TablistConfiguration tablistConfig, String text, String placeholder, @Nullable User targetUser, Guild guild, String topFormat) {
+    private String formatGuildRank(String text, String placeholder, @Nullable User targetUser, Guild guild, String topFormat) {
         String guildTag = guild.getTag();
         if (tablistConfig.playerListUseRelationshipColors) {
             guildTag = StringUtils.replace(config.prefixOther.getValue(), "{TAG}", guild.getTag());
@@ -331,9 +309,6 @@ public class RankUtils {
         }
 
         return StringUtils.replace(text, placeholder, guildTag + topFormat);
-    }
-
-    private RankUtils() {
     }
 
 }

@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.rank.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -51,6 +52,9 @@ public abstract class AbstractFunnyCommand {
     public RegionManager regionManager;
     @Inject
     public IndividualPrefixManager individualPrefixManager;
+
+    @Inject
+    public RankPlaceholdersService rankPlaceholdersSerivce;
 
     protected void sendMessage(CommandSender sender, String message) {
         ChatUtils.sendMessage(sender, message);

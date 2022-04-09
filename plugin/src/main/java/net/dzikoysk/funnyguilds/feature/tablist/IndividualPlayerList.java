@@ -13,7 +13,6 @@ import net.dzikoysk.funnyguilds.feature.tablist.variable.VariableParsingResult;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -137,16 +136,8 @@ public class IndividualPlayerList {
     }
 
     private String putTop(String cell) {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-
-        String temp = RankUtils.parseTopPosition(plugin, this.user, cell);
-
-        temp = RankUtils.parseTop(plugin, this.user, temp);
-        if (enableLegacyPlaceholders) {
-            temp = RankUtils.parseRank(plugin, this.user, temp);
-        }
-
-        return temp;
+        cell = FunnyGuilds.getInstance().getRankPlaceholdersService().format(cell, this.user);
+        return cell;
     }
 
     private String putVars(String cell) {
