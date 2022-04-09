@@ -14,9 +14,8 @@ public class UserRank extends Rank<User> implements Comparable<UserRank> {
     private int assists;
     private int logouts;
 
-    public UserRank(User user, int rankStart) {
+    UserRank(User user, int rankStart) {
         super(user);
-
         this.points = rankStart;
     }
 

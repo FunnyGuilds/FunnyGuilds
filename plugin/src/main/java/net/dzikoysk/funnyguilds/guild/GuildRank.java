@@ -7,7 +7,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 public class GuildRank extends Rank<Guild> implements Comparable<GuildRank> {
 
-    public GuildRank(Guild guild) {
+    GuildRank(Guild guild) {
         super(guild);
     }
 

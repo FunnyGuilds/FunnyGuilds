@@ -11,7 +11,7 @@ public abstract class Rank<T extends MutableEntity> {
     protected final T entity;
     protected Map<String, Integer> position = new HashMap<>();
 
-    public Rank(T entity) {
+    protected Rank(T entity) {
         this.entity = entity;
     }
 
