@@ -201,7 +201,6 @@ public class RankPlaceholdersService {
         return text;
     }
 
-
     // TODO Migrate all {PTOP/GTOP-x} placeholders to new {PTOP/GTOP-type-x} and remove this method
     /**
      * Format legacy top placeholders (PTOP/GTOP-x) in text
@@ -257,7 +256,7 @@ public class RankPlaceholdersService {
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
-                return formatUserRank(text, "{PTOP-" + index + "}", user, pointsFormat);
+                return this.formatUserRank(text, "{PTOP-" + index + "}", user, pointsFormat);
             }
             else if (topType.equalsIgnoreCase("GTOP")) {
                 Option<Guild> guildOption = guildRankManager.getGuild(DefaultTops.GUILD_AVG_POINTS_TOP, index);
@@ -273,7 +272,7 @@ public class RankPlaceholdersService {
                     pointsFormat = pointsFormat.replace("{POINTS}", String.valueOf(points));
                 }
 
-                return formatGuildRank(text, "{GTOP-" + index + "}", targetUser, guild, pointsFormat);
+                return this.formatGuildRank(text, "{GTOP-" + index + "}", targetUser, guild, pointsFormat);
             }
         }
 
