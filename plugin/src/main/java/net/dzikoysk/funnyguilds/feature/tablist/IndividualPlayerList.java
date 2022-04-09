@@ -136,8 +136,7 @@ public class IndividualPlayerList {
     }
 
     private String putTop(String cell) {
-        cell = FunnyGuilds.getInstance().getRankPlaceholdersService().format(cell, this.user);
-        return cell;
+        return FunnyGuilds.getInstance().getRankPlaceholdersService().format(cell, this.user);
     }
 
     private String putVars(String cell) {
