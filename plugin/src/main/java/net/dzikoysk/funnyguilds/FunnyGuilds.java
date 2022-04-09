@@ -18,7 +18,7 @@ import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
-import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.LegacyPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
 import net.dzikoysk.funnyguilds.feature.tablist.TablistBroadcastHandler;
@@ -121,7 +121,7 @@ public class FunnyGuilds extends JavaPlugin {
     private RegionManager regionManager;
     private FunnyServer funnyServer;
     private IndividualPrefixManager individualPrefixManager;
-    private PlaceholdersService placeholdersService;
+    private LegacyPlaceholdersService placeholdersService;
 
     private GuildInvitationList guildInvitationList;
     private AllyInvitationList allyInvitationList;
@@ -214,7 +214,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
 
-        this.placeholdersService = new PlaceholdersService(this);
+        this.placeholdersService = new LegacyPlaceholdersService(this);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -250,7 +250,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(IndividualPrefixManager.class).assignInstance(this.individualPrefixManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
-            resources.on(PlaceholdersService.class).assignInstance(this.placeholdersService);
+            resources.on(LegacyPlaceholdersService.class).assignInstance(this.placeholdersService);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
@@ -507,7 +507,7 @@ public class FunnyGuilds extends JavaPlugin {
         return individualPrefixManager;
     }
 
-    public PlaceholdersService getPlaceholdersService() {
+    public LegacyPlaceholdersService getPlaceholdersService() {
         return placeholdersService;
     }
 

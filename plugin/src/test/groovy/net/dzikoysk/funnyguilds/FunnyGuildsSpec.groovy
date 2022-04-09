@@ -5,7 +5,7 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
-import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService
+import net.dzikoysk.funnyguilds.feature.placeholders.LegacyPlaceholdersService
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
@@ -44,7 +44,7 @@ class FunnyGuildsSpec extends BukkitSpec {
     protected GuildRankManager guildRankManager
     protected RegionManager regionManager
 
-    protected PlaceholdersService placeholdersService
+    protected LegacyPlaceholdersService placeholdersService
 
     @BeforeAll
     static void openMockedFunnyGuilds() {
@@ -71,7 +71,7 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getGuildRankManager()).thenReturn(guildRankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
 
-        placeholdersService = new PlaceholdersService(funnyGuilds)
+        placeholdersService = new LegacyPlaceholdersService(funnyGuilds)
         placeholdersService.installPlaceholders()
 
         lenient().when(funnyGuilds.getPlaceholdersService()).thenReturn(placeholdersService)

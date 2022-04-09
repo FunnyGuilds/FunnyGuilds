@@ -9,7 +9,7 @@ import net.dzikoysk.funnyguilds.config.sections.HologramConfiguration;
 import net.dzikoysk.funnyguilds.event.guild.GuildCreateEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.feature.holograms.HologramsHook;
-import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.LegacyPlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import org.bukkit.Bukkit;
@@ -67,7 +67,7 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
             holo.appendItem(new ItemStack(holoConfig.item));
         }
 
-        PlaceholdersService placeholdersService = this.plugin.getPlaceholdersService();
+        LegacyPlaceholdersService placeholdersService = this.plugin.getPlaceholdersService();
 
         Formatter formatter = placeholdersService.getGuildPlaceholders()
                 .toVariablesFormatter(guild);
