@@ -1,9 +1,10 @@
-package net.dzikoysk.funnyguilds.rank;
+package net.dzikoysk.funnyguilds.rank.placeholders;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
@@ -12,6 +13,7 @@ import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.top.GuildTop;
+import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import net.dzikoysk.funnyguilds.user.top.UserTop;
@@ -26,7 +28,7 @@ public class RankPlaceholdersService {
     private static final Pattern TOP_POSITION_PATTERN = Pattern.compile("\\{(POSITION|G-POSITION)-([A-Za-z_]+)}");
     private static final Pattern LEGACY_TOP_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([0-9]+)}");
 
-    private final FunnyGuilds plugin;
+    private final FunnyGuildsLogger logger;
 
     private final PluginConfiguration config;
     private final MessageConfiguration messages;
@@ -35,15 +37,15 @@ public class RankPlaceholdersService {
     private final UserRankManager userRankManager;
     private final GuildRankManager guildRankManager;
 
-    public RankPlaceholdersService(FunnyGuilds plugin) {
-        this.plugin = plugin;
+    public RankPlaceholdersService(FunnyGuildsLogger logger, PluginConfiguration config, MessageConfiguration messages, TablistConfiguration tablistConfig, UserRankManager userRankManager, GuildRankManager guildRankManager) {
+        this.logger = logger;
 
-        this.config = plugin.getPluginConfiguration();
-        this.messages = plugin.getMessageConfiguration();
-        this.tablistConfig = plugin.getTablistConfiguration();
+        this.config = config;
+        this.messages = messages;
+        this.tablistConfig = tablistConfig;
 
-        this.userRankManager = plugin.getUserRankManager();
-        this.guildRankManager = plugin.getGuildRankManager();
+        this.userRankManager = userRankManager;
+        this.guildRankManager = guildRankManager;
     }
 
     /**
@@ -158,10 +160,7 @@ public class RankPlaceholdersService {
      * @param targetUser user for which text will be formatted
      * @return formatted text
      */
-    public String formatTopPosition(
-            String text,
-            @Nullable User targetUser
-    ) {
+    public String formatTopPosition(String text, @Nullable User targetUser) {
         if (text == null) {
             return null;
         }
@@ -211,10 +210,7 @@ public class RankPlaceholdersService {
      */
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
-    public String formatRank(
-            String text,
-            @Nullable User targetUser
-    ) {
+    public String formatRank(String text, @Nullable User targetUser) {
         if (text == null) {
             return null;
         }

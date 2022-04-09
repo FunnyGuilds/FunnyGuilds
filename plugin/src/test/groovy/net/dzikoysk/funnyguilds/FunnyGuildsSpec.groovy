@@ -10,7 +10,7 @@ import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.DefaultTops
-import net.dzikoysk.funnyguilds.rank.RankPlaceholdersService
+import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
 import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
@@ -74,7 +74,7 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getGuildRankManager()).thenReturn(guildRankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
 
-        rankPlaceholdersService = new RankPlaceholdersService(funnyGuilds)
+        rankPlaceholdersService = new RankPlaceholdersService(null, config, messages, tablistConfig, userRankManager, guildRankManager)
 
         lenient().when(funnyGuilds.getRankPlaceholdersService()).thenReturn(rankPlaceholdersService)
 

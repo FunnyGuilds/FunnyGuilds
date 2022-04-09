@@ -18,7 +18,8 @@ import panda.std.stream.PandaStream;
 
 public class UserManager {
 
-    private final Map<UUID, User> usersMap = new ConcurrentHashMap<>();
+    private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
+    private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
     @Deprecated
     private static UserManager INSTANCE;
@@ -28,7 +29,7 @@ public class UserManager {
     }
 
     public int countUsers() {
-        return this.usersMap.size();
+        return this.usersByUuid.size();
     }
 
     /**
@@ -37,7 +38,7 @@ public class UserManager {
      * @return set of users
      */
     public Set<User> getUsers() {
-        return new HashSet<>(this.usersMap.values());
+        return new HashSet<>(this.usersByUuid.values());
     }
 
     /**
@@ -59,7 +60,7 @@ public class UserManager {
      * @return the user
      */
     public Option<User> findByUuid(UUID uuid) {
-        return Option.of(usersMap.get(uuid));
+        return Option.of(usersByUuid.get(uuid));
     }
 
     /**
@@ -80,11 +81,13 @@ public class UserManager {
      * @return the user
      */
     public Option<User> findByName(String nickname, boolean ignoreCase) {
-        return PandaStream.of(usersMap.entrySet())
-                .find(entry -> ignoreCase
-                        ? entry.getValue().getName().equalsIgnoreCase(nickname)
-                        : entry.getValue().getName().equals(nickname))
-                .map(Map.Entry::getValue);
+        if (ignoreCase) {
+            return PandaStream.of(usersByName.entrySet())
+                    .find(entry -> entry.getKey().equalsIgnoreCase(nickname))
+                    .map(Map.Entry::getValue);
+        }
+
+        return Option.of(usersByName.get(nickname));
     }
 
     /**
@@ -96,6 +99,7 @@ public class UserManager {
         if (player.getUniqueId().version() == 2) {
             return Option.of(new User(player.getUniqueId(), player.getName(), new NPCUserProfile()));
         }
+
         return findByUuid(player.getUniqueId());
     }
 
@@ -144,7 +148,9 @@ public class UserManager {
      */
     public void addUser(User user) {
         Validate.notNull(user, "user can't be null!");
-        usersMap.put(user.getUUID(), user);
+
+        usersByUuid.put(user.getUUID(), user);
+        usersByName.put(user.getName(), user);
     }
 
     /**
@@ -154,7 +160,9 @@ public class UserManager {
      */
     public void removeUser(User user) {
         Validate.notNull(user, "user can't be null!");
-        usersMap.remove(user.getUUID());
+
+        usersByUuid.remove(user.getUUID());
+        usersByName.remove(user.getName());
     }
 
     /**
@@ -165,6 +173,10 @@ public class UserManager {
      */
     public void updateUsername(User user, String newUsername) {
         Validate.notNull(user, "user can't be null!");
+
+        usersByName.remove(user.getName());
+        usersByName.put(newUsername, user);
+
         user.setName(newUsername);
     }
 
