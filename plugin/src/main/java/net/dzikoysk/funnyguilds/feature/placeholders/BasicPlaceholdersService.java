@@ -4,14 +4,14 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import org.bukkit.ChatColor;
 
-public class DefaultPlaceholdersService extends AbstractPlaceholdersService<Object, SimplePlaceholders<Object>> {
+public class BasicPlaceholdersService extends AbstractPlaceholdersService<Object, BasicPlaceholders<Object>> {
 
-    public static final SimplePlaceholders<String> ONLINE = new SimplePlaceholders<String>()
+    public static final BasicPlaceholders<String> ONLINE = new BasicPlaceholders<String>()
             .property("<online>", () -> ChatColor.GREEN)
             .property("</online>", end -> end);
 
-    public static SimplePlaceholders<Object> createSimplePlaceholders(FunnyGuilds plugin) {
-        return new SimplePlaceholders<>()
+    public static BasicPlaceholders<Object> createSimplePlaceholders(FunnyGuilds plugin) {
+        return new BasicPlaceholders<>()
                 .property("tps", MinecraftServerUtils::getFormattedTPS)
                 .property("users", plugin.getUserManager()::countUsers)
                 .property("guilds", plugin.getGuildManager()::countGuilds);

@@ -6,7 +6,7 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
-import net.dzikoysk.funnyguilds.feature.placeholders.DefaultPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -58,7 +58,7 @@ public abstract class AbstractFunnyCommand {
     public IndividualPrefixManager individualPrefixManager;
 
     @Inject
-    public DefaultPlaceholdersService defaultPlaceholdersService;
+    public BasicPlaceholdersService basicPlaceholdersService;
     @Inject
     public TimePlaceholdersService timePlaceholdersService;
     @Inject

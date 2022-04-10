@@ -18,7 +18,7 @@ import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
-import net.dzikoysk.funnyguilds.feature.placeholders.DefaultPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
@@ -130,7 +130,7 @@ public class FunnyGuilds extends JavaPlugin {
     private GuildInvitationList guildInvitationList;
     private AllyInvitationList allyInvitationList;
 
-    private DefaultPlaceholdersService defaultPlaceholdersService;
+    private BasicPlaceholdersService basicPlaceholdersService;
     private TimePlaceholdersService timePlaceholdersService;
     private UserPlaceholdersService userPlaceholdersService;
     private GuildPlaceholdersService guildPlaceholdersService;
@@ -225,8 +225,8 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
 
-        this.defaultPlaceholdersService = new DefaultPlaceholdersService();
-        this.defaultPlaceholdersService.register(this, "simple", DefaultPlaceholdersService.createSimplePlaceholders(this));
+        this.basicPlaceholdersService = new BasicPlaceholdersService();
+        this.basicPlaceholdersService.register(this, "simple", BasicPlaceholdersService.createSimplePlaceholders(this));
 
         this.timePlaceholdersService = new TimePlaceholdersService();
         this.timePlaceholdersService.register(this, "time", TimePlaceholdersService.createTimePlaceholders());
@@ -242,7 +242,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.rankPlaceholdersService = new RankPlaceholdersService(logger, this.pluginConfiguration, this.messageConfiguration, this.tablistConfiguration, this.userRankManager, this.guildRankManager);
 
-        this.tablistPlaceholdersService = new TablistPlaceholdersService(defaultPlaceholdersService, timePlaceholdersService, userPlaceholdersService, guildPlaceholdersService);
+        this.tablistPlaceholdersService = new TablistPlaceholdersService(basicPlaceholdersService, timePlaceholdersService, userPlaceholdersService, guildPlaceholdersService);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -278,7 +278,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(IndividualPrefixManager.class).assignInstance(this.individualPrefixManager);
             resources.on(GuildInvitationList.class).assignInstance(this.guildInvitationList);
             resources.on(AllyInvitationList.class).assignInstance(this.allyInvitationList);
-            resources.on(DefaultPlaceholdersService.class).assignInstance(this.defaultPlaceholdersService);
+            resources.on(BasicPlaceholdersService.class).assignInstance(this.basicPlaceholdersService);
             resources.on(TimePlaceholdersService.class).assignInstance(this.timePlaceholdersService);
             resources.on(UserPlaceholdersService.class).assignInstance(this.userPlaceholdersService);
             resources.on(GuildPlaceholdersService.class).assignInstance(this.guildPlaceholdersService);
@@ -545,8 +545,8 @@ public class FunnyGuilds extends JavaPlugin {
         return this.allyInvitationList;
     }
 
-    public DefaultPlaceholdersService getDefaultPlaceholdersService() {
-        return this.defaultPlaceholdersService;
+    public BasicPlaceholdersService getBasicPlaceholdersService() {
+        return this.basicPlaceholdersService;
     }
 
     public TimePlaceholdersService getTimePlaceholdersService() {

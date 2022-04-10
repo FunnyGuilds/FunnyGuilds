@@ -9,8 +9,8 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.placeholders.AbstractPlaceholdersService;
-import net.dzikoysk.funnyguilds.feature.placeholders.DefaultPlaceholdersService;
-import net.dzikoysk.funnyguilds.feature.placeholders.SimplePlaceholders;
+import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholders;
+import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
@@ -25,13 +25,13 @@ import panda.utilities.StringUtils;
 
 public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild, GuildPlaceholders> {
 
-    public static final SimplePlaceholders<Pair<String, Guild>> GUILD_MEMBERS_COLOR_CONTEXT = new SimplePlaceholders<Pair<String, Guild>>()
+    public static final BasicPlaceholders<Pair<String, Guild>> GUILD_MEMBERS_COLOR_CONTEXT = new BasicPlaceholders<Pair<String, Guild>>()
             .property("members", pair -> {
                 String text = JOIN_OR_DEFAULT.apply(UserUtils.getOnlineNames(pair.getSecond().getMembers()), "");
 
                 return !text.contains("<online>")
                         ? text
-                        : DefaultPlaceholdersService.ONLINE.toFormatter(pair.getFirst()).format(text);
+                        : BasicPlaceholdersService.ONLINE.toFormatter(pair.getFirst()).format(text);
             });
 
     private static Option<GuildPlaceholders> SIMPLE = Option.none();

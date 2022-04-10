@@ -36,7 +36,7 @@ class PlaceholdersTest extends FunnyGuildsSpec {
     @Test
     void 'test ONLINE placeholder'() {
         def text = "§7offline - <online>online</online> - offline - <online>online</online> - offline"
-        def formatter = DefaultPlaceholdersService.ONLINE.toFormatter(ChatUtils.getLastColorBefore(text, "<online>"))
+        def formatter = BasicPlaceholdersService.ONLINE.toFormatter(ChatUtils.getLastColorBefore(text, "<online>"))
 
         text = formatter.format text
 
