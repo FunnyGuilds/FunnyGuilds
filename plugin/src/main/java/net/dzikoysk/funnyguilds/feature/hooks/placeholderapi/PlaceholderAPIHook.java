@@ -7,8 +7,6 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariable;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
@@ -63,9 +61,9 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
             User user = userOption.get();
 
-            TablistVariable variable = DefaultTablistVariables.getFunnyVariables().get(identifier.toLowerCase());
-            if (variable != null) {
-                return variable.get(user);
+            String value = this.plugin.getTablistPlaceholdersService().formatIdentifier(identifier, user);
+            if (value != null) {
+                return value;
             }
 
             if (identifier.toLowerCase().contains("position-")) {

@@ -1,0 +1,20 @@
+package net.dzikoysk.funnyguilds.feature.placeholders;
+
+import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
+import org.bukkit.ChatColor;
+
+public class BasicPlaceholdersService extends AbstractPlaceholdersService<Object, BasicPlaceholders<Object>> {
+
+    public static final BasicPlaceholders<String> ONLINE = new BasicPlaceholders<String>()
+            .property("<online>", () -> ChatColor.GREEN)
+            .property("</online>", end -> end);
+
+    public static BasicPlaceholders<Object> createSimplePlaceholders(FunnyGuilds plugin) {
+        return new BasicPlaceholders<>()
+                .property("tps", MinecraftServerUtils::getFormattedTPS)
+                .property("users", plugin.getUserManager()::countUsers)
+                .property("guilds", plugin.getGuildManager()::countGuilds);
+    }
+
+}

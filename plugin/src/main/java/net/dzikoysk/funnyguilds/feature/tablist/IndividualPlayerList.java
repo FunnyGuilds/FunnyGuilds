@@ -7,9 +7,6 @@ import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.TablistVariablesParser;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.VariableParsingResult;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
@@ -24,7 +21,6 @@ public class IndividualPlayerList {
 
     private final User user;
     private final PlayerList playerList;
-    private final TablistVariablesParser variableParser;
 
     private final Map<Integer, String> unformattedCells;
     private final int cellCount;
@@ -51,7 +47,6 @@ public class IndividualPlayerList {
                                 boolean fillCells,
                                 boolean enableLegacyPlaceholders) {
         this.user = user;
-        this.variableParser = new TablistVariablesParser();
 
         this.unformattedCells = new HashMap<>(unformattedCells);
         this.header = header;
@@ -78,8 +73,6 @@ public class IndividualPlayerList {
         }
 
         this.playerList = playerListAccessor.createPlayerList(this.cellCount);
-
-        DefaultTablistVariables.install(this.variableParser);
     }
 
     public void send() {
@@ -148,10 +141,8 @@ public class IndividualPlayerList {
         }
         Player player = playerOption.get();
 
-        VariableParsingResult result = this.variableParser.createResultFor(this.user);
-        formatted = result.replaceInString(formatted);
+        formatted = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(formatted, this.user);
         formatted = ChatUtils.colored(formatted);
-
         formatted = HookUtils.replacePlaceholders(player, formatted);
 
         return formatted;

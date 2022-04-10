@@ -5,16 +5,13 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
-import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import panda.std.Option;
-import panda.std.Pair;
-import panda.utilities.text.Formatter;
+import panda.std.stream.PandaStream;
 
 @FunnyComponent
 public final class InfoCommand extends AbstractFunnyCommand {
@@ -39,16 +36,10 @@ public final class InfoCommand extends AbstractFunnyCommand {
                 .orThrow(() -> new ValidationException(messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
-        Formatter formatter = Placeholders.GUILD_ALL
-                .toFormatter(guild);
 
-        for (String messageLine : messages.infoList) {
-            messageLine = formatter.format(messageLine);
-            messageLine = Placeholders.GUILD_MEMBERS_COLOR_CONTEXT
-                    .format(messageLine, Pair.of(ChatUtils.getLastColorBefore(messageLine, "{MEMBERS}"), guild));
-
-            sendMessage(sender, (messageLine));
-        }
+        PandaStream.of(messages.infoList)
+                .map(line -> guildPlaceholdersService.format(line, guild))
+                .forEach(sender::sendMessage);
     }
 
 }

@@ -61,12 +61,12 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getTablistConfiguration()).thenReturn(tablistConfig)
 
         userManager = new UserManager()
-        guildManager = new GuildManager(config);
-        userRankManager = new UserRankManager(config);
+        guildManager = new GuildManager(config)
+        userRankManager = new UserRankManager(config)
         userRankManager.register(DefaultTops.defaultUserTops(config, userManager))
-        guildRankManager = new GuildRankManager(config);
+        guildRankManager = new GuildRankManager(config)
         guildRankManager.register(DefaultTops.defaultGuildTops(guildManager))
-        regionManager = new RegionManager(config);
+        regionManager = new RegionManager(config)
 
         lenient().when(funnyGuilds.getUserManager()).thenReturn(userManager)
         lenient().when(funnyGuilds.getGuildManager()).thenReturn(guildManager)

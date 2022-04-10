@@ -1,156 +1,124 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import net.dzikoysk.funnyguilds.Entity;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.MessageConfiguration;
-import net.dzikoysk.funnyguilds.config.NumberRange;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildRankManager;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.rank.DefaultTops;
-import net.dzikoysk.funnyguilds.shared.TimeUtils;
-import net.dzikoysk.funnyguilds.user.UserUtils;
-import org.bukkit.ChatColor;
-import panda.std.Pair;
-import panda.utilities.StringUtils;
+import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
+import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
+import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
+import panda.std.Option;
 import panda.utilities.text.Formatter;
-import panda.utilities.text.Joiner;
 
-public class Placeholders<T> {
+public abstract class Placeholders<T, P extends Placeholders<T, P>> {
 
-    public static final Placeholders<String> ONLINE;
-    public static final Placeholders<Guild> GUILD;
-    public static final Placeholders<Guild> GUILD_ALL;
-    public static final Placeholders<Pair<String, Guild>> GUILD_MEMBERS_COLOR_CONTEXT;
+    protected final Map<String, Placeholder<T>> placeholders = new ConcurrentHashMap<>();
 
-    static {
-        FunnyGuilds plugin = FunnyGuilds.getInstance();
-        MessageConfiguration messages = plugin.getMessageConfiguration();
-        PluginConfiguration config = plugin.getPluginConfiguration();
-        GuildRankManager guildRankManager = plugin.getGuildRankManager();
+    public abstract P create();
 
-        ONLINE = new Placeholders<String>()
-                .raw("<online>", () -> ChatColor.GREEN)
-                .raw("</online>", end -> end);
-
-        GUILD = new Placeholders<Guild>()
-                .property("GUILD", Guild::getName)
-                .property("TAG", Guild::getTag);
-
-        Function<Guild, Object> bindGuildProtection = guild -> {
-            long now = System.currentTimeMillis();
-            long protectionEndTime = guild.getProtection();
-
-            return protectionEndTime < now ? "Brak" : TimeUtils.getDurationBreakdown(protectionEndTime - now);
-        };
-
-        BiFunction<Collection<String>, String, Object> joinOrDefault = (list, listNoValue) -> list.isEmpty() ? listNoValue : Joiner.on(", ").join(list);
-
-        GUILD_ALL = new Placeholders<Guild>()
-                .property("GUILD", Guild::getName)
-                .property("TAG", Guild::getTag)
-                .property("OWNER", guild -> guild.getOwner().getName())
-                .property("MEMBERS-ONLINE", guild -> guild.getOnlineMembers().size())
-                .property("MEMBERS-ALL", guild -> guild.getMembers().size())
-                .property("DEPUTIES", guild -> joinOrDefault.apply(Entity.names(guild.getDeputies()), "Brak"))
-                .property("REGION-SIZE", guild -> guild.getRegion()
-                        .map(Region::getSize)
-                        .map(value -> Integer.toString(value))
-                        .orElseGet(messages.gRegionSizeNoValue))
-                .property("GUILD-PROTECTION", bindGuildProtection)
-                .property("POINTS-FORMAT", guild -> NumberRange.inRangeToString(guild.getRank().getAveragePoints(), config.pointsFormat))
-                .property("POINTS", guild -> guild.getRank().getAveragePoints())
-                .property("KILLS", guild -> guild.getRank().getKills())
-                .property("DEATHS", guild -> guild.getRank().getDeaths())
-                .property("ASSISTS", guild -> guild.getRank().getAssists())
-                .property("LOGOUTS", guild -> guild.getRank().getLogouts())
-                .property("KDR", guild -> String.format(Locale.US, "%.2f", guild.getRank().getKDR()))
-                .property("VALIDITY", guild -> messages.dateFormat.format(new Date(guild.getValidity())))
-                .property("LIVES", Guild::getLives)
-                .property("LIVES-SYMBOL", guild -> {
-                    int lives = guild.getLives();
-                    if (lives <= config.warLives) {
-                        return StringUtils.repeated(lives, config.livesRepeatingSymbol.full.getValue()) +
-                                StringUtils.repeated(config.warLives - lives, config.livesRepeatingSymbol.empty.getValue());
-                    }
-                    else {
-                        return StringUtils.repeated(config.warLives, config.livesRepeatingSymbol.full.getValue()) +
-                                config.livesRepeatingSymbol.more.getValue();
-                    }
-                })
-                .property("LIVES-SYMBOL-ALL", guild -> StringUtils.repeated(guild.getLives(), config.livesRepeatingSymbol.full.getValue()))
-                .property("RANK", guild -> guildRankManager.isRankedGuild(guild)
-                        ? guild.getRank().getPosition(DefaultTops.GUILD_AVG_POINTS_TOP)
-                        : messages.minMembersToIncludeNoValue)
-                .property("ALLIES", guild -> joinOrDefault.apply(Entity.names(guild.getAllies()), messages.alliesNoValue))
-                .property("ALLIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getAllies()), messages.alliesNoValue))
-                .property("ENEMIES", guild -> joinOrDefault.apply(Entity.names(guild.getEnemies()), messages.enemiesNoValue))
-                .property("ENEMIES-TAGS", guild -> joinOrDefault.apply(GuildUtils.getTags(guild.getEnemies()), messages.enemiesNoValue));
-
-        GUILD_MEMBERS_COLOR_CONTEXT = new Placeholders<Pair<String, Guild>>()
-                .property("MEMBERS", pair -> {
-                    String text = Joiner.on(", ").join(UserUtils.getOnlineNames(pair.getSecond().getMembers())).toString();
-
-                    return !text.contains("<online>")
-                            ? text
-                            : ONLINE.toFormatter(pair.getFirst()).format(text);
-                });
+    public Map<String, Placeholder<T>> getPlaceholders() {
+        return new HashMap<>(this.placeholders);
     }
 
-    private final Map<String, Function<T, String>> placeholders = new HashMap<>();
-
-    public Placeholders() {
+    public Option<Placeholder<T>> getPlaceholder(String name) {
+        return Option.of(this.placeholders.get(name));
     }
 
-    public Placeholders<T> raw(String key, Function<T, Object> bind) {
-        return Placeholders.of(placeholders, key, t -> String.valueOf(bind.apply(t)));
+    public P property(String name, Placeholder<T> placeholder) {
+        P copy = this.create();
+        copy.placeholders.putAll(this.placeholders);
+        copy.placeholders.put(name, placeholder);
+        return copy;
     }
 
-    public Placeholders<T> raw(String key, Supplier<Object> bind) {
-        return Placeholders.of(placeholders, key, t -> String.valueOf(bind.get()));
+    public P property(String name, MonoResolver<T> resolver) {
+        return this.property(name, new Placeholder<>(resolver));
     }
 
-    public Placeholders<T> property(String key, Function<T, Object> bind) {
-        return raw("{" + key + "}", bind);
+    public P property(String name, SimpleResolver resolver) {
+        return this.property(name, object -> resolver.resolve());
     }
 
-    public Placeholders<T> property(String key, Supplier<Object> bind) {
-        return raw("{" + key + "}", bind);
+    public P property(Map<String, Placeholder<T>> placeholders) {
+        P copy = this.create();
+        copy.placeholders.putAll(this.placeholders);
+        copy.placeholders.putAll(placeholders);
+        return copy;
     }
 
+    public P property(P placeholders) {
+        return this.property(placeholders.placeholders);
+    }
+
+    public <M> P map(Placeholders<M, ?> toMap, Function<String, String> nameMapper, BiFunction<T, Placeholder<M>, Object> dataMapper) {
+        P copy = this.create();
+        copy.placeholders.putAll(this.placeholders);
+        toMap.getPlaceholders().forEach((key, placeholder) ->
+                copy.placeholders.put(nameMapper.apply(key), new Placeholder<>(data -> dataMapper.apply(data, placeholder))));
+        return copy;
+    }
+
+    public <M> P map(Placeholders<M, ?> toMap, Supplier<M> dataSupplier, Function<String, String> nameMapper) {
+        return this.map(toMap, nameMapper, (data, placeholder) -> placeholder.getRaw(dataSupplier.get()));
+    }
+
+    public <M> P map(Placeholders<M, ?> toMap, Supplier<M> dataSupplier) {
+        return this.map(toMap, dataSupplier, name -> name);
+    }
+
+    /**
+     * Format text with raw placeholders
+     *
+     * @param text text to format
+     * @param data data to use to formatting
+     * @return formatted text
+     */
     public String format(String text, T data) {
-        for (Map.Entry<String, Function<T, String>> entry : placeholders.entrySet()) {
-            text = text.replace(entry.getKey(), entry.getValue().apply(data));
-        }
-
-        return text;
+        return this.toFormatter(data)
+                .format(text);
     }
 
     public Formatter toFormatter(T data) {
-        Formatter formatter = new Formatter();
-
-        placeholders.forEach((key, bind) -> formatter.register(key, bind.apply(data)));
-
-        return formatter;
+        return this.toCustomFormatter(data, "", "", name -> name);
     }
 
-    private static <T> Placeholders<T> of(Map<String, Function<T, String>> placeholdersMap, String newKey, Function<T, String> newBind) {
-        Placeholders<T> placeholders = new Placeholders<>();
+    /**
+     * Format text with variable format placeholders (e.g. {NAME})
+     *
+     * @param text text to format
+     * @param data data to use to formatting
+     * @return formatted text
+     */
+    public String formatVariables(String text, T data) {
+        return this.toVariablesFormatter(data)
+                .format(text);
+    }
 
-        placeholders.placeholders.putAll(placeholdersMap);
-        placeholders.placeholders.put(newKey, newBind);
+    public Formatter toVariablesFormatter(T data) {
+        return this.toCustomFormatter(data, "{", "}", String::toUpperCase);
+    }
 
-        return placeholders;
+    /**
+     * Format text with custom format placeholders
+     *
+     * @param text text to format
+     * @param data data to use to formatting
+     * @param prefix prefix to use before placeholders (for eg. "{")
+     * @param suffix suffix to use after placeholders (for eg. "}")
+     * @param nameModifier function to modify placeholder name (for eg. upper case)
+     * @return formatted text
+     */
+    public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+        return this.toCustomFormatter(data, prefix, suffix, nameModifier)
+                .format(text);
+    }
+
+    public Formatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {
+        Formatter formatter = new Formatter();
+        placeholders.forEach((key, placeholder) -> formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(data)));
+        return formatter;
     }
 
 }

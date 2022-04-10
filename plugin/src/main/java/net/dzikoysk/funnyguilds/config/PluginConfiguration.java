@@ -85,6 +85,10 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Ta opcja działa tylko wtedy, gdy także jest włączona opcja 'update-info'")
     public boolean updateNightlyInfo = true;
 
+    @Comment("Czas w godzinach o, który ma zostać przesunięty czas w np. placeholderach. Przyjmuje zarówno wartości dodatnie jak i ujemne.")
+    @Comment("Opcja przydatna, kiedy strefa czasowa ustawiona na serwerze jest inna niz w kraju docelowym (np. serwer ma ustawiona strefe czasowa \"Europe/London\", a gracze są z Polski - wystąpi wtedy godzina różnicy czasu)")
+    public int timeOffset = 0;
+
     @Comment("Mozliwosc zakladania gildii. Mozna ja zmienic takze za pomoca komendy /ga enabled")
     public boolean guildsEnabled = true;
 

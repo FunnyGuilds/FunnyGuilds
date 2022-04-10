@@ -20,7 +20,7 @@ public final class RankingCommand extends AbstractFunnyCommand {
         User targetUser = userManager.findByName(sender.getName()).orNull();
 
         for (String messageLine : messages.rankingList) {
-            String parsedRank = rankPlaceholdersSerivce.format(messageLine, targetUser);
+            String parsedRank = rankPlaceholdersService.format(messageLine, targetUser);
             sendMessage(sender, (parsedRank == null ? messageLine : parsedRank));
         }
     }

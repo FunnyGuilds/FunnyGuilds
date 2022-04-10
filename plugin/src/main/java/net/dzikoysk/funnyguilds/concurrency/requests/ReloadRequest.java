@@ -5,7 +5,6 @@ import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.feature.tablist.IndividualPlayerList;
-import net.dzikoysk.funnyguilds.feature.tablist.variable.DefaultTablistVariables;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -35,8 +34,6 @@ public final class ReloadRequest extends DefaultConcurrencyRequest {
             PluginConfiguration config = this.plugin.getPluginConfiguration();
             TablistConfiguration tablistConfig = this.plugin.getTablistConfiguration();
             UserManager userManager = this.plugin.getUserManager();
-
-            DefaultTablistVariables.clearFunnyVariables();
 
             PandaStream.of(Bukkit.getOnlinePlayers())
                     .flatMap(userManager::findByPlayer)
