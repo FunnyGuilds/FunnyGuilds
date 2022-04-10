@@ -20,16 +20,32 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
 
     protected final Map<String, P> placeholders = new ConcurrentHashMap<>();
 
+    /**
+     * Register placeholders set.
+     *
+     * @param plugin plugin which register placeholders set
+     * @param name name of placeholders set
+     * @param placeholders placeholders set
+     */
     public void register(JavaPlugin plugin, String name, P placeholders) {
         this.placeholders.put(plugin.getName().toLowerCase() + "_" + name.toLowerCase(), placeholders);
     }
 
+    /**
+     * @return all placeholders key of all sets
+     */
     public Set<String> getPlaceholdersKeys() {
         return PandaStream.of(this.placeholders.values())
                 .flatMap(placeholders -> placeholders.getPlaceholders().keySet())
                 .toSet();
     }
 
+    /**
+     * Find placeholder by key in all placeholders sets.
+     *
+     * @param name key of placeholder
+     * @return placeholder
+     */
     public Option<Placeholder<T>> getPlaceholder(String name) {
         for (P placeholders : this.placeholders.values()) {
             Option<Placeholder<T>> placeholder = placeholders.getPlaceholder(name);
@@ -40,6 +56,13 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
         return Option.none();
     }
 
+    /**
+     * Format text with all placeholders.
+     *
+     * @param text text to format
+     * @param data data to use to formatting
+     * @return formatted text
+     */
     @Override
     public String format(String text, T data) {
         for (P placeholders : this.placeholders.values()) {
