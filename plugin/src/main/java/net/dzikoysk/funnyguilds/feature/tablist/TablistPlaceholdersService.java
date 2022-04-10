@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.feature.placeholders.DefaultPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
-import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
 import panda.std.stream.PandaStream;
@@ -20,14 +19,12 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
     private final TimePlaceholdersService timePlaceholdersService;
     private final UserPlaceholdersService userPlaceholdersService;
     private final GuildPlaceholdersService guildPlaceholdersService;
-    private final RankPlaceholdersService rankPlaceholdersService;
 
-    public TablistPlaceholdersService(DefaultPlaceholdersService defaultPlaceholdersService, TimePlaceholdersService timePlaceholdersService, UserPlaceholdersService userPlaceholdersService, GuildPlaceholdersService guildPlaceholdersService, RankPlaceholdersService rankPlaceholdersService) {
+    public TablistPlaceholdersService(DefaultPlaceholdersService defaultPlaceholdersService, TimePlaceholdersService timePlaceholdersService, UserPlaceholdersService userPlaceholdersService, GuildPlaceholdersService guildPlaceholdersService) {
         this.defaultPlaceholdersService = defaultPlaceholdersService;
         this.timePlaceholdersService = timePlaceholdersService;
         this.userPlaceholdersService = userPlaceholdersService;
         this.guildPlaceholdersService = guildPlaceholdersService;
-        this.rankPlaceholdersService = rankPlaceholdersService;
     }
 
     @Override
@@ -36,7 +33,6 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
         text = timePlaceholdersService.format(text, OffsetDateTime.now());
         text = userPlaceholdersService.format(text, user);
         text = guildPlaceholdersService.formatCustom(text, user.getGuild().orNull(), "{G-", "}", String::toUpperCase);
-        text = rankPlaceholdersService.format(text, user);
         return text;
     }
 

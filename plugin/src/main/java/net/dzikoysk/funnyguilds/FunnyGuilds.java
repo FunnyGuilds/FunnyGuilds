@@ -242,7 +242,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.rankPlaceholdersService = new RankPlaceholdersService(logger, this.pluginConfiguration, this.messageConfiguration, this.tablistConfiguration, this.userRankManager, this.guildRankManager);
 
-        this.tablistPlaceholdersService = new TablistPlaceholdersService(defaultPlaceholdersService, timePlaceholdersService, userPlaceholdersService, guildPlaceholdersService, rankPlaceholdersService);
+        this.tablistPlaceholdersService = new TablistPlaceholdersService(defaultPlaceholdersService, timePlaceholdersService, userPlaceholdersService, guildPlaceholdersService);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);

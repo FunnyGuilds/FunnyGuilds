@@ -43,16 +43,9 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
     @Override
     public String format(String text, T data) {
         for (P placeholders : this.placeholders.values()) {
-            text = this.format(placeholders, text, data);
+            text = placeholders.formatVariables(text, data);
         }
         return text;
-    }
-
-    protected String format(P placeholders, String text, T data) {
-        if (placeholders == null) {
-            return text;
-        }
-        return placeholders.formatVariables(text, data);
     }
 
     public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
