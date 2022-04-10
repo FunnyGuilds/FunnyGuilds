@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.RangeFormatting;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
+import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.top.GuildTop;
@@ -22,7 +23,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
 
-public class RankPlaceholdersService {
+public class RankPlaceholdersService implements PlaceholdersService<User> {
 
     private static final Pattern TOP_PATTERN = Pattern.compile("\\{(PTOP|GTOP)-([A-Za-z_]+)-([0-9]+)}");
     private static final Pattern TOP_POSITION_PATTERN = Pattern.compile("\\{(POSITION|G-POSITION)-([A-Za-z_]+)}");
@@ -55,6 +56,7 @@ public class RankPlaceholdersService {
      * @param targetUser user for which text will be formatted
      * @return formatted text
      */
+    @Override
     public String format(String text, User targetUser) {
         text = formatTop(text, targetUser);
         text = formatTopPosition(text, targetUser);

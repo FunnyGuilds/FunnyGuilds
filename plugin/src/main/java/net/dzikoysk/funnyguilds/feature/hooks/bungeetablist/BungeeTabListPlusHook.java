@@ -7,6 +7,7 @@ import java.util.function.Function;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
+import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
@@ -31,11 +32,12 @@ public class BungeeTabListPlusHook extends AbstractPluginHook {
         UserRankManager userRankManager = this.plugin.getUserRankManager();
         GuildRankManager guildRankManager = this.plugin.getGuildRankManager();
         RankPlaceholdersService rankPlaceholdersSerivce = this.plugin.getRankPlaceholdersService();
+        TablistPlaceholdersService tablistPlaceholdersService = this.plugin.getTablistPlaceholdersService();
 
-        this.plugin.getTablistPlaceholdersService().getPlaceholdersEntries().forEach(entry ->
-                BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_" + entry.getKey().toLowerCase(), player ->
+        tablistPlaceholdersService.getPlaceholdersKeys().forEach(key ->
+                BungeeTabListPlusBukkitAPI.registerVariable(plugin, new FunctionVariable("funnyguilds_" + key.toLowerCase(), player ->
                         userManager.findByPlayer(player)
-                                .map(user -> entry.getValue().get(user))
+                                .map(user -> tablistPlaceholdersService.formatIdentifier(key, user))
                                 .orElseGet(StringUtils.EMPTY))));
 
         Set<String> userTopIds = userRankManager.getTopIds();

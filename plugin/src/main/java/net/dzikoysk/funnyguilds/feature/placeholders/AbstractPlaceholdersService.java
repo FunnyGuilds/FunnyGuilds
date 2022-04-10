@@ -1,11 +1,11 @@
 package net.dzikoysk.funnyguilds.feature.placeholders;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import org.bukkit.plugin.java.JavaPlugin;
 import panda.std.Option;
@@ -24,17 +24,9 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
         this.placeholders.put(plugin.getName().toLowerCase() + "_" + name.toLowerCase(), placeholders);
     }
 
-    public Collection<P> getPlaceholders() {
-        return this.placeholders.values();
-    }
-
-    public Map<String, P> getPlaceholdersMap() {
-        return new HashMap<>(this.placeholders);
-    }
-
-    public Set<Map.Entry<String, Placeholder<T>>> getPlaceholdersEntries() {
+    public Set<String> getPlaceholdersKeys() {
         return PandaStream.of(this.placeholders.values())
-                .flatMap(placeholders -> placeholders.placeholders.entrySet())
+                .flatMap(placeholders -> placeholders.getPlaceholders().keySet())
                 .toSet();
     }
 
@@ -61,6 +53,13 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
             return text;
         }
         return placeholders.formatVariables(text, data);
+    }
+
+    public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+        for (P placeholders : this.placeholders.values()) {
+            text = placeholders.formatCustom(text, data, prefix, suffix, nameModifier);
+        }
+        return text;
     }
 
 }

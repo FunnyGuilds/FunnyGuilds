@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds;
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
-import java.time.OffsetDateTime;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -226,8 +225,24 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildInvitationList = new GuildInvitationList(this.userManager, this.guildManager);
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
 
-        this.setupPlaceholdersService();
+        this.defaultPlaceholdersService = new DefaultPlaceholdersService();
+        this.defaultPlaceholdersService.register(this, "simple", DefaultPlaceholdersService.createSimplePlaceholders(this));
+
+        this.timePlaceholdersService = new TimePlaceholdersService();
+        this.timePlaceholdersService.register(this, "time", TimePlaceholdersService.createTimePlaceholders());
+
+        this.userPlaceholdersService = new UserPlaceholdersService();
+        this.userPlaceholdersService.register(this, "player", UserPlaceholdersService.createPlayerPlaceholders(this));
+        this.userPlaceholdersService.register(this, "user", UserPlaceholdersService.createUserPlaceholders(this));
+
+        this.guildPlaceholdersService = new GuildPlaceholdersService();
+        this.guildPlaceholdersService.register(this, "simple", GuildPlaceholdersService.createSimplePlaceholders(this));
+        this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
+        this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
+
         this.rankPlaceholdersService = new RankPlaceholdersService(logger, this.pluginConfiguration, this.messageConfiguration, this.tablistConfiguration, this.userRankManager, this.guildRankManager);
+
+        this.tablistPlaceholdersService = new TablistPlaceholdersService(defaultPlaceholdersService, timePlaceholdersService, userPlaceholdersService, guildPlaceholdersService, rankPlaceholdersService);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -440,33 +455,6 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         this.guildEntityHelper.createGuildsEntities(this.guildManager);
-    }
-
-    public void setupPlaceholdersService() {
-        this.defaultPlaceholdersService = new DefaultPlaceholdersService();
-        this.defaultPlaceholdersService.register(this, "simple", DefaultPlaceholdersService.createSimplePlaceholders(this));
-
-        this.timePlaceholdersService = new TimePlaceholdersService();
-        this.timePlaceholdersService.register(this, "time", TimePlaceholdersService.createTimePlaceholders());
-
-        this.userPlaceholdersService = new UserPlaceholdersService();
-        this.userPlaceholdersService.register(this, "player", UserPlaceholdersService.createPlayerPlaceholders(this));
-        this.userPlaceholdersService.register(this, "user", UserPlaceholdersService.createUserPlaceholders(this));
-
-        this.guildPlaceholdersService = new GuildPlaceholdersService();
-        this.guildPlaceholdersService.register(this, "simple", GuildPlaceholdersService.createSimplePlaceholders(this));
-        this.guildPlaceholdersService.register(this, "guild", GuildPlaceholdersService.createGuildPlaceholders(this));
-        this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
-
-        this.tablistPlaceholdersService = new TablistPlaceholdersService();
-        this.tablistPlaceholdersService.register(this, "default", this.defaultPlaceholdersService.getPlaceholdersMap(),
-                name -> name, (user, placeholder) -> placeholder.getRaw(null));
-        this.tablistPlaceholdersService.register(this, "time", this.timePlaceholdersService.getPlaceholdersMap(),
-                name -> name, (user, placeholder) -> placeholder.get(OffsetDateTime.now()));
-        this.tablistPlaceholdersService.register(this, "user", this.userPlaceholdersService.getPlaceholdersMap(),
-                name -> name, (user, placeholder) -> placeholder.get(user));
-        this.tablistPlaceholdersService.register(this, "guild", this.guildPlaceholdersService.getPlaceholdersMap(),
-                name -> "g-" + name, (user, placeholder) -> placeholder.get(user.getGuild().orNull()));
     }
 
     public boolean isDisabling() {

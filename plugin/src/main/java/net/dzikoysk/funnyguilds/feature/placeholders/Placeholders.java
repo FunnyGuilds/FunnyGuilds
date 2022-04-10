@@ -80,6 +80,33 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
                 .format(text);
     }
 
+    public Formatter toFormatter(T data) {
+        Formatter formatter = new Formatter();
+        placeholders.forEach((key, placeholder) -> formatter.register(key, placeholder.get(data)));
+        return formatter;
+    }
+
+    /**
+     * Format text with custom format placeholders
+     *
+     * @param text text to format
+     * @param data data to use to formatting
+     * @param prefix prefix to use before placeholders (for eg. "{")
+     * @param suffix suffix to use after placeholders (for eg. "}")
+     * @param nameModifier function to modify placeholder name (for eg. upper case)
+     * @return formatted text
+     */
+    public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
+        return this.toCustomFormatter(data, prefix, suffix, nameModifier)
+                .format(text);
+    }
+
+    public Formatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {
+        Formatter formatter = new Formatter();
+        placeholders.forEach((key, placeholder) -> formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(data)));
+        return formatter;
+    }
+
     /**
      * Format text with variable format placeholders (e.g. {NAME})
      *
@@ -92,16 +119,8 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
                 .format(text);
     }
 
-    public Formatter toFormatter(T data) {
-        Formatter formatter = new Formatter();
-        placeholders.forEach((key, placeholder) -> formatter.register(key, placeholder.get(data)));
-        return formatter;
-    }
-
     public Formatter toVariablesFormatter(T data) {
-        Formatter formatter = new Formatter();
-        placeholders.forEach((key, placeholder) -> formatter.register("{" + key.toUpperCase() + "}", placeholder.get(data)));
-        return formatter;
+        return this.toCustomFormatter(data, "{", "}", String::toUpperCase);
     }
 
 }

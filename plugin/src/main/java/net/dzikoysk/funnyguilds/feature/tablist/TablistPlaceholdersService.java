@@ -1,23 +1,61 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
-import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.feature.placeholders.AbstractPlaceholdersService;
-import net.dzikoysk.funnyguilds.feature.placeholders.Placeholders;
-import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import net.dzikoysk.funnyguilds.feature.placeholders.DefaultPlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.PlaceholdersService;
+import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
+import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
+import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholders;
+import net.dzikoysk.funnyguilds.user.placeholders.UserPlaceholdersService;
+import panda.std.stream.PandaStream;
 
-public class TablistPlaceholdersService extends AbstractPlaceholdersService<User, UserPlaceholders> {
+public class TablistPlaceholdersService implements PlaceholdersService<User> {
 
-    public <M> void register(FunnyGuilds plugin, String name, Placeholders<M, ?> toMap, Function<String, String> nameMapper, BiFunction<User, Placeholder<M>, Object> dataMapper) {
-        this.register(plugin, name, new UserPlaceholders().map(toMap, nameMapper, dataMapper));
+    private final DefaultPlaceholdersService defaultPlaceholdersService;
+    private final TimePlaceholdersService timePlaceholdersService;
+    private final UserPlaceholdersService userPlaceholdersService;
+    private final GuildPlaceholdersService guildPlaceholdersService;
+    private final RankPlaceholdersService rankPlaceholdersService;
+
+    public TablistPlaceholdersService(DefaultPlaceholdersService defaultPlaceholdersService, TimePlaceholdersService timePlaceholdersService, UserPlaceholdersService userPlaceholdersService, GuildPlaceholdersService guildPlaceholdersService, RankPlaceholdersService rankPlaceholdersService) {
+        this.defaultPlaceholdersService = defaultPlaceholdersService;
+        this.timePlaceholdersService = timePlaceholdersService;
+        this.userPlaceholdersService = userPlaceholdersService;
+        this.guildPlaceholdersService = guildPlaceholdersService;
+        this.rankPlaceholdersService = rankPlaceholdersService;
     }
 
-    public <M, P extends Placeholders<M, ?>> void register(FunnyGuilds plugin, String name, Map<String, P> toMap, Function<String, String> nameMapper, BiFunction<User, Placeholder<M>, Object> dataMapper) {
-        toMap.forEach((key, value) ->
-                this.register(plugin, name + "_" + key.split("_", 2)[1], value, nameMapper, dataMapper));
+    @Override
+    public String format(String text, User user) {
+        text = defaultPlaceholdersService.format(text, null);
+        text = timePlaceholdersService.format(text, OffsetDateTime.now());
+        text = userPlaceholdersService.format(text, user);
+        text = guildPlaceholdersService.formatCustom(text, user.getGuild().orNull(), "{G-", "}", String::toUpperCase);
+        text = rankPlaceholdersService.format(text, user);
+        return text;
     }
+
+    public String formatIdentifier(String identifier, User user) {
+        return this.format("{" + identifier.toUpperCase() + "}", user);
+    }
+
+    public Set<String> getPlaceholdersKeys() {
+        List<Set<String>> keys = Arrays.asList(
+                defaultPlaceholdersService.getPlaceholdersKeys(),
+                timePlaceholdersService.getPlaceholdersKeys(),
+                userPlaceholdersService.getPlaceholdersKeys(),
+                guildPlaceholdersService.getPlaceholdersKeys().stream()
+                        .map(key -> "{G-" + key)
+                        .collect(Collectors.toSet())
+        );
+        return PandaStream.of(keys)
+                .flatMap(streamKeys -> streamKeys)
+                .toSet();
+    }
+
 }

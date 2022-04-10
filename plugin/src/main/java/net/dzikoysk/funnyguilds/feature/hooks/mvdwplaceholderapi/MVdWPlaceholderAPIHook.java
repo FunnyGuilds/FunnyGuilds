@@ -5,6 +5,7 @@ import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
+import net.dzikoysk.funnyguilds.feature.tablist.TablistPlaceholdersService;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
@@ -30,16 +31,17 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         UserRankManager userRankManager = this.plugin.getUserRankManager();
         GuildRankManager guildRankManager = this.plugin.getGuildRankManager();
         RankPlaceholdersService rankPlaceholdersService = this.plugin.getRankPlaceholdersService();
+        TablistPlaceholdersService tablistPlaceholdersService = this.plugin.getTablistPlaceholdersService();
 
-        this.plugin.getTablistPlaceholdersService().getPlaceholdersEntries().forEach(entry ->
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + entry.getKey().toLowerCase(), event -> {
+        tablistPlaceholdersService.getPlaceholdersKeys().forEach(key ->
+                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + key.toLowerCase(), event -> {
                     OfflinePlayer target = event.getOfflinePlayer();
                     if (target == null) {
                         return StringUtils.EMPTY;
                     }
 
                     return userManager.findByUuid(target.getUniqueId())
-                            .map(user -> entry.getValue().get(user))
+                            .map(user -> tablistPlaceholdersService.formatIdentifier(key, user))
                             .orElseGet("none");
                 }));
 
