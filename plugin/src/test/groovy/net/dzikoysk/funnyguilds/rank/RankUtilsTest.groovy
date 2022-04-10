@@ -4,7 +4,6 @@ import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import net.dzikoysk.funnyguilds.config.RangeFormatting
 import net.dzikoysk.funnyguilds.config.RawString
-import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.Guild
 import org.junit.jupiter.api.Test
 
@@ -29,7 +28,7 @@ class RankUtilsTest extends FunnyGuildsSpec {
         config.pointsFormat = [ new RangeFormatting(0, Integer.MAX_VALUE, '{POINTS}') ]
 
         // when: the GTOP placeholder is requested to parse
-        def rank = RankUtils.parseRank(config, new TablistConfiguration(), messages, userRankManager, guildRankManager, user, '{GTOP-1}')
+        def rank = rankPlaceholdersService.formatRank('{GTOP-1}', user)
 
         // then: the result should match the configured pattern
         assertEquals 'OP 1000', rank

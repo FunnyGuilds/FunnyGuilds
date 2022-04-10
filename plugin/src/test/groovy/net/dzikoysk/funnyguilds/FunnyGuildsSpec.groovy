@@ -4,11 +4,13 @@ import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
+import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.DefaultTops
+import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
 import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
@@ -36,12 +38,15 @@ class FunnyGuildsSpec extends BukkitSpec {
 
     protected PluginConfiguration config = new PluginConfiguration()
     protected MessageConfiguration messages = new MessageConfiguration()
+    protected TablistConfiguration tablistConfig = new TablistConfiguration()
 
     protected UserManager userManager
     protected GuildManager guildManager
     protected UserRankManager userRankManager
     protected GuildRankManager guildRankManager
     protected RegionManager regionManager
+
+    protected RankPlaceholdersService rankPlaceholdersService
 
     @BeforeAll
     static void openMockedFunnyGuilds() {
@@ -53,6 +58,7 @@ class FunnyGuildsSpec extends BukkitSpec {
     void prepareFunnyGuilds() {
         lenient().when(funnyGuilds.getPluginConfiguration()).thenReturn(config)
         lenient().when(funnyGuilds.getMessageConfiguration()).thenReturn(messages)
+        lenient().when(funnyGuilds.getTablistConfiguration()).thenReturn(tablistConfig)
 
         userManager = new UserManager()
         guildManager = new GuildManager(config)
@@ -67,6 +73,10 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getUserRankManager()).thenReturn(userRankManager)
         lenient().when(funnyGuilds.getGuildRankManager()).thenReturn(guildRankManager)
         lenient().when(funnyGuilds.getRegionManager()).thenReturn(regionManager)
+
+        rankPlaceholdersService = new RankPlaceholdersService(null, config, messages, tablistConfig, userRankManager, guildRankManager)
+
+        lenient().when(funnyGuilds.getRankPlaceholdersService()).thenReturn(rankPlaceholdersService)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)
         mockedBossBarProvider.when(() -> BossBarProvider.getBossBar(any(User.class))).thenReturn(null)

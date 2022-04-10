@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
 import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
+import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
@@ -64,6 +65,8 @@ public abstract class AbstractFunnyCommand {
     public UserPlaceholdersService userPlaceholdersService;
     @Inject
     public GuildPlaceholdersService guildPlaceholdersService;
+    @Inject
+    public RankPlaceholdersService rankPlaceholdersSerivce;
 
     protected void sendMessage(CommandSender sender, String message) {
         ChatUtils.sendMessage(sender, message);

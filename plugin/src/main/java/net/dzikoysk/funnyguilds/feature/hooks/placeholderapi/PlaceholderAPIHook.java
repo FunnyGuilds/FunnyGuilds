@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.rank.RankUtils;
+import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
@@ -40,10 +40,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
     private static class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
 
         private final FunnyGuilds plugin;
+        private final RankPlaceholdersService rankPlaceholdersService;
         private final String funnyguildsVersion;
 
         private FunnyGuildsPlaceholder(FunnyGuilds plugin) {
             this.plugin = plugin;
+            this.rankPlaceholdersService = plugin.getRankPlaceholdersService();
             this.funnyguildsVersion = plugin.getDescription().getVersion();
         }
 
@@ -68,12 +70,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
 
             if (identifier.toLowerCase().contains("position-")) {
-                return RankUtils.parseTopPosition(user, "{" + identifier.toUpperCase() + "}");
+                return rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase() + "}", user);
             }
             else if (identifier.toLowerCase().contains("top-")) {
-                String temp = RankUtils.parseTop(user, "{" + identifier.toUpperCase() + "}");
+                String temp = rankPlaceholdersService.formatTop("{" + identifier.toUpperCase() + "}", user);
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
-                    temp = RankUtils.parseRank(user, temp);
+                    temp = rankPlaceholdersService.formatRank(temp, user);
                 }
                 return temp;
             }

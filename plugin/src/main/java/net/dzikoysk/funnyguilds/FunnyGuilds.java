@@ -78,6 +78,7 @@ import net.dzikoysk.funnyguilds.nms.v1_8R3.V1_8R3NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.v1_9R2.V1_9R2NmsAccessor;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.rank.RankRecalculationTask;
+import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
@@ -135,6 +136,7 @@ public class FunnyGuilds extends JavaPlugin {
     private UserPlaceholdersService userPlaceholdersService;
     private GuildPlaceholdersService guildPlaceholdersService;
     private TablistPlaceholdersService tablistPlaceholdersService;
+    private RankPlaceholdersService rankPlaceholdersService;
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
@@ -225,6 +227,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.allyInvitationList = new AllyInvitationList(this.guildManager);
 
         this.setupPlaceholdersService();
+        this.rankPlaceholdersService = new RankPlaceholdersService(logger, this.pluginConfiguration, this.messageConfiguration, this.tablistConfiguration, this.userRankManager, this.guildRankManager);
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -264,6 +267,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(TimePlaceholdersService.class).assignInstance(this.timePlaceholdersService);
             resources.on(UserPlaceholdersService.class).assignInstance(this.userPlaceholdersService);
             resources.on(GuildPlaceholdersService.class).assignInstance(this.guildPlaceholdersService);
+            resources.on(RankPlaceholdersService.class).assignInstance(this.rankPlaceholdersService);
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
@@ -571,6 +575,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public TablistPlaceholdersService getTablistPlaceholdersService() {
         return this.tablistPlaceholdersService;
+    }
+
+    public RankPlaceholdersService getRankPlaceholdersService() {
+        return this.rankPlaceholdersService;
     }
 
     public NmsAccessor getNmsAccessor() {
