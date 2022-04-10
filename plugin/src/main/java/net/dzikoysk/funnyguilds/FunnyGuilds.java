@@ -134,8 +134,8 @@ public class FunnyGuilds extends JavaPlugin {
     private TimePlaceholdersService timePlaceholdersService;
     private UserPlaceholdersService userPlaceholdersService;
     private GuildPlaceholdersService guildPlaceholdersService;
-    private TablistPlaceholdersService tablistPlaceholdersService;
     private RankPlaceholdersService rankPlaceholdersService;
+    private TablistPlaceholdersService tablistPlaceholdersService;
 
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
@@ -561,12 +561,12 @@ public class FunnyGuilds extends JavaPlugin {
         return this.guildPlaceholdersService;
     }
 
-    public TablistPlaceholdersService getTablistPlaceholdersService() {
-        return this.tablistPlaceholdersService;
-    }
-
     public RankPlaceholdersService getRankPlaceholdersService() {
         return this.rankPlaceholdersService;
+    }
+
+    public TablistPlaceholdersService getTablistPlaceholdersService() {
+        return this.tablistPlaceholdersService;
     }
 
     public NmsAccessor getNmsAccessor() {

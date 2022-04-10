@@ -66,7 +66,7 @@ public abstract class AbstractFunnyCommand {
     @Inject
     public GuildPlaceholdersService guildPlaceholdersService;
     @Inject
-    public RankPlaceholdersService rankPlaceholdersSerivce;
+    public RankPlaceholdersService rankPlaceholdersService;
 
     protected void sendMessage(CommandSender sender, String message) {
         ChatUtils.sendMessage(sender, message);
