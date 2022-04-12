@@ -55,11 +55,11 @@ dependencies {
     shadow "com.gmail.filoghost.holographicdisplays:holographicdisplays-api:2.4.9"
 
     testImplementation 'nl.jqno.equalsverifier:equalsverifier:3.10'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test:1.6.20'
     testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
     testImplementation 'org.mockito:mockito-core:4.4.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:4.4.0'
     testImplementation 'org.mockito:mockito-inline:4.4.0'
-    testImplementation 'org.codehaus.groovy:groovy-all:3.0.10'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'org.panda-lang:expressible-junit:1.1.17'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
