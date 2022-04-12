@@ -21,13 +21,10 @@ class PlaceholdersTest : FunnyGuildsSpec() {
     override fun prepareBukkit() {
         val player = Mockito.mock(Player::class.java)
 
-        mockedBukkit.`when`<Bukkit> { Bukkit.getPlayer(any(UUID::class.java)) }.thenAnswer { invocation ->
-            if (UUID.nameUUIDFromBytes("online".toByteArray()).equals(invocation.arguments[0])) {
-                player
-            } else {
-                null
+        mockedBukkit.`when`<Bukkit> { Bukkit.getPlayer(any(UUID::class.java)) }
+            .thenAnswer { invocation ->
+                player.takeIf { UUID.nameUUIDFromBytes("online".toByteArray()).equals(invocation.arguments[0]) }
             }
-        }
     }
 
     @Test
@@ -52,17 +49,26 @@ class PlaceholdersTest : FunnyGuildsSpec() {
         guild.addMember(user3)
 
         var text1 = "§7{MEMBERS}"
-        text1 = GuildPlaceholdersService.GUILD_MEMBERS_COLOR_CONTEXT.formatVariables(text1, Pair.of(ChatUtils.getLastColorBefore(text1, "{MEMBERS}"), guild))
+        text1 = GuildPlaceholdersService.GUILD_MEMBERS_COLOR_CONTEXT.formatVariables(
+            text1,
+            Pair.of(ChatUtils.getLastColorBefore(text1, "{MEMBERS}"), guild)
+        )
 
         assertEquals("§7user1, §auser2§7, user3", text1)
 
         var text2 = "§c{MEMBERS}"
-        text2 = GuildPlaceholdersService.GUILD_MEMBERS_COLOR_CONTEXT.formatVariables(text2, Pair.of(ChatUtils.getLastColorBefore(text2, "{MEMBERS}"), guild))
+        text2 = GuildPlaceholdersService.GUILD_MEMBERS_COLOR_CONTEXT.formatVariables(
+            text2,
+            Pair.of(ChatUtils.getLastColorBefore(text2, "{MEMBERS}"), guild)
+        )
 
         assertEquals("§cuser1, §auser2§c, user3", text2)
 
         var text3 = "§a{MEMBERS}"
-        text3 = GuildPlaceholdersService.GUILD_MEMBERS_COLOR_CONTEXT.formatVariables(text3, Pair.of(ChatUtils.getLastColorBefore(text3, "{MEMBERS}"), guild))
+        text3 = GuildPlaceholdersService.GUILD_MEMBERS_COLOR_CONTEXT.formatVariables(
+            text3,
+            Pair.of(ChatUtils.getLastColorBefore(text3, "{MEMBERS}"), guild)
+        )
 
         assertEquals("§auser1, §auser2§a, user3", text3)
     }
