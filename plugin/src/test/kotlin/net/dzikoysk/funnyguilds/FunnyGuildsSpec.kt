@@ -13,8 +13,7 @@ import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
 import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -27,25 +26,13 @@ import org.mockito.junit.jupiter.MockitoExtension
 @ExtendWith(MockitoExtension::class)
 open class FunnyGuildsSpec : BukkitSpec(){
 
-    companion object {
-        @JvmStatic
-        protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
-        @JvmStatic
-        protected lateinit var mockedBossBarProvider: MockedStatic<BossBarProvider>
+    protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
+    protected lateinit var mockedBossBarProvider: MockedStatic<BossBarProvider>
 
-        @BeforeAll
-        @JvmStatic
-        fun openMockedFunnyGuilds() {
-            mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
-            mockedBossBarProvider = mockStatic(BossBarProvider::class.java)
-        }
-
-        @AfterAll
-        @JvmStatic
-        fun closeMockedFunnyGuilds() {
-            mockedFunnyGuilds.close()
-            mockedBossBarProvider.close()
-        }
+    @BeforeEach
+    fun openMockedFunnyGuilds() {
+        mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
+        mockedBossBarProvider = mockStatic(BossBarProvider::class.java)
     }
 
     @Mock
@@ -99,6 +86,12 @@ open class FunnyGuildsSpec : BukkitSpec(){
                 .forEach { (range, number) -> parsedData[range] = number.toInt() }
 
         config.eloConstants = parsedData
+    }
+
+    @AfterEach
+    fun closeMockedFunnyGuilds() {
+        mockedFunnyGuilds.close()
+        mockedBossBarProvider.close()
     }
 
 }
