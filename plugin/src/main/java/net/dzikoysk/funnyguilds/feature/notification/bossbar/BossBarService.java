@@ -11,12 +11,7 @@ public class BossBarService {
     private final Map<UUID, BossBarProvider> providers = new HashMap<>();
 
     public BossBarProvider getBossBarProvider(User user) {
-        BossBarProvider provider = this.providers.get(user.getUUID());
-        if (provider == null) {
-            provider = BossBarProvider.getBossBar(user);
-            this.providers.put(user.getUUID(), provider);
-        }
-        return this.providers.get(user.getUUID());
+        return this.providers.computeIfAbsent(user.getUUID(), uuid -> BossBarProvider.getBossBar(user));
     }
 
 }
