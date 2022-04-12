@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.data.AbstractMutableEntity;
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Bukkit;
@@ -23,7 +22,6 @@ public class User extends AbstractMutableEntity {
     private WeakReference<Player> playerRef;
     private Option<Guild> guild = Option.none();
     private Option<UserBan> ban = Option.none();
-    private final BossBarProvider bossBarProvider;
 
     private final UserProfile profile;
 
@@ -35,7 +33,6 @@ public class User extends AbstractMutableEntity {
         this.cache = new UserCache(this);
         this.rank = new UserRank(this, FunnyGuilds.getInstance().getPluginConfiguration().rankStart);
         this.playerRef = new WeakReference<>(Bukkit.getPlayer(this.uuid));
-        this.bossBarProvider = BossBarProvider.getBossBar(this);
 
         this.markChanged();
     }
@@ -143,10 +140,6 @@ public class User extends AbstractMutableEntity {
 
     public void setBan(@Nullable UserBan ban) {
         this.ban = Option.of(ban);
-    }
-
-    public BossBarProvider getBossBar() {
-        return this.bossBarProvider;
     }
 
     public UserProfile getProfile() {
