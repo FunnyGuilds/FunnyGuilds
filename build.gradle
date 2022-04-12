@@ -5,6 +5,7 @@ plugins {
     id 'maven-publish'
     id 'checkstyle'
     id 'org.openrewrite.rewrite' version '5.19.3'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20'
 }
 
 rewrite {
@@ -41,8 +42,8 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'groovy'
     apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'kotlin'
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
