@@ -8,13 +8,13 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
 
-public final class DefaultBossBarProvider implements BossBarProvider {
+public final class BossBarProviderImpl implements BossBarProvider {
 
     private final User user;
     private final BossBar bossBar;
     private volatile BukkitTask hideBossBarTask;
 
-    public DefaultBossBarProvider(User user) {
+    public BossBarProviderImpl(User user) {
         this.user = user;
         this.bossBar = Bukkit.createBossBar("", BarColor.WHITE, BarStyle.SOLID);
     }

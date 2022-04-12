@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.v1_8;
+package net.dzikoysk.funnyguilds.feature.notification.bossbar.provider;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -6,8 +6,6 @@ import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.notification.NotificationUtil;
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarOptions;
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider;
 import net.dzikoysk.funnyguilds.nms.PacketSender;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.user.User;
@@ -16,7 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-public class BossBarProviderImpl implements BossBarProvider {
+public class LegacyBossBarProviderImpl implements BossBarProvider {
 
     private static final Class<?> ENTITY_CLASS;
     private static final Class<?> ENTITY_LIVING_CLASS;
@@ -85,7 +83,7 @@ public class BossBarProviderImpl implements BossBarProvider {
     private final AtomicInteger currentSecond;
     private int witherId;
 
-    public BossBarProviderImpl(User user) {
+    public LegacyBossBarProviderImpl(User user) {
         this.user = user;
         this.currentSecond = new AtomicInteger(0);
     }
