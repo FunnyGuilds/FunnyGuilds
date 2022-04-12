@@ -42,8 +42,8 @@ allprojects {
 }
 
 subprojects {
-    apply plugin: 'groovy'
     apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'kotlin'
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
