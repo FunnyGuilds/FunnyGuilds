@@ -31,7 +31,7 @@ class PlaceholdersTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun test_ONLINE_placeholder() {
+    fun `test ONLINE placeholder`() {
         var text = "§7offline - <online>online</online> - offline - <online>online</online> - offline"
         val formatter = BasicPlaceholdersService.ONLINE.toFormatter(ChatUtils.getLastColorBefore(text, "<online>"))
 
@@ -41,7 +41,7 @@ class PlaceholdersTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun test_GUILD_MEMBERS_COLOR_CONTEXT_placeholder() {
+    fun `test GUILD MEMBERS COLOR CONTEXT placeholder`() {
         val guild = guildManager.addGuild(Guild("guild", "TEST"))
         val user1 = userManager.createFake(UUID.randomUUID(), "user1", FakeUserProfile.offline())
         val user2 = userManager.createFake(UUID.randomUUID(), "user2", FakeUserProfile.online())

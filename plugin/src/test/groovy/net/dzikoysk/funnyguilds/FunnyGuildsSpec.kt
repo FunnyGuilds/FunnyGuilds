@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds
 
-import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
@@ -25,12 +24,10 @@ import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
 
-@CompileStatic
 @ExtendWith(MockitoExtension::class)
 open class FunnyGuildsSpec : BukkitSpec(){
 
     companion object {
-
         @JvmStatic
         protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
         @JvmStatic
@@ -49,7 +46,6 @@ open class FunnyGuildsSpec : BukkitSpec(){
             mockedFunnyGuilds.close()
             mockedBossBarProvider.close()
         }
-
     }
 
     @Mock

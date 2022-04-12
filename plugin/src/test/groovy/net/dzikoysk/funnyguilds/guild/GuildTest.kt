@@ -11,7 +11,7 @@ import java.util.*
 class GuildTest : FunnyGuildsSpec() {
 
     @Test
-    fun `guild_should_implement_proper_equals_&_hashcode`() {
+    fun `guild should implement proper equals & hashcode`() {
         val user1 = userManager.createFake(UUID.nameUUIDFromBytes("user1".toByteArray()), "user1")
         val user2 = userManager.createFake(UUID.nameUUIDFromBytes("user2".toByteArray()), "user2")
         val guild1 = Guild("guild1", "TEST1")

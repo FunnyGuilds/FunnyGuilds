@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.shared.bukkit
 
-import groovy.transform.CompileStatic
 import net.dzikoysk.funnyguilds.BukkitSpec
 import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.guild.Region
@@ -9,11 +8,10 @@ import org.bukkit.util.Vector
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
-@CompileStatic
 class FunnyBoxTest : BukkitSpec() {
 
     @Test
-    fun test_FunnyBox() {
+    fun `test FunnyBox`() {
         val createMinDistanceFromBorder = 50.0
 
         val radius = 10000.0 / 2

@@ -9,7 +9,7 @@ class RankSystemTest : FunnyGuildsSpec() {
     private var rankSystem = RankSystem.create(config)
 
     @Test
-    fun ELO_rank_system_test_1000_vs_1000() {
+    fun `ELO rank system test 1000 vs 1000`() {
         val result = rankSystem.calculate(RankSystem.Type.ELO, 1000, 1000)
 
         assertEquals(16, result.attackerPoints)
@@ -17,7 +17,7 @@ class RankSystemTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun ELO_rank_system_test_1100_vs_1000() {
+    fun `ELO rank system test 1100 vs 1000`() {
         val result = rankSystem.calculate(RankSystem.Type.ELO, 1100, 1000)
 
         assertEquals(12, result.attackerPoints)
@@ -25,7 +25,7 @@ class RankSystemTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun ELO_rank_system_test_1000_vs_1200() {
+    fun `ELO rank system test 1000 vs 1200`() {
         val result = rankSystem.calculate(RankSystem.Type.ELO, 1000, 1200)
 
         assertEquals(24, result.attackerPoints)
@@ -33,7 +33,7 @@ class RankSystemTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun ELO_rank_system_test_1200_vs_800() {
+    fun `ELO rank system test 1200 vs 800`() {
         val result = rankSystem.calculate(RankSystem.Type.ELO, 1200, 800)
 
         assertEquals(3, result.attackerPoints)
@@ -41,7 +41,7 @@ class RankSystemTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun PERCENT_rank_system_test() {
+    fun `PERCENT rank system test`() {
         var result = rankSystem.calculate(RankSystem.Type.PERCENT, 1000, 1000)
 
         assertEquals(10, result.attackerPoints)
@@ -54,7 +54,7 @@ class RankSystemTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun STATIC_rank_system_test() {
+    fun `STATIC rank system test`() {
         val result = rankSystem.calculate(RankSystem.Type.STATIC, 1000, 1000)
 
         assertEquals(15, result.attackerPoints)

@@ -12,7 +12,7 @@ import java.util.*
 class RankTest : FunnyGuildsSpec() {
 
     @Test
-    fun `user_should_implement_proper_equals_&_hashcode`() {
+    fun `user should implement proper equals & hashcode`() {
         val user1 = userManager.createFake(UUID.nameUUIDFromBytes("user1".toByteArray()), "user1")
         val user2 = userManager.createFake(UUID.nameUUIDFromBytes("user2".toByteArray()), "user2")
 
@@ -25,7 +25,7 @@ class RankTest : FunnyGuildsSpec() {
     }
 
     @Test
-    fun `guild_should_implement_proper_equals_&_hashcode`() {
+    fun `guild should implement proper equals & hashcode`() {
         val guild1 = Guild("guild1", "TEST1")
         val guild2 = Guild("guild2", "TEST2")
 

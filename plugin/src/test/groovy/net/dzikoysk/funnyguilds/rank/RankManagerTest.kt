@@ -9,7 +9,7 @@ import java.util.*
 class RankManagerTest : FunnyGuildsSpec() {
 
     @Test
-    fun `should_correctly_update_the_guilds_&_users_ranking`() {
+    fun `should correctly update the guilds & users ranking`() {
         val rankRecalculationTask = RankRecalculationTask(funnyGuilds)
 
         val user1 = userManager.createFake(UUID.randomUUID(), "user1")

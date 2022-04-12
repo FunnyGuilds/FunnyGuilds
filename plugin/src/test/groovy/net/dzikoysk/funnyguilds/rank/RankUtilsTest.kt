@@ -11,7 +11,7 @@ import java.util.*
 class RankUtilsTest : FunnyGuildsSpec() {
 
     @Test
-    fun should_parse_rank_with_guild_name() {
+    fun `should parse rank with guild name`() {
         val rankRecalculationTask = RankRecalculationTask(funnyGuilds)
 
         // given: a guild on top of the ranking
