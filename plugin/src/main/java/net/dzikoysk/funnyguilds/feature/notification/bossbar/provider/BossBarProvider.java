@@ -17,7 +17,7 @@ public interface BossBarProvider {
 
     void removeNotification();
 
-    static BossBarProvider  getBossBar(User user) {
+    static BossBarProvider getBossBar(User user) {
         switch (Reflections.SERVER_VERSION) {
             case "v1_8_R1":
             case "v1_8_R3":

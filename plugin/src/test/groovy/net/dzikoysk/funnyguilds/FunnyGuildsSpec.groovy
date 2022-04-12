@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.DefaultTops
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
-import net.dzikoysk.funnyguilds.user.User
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
 import org.junit.jupiter.api.AfterAll
@@ -22,7 +21,6 @@ import org.mockito.Mock
 import org.mockito.MockedStatic
 import org.mockito.junit.jupiter.MockitoExtension
 
-import static org.mockito.ArgumentMatchers.any
 import static org.mockito.Mockito.lenient
 import static org.mockito.Mockito.mockStatic
 
@@ -51,7 +49,6 @@ class FunnyGuildsSpec extends BukkitSpec {
     @BeforeAll
     static void openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds.class)
-        mockedBossBarProvider = mockStatic(BossBarProvider.class)
     }
 
     @BeforeEach
@@ -79,7 +76,6 @@ class FunnyGuildsSpec extends BukkitSpec {
         lenient().when(funnyGuilds.getRankPlaceholdersService()).thenReturn(rankPlaceholdersService)
 
         mockedFunnyGuilds.when({ FunnyGuilds.getInstance() }).thenReturn(funnyGuilds)
-        mockedBossBarProvider.when(() -> BossBarProvider.getBossBar(any(User.class))).thenReturn(null)
     }
 
     @BeforeEach
@@ -95,7 +91,6 @@ class FunnyGuildsSpec extends BukkitSpec {
     @AfterAll
     static void closeMockedFunnyGuilds() {
         mockedFunnyGuilds.close()
-        mockedBossBarProvider.close()
     }
 
 }

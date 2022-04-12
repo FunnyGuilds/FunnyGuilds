@@ -40,7 +40,7 @@ public class PlayerQuit extends AbstractFunnyListener {
         cache.setPlayerList(null);
         cache.clearDamage();
 
-        user.getBossBar().removeNotification();
+        bossBarService.getBossBarProvider(user).removeNotification();
     }
 
 }

@@ -396,7 +396,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
-        this.userManager.getUsers().forEach(user -> user.getBossBar().removeNotification());
+        this.userManager.getUsers().forEach(user -> bossBarService.getBossBarProvider(user).removeNotification());
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
@@ -581,6 +581,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public GuildEntityHelper getGuildEntityHelper() {
         return this.guildEntityHelper;
+    }
+
+    public BossBarService getBossBarService() {
+        return bossBarService;
     }
 
     public Injector getInjector() {

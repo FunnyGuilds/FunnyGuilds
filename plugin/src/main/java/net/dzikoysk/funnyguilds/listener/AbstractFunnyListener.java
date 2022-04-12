@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
+import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
 import net.dzikoysk.funnyguilds.guild.GuildRankManager;
@@ -58,5 +59,8 @@ public abstract class AbstractFunnyListener implements Listener {
     public MessageAccessor messageAccessor;
     @Inject
     public GuildEntityHelper guildEntityHelper;
+
+    @Inject
+    public BossBarService bossBarService;
 
 }
