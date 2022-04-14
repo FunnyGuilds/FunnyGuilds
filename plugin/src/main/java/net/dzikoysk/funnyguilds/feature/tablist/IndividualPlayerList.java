@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.ThreadLocalRandom;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
@@ -28,11 +27,13 @@ public class IndividualPlayerList {
     private final int cellCount;
     private final String header;
     private final String footer;
-    private final int cellPing;
 
     private final boolean animated;
     private final List<TablistPage> pages;
     private final int pagesCount;
+
+    private final SkinTexture cellTexture;
+    private final int cellPing;
 
     private final boolean enableLegacyPlaceholders;
 
@@ -45,6 +46,7 @@ public class IndividualPlayerList {
                                 String header, String footer,
                                 boolean animated,
                                 List<TablistPage> pages,
+                                SkinTexture cellTexture,
                                 int cellPing,
                                 boolean fillCells,
                                 boolean enableLegacyPlaceholders) {
@@ -56,6 +58,7 @@ public class IndividualPlayerList {
         this.animated = animated;
         this.pages = pages;
         this.pagesCount = pages.size();
+        this.cellTexture = cellTexture;
         this.cellPing = cellPing;
 
         this.enableLegacyPlaceholders = enableLegacyPlaceholders;
@@ -155,19 +158,7 @@ public class IndividualPlayerList {
     public SkinTexture[] putTexturePrepareCells() {
         SkinTexture[] textures = new SkinTexture[PlayerListConstants.DEFAULT_CELL_COUNT];
         for (int i = 0; i < this.cellCount; i++) {
-            ThreadLocalRandom random = ThreadLocalRandom.current();
-            SkinTexture texture;
-            switch (random.nextInt(0, 2)) {
-                case 0:
-                    texture = new SkinTexture("ewogICJ0aW1lc3RhbXAiIDogMTU5NDI5NjI1MTAzNiwKICAicHJvZmlsZUlkIiA6ICJhNzFjNTQ5MmQwNTE0ZDg3OGFiOTEwZmRmZmRmYzgyZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBcHBsZTU0NDciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjBlNGIyNmJkMDcwNjFmMDQwZGUxNmJiOTVlMTY3NDU2MWU0NjQzZGY3Nzg0MDcxYzUwOGFjZTMxNDkwZjJkOCIKICAgIH0KICB9Cn0=", "rHxHLDlEDkDvGGo8foVbmtsqUeQH++nA3cLDGYdkZ8mn9vCgE0dmbGKEnVydLB95pJoy9vCFE2Kzy7iG78H1iNWDi8VUGcY7TPRLfGihYuO9MavZ35nbKvY0to66dTMpW3GSFpOQ/sGGmBjXfEAipa7tiASK2hiDv/F5JMGqkMB0oczlXyYdcKsrRNWRL29qE3wZX2mrMX3g5liJduviAWyeNjlvX012mqDOQ2xeH1OPAotwE6mEWLwZUWfSjqbHrBRLX13DhwCylSNqP7FLGMeXghN6ESLD9vz26xpFzGVLKXww1RXH+2jJ/07G0QNz2oYURF84AerliODWoZJc0HTjchL0CVRv5Vkhy+OwagLsvcvcJSm//O4imxk44sa3n5j3yzHP4aHxq7SUTO53IsMD0y23tCYHsYahhAcwVLrKpoFF6sApvn4CNHsRzeuKRszg33h8OM9esCYqH8ZUmaf9XzXyM3xSQ65coc00bzl1UMQ8zCO7kNanb5klkICSG0xkbU4L9U2dc5zp0oK/2ORdP5oWsLfbnATSqFYSPcqABb0jTYf7XSU2rBUTeNF+YWXcUf2e2scc8zrwJP9L0qReCIfKAP3gnI28ujwk/AZ53RRVjDlxD39rqcIz2I1P6CSJzcJN6aOYo3BBrg2qZrSU77pDEmghrPVj6wBjMpM=");
-                    break;
-                case 1:
-                    texture = new SkinTexture("ewogICJ0aW1lc3RhbXAiIDogMTY0OTkyNTYyOTQ1NSwKICAicHJvZmlsZUlkIiA6ICI0OWIzODUyNDdhMWY0NTM3YjBmN2MwZTFmMTVjMTc2NCIsCiAgInByb2ZpbGVOYW1lIiA6ICJiY2QyMDMzYzYzZWM0YmY4IiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzkwMmQ1NWJjOWI3NDg0OWU2NDg4OGExMzRlMTA1ZjA4YjRiMjdlNmJjZDg5MDBhNzgyMjJiNzdlMWY4N2YwNTAiCiAgICB9CiAgfQp9", "SpbWrqCDXZOdoIsJOe5aJO3qdoN9v1alCzVtTdaBmpLPDRm0Kx7q1fLXgySu49KYyWMdKwgfkeCS1JkdCUACVns1xXbqZ/lsxIeD+mqktReXsBVQ8oGRXP3ho8+hcgSfHJdoV3vR2Qx+lV94nJAbOBPFqLFJFcfmNKbUbCW1QimJBGjgjBC+41GVeOZQhT52X8tLhkL88/0v6PvLtQ6Her7EVEjB1yvbDySuQPFHPTqtPCDqDu7TyEZ6Lbw3q9FW2HVwyfvQj91nIYEFMMyEId5KNtVWbBSiMrtNTLLscUf3pp7CtG8R0eTTkWZdz1ALKy656VcOGkJBCf6bN0nG75IyJeKSl7mGlaKCASco9LjIyhMRdAaqchY9G3HnkaTL1j2vi6JRDPuP3R/XjYg8bip1yWjVWmLNc6TvCRLBdbTo508pKeXPWBOnGQkucL5yT6mtzveFxCSVy8GBrjmwRK0XnaPl1TQfo4frDUBMkyrur0fN1rnBcGKXEwSlIWh7uTvXKmho4/o3zcMyiPb5zw73fASb6+l0lj/OMig/Jx3h+IpZwgfv1nQjL9+A8/ZJaGmsorVArD5J1s8gqaf8u26yCNKOXHa66Ojbgih2fI8TEKGM4AthIA9OkRB9Gl25B7uQwQsX/cATuo+y8rSGL8+vWgA8a1waXv+/kMlp5/4=");
-                    break;
-                default:
-                    texture = new SkinTexture("ewogICJ0aW1lc3RhbXAiIDogMTY0OTkyNDYwMTAwOSwKICAicHJvZmlsZUlkIiA6ICI1MjhlYzVmMmEzZmM0MDA0YjYwY2IwOTA5Y2JiMjdjYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJQdWxpenppIiwKICAic2lnbmF0dXJlUmVxdWlyZWQiIDogdHJ1ZSwKICAidGV4dHVyZXMiIDogewogICAgIlNLSU4iIDogewogICAgICAidXJsIiA6ICJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlL2JmZTQ4ZWNlODdhYWVhOTBkZjEwNDdiYmE5ODY0ZjQwOThhMWVmN2Q4YmYzM2E0MjI5ODE0ZDY0ZWI3YzBlNDYiLAogICAgICAibWV0YWRhdGEiIDogewogICAgICAgICJtb2RlbCIgOiAic2xpbSIKICAgICAgfQogICAgfQogIH0KfQ==", "lQecbM8q2//0+k45oOMLwVyHXn2Ts6p9HLuZtiTAEHxY9x5HTf8tVrk+UgUxXRcAIRv/9c/47daQlSKFwoXQgXpIglR/8vqLkDodsDc1edPiOdp7GFOVCJ8Jnj4UaV+kQ+J93zzpW6pAbLlupZuwriJzfPMPhqFYuJp58ZXVwiE9uRuLykY3aXiKxPjAcqGqU8e8FcxzLZXj4b0Z0xvG+Imqoak6PYIpMW9oOhP4ZZ/u5Ag+dvVKKNq6aVfovrWHH/HYsIp6imfFebQuY51vkvOMNw7eNexqcAmnBFonv9z28VF1hXZI9bbyOsArYboPrxToDbumubVMGH6qHnd6QIqLRFg1/08IieH56/fhDU+UTOyGoED0j0EUXMxsJd2behUVCr67ykASdlPg634yYtVJigvQU0joe1UruCUMjDxJV7ZtGTNPQvnJh386vhnn2fDZXZJlZjisA0e65j2r6MHLkO/3IttTDSmXDn6Iiv9JtBSqcBWSnpKvCjFs7JQ3N9nNkZqlqgSSzL/1CxEIQI4htUC2qN1IZd8f+EM0iHkkngse9u0svPTYJ3hjyPFpi/B2nD9L/+9yOCn9IYXofUyZQW+saS8Ir/iOummoUmwhrKjDBHYZwI3HaEDkh+N/6s2BnKr3E4KbH+8W+dljbsfx0bywzs98QePflx06U8Q=");
-            }
-            textures[i] = texture;
+            textures[i] = this.cellTexture;
         }
         return textures;
     }

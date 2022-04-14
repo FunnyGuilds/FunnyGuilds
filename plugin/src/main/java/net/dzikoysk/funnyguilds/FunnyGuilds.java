@@ -444,8 +444,8 @@ public class FunnyGuilds extends JavaPlugin {
                     this.getNmsAccessor().getPlayerListAccessor(),
                     this.tablistConfiguration.playerList,
                     this.tablistConfiguration.playerListHeader, this.tablistConfiguration.playerListFooter,
-                    this.tablistConfiguration.playerListAnimated,
-                    this.tablistConfiguration.pages,
+                    this.tablistConfiguration.playerListAnimated, this.tablistConfiguration.pages,
+                    this.tablistConfiguration.heads.fillerTexture.toSkinTexture(),
                     this.tablistConfiguration.playerListPing,
                     this.tablistConfiguration.playerListFillCells,
                     this.pluginConfiguration.top.enableLegacyPlaceholders

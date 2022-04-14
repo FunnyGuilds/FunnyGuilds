@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 
 @Names(strategy = NameStrategy.HYPHEN_CASE, modifier = NameModifier.TO_LOWER_CASE)
 public class TablistConfiguration extends OkaeriConfig {
@@ -149,12 +150,28 @@ public class TablistConfiguration extends OkaeriConfig {
     public static class Heads extends OkaeriConfig {
 
         @Comment("Czy customowe glowki na liscie graczy maja byc wlaczone.")
-        public boolean enabled = false;
+        public boolean enabled = true;
+
+        @Comment("Tekstura glowy, ktora ma byc wyswietlana na liscie graczy.")
+        @Comment("Teksture mozna wziac z np. https://mineskin.org/ (mozna wybrac z galerii lub utworzyc wlasna).")
+        public Texture fillerTexture = new Texture(
+                "ewogICJ0aW1lc3RhbXAiIDogMTY0OTkzMjg0OTYyOCwKICAicHJvZmlsZUlkIiA6ICIzMjIzNDVjNzg2ZTY0ZWU3OWNlZDA3NTAzMmI5MzQxZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJQZXJpZDB0XyIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS84ZWUyMTYxODk0NjA5M2QzZDYzNjk1M2M0ZTM4Mzc5NDM3MjFhOWE4N2NiZGRlZmEwYmVmMmZjZmY0NTQ1ZGU4IgogICAgfQogIH0KfQ==",
+                "JK7IOCq36OLWWKmqp0NZHtZ0gKCXHgXWiHJS7d648X+5Nk7JrYhrV0GksyNOlBZzu+q0OtMGOnL/o+c9UFoedfIwEojjCv9Aty8knKU0+xfD190148nkXxEqOw6X/JJIe+7oWAQ+dBm7E/9LID2nU4X0clbWHFaFm5yFEbvuSYHdXrI6WRmAZoaacTOI5AVAudOz2nc3PCl9Zwl/Uzf1YosLOyYc3VQKGEnWSZHqiDWOGsPpHuVmQazOtgeg39LyfCDiDi7dT33nQjdiGab3DTYLIXNzKvG3pijzJGfs5seV4RJNlHWosmmVSfvmEOw6AONWMxxNnKd6aEl2OLIDc7SeZT6zgvyXtd7MZ6WtWB7d+8aBdH7hRodtDnUXIdiqFuQcT/3Z+ljU1N0rTn7e/RQ6Ci+/U05V/BTGJ1/reYldEjhT2M+3A93ydWP6qclzztWxjdOwqOS2ga4Z6KcsnnQCkbR+ZfUbCdrwSEW8bg6iwUb4ZJc5FIqe7is5hT8h4HU5U1ODTzC0qNZ5jwPNv35FVEy33zeZjrYvAYRWPkjr5ro1TIsP8pnrzK+SAsnVjq1+wNltPPF0DYRncMqVPlQ9jH4QwrHP5MHlTTZm3O5d2M8v62RhOx+lUjpIZes6Si0BChMrZOGnmr/M2h5bIkxEpBLnmvaHgVkLBdm+hx0="
+        );
 
         public static class Texture extends OkaeriConfig {
 
-            /*public final String value;
-            public final String signature;*/
+            public final String value;
+            public final String signature;
+
+            public Texture(String value, String signature) {
+                this.value = value;
+                this.signature = signature;
+            }
+
+            public SkinTexture toSkinTexture() {
+                return new SkinTexture(value, signature);
+            }
 
         }
 
