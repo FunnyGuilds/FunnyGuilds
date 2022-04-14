@@ -68,21 +68,22 @@ public class V1_12R1PlayerList implements PlayerList {
 
             for (int i = 0; i < this.cellCount; i++) {
                 if (this.profileCache[i] == null) {
-                    this.profileCache[i] = new GameProfile(
+                    GameProfile gameProfile = new GameProfile(
                             UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, StringUtils.leftPad(String.valueOf(i), 2, '0'))),
                             " "
                     );
+
+                    SkinTexture texture = cellTextures[i];
+                    if (texture != null) {
+                        gameProfile.getProperties().removeAll("textures");
+                        gameProfile.getProperties().put("textures", new Property("textures", texture.getValue(), texture.getSignature()));
+                    }
+
+                    this.profileCache[i] = gameProfile;
                 }
 
                 String text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
-
-                SkinTexture texture = cellTextures[i];
-                if (texture != null) {
-                    gameProfile.getProperties().removeAll("textures");
-                    gameProfile.getProperties().put("textures", new Property("textures", texture.getValue(), texture.getSignature()));
-                }
-
                 IChatBaseComponent component = CraftChatMessage.fromString(text, false)[0];
 
                 Object playerInfoData = PLAYER_INFO_DATA_HELPER.createPlayerInfoData(

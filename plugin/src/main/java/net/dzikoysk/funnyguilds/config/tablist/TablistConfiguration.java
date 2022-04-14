@@ -141,6 +141,25 @@ public class TablistConfiguration extends OkaeriConfig {
     @CustomKey("player-list-footer")
     public String playerListFooter = "&c&lWiadomosci braku (pokazujace sie, gdy gracz nie ma gildii) mozna zmienic w pliku messages.yml!";
 
+
+    @Comment("Wyglad glowek na liscie graczy.")
+    @Comment("Funkcja dziala jedynie dla zautoryzowanych graczy (tzw. premium), gracze niezautoryzowani (tzw. cracked/non-premium) nie zobacza zadnych zmian.")
+    public Heads heads = new Heads();
+
+    public static class Heads extends OkaeriConfig {
+
+        @Comment("Czy customowe glowki na liscie graczy maja byc wlaczone.")
+        public boolean enabled = false;
+
+        public static class Texture extends OkaeriConfig {
+
+            /*public final String value;
+            public final String signature;*/
+
+        }
+
+    }
+
     @Comment("Czy animowana tablista ma byc wlaczona?")
     public boolean playerListAnimated = true;
 
