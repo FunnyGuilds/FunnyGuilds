@@ -24,7 +24,7 @@ class UserTest : FunnyGuildsSpec() {
                 .withPrefabValues(UserCache::class.java, user1.cache, user2.cache)
                 .withPrefabValues(MutableEntity::class.java, user1, user2)
                 .withPrefabValues(WeakReference::class.java, WeakReference<Any?>(null), WeakReference<Any?>(null))
-                .withIgnoredFields("name", "cache", "rank", "playerRef", "guild", "ban", "profile", "bossBarProvider", "wasChanged")
+                .withIgnoredFields("name", "cache", "rank", "playerRef", "guild", "ban", "profile", "wasChanged")
                 .verify()
     }
 

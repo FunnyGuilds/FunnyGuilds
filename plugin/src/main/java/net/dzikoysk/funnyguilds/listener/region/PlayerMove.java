@@ -72,7 +72,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                                user.getBossBar().sendNotification(
+                                bossBarService.getBossBarProvider(user).sendNotification(
                                         formatter.format(this.messages.notificationBossbarLeaveGuildRegion),
                                         config.bossBarOptions_,
                                         config.regionNotificationTime
@@ -124,7 +124,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             }
 
                             if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                                user.getBossBar().sendNotification(
+                                bossBarService.getBossBarProvider(user).sendNotification(
                                         formatter.format(this.messages.notificationBossbarEnterGuildRegion),
                                         config.bossBarOptions_,
                                         config.regionNotificationTime
@@ -171,7 +171,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 }
 
                                 if (config.regionEnterNotificationStyle.contains(NotificationStyle.BOSSBAR)) {
-                                    memberUser.getBossBar().sendNotification(
+                                    bossBarService.getBossBarProvider(memberUser).sendNotification(
                                             formatter.format(this.messages.notificationBossbarIntruderEnterGuildRegion),
                                             config.bossBarOptions_,
                                             config.regionNotificationTime

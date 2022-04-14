@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.feature.gui.GuiActionHandler;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
+import net.dzikoysk.funnyguilds.feature.notification.bossbar.BossBarService;
 import net.dzikoysk.funnyguilds.feature.placeholders.BasicPlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.placeholders.TimePlaceholdersService;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
@@ -140,6 +141,8 @@ public class FunnyGuilds extends JavaPlugin {
     private NmsAccessor nmsAccessor;
     private GuildEntityHelper guildEntityHelper;
 
+    private BossBarService bossBarService;
+
     private DataModel dataModel;
     private DataPersistenceHandler dataPersistenceHandler;
     private InvitationPersistenceHandler invitationPersistenceHandler;
@@ -244,6 +247,8 @@ public class FunnyGuilds extends JavaPlugin {
 
         this.tablistPlaceholdersService = new TablistPlaceholdersService(basicPlaceholdersService, timePlaceholdersService, userPlaceholdersService, guildPlaceholdersService);
 
+        this.bossBarService = new BossBarService();
+
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
             this.dataModel.load();
@@ -286,6 +291,7 @@ public class FunnyGuilds extends JavaPlugin {
             resources.on(NmsAccessor.class).assignInstance(this.nmsAccessor);
             resources.on(MessageAccessor.class).assignInstance(this.nmsAccessor.getMessageAccessor());
             resources.on(GuildEntityHelper.class).assignInstance(this.guildEntityHelper);
+            resources.on(BossBarService.class).assignInstance(this.bossBarService);
             resources.on(DataModel.class).assignInstance(this.dataModel);
         });
 
@@ -390,7 +396,7 @@ public class FunnyGuilds extends JavaPlugin {
         this.tablistBroadcastTask.cancel();
         this.rankRecalculationTask.cancel();
 
-        this.userManager.getUsers().forEach(user -> user.getBossBar().removeNotification());
+        this.userManager.getUsers().forEach(user -> bossBarService.getBossBarProvider(user).removeNotification());
 
         this.dataModel.save(false);
         this.dataPersistenceHandler.stopHandler();
@@ -575,6 +581,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public GuildEntityHelper getGuildEntityHelper() {
         return this.guildEntityHelper;
+    }
+
+    public BossBarService getBossBarService() {
+        return bossBarService;
     }
 
     public Injector getInjector() {

@@ -5,27 +5,12 @@ import net.dzikoysk.funnyguilds.guild.Guild
 import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils
 import net.dzikoysk.funnyguilds.user.FakeUserProfile
-import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import panda.std.Pair
 import java.util.*
 
 class PlaceholdersTest : FunnyGuildsSpec() {
-
-    @BeforeEach
-    override fun prepareBukkit() {
-        val player = Mockito.mock(Player::class.java)
-
-        mockedBukkit.`when`<Bukkit> { Bukkit.getPlayer(any(UUID::class.java)) }
-            .thenAnswer { invocation ->
-                player.takeIf { UUID.nameUUIDFromBytes("online".toByteArray()).equals(invocation.arguments[0]) }
-            }
-    }
 
     @Test
     fun `test ONLINE placeholder`() {
