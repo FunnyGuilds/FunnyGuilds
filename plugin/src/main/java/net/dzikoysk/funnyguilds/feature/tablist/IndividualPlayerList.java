@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -26,11 +27,13 @@ public class IndividualPlayerList {
     private final int cellCount;
     private final String header;
     private final String footer;
-    private final int cellPing;
 
     private final boolean animated;
     private final List<TablistPage> pages;
     private final int pagesCount;
+
+    private final SkinTexture cellTexture;
+    private final int cellPing;
 
     private final boolean enableLegacyPlaceholders;
 
@@ -43,6 +46,7 @@ public class IndividualPlayerList {
                                 String header, String footer,
                                 boolean animated,
                                 List<TablistPage> pages,
+                                SkinTexture cellTexture,
                                 int cellPing,
                                 boolean fillCells,
                                 boolean enableLegacyPlaceholders) {
@@ -54,6 +58,7 @@ public class IndividualPlayerList {
         this.animated = animated;
         this.pages = pages;
         this.pagesCount = pages.size();
+        this.cellTexture = cellTexture;
         this.cellPing = cellPing;
 
         this.enableLegacyPlaceholders = enableLegacyPlaceholders;
@@ -113,8 +118,10 @@ public class IndividualPlayerList {
         String preparedHeader = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT];
         String preparedFooter = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1];
 
+        SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
+
         this.user.getPlayer()
-                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, this.cellPing));
+                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing));
     }
 
     private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
@@ -146,6 +153,14 @@ public class IndividualPlayerList {
         formatted = HookUtils.replacePlaceholders(player, formatted);
 
         return formatted;
+    }
+
+    public SkinTexture[] putTexturePrepareCells() {
+        SkinTexture[] textures = new SkinTexture[PlayerListConstants.DEFAULT_CELL_COUNT];
+        for (int i = 0; i < this.cellCount; i++) {
+            textures[i] = this.cellTexture;
+        }
+        return textures;
     }
 
 }

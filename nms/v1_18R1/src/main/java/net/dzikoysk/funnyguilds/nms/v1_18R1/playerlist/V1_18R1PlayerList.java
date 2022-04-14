@@ -2,10 +2,12 @@ package net.dzikoysk.funnyguilds.nms.v1_18R1.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import java.util.List;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 import net.minecraft.network.chat.IChatBaseComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.PacketPlayOutPlayerInfo;
@@ -33,7 +35,7 @@ public class V1_18R1PlayerList implements PlayerList {
     }
 
     @Override
-    public void send(Player player, String[] playerListCells, String header, String footer, int ping) {
+    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping) {
         final List<Packet<?>> packets = Lists.newArrayList();
         final List<PacketPlayOutPlayerInfo.PlayerInfoData> addPlayerList = Lists.newArrayList();
         final List<PacketPlayOutPlayerInfo.PlayerInfoData> updatePlayerList = Lists.newArrayList();
@@ -41,10 +43,18 @@ public class V1_18R1PlayerList implements PlayerList {
         try {
             for (int i = 0; i < this.cellCount; i++) {
                 if (this.profileCache[i] == null) {
-                    this.profileCache[i] = new GameProfile(
+                    GameProfile gameProfile = new GameProfile(
                             UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, StringUtils.leftPad(String.valueOf(i), 2, '0'))),
                             " "
                     );
+
+                    SkinTexture texture = cellTextures[i];
+                    if (texture != null) {
+                        gameProfile.getProperties().removeAll("textures");
+                        gameProfile.getProperties().put("textures", new Property("textures", texture.getValue(), texture.getSignature()));
+                    }
+
+                    this.profileCache[i] = gameProfile;
                 }
 
                 String text = playerListCells[i];
