@@ -18,6 +18,7 @@ import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RawStringTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.SimpleDateFormatTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.SkinTextureSerializer;
 import net.dzikoysk.funnyguilds.config.serdes.VectorSerializer;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPageSerializer;
@@ -64,7 +65,10 @@ public final class ConfigurationFactory {
     public TablistConfiguration createTablistConfiguration(File tablistConfigurationFile) {
         return ConfigManager.create(TablistConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
-            it.withSerdesPack(registry -> registry.register(new TablistPageSerializer()));
+            it.withSerdesPack(registry -> {
+                registry.register(new TablistPageSerializer());
+                registry.register(new SkinTextureSerializer());
+            });
             it.withBindFile(tablistConfigurationFile);
             it.saveDefaults();
             it.load(true);
