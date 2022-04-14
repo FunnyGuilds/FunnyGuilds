@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListAccessor;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -113,8 +114,10 @@ public class IndividualPlayerList {
         String preparedHeader = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT];
         String preparedFooter = preparedCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1];
 
+        SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
+
         this.user.getPlayer()
-                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, this.cellPing));
+                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing));
     }
 
     private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
@@ -146,6 +149,14 @@ public class IndividualPlayerList {
         formatted = HookUtils.replacePlaceholders(player, formatted);
 
         return formatted;
+    }
+
+    public SkinTexture[] putTexturePrepareCells() {
+        SkinTexture[] textures = new SkinTexture[PlayerListConstants.DEFAULT_CELL_COUNT];
+        for (int i = 0; i < this.cellCount; i++) {
+            textures[i] = new SkinTexture("ewogICJ0aW1lc3RhbXAiIDogMTU5NDI5NjI1MTAzNiwKICAicHJvZmlsZUlkIiA6ICJhNzFjNTQ5MmQwNTE0ZDg3OGFiOTEwZmRmZmRmYzgyZiIsCiAgInByb2ZpbGVOYW1lIiA6ICJBcHBsZTU0NDciLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjBlNGIyNmJkMDcwNjFmMDQwZGUxNmJiOTVlMTY3NDU2MWU0NjQzZGY3Nzg0MDcxYzUwOGFjZTMxNDkwZjJkOCIKICAgIH0KICB9Cn0=", "rHxHLDlEDkDvGGo8foVbmtsqUeQH++nA3cLDGYdkZ8mn9vCgE0dmbGKEnVydLB95pJoy9vCFE2Kzy7iG78H1iNWDi8VUGcY7TPRLfGihYuO9MavZ35nbKvY0to66dTMpW3GSFpOQ/sGGmBjXfEAipa7tiASK2hiDv/F5JMGqkMB0oczlXyYdcKsrRNWRL29qE3wZX2mrMX3g5liJduviAWyeNjlvX012mqDOQ2xeH1OPAotwE6mEWLwZUWfSjqbHrBRLX13DhwCylSNqP7FLGMeXghN6ESLD9vz26xpFzGVLKXww1RXH+2jJ/07G0QNz2oYURF84AerliODWoZJc0HTjchL0CVRv5Vkhy+OwagLsvcvcJSm//O4imxk44sa3n5j3yzHP4aHxq7SUTO53IsMD0y23tCYHsYahhAcwVLrKpoFF6sApvn4CNHsRzeuKRszg33h8OM9esCYqH8ZUmaf9XzXyM3xSQ65coc00bzl1UMQ8zCO7kNanb5klkICSG0xkbU4L9U2dc5zp0oK/2ORdP5oWsLfbnATSqFYSPcqABb0jTYf7XSU2rBUTeNF+YWXcUf2e2scc8zrwJP9L0qReCIfKAP3gnI28ujwk/AZ53RRVjDlxD39rqcIz2I1P6CSJzcJN6aOYo3BBrg2qZrSU77pDEmghrPVj6wBjMpM=");
+        }
+        return textures;
     }
 
 }

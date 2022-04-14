@@ -2,11 +2,13 @@ package net.dzikoysk.funnyguilds.nms.v1_16R3.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
+import net.dzikoysk.funnyguilds.nms.api.playerlist.SkinTexture;
 import net.dzikoysk.funnyguilds.nms.v1_8R3.playerlist.PlayerInfoDataHelper;
 import net.minecraft.server.v1_16_R3.EnumGamemode;
 import net.minecraft.server.v1_16_R3.IChatBaseComponent;
@@ -47,7 +49,7 @@ public class V1_16R3PlayerList implements PlayerList {
     }
 
     @Override
-    public void send(Player player, String[] playerListCells, String header, String footer, int ping) {
+    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping) {
         final List<Packet<?>> packets = Lists.newArrayList();
         final List<Object> addPlayerList = Lists.newArrayList();
         final List<Object> updatePlayerList = Lists.newArrayList();
@@ -66,6 +68,13 @@ public class V1_16R3PlayerList implements PlayerList {
 
                 String text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
+
+                SkinTexture texture = cellTextures[i];
+                if (texture != null) {
+                    gameProfile.getProperties().removeAll("textures");
+                    gameProfile.getProperties().put("textures", new Property("textures", texture.getValue(), texture.getSignature()));
+                }
+
                 IChatBaseComponent component = CraftChatMessage.fromStringOrNull(text, false);
 
                 Object playerInfoData = PLAYER_INFO_DATA_HELPER.createPlayerInfoData(
