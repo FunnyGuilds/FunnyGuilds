@@ -23,19 +23,19 @@ public class PlayerTeleport extends AbstractFunnyListener {
     }
 
     private boolean isTeleportationToRegionAllowed(Guild guild, Guild userGuild) {
-        return !config.blockTeleportOnRegion.neutral
-                && this.isTeleportationOnAllyRegionAllowed(guild, userGuild)
-                && this.isTeleportationOnEnemyRegionAllowed(guild, userGuild);
+        return !config.blockTeleportOnRegion.neutral &&
+                this.isTeleportationOnAllyRegionAllowed(guild, userGuild) &&
+                this.isTeleportationOnEnemyRegionAllowed(guild, userGuild);
     }
 
     private boolean isTeleportationOnEnemyRegionAllowed(Guild guild, Guild userGuild) {
-        return !config.blockTeleportOnRegion.enemy
-                || !guild.getEnemies().contains(userGuild);
+        return !config.blockTeleportOnRegion.enemy ||
+                !guild.getEnemies().contains(userGuild);
     }
 
     private boolean isTeleportationOnAllyRegionAllowed(Guild guild, Guild userGuild) {
-        return  !config.blockTeleportOnRegion.ally
-                || !guild.getAllies().contains(userGuild);
+        return  !config.blockTeleportOnRegion.ally ||
+                !guild.getAllies().contains(userGuild);
     }
 
 }
