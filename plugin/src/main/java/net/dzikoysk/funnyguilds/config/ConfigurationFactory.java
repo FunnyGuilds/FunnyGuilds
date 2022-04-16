@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animat
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.NumberRangeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RangeFormattingTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.RawStringTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.SimpleDateFormatTransformer;
@@ -66,6 +67,7 @@ public final class ConfigurationFactory {
         return ConfigManager.create(TablistConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
+                registry.register(new NumberRangeTransformer());
                 registry.register(new TablistPageSerializer());
                 registry.register(new SkinTextureSerializer());
             });

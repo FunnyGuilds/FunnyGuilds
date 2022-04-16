@@ -451,7 +451,7 @@ public class FunnyGuilds extends JavaPlugin {
                     this.tablistConfiguration.playerList,
                     this.tablistConfiguration.playerListHeader, this.tablistConfiguration.playerListFooter,
                     this.tablistConfiguration.playerListAnimated, this.tablistConfiguration.pages,
-                    this.tablistConfiguration.heads.fillerTexture,
+                    this.tablistConfiguration.heads.textures,
                     this.tablistConfiguration.playerListPing,
                     this.tablistConfiguration.playerListFillCells,
                     this.pluginConfiguration.top.enableLegacyPlaceholders

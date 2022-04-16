@@ -40,7 +40,7 @@ public class PlayerJoin extends AbstractFunnyListener {
                     tablistConfig.playerList,
                     tablistConfig.playerListHeader, tablistConfig.playerListFooter,
                     tablistConfig.playerListAnimated, tablistConfig.pages,
-                    tablistConfig.heads.fillerTexture,
+                    tablistConfig.heads.textures,
                     tablistConfig.playerListPing,
                     tablistConfig.playerListFillCells,
                     config.top.enableLegacyPlaceholders
