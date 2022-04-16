@@ -34,7 +34,7 @@ public class PlayerTeleport extends AbstractFunnyListener {
     }
 
     private boolean isTeleportationOnAllyRegionAllowed(Guild guild, Guild userGuild) {
-        return  !config.blockTeleportOnRegion.ally ||
+        return !config.blockTeleportOnRegion.ally ||
                 !guild.getAllies().contains(userGuild);
     }
 
