@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.jetbrains.annotations.Nullable;
 
 public class PlayerTeleport extends AbstractFunnyListener {
 
@@ -29,18 +30,18 @@ public class PlayerTeleport extends AbstractFunnyListener {
                 .isPresent();
     }
 
-    private boolean isTeleportationToRegionAllowed(Guild guild, Guild userGuild) {
+    private boolean isTeleportationToRegionAllowed(Guild guild, @Nullable Guild userGuild) {
         return !config.blockTeleportOnRegion.neutral &&
                 this.isTeleportationOnAllyRegionAllowed(guild, userGuild) &&
                 this.isTeleportationOnEnemyRegionAllowed(guild, userGuild);
     }
 
-    private boolean isTeleportationOnEnemyRegionAllowed(Guild guild, Guild userGuild) {
+    private boolean isTeleportationOnEnemyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
         return !config.blockTeleportOnRegion.enemy ||
                 !guild.getEnemies().contains(userGuild);
     }
 
-    private boolean isTeleportationOnAllyRegionAllowed(Guild guild, Guild userGuild) {
+    private boolean isTeleportationOnAllyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
         return !config.blockTeleportOnRegion.ally ||
                 !guild.getAllies().contains(userGuild);
     }
