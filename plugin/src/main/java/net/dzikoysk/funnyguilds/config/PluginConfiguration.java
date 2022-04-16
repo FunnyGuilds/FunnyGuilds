@@ -421,6 +421,19 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("region-commands")
     public List<String> regionCommands = Collections.singletonList("sethome");
 
+    public BlockTeleportOnRegion blockTeleportOnRegion = new BlockTeleportOnRegion();
+
+    public static class BlockTeleportOnRegion extends OkaeriConfig {
+
+        @Comment("Czy ma byc blokowana teleportacja na teren neutralnej gildii")
+        public boolean neutral = true;
+        @Comment("Czy ma byc blokowana teleportacja na teren wrogiej gildii")
+        public boolean enemy = true;
+        @Comment("Czy ma byc blokowana teleportacja na teren sojuszniczej gildii")
+        public boolean ally = false;
+
+    }
+
     @Comment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
 
