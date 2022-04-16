@@ -12,7 +12,6 @@ public class BlockBreak extends AbstractFunnyListener {
         ProtectionSystem.isProtected(event.getPlayer(), event.getBlock().getLocation(), this.config.regionExplodeBlockBreaking)
                 .peek(ProtectionSystem::defaultResponse)
                 .peek(result -> event.setCancelled(true));
-
     }
 
 }
