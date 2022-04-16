@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerListConstants;
@@ -48,7 +49,7 @@ public class V1_16R3PlayerList implements PlayerList {
     }
 
     @Override
-    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping) {
+    public void send(Player player, String[] playerListCells, String header, String footer, SkinTexture[] cellTextures, int ping, Set<Integer> forceUpdateSlots) {
         final List<Packet<?>> packets = Lists.newArrayList();
         final List<Object> addPlayerList = Lists.newArrayList();
         final List<Object> updatePlayerList = Lists.newArrayList();
@@ -59,23 +60,23 @@ public class V1_16R3PlayerList implements PlayerList {
 
             for (int i = 0; i < this.cellCount; i++) {
                 if (this.profileCache[i] == null) {
-                    GameProfile gameProfile = new GameProfile(
+                    this.profileCache[i] = new GameProfile(
                             UUID.fromString(String.format(PlayerListConstants.UUID_PATTERN, StringUtils.leftPad(String.valueOf(i), 2, '0'))),
                             " "
                     );
-
-                    SkinTexture texture = cellTextures[i];
-                    if (texture != null) {
-                        gameProfile.getProperties().removeAll("textures");
-                        gameProfile.getProperties().put("textures", texture.getProperty());
-                    }
-
-                    this.profileCache[i] = gameProfile;
                 }
 
                 String text = playerListCells[i];
                 GameProfile gameProfile = this.profileCache[i];
                 IChatBaseComponent component = CraftChatMessage.fromStringOrNull(text, false);
+
+                if (this.firstPacket || forceUpdateSlots.contains(i)) {
+                    SkinTexture texture = cellTextures[i];
+                    if (texture != null) {
+                        gameProfile.getProperties().removeAll("textures");
+                        gameProfile.getProperties().put("textures", texture.getProperty());
+                    }
+                }
 
                 Object playerInfoData = PLAYER_INFO_DATA_HELPER.createPlayerInfoData(
                         addPlayerPacket,
@@ -84,7 +85,7 @@ public class V1_16R3PlayerList implements PlayerList {
                         component
                 );
 
-                if (this.firstPacket) {
+                if (this.firstPacket || forceUpdateSlots.contains(i)) {
                     addPlayerList.add(playerInfoData);
                 }
 
