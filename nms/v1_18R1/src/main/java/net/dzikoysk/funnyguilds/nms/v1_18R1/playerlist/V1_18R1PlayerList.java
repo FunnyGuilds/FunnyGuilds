@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.nms.v1_18R1.playerlist;
 
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
 import java.util.List;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
@@ -51,7 +50,7 @@ public class V1_18R1PlayerList implements PlayerList {
                     SkinTexture texture = cellTextures[i];
                     if (texture != null) {
                         gameProfile.getProperties().removeAll("textures");
-                        gameProfile.getProperties().put("textures", new Property("textures", texture.getValue(), texture.getSignature()));
+                        gameProfile.getProperties().put("textures", texture.getProperty());
                     }
 
                     this.profileCache[i] = gameProfile;
