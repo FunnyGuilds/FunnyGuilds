@@ -1,10 +1,12 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.tablist.TablistPage;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.nms.api.playerlist.PlayerList;
@@ -32,7 +34,7 @@ public class IndividualPlayerList {
     private final List<TablistPage> pages;
     private final int pagesCount;
 
-    private final SkinTexture cellTexture;
+    private final Map<NumberRange, SkinTexture> cellTextures;
     private final int cellPing;
 
     private final boolean enableLegacyPlaceholders;
@@ -46,7 +48,7 @@ public class IndividualPlayerList {
                                 String header, String footer,
                                 boolean animated,
                                 List<TablistPage> pages,
-                                SkinTexture cellTexture,
+                                Map<NumberRange, SkinTexture> cellTextures,
                                 int cellPing,
                                 boolean fillCells,
                                 boolean enableLegacyPlaceholders) {
@@ -58,7 +60,7 @@ public class IndividualPlayerList {
         this.animated = animated;
         this.pages = pages;
         this.pagesCount = pages.size();
-        this.cellTexture = cellTexture;
+        this.cellTextures = cellTextures;
         this.cellPing = cellPing;
 
         this.enableLegacyPlaceholders = enableLegacyPlaceholders;
@@ -121,7 +123,7 @@ public class IndividualPlayerList {
         SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
 
         this.user.getPlayer()
-                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing));
+                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Collections.emptySet()));
     }
 
     private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
@@ -157,9 +159,11 @@ public class IndividualPlayerList {
 
     public SkinTexture[] putTexturePrepareCells() {
         SkinTexture[] textures = new SkinTexture[PlayerListConstants.DEFAULT_CELL_COUNT];
-        for (int i = 0; i < this.cellCount; i++) {
-            textures[i] = this.cellTexture;
-        }
+        this.cellTextures.forEach((range, texture) -> {
+            for (int i = range.getMinRange().intValue(); i <= range.getMaxRange().intValue(); i++) {
+                textures[i - 1] = texture;
+            }
+        });
         return textures;
     }
 

@@ -3,11 +3,15 @@ package net.dzikoysk.funnyguilds.config;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
 
 public final class NumberRange {
+
+    private static final Pattern RANGE_PATTERN = Pattern.compile("(-?[0-9.*]+)-(-?[0-9.*]+)");
 
     private final Number minRange;
     private final Number maxRange;
@@ -15,6 +19,20 @@ public final class NumberRange {
     public NumberRange(Number minRange, Number maxRange) {
         this.minRange = minRange;
         this.maxRange = maxRange;
+    }
+
+    public NumberRange(String string) {
+        Matcher matcher = RANGE_PATTERN.matcher(string);
+
+        Number min = Integer.MIN_VALUE;
+        Number max = Integer.MAX_VALUE;
+        if (matcher.matches()) {
+            min = parseNumber(matcher.group(1), Integer.MIN_VALUE);
+            max = parseNumber(matcher.group(2), Integer.MAX_VALUE);
+        }
+
+        this.minRange = min;
+        this.maxRange = max;
     }
 
     public Number getMinRange() {
@@ -63,6 +81,46 @@ public final class NumberRange {
         return PandaStream.of(rangeEntries)
                 .map(RangeFormatting::new)
                 .toMap(RangeFormatting::getRange, (formatting) -> color ? ChatUtils.colored(formatting.getValue()) : formatting.getValue());
+    }
+
+    private static Number parseNumber(String numberString, Number borderValue) {
+        try {
+            if (numberString.contains("*")) {
+                return borderValue;
+            }
+            else {
+                if (numberString.contains(".")) {
+                    return Double.parseDouble(numberString);
+                }
+                else {
+                    return Integer.parseInt(numberString);
+                }
+            }
+        }
+        catch (NumberFormatException exception) {
+            exception.printStackTrace();
+            return borderValue;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(minRange, maxRange);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof NumberRange)) {
+            return false;
+        }
+
+        NumberRange range = (NumberRange) obj;
+
+        return this.minRange.equals(range.minRange) && this.maxRange.equals(range.maxRange);
     }
 
     @Override
