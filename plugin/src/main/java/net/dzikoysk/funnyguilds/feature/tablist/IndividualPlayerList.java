@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.feature.tablist;
 
-import com.google.common.collect.Sets;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +123,7 @@ public class IndividualPlayerList {
         SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
 
         this.user.getPlayer()
-                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Sets.newHashSet()));
+                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Collections.emptySet()));
     }
 
     private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
