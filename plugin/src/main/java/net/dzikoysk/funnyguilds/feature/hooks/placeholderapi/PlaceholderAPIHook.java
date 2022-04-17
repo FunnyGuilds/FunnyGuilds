@@ -59,25 +59,24 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             if (userOption.isEmpty()) {
                 return "";
             }
+
             User user = userOption.get();
+            String lowerIdentifier = identifier.toLowerCase();
 
-            String value = this.plugin.getTablistPlaceholdersService().formatIdentifier(identifier, user);
-            if (value != null) {
-                return value;
-            }
-
-            if (identifier.toLowerCase().contains("position-")) {
+            if (lowerIdentifier.contains("position-")) {
                 return rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase() + "}", user);
             }
-            else if (identifier.toLowerCase().contains("top-")) {
+            else if (lowerIdentifier.contains("top-")) {
                 String temp = rankPlaceholdersService.formatTop("{" + identifier.toUpperCase() + "}", user);
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
                     temp = rankPlaceholdersService.formatRank(temp, user);
                 }
+
                 return temp;
             }
-
-            return "";
+            else {
+                return this.plugin.getTablistPlaceholdersService().formatIdentifier(identifier, user);
+            }
         }
 
         @Override
