@@ -293,10 +293,10 @@ public class RankPlaceholdersService implements PlaceholdersService<User> {
             if (targetUser != null && targetUser.hasGuild()) {
                 Guild sourceGuild = targetUser.getGuild().get();
 
-                if (sourceGuild.getAllies().contains(guild)) {
+                if (sourceGuild.isAlly(guild)) {
                     guildTag = StringUtils.replace(config.prefixAllies.getValue(), "{TAG}", guild.getTag());
                 }
-                else if (sourceGuild.getEnemies().contains(guild)) {
+                else if (sourceGuild.isEnemy(guild)) {
                     guildTag = StringUtils.replace(config.prefixEnemies.getValue(), "{TAG}", guild.getTag());
                 }
                 else if (sourceGuild.getUUID().equals(guild.getUUID())) {

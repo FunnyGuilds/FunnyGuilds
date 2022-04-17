@@ -103,7 +103,7 @@ public class PlayerInteract extends AbstractFunnyListener {
             this.userManager.findByPlayer(player).peek(user -> {
                 boolean blocked = config.blockedInteract.contains(clicked.getType());
 
-                if (guild.getMembers().contains(user)) {
+                if (guild.isMember(user)) {
                     event.setCancelled(blocked && config.regionExplodeBlockInteractions && !guild.canBuild());
                 }
                 else {

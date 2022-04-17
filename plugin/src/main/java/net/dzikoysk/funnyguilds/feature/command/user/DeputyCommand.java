@@ -31,7 +31,7 @@ public final class DeputyCommand extends AbstractFunnyCommand {
 
         User deputyUser = UserValidation.requireUserByName(args[0]);
         when(owner.equals(deputyUser), messages.deputyMustBeDifferent);
-        when(!guild.getMembers().contains(deputyUser), messages.generalIsNotMember);
+        when(!guild.isMember(deputyUser), messages.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(EventCause.USER, owner, guild, deputyUser))) {
             return;

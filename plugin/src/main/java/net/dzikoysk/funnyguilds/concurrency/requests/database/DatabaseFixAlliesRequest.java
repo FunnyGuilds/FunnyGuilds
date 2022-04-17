@@ -20,7 +20,7 @@ public class DatabaseFixAlliesRequest extends DefaultConcurrencyRequest {
     }
 
     private void fixAlly(Guild guild, Guild ally) {
-        if (!ally.getAllies().contains(guild)) {
+        if (!ally.isAlly(guild)) {
             ally.addAlly(guild);
         }
     }
