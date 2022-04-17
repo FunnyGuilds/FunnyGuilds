@@ -182,6 +182,10 @@ public class Guild extends AbstractMutableEntity {
         return this.owner;
     }
 
+    public boolean isOwner(User user) {
+        return this.owner.equals(user);
+    }
+
     public void setOwner(User user) {
         this.owner = user;
         this.addMember(user);
@@ -197,6 +201,10 @@ public class Guild extends AbstractMutableEntity {
                 .stream()
                 .filter(User::isOnline)
                 .collect(Collectors.toSet());
+    }
+
+    public boolean isMember(User user) {
+        return this.members.contains(user);
     }
 
     public void setMembers(Set<User> members) {
@@ -227,6 +235,10 @@ public class Guild extends AbstractMutableEntity {
         return !this.deputies.isEmpty();
     }
 
+    public boolean isDeputy(User user) {
+        return this.deputies.contains(user);
+    }
+
     public void setDeputies(Set<User> users) {
         this.deputies = users;
         this.markChanged();
@@ -254,6 +266,10 @@ public class Guild extends AbstractMutableEntity {
         return !this.allies.isEmpty();
     }
 
+    public boolean isAlly(Guild guild) {
+        return this.allies.contains(guild);
+    }
+
     public void setAllies(Set<Guild> guilds) {
         this.allies = guilds;
         this.markChanged();
@@ -279,6 +295,10 @@ public class Guild extends AbstractMutableEntity {
 
     public boolean hasEnemies() {
         return !this.enemies.isEmpty();
+    }
+
+    public boolean isEnemy(Guild guild) {
+        return this.enemies.contains(guild);
     }
 
     public void setEnemies(Set<Guild> guilds) {
