@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds
 
-import net.dzikoysk.funnyguilds.config.FunnyItemStack
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
@@ -16,7 +15,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
-import org.mockito.Mockito.anyString
 import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
@@ -26,12 +24,10 @@ import java.util.logging.Logger
 open class FunnyGuildsSpec : BukkitSpec() {
 
     protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
-    protected lateinit var mockedFunnyItemStack: MockedStatic<FunnyItemStack>
 
     @BeforeEach
     fun openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
-        mockedFunnyItemStack = mockStatic(FunnyItemStack::class.java)
     }
 
     @Mock
@@ -54,8 +50,6 @@ open class FunnyGuildsSpec : BukkitSpec() {
     @BeforeEach
     fun prepareFunnyGuilds() {
         mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(funnyGuildsLogger)
-
-        mockedFunnyItemStack.`when`<FunnyItemStack> { FunnyItemStack.parse(anyString()) }.thenReturn(null)
 
         config = PluginConfiguration()
         messages = MessageConfiguration()
@@ -96,7 +90,6 @@ open class FunnyGuildsSpec : BukkitSpec() {
     @AfterEach
     fun closeMockedFunnyGuilds() {
         mockedFunnyGuilds.close()
-        mockedFunnyItemStack.close()
     }
 
 }

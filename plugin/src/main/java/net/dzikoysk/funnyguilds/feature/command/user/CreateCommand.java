@@ -8,7 +8,6 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.concurrency.requests.database.DatabaseUpdateGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddGuildRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalAddPlayerRequest;
-import net.dzikoysk.funnyguilds.config.FunnyItemStack;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -123,9 +122,9 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
         }
 
-        List<ItemStack> requiredItems = FunnyItemStack.toItemStacks(player.hasPermission("funnyguilds.vip.items")
+        List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items")
                 ? config.createItemsVip
-                : config.createItems);
+                : config.createItems;
         int requiredExperience = player.hasPermission("funnyguilds.vip.items")
                 ? config.requiredExperienceVip
                 : config.requiredExperience;

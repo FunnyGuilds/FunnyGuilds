@@ -162,7 +162,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Przedmioty wymagane do zalozenia gildii")
     @Comment("Tylko wartosci ujete w <> sa wymagane, reszta, ujeta w [], jest opcjonalna")
-    @Comment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchant:eggtype:skullowner:armorcolor:flags]")
+    @Comment("Wzor: <ilosc> <przedmiot>:[metadata] [name:lore:enchants:eggtype:skullowner:armorcolor:flags]")
     @Comment("Przyklad: \"5 stone name:&bFunnyGuilds lore:&eJestem_najlepszym#&6pluginem!\"")
     @Comment(" ")
     @Comment("Zamiast spacji wstawiaj podkreslnik: _")
@@ -180,7 +180,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment(
             "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
     @CustomKey("items")
-    public List<FunnyItemStack> createItems = FunnyItemStack.parseItemStacks("5 stone", "5 dirt", "5 tnt");
+    public List<ItemStack> createItems = ItemUtils.parseItems("5 stone", "5 dirt", "5 tnt");
 
     @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii")
@@ -193,7 +193,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @CustomKey("items-vip")
-    public List<FunnyItemStack> createItemsVip = FunnyItemStack.parseItemStacks("1 gold_ingot");
+    public List<ItemStack> createItemsVip = ItemUtils.parseItems("1 gold_ingot");
 
     @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
@@ -1044,7 +1044,7 @@ public class PluginConfiguration extends OkaeriConfig {
                 try {
                     int index = LegacyUtils.getIndex(var);
                     if (index > 0 && index <= createItemsVip.size()) {
-                        item = createItemsVip.get(index - 1).getItem();
+                        item = createItemsVip.get(index - 1);
                     }
                 }
                 catch (IndexOutOfBoundsException e) {
@@ -1055,7 +1055,7 @@ public class PluginConfiguration extends OkaeriConfig {
                 try {
                     int index = LegacyUtils.getIndex(var);
                     if (index > 0 && index <= createItems.size()) {
-                        item = createItems.get(index - 1).getItem();
+                        item = createItems.get(index - 1);
                     }
                 }
                 catch (IndexOutOfBoundsException e) {
