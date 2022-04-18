@@ -8,13 +8,16 @@ import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.DefaultTops
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
+import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
+import org.bukkit.inventory.ItemStack
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
+import org.mockito.Mockito.anyString
 import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
@@ -24,10 +27,12 @@ import java.util.logging.Logger
 open class FunnyGuildsSpec : BukkitSpec() {
 
     protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
+    protected lateinit var mockedItemUtils: MockedStatic<ItemUtils>
 
     @BeforeEach
     fun openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
+        mockedItemUtils = mockStatic(ItemUtils::class.java)
     }
 
     @Mock
@@ -50,6 +55,8 @@ open class FunnyGuildsSpec : BukkitSpec() {
     @BeforeEach
     fun prepareFunnyGuilds() {
         mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(funnyGuildsLogger)
+
+        mockedItemUtils.`when`<ItemStack> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
 
         config = PluginConfiguration()
         messages = MessageConfiguration()
@@ -90,6 +97,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
     @AfterEach
     fun closeMockedFunnyGuilds() {
         mockedFunnyGuilds.close()
+        mockedItemUtils.close()
     }
 
 }
