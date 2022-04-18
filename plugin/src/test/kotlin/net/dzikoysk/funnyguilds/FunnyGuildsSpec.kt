@@ -49,7 +49,6 @@ open class FunnyGuildsSpec : BukkitSpec(){
 
     @BeforeEach
     fun prepareFunnyGuilds() {
-        mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
         mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(funnyGuildsLogger)
 
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
@@ -73,6 +72,8 @@ open class FunnyGuildsSpec : BukkitSpec(){
         rankPlaceholdersService = RankPlaceholdersService(funnyGuildsLogger, config, messages, tablistConfig, userRankManager, guildRankManager)
 
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)
+
+        mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
     }
 
     @AfterEach
