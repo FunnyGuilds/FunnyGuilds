@@ -47,6 +47,9 @@ open class FunnyGuildsSpec : BukkitSpec(){
 
     @BeforeEach
     fun prepareFunnyGuilds() {
+        mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
+        mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(FunnyGuildsLogger(Logger.getLogger("TestLogger")))
+
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
         lenient().`when`(funnyGuilds.messageConfiguration).thenReturn(messages)
         lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
@@ -65,12 +68,9 @@ open class FunnyGuildsSpec : BukkitSpec(){
         lenient().`when`(funnyGuilds.guildRankManager).thenReturn(guildRankManager)
         lenient().`when`(funnyGuilds.regionManager).thenReturn(regionManager)
 
-        rankPlaceholdersService = RankPlaceholdersService(null, config, messages, tablistConfig, userRankManager, guildRankManager)
+        rankPlaceholdersService = RankPlaceholdersService(FunnyGuilds.getPluginLogger(), config, messages, tablistConfig, userRankManager, guildRankManager)
 
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)
-
-        mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
-        mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(FunnyGuildsLogger(Logger.getLogger("TestLogger")))
     }
 
     @AfterEach
