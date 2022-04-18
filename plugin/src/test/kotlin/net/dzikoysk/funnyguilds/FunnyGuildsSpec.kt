@@ -8,13 +8,16 @@ import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.DefaultTops
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
+import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
+import org.bukkit.Material
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
+import org.mockito.Mockito.anyString
 import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
@@ -24,10 +27,12 @@ import java.util.logging.Logger
 open class FunnyGuildsSpec : BukkitSpec(){
 
     protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
+    protected lateinit var mockedMaterialUtils: MockedStatic<MaterialUtils>
 
     @BeforeEach
     fun openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
+        mockedMaterialUtils = mockStatic(MaterialUtils::class.java)
     }
 
     @Mock
@@ -46,6 +51,12 @@ open class FunnyGuildsSpec : BukkitSpec(){
     protected lateinit var regionManager: RegionManager
 
     protected lateinit var rankPlaceholdersService: RankPlaceholdersService
+
+    @BeforeEach
+    fun prepareMaterialUtils() {
+        mockedMaterialUtils.`when`<Material> {MaterialUtils.matchMaterial(anyString())}
+            .thenAnswer { Material.matchMaterial(it.arguments[0].toString()) ?: Material.AIR }
+    }
 
     @BeforeEach
     fun prepareFunnyGuilds() {
@@ -83,6 +94,7 @@ open class FunnyGuildsSpec : BukkitSpec(){
     @AfterEach
     fun closeMockedFunnyGuilds() {
         mockedFunnyGuilds.close()
+        mockedMaterialUtils.close()
     }
 
 }
