@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -571,11 +572,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
     @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank stala\", np.: \"0-1999 32\"")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"2401-* 16\"")
-    public Map<NumberRange, Integer> eloConstants = ImmutableMap.<NumberRange, Integer>builder()
-            .put(new NumberRange(0, 1999), 32)
-            .put(new NumberRange(2000, 2400), 24)
-            .put(new NumberRange(2401, Integer.MAX_VALUE), 16)
-            .build();
+    @CustomKey("elo-constants")
+    public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
+
+    @Exclude
+    public Map<NumberRange, Integer> eloConstants;
 
     @Positive
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
@@ -1070,6 +1071,21 @@ public class PluginConfiguration extends OkaeriConfig {
         if (!this.enlargeEnable) {
             this.enlargeSize = 0;
             this.enlargeItems = null;
+        }
+
+        if (this.rankSystem == RankSystem.Type.ELO) {
+            Map<NumberRange, Integer> parsedData = new HashMap<>();
+
+            for (Entry<NumberRange, String> entry : NumberRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
+                try {
+                    parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
+                }
+                catch (NumberFormatException e) {
+                    FunnyGuilds.getPluginLogger().parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
+                }
+            }
+
+            this.eloConstants = parsedData;
         }
 
         Map<Material, Double> map = new EnumMap<>(Material.class);
