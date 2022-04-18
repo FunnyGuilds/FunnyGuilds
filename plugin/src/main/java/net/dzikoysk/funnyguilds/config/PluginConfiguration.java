@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +43,6 @@ import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.LegacyUtils;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
@@ -362,18 +360,10 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration baseDelayVip = Duration.ofSeconds(3);
 
     @Comment("Koszt teleportacji do gildii. Jezeli teleportacja ma byc darmowa, wystarczy wpisac: base-items: []")
-    @CustomKey("base-items")
-    public List<String> baseItems_ = Arrays.asList("1 diamond", "1 emerald");
-
-    @Exclude
-    public List<ItemStack> baseItems;
+    public List<ItemStack> baseItems = ItemUtils.parseItems("1 diamond", "1 emerald");
 
     @Comment("Koszt dolaczenia do gildii. Jezeli dolaczenie ma byc darmowe, wystarczy wpisac: join-items: []")
-    @CustomKey("join-items")
-    public List<String> joinItems_ = Collections.singletonList("1 diamond");
-
-    @Exclude
-    public List<ItemStack> joinItems;
+    public List<ItemStack> joinItems = ItemUtils.parseItems("1 diamond");
 
     @Comment("Mozliwosc powiekszania gildii")
     public boolean enlargeEnable = true;
@@ -383,11 +373,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Koszt powiekszania gildii")
     @Comment("- kazdy myslnik, to 1 poziom gildii")
-    @CustomKey("enlarge-items")
-    public List<String> enlargeItems_ = Arrays.asList("8 diamond", "16 diamond", "24 diamond", "32 diamond", "40 diamond", "48 diamond", "56 diamond", "64 diamond", "72 diamond", "80 diamond");
-
-    @Exclude
-    public List<ItemStack> enlargeItems;
+    public List<ItemStack> enlargeItems = ItemUtils.parseItems("8 diamond", "16 diamond", "24 diamond", "32 diamond", "40 diamond", "48 diamond", "56 diamond", "64 diamond", "72 diamond", "80 diamond");
 
     @Min(1)
     @Comment("Wielkosc regionu gildii")
@@ -506,10 +492,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration validityWhen = Duration.ofDays(14);
 
     @Comment("Koszt przedluzenia gildii")
-    @CustomKey("validity-items")
-    public List<String> validityItems_ = Collections.singletonList("10 diamond");
-    @Exclude
-    public List<ItemStack> validityItems;
+    public List<ItemStack> validityItems = ItemUtils.parseItems("10 diamond");
 
     @Comment("Czy wiadomosc o zabiciu gracza powinna byc pokazywana wszystkim")
     @Comment("Jesli wylaczone - bedzie pokazywana tylko graczom, ktorzy brali udzial w walce")
@@ -831,22 +814,15 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Tlumaczenia nazw przedmiotow dla znacznikow {ITEM}, {ITEMS}, {ITEM-NO-AMOUNT}, {WEAPON}")
     @Comment("Wypisywac w formacie nazwa_przedmiotu: \"tlumaczona nazwa przedmiotu\"")
     @CustomKey("translated-materials-name")
-    public Map<String, String> translatedMaterials_ = ImmutableMap.<String, String>builder()
-            .put("diamond_sword", "&3diamentowy miecz")
-            .put("iron_sword", "&7zelazny miecz")
-            .put("gold_ingot", "&eZloto")
+    public Map<Material, String> translatedMaterials = ImmutableMap.<Material, String>builder()
+            .put(Material.DIAMOND_SWORD, "&3diamentowy miecz")
+            .put(Material.IRON_SWORD, "&7zelazny miecz")
+            .put(Material.GOLD_INGOT, "&eZloto")
             .build();
-
-    @Exclude
-    public Map<Material, String> translatedMaterials;
 
     @Comment("Wyglad znacznikow {ITEM} i {ITEMS} (suffix, za iloscia przedmiotu)")
     @Comment("Dla np. item-amount-suffix: \"szt.\" 1szt. golden_apple")
-    @CustomKey("item-amount-suffix")
-    public String itemAmountSuffix_ = "x";
-
-    @Exclude
-    public String itemAmountSuffix;
+    public RawString itemAmountSuffix = new RawString("x");
 
     @Comment("Czy blacklista nazw i tagow gildii powinny byc wlaczona")
     @CustomKey("check-for-restricted-guild-names")
@@ -929,17 +905,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Przedmioty, ktore zostana nadane graczowi, ktory pierwszy zalozyl gildie na serwerze")
     @Comment("Dziala tylko w wypadku, gdy opcja \"should-give-rewards-for-first-guild\" jest wlaczona")
     @CustomKey("rewards-for-first-guild")
-    public List<String> firstGuildRewards_ = Collections.singletonList("1 diamond name:&bNagroda_za_pierwsza_gildie_na_serwerze");
-
-    @Exclude
-    public List<ItemStack> firstGuildRewards;
+    public List<ItemStack> firstGuildRewards = ItemUtils.parseItems("1 diamond name:&bNagroda_za_pierwsza_gildie_na_serwerze");
 
     @Comment("Zbior przedmiotow potrzebnych do resetu rankingu")
     @CustomKey("rank-reset-needed-items")
-    public List<String> rankResetItems_ = Collections.singletonList("1 diamond");
-
-    @Exclude
-    public List<ItemStack> rankResetItems;
+    public List<ItemStack> rankResetItems = ItemUtils.parseItems("1 diamond");
 
     @Comment("Czy przy szukaniu danych o graczu ma byc pomijana wielkosc znakow")
     @CustomKey("player-lookup-ignorecase")
@@ -1097,10 +1067,7 @@ public class PluginConfiguration extends OkaeriConfig {
             this.eventPhysics = true;
         }
 
-        if (this.enlargeEnable) {
-            this.enlargeItems = this.loadItemStackList(this.enlargeItems_);
-        }
-        else {
+        if (!this.enlargeEnable) {
             this.enlargeSize = 0;
             this.enlargeItems = null;
         }
@@ -1129,18 +1096,6 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
 
-        this.translatedMaterials = new HashMap<>();
-        for (String materialName : translatedMaterials_.keySet()) {
-            Material material = MaterialUtils.matchMaterial(materialName.toUpperCase());
-            if (material == null) {
-                continue;
-            }
-
-            translatedMaterials.put(material, translatedMaterials_.get(materialName));
-        }
-
-        this.itemAmountSuffix = ChatUtils.colored(this.itemAmountSuffix_);
-
         if (!"v1_8_R1".equals(Reflections.SERVER_VERSION) && !"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
             this.bossBarOptions_ = BossBarOptions.builder()
                     .color(this.bossBarColor)
@@ -1148,15 +1103,6 @@ public class PluginConfiguration extends OkaeriConfig {
                     .flags(this.bossBarFlags)
                     .build();
         }
-
-        this.rankResetItems = loadItemStackList(this.rankResetItems_);
-
-        this.firstGuildRewards = loadItemStackList(this.firstGuildRewards_);
-
-        this.validityItems = this.loadItemStackList(this.validityItems_);
-
-        this.joinItems = this.loadItemStackList(this.joinItems_);
-        this.baseItems = this.loadItemStackList(this.baseItems_);
 
         this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }
