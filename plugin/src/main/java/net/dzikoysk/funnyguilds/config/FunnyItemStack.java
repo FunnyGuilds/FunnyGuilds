@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.config;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
@@ -27,6 +28,10 @@ public class FunnyItemStack {
         return stringItemStacks.stream()
                 .map(FunnyItemStack::new)
                 .collect(Collectors.toList());
+    }
+
+    public static List<FunnyItemStack> parseItemStacks(String... stringItemStacks) {
+        return parseItemStacks(Arrays.asList(stringItemStacks));
     }
 
     public static List<ItemStack> toItemStacks(List<FunnyItemStack> itemStacks) {

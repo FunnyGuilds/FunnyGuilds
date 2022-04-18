@@ -180,7 +180,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment(
             "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
     @CustomKey("items")
-    public List<FunnyItemStack> createItems = FunnyItemStack.parseItemStacks(Arrays.asList("5 stone", "5 dirt", "5 tnt"));
+    public List<FunnyItemStack> createItems = FunnyItemStack.parseItemStacks("5 stone", "5 dirt", "5 tnt");
 
     @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii")
@@ -193,7 +193,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @CustomKey("items-vip")
-    public List<FunnyItemStack> createItemsVip = FunnyItemStack.parseItemStacks(Collections.singletonList("1 gold_ingot"));
+    public List<FunnyItemStack> createItemsVip = FunnyItemStack.parseItemStacks("1 gold_ingot");
 
     @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
