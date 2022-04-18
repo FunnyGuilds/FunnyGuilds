@@ -180,10 +180,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment(
             "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
     @CustomKey("items")
-    public List<String> items_ = Arrays.asList("5 stone", "5 dirt", "5 tnt");
-
-    @Exclude
-    public List<ItemStack> createItems;
+    public List<FunnyItemStack> createItems = FunnyItemStack.parseItemStacks(Arrays.asList("5 stone", "5 dirt", "5 tnt"));
 
     @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii")
@@ -196,10 +193,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Przedmioty wymagane do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
     @CustomKey("items-vip")
-    public List<String> itemsVip_ = Collections.singletonList("1 gold_ingot");
-
-    @Exclude
-    public List<ItemStack> createItemsVip;
+    public List<FunnyItemStack> createItemsVip = FunnyItemStack.parseItemStacks(Collections.singletonList("1 gold_ingot"));
 
     @Min(0)
     @Comment("Wymagana ilosc doswiadczenia do zalozenia gildii dla osoby z uprawnieniem funnyguilds.vip.items")
@@ -1050,7 +1044,7 @@ public class PluginConfiguration extends OkaeriConfig {
                 try {
                     int index = LegacyUtils.getIndex(var);
                     if (index > 0 && index <= createItemsVip.size()) {
-                        item = createItemsVip.get(index - 1);
+                        item = createItemsVip.get(index - 1).getItem();
                     }
                 }
                 catch (IndexOutOfBoundsException e) {
@@ -1061,7 +1055,7 @@ public class PluginConfiguration extends OkaeriConfig {
                 try {
                     int index = LegacyUtils.getIndex(var);
                     if (index > 0 && index <= createItems.size()) {
-                        item = createItems.get(index - 1);
+                        item = createItems.get(index - 1).getItem();
                     }
                 }
                 catch (IndexOutOfBoundsException e) {
@@ -1093,9 +1087,6 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public void loadProcessedProperties() {
-        this.createItems = loadItemStackList(this.items_);
-        this.createItemsVip = loadItemStackList(this.itemsVip_);
-
         this.guiItems = loadGUI(this.guiItems_);
 
         if (!useCommonGUI) {

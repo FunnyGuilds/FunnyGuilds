@@ -16,7 +16,6 @@ public class FunnyTimeTransformer extends BidirectionalTransformer<String, Funny
 
     @Override
     public FunnyTime leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
-
         // standard parse from string
         if (data.contains(":")) {
             return new FunnyTime(LocalTime.parse(data, FunnyTime.TIME_FORMATTER));

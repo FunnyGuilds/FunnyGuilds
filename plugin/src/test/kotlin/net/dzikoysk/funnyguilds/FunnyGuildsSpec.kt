@@ -8,10 +8,10 @@ import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.DefaultTops
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
-import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils
+import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
-import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -24,21 +24,21 @@ import org.mockito.junit.jupiter.MockitoExtension
 import java.util.logging.Logger
 
 @ExtendWith(MockitoExtension::class)
-open class FunnyGuildsSpec : BukkitSpec(){
+open class FunnyGuildsSpec : BukkitSpec() {
 
     protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
-    protected lateinit var mockedMaterialUtils: MockedStatic<MaterialUtils>
+    protected lateinit var mockedItemUtils: MockedStatic<ItemUtils>
 
     @BeforeEach
     fun openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
-        mockedMaterialUtils = mockStatic(MaterialUtils::class.java)
+        mockedItemUtils = mockStatic(ItemUtils::class.java)
     }
 
     @Mock
     lateinit var funnyGuilds: FunnyGuilds
 
-    protected val funnyGuildsLogger = FunnyGuildsLogger(Logger.getLogger("TestLogger"))
+    protected val funnyGuildsLogger = TestLogger(Logger.getLogger("TestLogger"))
 
     protected lateinit var config: PluginConfiguration
     protected lateinit var messages: MessageConfiguration
@@ -53,14 +53,10 @@ open class FunnyGuildsSpec : BukkitSpec(){
     protected lateinit var rankPlaceholdersService: RankPlaceholdersService
 
     @BeforeEach
-    fun prepareMaterialUtils() {
-        mockedMaterialUtils.`when`<Material> {MaterialUtils.matchMaterial(anyString())}
-            .thenAnswer { Material.matchMaterial(it.arguments[0].toString()) ?: Material.AIR }
-    }
-
-    @BeforeEach
     fun prepareFunnyGuilds() {
         mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(funnyGuildsLogger)
+
+        mockedItemUtils.`when`<ItemStack> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
 
         config = PluginConfiguration()
         messages = MessageConfiguration()
@@ -84,7 +80,14 @@ open class FunnyGuildsSpec : BukkitSpec(){
         lenient().`when`(funnyGuilds.guildRankManager).thenReturn(guildRankManager)
         lenient().`when`(funnyGuilds.regionManager).thenReturn(regionManager)
 
-        rankPlaceholdersService = RankPlaceholdersService(funnyGuildsLogger, config, messages, tablistConfig, userRankManager, guildRankManager)
+        rankPlaceholdersService = RankPlaceholdersService(
+            funnyGuildsLogger,
+            config,
+            messages,
+            tablistConfig,
+            userRankManager,
+            guildRankManager
+        )
 
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)
 
@@ -94,7 +97,7 @@ open class FunnyGuildsSpec : BukkitSpec(){
     @AfterEach
     fun closeMockedFunnyGuilds() {
         mockedFunnyGuilds.close()
-        mockedMaterialUtils.close()
+        mockedItemUtils.close()
     }
 
 }

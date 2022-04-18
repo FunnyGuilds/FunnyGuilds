@@ -27,15 +27,13 @@ public final class MaterialUtils {
             FunnyGuilds.getPluginLogger().parser("Unknown material: null");
             return allowNullReturn ? null : Material.AIR;
         }
-
         String materialName = materialString.toUpperCase().replaceAll(" ", "_");
-        Material material = matchMaterial(materialName);
 
+        Material material = matchMaterial(materialName);
         if (material == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: " + materialString);
             return allowNullReturn ? null : Material.AIR;
         }
-
         return material;
     }
 

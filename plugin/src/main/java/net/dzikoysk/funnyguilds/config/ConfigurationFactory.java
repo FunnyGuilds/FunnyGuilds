@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.config.migration.P0004_Migrate_tablist_into_sepa
 import net.dzikoysk.funnyguilds.config.migration.P0005_Fix_heart_configuration_centery_key;
 import net.dzikoysk.funnyguilds.config.migration.T0001_Update_player_list_animated;
 import net.dzikoysk.funnyguilds.config.serdes.DecolorTransformer;
+import net.dzikoysk.funnyguilds.config.serdes.FunnyItemStackTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.FunnyTimeTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.MaterialTransformer;
 import net.dzikoysk.funnyguilds.config.serdes.NumberRangeTransformer;
@@ -45,6 +46,7 @@ public final class ConfigurationFactory {
             it.withSerdesPack(registry -> {
                 registry.register(new RawStringTransformer());
                 registry.register(new MaterialTransformer());
+                registry.register(new FunnyItemStackTransformer());
                 registry.register(new FunnyTimeTransformer());
                 registry.register(new RangeFormattingTransformer());
                 registry.register(new VectorSerializer());
