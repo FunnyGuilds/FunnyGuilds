@@ -14,7 +14,7 @@ public class FunnyItemStackTransformer extends BidirectionalTransformer<String, 
 
     @Override
     public FunnyItemStack leftToRight(String data, SerdesContext serdesContext) {
-        return new FunnyItemStack(data);
+        return FunnyItemStack.parse(data);
     }
 
     @Override

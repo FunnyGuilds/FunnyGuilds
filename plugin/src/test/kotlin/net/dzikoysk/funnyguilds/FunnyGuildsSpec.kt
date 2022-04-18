@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds
 
+import net.dzikoysk.funnyguilds.config.FunnyItemStack
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
@@ -8,10 +9,8 @@ import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.DefaultTops
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
-import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
-import org.bukkit.inventory.ItemStack
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
@@ -27,12 +26,12 @@ import java.util.logging.Logger
 open class FunnyGuildsSpec : BukkitSpec() {
 
     protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
-    protected lateinit var mockedItemUtils: MockedStatic<ItemUtils>
+    protected lateinit var mockedFunnyItemStack: MockedStatic<FunnyItemStack>
 
     @BeforeEach
     fun openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
-        mockedItemUtils = mockStatic(ItemUtils::class.java)
+        mockedFunnyItemStack = mockStatic(FunnyItemStack::class.java)
     }
 
     @Mock
@@ -56,7 +55,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
     fun prepareFunnyGuilds() {
         mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(funnyGuildsLogger)
 
-        mockedItemUtils.`when`<ItemStack> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
+        mockedFunnyItemStack.`when`<FunnyItemStack> { FunnyItemStack.parse(anyString()) }.thenReturn(null)
 
         config = PluginConfiguration()
         messages = MessageConfiguration()
@@ -97,7 +96,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
     @AfterEach
     fun closeMockedFunnyGuilds() {
         mockedFunnyGuilds.close()
-        mockedItemUtils.close()
+        mockedFunnyItemStack.close()
     }
 
 }

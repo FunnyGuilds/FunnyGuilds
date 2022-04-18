@@ -11,8 +11,8 @@ public class FunnyItemStack {
     private final ItemStack item;
     private final String itemString;
 
-    public FunnyItemStack(String itemString) {
-        this.item = ItemUtils.parseItem(itemString);
+    private FunnyItemStack(ItemStack item, String itemString) {
+        this.item = item;
         this.itemString = itemString;
     }
 
@@ -24,9 +24,13 @@ public class FunnyItemStack {
         return itemString;
     }
 
+    public static FunnyItemStack parse(String itemString) {
+        return new FunnyItemStack(ItemUtils.parseItem(itemString), itemString);
+    }
+
     public static List<FunnyItemStack> parseItemStacks(List<String> stringItemStacks) {
         return stringItemStacks.stream()
-                .map(FunnyItemStack::new)
+                .map(FunnyItemStack::parse)
                 .collect(Collectors.toList());
     }
 
