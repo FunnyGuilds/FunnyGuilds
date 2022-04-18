@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import org.bukkit.inventory.ItemStack;
@@ -42,6 +43,37 @@ public class FunnyItemStack {
         return itemStacks.stream()
                 .map(FunnyItemStack::getItem)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof FunnyItemStack)) {
+            if (obj instanceof ItemStack) {
+                return item.equals(obj);
+            }
+
+            return false;
+        }
+
+        FunnyItemStack funnyItem = (FunnyItemStack) obj;
+
+        return item.equals(funnyItem.item);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(item);
+    }
+
+    @Override
+    public String toString() {
+        return "FunnyItemStack{" +
+                "item='" + itemString + '\'' +
+                '}';
     }
 
 }
