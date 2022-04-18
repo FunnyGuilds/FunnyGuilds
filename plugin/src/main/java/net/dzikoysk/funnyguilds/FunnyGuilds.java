@@ -212,8 +212,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        plugin = this;
-
         if (this.forceDisabling) {
             return;
         }

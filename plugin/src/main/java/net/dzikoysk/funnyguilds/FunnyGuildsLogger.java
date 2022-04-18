@@ -64,7 +64,7 @@ public class FunnyGuildsLogger {
 
         @Override
         public void debug(String content) {
-            if (this.plugin.getPluginConfiguration().debugMode) {
+            if (!this.plugin.getPluginConfiguration().debugMode) {
                 return;
             }
             super.debug(content);
