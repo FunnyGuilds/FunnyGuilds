@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds
 
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
+import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
 import net.dzikoysk.funnyguilds.guild.GuildManager
@@ -62,6 +63,8 @@ open class FunnyGuildsSpec : BukkitSpec() {
         messages = MessageConfiguration()
         tablistConfig = TablistConfiguration()
 
+        preparePluginConfiguration()
+
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
         lenient().`when`(funnyGuilds.messageConfiguration).thenReturn(messages)
         lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
@@ -92,6 +95,15 @@ open class FunnyGuildsSpec : BukkitSpec() {
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)
 
         mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
+    }
+
+    fun preparePluginConfiguration() {
+        val parsedData = mutableMapOf<NumberRange, Int>()
+
+        NumberRange.parseIntegerRange(config.eloConstants_, false)
+            .forEach { (range, number) -> parsedData[range] = number.toInt() }
+
+        config.eloConstants = parsedData
     }
 
     @AfterEach
