@@ -2,11 +2,17 @@ package net.dzikoysk.funnyguilds.rank
 
 import net.dzikoysk.funnyguilds.FunnyGuildsSpec
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class RankSystemTest : FunnyGuildsSpec() {
 
-    private var rankSystem = RankSystem.create(config)
+    private lateinit var rankSystem: RankSystem
+
+    @BeforeEach
+    fun prepareRankSystem() {
+        rankSystem = RankSystem.create(config)
+    }
 
     @Test
     fun `ELO rank system test 1000 vs 1000`() {

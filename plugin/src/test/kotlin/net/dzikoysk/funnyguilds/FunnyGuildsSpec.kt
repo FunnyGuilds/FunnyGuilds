@@ -35,9 +35,9 @@ open class FunnyGuildsSpec : BukkitSpec(){
 
     protected val funnyGuildsLogger = FunnyGuildsLogger(Logger.getLogger("TestLogger"))
 
-    protected val config = PluginConfiguration()
-    protected val messages = MessageConfiguration()
-    protected val tablistConfig = TablistConfiguration()
+    protected lateinit var config: PluginConfiguration
+    protected lateinit var messages: MessageConfiguration
+    protected lateinit var tablistConfig: TablistConfiguration
 
     protected lateinit var userManager: UserManager
     protected lateinit var guildManager: GuildManager
@@ -50,6 +50,10 @@ open class FunnyGuildsSpec : BukkitSpec(){
     @BeforeEach
     fun prepareFunnyGuilds() {
         mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(funnyGuildsLogger)
+
+        config = PluginConfiguration()
+        messages = MessageConfiguration()
+        tablistConfig = TablistConfiguration()
 
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
         lenient().`when`(funnyGuilds.messageConfiguration).thenReturn(messages)

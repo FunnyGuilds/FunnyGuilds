@@ -3,7 +3,6 @@ package net.dzikoysk.funnyguilds;
 import com.google.common.collect.ImmutableSet;
 import eu.okaeri.configs.exception.OkaeriException;
 import java.io.File;
-import java.util.logging.Logger;
 import net.dzikoysk.funnycommands.FunnyCommands;
 import net.dzikoysk.funnyguilds.concurrency.ConcurrencyManager;
 import net.dzikoysk.funnyguilds.config.ConfigurationFactory;
@@ -105,7 +104,7 @@ import panda.utilities.ClassUtils;
 public class FunnyGuilds extends JavaPlugin {
 
     private static FunnyGuilds plugin;
-    private static FunnyGuildsLogger logger = new FunnyGuildsLogger(Logger.getLogger("DefaultFunnyLogger"));
+    private static FunnyGuildsLogger logger;
 
     private final File pluginConfigurationFile = new File(this.getDataFolder(), "config.yml");
     private final File tablistConfigurationFile = new File(this.getDataFolder(), "tablist.yml");
