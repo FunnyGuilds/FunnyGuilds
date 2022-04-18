@@ -59,25 +59,24 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             if (userOption.isEmpty()) {
                 return "";
             }
+
             User user = userOption.get();
+            String lowerIdentifier = identifier.toLowerCase();
 
-            String value = this.plugin.getTablistPlaceholdersService().formatIdentifier(identifier, user);
-            if (value != null) {
-                return value;
-            }
-
-            if (identifier.toLowerCase().contains("position-")) {
+            if (lowerIdentifier.contains("position-")) {
                 return rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase() + "}", user);
             }
-            else if (identifier.toLowerCase().contains("top-")) {
+            else if (lowerIdentifier.contains("top-")) {
                 String temp = rankPlaceholdersService.formatTop("{" + identifier.toUpperCase() + "}", user);
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
                     temp = rankPlaceholdersService.formatRank(temp, user);
                 }
+
                 return temp;
             }
-
-            return "";
+            else {
+                return this.plugin.getTablistPlaceholdersService().formatIdentifier(identifier, user);
+            }
         }
 
         @Override
@@ -107,10 +106,10 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 Guild guildTwo = guildTwoOption.get();
 
                 if (guildOneOption.isPresent()) {
-                    if (guildOne.getAllies().contains(guildTwo)) {
+                    if (guildOne.isAlly(guildTwo)) {
                         return IndividualPrefix.preparePrefix(config.prefixAllies.getValue(), guildTwo);
                     }
-                    else if (guildOne.getEnemies().contains(guildTwo) || guildTwo.getEnemies().contains(guildOne)) {
+                    else if (guildOne.isEnemy(guildTwo) || guildTwo.isEnemy(guildOne)) {
                         return IndividualPrefix.preparePrefix(config.prefixEnemies.getValue(), guildTwo);
                     }
                     else {

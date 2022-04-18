@@ -28,7 +28,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         when(args.length < 2, messages.generalNoNickGiven);
 
         User userToMove = UserValidation.requireUserByName(args[1]);
-        when(!guild.getMembers().contains(userToMove), messages.adminUserNotMemberOf);
+        when(!guild.isMember(userToMove), messages.adminUserNotMemberOf);
 
         User admin = AdminUtils.getAdminUser(sender);
 

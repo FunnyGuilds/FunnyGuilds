@@ -25,7 +25,7 @@ public class PlayerTeleport extends AbstractFunnyListener {
     private boolean isTeleportationToRegionAllowed(Location to, User user) {
         return this.regionManager.findRegionAtLocation(to)
                 .map(Region::getGuild)
-                .filter(guild -> guild.getMembers().contains(user) ||
+                .filter(guild -> guild.isMember(user) ||
                         this.isTeleportationToRegionAllowed(guild, user.getGuild().orNull()))
                 .isPresent();
     }
@@ -38,12 +38,12 @@ public class PlayerTeleport extends AbstractFunnyListener {
 
     private boolean isTeleportationOnEnemyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
         return !config.blockTeleportOnRegion.enemy ||
-                !guild.getEnemies().contains(userGuild);
+                !guild.isEnemy(userGuild);
     }
 
     private boolean isTeleportationOnAllyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
         return !config.blockTeleportOnRegion.ally ||
-                !guild.getAllies().contains(userGuild);
+                !guild.isAlly(userGuild);
     }
 
 }

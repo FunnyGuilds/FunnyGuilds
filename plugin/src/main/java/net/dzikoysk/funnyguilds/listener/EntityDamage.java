@@ -63,7 +63,7 @@ public class EntityDamage extends AbstractFunnyListener {
                     }
                 }
 
-                if (victimGuild.getAllies().contains(attackerGuild)) {
+                if (victimGuild.isAlly(attackerGuild)) {
                     if (!config.damageAlly) {
                         event.setCancelled(true);
                         return;

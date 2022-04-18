@@ -34,8 +34,8 @@ public final class WarCommand extends AbstractFunnyCommand {
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
         when(guild.equals(enemyGuild), messages.enemySame);
-        when(guild.getAllies().contains(enemyGuild), messages.enemyAlly);
-        when(guild.getEnemies().contains(enemyGuild), messages.enemyAlready);
+        when(guild.isAlly(enemyGuild), messages.enemyAlly);
+        when(guild.isEnemy(enemyGuild), messages.enemyAlready);
         when(guild.getEnemies().size() >= config.maxEnemiesBetweenGuilds, () -> messages.enemyMaxAmount.replace("{AMOUNT}", Integer.toString(config.maxEnemiesBetweenGuilds)));
 
         if (enemyGuild.getEnemies().size() >= config.maxEnemiesBetweenGuilds) {

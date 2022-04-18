@@ -31,7 +31,7 @@ public final class LeaderCommand extends AbstractFunnyCommand {
 
         User leaderUser = UserValidation.requireUserByName(args[0]);
         when(owner.equals(leaderUser), messages.leaderMustBeDifferent);
-        when(!guild.getMembers().contains(leaderUser), messages.generalIsNotMember);
+        when(!guild.isMember(leaderUser), messages.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(EventCause.USER, owner, guild, leaderUser))) {
             return;

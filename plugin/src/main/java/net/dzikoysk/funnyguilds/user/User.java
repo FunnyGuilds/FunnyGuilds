@@ -83,7 +83,6 @@ public class User extends AbstractMutableEntity {
         this.profile.sendMessage(message);
     }
 
-
     public Option<Guild> getGuild() {
         return this.guild;
     }
@@ -107,24 +106,14 @@ public class User extends AbstractMutableEntity {
     }
 
     public boolean isOwner() {
-        if (!hasGuild()) {
-            return false;
-        }
-
         return this.guild
-                .map(Guild::getOwner)
-                .map(owner -> owner.equals(this))
+                .map(guild -> guild.isOwner(this))
                 .orElseGet(false);
     }
 
     public boolean isDeputy() {
-        if (!hasGuild()) {
-            return false;
-        }
-
         return this.guild
-                .map(Guild::getDeputies)
-                .map(deputies -> deputies.contains(this))
+                .map(guild -> guild.isDeputy(this))
                 .orElseGet(false);
     }
 
