@@ -39,7 +39,7 @@ public class PlayerCommand extends AbstractFunnyListener {
         this.regionManager.findRegionAtLocation(player.getLocation())
                 .map(Region::getGuild)
                 .peek(guild -> this.userManager.findByPlayer(player)
-                        .filterNot(user -> guild.getMembers().contains(user))
+                        .filterNot(guild::isMember)
                         .peek(user -> {
                             event.setCancelled(true);
                             user.sendMessage(messages.regionCommand);

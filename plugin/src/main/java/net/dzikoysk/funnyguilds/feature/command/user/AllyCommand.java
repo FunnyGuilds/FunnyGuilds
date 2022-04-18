@@ -59,9 +59,9 @@ public final class AllyCommand extends AbstractFunnyCommand {
         User invitedOwner = invitedGuild.getOwner();
 
         when(guild.equals(invitedGuild), messages.allySame);
-        when(guild.getAllies().contains(invitedGuild), messages.allyAlly);
+        when(guild.isAlly(invitedGuild), messages.allyAlly);
 
-        if (guild.getEnemies().contains(invitedGuild)) {
+        if (guild.isEnemy(invitedGuild)) {
             guild.removeEnemy(invitedGuild);
 
             String allyDoneMessage = messages.enemyEnd;

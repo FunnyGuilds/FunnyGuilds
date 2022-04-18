@@ -47,7 +47,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
         }
 
         Guild oppositeGuild = GuildValidation.requireGuildByTag(args[0]);
-        when(!guild.getAllies().contains(oppositeGuild), () -> messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
+        when(!guild.isAlly(oppositeGuild), () -> messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
 
         if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
             return;

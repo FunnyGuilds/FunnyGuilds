@@ -54,7 +54,7 @@ public class WarSystem {
             return;
         }
 
-        if (attacker.getAllies().contains(guild)) {
+        if (attacker.isAlly(guild)) {
             user.sendMessage(WarUtils.getMessage(Message.ALLY));
             return;
         }

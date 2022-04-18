@@ -27,8 +27,8 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User user = UserValidation.requireUserByName(args[1]);
 
-        when(!guild.getMembers().contains(user), messages.adminUserNotMemberOf);
-        when(guild.getOwner().equals(user), messages.adminAlreadyLeader);
+        when(!guild.isMember(user), messages.adminUserNotMemberOf);
+        when(guild.isOwner(user), messages.adminAlreadyLeader);
 
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(AdminUtils.getCause(admin), admin, guild, user))) {

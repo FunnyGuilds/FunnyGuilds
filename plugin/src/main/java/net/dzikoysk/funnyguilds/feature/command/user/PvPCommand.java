@@ -30,7 +30,7 @@ public final class PvPCommand extends AbstractFunnyCommand {
 
             Guild targetAlliedGuild = GuildValidation.requireGuildByTag(args[0]);
             Formatter guildTagFormatter = new Formatter().register("{TAG}", targetAlliedGuild.getTag());
-            when(!guild.getAllies().contains(targetAlliedGuild), guildTagFormatter.format(messages.allyDoesntExist));
+            when(!guild.isAlly(targetAlliedGuild), guildTagFormatter.format(messages.allyDoesntExist));
 
             guild.setPvP(targetAlliedGuild, !guild.getPvP(targetAlliedGuild));
             user.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messages.pvpAllyOn : messages.pvpAllyOff));

@@ -43,7 +43,7 @@ public class IndividualPrefix {
                     }
 
                     if (this.user.hasGuild()) {
-                        if (this.user.equals(byName) || guild.getMembers().contains(byName)) {
+                        if (this.user.equals(byName) || guild.isMember(byName)) {
                             team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur.getValue(), guild));
                         }
                     }
@@ -80,11 +80,11 @@ public class IndividualPrefix {
 
             String prefix = plugin.getPluginConfiguration().prefixOther.getValue();
 
-            if (guild.getAllies().contains(to)) {
+            if (guild.isAlly(to)) {
                 prefix = plugin.getPluginConfiguration().prefixAllies.getValue();
             }
 
-            if (guild.getEnemies().contains(to) || to.getEnemies().contains(guild)) {
+            if (guild.isEnemy(to) || to.isEnemy(guild)) {
                 prefix = plugin.getPluginConfiguration().prefixEnemies.getValue();
             }
 
@@ -181,10 +181,10 @@ public class IndividualPrefix {
                     }
                 }
 
-                if (guild.getAllies().contains(one)) {
+                if (guild.isAlly(one)) {
                     team.setPrefix(preparePrefix(ally, one));
                 }
-                else if (guild.getEnemies().contains(one) || one.getEnemies().contains(guild)) {
+                else if (guild.isEnemy(one) || one.isEnemy(guild)) {
                     team.setPrefix(preparePrefix(enemy, one));
                 }
                 else {
