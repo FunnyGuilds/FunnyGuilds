@@ -1,10 +1,8 @@
 package net.dzikoysk.funnyguilds
 
 import net.dzikoysk.funnyguilds.config.MessageConfiguration
-import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
@@ -20,12 +18,12 @@ import org.mockito.MockedStatic
 import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
+import java.util.logging.Logger
 
 @ExtendWith(MockitoExtension::class)
 open class FunnyGuildsSpec : BukkitSpec(){
 
     protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
-    protected lateinit var mockedBossBarProvider: MockedStatic<BossBarProvider>
 
     @BeforeEach
     fun openMockedFunnyGuilds() {
@@ -72,16 +70,7 @@ open class FunnyGuildsSpec : BukkitSpec(){
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)
 
         mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
-    }
-
-    @BeforeEach
-    fun preparePluginConfiguration() {
-        val parsedData = mutableMapOf<NumberRange, Int>()
-
-        NumberRange.parseIntegerRange(config.eloConstants_, false)
-                .forEach { (range, number) -> parsedData[range] = number.toInt() }
-
-        config.eloConstants = parsedData
+        mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(FunnyGuildsLogger(Logger.getLogger("TestLogger")))
     }
 
     @AfterEach

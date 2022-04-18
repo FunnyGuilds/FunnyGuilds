@@ -306,8 +306,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Bloki, ktorych nie mozna 'bugowac'")
     @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
-    @CustomKey("bugged-blocks-exclude")
-    public List<String> buggedBlocksExclude_ = Arrays.asList(
+    public Set<Material> buggedBlocksExclude = MaterialUtils.parseMaterials(false,
             // Ban basic
             "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
             // Ban TNT Minecart placement
@@ -325,11 +324,7 @@ public class PluginConfiguration extends OkaeriConfig {
             "TRAPPED_CHEST", "CHEST"
     );
 
-    @Exclude
-    public Set<Material> buggedBlocksExclude;
-
     @Comment("Czy klocki po 'zbugowaniu' maja zostac oddane")
-    @CustomKey("bugged-blocks-return")
     public boolean buggedBlockReturn = false;
 
     @Min(1)
@@ -348,7 +343,6 @@ public class PluginConfiguration extends OkaeriConfig {
     public int maxEnemiesBetweenGuilds = 15;
 
     @Comment("Lista nazw swiatow, na ktorych mozliwosc utworzenia gildii powinna byc zablokowana")
-    @CustomKey("blocked-worlds")
     public List<String> blockedWorlds = Collections.singletonList("some_world");
 
     @Comment("Mozliwosc ucieczki z terenu innej gildii")
@@ -600,11 +594,11 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Lista powinna byc podana od najmniejszych do najwiekszych rankingow i zawierac tylko liczby naturalne, z zerem wlacznie")
     @Comment("Elementy listy powinny byc postaci: \"minRank-maxRank stala\", np.: \"0-1999 32\"")
     @Comment("* uzyta w zapisie elementu listy oznacza wszystkie wartosci od danego minRank w gore, np.: \"2401-* 16\"")
-    @CustomKey("elo-constants")
-    public List<String> eloConstants_ = Arrays.asList("0-1999 32", "2000-2400 24", "2401-* 16");
-
-    @Exclude
-    public Map<NumberRange, Integer> eloConstants;
+    public Map<NumberRange, Integer> eloConstants = ImmutableMap.<NumberRange, Integer>builder()
+            .put(new NumberRange(0, 1999), 32)
+            .put(new NumberRange(2000, 2400), 24)
+            .put(new NumberRange(2401, Integer.MAX_VALUE), 16)
+            .build();
 
     @Positive
     @Comment("Sekcja uzywana TYLKO jesli wybranym rank-system jest ELO!")
@@ -1118,26 +1112,6 @@ public class PluginConfiguration extends OkaeriConfig {
         else {
             this.enlargeSize = 0;
             this.enlargeItems = null;
-        }
-
-        this.buggedBlocksExclude = new HashSet<>();
-        for (String stringMaterial : this.buggedBlocksExclude_) {
-            this.buggedBlocksExclude.add(MaterialUtils.parseMaterial(stringMaterial, false));
-        }
-
-        if (this.rankSystem == RankSystem.Type.ELO) {
-            Map<NumberRange, Integer> parsedData = new HashMap<>();
-
-            for (Entry<NumberRange, String> entry : NumberRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
-                try {
-                    parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
-                }
-                catch (NumberFormatException e) {
-                    FunnyGuilds.getPluginLogger().parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
-                }
-            }
-
-            this.eloConstants = parsedData;
         }
 
         Map<Material, Double> map = new EnumMap<>(Material.class);

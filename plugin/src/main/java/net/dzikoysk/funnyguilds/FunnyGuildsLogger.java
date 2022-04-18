@@ -8,14 +8,12 @@ import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import org.bukkit.Bukkit;
 
-public final class FunnyGuildsLogger {
+public class FunnyGuildsLogger {
 
-    private final FunnyGuilds plugin;
-    private final Logger rootLogger;
+    protected final Logger rootLogger;
 
-    FunnyGuildsLogger(FunnyGuilds plugin) {
-        this.plugin = plugin;
-        this.rootLogger = plugin.getLogger();
+    public FunnyGuildsLogger(Logger rootLogger) {
+        this.rootLogger = rootLogger;
     }
 
     public void update(String content) {
@@ -35,9 +33,7 @@ public final class FunnyGuildsLogger {
     }
 
     public void debug(String content) {
-        if (this.plugin.getPluginConfiguration().debugMode) {
-            this.rootLogger.info("[Debug] > " + content);
-        }
+        this.rootLogger.info("[Debug] > " + content);
     }
 
     public void error(String content) {
@@ -45,15 +41,6 @@ public final class FunnyGuildsLogger {
     }
 
     public void error(String content, Throwable cause) {
-        String loadedPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
-                .filter(plugin -> !plugin.getName().contains("FunnyGuilds"))
-                .map(plugin -> plugin.getName() + " " + plugin.getDescription().getVersion())
-                .collect(Collectors.joining(", "));
-
-        if (loadedPlugins.length() == 0) {
-            loadedPlugins = "none";
-        }
-
         error("");
         error(content);
         error("");
@@ -64,16 +51,49 @@ public final class FunnyGuildsLogger {
         for (String line : errorDump.toString().split("\n")) {
             error(line);
         }
+    }
 
-        error("");
-        error("Server Information:");
-        error("  FunnyGuilds: " + this.plugin.getVersion().getFullVersion());
-        error("  Bukkit: " + Bukkit.getBukkitVersion());
-        error("  Java: " + System.getProperty("java.version"));
-        error("  Thread: " + Thread.currentThread());
-        error("  Loaded plugins: " + loadedPlugins);
-        error("  Reload count: " + MinecraftServerUtils.getReloadCount());
-        error("");
+    static class DefaultLogger extends FunnyGuildsLogger {
+
+        private final FunnyGuilds plugin;
+
+        DefaultLogger(FunnyGuilds plugin) {
+            super(plugin.getLogger());
+            this.plugin = plugin;
+        }
+
+        @Override
+        public void debug(String content) {
+            if (this.plugin.getPluginConfiguration().debugMode) {
+                return;
+            }
+            super.debug(content);
+        }
+
+        @Override
+        public void error(String content, Throwable cause) {
+            String loadedPlugins = Arrays.stream(Bukkit.getPluginManager().getPlugins())
+                    .filter(plugin -> !plugin.getName().contains("FunnyGuilds"))
+                    .map(plugin -> plugin.getName() + " " + plugin.getDescription().getVersion())
+                    .collect(Collectors.joining(", "));
+
+            if (loadedPlugins.length() == 0) {
+                loadedPlugins = "none";
+            }
+
+            super.error(content, cause);
+
+            error("");
+            error("Server Information:");
+            error("  FunnyGuilds: " + this.plugin.getVersion().getFullVersion());
+            error("  Bukkit: " + Bukkit.getBukkitVersion());
+            error("  Java: " + System.getProperty("java.version"));
+            error("  Thread: " + Thread.currentThread());
+            error("  Loaded plugins: " + loadedPlugins);
+            error("  Reload count: " + MinecraftServerUtils.getReloadCount());
+            error("");
+        }
+
     }
 
 }
