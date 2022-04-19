@@ -48,7 +48,6 @@ public final class ConfigurationFactory {
                 registry.register(new MaterialTransformer());
                 registry.register(new ItemStackTransformer());
                 registry.register(new FunnyTimeTransformer());
-                registry.register(new NumberRangeTransformer());
                 registry.register(new RangeFormattingTransformer());
                 registry.register(new VectorSerializer());
             });

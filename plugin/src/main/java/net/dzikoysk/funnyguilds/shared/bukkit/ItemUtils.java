@@ -144,70 +144,71 @@ public final class ItemUtils {
             String attributeName = itemAttribute[0];
             String attributeValue = itemAttribute[1];
 
-            if (attributeName.equalsIgnoreCase("name")) {
-                item.setName(StringUtils.replace(ChatUtils.colored(attributeValue), "_", " "), true);
-            }
-            else if (attributeName.equalsIgnoreCase("lore")) {
-                String[] lores = String.join(":", attributeValue).split("#");
-                List<String> lore = new ArrayList<>();
+            switch (attributeName.toLowerCase()) {
+                case "name":
+                case "displayname":
+                    item.setName(attributeValue.replace("_", " "), true);
+                case "lore":
+                    String[] lores = String.join(":", attributeValue).split("#");
 
-                for (String loreLine : lores) {
-                    lore.add(StringUtils.replace(StringUtils.replace(ChatUtils.colored(loreLine), "_", " "), "{HASH}", "#"));
-                }
+                    List<String> lore = PandaStream.of(lores)
+                            .map(line -> line.replace("_", " "))
+                            .map(line -> line.replace("{HASH}", "#"))
+                            .toList();
 
-                item.setLore(lore);
-            }
-            else if (attributeName.equalsIgnoreCase("enchant")) {
-                Pair<Enchantment, Integer> enchant = parseEnchant(attributeValue);
-                item.addEnchant(enchant.getFirst(), enchant.getSecond());
-            }
-            else if (attributeName.equalsIgnoreCase("enchants")) {
-                PandaStream.of(attributeValue.split(","))
-                        .map(ItemUtils::parseEnchant)
-                        .filter(enchant -> enchant.getFirst() != null)
-                        .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
-            }
-            else if (attributeName.equalsIgnoreCase("skullowner")) {
-                if (item.getMeta() instanceof SkullMeta) {
-                    ((SkullMeta) item.getMeta()).setOwner(attributeValue);
-                    item.refreshMeta();
-                }
-            }
-            else if (attributeName.equalsIgnoreCase("flags")) {
-                String[] flags = attributeValue.split(",");
+                    item.setLore(lore, true);
+                case "enchant":
+                case "enchantment":
+                    Pair<Enchantment, Integer> parsedEnchant = parseEnchant(attributeValue);
+                    item.addEnchant(parsedEnchant.getFirst(), parsedEnchant.getSecond());
+                case "enchants":
+                case "enchantments":
+                    PandaStream.of(attributeValue.split(","))
+                            .map(ItemUtils::parseEnchant)
+                            .filter(enchant -> enchant.getFirst() != null)
+                            .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
+                case "skullowner":
+                    if (item.getMeta() instanceof SkullMeta) {
+                        ((SkullMeta) item.getMeta()).setOwner(attributeValue);
+                        item.refreshMeta();
+                    }
+                case "flags":
+                case "itemflags":
+                    String[] flags = attributeValue.split(",");
 
-                for (String flag : flags) {
-                    flag = flag.trim();
-                    ItemFlag matchedFlag = matchItemFlag(flag);
+                    for (String flag : flags) {
+                        flag = flag.trim();
 
-                    if (matchedFlag == null) {
-                        FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flag);
+                        ItemFlag matchedFlag = matchItemFlag(flag);
+                        if (matchedFlag == null) {
+                            FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flag);
+                            continue;
+                        }
+
+                        item.setFlag(matchedFlag);
+                    }
+                case "armorcolor":
+                    if (!(item.getMeta() instanceof LeatherArmorMeta)) {
+                        FunnyGuilds.getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[index]);
                         continue;
                     }
 
-                    item.setFlag(matchedFlag);
-                }
+                    String[] colorSplit = attributeValue.split("_");
 
-            }
-            else if (attributeName.equalsIgnoreCase("armorcolor")) {
-                if (!(item.getMeta() instanceof LeatherArmorMeta)) {
-                    FunnyGuilds.getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[index]);
-                    continue;
-                }
+                    try {
+                        Color color = Color.fromRGB(Integer.parseInt(colorSplit[0]), Integer.parseInt(colorSplit[1]), Integer.parseInt(colorSplit[2]));
+                        ((LeatherArmorMeta) item.getMeta()).setColor(color);
+                        item.refreshMeta();
+                    }
+                    catch (NumberFormatException numberFormatException) {
+                        FunnyGuilds.getPluginLogger().parser("Invalid armor color: " + attributeValue);
+                    }
+                case "eggtype":
+                    if (!EggTypeChanger.needsSpawnEggMeta()) {
+                        FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
+                        continue;
+                    }
 
-                String[] color = attributeValue.split("_");
-
-                try {
-                    ((LeatherArmorMeta) item.getMeta()).setColor(Color.fromRGB(Integer.parseInt(color[0]),
-                            Integer.parseInt(color[1]), Integer.parseInt(color[2])));
-                    item.refreshMeta();
-                }
-                catch (NumberFormatException numberFormatException) {
-                    FunnyGuilds.getPluginLogger().parser("Invalid armor color: " + attributeValue);
-                }
-            }
-            else if (attributeName.equalsIgnoreCase("eggtype")) {
-                if (EggTypeChanger.needsSpawnEggMeta()) {
                     EntityType type = null;
                     String entityTypeName = attributeValue.toUpperCase();
 
@@ -222,10 +223,6 @@ public final class ItemUtils {
                         EggTypeChanger.applyChanges(item.getMeta(), type);
                         item.refreshMeta();
                     }
-                }
-                else {
-                    FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
-                }
             }
         }
 
@@ -262,8 +259,8 @@ public final class ItemUtils {
         if (meta.hasLore()) {
             List<String> lore = PandaStream.of(meta.getLore())
                     .map(ChatUtils::decolor)
-                    .map(line -> line.replace("#", "{HASH}"))
                     .map(line -> line.replace(" ", "_"))
+                    .map(line -> line.replace("#", "{HASH}"))
                     .toList();
 
             itemString.append(" lore:").append(Joiner.on("#").join(lore));

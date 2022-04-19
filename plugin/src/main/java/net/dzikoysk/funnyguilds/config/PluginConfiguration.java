@@ -318,7 +318,7 @@ public class PluginConfiguration extends OkaeriConfig {
     );
 
     @Comment("Czy klocki po 'zbugowaniu' maja zostac oddane")
-    public boolean buggedBlockReturn = false;
+    public boolean buggedBlocksReturn = false;
 
     @Min(1)
     @Comment("Maksymalna liczba czlonkow w gildii")
