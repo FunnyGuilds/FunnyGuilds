@@ -119,8 +119,8 @@ public final class NumberRange {
         }
         NumberRange range = (NumberRange) obj;
 
-        return this.minRange.equals(range.minRange)
-                && this.maxRange.equals(range.maxRange);
+        return this.minRange.equals(range.minRange) &&
+                this.maxRange.equals(range.maxRange);
     }
 
     @Override
