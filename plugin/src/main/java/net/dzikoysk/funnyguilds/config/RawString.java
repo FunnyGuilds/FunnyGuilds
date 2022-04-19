@@ -23,8 +23,7 @@ public class RawString {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof RawString &&
-                value.equals(((RawString) obj).value);
+        return obj instanceof RawString && value.equals(((RawString) obj).value);
     }
 
     @Override
