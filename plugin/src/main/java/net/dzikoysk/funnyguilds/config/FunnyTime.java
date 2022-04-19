@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class FunnyTime {
 
@@ -29,6 +30,33 @@ public class FunnyTime {
 
     public String getFormattedTime() {
         return formattedTime;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(time);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof FunnyTime)) {
+            return false;
+        }
+        FunnyTime funnyTime = (FunnyTime) obj;
+
+        return time.equals(funnyTime.time);
+    }
+
+    @Override
+    public String toString() {
+        return "FunnyTime{" +
+                "time=" + time +
+                ", formattedTime='" + formattedTime + '\'' +
+                '}';
     }
 
 }
