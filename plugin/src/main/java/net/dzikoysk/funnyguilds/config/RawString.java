@@ -28,9 +28,6 @@ public class RawString {
         }
 
         if (!(obj instanceof RawString)) {
-            if (obj instanceof String) {
-                return this.value.equals(obj);
-            }
             return false;
         }
         RawString rawString = (RawString) obj;
