@@ -148,6 +148,7 @@ public final class ItemUtils {
                 case "name":
                 case "displayname":
                     item.setName(attributeValue.replace("_", " "), true);
+                    continue;
                 case "lore":
                     String[] lores = String.join(":", attributeValue).split("#");
 
@@ -157,21 +158,25 @@ public final class ItemUtils {
                             .toList();
 
                     item.setLore(lore, true);
+                    continue;
                 case "enchant":
                 case "enchantment":
                     Pair<Enchantment, Integer> parsedEnchant = parseEnchant(attributeValue);
                     item.addEnchant(parsedEnchant.getFirst(), parsedEnchant.getSecond());
+                    continue;
                 case "enchants":
                 case "enchantments":
                     PandaStream.of(attributeValue.split(","))
                             .map(ItemUtils::parseEnchant)
                             .filter(enchant -> enchant.getFirst() != null)
                             .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
+                    continue;
                 case "skullowner":
                     if (item.getMeta() instanceof SkullMeta) {
                         ((SkullMeta) item.getMeta()).setOwner(attributeValue);
                         item.refreshMeta();
                     }
+                    continue;
                 case "flags":
                 case "itemflags":
                     String[] flags = attributeValue.split(",");
@@ -187,6 +192,8 @@ public final class ItemUtils {
 
                         item.setFlag(matchedFlag);
                     }
+
+                    continue;
                 case "armorcolor":
                     if (!(item.getMeta() instanceof LeatherArmorMeta)) {
                         FunnyGuilds.getPluginLogger().parser("Invalid item armor color attribute (given item is not a leather armor!): " + split[index]);
@@ -203,6 +210,8 @@ public final class ItemUtils {
                     catch (NumberFormatException numberFormatException) {
                         FunnyGuilds.getPluginLogger().parser("Invalid armor color: " + attributeValue);
                     }
+
+                    continue;
                 case "eggtype":
                     if (!EggTypeChanger.needsSpawnEggMeta()) {
                         FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
@@ -223,6 +232,8 @@ public final class ItemUtils {
                         EggTypeChanger.applyChanges(item.getMeta(), type);
                         item.refreshMeta();
                     }
+
+                    continue;
             }
         }
 
