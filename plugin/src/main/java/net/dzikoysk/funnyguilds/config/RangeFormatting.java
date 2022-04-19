@@ -47,6 +47,7 @@ public class RangeFormatting {
         if (this == obj) {
             return true;
         }
+
         if (!(obj instanceof RangeFormatting)) {
             return false;
         }

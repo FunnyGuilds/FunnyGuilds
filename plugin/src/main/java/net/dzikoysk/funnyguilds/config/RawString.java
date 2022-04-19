@@ -23,16 +23,8 @@ public class RawString {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof RawString)) {
-            return false;
-        }
-        RawString rawString = (RawString) obj;
-
-        return value.equals(rawString.value);
+        return obj instanceof RawString
+                && value.equals(((RawString) obj).value);
     }
 
     @Override

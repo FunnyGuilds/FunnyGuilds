@@ -39,16 +39,8 @@ public class FunnyTime {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof FunnyTime)) {
-            return false;
-        }
-        FunnyTime funnyTime = (FunnyTime) obj;
-
-        return time.equals(funnyTime.time);
+        return obj instanceof FunnyTime
+                && time.equals(((FunnyTime) obj).time);
     }
 
     @Override
