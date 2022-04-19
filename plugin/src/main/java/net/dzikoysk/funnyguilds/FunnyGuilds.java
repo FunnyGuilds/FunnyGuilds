@@ -159,8 +159,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onLoad() {
+        Reflections.prepareServerVersion();
+
         plugin = this;
-        logger = new FunnyGuildsLogger(this);
+        logger = new FunnyGuildsLogger.DefaultLogger(this);
         this.version = new FunnyGuildsVersion(this);
         this.funnyServer = new FunnyServer(this.getServer());
 
@@ -210,8 +212,6 @@ public class FunnyGuilds extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        plugin = this;
-
         if (this.forceDisabling) {
             return;
         }

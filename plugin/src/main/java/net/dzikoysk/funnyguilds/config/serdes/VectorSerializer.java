@@ -23,7 +23,6 @@ public class VectorSerializer implements ObjectSerializer<Vector> {
 
     @Override
     public Vector deserialize(@NotNull DeserializationData data, @NotNull GenericsDeclaration generics) {
-
         double x = data.get("x", double.class);
         double y = data.get("y", double.class);
         double z = data.get("z", double.class);

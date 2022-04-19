@@ -97,7 +97,7 @@ public class BlockPlace extends AbstractFunnyListener {
                 if (!player.isOnline()) {
                     return;
                 }
-                if (config.buggedBlockReturn) {
+                if (config.buggedBlocksReturn) {
                     player.getInventory().addItem(returnItem);
                 }
             }, config.buggedBlocksTimer);

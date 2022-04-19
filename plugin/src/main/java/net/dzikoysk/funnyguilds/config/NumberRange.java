@@ -117,7 +117,6 @@ public final class NumberRange {
         if (!(obj instanceof NumberRange)) {
             return false;
         }
-
         NumberRange range = (NumberRange) obj;
 
         return this.minRange.equals(range.minRange) && this.maxRange.equals(range.maxRange);

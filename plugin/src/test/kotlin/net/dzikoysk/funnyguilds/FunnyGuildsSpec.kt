@@ -4,40 +4,46 @@ import net.dzikoysk.funnyguilds.config.MessageConfiguration
 import net.dzikoysk.funnyguilds.config.NumberRange
 import net.dzikoysk.funnyguilds.config.PluginConfiguration
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration
-import net.dzikoysk.funnyguilds.feature.notification.bossbar.provider.BossBarProvider
 import net.dzikoysk.funnyguilds.guild.GuildManager
 import net.dzikoysk.funnyguilds.guild.GuildRankManager
 import net.dzikoysk.funnyguilds.guild.RegionManager
 import net.dzikoysk.funnyguilds.rank.DefaultTops
 import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService
+import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils
 import net.dzikoysk.funnyguilds.user.UserManager
 import net.dzikoysk.funnyguilds.user.UserRankManager
+import org.bukkit.inventory.ItemStack
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mock
 import org.mockito.MockedStatic
+import org.mockito.Mockito.anyString
 import org.mockito.Mockito.lenient
 import org.mockito.Mockito.mockStatic
 import org.mockito.junit.jupiter.MockitoExtension
+import java.util.logging.Logger
 
 @ExtendWith(MockitoExtension::class)
-open class FunnyGuildsSpec : BukkitSpec(){
+open class FunnyGuildsSpec : BukkitSpec() {
 
     protected lateinit var mockedFunnyGuilds: MockedStatic<FunnyGuilds>
-    protected lateinit var mockedBossBarProvider: MockedStatic<BossBarProvider>
+    protected lateinit var mockedItemUtils: MockedStatic<ItemUtils>
 
     @BeforeEach
     fun openMockedFunnyGuilds() {
         mockedFunnyGuilds = mockStatic(FunnyGuilds::class.java)
+        mockedItemUtils = mockStatic(ItemUtils::class.java)
     }
 
     @Mock
     lateinit var funnyGuilds: FunnyGuilds
 
-    protected val config = PluginConfiguration()
-    protected val messages = MessageConfiguration()
-    protected val tablistConfig = TablistConfiguration()
+    protected val funnyGuildsLogger = TestLogger(Logger.getLogger("TestLogger"))
+
+    protected lateinit var config: PluginConfiguration
+    protected lateinit var messages: MessageConfiguration
+    protected lateinit var tablistConfig: TablistConfiguration
 
     protected lateinit var userManager: UserManager
     protected lateinit var guildManager: GuildManager
@@ -49,6 +55,16 @@ open class FunnyGuildsSpec : BukkitSpec(){
 
     @BeforeEach
     fun prepareFunnyGuilds() {
+        mockedFunnyGuilds.`when`<FunnyGuildsLogger> { FunnyGuilds.getPluginLogger() }.thenReturn(funnyGuildsLogger)
+
+        mockedItemUtils.`when`<ItemStack> { ItemUtils.parseItem(anyString()) }.thenReturn(null)
+
+        config = PluginConfiguration()
+        messages = MessageConfiguration()
+        tablistConfig = TablistConfiguration()
+
+        preparePluginConfiguration()
+
         lenient().`when`(funnyGuilds.pluginConfiguration).thenReturn(config)
         lenient().`when`(funnyGuilds.messageConfiguration).thenReturn(messages)
         lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
@@ -67,19 +83,25 @@ open class FunnyGuildsSpec : BukkitSpec(){
         lenient().`when`(funnyGuilds.guildRankManager).thenReturn(guildRankManager)
         lenient().`when`(funnyGuilds.regionManager).thenReturn(regionManager)
 
-        rankPlaceholdersService = RankPlaceholdersService(null, config, messages, tablistConfig, userRankManager, guildRankManager)
+        rankPlaceholdersService = RankPlaceholdersService(
+            funnyGuildsLogger,
+            config,
+            messages,
+            tablistConfig,
+            userRankManager,
+            guildRankManager
+        )
 
         lenient().`when`(funnyGuilds.rankPlaceholdersService).thenReturn(rankPlaceholdersService)
 
         mockedFunnyGuilds.`when`<FunnyGuilds> { FunnyGuilds.getInstance() }.thenReturn(funnyGuilds)
     }
 
-    @BeforeEach
     fun preparePluginConfiguration() {
         val parsedData = mutableMapOf<NumberRange, Int>()
 
         NumberRange.parseIntegerRange(config.eloConstants_, false)
-                .forEach { (range, number) -> parsedData[range] = number.toInt() }
+            .forEach { (range, number) -> parsedData[range] = number.toInt() }
 
         config.eloConstants = parsedData
     }
@@ -87,6 +109,7 @@ open class FunnyGuildsSpec : BukkitSpec(){
     @AfterEach
     fun closeMockedFunnyGuilds() {
         mockedFunnyGuilds.close()
+        mockedItemUtils.close()
     }
 
 }

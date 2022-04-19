@@ -2,12 +2,10 @@ package net.dzikoysk.funnyguilds.config;
 
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
+import java.util.Objects;
 import panda.std.stream.PandaStream;
 
 public class RangeFormatting {
-
-    private static final Pattern RANGE_PATTERN = Pattern.compile("(-?[0-9.*]+)-(-?[0-9.*]+)");
 
     private final NumberRange range;
     private String value;
@@ -40,6 +38,25 @@ public class RangeFormatting {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(range, value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (!(obj instanceof RangeFormatting)) {
+            return false;
+        }
+        RangeFormatting rangeFormatting = (RangeFormatting) obj;
+
+        return range.equals(rangeFormatting.range) && value.equals(rangeFormatting.value);
+    }
+
+    @Override
     public String toString() {
         return this.range.toString() + " " + this.value;
     }
@@ -48,4 +65,5 @@ public class RangeFormatting {
         return PandaStream.of(formattingList)
                 .toMap(RangeFormatting::getRange, RangeFormatting::getValue);
     }
+
 }

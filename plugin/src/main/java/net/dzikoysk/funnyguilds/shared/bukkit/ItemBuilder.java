@@ -45,10 +45,10 @@ public final class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder setLore(List<String> lore) {
+    public ItemBuilder setLore(List<String> lore, boolean color) {
         final List<String> formatted = new ArrayList<>();
-        for (String str : lore) {
-            formatted.add(ChatUtils.colored(str));
+        for (String line : lore) {
+            formatted.add(color ? ChatUtils.colored(line) : line);
         }
 
         this.itemMeta.setLore(formatted);
@@ -58,7 +58,7 @@ public final class ItemBuilder {
     }
 
     public ItemBuilder setLore(String... lore) {
-        return setLore(Arrays.asList(lore));
+        return setLore(Arrays.asList(lore), true);
     }
 
     public ItemBuilder addEnchant(Enchantment enchant, int level) {

@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.config;
 
 import java.util.List;
+import java.util.Objects;
 import panda.std.stream.PandaStream;
 
 public class RawString {
@@ -13,6 +14,16 @@ public class RawString {
 
     public String getValue() {
         return this.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RawString && value.equals(((RawString) obj).value);
     }
 
     @Override

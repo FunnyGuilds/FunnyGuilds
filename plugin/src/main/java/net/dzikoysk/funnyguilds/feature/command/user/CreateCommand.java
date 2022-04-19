@@ -122,9 +122,15 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
         }
 
-        List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items") ? config.createItemsVip : config.createItems;
-        int requiredExperience = player.hasPermission("funnyguilds.vip.items") ? config.requiredExperienceVip : config.requiredExperience;
-        double requiredMoney = player.hasPermission("funnyguilds.vip.items") ? config.requiredMoneyVip : config.requiredMoney;
+        List<ItemStack> requiredItems = player.hasPermission("funnyguilds.vip.items")
+                ? config.createItemsVip
+                : config.createItems;
+        int requiredExperience = player.hasPermission("funnyguilds.vip.items")
+                ? config.requiredExperienceVip
+                : config.requiredExperience;
+        double requiredMoney = player.hasPermission("funnyguilds.vip.items")
+                ? config.requiredMoneyVip
+                : config.requiredMoney;
 
         if (player.getTotalExperience() < requiredExperience) {
             String msg = messages.createExperience;

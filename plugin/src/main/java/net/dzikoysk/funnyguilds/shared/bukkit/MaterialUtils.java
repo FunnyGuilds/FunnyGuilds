@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
@@ -11,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.Nullable;
+import panda.std.stream.PandaStream;
 
 public final class MaterialUtils {
 
@@ -20,21 +22,25 @@ public final class MaterialUtils {
     private MaterialUtils() {
     }
 
-    public static Material parseMaterial(String string, boolean allowNullReturn) {
-        if (string == null) {
+    public static Material parseMaterial(String materialString, boolean allowNullReturn) {
+        if (materialString == null) {
             FunnyGuilds.getPluginLogger().parser("Unknown material: null");
             return allowNullReturn ? null : Material.AIR;
         }
+        String materialName = materialString.toUpperCase().replaceAll(" ", "_");
 
-        String materialName = string.toUpperCase().replaceAll(" ", "_");
         Material material = matchMaterial(materialName);
-
         if (material == null) {
-            FunnyGuilds.getPluginLogger().parser("Unknown material: " + string);
+            FunnyGuilds.getPluginLogger().parser("Unknown material: " + materialString);
             return allowNullReturn ? null : Material.AIR;
         }
-
         return material;
+    }
+
+    public static Set<Material> parseMaterials(boolean allowNullReturn, String... materialStrings) {
+        return PandaStream.of(materialStrings)
+                .map(materialString -> parseMaterial(materialString, allowNullReturn))
+                .toSet();
     }
 
     public static Pair<Material, Byte> parseMaterialData(String string, boolean allowNullReturn) {
@@ -50,7 +56,6 @@ public final class MaterialUtils {
             FunnyGuilds.getPluginLogger().parser("Unknown material in material data: " + string);
             return allowNullReturn ? null : Pair.of(Material.AIR, (byte) 0);
         }
-
 
         return Pair.of(material, data.length == 2 ? Byte.parseByte(data[1]) : (byte) 0);
     }

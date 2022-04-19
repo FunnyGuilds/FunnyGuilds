@@ -14,10 +14,10 @@ import org.bukkit.entity.Entity;
 
 public final class Reflections {
 
-    public static final String SERVER_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
-    public static final boolean USE_PRE_13_METHODS = Integer.parseInt(SERVER_VERSION.split("_")[1]) < 13;
-    public static final boolean USE_PRE_12_METHODS = Integer.parseInt(SERVER_VERSION.split("_")[1]) < 12;
-    public static final boolean USE_PRE_9_METHODS = Integer.parseInt(SERVER_VERSION.split("_")[1]) < 9;
+    public static String SERVER_VERSION = "1_0";
+    public static boolean USE_PRE_13_METHODS;
+    public static boolean USE_PRE_12_METHODS;
+    public static boolean USE_PRE_9_METHODS;
 
     private static final Map<String, Class<?>> CLASS_CACHE = new HashMap<>();
     private static final Map<String, Field> FIELD_CACHE = new HashMap<>();
@@ -27,6 +27,16 @@ public final class Reflections {
     private static final Method INVALID_METHOD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredMethod("invalidMethodMaker"));
     private static final Field INVALID_FIELD = SafeUtils.safeInit(() -> InvalidMarker.class.getDeclaredField("invalidFieldMarker"));
     private static final FieldAccessor<?> INVALID_FIELD_ACCESSOR = getField(INVALID_CLASS, Void.class, 0);
+
+    public static void prepareServerVersion() {
+        SERVER_VERSION = Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3];
+
+        int versionNumber = Integer.parseInt(SERVER_VERSION.split("_")[1]);
+
+        USE_PRE_13_METHODS = versionNumber < 13;
+        USE_PRE_12_METHODS = versionNumber < 12;
+        USE_PRE_9_METHODS = versionNumber < 9;
+    }
 
     public static Class<?> getClassOmitCache(String className) {
         CLASS_CACHE.remove(className);
