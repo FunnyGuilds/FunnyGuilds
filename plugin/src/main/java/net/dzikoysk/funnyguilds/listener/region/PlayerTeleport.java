@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.jetbrains.annotations.Nullable;
 
 public class PlayerTeleport extends AbstractFunnyListener {
@@ -14,6 +15,7 @@ public class PlayerTeleport extends AbstractFunnyListener {
     @EventHandler(ignoreCancelled = true)
     public void onTeleport(PlayerTeleportEvent event) {
         this.userManager.findByUuid(event.getPlayer().getUniqueId())
+                .filter(user -> event.getCause() == TeleportCause.COMMAND || event.getCause() == TeleportCause.PLUGIN)
                 .filterNot(user -> user.hasPermission("funnyguilds.admin"))
                 .filterNot(user -> this.isTeleportationToRegionAllowed(event.getTo(), user))
                 .peek(user -> {
@@ -31,8 +33,7 @@ public class PlayerTeleport extends AbstractFunnyListener {
     }
 
     private boolean isTeleportationToRegionAllowed(Guild guild, @Nullable Guild userGuild) {
-        return !config.blockTeleportOnRegion.neutral &&
-                this.isTeleportationOnAllyRegionAllowed(guild, userGuild) &&
+        return this.isTeleportationOnAllyRegionAllowed(guild, userGuild) ||
                 this.isTeleportationOnEnemyRegionAllowed(guild, userGuild);
     }
 
