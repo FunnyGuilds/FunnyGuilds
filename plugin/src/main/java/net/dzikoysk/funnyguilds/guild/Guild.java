@@ -266,7 +266,7 @@ public class Guild extends AbstractMutableEntity {
         return !this.allies.isEmpty();
     }
 
-    public boolean isAlly(Guild guild) {
+    public boolean isAlly(@Nullable Guild guild) {
         return this.allies.contains(guild);
     }
 
@@ -297,7 +297,7 @@ public class Guild extends AbstractMutableEntity {
         return !this.enemies.isEmpty();
     }
 
-    public boolean isEnemy(Guild guild) {
+    public boolean isEnemy(@Nullable Guild guild) {
         return this.enemies.contains(guild);
     }
 
@@ -318,6 +318,10 @@ public class Guild extends AbstractMutableEntity {
     public void removeEnemy(Guild guild) {
         this.enemies.remove(guild);
         this.markChanged();
+    }
+
+    public boolean isNeutral(@Nullable Guild guild) {
+        return !this.isEnemy(guild) && !this.isAlly(guild);
     }
 
     public long getBorn() {
