@@ -360,7 +360,7 @@ public class FunnyGuilds extends JavaPlugin {
             this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventMove, this.injector.newInstanceWithFields(PlayerMove.class));
             this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventPhysics, this.injector.newInstanceWithFields(BlockPhysics.class));
             this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.respawnInBase, this.injector.newInstanceWithFields(PlayerRespawn.class));
-            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && (pluginConfiguration.blockTeleportOnRegion.neutral || pluginConfiguration.blockTeleportOnRegion.enemy || pluginConfiguration.blockTeleportOnRegion.ally), this.injector.newInstanceWithFields(PlayerTeleport.class));
+            this.dynamicListenerManager.registerDynamic(() -> pluginConfiguration.regionsEnabled && pluginConfiguration.eventTeleport, this.injector.newInstanceWithFields(PlayerTeleport.class));
 
             this.dynamicListenerManager.reloadAll();
         }

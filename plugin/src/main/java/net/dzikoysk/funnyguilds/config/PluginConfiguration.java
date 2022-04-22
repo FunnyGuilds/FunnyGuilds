@@ -409,6 +409,9 @@ public class PluginConfiguration extends OkaeriConfig {
 
     }
 
+    @Exclude
+    public boolean eventTeleport = false;
+
     @Comment("Czy proces usuniecia gildii powinien zostac przerwany jezeli ktos spoza gildii jest na jej terenie")
     public boolean guildDeleteCancelIfSomeoneIsOnRegion = false;
 
@@ -1086,6 +1089,10 @@ public class PluginConfiguration extends OkaeriConfig {
             }
 
             this.eloConstants = parsedData;
+        }
+
+        if (blockTeleportOnRegion.neutral || blockTeleportOnRegion.enemy || blockTeleportOnRegion.ally) {
+            this.eventPhysics = true;
         }
 
         Map<Material, Double> map = new EnumMap<>(Material.class);
