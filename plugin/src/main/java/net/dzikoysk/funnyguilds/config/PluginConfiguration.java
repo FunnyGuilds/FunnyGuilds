@@ -1092,7 +1092,7 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         if (blockTeleportOnRegion.neutral || blockTeleportOnRegion.enemy || blockTeleportOnRegion.ally) {
-            this.eventPhysics = true;
+            this.eventTeleport = true;
         }
 
         Map<Material, Double> map = new EnumMap<>(Material.class);
