@@ -1,9 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import org.bukkit.event.EventHandler;
@@ -54,7 +54,7 @@ public class TntProtection extends AbstractFunnyListener {
                 .filterNot(guild -> config.regionExplodeExcludeEntities.contains(event.getEntityType()))
                 .peek(guild -> guild.setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli()))
                 .toStream(guild -> guild.getMembers().stream())
-                .filterNot(user -> informationMessageCooldowns.cooldown(user.getUUID(), TimeUnit.SECONDS, config.infoPlayerCooldown))
+                .filterNot(user -> informationMessageCooldowns.cooldown(user.getUUID(), Duration.ofSeconds(config.infoPlayerCooldown)))
                 .forEach(user -> user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
     }
 

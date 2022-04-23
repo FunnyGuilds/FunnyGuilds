@@ -1,6 +1,6 @@
 package net.dzikoysk.funnyguilds.listener.region;
 
-import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -81,7 +81,7 @@ public class PlayerInteract extends AbstractFunnyListener {
                         return;
                     }
 
-                    if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                    if (config.informationMessageCooldowns.cooldown(player, Duration.ofSeconds(config.infoPlayerCooldown))) {
                         return;
                     }
 
