@@ -1,5 +1,9 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
@@ -28,17 +32,26 @@ public class PlayerChat extends AbstractFunnyListener {
         }
         User user = userOption.get();
 
-        if (user.hasGuild()) {
-            Guild guild = user.getGuild().get();
-            String message = event.getMessage();
+        boolean guildChatHandled = user.getGuild()
+                .map(guild -> {
+                    String message = event.getMessage();
 
-            if (sendGuildMessage(event, message, player, guild)) {
-                if (config.logGuildChat) {
-                    FunnyGuilds.getPluginLogger().info("[Guild Chat] " + message);
-                }
+                    if (sendGuildMessage(player, guild, message)) {
+                        event.setCancelled(true);
 
-                return;
-            }
+                        if (config.logGuildChat) {
+                            FunnyGuilds.getPluginLogger().info("[Guild Chat] " + message);
+                        }
+
+                        return true;
+                    }
+
+                    return false;
+                })
+                .orElseGet(false);
+
+        if (guildChatHandled) {
+            return;
         }
 
         int points = user.getRank().getPoints();
@@ -51,7 +64,7 @@ public class PlayerChat extends AbstractFunnyListener {
 
         if (user.hasGuild()) {
             format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().get().getTag()));
-            format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByPlayer(player))));
+            format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", getUserPosition(this.userManager.findByPlayer(player))));
         }
         else {
             format = StringUtils.replace(format, "{TAG}", "");
@@ -61,127 +74,75 @@ public class PlayerChat extends AbstractFunnyListener {
         event.setFormat(format);
     }
 
-    private boolean sendGuildMessage(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
-        if (sendMessageToAllGuilds(event, message, player, guild)) {
+    private boolean sendGuildMessage(Player player, Guild guild, String message) {
+        if (sendMessageToAllGuilds(player, guild, message)) {
             return true;
         }
 
-        if (sendMessageToGuildAllies(event, message, player, guild)) {
+        if (sendMessageToGuildAllies(player, guild, message)) {
             return true;
         }
 
-        return sendMessageToGuildMembers(event, message, player, guild);
+        return sendMessageToGuildMembers(player, guild, message);
     }
 
     private void spy(Player player, String message) {
         String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
 
-        for (Player looped : Bukkit.getOnlinePlayers()) {
-            this.userManager.findByPlayer(looped)
-                    .filter(user -> user.getCache().isSpy())
-                    .peek(user -> user.sendMessage(spyMessage));
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(onlinePlayer -> userManager.findByPlayer(onlinePlayer))
+                .filter(user -> user.getCache().isSpy())
+                .forEach(user -> user.sendMessage(spyMessage));
     }
 
-    private boolean sendMessageToGuildMembers(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
-        String guildPrefix = config.chatPriv;
-        int prefixLength = guildPrefix.length();
+    private boolean sendMessageToGuildMembers(Player player, Guild guild, String message) {
+        return this.sendMessageToGuilds(player, guild, config.chatPrivDesign.getValue(), config.chatPriv, message, Collections.singletonList(guild));
+    }
 
-        if (message.length() > prefixLength && message.substring(0, prefixLength).equals(guildPrefix)) {
-            String resultMessage = config.chatPrivDesign.getValue();
+    private boolean sendMessageToGuildAllies(Player player, Guild guild, String message) {
+        Set<Guild> allies = new HashSet<>(guild.getAllies());
+        allies.add(guild);
+        return this.sendMessageToGuilds(player, guild, config.chatAllyDesign.getValue(), config.chatAlly, message, allies);
+    }
+
+    private boolean sendMessageToAllGuilds(Player player, Guild guild, String message) {
+        return this.sendMessageToGuilds(player, guild, config.chatGlobalDesign.getValue(), config.chatGlobal, message, this.guildManager.getGuilds());
+    }
+
+    private boolean sendMessageToGuilds(Player player, Guild playerGuild, String chatDesign, String prefix, String message, Collection<Guild> receivers) {
+        int prefixLength = prefix.length();
+
+        if (message.length() > prefixLength && message.substring(0, prefixLength).equalsIgnoreCase(prefix)) {
+            String resultMessage = chatDesign;
 
             resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
-            resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
+            resultMessage = StringUtils.replace(resultMessage, "{TAG}", playerGuild.getTag());
             resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
+                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getUserPosition(this.userManager.findByUuid(player.getUniqueId()))));
 
             resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
-            String messageWithoutPrefix = event.getMessage().substring(prefixLength).trim();
-            resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", messageWithoutPrefix);
-
-            this.spy(player, messageWithoutPrefix);
-            this.sendMessageToGuild(guild, player, resultMessage);
-
-            event.setCancelled(true);
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean sendMessageToGuildAllies(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
-        String allyPrefix = config.chatAlly;
-        int prefixLength = allyPrefix.length();
-
-        if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allyPrefix)) {
-            String resultMessage = config.chatAllyDesign.getValue();
-
-            resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
-            resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
-            resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
-
-            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
-
-            String subMessage = event.getMessage().substring(prefixLength).trim();
-            resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
-
-            this.spy(player, subMessage);
-            this.sendMessageToGuild(guild, player, resultMessage);
-
-            for (Guild ally : guild.getAllies()) {
-                this.sendMessageToGuild(ally, player, resultMessage);
-            }
-
-            event.setCancelled(true);
-            return true;
-        }
-
-        return false;
-    }
-
-    private boolean sendMessageToAllGuilds(AsyncPlayerChatEvent event, String message, Player player, Guild guild) {
-        String allGuildsPrefix = config.chatGlobal;
-        int prefixLength = allGuildsPrefix.length();
-
-        if (message.length() > prefixLength && message.substring(0, prefixLength).equals(allGuildsPrefix)) {
-            String resultMessage = config.chatGlobalDesign.getValue();
-
-            resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
-            resultMessage = StringUtils.replace(resultMessage, "{TAG}", guild.getTag());
-            resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getPositionString(this.userManager.findByUuid(player.getUniqueId()))));
-
-            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
-
-            String subMessage = event.getMessage().substring(prefixLength).trim();
+            String subMessage = message.substring(prefixLength).trim();
             resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
 
             this.spy(player, subMessage);
 
-            for (Guild globalGuild : this.guildManager.getGuilds()) {
-                this.sendMessageToGuild(globalGuild, player, resultMessage);
-            }
+            String finalResultMessage = resultMessage;
+            receivers.forEach(guild -> this.sendMessageToGuild(guild, finalResultMessage));
 
-            event.setCancelled(true);
             return true;
         }
 
         return false;
     }
 
-    private void sendMessageToGuild(Guild guild, Player player, String message) {
-        if (guild == null || player == null || !player.isOnline()) {
-            return;
-        }
-
+    private void sendMessageToGuild(Guild guild, String message) {
         PandaStream.of(guild.getMembers())
                 .filterNot(member -> member.getCache().isSpy())
                 .forEach(member -> member.sendMessage(message));
     }
 
-    private String getPositionString(Option<User> userOption) {
+    private String getUserPosition(Option<User> userOption) {
         if (userOption.isEmpty()) {
             return "";
         }
