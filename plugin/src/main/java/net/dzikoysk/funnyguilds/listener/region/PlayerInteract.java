@@ -6,6 +6,8 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartAttackEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
+import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
@@ -14,7 +16,6 @@ import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -54,28 +55,26 @@ public class PlayerInteract extends AbstractFunnyListener {
         boolean returnMethod = region.getHeartBlock()
                 .filter(heart -> heart.equals(clicked))
                 .peek(heart -> {
-                    if (heart.getType() == Material.DRAGON_EGG) {
-                        event.setCancelled(true);
-                    }
+                    event.setCancelled(true);
 
                     Guild guild = region.getGuild();
-
-                    if (SecuritySystem.onHitCrystal(player, guild)) {
-                        return;
-                    }
 
                     Option<User> userOption = this.userManager.findByPlayer(player);
                     if (userOption.isEmpty()) {
                         return;
                     }
-
                     User user = userOption.get();
+
+                    GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, SecuritySystem.onHitCrystal(player, guild));
+                    SimpleEventHandler.handle(interactEvent);
+
+                    if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
+                        return;
+                    }
 
                     if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, user, guild))) {
                         return;
                     }
-
-                    event.setCancelled(true);
 
                     if (eventAction == Action.LEFT_CLICK_BLOCK) {
                         WarSystem.getInstance().attack(player, guild);
