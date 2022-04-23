@@ -35,8 +35,8 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
     @Override
     public void execute() throws Exception {
         PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())
-                .filter(entry -> entry.getValue().getId() == this.entityId)
-                .forEach(entry -> {
+                .find(entry -> entry.getValue().getId() == this.entityId)
+                .peek(entry -> {
                     Option<Player> playerOption = plugin.getFunnyServer().getPlayer(user.getUUID());
                     if (playerOption.isEmpty()) {
                         return;
