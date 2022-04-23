@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency;
 
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,15 +27,18 @@ public class ConcurrencyManager {
         this.executor.submit(task);
     }
 
-    public void awaitTermination(long timeout) {
+    public void awaitTermination(Duration timeout) {
         this.executor.shutdown();
 
         try {
-            this.executor.awaitTermination(timeout, TimeUnit.SECONDS);
+            this.executor.awaitTermination(timeout.getSeconds(), TimeUnit.SECONDS);
         }
         catch (InterruptedException ex) {
             funnyGuilds.getPluginLogger().error("ConcurrencyManager termination failed", ex);
         }
+    }
+    public void awaitTermination(long timeout) {
+        awaitTermination(Duration.ofSeconds(timeout));
     }
 
     public void printStatus() {
