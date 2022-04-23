@@ -81,13 +81,15 @@ public class PlayerInteract extends AbstractFunnyListener {
                         return;
                     }
 
-                    if (!config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                        try {
-                            infoExecutor.execute(player, new String[]{guild.getTag()});
-                        }
-                        catch (ValidationException validatorException) {
-                            validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
-                        }
+                    if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                        return;
+                    }
+
+                    try {
+                        infoExecutor.execute(player, new String[] {guild.getTag()});
+                    }
+                    catch (ValidationException validatorException) {
+                        validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
                     }
                 })
                 .isPresent();
