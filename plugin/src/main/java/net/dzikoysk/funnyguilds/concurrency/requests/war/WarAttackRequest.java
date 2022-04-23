@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
+import java.util.Map.Entry;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
@@ -9,7 +10,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.feature.war.WarSystem;
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
@@ -36,14 +36,13 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
     public void execute() throws Exception {
         PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())
                 .find(entry -> entry.getValue().getId() == this.entityId)
-                .peek(entry -> {
+                .map(Entry::getKey)
+                .peek(guild -> {
                     Option<Player> playerOption = plugin.getFunnyServer().getPlayer(user.getUUID());
                     if (playerOption.isEmpty()) {
                         return;
                     }
                     Player player = playerOption.get();
-
-                    Guild guild = entry.getKey();
 
                     GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, Click.LEFT, SecuritySystem.onHitCrystal(player, guild));
                     SimpleEventHandler.handle(interactEvent);
@@ -56,7 +55,7 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
                         return;
                     }
 
-                    WarSystem.getInstance().attack(player, entry.getKey());
+                    WarSystem.getInstance().attack(player, guild);
                 });
     }
 }

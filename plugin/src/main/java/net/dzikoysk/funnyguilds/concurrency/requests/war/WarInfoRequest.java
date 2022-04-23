@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
+import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -11,7 +12,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent;
 import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
-import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -48,14 +48,13 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
     public void execute() throws Exception {
         PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())
                 .find(entry -> entry.getValue().getId() == this.entityId)
-                .peek(entry -> {
+                .map(Entry::getKey)
+                .peek(guild -> {
                     Option<Player> playerOption = plugin.getFunnyServer().getPlayer(user.getUUID());
                     if (playerOption.isEmpty()) {
                         return;
                     }
                     Player player = playerOption.get();
-
-                    Guild guild = entry.getKey();
 
                     GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, Click.RIGHT, SecuritySystem.onHitCrystal(player, guild));
                     SimpleEventHandler.handle(interactEvent);
@@ -71,7 +70,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
                     }
 
                     try {
-                        infoExecutor.execute(player, new String[] {entry.getKey().getTag()});
+                        infoExecutor.execute(player, new String[] {guild.getTag()});
                     }
                     catch (ValidationException validatorException) {
                         validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));
