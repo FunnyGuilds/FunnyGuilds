@@ -32,25 +32,17 @@ public class PlayerChat extends AbstractFunnyListener {
         }
         User user = userOption.get();
 
-        boolean guildChatHandled = user.getGuild()
-                .map(guild -> {
-                    String message = event.getMessage();
-
-                    if (sendGuildMessage(player, guild, message)) {
-                        event.setCancelled(true);
-
-                        if (config.logGuildChat) {
-                            FunnyGuilds.getPluginLogger().info("[Guild Chat] " + message);
-                        }
-
-                        return true;
-                    }
-
-                    return false;
-                })
+        boolean isGuildChat = user.getGuild()
+                .map(guild -> this.sendGuildMessage(player, guild, event.getMessage()))
                 .orElseGet(false);
 
-        if (guildChatHandled) {
+        if (isGuildChat) {
+            event.setCancelled(true);
+
+            if (config.logGuildChat) {
+                FunnyGuilds.getPluginLogger().info("[Guild Chat] " + event.getMessage());
+            }
+
             return;
         }
 
