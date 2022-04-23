@@ -936,13 +936,11 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean eventPhysics;
 
     @Comment("Czy System Security ma byc wlaczony?")
-    @CustomKey("system-security-enable")
     public boolean systemSecurityEnable = true;
 
     @DecimalMin("0")
     @Comment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
     @Comment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
-    @CustomKey("reach-compensation")
     public double reachCompensation = 0.26;
 
     @Min(0)
@@ -952,16 +950,13 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("Ilość wątków używanych przez ConcurrencyManager")
-    @CustomKey("concurrency-threads")
     public int concurrencyThreads = 1;
 
     @Min(1)
     @Comment("Co ile minut ma automatycznie zapisywac dane")
-    @CustomKey("data-interval")
     public int dataInterval = 1;
 
     @Comment("Jak dlugo plugin powinien czekac na zatrzymanie wszystkich biezacych zadan przy wylaczaniu pluginu")
-    @CustomKey("plugin-task-termination-timeout")
     public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
 
     @Comment("Hooki do pluginow, ktore powinny zostac wylaczone. Opcja powinna byc stosowania jedynie w awaryjnych sytuacjach!")
