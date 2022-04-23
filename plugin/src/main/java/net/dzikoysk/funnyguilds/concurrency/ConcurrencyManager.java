@@ -37,9 +37,6 @@ public class ConcurrencyManager {
             funnyGuilds.getPluginLogger().error("ConcurrencyManager termination failed", ex);
         }
     }
-    public void awaitTermination(long timeout) {
-        awaitTermination(Duration.ofSeconds(timeout));
-    }
 
     public void printStatus() {
         funnyGuilds.getPluginLogger().info("Available Processors: " + Runtime.getRuntime().availableProcessors());
