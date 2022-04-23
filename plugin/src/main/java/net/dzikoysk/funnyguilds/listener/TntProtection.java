@@ -9,7 +9,6 @@ import net.dzikoysk.funnyguilds.shared.Cooldown;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import panda.std.stream.PandaStream;
 
 public class TntProtection extends AbstractFunnyListener {
 
@@ -53,12 +52,10 @@ public class TntProtection extends AbstractFunnyListener {
         this.regionManager.findRegionAtLocation(event.getLocation())
                 .map(Region::getGuild)
                 .filterNot(guild -> config.regionExplodeExcludeEntities.contains(event.getEntityType()))
-                .peek(guild -> {
-                    guild.setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli());
-                    PandaStream.of(guild.getMembers())
-                            .filterNot(user -> informationMessageCooldowns.cooldown(user.getUUID(), TimeUnit.SECONDS, config.infoPlayerCooldown))
-                            .forEach(user -> user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
-                });
+                .peek(guild -> guild.setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli()))
+                .toStream(guild -> guild.getMembers().stream())
+                .filterNot(user -> informationMessageCooldowns.cooldown(user.getUUID(), TimeUnit.SECONDS, config.infoPlayerCooldown))
+                .forEach(user -> user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
     }
 
 }
