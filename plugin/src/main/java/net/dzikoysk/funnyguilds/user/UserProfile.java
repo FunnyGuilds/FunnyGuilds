@@ -17,7 +17,7 @@ public interface UserProfile {
     }
 
     default int getPing() {
-        return - 1;
+        return -1;
     }
 
     default void sendMessage(String message) {
