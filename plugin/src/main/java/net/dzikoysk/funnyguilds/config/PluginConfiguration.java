@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
@@ -525,10 +524,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Min(0)
     @Comment("Przez ile sekund gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
     @CustomKey("rank-farming-consideration-timeout")
-    public int lastAttackerAsKillerConsiderationTimeout = 30;
-
-    @Exclude
-    public long lastAttackerAsKillerConsiderationTimeout_;
+    public Duration lastAttackerAsKillerConsiderationTimeout = Duration.ofSeconds(30);
 
     @Min(0)
     @Comment("Czas w sekundach blokady nabijania rankingu po walce dwoch osob")
@@ -1125,15 +1121,13 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
 
-        if (!"v1_8_R1".equals(Reflections.SERVER_VERSION) && !"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
+        if (!"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
             this.bossBarOptions_ = BossBarOptions.builder()
                     .color(this.bossBarColor)
                     .style(this.bossBarStyle)
                     .flags(this.bossBarFlags)
                     .build();
         }
-
-        this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }
 
     public enum DataModel {

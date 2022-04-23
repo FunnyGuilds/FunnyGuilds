@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.config;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.serdes.commons.SerdesCommons;
+import eu.okaeri.configs.serdes.commons.duration.DurationTransformer;
 import eu.okaeri.configs.validator.okaeri.OkaeriValidator;
 import eu.okaeri.configs.yaml.bukkit.YamlBukkitConfigurer;
 import java.io.File;
@@ -45,6 +46,7 @@ public final class ConfigurationFactory {
         return ConfigManager.create(PluginConfiguration.class, (it) -> {
             it.withConfigurer(new OkaeriValidator(new YamlBukkitConfigurer(), true), new SerdesCommons());
             it.withSerdesPack(registry -> {
+                registry.register(new DurationTransformer());
                 registry.register(new RawStringTransformer());
                 registry.register(new MaterialTransformer());
                 registry.register(new ItemStackTransformer());
