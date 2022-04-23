@@ -108,7 +108,7 @@ public class PlayerDeath extends AbstractFunnyListener {
             Instant victimTimestamp = attackerCache.wasVictimOf(attacker);
 
             if (attackTimestamp != null) {
-                if (attackTimestamp.plusSeconds(config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
+                if (attackTimestamp.plus(config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
                     ChatUtils.sendMessage(playerVictim, messages.rankLastVictimV);
                     ChatUtils.sendMessage(playerAttacker, messages.rankLastVictimA);
 
@@ -119,7 +119,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 }
             }
             else if (victimTimestamp != null) {
-                if (victimTimestamp.plusSeconds(config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
+                if (victimTimestamp.plus(config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
                     ChatUtils.sendMessage(playerVictim, messages.rankLastAttackerV);
                     ChatUtils.sendMessage(playerAttacker, messages.rankLastAttackerA);
 

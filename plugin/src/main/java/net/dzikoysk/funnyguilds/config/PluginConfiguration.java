@@ -423,7 +423,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     public int regionExplode = 120;
 
-    @Comment("Lista entity, ktorych wybuch nie powinien powodowac blokade budowania na terenie gildii")
+    @Comment("Lista entity, ktorych wybuch nie powinien powodowac blokady budowania na terenie gildii")
     @Comment("Nazwy entity musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchaja)")
     public Set<EntityType> regionExplodeExcludeEntities = EntityUtils.parseEntityTypes(true,  "CREEPER", "WITHER", "WITHER_SKULL", "FIREBALL");
 
@@ -532,8 +532,8 @@ public class PluginConfiguration extends OkaeriConfig {
     public Duration lastAttackerAsKillerConsiderationTimeout = Duration.ofSeconds(30);
 
     @Min(0)
-    @Comment("Czas w sekundach blokady nabijania rankingu po walce dwoch osob")
-    public int rankFarmingCooldown = 7200;
+    @Comment("Czas trwania blokady nabijania rankingu po walce dwoch osob")
+    public Duration rankFarmingCooldown = Duration.ofHours(2);
 
     @Comment("Czy ma byc zablokowana zmiana rankingu, jesli obie osoby z walki maja taki sam adres IP")
     public boolean rankIPProtect = false;
