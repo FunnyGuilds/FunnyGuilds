@@ -72,11 +72,11 @@ public class PlayerInteract extends AbstractFunnyListener {
                         return;
                     }
 
-                    if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, user, guild))) {
-                        return;
-                    }
-
                     if (eventAction == Action.LEFT_CLICK_BLOCK) {
+                        if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, user, guild))) {
+                            return;
+                        }
+
                         WarSystem.getInstance().attack(player, guild);
                         return;
                     }
