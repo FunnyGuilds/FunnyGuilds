@@ -44,10 +44,12 @@ import net.dzikoysk.funnyguilds.nms.Reflections;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
 import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.LegacyUtils;
+import net.dzikoysk.funnyguilds.shared.bukkit.EntityUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemBuilder;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -420,6 +422,10 @@ public class PluginConfiguration extends OkaeriConfig {
     @Min(0)
     @Comment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     public int regionExplode = 120;
+
+    @Comment("Lista entity, ktorych wybuch nie powinien powodowac blokade budowania na terenie gildii")
+    @Comment("Nazwy entity musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchaja)")
+    public Set<EntityType> regionExplodeExcludeEntities = EntityUtils.parseEntityTypes(true,  "CREEPER", "WITHER", "WITHER_SKULL", "FIREBALL");
 
     @Comment("Czy blokada po wybuchu ma obejmowac rowniez budowanie")
     public boolean regionExplodeBlockBreaking = false;

@@ -2,12 +2,18 @@ package net.dzikoysk.funnyguilds.listener;
 
 import java.time.Instant;
 import java.time.LocalTime;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.Cooldown;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import panda.std.stream.PandaStream;
 
 public class TntProtection extends AbstractFunnyListener {
+
+    private final Cooldown<UUID> informationMessageCooldowns = new Cooldown<>();
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onExplode(EntityExplodeEvent event) {
@@ -46,7 +52,13 @@ public class TntProtection extends AbstractFunnyListener {
     public void blockBuildingOnGuildRegionOnExplosion(EntityExplodeEvent event) {
         this.regionManager.findRegionAtLocation(event.getLocation())
                 .map(Region::getGuild)
-                .peek(guild -> guild.setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli()));
+                .filterNot(guild -> config.regionExplodeExcludeEntities.contains(event.getEntityType()))
+                .peek(guild -> {
+                    guild.setBuild(Instant.now().plusSeconds(config.regionExplode).toEpochMilli());
+                    PandaStream.of(guild.getMembers())
+                            .filterNot(user -> informationMessageCooldowns.cooldown(user.getUUID(), TimeUnit.SECONDS, config.infoPlayerCooldown))
+                            .forEach(user -> user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode))));
+                });
     }
 
 }
