@@ -3,18 +3,14 @@ package net.dzikoysk.funnyguilds.listener.region;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.event.FunnyEvent;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildEntityExplodeEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
-import net.dzikoysk.funnyguilds.shared.Cooldown;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
-import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,8 +23,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import panda.std.Option;
 
 public class EntityExplode extends AbstractFunnyListener {
-
-    private final Cooldown<UUID> informationMessageCooldowns = new Cooldown<>();
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void preNormalExplosionHandler(EntityExplodeEvent event) {
@@ -97,14 +91,6 @@ public class EntityExplode extends AbstractFunnyListener {
                         explodedBlocks.removeIf(block -> block.getLocation().equals(heart));
                         blocksInSphere.removeIf(block -> block.getLocation().equals(heart));
                     });
-
-            for (User user : guild.getMembers()) {
-                if (informationMessageCooldowns.cooldown(user.getUUID(), TimeUnit.SECONDS, config.infoPlayerCooldown)) {
-                    continue;
-                }
-
-                user.sendMessage(messages.regionExplode.replace("{TIME}", Integer.toString(config.regionExplode)));
-            }
         }
 
         if (config.warTntProtection) {
