@@ -51,7 +51,7 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
                         return;
                     }
 
-                    if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.SYSTEM, user, guild))) {
+                    if (!SimpleEventHandler.handle(new GuildHeartAttackEvent(EventCause.USER, user, guild))) {
                         return;
                     }
 
