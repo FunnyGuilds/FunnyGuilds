@@ -10,6 +10,7 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.exception.OkaeriException;
+import eu.okaeri.configs.serdes.commons.duration.DurationFormat;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
 import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
@@ -522,8 +523,12 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean considerLastAttackerAsKiller = false;
 
     @Min(0)
-    @Comment("Przez ile sekund gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @Comment("Czas przez gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @Comment("Format: <wartosc><jednostka><wartosc><jednostka><...>")
+    @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Przyklad: 1m30s")
     @CustomKey("rank-farming-consideration-timeout")
+    @DurationSpec(format = DurationFormat.SIMPLIFIED)
     public Duration lastAttackerAsKillerConsiderationTimeout = Duration.ofSeconds(30);
 
     @Min(0)
