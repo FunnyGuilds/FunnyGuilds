@@ -1,5 +1,6 @@
 package net.dzikoysk.funnyguilds.listener;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -72,8 +73,8 @@ public class PlayerDeath extends AbstractFunnyListener {
                 return;
             }
 
-            Long attackTime = victimCache.wasVictimOf(lastAttacker);
-            if (attackTime == null || attackTime + config.lastAttackerAsKillerConsiderationTimeout_ < System.currentTimeMillis()) {
+            Instant attackTime = victimCache.wasVictimOf(lastAttacker);
+            if (attackTime == null || attackTime.plus(config.lastAttackerAsKillerConsiderationTimeout).isBefore(Instant.now())) {
                 victimCache.clearDamage();
                 return;
             }
@@ -103,11 +104,11 @@ public class PlayerDeath extends AbstractFunnyListener {
         }
 
         if (config.rankFarmingProtect) {
-            Long attackTimestamp = attackerCache.wasAttackerOf(victim);
-            Long victimTimestamp = attackerCache.wasVictimOf(attacker);
+            Instant attackTimestamp = attackerCache.wasAttackerOf(victim);
+            Instant victimTimestamp = attackerCache.wasVictimOf(attacker);
 
             if (attackTimestamp != null) {
-                if (attackTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
+                if (attackTimestamp.plus(config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
                     ChatUtils.sendMessage(playerVictim, messages.rankLastVictimV);
                     ChatUtils.sendMessage(playerAttacker, messages.rankLastVictimA);
 
@@ -118,7 +119,7 @@ public class PlayerDeath extends AbstractFunnyListener {
                 }
             }
             else if (victimTimestamp != null) {
-                if (victimTimestamp + (config.rankFarmingCooldown * 1000L) >= System.currentTimeMillis()) {
+                if (victimTimestamp.plus(config.rankFarmingCooldown).compareTo(Instant.now()) >= 0) {
                     ChatUtils.sendMessage(playerVictim, messages.rankLastAttackerV);
                     ChatUtils.sendMessage(playerAttacker, messages.rankLastAttackerA);
 

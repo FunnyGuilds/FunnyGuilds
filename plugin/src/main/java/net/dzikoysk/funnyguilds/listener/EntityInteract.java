@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.listener;
 
-import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.feature.command.user.PlayerInfoCommand;
@@ -32,7 +31,7 @@ public class EntityInteract extends AbstractFunnyListener {
 
             if (!config.infoPlayerEnabled ||
                     (config.infoPlayerSneaking && !eventCaller.isSneaking()) ||
-                    informationMessageCooldowns.cooldown(eventCaller, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
+                    informationMessageCooldowns.cooldown(eventCaller, config.infoPlayerCooldown)) {
 
                 return;
             }

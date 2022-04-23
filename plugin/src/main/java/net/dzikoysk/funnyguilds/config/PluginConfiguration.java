@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.sections.CommandsConfiguration;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
@@ -423,7 +422,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Przez ile sekund nie mozna budowac na terenie gildii po wybuchu")
     public int regionExplode = 120;
 
-    @Comment("Lista entity, ktorych wybuch nie powinien powodowac blokade budowania na terenie gildii")
+    @Comment("Lista entity, ktorych wybuch nie powinien powodowac blokady budowania na terenie gildii")
     @Comment("Nazwy entity musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchaja)")
     public Set<EntityType> regionExplodeExcludeEntities = EntityUtils.parseEntityTypes(true,  "CREEPER", "WITHER", "WITHER_SKULL", "FIREBALL");
 
@@ -522,17 +521,17 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("rank-farming-last-attacker-as-killer")
     public boolean considerLastAttackerAsKiller = false;
 
-    @Min(0)
-    @Comment("Przez ile sekund gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @PositiveOrZero
+    @Comment("Czas przez gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
+    @Comment("Format: <wartosc><jednostka><wartosc><jednostka><...>")
+    @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
+    @Comment("Przyklad: 1m30s")
     @CustomKey("rank-farming-consideration-timeout")
-    public int lastAttackerAsKillerConsiderationTimeout = 30;
+    public Duration lastAttackerAsKillerConsiderationTimeout = Duration.ofSeconds(30);
 
-    @Exclude
-    public long lastAttackerAsKillerConsiderationTimeout_;
-
-    @Min(0)
-    @Comment("Czas w sekundach blokady nabijania rankingu po walce dwoch osob")
-    public int rankFarmingCooldown = 7200;
+    @PositiveOrZero
+    @Comment("Czas trwania blokady nabijania rankingu po walce dwoch osob")
+    public Duration rankFarmingCooldown = Duration.ofHours(2);
 
     @Comment("Czy ma byc zablokowana zmiana rankingu, jesli obie osoby z walki maja taki sam adres IP")
     public boolean rankIPProtect = false;
@@ -628,9 +627,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("info-player-command")
     public boolean infoPlayerCommand = true;
 
-    @Comment("Cooldown pomiedzy pokazywaniem informacji przez PPM (w sekundach)")
+    @Comment("Cooldown pomiedzy pokazywaniem informacji przez PPM")
     @CustomKey("info-player-cooldown")
-    public int infoPlayerCooldown = 5;
+    public Duration infoPlayerCooldown = Duration.ofSeconds(5);
 
     @Comment("Czy trzeba kucac, zeby przy klikniecu PPM na gracza wyswietlilo informacje o nim")
     @CustomKey("info-player-sneaking")
@@ -937,13 +936,11 @@ public class PluginConfiguration extends OkaeriConfig {
     public boolean eventPhysics;
 
     @Comment("Czy System Security ma byc wlaczony?")
-    @CustomKey("system-security-enable")
     public boolean systemSecurityEnable = true;
 
     @DecimalMin("0")
     @Comment("Margines sprawdzania jak daleko uderzył gracz serce gildii")
     @Comment("Jeśli dostajesz fałszywe alarmy od Security zwiększ tę wartość do około 0.50 lub więcej")
-    @CustomKey("reach-compensation")
     public double reachCompensation = 0.26;
 
     @Min(0)
@@ -953,22 +950,14 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Min(1)
     @Comment("Ilość wątków używanych przez ConcurrencyManager")
-    @CustomKey("concurrency-threads")
     public int concurrencyThreads = 1;
 
     @Min(1)
     @Comment("Co ile minut ma automatycznie zapisywac dane")
-    @CustomKey("data-interval")
     public int dataInterval = 1;
 
-    @Min(0)
     @Comment("Jak dlugo plugin powinien czekac na zatrzymanie wszystkich biezacych zadan przy wylaczaniu pluginu")
-    @Comment("Czas podawany w sekundach")
-    @CustomKey("plugin-task-termination-timeout")
-    public long pluginTaskTerminationTimeout_ = 30;
-
-    @Exclude
-    public long pluginTaskTerminationTimeout;
+    public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
 
     @Comment("Hooki do pluginow, ktore powinny zostac wylaczone. Opcja powinna byc stosowania jedynie w awaryjnych sytuacjach!")
     @Comment("Lista hookow, ktore mozna wylaczyc: WorldEdit, WorldGuard, Vault, BungeeTabListPlus, MVdWPlaceholderAPI, PlaceholderAPI, LeaderHeads, HolographicDisplays")
@@ -1125,15 +1114,13 @@ public class PluginConfiguration extends OkaeriConfig {
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
 
-        if (!"v1_8_R1".equals(Reflections.SERVER_VERSION) && !"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
+        if (!"v1_8_R3".equals(Reflections.SERVER_VERSION)) {
             this.bossBarOptions_ = BossBarOptions.builder()
                     .color(this.bossBarColor)
                     .style(this.bossBarStyle)
                     .flags(this.bossBarFlags)
                     .build();
         }
-
-        this.lastAttackerAsKillerConsiderationTimeout_ = TimeUnit.SECONDS.toMillis(this.lastAttackerAsKillerConsiderationTimeout);
     }
 
     public enum DataModel {

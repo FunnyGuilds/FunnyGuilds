@@ -2,6 +2,7 @@ package net.dzikoysk.funnyguilds.user;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,12 +30,12 @@ public class UserCache {
 
     private DamageCache lastOldDamageCache = null;
 
-    private final Cache<UUID, Long> killerCache = CacheBuilder
+    private final Cache<UUID, Instant> killerCache = CacheBuilder
             .newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES)
             .build();
 
-    private final Cache<UUID, Long> victimCache = CacheBuilder
+    private final Cache<UUID, Instant> victimCache = CacheBuilder
             .newBuilder()
             .expireAfterWrite(30, TimeUnit.MINUTES)
             .build();
@@ -53,7 +54,7 @@ public class UserCache {
         this.user = user;
     }
 
-    public void addDamage(User user, double damage, long lastTime) {
+    public void addDamage(User user, double damage, Instant lastTime) {
         if (!damageCaches.containsKey(user)) {
             damageCaches.put(user, new DamageCache(user, damage, lastTime));
             return;
@@ -113,17 +114,17 @@ public class UserCache {
     }
 
     public void registerVictim(User user) {
-        this.victimCache.put(user.getUUID(), System.currentTimeMillis());
+        this.victimCache.put(user.getUUID(), Instant.now());
     }
 
     public void registerKiller(User user) {
-        this.killerCache.put(user.getUUID(), System.currentTimeMillis());
+        this.killerCache.put(user.getUUID(), Instant.now());
     }
 
     @Nullable
     public User getLastKiller() {
         return PandaStream.of(this.killerCache.asMap().entrySet())
-                .sorted(Entry.<UUID, Long>comparingByValue().reversed())
+                .sorted(Entry.<UUID, Instant>comparingByValue().reversed())
                 .map(Entry::getKey)
                 .head()
                 .flatMap(FunnyGuilds.getInstance().getUserManager()::findByUuid)
@@ -140,7 +141,7 @@ public class UserCache {
                 continue;
             }
 
-            if (last.getLastTime() < damageCache.getLastTime()) {
+            if (last.getLastTime().isBefore(damageCache.getLastTime())) {
                 last = damageCache;
             }
         }
@@ -153,12 +154,12 @@ public class UserCache {
     }
 
     @Nullable
-    public Long wasVictimOf(User attacker) {
+    public Instant wasVictimOf(User attacker) {
         return this.killerCache.getIfPresent(attacker.getUUID());
     }
 
     @Nullable
-    public Long wasAttackerOf(User victim) {
+    public Instant wasAttackerOf(User victim) {
         return this.victimCache.getIfPresent(victim.getUUID());
     }
 
@@ -205,7 +206,7 @@ public class UserCache {
             return false;
         }
 
-        return damageCache.getLastTime() + config.lastAttackerAsKillerConsiderationTimeout_ >= System.currentTimeMillis();
+        return damageCache.getLastTime().plus(config.lastAttackerAsKillerConsiderationTimeout).compareTo(Instant.now()) >= 0;
     }
 
     public synchronized Option<Scoreboard> getScoreboard() {
