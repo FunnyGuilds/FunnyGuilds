@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.war;
 
-import java.time.Duration;
 import java.util.Map.Entry;
 import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -64,7 +63,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             return;
         }
 
-        if (config.informationMessageCooldowns.cooldown(player, Duration.ofSeconds(config.infoPlayerCooldown))) {
+        if (config.informationMessageCooldowns.cooldown(player, config.infoPlayerCooldown)) {
             return;
         }
 

@@ -627,9 +627,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("info-player-command")
     public boolean infoPlayerCommand = true;
 
-    @Comment("Cooldown pomiedzy pokazywaniem informacji przez PPM (w sekundach)")
+    @Comment("Cooldown pomiedzy pokazywaniem informacji przez PPM")
     @CustomKey("info-player-cooldown")
-    public int infoPlayerCooldown = 5;
+    public Duration infoPlayerCooldown = Duration.ofSeconds(5);
 
     @Comment("Czy trzeba kucac, zeby przy klikniecu PPM na gracza wyswietlilo informacje o nim")
     @CustomKey("info-player-sneaking")
