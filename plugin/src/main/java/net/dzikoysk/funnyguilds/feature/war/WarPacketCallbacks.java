@@ -27,6 +27,6 @@ public class WarPacketCallbacks implements PacketCallbacks {
             return;
         }
 
-        plugin.getConcurrencyManager().postRequests(new WarAttackRequest(plugin.getGuildEntityHelper(), plugin.getServer(), user, entityId));
+        plugin.getConcurrencyManager().postRequests(new WarAttackRequest(plugin, plugin.getGuildEntityHelper(), user, entityId));
     }
 }

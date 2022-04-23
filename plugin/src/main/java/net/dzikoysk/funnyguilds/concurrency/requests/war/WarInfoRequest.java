@@ -6,6 +6,10 @@ import net.dzikoysk.funnycommands.resources.ValidationException;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.event.FunnyEvent.EventCause;
+import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
+import net.dzikoysk.funnyguilds.event.guild.HeartClickEvent;
+import net.dzikoysk.funnyguilds.event.guild.HeartClickEvent.Click;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -18,25 +22,26 @@ import panda.std.Option;
 
 public class WarInfoRequest extends DefaultConcurrencyRequest {
 
-    private InfoCommand infoExecutor;
-
+    private final FunnyGuilds plugin;
     private final GuildEntityHelper guildEntityHelper;
 
-    private final FunnyGuilds plugin;
+    private InfoCommand infoExecutor;
+
     private final User user;
     private final int entityId;
 
     public WarInfoRequest(FunnyGuilds plugin, GuildEntityHelper guildEntityHelper, User user, int entityId) {
-        this.user = user;
         this.plugin = plugin;
+        this.guildEntityHelper = guildEntityHelper;
+
         try {
             this.infoExecutor = plugin.getInjector().newInstanceWithFields(InfoCommand.class);
         }
         catch (Throwable throwable) {
             FunnyGuilds.getPluginLogger().error("An error occurred while creating war info request", throwable);
         }
-        this.guildEntityHelper = guildEntityHelper;
 
+        this.user = user;
         this.entityId = entityId;
     }
 
@@ -48,19 +53,21 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             }
 
             Option<Player> playerOption = plugin.getFunnyServer().getPlayer(user.getUUID());
-
             if (playerOption.isEmpty()) {
                 return;
             }
-
             Player player = playerOption.get();
+
             Guild guild = entry.getKey();
+
+            if (!SimpleEventHandler.handle(new HeartClickEvent(EventCause.USER, user, guild, Click.RIGHT))) {
+                return;
+            }
 
             if (SecuritySystem.onHitCrystal(player, guild)) {
                 return;
             }
 
-            FunnyGuilds plugin = FunnyGuilds.getInstance();
             PluginConfiguration config = plugin.getPluginConfiguration();
 
             if (config.informationMessageCooldowns.cooldown(player, TimeUnit.SECONDS, config.infoPlayerCooldown)) {
