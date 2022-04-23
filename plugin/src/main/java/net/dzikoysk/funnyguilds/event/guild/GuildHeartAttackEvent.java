@@ -4,6 +4,10 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
 
+/**
+ * @deprecated for removal in the future, in favour of {@link GuildHeartInteractEvent}
+ */
+@Deprecated
 public class GuildHeartAttackEvent extends GuildEvent {
 
     private static final HandlerList handlers = new HandlerList();
