@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.TimeUnit;
 
 public final class Cooldown<T> {
 
@@ -29,10 +28,6 @@ public final class Cooldown<T> {
         this.cooldowns.put(key, Instant.now().plus(duration));
     }
 
-    public void putOnCooldown(T key, long cooldown) {
-        this.putOnCooldown(key, Duration.ofMillis(cooldown));
-    }
-
     public boolean cooldown(T key, Duration cooldown) {
         if (isOnCooldown(key)) {
             return true;
@@ -40,19 +35,6 @@ public final class Cooldown<T> {
 
         this.putOnCooldown(key, cooldown);
         return false;
-    }
-
-    public boolean cooldown(T key, long cooldown) {
-        if (isOnCooldown(key)) {
-            return true;
-        }
-
-        this.putOnCooldown(key, cooldown);
-        return false;
-    }
-
-    public boolean cooldown(T key, TimeUnit unit, long duration) {
-        return this.cooldown(key, unit.toMillis(duration));
     }
 
 }
