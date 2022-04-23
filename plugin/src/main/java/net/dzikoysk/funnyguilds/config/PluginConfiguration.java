@@ -10,7 +10,6 @@ import eu.okaeri.configs.annotation.NameModifier;
 import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import eu.okaeri.configs.exception.OkaeriException;
-import eu.okaeri.configs.serdes.commons.duration.DurationFormat;
 import eu.okaeri.configs.serdes.commons.duration.DurationSpec;
 import eu.okaeri.validator.annotation.DecimalMax;
 import eu.okaeri.validator.annotation.DecimalMin;
@@ -522,16 +521,15 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("rank-farming-last-attacker-as-killer")
     public boolean considerLastAttackerAsKiller = false;
 
-    @Min(0)
+    @PositiveOrZero
     @Comment("Czas przez gracz, ktory zaatakowal gracza, ktory zginal ma byc uznawany jako zabojca")
     @Comment("Format: <wartosc><jednostka><wartosc><jednostka><...>")
     @Comment("Jednostki: ns - nanosekundy, ms - milisekundy, s - sekundy, m - minuty, h - godziny, d - dni")
     @Comment("Przyklad: 1m30s")
     @CustomKey("rank-farming-consideration-timeout")
-    @DurationSpec(format = DurationFormat.SIMPLIFIED)
     public Duration lastAttackerAsKillerConsiderationTimeout = Duration.ofSeconds(30);
 
-    @Min(0)
+    @PositiveOrZero
     @Comment("Czas trwania blokady nabijania rankingu po walce dwoch osob")
     public Duration rankFarmingCooldown = Duration.ofHours(2);
 
@@ -962,14 +960,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("data-interval")
     public int dataInterval = 1;
 
-    @Min(0)
     @Comment("Jak dlugo plugin powinien czekac na zatrzymanie wszystkich biezacych zadan przy wylaczaniu pluginu")
-    @Comment("Czas podawany w sekundach")
     @CustomKey("plugin-task-termination-timeout")
-    public long pluginTaskTerminationTimeout_ = 30;
-
-    @Exclude
-    public long pluginTaskTerminationTimeout;
+    public Duration pluginTaskTerminationTimeout = Duration.ofSeconds(30);
 
     @Comment("Hooki do pluginow, ktore powinny zostac wylaczone. Opcja powinna byc stosowania jedynie w awaryjnych sytuacjach!")
     @Comment("Lista hookow, ktore mozna wylaczyc: WorldEdit, WorldGuard, Vault, BungeeTabListPlus, MVdWPlaceholderAPI, PlaceholderAPI, LeaderHeads, HolographicDisplays")
