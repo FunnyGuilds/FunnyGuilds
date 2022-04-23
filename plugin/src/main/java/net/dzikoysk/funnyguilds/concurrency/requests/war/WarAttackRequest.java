@@ -42,7 +42,7 @@ public class WarAttackRequest extends DefaultConcurrencyRequest {
                 .forEach(playerToGuild -> this.attackGuild(playerToGuild.getFirst(), playerToGuild.getSecond()));
     }
 
-    public void attackGuild(Player player, Guild guild) {
+    private void attackGuild(Player player, Guild guild) {
         GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, Click.LEFT, SecuritySystem.onHitCrystal(player, guild));
         SimpleEventHandler.handle(interactEvent);
 
