@@ -54,14 +54,15 @@ public class PlayerChat extends AbstractFunnyListener {
                 .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat))
                 .register("{POINTS}", String.valueOf(points));
 
-        if (user.hasGuild()) {
-            formatter.register("{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().get().getTag()));
-            formatter.register("{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", userManager.getUserPosition(user)));
-        }
-        else {
-            formatter.register("{TAG}", "");
-            formatter.register("{POS}", "");
-        }
+        user.getGuild()
+                .peek(guild -> {
+                    formatter.register("{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().get().getTag()));
+                    formatter.register("{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", userManager.getUserPosition(user)));
+                })
+                .onEmpty(() -> {
+                    formatter.register("{TAG}", "");
+                    formatter.register("{POS}", "");
+                });
 
         String format = formatter.format(event.getFormat());
 
