@@ -216,7 +216,7 @@ public class FunnyGuilds extends JavaPlugin {
             return;
         }
 
-        this.userManager = new UserManager();
+        this.userManager = new UserManager(pluginConfiguration);
         this.guildManager = new GuildManager(this.pluginConfiguration);
         this.userRankManager = new UserRankManager(this.pluginConfiguration);
         this.userRankManager.register(DefaultTops.defaultUserTops(this.pluginConfiguration, this.userManager));

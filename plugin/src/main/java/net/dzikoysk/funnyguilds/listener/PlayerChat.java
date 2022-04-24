@@ -12,13 +12,13 @@ import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import panda.std.Option;
 import panda.std.stream.PandaStream;
+import panda.utilities.text.Formatter;
 
 public class PlayerChat extends AbstractFunnyListener {
 
@@ -47,39 +47,41 @@ public class PlayerChat extends AbstractFunnyListener {
         }
 
         int points = user.getRank().getPoints();
-        String format = event.getFormat();
 
-        format = StringUtils.replace(format, "{RANK}", StringUtils.replace(config.chatRank.getValue(), "{RANK}", String.valueOf(user.getRank().getPosition(DefaultTops.USER_POINTS_TOP))));
-        format = StringUtils.replace(format, "{POINTS}", config.chatPoints.getValue());
-        format = StringUtils.replace(format, "{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
-        format = StringUtils.replace(format, "{POINTS}", String.valueOf(points));
+        Formatter formatter = new Formatter()
+                .register("{RANK}", StringUtils.replace(config.chatRank.getValue(), "{RANK}", String.valueOf(user.getRank().getPosition(DefaultTops.USER_POINTS_TOP))))
+                .register("{POINTS}", config.chatPoints.getValue())
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat))
+                .register("{POINTS}", String.valueOf(points));
 
         if (user.hasGuild()) {
-            format = StringUtils.replace(format, "{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().get().getTag()));
-            format = StringUtils.replace(format, "{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", getUserPosition(this.userManager.findByPlayer(player))));
+            formatter.register("{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().get().getTag()));
+            formatter.register("{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", userManager.getUserPosition(user)));
         }
         else {
-            format = StringUtils.replace(format, "{TAG}", "");
-            format = StringUtils.replace(format, "{POS}", "");
+            formatter.register("{TAG}", "");
+            formatter.register("{POS}", "");
         }
+
+        String format = formatter.format(event.getFormat());
 
         event.setFormat(format);
     }
 
     private boolean sendGuildMessage(Player player, Guild guild, String message) {
-        if (sendMessageToAllGuilds(player, guild, message)) {
+        if (this.sendMessageToAllGuilds(player, guild, message)) {
             return true;
         }
 
-        if (sendMessageToGuildAllies(player, guild, message)) {
+        if (this.sendMessageToGuildAllies(player, guild, message)) {
             return true;
         }
 
-        return sendMessageToGuildMembers(player, guild, message);
+        return this.sendMessageToGuildMembers(player, guild, message);
     }
 
-    private void spy(Player player, String message) {
-        String spyMessage = ChatColor.GOLD + "[Spy] " + ChatColor.GRAY + player.getName() + ": " + ChatColor.WHITE + message;
+    private void spy(Player player, Guild playerGuild, String message) {
+        String spyMessage = this.formatChatDesign(player, playerGuild, config.chatSpyDesign.getValue(), message);
 
         PandaStream.of(Bukkit.getOnlinePlayers())
                 .flatMap(onlinePlayer -> userManager.findByPlayer(onlinePlayer))
@@ -105,22 +107,12 @@ public class PlayerChat extends AbstractFunnyListener {
         int prefixLength = prefix.length();
 
         if (message.length() > prefixLength && message.substring(0, prefixLength).equalsIgnoreCase(prefix)) {
-            String resultMessage = chatDesign;
-
-            resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
-            resultMessage = StringUtils.replace(resultMessage, "{TAG}", playerGuild.getTag());
-            resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                    StringUtils.replace(config.chatPosition.getValue(), "{POS}", getUserPosition(this.userManager.findByUuid(player.getUniqueId()))));
-
-            resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
-
             String subMessage = message.substring(prefixLength).trim();
-            resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", subMessage);
+            String resultMessage = this.formatChatDesign(player, playerGuild, chatDesign, subMessage);
 
-            this.spy(player, subMessage);
+            this.spy(player, playerGuild, subMessage);
 
-            String finalResultMessage = resultMessage;
-            receivers.forEach(guild -> this.sendMessageToGuild(guild, finalResultMessage));
+            receivers.forEach(guild -> this.sendMessageToGuild(guild, resultMessage));
 
             return true;
         }
@@ -134,21 +126,18 @@ public class PlayerChat extends AbstractFunnyListener {
                 .forEach(member -> member.sendMessage(message));
     }
 
-    private String getUserPosition(Option<User> userOption) {
-        if (userOption.isEmpty()) {
-            return "";
-        }
-        User user = userOption.get();
+    private String formatChatDesign(Player player, Guild playerGuild, String chatDesign, String message) {
+        String resultMessage = chatDesign;
 
-        if (user.isOwner()) {
-            return config.chatPositionLeader;
-        }
+        resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
+        resultMessage = StringUtils.replace(resultMessage, "{TAG}", playerGuild.getTag());
+        resultMessage = StringUtils.replace(resultMessage, "{POS}",
+                StringUtils.replace(config.chatPosition.getValue(), "{POS}", userManager.getUserPosition(this.userManager.findByUuid(player.getUniqueId()))));
+        resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", message);
 
-        if (user.isDeputy()) {
-            return config.chatPositionDeputy;
-        }
+        resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
-        return config.chatPositionMember;
+        return resultMessage;
     }
 
 }

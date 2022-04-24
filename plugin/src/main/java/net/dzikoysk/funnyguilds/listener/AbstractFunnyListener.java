@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.guild.RegionManager;
 import net.dzikoysk.funnyguilds.nms.api.NmsAccessor;
 import net.dzikoysk.funnyguilds.nms.api.message.MessageAccessor;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
+import net.dzikoysk.funnyguilds.shared.bukkit.FunnyServer;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.bukkit.Server;
@@ -29,6 +30,8 @@ public abstract class AbstractFunnyListener implements Listener {
 
     @Inject
     public Server server;
+    @Inject
+    public FunnyServer funnyServer;
 
     @Inject
     public PluginConfiguration config;

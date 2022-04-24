@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -18,13 +19,16 @@ import panda.std.stream.PandaStream;
 
 public class UserManager {
 
+    private final PluginConfiguration pluginConfiguration;
+
     private final Map<UUID, User> usersByUuid = new ConcurrentHashMap<>();
     private final Map<String, User> usersByName = new ConcurrentHashMap<>();
 
     @Deprecated
     private static UserManager INSTANCE;
 
-    public UserManager() {
+    public UserManager(PluginConfiguration pluginConfiguration) {
+        this.pluginConfiguration = pluginConfiguration;
         INSTANCE = this;
     }
 
@@ -199,6 +203,27 @@ public class UserManager {
      */
     public boolean playedBefore(String nickname, boolean ignoreCase) {
         return findByName(nickname, ignoreCase).isPresent();
+    }
+
+
+    public String getUserPosition(User user) {
+        if (user.isOwner()) {
+            return pluginConfiguration.chatPositionLeader;
+        }
+
+        if (user.isDeputy()) {
+            return pluginConfiguration.chatPositionDeputy;
+        }
+
+        return pluginConfiguration.chatPositionMember;
+    }
+
+    public String getUserPosition(Option<User> userOption) {
+        if (userOption.isEmpty()) {
+            return "";
+        }
+
+        return this.getUserPosition(userOption.get());
     }
 
     /**
