@@ -40,7 +40,7 @@ public class PlayerChat extends AbstractFunnyListener {
             event.setCancelled(true);
 
             if (config.logGuildChat) {
-                FunnyGuilds.getPluginLogger().info("[Guild Chat] " + event.getMessage());
+                FunnyGuilds.getPluginLogger().info("[Guild Chat] " + player.getName() + ": "+ event.getMessage());
             }
 
             return;
