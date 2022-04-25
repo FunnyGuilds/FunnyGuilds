@@ -463,7 +463,7 @@ public class FunnyGuilds extends JavaPlugin {
             cache.setPlayerList(individualPlayerList);
         }
 
-        this.guildEntityHelper.createGuildsEntities(this.guildManager);
+        this.guildEntityHelper.spawnGuildEntities(this.guildManager);
     }
 
     public boolean isDisabling() {

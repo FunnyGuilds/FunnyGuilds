@@ -89,7 +89,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
             }
         }
 
-        plugin.getGuildEntityHelper().createGuildEntity(guild);
+        plugin.getGuildEntityHelper().spawnGuildEntity(guild);
         admin.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
     }
 

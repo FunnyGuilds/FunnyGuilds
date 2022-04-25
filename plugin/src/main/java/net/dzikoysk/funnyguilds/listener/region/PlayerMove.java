@@ -24,7 +24,11 @@ public class PlayerMove extends AbstractFunnyListener {
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        onMove(event);
+        this.userManager.findByUuid(event.getPlayer().getUniqueId())
+                .map(User::getCache)
+                .peek(userCache -> userCache.setEnter(false));
+
+        this.onMove(event);
     }
 
     @EventHandler
@@ -50,9 +54,9 @@ public class PlayerMove extends AbstractFunnyListener {
 
             UserCache cache = user.getCache();
 
-            Option<Region> regionToOption = this.regionManager.findRegionAtLocation(to);
+            Option<Region> regionOption = this.regionManager.findRegionAtLocation(to);
 
-            if (regionToOption.isEmpty() && user.getCache().getEnter()) {
+            if (regionOption.isEmpty() && user.getCache().getEnter()) {
                 cache.setEnter(false);
 
                 this.regionManager.findRegionAtLocation(from)
@@ -97,7 +101,7 @@ public class PlayerMove extends AbstractFunnyListener {
                         });
             }
             else if (!cache.getEnter()) {
-                regionToOption.map(Region::getGuild)
+                regionOption.map(Region::getGuild)
                         .peek(guild -> {
                             if (guild.getName() == null) {
                                 return;
@@ -111,6 +115,7 @@ public class PlayerMove extends AbstractFunnyListener {
                             cache.setEnter(true);
 
                             if (config.heart.createEntityType != null) {
+                                System.out.println("Creating heart");
                                 Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> this.guildEntityHelper.spawnGuildEntity(guild, player), 40L);
                             }
 
