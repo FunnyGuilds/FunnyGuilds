@@ -758,6 +758,10 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
     public RawString chatGlobalDesign = new RawString("&8[&cChat globalny gildii&8] &8{TAG} &7{POS}{PLAYER}&8:&f {MESSAGE}");
 
+    @Comment("Wyglad wiadomoci wysylanej na czacie gildyjnym/sojuszniczym/globalnym gildii dla osob z wlaczonym /ga spy")
+    @Comment("Zmienne: {PLAYER}, {TAG}, {MESSAGE}, {POS}")
+    public RawString chatSpyDesign = new RawString("&8[&6Spy&8] &7{PLAYER}&8:&f {MESSAGE}");
+
     @Comment("Czy wiadomosci z chatow gildyjnych powinny byc wyswietlane w logach serwera")
     @CustomKey("log-guild-chat")
     public boolean logGuildChat = false;

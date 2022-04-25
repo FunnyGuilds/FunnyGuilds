@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import org.jetbrains.annotations.ApiStatus;
 
 public final class UserUtils {
@@ -128,6 +129,22 @@ public final class UserUtils {
      */
     public static boolean validateUUID(String uuid) {
         return UUID_PATTERN.matcher(uuid).matches();
+    }
+
+    public static String getUserPosition(PluginConfiguration pluginConfiguration, @Nullable User user) {
+        if (user == null) {
+            return "";
+        }
+
+        if (user.isOwner()) {
+            return pluginConfiguration.chatPositionLeader;
+        }
+
+        if (user.isDeputy()) {
+            return pluginConfiguration.chatPositionDeputy;
+        }
+
+        return pluginConfiguration.chatPositionMember;
     }
 
 }

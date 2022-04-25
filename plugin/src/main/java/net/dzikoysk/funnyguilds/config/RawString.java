@@ -16,6 +16,10 @@ public class RawString {
         return this.value;
     }
 
+    public String replace(String from, String to) {
+        return this.value.replace(from, to);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(value);
