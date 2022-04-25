@@ -44,8 +44,7 @@ public class GuildEntityHelper {
     }
 
     public void spawnGuildEntity(Guild guild) {
-        this.getOrCreateGuildEntity(guild).peek(entity -> Bukkit.getOnlinePlayers()
-                .forEach(player -> nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player)));
+        this.getOrCreateGuildEntity(guild).peek(entity -> nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, Bukkit.getOnlinePlayers()));
     }
 
     public void spawnGuildEntities(GuildManager guildManager) {
@@ -63,8 +62,7 @@ public class GuildEntityHelper {
             return;
         }
 
-        Bukkit.getOnlinePlayers()
-                .forEach(player -> nmsAccessor.getEntityAccessor().despawnFakeEntityFor(guildHeartEntity, player));
+        nmsAccessor.getEntityAccessor().despawnFakeEntityFor(guildHeartEntity, Bukkit.getOnlinePlayers());
         entityMap.remove(guild);
     }
 
