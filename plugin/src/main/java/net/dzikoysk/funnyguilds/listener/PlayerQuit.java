@@ -22,11 +22,12 @@ public class PlayerQuit extends AbstractFunnyListener {
 
     private void handleQuit(Player player) {
         Option<User> userOption = this.userManager.findByPlayer(player);
+
         if (userOption.isEmpty()) {
             return;
         }
-        User user = userOption.get();
 
+        User user = userOption.get();
         UserCache cache = user.getCache();
 
         if (cache.isInCombat()) {
