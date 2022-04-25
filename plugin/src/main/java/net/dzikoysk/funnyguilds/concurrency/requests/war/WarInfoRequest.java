@@ -56,16 +56,21 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
     }
 
     private void displayGuildInfo(Player player, Guild guild) {
-        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, Click.RIGHT, SecuritySystem.onHitCrystal(player, guild));
+        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));
         SimpleEventHandler.handle(interactEvent);
 
+        System.out.println("interactEvent = " + interactEvent);
+
         if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
+            System.out.println(interactEvent.isSecurityCheckPassed());
             return;
         }
 
         if (config.informationMessageCooldowns.cooldown(player, config.infoPlayerCooldown)) {
             return;
         }
+
+        System.out.println("info");
 
         try {
             infoExecutor.execute(player, new String[] {guild.getTag()});
