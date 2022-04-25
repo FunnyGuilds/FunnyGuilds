@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
+import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
@@ -147,6 +148,11 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+            return;
+        }
+
+        if (HookManager.WORLD_GUARD.isPresent() && HookManager.WORLD_GUARD.get().isInNonGuildsRegion(guildLocation)) {
+            user.sendMessage(messages.invalidGuildLocation);
             return;
         }
 
