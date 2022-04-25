@@ -69,7 +69,7 @@ open class FunnyGuildsSpec : BukkitSpec() {
         lenient().`when`(funnyGuilds.messageConfiguration).thenReturn(messages)
         lenient().`when`(funnyGuilds.tablistConfiguration).thenReturn(tablistConfig)
 
-        userManager = UserManager(config)
+        userManager = UserManager()
         guildManager = GuildManager(config)
         userRankManager = UserRankManager(config)
         userRankManager.register(DefaultTops.defaultUserTops(config, userManager))

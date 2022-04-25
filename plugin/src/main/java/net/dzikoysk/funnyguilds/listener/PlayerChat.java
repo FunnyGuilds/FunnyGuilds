@@ -10,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookUtils;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
+import net.dzikoysk.funnyguilds.user.UserUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -56,8 +57,8 @@ public class PlayerChat extends AbstractFunnyListener {
 
         user.getGuild()
                 .peek(guild -> {
-                    formatter.register("{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", user.getGuild().get().getTag()));
-                    formatter.register("{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", userManager.getUserPosition(user)));
+                    formatter.register("{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()));
+                    formatter.register("{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", UserUtils.getUserPosition(config, user)));
                 })
                 .onEmpty(() -> {
                     formatter.register("{TAG}", "");
@@ -133,7 +134,7 @@ public class PlayerChat extends AbstractFunnyListener {
         resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
         resultMessage = StringUtils.replace(resultMessage, "{TAG}", playerGuild.getTag());
         resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                StringUtils.replace(config.chatPosition.getValue(), "{POS}", userManager.getUserPosition(this.userManager.findByUuid(player.getUniqueId()))));
+                StringUtils.replace(config.chatPosition.getValue(), "{POS}", UserUtils.getUserPosition(config, this.userManager.findByUuid(player.getUniqueId()).orNull())));
         resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", message);
 
         resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
