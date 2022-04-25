@@ -17,6 +17,7 @@ public class WorldGuard7Hook extends WorldGuardHook {
 
     private WorldGuard worldGuard;
     private StateFlag noPointsFlag;
+    private StateFlag noGuildsFlag;
 
     public WorldGuard7Hook(String name) {
         super(name);
@@ -26,8 +27,10 @@ public class WorldGuard7Hook extends WorldGuardHook {
     public HookInitResult earlyInit() {
         worldGuard = WorldGuard.getInstance();
         noPointsFlag = new StateFlag("fg-no-points", false);
+        noGuildsFlag = new StateFlag("fg-no-guilds", false);
 
         worldGuard.getFlagRegistry().register(noPointsFlag);
+        worldGuard.getFlagRegistry().register(noGuildsFlag);
         return HookInitResult.SUCCESS;
     }
 
@@ -40,6 +43,22 @@ public class WorldGuard7Hook extends WorldGuardHook {
 
         for (ProtectedRegion region : regionSet) {
             if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isInNonGuildsRegion(Location location) {
+        ApplicableRegionSet regionSet = getRegionSet(location);
+        if (regionSet == null) {
+            return false;
+        }
+
+        for (ProtectedRegion region : regionSet) {
+            if (region.getFlag(noGuildsFlag) == StateFlag.State.ALLOW) {
                 return true;
             }
         }

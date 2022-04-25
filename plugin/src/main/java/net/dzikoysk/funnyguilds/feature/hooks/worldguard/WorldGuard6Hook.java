@@ -44,6 +44,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
 
     private WorldGuardPlugin worldGuard;
     private StateFlag noPointsFlag;
+    private StateFlag noGuildsFlag;
 
     public WorldGuard6Hook(String name) {
         super(name);
@@ -53,6 +54,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
     public HookInitResult earlyInit() {
         worldGuard = WorldGuardPlugin.inst();
         noPointsFlag = new StateFlag("fg-no-points", false);
+        noGuildsFlag = new StateFlag("fg-no-guilds", false);
 
         Class<?> worldGuardPluginClass = Reflections.getClass("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
 
@@ -61,6 +63,7 @@ public class WorldGuard6Hook extends WorldGuardHook {
 
         try {
             ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(noPointsFlag);
+            ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(noGuildsFlag);
         }
         catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             FunnyGuilds.getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
@@ -79,6 +82,22 @@ public class WorldGuard6Hook extends WorldGuardHook {
 
         for (ProtectedRegion region : regionSet) {
             if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean isInNonGuildsRegion(Location location) {
+        ApplicableRegionSet regionSet = getRegionSet(location);
+        if (regionSet == null) {
+            return false;
+        }
+
+        for (ProtectedRegion region : regionSet) {
+            if (region.getFlag(noGuildsFlag) == StateFlag.State.ALLOW) {
                 return true;
             }
         }
