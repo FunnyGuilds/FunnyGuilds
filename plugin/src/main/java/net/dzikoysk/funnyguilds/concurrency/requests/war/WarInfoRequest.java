@@ -59,10 +59,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
         GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));
         SimpleEventHandler.handle(interactEvent);
 
-        System.out.println("interactEvent = " + interactEvent);
-
         if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
-            System.out.println(interactEvent.isSecurityCheckPassed());
             return;
         }
 
