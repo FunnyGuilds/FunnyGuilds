@@ -67,8 +67,6 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             return;
         }
 
-        System.out.println("info");
-
         try {
             infoExecutor.execute(player, new String[] {guild.getTag()});
         }
