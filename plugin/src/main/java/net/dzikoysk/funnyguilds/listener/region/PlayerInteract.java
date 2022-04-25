@@ -64,7 +64,7 @@ public class PlayerInteract extends AbstractFunnyListener {
                     }
                     User user = userOption.get();
 
-                    GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, SecuritySystem.onHitCrystal(player, guild));
+                    GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, eventAction == Action.LEFT_CLICK_BLOCK ? Click.LEFT : Click.RIGHT, !SecuritySystem.onHitCrystal(player, guild));
                     SimpleEventHandler.handle(interactEvent);
 
                     if (interactEvent.isCancelled() || !interactEvent.isSecurityCheckPassed()) {
