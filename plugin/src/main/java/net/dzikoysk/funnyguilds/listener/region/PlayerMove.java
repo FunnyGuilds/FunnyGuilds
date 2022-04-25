@@ -115,7 +115,6 @@ public class PlayerMove extends AbstractFunnyListener {
                             cache.setEnter(true);
 
                             if (config.heart.createEntityType != null) {
-                                System.out.println("Creating heart");
                                 Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> this.guildEntityHelper.spawnGuildEntity(guild, player), 40L);
                             }
 
