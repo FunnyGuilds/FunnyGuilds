@@ -50,15 +50,15 @@ public class PlayerChat extends AbstractFunnyListener {
         int points = user.getRank().getPoints();
 
         Formatter formatter = new Formatter()
-                .register("{RANK}", StringUtils.replace(config.chatRank.getValue(), "{RANK}", String.valueOf(user.getRank().getPosition(DefaultTops.USER_POINTS_TOP))))
+                .register("{RANK}", config.chatRank.getValue().replace( "{RANK}", String.valueOf(user.getRank().getPosition(DefaultTops.USER_POINTS_TOP))))
                 .register("{POINTS}", config.chatPoints.getValue())
                 .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat))
                 .register("{POINTS}", String.valueOf(points));
 
         user.getGuild()
                 .peek(guild -> {
-                    formatter.register("{TAG}", StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()));
-                    formatter.register("{POS}", StringUtils.replace(config.chatPosition.getValue(), "{POS}", UserUtils.getUserPosition(config, user)));
+                    formatter.register("{TAG}", config.chatGuild.getValue().replace("{TAG}", guild.getTag()));
+                    formatter.register("{POS}", config.chatPosition.getValue().replace("{POS}", UserUtils.getUserPosition(config, user)));
                 })
                 .onEmpty(() -> {
                     formatter.register("{TAG}", "");
@@ -133,8 +133,7 @@ public class PlayerChat extends AbstractFunnyListener {
 
         resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
         resultMessage = StringUtils.replace(resultMessage, "{TAG}", playerGuild.getTag());
-        resultMessage = StringUtils.replace(resultMessage, "{POS}",
-                StringUtils.replace(config.chatPosition.getValue(), "{POS}", UserUtils.getUserPosition(config, this.userManager.findByUuid(player.getUniqueId()).orNull())));
+        resultMessage = StringUtils.replace(resultMessage, "{POS}", config.chatPosition.replace("{POS}", UserUtils.getUserPosition(config, this.userManager.findByUuid(player.getUniqueId()).orNull())));
         resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", message);
 
         resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
