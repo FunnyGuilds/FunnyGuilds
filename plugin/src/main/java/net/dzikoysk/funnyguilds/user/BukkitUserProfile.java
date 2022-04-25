@@ -7,6 +7,7 @@ import net.dzikoysk.funnyguilds.shared.Position;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PositionConverter;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -39,6 +40,11 @@ public class BukkitUserProfile implements UserProfile {
         }
 
         return Option.of(player);
+    }
+
+    public void updateReference(Player player) {
+        Validate.notNull(player, "you can't update reference with null player!");
+        this.playerRef = new WeakReference<>(player);
     }
 
     @Override

@@ -22,7 +22,14 @@ public class PlayerJoin extends AbstractFunnyListener {
     public void onJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         UserProfile profile = new BukkitUserProfile(player.getUniqueId(), this.server);
-        User user = this.userManager.findByPlayer(player).orElseGet(() -> userManager.create(player.getUniqueId(), player.getName(), profile));
+        User user = this.userManager.findByPlayer(player)
+                .peek(userPeek -> {
+                    UserProfile peekUserProfile = userPeek.getProfile();
+                    if (peekUserProfile instanceof BukkitUserProfile) {
+                        ((BukkitUserProfile) peekUserProfile).updateReference(player);
+                    }
+                })
+                .orElseGet(() -> userManager.create(player.getUniqueId(), player.getName(), profile));
 
         String playerName = player.getName();
 
