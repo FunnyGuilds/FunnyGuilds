@@ -12,7 +12,7 @@ dependencies {
     implementation "net.dzikoysk:funnycommands:0.5.2"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.0-beta17"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.0-beta18"
     implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.0-beta18"
     implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.0-beta17"
     // okaeri holographicdisplays commons
