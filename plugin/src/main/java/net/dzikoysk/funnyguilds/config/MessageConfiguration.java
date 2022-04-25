@@ -293,6 +293,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String createTagExists = "&cJest juz gildia z takim tagiem!";
     public String restrictedGuildName = "&cPodana nazwa gildii jest niedozwolona.";
     public String restrictedGuildTag = "&cPodany tag gildii jest niedozwolony.";
+    public String invalidGuildLocation = "&cNie mozesz stworzyc gildii w tym miejscu!";
     @Comment("Dostepne zmienne: {DISTANCE}")
     public String createSpawn = "&7Jestes zbyt blisko spawnu! Minimalna odleglosc to &c{DISTANCE}";
     public String createIsNear = "&cW poblizu znajduje sie jakas gildia, poszukaj innego miejsca!";
