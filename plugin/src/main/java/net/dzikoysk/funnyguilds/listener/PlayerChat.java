@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -131,10 +130,12 @@ public class PlayerChat extends AbstractFunnyListener {
     private String formatChatDesign(Player player, Guild playerGuild, String chatDesign, String message) {
         String resultMessage = chatDesign;
 
-        resultMessage = StringUtils.replace(resultMessage, "{PLAYER}", player.getName());
-        resultMessage = StringUtils.replace(resultMessage, "{TAG}", playerGuild.getTag());
-        resultMessage = StringUtils.replace(resultMessage, "{POS}", config.chatPosition.replace("{POS}", UserUtils.getUserPosition(config, this.userManager.findByUuid(player.getUniqueId()).orNull())));
-        resultMessage = StringUtils.replace(resultMessage, "{MESSAGE}", message);
+        Formatter formatter = new Formatter()
+                .register("{PLAYER}", player.getName())
+                .register("{TAG}", playerGuild.getTag())
+                .register("{POS}", config.chatPosition.replace("{POS}", UserUtils.getUserPosition(config, this.userManager.findByUuid(player.getUniqueId()).orNull())))
+                .register("{MESSAGE}", message);
+        resultMessage = formatter.format(resultMessage);
 
         resultMessage = HookUtils.replacePlaceholders(player, resultMessage);
 
