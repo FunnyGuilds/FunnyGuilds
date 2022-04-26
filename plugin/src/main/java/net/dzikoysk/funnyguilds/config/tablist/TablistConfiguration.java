@@ -137,7 +137,7 @@ public class TablistConfiguration extends OkaeriConfig {
 
     @Comment("Wyglad naglowka w liscie graczy.")
     @CustomKey("player-list-header")
-    public String playerListHeader = "&7FunnyGuilds &b4.10.0 Snowdrop &8- &bgithub.com/funnyguilds";
+    public String playerListHeader = "&7FunnyGuilds &b4.10.1 Snowdrop &8- &bgithub.com/funnyguilds";
 
     @Comment("Wyglad stopki w liscie graczy.")
     @CustomKey("player-list-footer")
