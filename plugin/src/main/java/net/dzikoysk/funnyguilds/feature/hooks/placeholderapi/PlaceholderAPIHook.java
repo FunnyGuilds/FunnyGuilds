@@ -85,13 +85,13 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             UserManager userManager = this.plugin.getUserManager();
 
             if (one == null || two == null) {
-                return null;
+                return "";
             }
 
             Option<User> userOneOption = userManager.findByPlayer(one);
             Option<User> userTwoOption = userManager.findByPlayer(two);
             if (userOneOption.isEmpty() || userTwoOption.isEmpty()) {
-                return null;
+                return "";
             }
             User userOne = userOneOption.get();
             User userTwo = userTwoOption.get();
@@ -121,7 +121,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
                 }
             }
 
-            return null;
+            return "";
         }
 
 
