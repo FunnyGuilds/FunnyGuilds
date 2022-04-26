@@ -309,7 +309,7 @@ public class GuildManager {
             return;
         }
 
-        guildEntityHelper.createGuildEntity(guild);
+        guildEntityHelper.spawnGuildEntity(guild);
     }
 
 }

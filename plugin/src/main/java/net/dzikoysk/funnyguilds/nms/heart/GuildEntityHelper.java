@@ -28,40 +28,32 @@ public class GuildEntityHelper {
         return entityMap;
     }
 
-    public void createGuildEntity(Guild guild) {
-        if (this.pluginConfiguration.heart.createEntityType == null) {
-            return;
-        }
+    public Option<FakeEntity> getOrCreateGuildEntity(Guild guild) {
+        return Option.of(entityMap.computeIfAbsent(guild, key -> {
+            if (this.pluginConfiguration.heart.createEntityType == null) {
+                return null;
+            }
 
-        if (entityMap.containsKey(guild)) {
-            return;
-        }
+            Option<Location> locationOption = guild.getEnderCrystal();
+            if (locationOption.isEmpty()) {
+                return null;
+            }
 
-        Option<Location> locationOption = guild.getEnderCrystal();
-        if (locationOption.isEmpty()) {
-            return;
-        }
-
-        FakeEntity guildHeartEntity = nmsAccessor.getEntityAccessor()
-                .createFakeEntity(pluginConfiguration.heart.createEntityType, locationOption.get());
-
-        Bukkit.getOnlinePlayers()
-                .forEach(player -> nmsAccessor.getEntityAccessor().spawnFakeEntityFor(guildHeartEntity, player));
-        entityMap.put(guild, guildHeartEntity);
+            return nmsAccessor.getEntityAccessor().createFakeEntity(pluginConfiguration.heart.createEntityType, locationOption.get());
+        }));
     }
 
-    public void createGuildsEntities(GuildManager guildManager) {
+    public void spawnGuildEntity(Guild guild) {
+        this.getOrCreateGuildEntity(guild).peek(entity -> nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, Bukkit.getOnlinePlayers()));
+    }
+
+    public void spawnGuildEntities(GuildManager guildManager) {
         guildManager.getGuilds()
-                .forEach(this::createGuildEntity);
+                .forEach(this::spawnGuildEntity);
     }
 
     public void spawnGuildEntity(Guild guild, Player player) {
-        FakeEntity guildHeartEntity = entityMap.get(guild);
-        if (guildHeartEntity == null) {
-            return;
-        }
-
-        nmsAccessor.getEntityAccessor().spawnFakeEntityFor(guildHeartEntity, player);
+        this.getOrCreateGuildEntity(guild).peek(entity -> nmsAccessor.getEntityAccessor().spawnFakeEntityFor(entity, player));
     }
 
     public void despawnGuildEntity(Guild guild) {
@@ -70,8 +62,7 @@ public class GuildEntityHelper {
             return;
         }
 
-        Bukkit.getOnlinePlayers()
-                .forEach(player -> nmsAccessor.getEntityAccessor().despawnFakeEntityFor(guildHeartEntity, player));
+        nmsAccessor.getEntityAccessor().despawnFakeEntityFor(guildHeartEntity, Bukkit.getOnlinePlayers());
         entityMap.remove(guild);
     }
 
