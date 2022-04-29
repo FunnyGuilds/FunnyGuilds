@@ -42,7 +42,7 @@ public class UserCache {
 
     private IndividualPlayerList playerList;
     private Scoreboard scoreboard;
-    private IndividualPrefix prefix;
+    private Option<IndividualPrefix> prefix;
     private Dummy dummy;
 
     private BukkitTask teleportation;
@@ -97,8 +97,8 @@ public class UserCache {
         this.dummy = dummy;
     }
 
-    public void setIndividualPrefix(IndividualPrefix prefix) {
-        this.prefix = prefix;
+    public void setIndividualPrefix(@Nullable IndividualPrefix prefix) {
+        this.prefix = Option.of(prefix);
     }
 
     public void setEnter(boolean enter) {
@@ -230,8 +230,7 @@ public class UserCache {
         }
     }
 
-    @Nullable
-    public IndividualPrefix getIndividualPrefix() {
+    public Option<IndividualPrefix> getIndividualPrefix() {
         return this.prefix;
     }
 
