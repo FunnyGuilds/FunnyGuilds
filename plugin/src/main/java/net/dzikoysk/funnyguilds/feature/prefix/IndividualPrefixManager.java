@@ -83,7 +83,7 @@ public class IndividualPrefixManager {
                 .map(Player::getUniqueId)
                 .flatMap(userManager::findByUuid)
                 .map(User::getCache)
-                .flatMap(UserCache::getIndividualPrefix)
+                .mapOpt(UserCache::getIndividualPrefix)
                 .forEach(prefix -> prefix.addGuild(guild));
 
         updatePlayers();
@@ -94,7 +94,7 @@ public class IndividualPrefixManager {
                 .map(Player::getUniqueId)
                 .flatMap(userManager::findByUuid)
                 .map(User::getCache)
-                .flatMap(UserCache::getIndividualPrefix)
+                .mapOpt(UserCache::getIndividualPrefix)
                 .forEach(prefix -> prefix.addPlayer(player));
 
         updatePlayers();
@@ -105,7 +105,7 @@ public class IndividualPrefixManager {
                 .map(Player::getUniqueId)
                 .flatMap(userManager::findByUuid)
                 .map(User::getCache)
-                .flatMap(UserCache::getIndividualPrefix)
+                .mapOpt(UserCache::getIndividualPrefix)
                 .forEach(prefix -> prefix.removeGuild(guild));
 
         updatePlayers();
@@ -116,7 +116,7 @@ public class IndividualPrefixManager {
                 .map(Player::getUniqueId)
                 .flatMap(userManager::findByUuid)
                 .map(User::getCache)
-                .flatMap(UserCache::getIndividualPrefix)
+                .mapOpt(UserCache::getIndividualPrefix)
                 .forEach(prefix -> prefix.removePlayer(player));
 
         updatePlayers();
