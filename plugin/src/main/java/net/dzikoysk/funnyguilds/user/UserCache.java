@@ -42,7 +42,7 @@ public class UserCache {
 
     private IndividualPlayerList playerList;
     private Scoreboard scoreboard;
-    private Option<IndividualPrefix> prefix;
+    private Option<IndividualPrefix> prefix = Option.none();
     private Dummy dummy;
 
     private BukkitTask teleportation;
