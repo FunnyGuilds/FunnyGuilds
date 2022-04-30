@@ -60,7 +60,7 @@ public class PlayerJoin extends AbstractFunnyListener {
 
         cache.updateScoreboardIfNull(player);
 
-        if (cache.getIndividualPrefix() == null && config.guildTagEnabled) {
+        if (config.guildTagEnabled && cache.getIndividualPrefix().isEmpty()) {
             IndividualPrefix prefix = new IndividualPrefix(user);
             prefix.initialize();
 
