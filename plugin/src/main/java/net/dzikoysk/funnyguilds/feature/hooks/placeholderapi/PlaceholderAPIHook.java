@@ -4,7 +4,6 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.hooks.AbstractPluginHook;
 import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefix;
 import net.dzikoysk.funnyguilds.guild.Guild;
@@ -79,51 +78,26 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             }
         }
 
-        @Override
+        @Override // one - seeing the placeholder, two - about which the placeholder is
         public String onPlaceholderRequest(Player one, Player two, String identifier) {
-            PluginConfiguration config = this.plugin.getPluginConfiguration();
-            UserManager userManager = this.plugin.getUserManager();
-
-            if (one == null || two == null) {
+            if (one == null || two == null || !identifier.equalsIgnoreCase("prefix")) {
                 return "";
             }
 
+            UserManager userManager = this.plugin.getUserManager();
             Option<User> userOneOption = userManager.findByPlayer(one);
             Option<User> userTwoOption = userManager.findByPlayer(two);
+
             if (userOneOption.isEmpty() || userTwoOption.isEmpty()) {
                 return "";
             }
-            User userOne = userOneOption.get();
-            User userTwo = userTwoOption.get();
 
-            if (identifier.equalsIgnoreCase("prefix")) {
-                Option<Guild> guildOneOption = userOne.getGuild();
-                Option<Guild> guildTwoOption = userTwo.getGuild();
-                if (guildTwoOption.isEmpty()) {
-                    return null;
-                }
-                Guild guildOne = guildOneOption.get();
-                Guild guildTwo = guildTwoOption.get();
-
-                if (guildOneOption.isPresent()) {
-                    if (guildOne.isAlly(guildTwo)) {
-                        return IndividualPrefix.preparePrefix(config.prefixAllies.getValue(), guildTwo);
-                    }
-                    else if (guildOne.isEnemy(guildTwo) || guildTwo.isEnemy(guildOne)) {
-                        return IndividualPrefix.preparePrefix(config.prefixEnemies.getValue(), guildTwo);
-                    }
-                    else {
-                        return IndividualPrefix.preparePrefix(config.prefixOther.getValue(), guildTwo);
-                    }
-                }
-                else {
-                    return IndividualPrefix.preparePrefix(config.prefixOther.getValue(), guildTwo);
-                }
-            }
-
-            return "";
+            return IndividualPrefix.chooseAndPreparePrefix(
+                    this.plugin.getPluginConfiguration(),
+                    userOneOption.get().getGuild().orElseGet((Guild) null),
+                    userTwoOption.get().getGuild().orElseGet((Guild) null)
+            );
         }
-
 
         @Override
         public String getAuthor() {

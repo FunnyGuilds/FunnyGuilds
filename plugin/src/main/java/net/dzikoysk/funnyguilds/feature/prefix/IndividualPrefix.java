@@ -78,17 +78,7 @@ public class IndividualPrefix {
                 }
             }
 
-            String prefix = plugin.getPluginConfiguration().prefixOther.getValue();
-
-            if (guild.isAlly(to)) {
-                prefix = plugin.getPluginConfiguration().prefixAllies.getValue();
-            }
-
-            if (guild.isEnemy(to) || to.isEnemy(guild)) {
-                prefix = plugin.getPluginConfiguration().prefixEnemies.getValue();
-            }
-
-            team.setPrefix(preparePrefix(prefix, to));
+            team.setPrefix(chooseAndPreparePrefix(plugin.getPluginConfiguration(), guild, to));
         }
         else {
             Team team = scoreboard.getTeam(to.getTag());
@@ -142,54 +132,39 @@ public class IndividualPrefix {
         Scoreboard scoreboard = getScoreboard();
 
         if (user.hasGuild()) {
-            Guild guild = user.getGuild().get();
-            guilds.remove(guild);
+            Guild userGuild = user.getGuild().get();
+            guilds.remove(userGuild);
 
-            PluginConfiguration config = plugin.getPluginConfiguration();
-            String our = config.prefixOur.getValue();
-            String ally = config.prefixAllies.getValue();
-            String enemy = config.prefixEnemies.getValue();
-            String other = config.prefixOther.getValue();
-
-            Team team = scoreboard.getTeam(guild.getTag());
+            Team team = scoreboard.getTeam(userGuild.getTag());
             if (team == null) {
-                team = scoreboard.registerNewTeam(guild.getTag());
+                team = scoreboard.registerNewTeam(userGuild.getTag());
             }
 
-            for (User member : guild.getMembers()) {
+            for (User member : userGuild.getMembers()) {
                 if (!team.hasEntry(member.getName())) {
                     team.addEntry(member.getName());
                 }
             }
 
-            team.setPrefix(preparePrefix(our, guild));
+            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur.getValue(), userGuild));
 
-            for (Guild one : guilds) {
-                if (one == null || one.getTag() == null) {
+            for (Guild otherGuild : guilds) {
+                if (otherGuild == null || otherGuild.getTag() == null) {
                     continue;
                 }
 
-                team = scoreboard.getTeam(one.getTag());
-
+                team = scoreboard.getTeam(otherGuild.getTag());
                 if (team == null) {
-                    team = scoreboard.registerNewTeam(one.getTag());
+                    team = scoreboard.registerNewTeam(otherGuild.getTag());
                 }
 
-                for (User member : one.getMembers()) {
+                for (User member : otherGuild.getMembers()) {
                     if (!team.hasEntry(member.getName())) {
                         team.addEntry(member.getName());
                     }
                 }
 
-                if (guild.isAlly(one)) {
-                    team.setPrefix(preparePrefix(ally, one));
-                }
-                else if (guild.isEnemy(one) || one.isEnemy(guild)) {
-                    team.setPrefix(preparePrefix(enemy, one));
-                }
-                else {
-                    team.setPrefix(preparePrefix(other, one));
-                }
+                team.setPrefix(chooseAndPreparePrefix(plugin.getPluginConfiguration(), userGuild, otherGuild));
             }
         }
         else {
@@ -241,6 +216,30 @@ public class IndividualPrefix {
         if (!team.hasEntry(soloUser.getName())) {
             team.addEntry(soloUser.getName());
         }
+    }
+
+    public static String chooseAndPreparePrefix(PluginConfiguration config, Guild guild, Guild inPrefix) {
+        if (inPrefix == null) {
+            return "";
+        }
+
+        if (guild == null) {
+            return preparePrefix(config.prefixOther.getValue(), inPrefix);
+        }
+
+        if (guild.equals(inPrefix)) {
+            return preparePrefix(config.prefixOur.getValue(), inPrefix);
+        }
+
+        if (guild.isAlly(inPrefix)) {
+            return preparePrefix(config.prefixAllies.getValue(), inPrefix);
+        }
+
+        if (guild.isEnemy(inPrefix) || inPrefix.isEnemy(guild)) {
+            return preparePrefix(config.prefixEnemies.getValue(), inPrefix);
+        }
+
+        return preparePrefix(config.prefixOther.getValue(), inPrefix);
     }
 
     public static String preparePrefix(String text, Guild guild) {
