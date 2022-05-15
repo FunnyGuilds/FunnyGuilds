@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.jetbrains.annotations.Nullable;
+import panda.std.Option;
 
 public class PlayerTeleport extends AbstractFunnyListener {
 
@@ -25,11 +26,13 @@ public class PlayerTeleport extends AbstractFunnyListener {
     }
 
     private boolean isTeleportationToRegionAllowed(Location to, User user) {
-        return this.regionManager.findRegionAtLocation(to)
-                .map(Region::getGuild)
-                .filter(guild -> guild.isMember(user) ||
-                        this.isTeleportationToRegionAllowed(guild, user.getGuild().orNull()))
-                .isPresent();
+        Option<Region> regionOption = this.regionManager.findRegionAtLocation(to);
+        if (regionOption.isEmpty()) {
+            return true;
+        }
+
+        Guild guild = regionOption.get().getGuild();
+        return guild.isMember(user) || this.isTeleportationToRegionAllowed(guild, user.getGuild().orNull());
     }
 
     private boolean isTeleportationToRegionAllowed(Guild guild, @Nullable Guild userGuild) {
@@ -39,18 +42,15 @@ public class PlayerTeleport extends AbstractFunnyListener {
     }
 
     private boolean isTeleportationOnNeutralRegionAllowed(Guild guild, @Nullable Guild userGuild) {
-        return !config.blockTeleportOnRegion.neutral ||
-                !guild.isNeutral(userGuild);
+        return !config.blockTeleportOnRegion.neutral || !guild.isNeutral(userGuild);
     }
 
     private boolean isTeleportationOnEnemyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
-        return !config.blockTeleportOnRegion.enemy ||
-                !guild.isEnemy(userGuild);
+        return !config.blockTeleportOnRegion.enemy || !guild.isEnemy(userGuild);
     }
 
     private boolean isTeleportationOnAllyRegionAllowed(Guild guild, @Nullable Guild userGuild) {
-        return !config.blockTeleportOnRegion.ally ||
-                !guild.isAlly(userGuild);
+        return !config.blockTeleportOnRegion.ally || !guild.isAlly(userGuild);
     }
 
 }
