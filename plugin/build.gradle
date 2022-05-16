@@ -8,7 +8,7 @@ dependencies {
     }
 
     // funnyguilds & panda utilities
-    api "org.panda-lang:expressible:1.1.19"
+    api "org.panda-lang:expressible:1.1.20"
     implementation "net.dzikoysk:funnycommands:0.5.3"
 
     // okaeri config library
