@@ -7,6 +7,8 @@ import nl.jqno.equalsverifier.EqualsVerifier
 import org.junit.jupiter.api.Test
 import java.lang.ref.WeakReference
 import java.util.*
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class UserTest : FunnyGuildsSpec() {
 
@@ -26,6 +28,22 @@ class UserTest : FunnyGuildsSpec() {
                 .withPrefabValues(WeakReference::class.java, WeakReference<Any?>(null), WeakReference<Any?>(null))
                 .withIgnoredFields("name", "cache", "rank", "playerRef", "guild", "ban", "profile", "wasChanged")
                 .verify()
+    }
+
+    @Test
+    fun `cache in the user manager should be correct with the user state after updating username`() {
+        val userManager = UserManager()
+        val uuid = UUID.randomUUID()
+        val name = "name"
+
+        val user = userManager.create(uuid, name, FakeUserProfile.offline())
+
+        userManager.updateUsername(user, "changed")
+
+        val result = userManager.findByName("changed")
+
+        assertTrue { result.isPresent }
+        assertEquals("changed", result.get().name)
     }
 
 
