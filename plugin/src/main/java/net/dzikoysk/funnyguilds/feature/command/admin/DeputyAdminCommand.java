@@ -7,9 +7,9 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -31,20 +31,18 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         when(!guild.isMember(userToMove), messages.adminUserNotMemberOf);
 
         User admin = AdminUtils.getAdminUser(sender);
-
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(AdminUtils.getCause(admin), admin, guild, userToMove))) {
             return;
         }
 
-        Formatter formatter = new Formatter().register("{PLAYER}", userToMove.getName());
+        FunnyFormatter formatter = new FunnyFormatter().register("{PLAYER}", userToMove.getName());
 
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
-            sendMessage(sender, (messages.deputyRemove));
+            sendMessage(sender, messages.deputyRemove);
             userToMove.sendMessage(messages.deputyMember);
 
             String message = formatter.format(messages.deputyNoLongerMembers);
-
             for (User member : guild.getOnlineMembers()) {
                 member.sendMessage(message);
             }
@@ -53,11 +51,10 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         }
 
         guild.addDeputy(userToMove);
-        sendMessage(sender, (messages.deputySet));
+        sendMessage(sender, messages.deputySet);
         userToMove.sendMessage(messages.deputyOwner);
 
         String message = formatter.format(messages.deputyMembers);
-
         for (User member : guild.getOnlineMembers()) {
             member.sendMessage(message);
         }

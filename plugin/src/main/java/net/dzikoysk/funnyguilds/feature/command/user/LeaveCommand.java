@@ -10,9 +10,9 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberLeaveEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsMember;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -37,9 +37,12 @@ public final class LeaveCommand extends AbstractFunnyCommand {
         guild.removeMember(user);
         user.removeGuild();
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()), new PrefixGlobalUpdatePlayer(individualPrefixManager, player));
+        this.concurrencyManager.postRequests(
+                new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()),
+                new PrefixGlobalUpdatePlayer(individualPrefixManager, player)
+        );
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());

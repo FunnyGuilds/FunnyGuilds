@@ -86,9 +86,9 @@ public class GuildPlaceholdersService extends AbstractPlaceholdersService<Guild,
                         () -> messages.gDeputiesNoValue)
                 .property("deputy",
                         guild -> guild.getDeputies().isEmpty()
-                                ? messages.gDeputiesNoValue
+                                ? messages.gDeputyNoValue
                                 : guild.getDeputies().iterator().next().getName(),
-                        () -> messages.gDeputiesNoValue)
+                        () -> messages.gDeputyNoValue)
                 .property("members-online", guild -> guild.getOnlineMembers().size(), () -> 0)
                 .property("members-all", guild -> guild.getMembers().size(), () -> 0)
                 .property("allies-all", guild -> guild.getAllies().size(), () -> 0)

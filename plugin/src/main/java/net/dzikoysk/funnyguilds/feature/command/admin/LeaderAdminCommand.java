@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
+import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -37,11 +38,9 @@ public final class LeaderAdminCommand extends AbstractFunnyCommand {
 
         guild.setOwner(user);
         sendMessage(sender, (messages.leaderSet));
-
         user.sendMessage(messages.leaderOwner);
 
-        String message = messages.leaderMembers.replace("{PLAYER}", user.getName());
-
+        String message = StringUtils.replace(messages.leaderMembers, "{PLAYER}", user.getName());
         for (User member : guild.getMembers()) {
             member.sendMessage(message);
         }

@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -17,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -47,13 +49,12 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         int distance = config.regionSize + config.createDistance;
-
         if (config.enlargeItems != null) {
             distance = config.enlargeItems.size() * config.enlargeSize + distance;
         }
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
+                StringUtils.replace(messages.createSpawn, "{DISTANCE}", Integer.toString(distance)));
         when(this.regionManager.isNearRegion(location), messages.createIsNear);
 
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
@@ -90,7 +91,12 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         plugin.getGuildEntityHelper().spawnGuildEntity(guild);
-        admin.sendMessage(messages.adminGuildRelocated.replace("{GUILD}", guild.getName()).replace("{REGION}", region.getName()));
+
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{REGION}", region.getName());
+
+        admin.sendMessage(formatter.format(messages.adminGuildRelocated));
     }
 
 }

@@ -1,12 +1,12 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import java.util.Date;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildExtendValidityEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
@@ -47,8 +47,11 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
         validity += time;
         guild.setValidity(validity);
 
-        String date = messages.dateFormat.format(new Date(validity));
-        sendMessage(sender, (messages.adminNewValidity.replace("{GUILD}", guild.getName()).replace("{VALIDITY}", date)));
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{VALIDITY}", messages.dateFormat.format(validity));
+
+        sendMessage(sender, formatter.format(messages.adminNewValidity));
     }
 
 }

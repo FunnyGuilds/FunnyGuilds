@@ -7,9 +7,9 @@ import net.dzikoysk.funnyguilds.feature.ban.BanUtils;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -34,12 +34,12 @@ public final class UnbanCommand extends AbstractFunnyCommand {
 
         BanUtils.unban(guild);
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getName())
                 .register("{ADMIN}", sender.getName());
 
-        sendMessage(sender, (formatter.format(messages.adminGuildUnban)));
+        sendMessage(sender, formatter.format(messages.adminGuildUnban));
         broadcastMessage(formatter.format(messages.broadcastUnban));
     }
 

@@ -24,7 +24,6 @@ public final class TeleportCommand extends AbstractFunnyCommand {
         when(args.length < 1, messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-
         Region region = when(guild.getRegion(), messages.adminNoRegionFound);
 
         user.sendMessage(messages.baseTeleport);

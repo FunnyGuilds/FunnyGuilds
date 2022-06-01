@@ -8,6 +8,7 @@ import net.dzikoysk.funnyguilds.feature.notification.NotificationStyle;
 import net.dzikoysk.funnyguilds.guild.Region;
 import net.dzikoysk.funnyguilds.listener.AbstractFunnyListener;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
@@ -18,7 +19,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import panda.std.Option;
-import panda.utilities.text.Formatter;
 
 public class PlayerMove extends AbstractFunnyListener {
 
@@ -67,7 +67,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 return;
                             }
 
-                            Formatter formatter = new Formatter()
+                            FunnyFormatter formatter = new FunnyFormatter()
                                     .register("{GUILD}", guild.getName())
                                     .register("{TAG}", guild.getTag());
 
@@ -118,7 +118,7 @@ public class PlayerMove extends AbstractFunnyListener {
                                 Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> this.guildEntityHelper.spawnGuildEntity(guild, player), 40L);
                             }
 
-                            Formatter formatter = new Formatter()
+                            FunnyFormatter formatter = new FunnyFormatter()
                                     .register("{GUILD}", guild.getName())
                                     .register("{TAG}", guild.getTag())
                                     .register("{PLAYER}", player.getName());

@@ -15,6 +15,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
+import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -48,8 +49,7 @@ public final class NameCommand extends AbstractFunnyCommand {
                 FlatDataModel dataModel = (FlatDataModel) this.dataModel;
                 dataModel.getRegionFile(region).delete();
             }
-
-            if (this.dataModel instanceof SQLDataModel) {
+            else if (this.dataModel instanceof SQLDataModel) {
                 DatabaseRegion.delete(region);
             }
 
@@ -60,13 +60,12 @@ public final class NameCommand extends AbstractFunnyCommand {
             FlatDataModel dataModel = (FlatDataModel) this.dataModel;
             dataModel.getGuildFile(guild).delete();
         }
-
-        if (this.dataModel instanceof SQLDataModel) {
+        else if (this.dataModel instanceof SQLDataModel) {
             DatabaseGuild.delete(guild);
         }
 
         guild.setName(args[1]);
-        sendMessage(sender, (messages.adminNameChanged.replace("{GUILD}", guild.getName())));
+        sendMessage(sender, StringUtils.replace(messages.adminNameChanged, "{GUILD}", guild.getName()));
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }

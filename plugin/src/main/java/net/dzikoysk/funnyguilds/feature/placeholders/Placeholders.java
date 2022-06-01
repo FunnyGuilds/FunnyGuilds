@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 import net.dzikoysk.funnyguilds.feature.placeholders.placeholder.Placeholder;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.MonoResolver;
 import net.dzikoysk.funnyguilds.feature.placeholders.resolver.SimpleResolver;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import panda.std.Option;
-import panda.utilities.text.Formatter;
 
 public abstract class Placeholders<T, P extends Placeholders<T, P>> {
 
@@ -80,7 +80,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
                 .format(text);
     }
 
-    public Formatter toFormatter(T data) {
+    public FunnyFormatter toFormatter(T data) {
         return this.toCustomFormatter(data, "", "", name -> name);
     }
 
@@ -96,7 +96,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
                 .format(text);
     }
 
-    public Formatter toVariablesFormatter(T data) {
+    public FunnyFormatter toVariablesFormatter(T data) {
         return this.toCustomFormatter(data, "{", "}", String::toUpperCase);
     }
 
@@ -115,8 +115,8 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
                 .format(text);
     }
 
-    public Formatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {
-        Formatter formatter = new Formatter();
+    public FunnyFormatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {
+        FunnyFormatter formatter = new FunnyFormatter();
         placeholders.forEach((key, placeholder) -> formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(data)));
         return formatter;
     }

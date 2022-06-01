@@ -9,6 +9,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.IsMember;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -84,7 +85,8 @@ public final class BaseCommand extends AbstractFunnyCommand {
             }
         }, 0L, 10L));
 
-        user.sendMessage(messages.baseDontMove.replace("{TIME}", Long.toString(time.getSeconds())));
+        FunnyFormatter formatter = new FunnyFormatter().register("{TIME}", time.getSeconds());
+        user.sendMessage(formatter.format(messages.baseDontMove));
     }
 
 }

@@ -8,9 +8,9 @@ import net.dzikoysk.funnyguilds.event.guild.member.GuildMemberKickEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -28,6 +28,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         User user = UserValidation.requireUserByName(args[0]);
         when(!user.hasGuild(), messages.generalPlayerHasNoGuild);
         when(user.isOwner(), messages.adminGuildOwner);
+
         Guild guild = user.getGuild().get();
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -40,12 +41,12 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
         guild.removeMember(user);
         user.removeGuild();
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        sendMessage(sender, (formatter.format(messages.kickToOwner)));
+        sendMessage(sender, formatter.format(messages.kickToOwner));
         broadcastMessage(formatter.format(messages.broadcastKick));
         user.sendMessage(formatter.format(messages.kickToPlayer));
 

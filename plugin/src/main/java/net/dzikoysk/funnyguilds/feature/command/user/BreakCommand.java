@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.Entity;
@@ -14,6 +13,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
@@ -36,26 +36,29 @@ public final class BreakCommand extends AbstractFunnyCommand {
         when(!guild.hasAllies(), messages.breakHasNotAllies);
 
         if (args.length < 1) {
-            List<String> list = messages.breakAlliesList;
-            String iss = ChatUtils.toString(Entity.names(guild.getAllies()), true);
-
-            for (String msg : list) {
-                user.sendMessage(msg.replace("{GUILDS}", iss));
-            }
-
+            FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", ChatUtils.toString(Entity.names(guild.getAllies()), true));
+            messages.breakAlliesList.forEach(line -> user.sendMessage(formatter.format(line)));
             return;
         }
 
         Guild oppositeGuild = GuildValidation.requireGuildByTag(args[0]);
-        when(!guild.isAlly(oppositeGuild), () -> messages.breakAllyExists.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", guild.getTag()));
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{GUILD}", oppositeGuild.getName())
+                .register("{TAG}", guild.getTag());
+
+        when(!guild.isAlly(oppositeGuild), () -> formatter.format(messages.breakAllyExists));
 
         if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
             return;
         }
 
-        oppositeGuild.getOwner().sendMessage(messages.breakIDone
-                .replace("{GUILD}", guild.getName())
-                .replace("{TAG}", guild.getTag()));
+        FunnyFormatter breakFormatter = new FunnyFormatter()
+                .register("{GUILD}", oppositeGuild.getName())
+                .register("{TAG}", oppositeGuild.getTag());
+
+        FunnyFormatter breakIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
 
         guild.removeAlly(oppositeGuild);
         oppositeGuild.removeAlly(guild);
@@ -73,7 +76,8 @@ public final class BreakCommand extends AbstractFunnyCommand {
         ConcurrencyTask task = taskBuilder.build();
         this.concurrencyManager.postTask(task);
 
-        user.sendMessage(messages.breakDone.replace("{GUILD}", oppositeGuild.getName()).replace("{TAG}", oppositeGuild.getTag()));
+        user.sendMessage(breakFormatter.format(messages.breakDone));
+        oppositeGuild.getOwner().sendMessage(breakIFormatter.format(messages.breakIDone));
     }
 
 }

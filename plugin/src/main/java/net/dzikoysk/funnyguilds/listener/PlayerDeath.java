@@ -24,6 +24,7 @@ import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.nms.api.message.TitleMessage;
 import net.dzikoysk.funnyguilds.rank.RankSystem;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
@@ -34,7 +35,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import panda.std.Option;
-import panda.utilities.text.Formatter;
 
 public class PlayerDeath extends AbstractFunnyListener {
 
@@ -145,7 +145,6 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
         }
 
-        int[] rankChanges = new int[2];
         int victimPoints = victim.getRank().getPoints();
         int attackerPoints = attacker.getRank().getPoints();
 
@@ -199,10 +198,12 @@ public class PlayerDeath extends AbstractFunnyListener {
 
                     givenPoints += addedPoints;
 
-                    String assistEntry = StringUtils.replace(messages.rankAssistEntry, "{PLAYER}", assistUser.getName());
-                    assistEntry = StringUtils.replace(assistEntry, "{+}", Integer.toString(addedPoints));
-                    assistEntry = StringUtils.replace(assistEntry, "{SHARE}", ChatUtils.getPercent(assistFraction));
-                    assistEntries.add(assistEntry);
+                    FunnyFormatter formatter = new FunnyFormatter()
+                            .register("{PLAYER}", assistUser.getName())
+                            .register("{+}", addedPoints)
+                            .register("{SHARE}", ChatUtils.getPercent(assistFraction));
+
+                    assistEntries.add(formatter.format(messages.rankAssistEntry));
 
                     int finalAddedPoints = addedPoints;
                     assistUser.getRank().updatePoints(currentValue -> currentValue + finalAddedPoints);
@@ -256,21 +257,21 @@ public class PlayerDeath extends AbstractFunnyListener {
         int attackerPointsChange = attackerPointsChangeEvent.getPointsChange();
         int victimPointsChange = Math.min(victimPointsBeforeChange, victimPointsChangeEvent.getPointsChange());
 
-        Formatter killFormatter = new Formatter()
+        FunnyFormatter killFormatter = new FunnyFormatter()
                 .register("{ATTACKER}", attacker.getName())
                 .register("{VICTIM}", victim.getName())
-                .register("{+}", Integer.toString(attackerPointsChange))
-                .register("{-}", Integer.toString(victimPointsChange))
-                .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(attackerPointsChange, config.killPointsChangeFormat, true)
-                        .replace("{CHANGE}", Integer.toString(Math.abs(attackerPointsChange))))
-                .register("{MINUS-FORMATTED}", NumberRange.inRangeToString(victimPointsChange, config.killPointsChangeFormat, true)
-                        .replace("{CHANGE}", Integer.toString(Math.abs(victimPointsChange))))
+                .register("{+}", attackerPointsChange)
+                .register("{-}", victimPointsChange)
+                .register("{PLUS-FORMATTED}", NumberRange.inRangeToString(attackerPointsChange, config.killPointsChangeFormat, true))
+                .register("{CHANGE}", Math.abs(attackerPointsChange))
+                .register("{MINUS-FORMATTED}", NumberRange.inRangeToString(victimPointsChange, config.killPointsChangeFormat, true))
+                .register("{CHANGE}", Math.abs(victimPointsChange))
                 .register("{POINTS-FORMAT}", NumberRange.inRangeToString(victimPoints, config.pointsFormat, true))
-                .register("{POINTS}", Integer.toString(victim.getRank().getPoints()))
+                .register("{POINTS}", victim.getRank().getPoints())
                 .register("{WEAPON}", MaterialUtils.getMaterialName(playerAttacker.getItemInHand().getType()))
                 .register("{WEAPON-NAME}", MaterialUtils.getItemCustomName(playerAttacker.getItemInHand()))
                 .register("{REMAINING-HEALTH}", String.format(Locale.US, "%.2f", playerAttacker.getHealth()))
-                .register("{REMAINING-HEARTS}", Integer.toString((int) (playerAttacker.getHealth() / 2)))
+                .register("{REMAINING-HEARTS}", (int) (playerAttacker.getHealth() / 2))
                 .register("{VTAG}", victim.getGuild()
                         .map(guild -> StringUtils.replace(config.chatGuild.getValue(), "{TAG}", guild.getTag()))
                         .orElseGet(""))
@@ -314,18 +315,6 @@ public class PlayerDeath extends AbstractFunnyListener {
             }
         }
 
-    }
-
-    private int[] getEloValues(int victimPoints, int attackerPoints) {
-        int[] rankChanges = new int[2];
-
-        int attackerElo = NumberRange.inRange(attackerPoints, config.eloConstants).orElseGet(0);
-        int victimElo = NumberRange.inRange(victimPoints, config.eloConstants).orElseGet(0);
-
-        rankChanges[0] = (int) Math.round(attackerElo * (1 - (1.0D / (1.0D + Math.pow(config.eloExponent, (victimPoints - attackerPoints) / config.eloDivider)))));
-        rankChanges[1] = (int) Math.round(victimElo * (0 - (1.0D / (1.0D + Math.pow(config.eloExponent, (attackerPoints - victimPoints) / config.eloDivider)))) * -1);
-
-        return rankChanges;
     }
 
 }

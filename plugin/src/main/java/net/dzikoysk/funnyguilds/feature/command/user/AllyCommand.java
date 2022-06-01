@@ -17,12 +17,11 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitation;
 import net.dzikoysk.funnyguilds.feature.invitation.ally.AllyInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -45,11 +44,12 @@ public final class AllyCommand extends AbstractFunnyCommand {
         Set<AllyInvitation> invitations = allyInvitationList.getInvitationsFor(guild);
 
         if (args.length < 1) {
-            when(invitations.size() == 0, messages.allyHasNotInvitation);
+            when(invitations.isEmpty(), messages.allyHasNotInvitation);
             String guildNames = ChatUtils.toString(allyInvitationList.getInvitationGuildNames(guild), false);
 
+            FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", guildNames);
             for (String msg : messages.allyInvitationList) {
-                user.sendMessage(msg.replace("{GUILDS}", guildNames));
+                user.sendMessage(formatter.format(msg));
             }
 
             return;
@@ -64,21 +64,23 @@ public final class AllyCommand extends AbstractFunnyCommand {
         if (guild.isEnemy(invitedGuild)) {
             guild.removeEnemy(invitedGuild);
 
-            String allyDoneMessage = messages.enemyEnd;
-            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
-            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
-            user.sendMessage(allyDoneMessage);
+            FunnyFormatter allyFormatter = new FunnyFormatter()
+                    .register("{GUILD}", invitedGuild.getName())
+                    .register("{TAG}", invitedGuild.getTag());
 
-            String allyIDoneMessage = messages.enemyIEnd;
-            allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
-            allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
-            invitedOwner.sendMessage(allyIDoneMessage);
+            FunnyFormatter allyIFormatter = new FunnyFormatter()
+                    .register("{GUILD}", guild.getName())
+                    .register("{TAG}", guild.getTag());
+
+            user.sendMessage(allyFormatter.format(messages.enemyEnd));
+            invitedOwner.sendMessage(allyIFormatter.format(messages.enemyIEnd));
         }
 
-        when(guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> messages.inviteAllyAmount.replace("{AMOUNT}", Integer.toString(config.maxAlliesBetweenGuilds)));
+        FunnyFormatter amountFormatter = new FunnyFormatter().register("{AMOUNT}", config.maxAlliesBetweenGuilds);
+        when(guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> amountFormatter.format(messages.inviteAllyAmount));
 
         if (invitedGuild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
-            Formatter formatter = new Formatter()
+            FunnyFormatter formatter = new FunnyFormatter()
                     .register("{GUILD}", invitedGuild.getName())
                     .register("{TAG}", invitedGuild.getTag())
                     .register("{AMOUNT}", config.maxAlliesBetweenGuilds);
@@ -97,15 +99,16 @@ public final class AllyCommand extends AbstractFunnyCommand {
             guild.addAlly(invitedGuild);
             invitedGuild.addAlly(guild);
 
-            String allyDoneMessage = messages.allyDone;
-            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", invitedGuild.getName());
-            allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", invitedGuild.getTag());
-            user.sendMessage(allyDoneMessage);
+            FunnyFormatter allyFormatter = new FunnyFormatter()
+                    .register("{GUILD}", invitedGuild.getName())
+                    .register("{TAG}", invitedGuild.getTag());
 
-            String allyIDoneMessage = messages.allyIDone;
-            allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
-            allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
-            invitedOwner.sendMessage(allyIDoneMessage);
+            FunnyFormatter allyIFormatter = new FunnyFormatter()
+                    .register("{GUILD}", guild.getName())
+                    .register("{TAG}", guild.getTag());
+
+            user.sendMessage(allyFormatter.format(messages.allyDone));
+            invitedOwner.sendMessage(allyIFormatter.format(messages.allyIDone));
 
             ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
@@ -128,15 +131,16 @@ public final class AllyCommand extends AbstractFunnyCommand {
 
             allyInvitationList.expireInvitation(guild, invitedGuild);
 
-            String allyReturnMessage = messages.allyReturn;
-            allyReturnMessage = StringUtils.replace(allyReturnMessage, "{GUILD}", invitedGuild.getName());
-            allyReturnMessage = StringUtils.replace(allyReturnMessage, "{TAG}", invitedGuild.getTag());
-            user.sendMessage(allyReturnMessage);
+            FunnyFormatter allyFormatter = new FunnyFormatter()
+                    .register("{GUILD}", invitedGuild.getName())
+                    .register("{TAG}", invitedGuild.getTag());
 
-            String allyIReturnMessage = messages.allyIReturn;
-            allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{GUILD}", guild.getName());
-            allyIReturnMessage = StringUtils.replace(allyIReturnMessage, "{TAG}", guild.getTag());
-            invitedOwner.sendMessage(allyIReturnMessage);
+            FunnyFormatter allyIFormatter = new FunnyFormatter()
+                    .register("{GUILD}", guild.getName())
+                    .register("{TAG}", guild.getTag());
+
+            user.sendMessage(allyFormatter.format(messages.allyReturn));
+            invitedOwner.sendMessage(allyIFormatter.format(messages.allyIReturn));
 
             return;
         }
@@ -147,15 +151,16 @@ public final class AllyCommand extends AbstractFunnyCommand {
 
         allyInvitationList.createInvitation(guild, invitedGuild);
 
-        String allyInviteDoneMessage = messages.allyInviteDone;
-        allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{GUILD}", invitedGuild.getName());
-        allyInviteDoneMessage = StringUtils.replace(allyInviteDoneMessage, "{TAG}", invitedGuild.getTag());
-        user.sendMessage(allyInviteDoneMessage);
+        FunnyFormatter allyFormatter = new FunnyFormatter()
+                .register("{GUILD}", invitedGuild.getName())
+                .register("{TAG}", invitedGuild.getTag());
 
-        String allyToInvitedMessage = messages.allyToInvited;
-        allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{GUILD}", guild.getName());
-        allyToInvitedMessage = StringUtils.replace(allyToInvitedMessage, "{TAG}", guild.getTag());
-        invitedOwner.sendMessage(allyToInvitedMessage);
+        FunnyFormatter allyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        user.sendMessage(allyFormatter.format(messages.allyInviteDone));
+        invitedOwner.sendMessage(allyIFormatter.format(messages.allyToInvited));
     }
 
 }

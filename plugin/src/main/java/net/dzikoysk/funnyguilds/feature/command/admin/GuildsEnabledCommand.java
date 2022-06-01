@@ -13,7 +13,7 @@ public final class GuildsEnabledCommand extends AbstractFunnyCommand {
     )
     public void execute(CommandSender sender) {
         config.guildsEnabled = !config.guildsEnabled;
-        sendMessage(sender, (config.guildsEnabled ? messages.adminGuildsEnabled : messages.adminGuildsDisabled));
+        sendMessage(sender, config.guildsEnabled ? messages.adminGuildsEnabled : messages.adminGuildsDisabled);
     }
 
 }
