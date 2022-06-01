@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import panda.std.Option;
-import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -29,7 +28,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         int lives = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(StringUtils.replace(messages.adminErrorInNumber, "{ERROR}", args[1]));
+            return new ValidationException(FunnyFormatter.of("{ERROR}", args[1]).format(messages.adminErrorInNumber));
         });
 
         User admin = AdminUtils.getAdminUser(sender);

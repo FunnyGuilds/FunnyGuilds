@@ -18,7 +18,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -54,7 +53,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                StringUtils.replace(messages.createSpawn, "{DISTANCE}", Integer.toString(distance)));
+                FunnyFormatter.of("{DISTANCE}", distance).format(messages.createSpawn));
         when(this.regionManager.isNearRegion(location), messages.createIsNear);
 
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {

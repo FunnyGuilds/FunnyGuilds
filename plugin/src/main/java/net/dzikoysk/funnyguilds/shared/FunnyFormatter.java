@@ -43,4 +43,12 @@ public final class FunnyFormatter {
         return this;
     }
 
+    public static FunnyFormatter of(String placeholder, Object value) {
+        return of(placeholder, value::toString);
+    }
+
+    public static FunnyFormatter of(String placeholder, Supplier<?> value) {
+        return new FunnyFormatter().register(placeholder, value);
+    }
+
 }

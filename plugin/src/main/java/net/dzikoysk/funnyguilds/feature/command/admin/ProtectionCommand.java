@@ -36,7 +36,7 @@ public final class ProtectionCommand extends AbstractFunnyCommand {
         LocalDateTime protectionDate = Option.attempt(ParseException.class, () -> {
             return LocalDateTime.parse(protectionDateAsString, PROTECTION_DATE_FORMATTER);
         }).orThrow(() -> {
-            return new ValidationException(StringUtils.replace(messages.adminErrorInNumber, "{ERROR}", args[1]));
+            return new ValidationException(FunnyFormatter.of("{ERROR}", args[1]).format(messages.adminErrorInNumber));
         });
 
         guild.setProtection(protectionDate.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());

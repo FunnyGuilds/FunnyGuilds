@@ -85,8 +85,9 @@ public class UserCache {
         this.damageCaches.clear();
     }
 
-    public void setSpy(boolean spy) {
-        this.spy = spy;
+    public boolean toggleSpy() {
+        this.spy = !this.spy;
+        return this.spy;
     }
 
     public void setTeleportation(BukkitTask teleportation) {

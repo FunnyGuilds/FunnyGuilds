@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import panda.std.Option;
-import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -29,7 +28,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
         when(args.length < 2, messages.adminNoPointsGiven);
 
         int points = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            throw new ValidationException(StringUtils.replace(messages.adminErrorInNumber, "{ERROR}", args[1]));
+            return new ValidationException(FunnyFormatter.of("{ERROR}", args[1]).format(messages.adminErrorInNumber));
         });
 
         User user = UserValidation.requireUserByName(args[0]);

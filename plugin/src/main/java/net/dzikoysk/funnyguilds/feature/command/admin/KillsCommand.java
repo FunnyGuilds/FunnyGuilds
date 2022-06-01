@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import panda.std.Option;
-import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -28,7 +27,7 @@ public final class KillsCommand extends AbstractFunnyCommand {
         when(args.length < 2, messages.adminNoKillsGiven);
 
         int kills = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(StringUtils.replace(messages.adminErrorInNumber, "{ERROR}", args[1]));
+            return new ValidationException(FunnyFormatter.of("{ERROR}", args[1]).format(messages.adminErrorInNumber));
         });
 
         User admin = AdminUtils.getAdminUser(sender);
