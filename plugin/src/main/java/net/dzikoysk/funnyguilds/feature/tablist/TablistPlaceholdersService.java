@@ -20,7 +20,7 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
     private final UserPlaceholdersService userPlaceholdersService;
     private final GuildPlaceholdersService guildPlaceholdersService;
 
-    public TablistPlaceholdersService(BasicPlaceholdersService basicPlaceholdersService,TimePlaceholdersService timePlaceholdersService,
+    public TablistPlaceholdersService(BasicPlaceholdersService basicPlaceholdersService, TimePlaceholdersService timePlaceholdersService,
                                       UserPlaceholdersService userPlaceholdersService, GuildPlaceholdersService guildPlaceholdersService) {
         this.basicPlaceholdersService = basicPlaceholdersService;
         this.timePlaceholdersService = timePlaceholdersService;

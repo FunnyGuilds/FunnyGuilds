@@ -49,7 +49,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        try (PandaStream<Entry<Guild,FakeEntity>> entries = PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())) {
+        try (PandaStream<Entry<Guild, FakeEntity>> entries = PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())) {
             entries.filter(entry -> entry.getValue().getId() == this.entityId)
                     .map(Entry::getKey)
                     .mapOpt(guild -> plugin.getFunnyServer().getPlayer(user.getUUID()).map(player -> Pair.of(player, guild)))
