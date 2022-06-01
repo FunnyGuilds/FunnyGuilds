@@ -8,7 +8,6 @@ import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -43,7 +42,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
 
         guild.getOwner().sendMessage(formatter.format(messages.adminGuildBroken));
         sendMessage(sender, formatter.format(messages.deleteSuccessful));
-        Bukkit.getServer().broadcastMessage(formatter.format(messages.broadcastDelete));
+        broadcastMessage(formatter.format(messages.broadcastDelete));
     }
 
 }

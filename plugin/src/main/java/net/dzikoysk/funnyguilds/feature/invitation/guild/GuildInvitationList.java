@@ -16,7 +16,6 @@ import panda.std.stream.PandaStream;
 public class GuildInvitationList implements InvitationList<GuildInvitation> {
 
     private final Set<GuildInvitation> invitations = new HashSet<>();
-
     private final UserManager userManager;
     private final GuildManager guildManager;
 
@@ -43,11 +42,9 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
     }
 
     public Set<String> getInvitationGuildNames(UUID to) {
-        return PandaStream.of(this.getInvitationsFor(to))
-                .map(GuildInvitation::getFrom)
-                .map(Guild::getName)
-                .collect(Collectors.toSet());
-
+        try (PandaStream<GuildInvitation> invitations = PandaStream.of(this.getInvitationsFor(to))) {
+            return invitations.map(GuildInvitation::getFrom).map(Guild::getName).collect(Collectors.toSet());
+        }
     }
 
     public Set<String> getInvitationGuildNames(User to) {
@@ -55,10 +52,9 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
     }
 
     public Set<String> getInvitationGuildTags(UUID to) {
-        return PandaStream.of(this.getInvitationsFor(to))
-                .map(GuildInvitation::getFrom)
-                .map(Guild::getTag)
-                .collect(Collectors.toSet());
+        try (PandaStream<GuildInvitation> invitations = PandaStream.of(this.getInvitationsFor(to))) {
+            return invitations.map(GuildInvitation::getFrom).map(Guild::getTag).collect(Collectors.toSet());
+        }
     }
 
     public Set<String> getInvitationGuildTags(User to) {
@@ -69,9 +65,11 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
     public void createInvitation(UUID from, UUID to) {
         Option<Guild> fromOption = guildManager.findByUuid(from);
         Option<User> toOption = userManager.findByUuid(to);
+
         if (fromOption.isEmpty() || toOption.isEmpty()) {
             return;
         }
+
         this.createInvitation(fromOption.get(), toOption.get());
     }
 
@@ -81,9 +79,9 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
 
     @Override
     public void expireInvitation(UUID from, UUID to) {
-        PandaStream.of(this.getInvitationsFrom(from))
-                .filter(invitation -> invitation.getToUUID().equals(to))
-                .forEach(this.invitations::remove);
+        try (PandaStream<GuildInvitation> invitations = PandaStream.of(this.getInvitationsFor(to))) {
+            invitations.filter(invitation -> invitation.getToUUID().equals(to)).forEach(this.invitations::remove);
+        }
     }
 
     public void expireInvitation(Guild from, User to) {

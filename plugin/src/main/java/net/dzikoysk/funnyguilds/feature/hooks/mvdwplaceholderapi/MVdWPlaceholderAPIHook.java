@@ -99,7 +99,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         return HookInitResult.SUCCESS;
     }
 
-    public String replacePlaceholders(Player user, String base) {
+    public static String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.replacePlaceholders(user, base);
     }
 

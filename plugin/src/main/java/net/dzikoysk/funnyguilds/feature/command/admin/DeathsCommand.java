@@ -27,7 +27,7 @@ public final class DeathsCommand extends AbstractFunnyCommand {
         when(args.length < 2, messages.adminNoDeathsGiven);
 
         int deaths = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(FunnyFormatter.of("{ERROR}", args[1]).format(messages.adminErrorInNumber));
+            return new ValidationException(FunnyFormatter.formatOnce(messages.adminErrorInNumber, "{ERROR}", args[1]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);

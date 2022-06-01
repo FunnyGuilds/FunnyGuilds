@@ -4,6 +4,7 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.tablist.TablistConfiguration;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import panda.std.stream.PandaStream;
 
 public class TablistBroadcastHandler implements Runnable {
@@ -23,9 +24,10 @@ public class TablistBroadcastHandler implements Runnable {
             return;
         }
 
-        PandaStream.of(Bukkit.getOnlinePlayers())
-                .flatMap(userManager::findByPlayer)
-                .flatMap(user -> user.getCache().getPlayerList())
-                .forEach(IndividualPlayerList::send);
+        try (PandaStream<? extends Player> players = PandaStream.of(Bukkit.getOnlinePlayers())) {
+            players.flatMap(userManager::findByPlayer)
+                    .flatMap(user -> user.getCache().getPlayerList())
+                    .forEach(IndividualPlayerList::send);
+        }
     }
 }

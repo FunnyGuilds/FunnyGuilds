@@ -78,6 +78,6 @@ public final class BossBarOptions {
         public BossBarOptions build() {
             return new BossBarOptions(this.barColor, this.barStyle, this.barFlags);
         }
-
     }
+
 }

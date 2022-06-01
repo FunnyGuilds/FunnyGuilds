@@ -35,7 +35,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        FunnyFormatter formatter = new FunnyFormatter().register("{PLAYER}", userToMove.getName());
+        FunnyFormatter formatter = FunnyFormatter.of("{PLAYER}", userToMove.getName());
 
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
@@ -43,9 +43,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
             userToMove.sendMessage(messages.deputyMember);
 
             String message = formatter.format(messages.deputyNoLongerMembers);
-            for (User member : guild.getOnlineMembers()) {
-                member.sendMessage(message);
-            }
+            guild.getOnlineMembers().forEach(member -> member.sendMessage(message));
 
             return;
         }
@@ -55,9 +53,7 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
         userToMove.sendMessage(messages.deputyOwner);
 
         String message = formatter.format(messages.deputyMembers);
-        for (User member : guild.getOnlineMembers()) {
-            member.sendMessage(message);
-        }
+        guild.getOnlineMembers().forEach(member -> member.sendMessage(message));
     }
 
 }

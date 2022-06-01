@@ -35,9 +35,9 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
      * @return all placeholders key of all sets
      */
     public Set<String> getPlaceholdersKeys() {
-        return PandaStream.of(this.placeholders.values())
-                .flatMap(placeholders -> placeholders.getPlaceholders().keySet())
-                .toSet();
+        try (PandaStream<P> values = PandaStream.of(this.placeholders.values())) {
+            return values.flatMap(placeholders -> placeholders.getPlaceholders().keySet()).toSet();
+        }
     }
 
     /**
@@ -49,10 +49,12 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
     public Option<Placeholder<T>> getPlaceholder(String name) {
         for (P placeholders : this.placeholders.values()) {
             Option<Placeholder<T>> placeholder = placeholders.getPlaceholder(name);
+
             if (placeholder.isPresent()) {
                 return placeholder;
             }
         }
+
         return Option.none();
     }
 
@@ -68,6 +70,7 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
         for (P placeholders : this.placeholders.values()) {
             text = placeholders.formatVariables(text, data);
         }
+
         return text;
     }
 
@@ -75,6 +78,7 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
         for (P placeholders : this.placeholders.values()) {
             text = placeholders.formatCustom(text, data, prefix, suffix, nameModifier);
         }
+
         return text;
     }
 

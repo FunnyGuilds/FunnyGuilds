@@ -4,8 +4,8 @@ import java.time.LocalTime;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.command.CommandSender;
-import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -25,17 +25,17 @@ public final class TntCommand extends AbstractFunnyCommand {
         LocalTime now = LocalTime.now();
         LocalTime start = config.tntProtection.time.startTime.getTime();
         LocalTime end = config.tntProtection.time.endTime.getTime();
-        String message = messages.tntInfo;
 
         boolean isWithinTimeframe = config.tntProtection.time.passingMidnight
                 ? now.isAfter(start) || now.isBefore(end)
                 : now.isAfter(start) && now.isBefore(end);
 
-        message = StringUtils.replace(message, "{PROTECTION_START}", config.tntProtection.time.startTime.getFormattedTime());
-        message = StringUtils.replace(message, "{PROTECTION_END}", config.tntProtection.time.endTime.getFormattedTime());
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{PROTECTION_START}", config.tntProtection.time.startTime.getFormattedTime())
+                .register("{PROTECTION_END}", config.tntProtection.time.endTime.getFormattedTime());
 
-        sendMessage(sender, (message));
-        sendMessage(sender, (isWithinTimeframe ? messages.tntNowDisabled : messages.tntNowEnabled));
+        sendMessage(sender, formatter.format(messages.tntInfo));
+        sendMessage(sender, isWithinTimeframe ? messages.tntNowDisabled : messages.tntNowEnabled);
     }
 
 }

@@ -28,7 +28,7 @@ public final class PointsCommand extends AbstractFunnyCommand {
         when(args.length < 2, messages.adminNoPointsGiven);
 
         int points = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(FunnyFormatter.of("{ERROR}", args[1]).format(messages.adminErrorInNumber));
+            return new ValidationException(FunnyFormatter.formatOnce(messages.adminErrorInNumber, "{ERROR}", args[1]));
         });
 
         User user = UserValidation.requireUserByName(args[0]);

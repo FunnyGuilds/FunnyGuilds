@@ -2,9 +2,11 @@ package net.dzikoysk.funnyguilds.feature.protection;
 
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.tuple.Pair;
@@ -16,10 +18,7 @@ import panda.std.Option;
 
 public final class ProtectionSystem {
 
-    public enum ProtectionType {
-        UNAUTHORIZED,
-        LOCKED,
-        HEART
+    private ProtectionSystem() {
     }
 
     public static Option<Triple<Player, Guild, ProtectionType>> isProtected(Player player, Location location, boolean includeBuildLock) {
@@ -35,13 +34,11 @@ public final class ProtectionSystem {
         if (regionOption.isEmpty()) {
             return Option.none();
         }
-        Region region = regionOption.get();
 
+        Region region = regionOption.get();
         Guild guild = region.getGuild();
 
-        User user = FunnyGuilds.getInstance().getUserManager().findByUuid(player.getUniqueId())
-                .orNull();
-
+        User user = FunnyGuilds.getInstance().getUserManager().findByUuid(player.getUniqueId()).orNull();
         if (!guild.isMember(user)) {
             return Option.of(Triple.of(player, guild, ProtectionType.UNAUTHORIZED));
         }
@@ -53,6 +50,7 @@ public final class ProtectionSystem {
         if (region.getHeart().contentEquals(location)) {
             PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
             Pair<Material, Byte> heartMaterial = config.heart.createMaterial;
+
             return Option.when(heartMaterial != null && heartMaterial.getLeft() != Material.AIR, Triple.of(player, guild, ProtectionType.HEART));
         }
 
@@ -69,9 +67,16 @@ public final class ProtectionSystem {
     }
 
     private static void sendRegionExplodeMessage(Player player, Guild guild) {
-        ChatUtils.sendMessage(player, FunnyGuilds.getInstance().getMessageConfiguration().regionExplodeInteract
-                .replace("{TIME}", Long.toString(TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis())))
-        );
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+        long time = TimeUnit.MILLISECONDS.toSeconds(guild.getBuild() - System.currentTimeMillis());
+
+        ChatUtils.sendMessage(player, FunnyFormatter.formatOnce(messages.regionExplodeInteract, "{TIME}", time));
+    }
+
+    public enum ProtectionType {
+        UNAUTHORIZED,
+        LOCKED,
+        HEART
     }
 
 }

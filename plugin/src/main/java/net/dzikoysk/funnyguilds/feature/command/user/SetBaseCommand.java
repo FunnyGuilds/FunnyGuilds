@@ -30,7 +30,8 @@ public final class SetBaseCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
         when(!config.regionsEnabled, messages.regionsDisabled);
-        Region region = this.regionManager.findByName(guild.getName()).getOrNull();
+
+        Region region = this.regionManager.findByName(guild.getName()).orNull();
         Location location = player.getLocation();
         when(region == null || !region.isIn(location), messages.setbaseOutside);
 

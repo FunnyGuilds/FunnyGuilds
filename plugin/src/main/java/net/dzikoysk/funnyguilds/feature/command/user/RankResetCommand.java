@@ -4,9 +4,9 @@ import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -32,11 +32,11 @@ public final class RankResetCommand extends AbstractFunnyCommand {
         user.getRank().setPoints(config.rankStart);
         player.getInventory().removeItem(ItemUtils.toArray(requiredItems));
 
-        String resetMessage = messages.rankResetMessage;
-        resetMessage = StringUtils.replace(resetMessage, "{LAST-RANK}", String.valueOf(lastRank));
-        resetMessage = StringUtils.replace(resetMessage, "{CURRENT-RANK}", String.valueOf(user.getRank().getPoints()));
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{LAST-RANK}", lastRank)
+                .register("{CURRENT-RANK}", user.getRank().getPoints());
 
-        user.sendMessage(resetMessage);
+        user.sendMessage(formatter.format(messages.rankResetMessage));
     }
 
 }

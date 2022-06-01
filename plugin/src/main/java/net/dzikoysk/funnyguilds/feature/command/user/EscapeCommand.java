@@ -6,6 +6,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserCache;
@@ -35,33 +36,36 @@ public final class EscapeCommand extends AbstractFunnyCommand {
         Location playerLocation = player.getLocation();
         Option<Region> regionOption = this.regionManager.findRegionAtLocation(playerLocation);
         when(regionOption.isEmpty(), messages.escapeNoNeedToRun);
-        Region region = regionOption.get();
 
+        Region region = regionOption.get();
         int time = config.escapeDelay;
 
         if (!user.hasGuild()) {
             when(!config.escapeSpawn, messages.escapeNoUserGuild);
-            scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {
-            });
+            scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {});
             return;
         }
 
         Guild guild = user.getGuild().get();
         when(guild.equals(region.getGuild()), messages.escapeOnYourRegion);
 
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{TIME}", time)
+                .register("{PLAYER}", player.getName())
+                .register("{X}", playerLocation.getBlockX())
+                .register("{Y}", playerLocation.getBlockY())
+                .register("{Z}", playerLocation.getBlockZ());
+
         if (time >= 1) {
-            user.sendMessage(messages.escapeStartedUser.replace("{TIME}", Integer.toString(time)));
-
-            String msg = messages.escapeStartedOpponents.replace("{TIME}", Integer.toString(time)).replace("{PLAYER}", player.getName())
-                    .replace("{X}", Integer.toString(playerLocation.getBlockX())).replace("{Y}", Integer.toString(playerLocation.getBlockY()))
-                    .replace("{Z}", Integer.toString(playerLocation.getBlockZ()));
-
-            region.getGuild().broadcast(msg);
+            user.sendMessage(formatter.format(messages.escapeStartedUser));
+            region.getGuild().broadcast(formatter.format(messages.escapeStartedOpponents));
         }
 
-        guild.getHome().peek(home -> scheduleTeleportation(player, user, home, time, () ->
-                region.getGuild().getMembers()
-                        .forEach(member -> member.sendMessage(messages.escapeSuccessfulOpponents.replace("{PLAYER}", player.getName())))));
+        guild.getHome().peek(home -> scheduleTeleportation(player, user, home, time, () -> {
+            region.getGuild().getMembers().forEach(member -> {
+                member.sendMessage(formatter.format(messages.escapeSuccessfulOpponents));
+            });
+        }));
     }
 
     private void scheduleTeleportation(Player player, User user, Location destination, int time, Runnable onSuccess) {

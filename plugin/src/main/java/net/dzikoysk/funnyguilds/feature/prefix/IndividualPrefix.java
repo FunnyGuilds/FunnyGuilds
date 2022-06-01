@@ -61,13 +61,13 @@ public class IndividualPrefix {
 
         if (user.hasGuild()) {
             Guild guild = user.getGuild().get();
+
             if (guild.equals(to)) {
                 initialize();
                 return;
             }
 
             Team team = scoreboard.getTeam(to.getTag());
-
             if (team == null) {
                 team = scoreboard.registerNewTeam(to.getTag());
             }
@@ -82,7 +82,6 @@ public class IndividualPrefix {
         }
         else {
             Team team = scoreboard.getTeam(to.getTag());
-
             if (team == null) {
                 team = scoreboard.registerNewTeam(to.getTag());
             }
@@ -103,8 +102,7 @@ public class IndividualPrefix {
             team.removeEntry(playerName);
         }
 
-        plugin.getUserManager().findByName(playerName)
-                .peek(this::registerSoloTeam);
+        plugin.getUserManager().findByName(playerName).peek(this::registerSoloTeam);
     }
 
     protected void removeGuild(Guild guild) {
@@ -113,7 +111,6 @@ public class IndividualPrefix {
         }
 
         String tag = guild.getTag();
-
         if (tag.isEmpty()) {
             throw new IllegalStateException("Guild tag can't be empty!");
         }
@@ -177,7 +174,6 @@ public class IndividualPrefix {
                 }
 
                 Team team = scoreboard.getTeam(one.getTag());
-
                 if (team == null) {
                     team = scoreboard.registerNewTeam(one.getTag());
                 }
@@ -208,7 +204,6 @@ public class IndividualPrefix {
         }
 
         Team team = getScoreboard().getTeam(teamName);
-
         if (team == null) {
             team = getScoreboard().registerNewTeam(teamName);
         }
@@ -256,8 +251,7 @@ public class IndividualPrefix {
 
     @NotNull
     public Scoreboard getScoreboard() {
-        return this.user.getCache().getScoreboard()
-                .orThrow(() -> new NullPointerException("scoreboard is null"));
+        return this.user.getCache().getScoreboard().orThrow(() -> new NullPointerException("scoreboard is null"));
     }
 
 }

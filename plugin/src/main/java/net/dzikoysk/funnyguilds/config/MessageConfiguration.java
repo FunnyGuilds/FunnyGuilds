@@ -15,6 +15,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("<------- Global Date Format -------> #")
     public SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 
+    @Comment("")
     @Comment("<------- No Value Messages -------> #")
     public String gNameNoValue = "Brak (G-NAME/NAME)";
     public String gTagNoValue = "Brak (G-TAG/TAG)";
@@ -31,11 +32,13 @@ public class MessageConfiguration extends OkaeriConfig {
     public String wgRegionNoValue = "Brak (WG-REGION)";
     public String minMembersToIncludeNoValue = "Brak (guild-min-members w config.yml)";
 
+    @Comment("")
     @Comment("<------- Permission Messages -------> #")
     public String permission = "&cNie masz wystarczajacych uprawnien do uzycia tej komendy!";
     public String blockedWorld = "&cZarzadzanie gildiami jest zablokowane na tym swiecie!";
     public String playerOnly = "&cKomenda dostepna tylko dla graczy!";
 
+    @Comment("")
     @Comment("<------- Rank Messages -------> #")
     public String rankLastVictimV = "&7Ostatnio zostales zabity przez tego samego gracza, punkty nie zostaja odebrane!";
     public String rankLastVictimA = "&7Ostatnio zabiles tego samego gracza, punkty nie zostaja dodane!";
@@ -43,8 +46,10 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
-    @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
+    @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, " +
+            "{VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
+    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) " +
+            "uzywajac &b{WEAPON} {WEAPON-NAME}";
     public String rankKillTitle = "&cZabiles gracza {VICTIM}";
     public String rankKillSubtitle = "&7+{+}";
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
@@ -56,10 +61,12 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {LAST-RANK}, {CURRENT-RANK}")
     public String rankResetMessage = "&7Zresetowales swoj ranking z poziomu &c{LAST-RANK} &7do poziomu &c{CURRENT-RANK}&7.";
 
+    @Comment("")
     @Comment("<------- Ban Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}, {REASON}, {DATE}, {NEWLINE}")
     public String banMessage = "&7Zostales zbanowany do &b{DATE}{NEWLINE}{NEWLINE}&7za: &b{REASON}";
 
+    @Comment("")
     @Comment("<------- Region Messages -------> #")
     public String regionOther = "&cTen teren nalezy do innej gildii!";
     public String regionCenter = "&cNie mozesz zniszczyc srodka swojej gildii!";
@@ -72,6 +79,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String regionExplosionHasProtection = "&cEksplozja nie spowodowala zniszczen na terenie gildii, poniewaz jest ona chroniona!";
     public String regionsDisabled = "&cRegiony gildii sa wylaczone!";
 
+    @Comment("")
     @Comment("<------- ActionBar Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
     public String notificationActionbarIntruderEnterGuildRegion = "&7Gracz &c{PLAYER} &7wkroczyl na teren &cTwojej &7gildii!";
@@ -80,6 +88,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String notificationActionbarLeaveGuildRegion = "&7Opusciles teren gildii &c{TAG}&7!";
 
+    @Comment("")
     @Comment("<------- Bossbar Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
     public String notificationBossbarIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
@@ -88,6 +97,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String notificationBossbarLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
 
+    @Comment("")
     @Comment("<------- Chat Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
     public String notificationChatIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
@@ -96,6 +106,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String notificationChatLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
 
+    @Comment("")
     @Comment("<------- Title Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
     public String notificationTitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
@@ -110,6 +121,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String notificationSubtitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
 
+    @Comment("")
     @Comment("<------- Broadcast Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
     public String broadcastCreate = "&a{PLAYER} &7zalozyl gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
@@ -129,8 +141,18 @@ public class MessageConfiguration extends OkaeriConfig {
     public String broadcastValidity = "&7Gildia &b{TAG} &7wygasla&b! &7Jej baza znajdowala sie na x: &b{X} &7y: &b{Y} &7z: &b{Z}&7!";
     @Comment("Dostepne zmienne: {WINNER}, {LOSER}")
     public String broadcastWar = "&7Gildia &4{WINNER}&7 podblila gildie &4{LOSER}&7!!";
+    public String noInformation = "Brak informacji";
 
+    @Comment("")
     @Comment("<------- Help Messages -------> #")
+    public List<String> funnyguildsHelp = Arrays.asList(
+            "&aFunnyGuilds Help:",
+            "&7/funnyguilds (reload|rl) - przeladuj plugin",
+            "&7/funnyguilds (update|check) - sprawdz dostepnosc aktualizacji",
+            "&7/funnyguilds save-all - zapisz wszystko",
+            "&7/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)"
+    );
+
     public List<String> helpList = Arrays.asList(
             "&7---------------------&8[ &aGildie &8]&7---------------------",
             "&a/zaloz [tag] [nazwa] &8- &7Tworzy gildie",
@@ -148,9 +170,9 @@ public class MessageConfiguration extends OkaeriConfig {
             "&a/rozwiaz [tag] &8- &7Rozwiazuje sojusz",
             "&a/usun &8- &7Usuwa gildie",
             "&a/przedmioty &8- &7Pokazuje przedmioty potrzebne do zalozenia gildii",
-            "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii");
+            "&a/ucieczka &8- &7Rozpoczyna ucieczke z terenu innej gildii"
+    );
 
-    @Comment("<------- Admin Help Messages -------> #")
     public List<String> adminHelpList = Arrays.asList(
             "&a/ga dodaj [tag] [nick] &8- &7Dodaje gracza do gildii",
             "&a/ga usun [tag] &8- &7Usuwa gildie",
@@ -171,8 +193,11 @@ public class MessageConfiguration extends OkaeriConfig {
             "&a/ga enabled &8- &7Zarzadzanie statusem zakladania gildii",
             "&a/ga lider [tag] [gracz] &8- &7Zmienia lidera gildii",
             "&a/ga zastepca [tag] [gracz] &8- &7Nadaje zastepce gildii",
-            "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii");
+            "&a/ga baza [gracz] &8- &7Teleportuje gracza do bazy jego gildii"
+    );
 
+    @Comment("")
+    @Comment("<------- Info Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
     public List<String> playerInfoList = Arrays.asList(
             "&8--------------.-----------------",
@@ -184,7 +209,8 @@ public class MessageConfiguration extends OkaeriConfig {
             "&7Asysty: &a{ASSISTS}",
             "&7Logouty: &a{LOGOUTS}",
             "&7KDR: &a{KDR}",
-            "&8-------------.------------------");
+            "&8-------------.------------------"
+    );
 
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {RANK}")
     public List<String> playerRightClickInfo = Arrays.asList(
@@ -192,13 +218,15 @@ public class MessageConfiguration extends OkaeriConfig {
             "&7Gracz: &a{PLAYER}",
             "&7Gildia: &a{TAG}",
             "&7Miejsce: &a{RANK} &8(&a{POINTS}&8)",
-            "&8-------------.------------------");
+            "&8-------------.------------------"
+    );
 
-    @Comment("<------- Info Messages -------> #")
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
 
-    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, " +
+            "{POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, " +
+            "{ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
@@ -211,8 +239,10 @@ public class MessageConfiguration extends OkaeriConfig {
             "&7Czlonkowie: &7{MEMBERS}",
             "&7Sojusze: &c{ALLIES}",
             "&7Wojny: &c{ENEMIES}",
-            "&8-------------------------------");
+            "&8-------------------------------"
+    );
 
+    @Comment("")
     @Comment("<------- Top Messages -------> #")
     @Comment("{GTOP-<pozycja>} - Gildia na podanej pozycji w rankingu")
     public List<String> topList = Arrays.asList(
@@ -226,8 +256,10 @@ public class MessageConfiguration extends OkaeriConfig {
             "&77&8. &c{GTOP-7}",
             "&78&8. &c{GTOP-8}",
             "&79&8. &c{GTOP-9}",
-            "&710&8. &c{GTOP-10}");
+            "&710&8. &c{GTOP-10}"
+    );
 
+    @Comment("")
     @Comment("<------- Ranking Messages -------> #")
     @Comment("{PTOP-<pozycja>} - Gracz na podanej pozycji w rankingu")
     public List<String> rankingList = Arrays.asList(
@@ -241,8 +273,10 @@ public class MessageConfiguration extends OkaeriConfig {
             "&77&8. &c{PTOP-7}",
             "&78&8. &c{PTOP-8}",
             "&79&8. &c{PTOP-9}",
-            "&710&8. &c{PTOP-10}");
+            "&710&8. &c{PTOP-10}"
+    );
 
+    @Comment("")
     @Comment("<------- General Messages -------> #")
     public String generalHasGuild = "&cMasz juz gildie!";
     public String generalNoNameGiven = "&cPodaj nazwe gildii!";
@@ -262,6 +296,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String generalCommandDisabled = "&cTa komenda jest wylaczona!";
     public String generalAllyPvpDisabled = "&cPVP pomiedzy sojuszami jest wylaczone w konfiguracji!";
 
+    @Comment("")
     @Comment("<------- Escape Messages -------> #")
     public String escapeDisabled = "&cPrzykro mi, ucieczki sa wylaczone!";
     @Comment("Dostepne zmienne: {TIME}")
@@ -277,6 +312,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String escapeNoNeedToRun = "&cNie znajdujesz sie na terenie zadnej gildii, po co uciekac?";
     public String escapeOnYourRegion = "&cZnajdujesz sie na terenie wlasnej gildii, dokad chcesz uciekac?";
 
+    @Comment("")
     @Comment("<------- Create Guild Messages -------> #")
     @Comment("Dostepne zmienne: {LENGTH}")
     public String createTagLength = "&7Tag nie moze byc dluzszy niz &c{LENGTH} litery&7!";
@@ -300,17 +336,21 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {POINTS}, {POINTS-FORMAT}, {REQUIRED}, {REQUIRED-FORMAT}")
     public String createRank = "&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED} &cpunktow.";
     @Comment("Dostepne zmienne: {ITEM}, {ITEMS}")
-    public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}&c. Najedz na przedmiot, aby dowiedziec sie wiecej";
+    public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}&c. " +
+            "Najedz na przedmiot, aby dowiedziec sie wiecej";
     @Comment("Dostepne zmienne: {EXP}")
     public String createExperience = "&cNie posiadasz wymaganego doswiadczenia do zalozenia gildii: &7{EXP}";
     @Comment("Dostepne zmienne: {MONEY}")
     public String createMoney = "&cNie posiadasz wymaganej ilosci pieniedzy do zalozenia gildii: &7{MONEY}";
+    public String withdrawError = "&cNie udalo sie pobrac pieniedzy z twojego konta z powodu: &7{ERROR}";
     @Comment("Dostepne zmienne: {PLAYER}, {GUILD}, {TAG}")
     public String createGuild = "&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
     public String createGuildCouldNotPasteSchematic = "&cWystapil blad podczas tworzenia terenu gildii, zglos sie do administracji.";
     @Comment("Dostepne zmienne: {BORDER-MIN-DISTANCE}")
-    public String createNotEnoughDistanceFromBorder = "&cJestes zbyt blisko granicy mapy aby zalozyc gildie! (Minimalna odleglosc: {BORDER-MIN-DISTANCE})";
+    public String createNotEnoughDistanceFromBorder = "&cJestes zbyt blisko granicy mapy aby zalozyc gildie! " +
+            "(Minimalna odleglosc: {BORDER-MIN-DISTANCE})";
 
+    @Comment("")
     @Comment("<------- Delete Guild Messages -------> #")
     public String deleteConfirm = "&7Aby potwierdzic usuniecie gildii, wpisz: &c/potwierdz";
     public String deleteToConfirm = "&cNie masz zadnych dzialan do potwierdzenia!";
@@ -318,6 +358,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String deleteSuccessful = "&7Pomyslnie &cusunieto &7gildie!";
 
+    @Comment("")
     @Comment("<------- Invite Messages -------> #")
     public String invitePlayerExists = "&cNie ma takiego gracza na serwerze!";
     @Comment("Dostepne zmienne: {AMOUNT}")
@@ -334,6 +375,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {OWNER}, {GUILD}, {TAG}")
     public String inviteToInvited = "&aOtrzymano zaproszenie do gildii &7{TAG}&a!";
 
+    @Comment("")
     @Comment("<------- Join Messages -------> #")
     public String joinHasNotInvitation = "&cNie masz zaproszenia do gildii!";
     public String joinHasNotInvitationTo = "&cNie otrzymales zaproszenia do tej gildii!";
@@ -342,7 +384,8 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILDS}")
     public List<String> joinInvitationList = Arrays.asList(
             "&7Otrzymano zaproszenia od gildii: &a{GUILDS}",
-            "&7Wpisz &a/dolacz [tag] &7aby dolaczyc do wybranej gildii");
+            "&7Wpisz &a/dolacz [tag] &7aby dolaczyc do wybranej gildii"
+    );
 
     @Comment("Dostepne zmienne: {ITEM}, {ITEMS}")
     public String joinItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
@@ -351,11 +394,13 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {PLAYER}")
     public String joinToOwner = "&a{PLAYER} &7dolaczyl do &aTwojej &7gildii!";
 
+    @Comment("")
     @Comment("<------- Leave Messages -------> #")
     public String leaveIsOwner = "&cZalozyciel &7nie moze opuscic gildii!";
     @Comment("Dostepne zmienne: {GUILDS}, {TAG}")
     public String leaveToUser = "&7Opusciles gildie &a{GUILD}&7!";
 
+    @Comment("")
     @Comment("<------- Kick Messages -------> #")
     public String kickOtherGuild = "&cTen gracz nie jest w Twojej gildii!";
     public String kickOwner = "&cNie mozna wyrzucic zalozyciela!";
@@ -364,6 +409,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String kickToPlayer = "&cZostales wyrzucony z gildii!";
 
+    @Comment("")
     @Comment("<------- Enlarge Messages -------> #")
     public String enlargeMaxSize = "&cOsiagnieto juz maksymalny rozmiar terenu!";
     public String enlargeIsNear = "&cW poblizu znajduje sie jakas gildia, nie mozesz powiekszyc terenu!";
@@ -372,6 +418,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {SIZE}, {LEVEL}")
     public String enlargeDone = "&7Teren &aTwojej &7gildii zostal powiekszony i jego wielkosc wynosi teraz &a{SIZE} &7(poz.&a{LEVEL}&7)";
 
+    @Comment("")
     @Comment("<------- Base Messages -------> #")
     public String baseTeleportationDisabled = "&cTeleportacja do baz gildyjnych nie jest dostepna";
     public String baseHasNotRegion = "&cTwoja gildia nie posiada terenu!";
@@ -383,7 +430,8 @@ public class MessageConfiguration extends OkaeriConfig {
     public String baseMove = "&cRuszyles sie, teleportacja przerwana!";
     public String baseTeleport = "&aTeleportacja&7...";
 
-    @Comment("<------- War Messages -------> #")
+    @Comment("")
+    @Comment("<------- Enemy Messages -------> #")
     public String enemyCorrectUse = "&7Aby rozpoczac wojne z gildia wpisz &c/wojna [tag]";
     public String enemySame = "&cNie mozesz rozpoczac wojny z wlasna gildia!";
     public String enemyAlly = "&cNie mozesz rozpoczac wojny z ta gildia poniewaz jestescie sojusznikami!";
@@ -401,12 +449,15 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String enemyIEnd = "&7Gildia &a{GUILD} &7zakonczyla wojne z twoja gildia!";
 
+    @Comment("")
     @Comment("<------- Ally Messages -------> #")
     public String allyHasNotInvitation = "&7Aby zaprosic gildie do sojuszy wpisz &c/sojusz [tag]";
     @Comment("Dostepne zmienne: {GUILDS}")
     public List<String> allyInvitationList = Arrays.asList(
             "&7Otrzymano zaproszenia od gildii: &a{GUILDS}",
-            "&7Aby zaakceptowac uzyj &a/sojusz [tag]");
+            "&7Aby zaakceptowac uzyj &a/sojusz [tag]"
+    );
+
     @Comment("Dostepne zmienne: {TAG}")
     public String allyAlly = "&cMasz juz sojusz z ta gildia!";
     public String allyDoesntExist = "&cNie posiadasz sojuszu z ta gildia!";
@@ -424,12 +475,15 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String allyToInvited = "&7Otrzymano zaproszenie do sojuszu od gildii &a{GUILD}&7!";
 
+    @Comment("")
     @Comment("<------- Break Messages -------> #")
     public String breakHasNotAllies = "&cTwoja gildia nie posiada sojuszy!";
     @Comment("Dostepne zmienne: {GUILDS}")
     public List<String> breakAlliesList = Arrays.asList(
             "&7Twoja gildia nawiazala sojusz z &a{GUILDS}",
-            "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]");
+            "&7Aby rozwiazac sojusz wpisz &c/rozwiaz [tag]"
+    );
+
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String breakAllyExists = "&7Twoja gildia nie posiada sojuszu z gildia (&c{TAG}&7, &c{GUILD}&7)!";
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
@@ -437,6 +491,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
     public String breakIDone = "&7Gildia &c{GUILD} &7rozwiazala sojusz z Twoja gildia!";
 
+    @Comment("")
     @Comment("<------- Validity Messages -------> #")
     @Comment("Dostepne zmienne: {TIME}")
     public String validityWhen = "&7Gildie mozesz przedluzyc dopiero za &c{TIME}&7!";
@@ -445,6 +500,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {DATE}")
     public String validityDone = "&7Waznosc gildii przedluzona do &a{DATE}&7!";
 
+    @Comment("")
     @Comment("<------- War Messages -------> #")
     public String warDisabled = "&cPodbijanie gildii jest wyłączone.";
     public String warHasNotGuild = "&cMusisz miec gildie, aby zaatkowac inna!";
@@ -460,6 +516,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {WINNER}")
     public String warLose = "&7Twoja gildia &4przegrala &7wojne z gildia &4{WINNER}&7! &4Gildia zostaje zniszona&7!";
 
+    @Comment("")
     @Comment("<------- Leader Messages -------> #")
     public String leaderMustBeDifferent = "&cNie mozesz sobie oddac zalozyciela!";
     public String leaderSet = "&7Ustanowiono nowego &alidera &7gildii!";
@@ -467,12 +524,14 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {PLAYER}")
     public String leaderMembers = "&7{PLAYER} zostal nowym &aliderem &7gildii!";
 
+    @Comment("")
     @Comment("<------- TNT Hours Messages -------> #")
     public String tntInfo = "&7TNT na teranach gildii działa od {PROTECTION_END} do {PROTECTION_START}";
     public String tntProtectDisable = "&7TNT wybucha o każdej porze.";
     public String tntNowEnabled = "&aTNT aktualnie jest włączone.";
     public String tntNowDisabled = "&cTNT aktualnie jest wyłączone.";
 
+    @Comment("")
     @Comment("<------- Deputy Messages -------> #")
     public String deputyMustBeDifferent = "&cNie mozesz mianowac siebie zastepca!";
     public String deputyRemove = "&7Zdegradowno gracza z funkcji &czastepcy&7!";
@@ -484,10 +543,12 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {PLAYER}")
     public String deputyNoLongerMembers = "&7{PLAYER} juz nie jest &azastepca &7gildii!";
 
+    @Comment("")
     @Comment("<------- Setbase Messages -------> #")
     public String setbaseOutside = "&cNie mozna ustawic domu gildii poza jej terenem!";
     public String setbaseDone = "&7Przeniesiono &adom &7gildii!";
 
+    @Comment("")
     @Comment("<------- PvP Messages -------> #")
     public String pvpOn = "&cWlaczono pvp w gildii!";
     public String pvpOff = "&aWylaczono pvp w gildii!";
@@ -495,6 +556,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String pvpAllyOn = "&cWlaczono pvp z sojuszem &7{TAG}!";
     public String pvpAllyOff = "&cWylaczono pvp z sojuszem &7{TAG}!";
 
+    @Comment("")
     @Comment("<------- Admin Messages -------> #")
     @Comment("Dostepne zmienne: {ADMIN}")
     public String adminGuildBroken = "&cTwoja gildia zostala rozwiazana przez &7{ADMIN}";
@@ -561,6 +623,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {PLAYER}")
     public String adminTargetTeleportedToBase = "&aGracz &7{PLAYER} &azostal teleportowany do bazy gildii!";
 
+    @Comment("")
     @Comment("<------- SecuritySystem Messages -------> #")
     @Comment("Przedrostek przed wiadomościami systemu bezpieczeństwa")
     public String securitySystemPrefix = "&8[&4Security&8] &7";
@@ -573,8 +636,49 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {BLOCKS}")
     public String securitySystemFreeCam = "Zaatakowal krysztal przez bloki: &c{BLOCKS}";
 
+    @Comment("")
+    @Comment("<------- FunnyGuilds Version Messages -------> #")
+    public List<String> newVersionAvailable = Arrays.asList(
+            "",
+            "&8-----------------------------------",
+            "&7Dostepna jest nowa wersja &bFunnyGuilds {VERSION_TYPE}&7!",
+            "&7Obecna: &b{CURRENT_VERSION}",
+            "&7Najnowsza: &b{NEWEST_VERSION}",
+            "&7GitHub: &b{GITHUB_LINK}",
+            "&7Discord: &b{DISCORD_LINK}",
+            "&8-----------------------------------",
+            ""
+    );
+
+    public String funnyguildsVersion = "&7FunnyGuilds &b{VERSION} &7by &bFunnyGuilds Team";
+
+    @Comment("")
+    @Comment("<------- FunnyBin Messages -------> #")
+    public List<String> funnybinHelp = Arrays.asList(
+            "&cUzycie:",
+            "&c/fg funnybin - domyslnie wysyla FunnyGuilds/config.yml i logs/latest.log",
+            "&c/fg funnybin config - wysyla FunnyGuilds/config.yml",
+            "&c/fg funnybin log - wysyla logs/latest.log",
+            "&c/fg funnybin custom <path> - wysyla dowolny plik z folderu serwera na funnybina",
+            "&c/fg funnybin bundle <file1> <fileN...> - wysyla dowolne pliki z folderu serwera na funnybina"
+    );
+
+    public String funnybinSendingFile = "&aWysylam plik: &b{NUM}&a/&b{TOTAL}&a...";
+    public String funnybinFileNotFound = "&cPodany plik: {FILE} nie istnieje";
+    public String funnybinFileNotOpened = "&cPodany plik: {FILE} nie mogl byc otworzony (szczegoly w konsoli)";
+    public String funnybinFileNotSent = "&cPodany plik: {FILE} nie mogl byc wyslany (szczegoly w konsoli)";
+    public String funnybinFileSent = "&aPlik wyslany. Link: &b{LINK}";
+    public String funnybinBuildingBundle = "&aTworze paczke z wyslanych plikow...";
+    public String funnybinBundleSent = "&aPaczka wyslana. Link: &b{LINK}";
+    public String funnybinBundleNotBuilt = "&cWystapil blad podczas tworzenia paczki";
+
+    @Comment("")
     @Comment("<------- System Messages -------> #")
     public String reloadWarn = "&cDziałanie pluginu FunnyGuilds po reloadzie moze byc zaburzone, zalecane jest przeprowadzenie restartu serwera!";
+    public String reloadTime = "&aFunnyGuilds &7przeladowano! (&b{TIME}s&7)";
+    public String reloadReloading = "&7Przeladowywanie...";
+    public String saveallSaving = "&7Zapisywanie...";
+    public String saveallSaved = "&7Zapisano (&b{TIME}s&7)!";
 
     @Override
     public OkaeriConfig load() throws OkaeriException {
@@ -588,10 +692,7 @@ public class MessageConfiguration extends OkaeriConfig {
 
                 if (field.getType().equals(List.class)) {
                     List<String> list = (List<String>) field.get(this);
-
-                    for (int i = 0; i < list.size(); i++) {
-                        list.set(i, ChatUtils.colored(list.get(i)));
-                    }
+                    list.replaceAll(ChatUtils::colored);
                 }
             }
         }

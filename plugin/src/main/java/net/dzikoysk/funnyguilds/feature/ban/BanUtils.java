@@ -1,13 +1,13 @@
 package net.dzikoysk.funnyguilds.feature.ban;
 
-import java.util.Date;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserBan;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.ChatColor;
+import panda.std.Option;
 
 public final class BanUtils {
 
@@ -46,16 +46,21 @@ public final class BanUtils {
     }
 
     public static String getBanMessage(User user) {
-        return user.getBan()
-                .map(ban -> {
-                    String message = FunnyGuilds.getInstance().getMessageConfiguration().banMessage;
-                    message = StringUtils.replace(message, "{NEWLINE}", ChatColor.RESET + "\n");
-                    message = StringUtils.replace(message, "{DATE}", FunnyGuilds.getInstance().getMessageConfiguration().dateFormat.format(new Date(ban.getBanTime())));
-                    message = StringUtils.replace(message, "{REASON}", ban.getReason());
-                    message = StringUtils.replace(message, "{PLAYER}", user.getName());
-                    return ChatUtils.colored(message);
-                })
-                .orElseGet("");
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
+
+        Option<UserBan> banOption = user.getBan();
+        if (banOption.isEmpty()) {
+            return "";
+        }
+
+        UserBan ban = banOption.get();
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{NEWLINE}", ChatColor.RESET + "\n")
+                .register("{DATE}", messages.dateFormat.format(ban.getBanTime()))
+                .register("{REASON}", ban.getReason())
+                .register("{PLAYER}", user.getName());
+
+        return formatter.format(messages.banMessage);
     }
 
 }

@@ -4,8 +4,8 @@ import com.google.common.base.Throwables;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.IOUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public final class FunnyGuildsVersion {
@@ -86,15 +86,16 @@ public final class FunnyGuildsVersion {
     }
 
     private void printNewVersionAvailable(CommandSender sender, String latest, boolean isNightly) {
-        sender.sendMessage("");
-        sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
-        sender.sendMessage(ChatColor.GRAY + "Dostepna jest nowa wersja " + ChatColor.AQUA + "FunnyGuilds" + (isNightly ? " Nightly" : "") + ChatColor.GRAY + '!');
-        sender.sendMessage(ChatColor.GRAY + "Obecna: " + ChatColor.AQUA + this.fullVersion);
-        sender.sendMessage(ChatColor.GRAY + "Najnowsza: " + ChatColor.AQUA + latest);
-        sender.sendMessage(ChatColor.GRAY + "GitHub: " + ChatColor.AQUA + GITHUB_URL);
-        sender.sendMessage(ChatColor.GRAY + "Discord: " + ChatColor.AQUA + DISCORD_URL);
-        sender.sendMessage(ChatColor.DARK_GRAY + "-----------------------------------");
-        sender.sendMessage("");
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{VERSION_TYPE}", isNightly ? "Nightly" : "")
+                .register("{CURRENT_VERSION}", this.fullVersion)
+                .register("{NEWEST_VERSION}", latest)
+                .register("{GITHUB_LINK}", GITHUB_URL)
+                .register("{DISCORD_LINK}", DISCORD_URL);
+
+        FunnyGuilds.getInstance().getMessageConfiguration().newVersionAvailable.forEach(line -> {
+            sender.sendMessage(formatter.format(line));
+        });
     }
 
     public String getFullVersion() {

@@ -64,10 +64,12 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
             holo.appendItem(new ItemStack(holoConfig.item));
         }
 
-        holo.appendTexts(PandaStream.of(holoConfig.displayedLines)
-                .map(line -> this.plugin.getGuildPlaceholdersService().format(line, guild))
-                .map(ChatUtils::colored)
-                .toList());
+        try (PandaStream<String> lines = PandaStream.of(holoConfig.displayedLines)) {
+            holo.appendTexts(lines
+                    .map(line -> this.plugin.getGuildPlaceholdersService().format(line, guild))
+                    .map(ChatUtils::colored)
+                    .toList());
+        }
 
         holo.update();
     }
@@ -77,6 +79,7 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
         if (config.heart.hologram.enabled) {
             return;
         }
+
         this.holograms.values().forEach(Holo::delete);
         this.holograms.clear();
     }
@@ -87,6 +90,7 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
         if (holo == null) {
             return;
         }
+
         holo.delete();
     }
 
@@ -94,4 +98,5 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
     public void handleGuildCreate(GuildCreateEvent event) {
         this.update(event.getGuild());
     }
+
 }

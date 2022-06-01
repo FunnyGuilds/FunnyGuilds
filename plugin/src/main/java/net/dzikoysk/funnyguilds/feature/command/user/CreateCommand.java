@@ -17,23 +17,22 @@ import net.dzikoysk.funnyguilds.event.guild.GuildPreCreateEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.hooks.HookManager;
 import net.dzikoysk.funnyguilds.feature.hooks.vault.VaultHook;
-import net.dzikoysk.funnyguilds.feature.hooks.worldguard.WorldGuardHook;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildUtils;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.LocationUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.SpaceUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.StringUtils;
+import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -61,7 +60,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         String tag = args[0];
-
         if (!config.guildTagKeepCase) {
             tag = config.guildTagUppercase ? tag.toUpperCase() : tag.toLowerCase();
         }
@@ -70,14 +68,21 @@ public final class CreateCommand extends AbstractFunnyCommand {
         Location guildLocation = player.getLocation().getBlock().getLocation();
         World world = player.getWorld();
 
-        when(tag.length() > config.createTagLength, messages.createTagLength.replace("{LENGTH}", Integer.toString(config.createTagLength)));
-        when(tag.length() < config.createTagMinLength, messages.createTagMinLength.replace("{LENGTH}", Integer.toString(config.createTagMinLength)));
-        when(name.length() > config.createNameLength, messages.createNameLength.replace("{LENGTH}", Integer.toString(config.createNameLength)));
-        when(name.length() < config.createNameMinLength, messages.createNameMinLength.replace("{LENGTH}", Integer.toString(config.createNameMinLength)));
+        when(tag.length() > config.createTagLength,
+                FunnyFormatter.formatOnce(messages.createTagLength, "{LENGTH}", config.createTagLength));
+        when(tag.length() < config.createTagMinLength,
+                FunnyFormatter.formatOnce(messages.createTagMinLength, "{LENGTH}", config.createTagMinLength));
+        when(name.length() > config.createNameLength,
+                FunnyFormatter.formatOnce(messages.createNameLength, "{LENGTH}", config.createNameLength));
+        when(name.length() < config.createNameMinLength,
+                FunnyFormatter.formatOnce(messages.createNameMinLength, "{LENGTH}", config.createNameMinLength));
+
         when(!tag.matches(config.tagRegex.getPattern()), messages.createOLTag);
         when(!name.matches(config.nameRegex.getPattern()), messages.createOLName);
+
         when(guildManager.nameExists(name), messages.createNameExists);
         when(guildManager.tagExists(tag), messages.createTagExists);
+
         when(config.regionsEnabled && this.regionManager.isInRegion(guildLocation), messages.createIsNear);
         when(config.regionsEnabled && this.regionManager.isNearRegion(guildLocation), messages.createIsNear);
 
@@ -103,7 +108,8 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 distance += config.enlargeItems.size() * config.enlargeSize;
             }
 
-            when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation), messages.createSpawn.replace("{DISTANCE}", Integer.toString(distance)));
+            when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), guildLocation),
+                    FunnyFormatter.formatOnce(messages.createSpawn, "{DISTANCE}", distance));
         }
 
         if (config.rankCreateEnable) {
@@ -111,14 +117,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
             int points = user.getRank().getPoints();
 
             if (points < requiredRank) {
-                String msg = messages.createRank;
+                FunnyFormatter formatter = new FunnyFormatter()
+                        .register("{REQUIRED-FORMAT}", NumberRange.inRangeToString(requiredRank, config.pointsFormat))
+                        .register("{POINTS}", requiredRank)
+                        .register("{REQUIRED}", requiredRank)
+                        .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat))
+                        .register("{POINTS}", points);
 
-                msg = StringUtils.replace(msg, "{REQUIRED-FORMAT}", NumberRange.inRangeToString(requiredRank, config.pointsFormat).replace("{POINTS}", "{REQUIRED}"));
-                msg = StringUtils.replace(msg, "{REQUIRED}", String.valueOf(requiredRank));
-                msg = StringUtils.replace(msg, "{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat));
-                msg = StringUtils.replace(msg, "{POINTS}", String.valueOf(points));
-
-                user.sendMessage(msg);
+                player.sendMessage(formatter.format(messages.createRank));
                 return;
             }
         }
@@ -134,16 +140,12 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 : config.requiredMoney;
 
         if (player.getTotalExperience() < requiredExperience) {
-            String msg = messages.createExperience;
-            msg = StringUtils.replace(msg, "{EXP}", String.valueOf(requiredExperience));
-            user.sendMessage(msg);
+            player.sendMessage(FunnyFormatter.formatOnce(messages.createExperience, "{EXP}", requiredExperience));
             return;
         }
 
         if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
-            String notEnoughMoneyMessage = messages.createMoney;
-            notEnoughMoneyMessage = StringUtils.replace(notEnoughMoneyMessage, "{MONEY}", Double.toString(requiredMoney));
-            user.sendMessage(notEnoughMoneyMessage);
+            player.sendMessage(FunnyFormatter.formatOnce(messages.createMoney, "{MONEY}", requiredMoney));
             return;
         }
 
@@ -152,7 +154,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         }
 
         if (HookManager.WORLD_GUARD.isPresent() && HookManager.WORLD_GUARD.get().isInNonGuildsRegion(guildLocation)) {
-            user.sendMessage(messages.invalidGuildLocation);
+            player.sendMessage(messages.invalidGuildLocation);
             return;
         }
 
@@ -164,8 +166,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
         guild.setProtection(Instant.now().plus(config.warProtection).toEpochMilli());
         guild.setPvP(config.damageGuild);
 
-        Location home = guildLocation.clone()
-                .add(0.5D, -2.0D, 0.5D);
+        Location home = guildLocation.clone().add(0.5D, -2.0D, 0.5D);
         guild.setHome(home);
 
         if (config.regionsEnabled) {
@@ -174,14 +175,14 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             WorldBorder border = world.getWorldBorder();
             double radius = border.getSize() / 2;
-            FunnyBox bbox = FunnyBox.of(border.getCenter().toVector(), radius - config.createMinDistanceFromBorder, world.getMaxHeight(), radius - config.createMinDistanceFromBorder);
+            FunnyBox bbox = FunnyBox.of(border.getCenter().toVector(), radius - config.createMinDistanceFromBorder,
+                    world.getMaxHeight(), radius - config.createMinDistanceFromBorder);
             FunnyBox gbox = FunnyBox.of(region.getFirstCorner(), region.getSecondCorner());
 
             // border box does not contain guild box
             if (!bbox.contains(gbox)) {
-                String notEnoughDistanceMessage = messages.createNotEnoughDistanceFromBorder;
-                notEnoughDistanceMessage = StringUtils.replace(notEnoughDistanceMessage, "{BORDER-MIN-DISTANCE}", Double.toString(config.createMinDistanceFromBorder));
-                user.sendMessage(notEnoughDistanceMessage);
+                player.sendMessage(FunnyFormatter.formatOnce(messages.createNotEnoughDistanceFromBorder,
+                        "{BORDER-MIN-DISTANCE}", config.createMinDistanceFromBorder));
                 return;
             }
         }
@@ -194,14 +195,19 @@ public final class CreateCommand extends AbstractFunnyCommand {
         player.setTotalExperience(player.getTotalExperience() - requiredExperience);
 
         if (VaultHook.isEconomyHooked()) {
-            VaultHook.withdrawFromPlayerBank(player, requiredMoney);
+            EconomyResponse withdrawResult = VaultHook.withdrawFromPlayerBank(player, requiredMoney);
+
+            if (!withdrawResult.transactionSuccess()) {
+                player.sendMessage(FunnyFormatter.formatOnce(messages.withdrawError, "{ERROR}", withdrawResult.errorMessage));
+                return;
+            }
         }
 
         if (config.regionsEnabled) {
             if (heartConfig.pasteSchematicOnCreation) {
                 HookManager.WORLD_EDIT.peek(worldEdit -> {
                     if (worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir)) {
-                        user.sendMessage(messages.createGuildCouldNotPasteSchematic);
+                        player.sendMessage(messages.createGuildCouldNotPasteSchematic);
                     }
                 });
             }
@@ -236,16 +242,17 @@ public final class CreateCommand extends AbstractFunnyCommand {
         this.concurrencyManager.postRequests(
                 new PrefixGlobalAddGuildRequest(individualPrefixManager, guild),
                 new PrefixGlobalAddPlayerRequest(individualPrefixManager, user.getName()),
-                new DatabaseUpdateGuildRequest(this.config, this.plugin.getDataModel(), guild)
+                new DatabaseUpdateGuildRequest(this.plugin.getDataModel(), guild)
         );
 
         SimpleEventHandler.handle(new GuildCreateEvent(EventCause.USER, user, guild));
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", name)
                 .register("{TAG}", tag)
                 .register("{PLAYER}", player.getName());
-        user.sendMessage(formatter.format(messages.createGuild));
+
+        player.sendMessage(formatter.format(messages.createGuild));
         broadcastMessage(formatter.format(messages.broadcastCreate));
 
         if (!config.giveRewardsForFirstGuild) {

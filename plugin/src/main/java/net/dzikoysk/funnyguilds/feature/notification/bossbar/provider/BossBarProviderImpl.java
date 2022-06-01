@@ -7,6 +7,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.scheduler.BukkitTask;
+import panda.std.Option;
 
 public final class BossBarProviderImpl implements BossBarProvider {
 
@@ -21,7 +22,7 @@ public final class BossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void sendNotification(String text, BossBarOptions options, int timeout) {
-        user.getPlayer().peek(player -> {
+        Option.of(Bukkit.getPlayer(user.getUUID())).peek(player -> {
             this.bossBar.setTitle(text);
             this.bossBar.setColor(options.getColor());
             this.bossBar.setStyle(options.getStyle());
@@ -45,7 +46,7 @@ public final class BossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void removeNotification() {
-        user.getPlayer().peek(player -> {
+        Option.of(Bukkit.getPlayer(user.getUUID())).peek(player -> {
             this.bossBar.removePlayer(player);
             this.bossBar.setVisible(false);
         });

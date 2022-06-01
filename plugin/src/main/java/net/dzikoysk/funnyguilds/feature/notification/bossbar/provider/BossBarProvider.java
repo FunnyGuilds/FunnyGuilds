@@ -20,6 +20,7 @@ public interface BossBarProvider {
         if (Reflections.SERVER_VERSION.equalsIgnoreCase("v1_8_R3")) {
             return new LegacyBossBarProviderImpl(user);
         }
+
         return new BossBarProviderImpl(user);
     }
 }

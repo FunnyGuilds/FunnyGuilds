@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.shared.MapUtil;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.apache.commons.lang3.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.std.Option;
 
@@ -42,16 +43,9 @@ public class IndividualPlayerList {
     private int cycle = 0;
     private int currentPage = 0;
 
-    public IndividualPlayerList(User user,
-                                PlayerListAccessor playerListAccessor,
-                                Map<Integer, String> unformattedCells,
-                                String header, String footer,
-                                boolean animated,
-                                List<TablistPage> pages,
-                                Map<NumberRange, SkinTexture> cellTextures,
-                                int cellPing,
-                                boolean fillCells,
-                                boolean enableLegacyPlaceholders) {
+    public IndividualPlayerList(User user, PlayerListAccessor playerListAccessor, Map<Integer, String> unformattedCells, String header,
+                                String footer, boolean animated, List<TablistPage> pages, Map<NumberRange, SkinTexture> cellTextures,
+                                int cellPing, boolean fillCells, boolean enableLegacyPlaceholders) {
         this.user = user;
 
         this.unformattedCells = new HashMap<>(unformattedCells);
@@ -67,7 +61,6 @@ public class IndividualPlayerList {
 
         if (!fillCells) {
             Entry<Integer, String> entry = MapUtil.findTheMaximumEntryByKey(unformattedCells);
-
             if (entry != null) {
                 this.cellCount = entry.getKey();
             }
@@ -122,8 +115,9 @@ public class IndividualPlayerList {
 
         SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
 
-        this.user.getPlayer()
-                .peek(player -> this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Collections.emptySet()));
+        Option.of(Bukkit.getPlayer(user.getUUID())).peek(player -> {
+            this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Collections.emptySet());
+        });
     }
 
     private String[] putVarsPrepareCells(Map<Integer, String> tablistPattern, String header, String footer) {
@@ -131,8 +125,10 @@ public class IndividualPlayerList {
         for (int i = 0; i < this.cellCount; i++) {
             allCells[i] = this.putTop(tablistPattern.getOrDefault(i + 1, ""));
         }
+
         allCells[PlayerListConstants.DEFAULT_CELL_COUNT] = header;
         allCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1] = footer;
+
         String mergedCells = StringUtils.join(allCells, '\0');
         return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\0');
     }
@@ -148,6 +144,7 @@ public class IndividualPlayerList {
         if (playerOption.isEmpty()) {
             return formatted;
         }
+
         Player player = playerOption.get();
 
         formatted = FunnyGuilds.getInstance().getTablistPlaceholdersService().format(formatted, this.user);
@@ -159,11 +156,13 @@ public class IndividualPlayerList {
 
     public SkinTexture[] putTexturePrepareCells() {
         SkinTexture[] textures = new SkinTexture[PlayerListConstants.DEFAULT_CELL_COUNT];
+
         this.cellTextures.forEach((range, texture) -> {
             for (int i = range.getMinRange().intValue(); i <= range.getMaxRange().intValue(); i++) {
                 textures[i - 1] = texture;
             }
         });
+
         return textures;
     }
 

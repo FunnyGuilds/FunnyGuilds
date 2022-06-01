@@ -8,9 +8,9 @@ import net.dzikoysk.funnyguilds.config.NumberRange;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.rank.DefaultTops;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -30,10 +30,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
     public void execute(CommandSender sender, String[] args) {
         when(args.length == 0 && !(sender instanceof Player), messages.playerOnly);
 
-        String name = args.length == 0
-                ? sender.getName()
-                : args[0];
-
+        String name = args.length == 0 ? sender.getName() : args[0];
         User user = when(userManager.findByName(name, config.playerLookupIgnorecase), messages.generalNotPlayedBefore);
 
         sendInfoMessage(messages.playerInfoList, user, sender);
@@ -41,30 +38,29 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
 
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
         UserRank rank = infoUser.getRank();
+        
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{PLAYER}", infoUser.getName())
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(rank.getPoints(), config.pointsFormat))
+                .register("{POINTS}", rank.getPoints())
+                .register("{KILLS}", rank.getKills())
+                .register("{DEATHS}", rank.getDeaths())
+                .register("{ASSISTS}", rank.getAssists())
+                .register("{LOGOUTS}", rank.getLogouts())
+                .register("{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()))
+                .register("{RANK}", rank.getPosition(DefaultTops.USER_POINTS_TOP));
 
-        for (String messageLine : baseMessage) {
-            if (infoUser.hasGuild()) {
-                Guild guild = infoUser.getGuild().get();
-                messageLine = StringUtils.replace(messageLine, "{GUILD}", guild.getName());
-                messageLine = StringUtils.replace(messageLine, "{TAG}", guild.getTag());
-            }
-            else {
-                messageLine = StringUtils.replace(messageLine, "{GUILD}", messages.gNameNoValue);
-                messageLine = StringUtils.replace(messageLine, "{TAG}", messages.gTagNoValue);
-            }
-
-            messageLine = StringUtils.replace(messageLine, "{PLAYER}", infoUser.getName());
-            messageLine = StringUtils.replace(messageLine, "{POINTS-FORMAT}", NumberRange.inRangeToString(rank.getPoints(), config.pointsFormat));
-            messageLine = StringUtils.replace(messageLine, "{POINTS}", Integer.toString(rank.getPoints()));
-            messageLine = StringUtils.replace(messageLine, "{KILLS}", Integer.toString(rank.getKills()));
-            messageLine = StringUtils.replace(messageLine, "{DEATHS}", Integer.toString(rank.getDeaths()));
-            messageLine = StringUtils.replace(messageLine, "{ASSISTS}", Integer.toString(rank.getAssists()));
-            messageLine = StringUtils.replace(messageLine, "{LOGOUTS}", Integer.toString(rank.getLogouts()));
-            messageLine = StringUtils.replace(messageLine, "{KDR}", String.format(Locale.US, "%.2f", rank.getKDR()));
-            messageLine = StringUtils.replace(messageLine, "{RANK}", Integer.toString(rank.getPosition(DefaultTops.USER_POINTS_TOP)));
-
-            sendMessage(messageTarget, messageLine);
+        if (infoUser.hasGuild()) {
+            Guild guild = infoUser.getGuild().get();
+            formatter.register("{GUILD}", guild.getName());
+            formatter.register("{TAG}", guild.getTag());
         }
+        else {
+            formatter.register("{GUILD}", messages.gNameNoValue);
+            formatter.register("{TAG}", messages.gTagNoValue);
+        }
+
+        baseMessage.forEach(line -> sendMessage(messageTarget, formatter.format(line)));
     }
 
 }

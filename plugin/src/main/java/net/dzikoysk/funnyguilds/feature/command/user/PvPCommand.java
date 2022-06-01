@@ -6,9 +6,9 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -29,16 +29,17 @@ public final class PvPCommand extends AbstractFunnyCommand {
             when(!config.damageAlly, messages.generalAllyPvpDisabled);
 
             Guild targetAlliedGuild = GuildValidation.requireGuildByTag(args[0]);
-            Formatter guildTagFormatter = new Formatter().register("{TAG}", targetAlliedGuild.getTag());
+            FunnyFormatter guildTagFormatter = FunnyFormatter.of("{TAG}", targetAlliedGuild.getTag());
             when(!guild.isAlly(targetAlliedGuild), guildTagFormatter.format(messages.allyDoesntExist));
 
-            guild.setPvP(targetAlliedGuild, !guild.getPvP(targetAlliedGuild));
-            user.sendMessage(guildTagFormatter.format(guild.getPvP(targetAlliedGuild) ? messages.pvpAllyOn : messages.pvpAllyOff));
+            boolean newPvpValue = guild.toggleAllyPvP(targetAlliedGuild);
+            user.sendMessage(guildTagFormatter.format(newPvpValue ? messages.pvpAllyOn : messages.pvpAllyOff));
+
             return;
         }
 
-        guild.setPvP(!guild.getPvP());
-        user.sendMessage(guild.getPvP() ? messages.pvpOn : messages.pvpOff);
+        boolean newPvpValue = guild.togglePvP();
+        user.sendMessage(newPvpValue ? messages.pvpOn : messages.pvpOff);
     }
 
 }

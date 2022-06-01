@@ -27,7 +27,7 @@ public class ConcurrencyTask implements Runnable {
         }
     }
 
-    private boolean execute(ConcurrencyRequest request) {
+    private static boolean execute(ConcurrencyRequest request) {
         try {
             request.execute();
         }

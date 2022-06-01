@@ -48,9 +48,7 @@ public final class AllyCommand extends AbstractFunnyCommand {
             String guildNames = ChatUtils.toString(allyInvitationList.getInvitationGuildNames(guild), false);
 
             FunnyFormatter formatter = new FunnyFormatter().register("{GUILDS}", guildNames);
-            for (String msg : messages.allyInvitationList) {
-                user.sendMessage(formatter.format(msg));
-            }
+            messages.allyInvitationList.forEach(line -> user.sendMessage(formatter.format(line)));
 
             return;
         }
@@ -76,8 +74,8 @@ public final class AllyCommand extends AbstractFunnyCommand {
             invitedOwner.sendMessage(allyIFormatter.format(messages.enemyIEnd));
         }
 
-        FunnyFormatter amountFormatter = new FunnyFormatter().register("{AMOUNT}", config.maxAlliesBetweenGuilds);
-        when(guild.getAllies().size() >= config.maxAlliesBetweenGuilds, () -> amountFormatter.format(messages.inviteAllyAmount));
+        when(guild.getAllies().size() >= config.maxAlliesBetweenGuilds, FunnyFormatter.formatOnce(messages.inviteAllyAmount,
+                "{AMOUNT}", config.maxAlliesBetweenGuilds));
 
         if (invitedGuild.getAllies().size() >= config.maxAlliesBetweenGuilds) {
             FunnyFormatter formatter = new FunnyFormatter()
@@ -111,14 +109,8 @@ public final class AllyCommand extends AbstractFunnyCommand {
             invitedOwner.sendMessage(allyIFormatter.format(messages.allyIDone));
 
             ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-
-            for (User member : guild.getMembers()) {
-                taskBuilder.delegate(new PrefixUpdateGuildRequest(member, invitedGuild));
-            }
-
-            for (User member : invitedGuild.getMembers()) {
-                taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
-            }
+            guild.getMembers().forEach(member -> taskBuilder.delegate(new PrefixUpdateGuildRequest(member, invitedGuild)));
+            invitedGuild.getMembers().forEach(member -> taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild)));
 
             this.concurrencyManager.postTask(taskBuilder.build());
             return;

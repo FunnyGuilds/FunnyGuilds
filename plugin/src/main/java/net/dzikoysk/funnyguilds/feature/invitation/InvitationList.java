@@ -10,21 +10,21 @@ public interface InvitationList<T extends Invitation<?, ?>> {
     Set<T> getInvitations();
 
     default Set<T> getInvitationsFrom(UUID from) {
-        return PandaStream.of(this.getInvitations())
-                .filter(invitation -> invitation.getFromUUID().equals(from))
-                .collect(Collectors.toSet());
+        try (PandaStream<T> invitations = PandaStream.of(this.getInvitations())) {
+            return invitations.filter(invitation -> invitation.getFromUUID().equals(from)).collect(Collectors.toSet());
+        }
     }
 
     default Set<T> getInvitationsFor(UUID to) {
-        return PandaStream.of(this.getInvitations())
-                .filter(invitation -> invitation.getToUUID().equals(to))
-                .collect(Collectors.toSet());
+        try (PandaStream<T> invitations = PandaStream.of(this.getInvitations())) {
+            return invitations.filter(invitation -> invitation.getToUUID().equals(to)).collect(Collectors.toSet());
+        }
     }
 
     default boolean hasInvitation(UUID from, UUID to) {
-        return PandaStream.of(this.getInvitationsFrom(from))
-                .find(invitation -> invitation.getToUUID().equals(to))
-                .isPresent();
+        try (PandaStream<T> invitations = PandaStream.of(this.getInvitationsFrom(from))) {
+            return invitations.find(invitation -> invitation.getToUUID().equals(to)).isPresent();
+        }
     }
 
     default boolean hasInvitationFor(UUID to) {
@@ -34,6 +34,5 @@ public interface InvitationList<T extends Invitation<?, ?>> {
     void createInvitation(UUID from, UUID to);
 
     void expireInvitation(UUID from, UUID to);
-
 
 }

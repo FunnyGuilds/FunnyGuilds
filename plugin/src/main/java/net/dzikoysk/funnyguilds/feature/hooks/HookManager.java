@@ -106,7 +106,6 @@ public class HookManager {
         }
 
         Plugin hookPlugin = Bukkit.getPluginManager().getPlugin(pluginName);
-
         if (hookPlugin == null || (requireEnabled && !hookPlugin.isEnabled())) {
             if (notifyIfMissing) {
                 FunnyGuilds.getPluginLogger().info(pluginName + " plugin could not be found, some features may not be available");
@@ -116,20 +115,19 @@ public class HookManager {
         }
 
         T hook = hookSupplier.apply(pluginName);
-
         if (hook == null) {
             return Completable.completed(Option.none());
         }
 
-        if (PandaStream.of(plugin.getPluginConfiguration().disabledHooks)
-                .find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName))
-                .isPresent()) {
-            if (!pluginName.equalsIgnoreCase("FunnyTab")) {
-                FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
-                return Completable.completed(Option.none());
-            }
+        try (PandaStream<String> disabledHooks = PandaStream.of(plugin.getPluginConfiguration().disabledHooks)) {
+            if (disabledHooks.find(disabledHook -> disabledHook.equalsIgnoreCase(pluginName)).isPresent()) {
+                if (!pluginName.equalsIgnoreCase("FunnyTab")) {
+                    FunnyGuilds.getPluginLogger().warning(pluginName + " plugin hook is disabled in configuration, some features may not be available");
+                    return Completable.completed(Option.none());
+                }
 
-            FunnyGuilds.getPluginLogger().warning("You can't disable FunnyTab plugin hook lol");
+                FunnyGuilds.getPluginLogger().warning("You can't disable FunnyTab plugin hook lol");
+            }
         }
 
         Completable<Option<T>> hookCompletable = new Completable<>();
@@ -173,6 +171,7 @@ public class HookManager {
 
             try {
                 PluginHook.HookInitResult result = completableHook.init();
+
                 if (result == PluginHook.HookInitResult.FAILURE) {
                     FunnyGuilds.getPluginLogger().error("Failed to initialize " + pluginName + " plugin hook");
                     completableHook.markAsNotCompleted();
@@ -206,4 +205,5 @@ public class HookManager {
             }
         });
     }
+
 }

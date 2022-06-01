@@ -13,15 +13,16 @@ public class DatabaseFixAlliesRequest extends DefaultConcurrencyRequest {
         }
     }
 
-    private void fixAllies(Guild guild) {
+    private static void fixAllies(Guild guild) {
         for (Guild ally : guild.getAllies()) {
             fixAlly(guild, ally);
         }
     }
 
-    private void fixAlly(Guild guild, Guild ally) {
+    private static void fixAlly(Guild guild, Guild ally) {
         if (!ally.isAlly(guild)) {
             ally.addAlly(guild);
         }
     }
+
 }

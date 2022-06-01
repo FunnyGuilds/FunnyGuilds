@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.CommandSender;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -34,14 +35,7 @@ public final class BanCommand extends AbstractFunnyCommand {
         long time = TimeUtils.parseTime(args[1]);
         when(time < 1, messages.adminTimeError);
 
-        StringBuilder reasonBuilder = new StringBuilder();
-
-        for (int index = 2; index < args.length; index++) {
-            reasonBuilder.append(args[index]);
-            reasonBuilder.append(" ");
-        }
-
-        String reason = reasonBuilder.toString();
+        String reason = StringUtils.join(args, " ", 2, args.length);
         User admin = AdminUtils.getAdminUser(sender);
 
         if (!SimpleEventHandler.handle(new GuildBanEvent(AdminUtils.getCause(admin), admin, guild, time, reason))) {

@@ -11,11 +11,11 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.session.PasteBuilder;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
 import java.util.zip.GZIPInputStream;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Location;
@@ -41,12 +41,10 @@ public class WorldEdit6Hook extends WorldEditHook {
         Class<?> worldDataClass = Reflections.getClass("com.sk89q.worldedit.world.registry.WorldData");
         Class<?> vectorClass = Reflections.getClass("com.sk89q.worldedit.Vector");
 
-        schematicReaderConstructor = Reflections.getConstructor(schematicReaderClass,
-                Reflections.getClass("com.sk89q.jnbt.NBTInputStream"));
+        schematicReaderConstructor = Reflections.getConstructor(schematicReaderClass, Reflections.getClass("com.sk89q.jnbt.NBTInputStream"));
         pasteConstructor = Reflections.getConstructor(PasteBuilder.class, ClipboardHolder.class, Extent.class, worldDataClass);
         clipboardHolderConstructor = Reflections.getConstructor(ClipboardHolder.class, Clipboard.class, worldDataClass);
-        vectorConstructor = Reflections.getConstructor(vectorClass,
-                double.class, double.class, double.class);
+        vectorConstructor = Reflections.getConstructor(vectorClass, double.class, double.class, double.class);
 
         schematicReaderConstructor.setAccessible(true);
         pasteConstructor.setAccessible(true);
@@ -71,10 +69,11 @@ public class WorldEdit6Hook extends WorldEditHook {
             com.sk89q.worldedit.world.World pasteWorld = new BukkitWorld(location.getWorld());
             Object pasteWorldData = getWorldData.invoke(pasteWorld);
 
-            NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(new FileInputStream(schematicFile)));
+            NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(Files.newInputStream(schematicFile.toPath())));
             Object reader = schematicReaderConstructor.newInstance(nbtStream);
             Object clipboard = readSchematic.invoke(reader, pasteWorldData);
 
+            @SuppressWarnings("deprecation")
             EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
 
             ClipboardHolder clipboardHolder = (ClipboardHolder) clipboardHolderConstructor.newInstance(clipboard, pasteWorldData);

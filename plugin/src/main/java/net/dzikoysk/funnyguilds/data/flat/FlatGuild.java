@@ -186,7 +186,7 @@ public class FlatGuild {
         wrapper.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
         wrapper.set("lives", guild.getLives());
         wrapper.set("ban", guild.getBan());
-        wrapper.set("pvp", guild.getPvP());
+        wrapper.set("pvp", guild.hasPvPEnabled());
         wrapper.set("deputy", ChatUtils.toString(Entity.names(guild.getDeputies()), false));
 
         wrapper.save();

@@ -37,9 +37,9 @@ public final class InfoCommand extends AbstractFunnyCommand {
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
 
-        PandaStream.of(messages.infoList)
-                .map(line -> guildPlaceholdersService.format(line, guild))
-                .forEach(sender::sendMessage);
+        try (PandaStream<String> message = PandaStream.of(messages.infoList)) {
+            message.map(line -> guildPlaceholdersService.format(line, guild)).forEach(sender::sendMessage);
+        }
     }
 
 }

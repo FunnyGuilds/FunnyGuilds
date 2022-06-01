@@ -30,9 +30,11 @@ public abstract class Invitation<F, T> {
         if (this == o) {
             return true;
         }
+
         if (!(o instanceof Invitation)) {
             return false;
         }
+
         Invitation<?, ?> that = (Invitation<?, ?>) o;
         return from.equals(that.from) && to.equals(that.to);
     }

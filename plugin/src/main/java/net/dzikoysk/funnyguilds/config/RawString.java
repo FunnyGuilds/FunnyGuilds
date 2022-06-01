@@ -1,7 +1,7 @@
 package net.dzikoysk.funnyguilds.config;
 
 import java.util.List;
-import java.util.Objects;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import panda.std.stream.PandaStream;
 
 public class RawString {
@@ -16,18 +16,22 @@ public class RawString {
         return this.value;
     }
 
+    public boolean isEmpty() {
+        return this.value.isEmpty();
+    }
+
     public String replace(String from, String to) {
-        return this.value.replace(from, to);
+        return FunnyFormatter.formatOnce(this.value, from, to);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return this.value.hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof RawString && value.equals(((RawString) obj).value);
+        return obj instanceof RawString && this.value.equals(((RawString) obj).value);
     }
 
     @Override
@@ -36,9 +40,9 @@ public class RawString {
     }
 
     public static List<RawString> listOf(String... values) {
-        return PandaStream.of(values)
-                .map(RawString::new)
-                .toList();
+        try (PandaStream<String> valuesStream = PandaStream.of(values)) {
+            return valuesStream.map(RawString::new).toList();
+        }
     }
 
 }

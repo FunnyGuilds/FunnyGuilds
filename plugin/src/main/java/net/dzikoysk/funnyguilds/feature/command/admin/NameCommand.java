@@ -12,10 +12,10 @@ import net.dzikoysk.funnyguilds.event.guild.GuildRenameEvent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import panda.utilities.StringUtils;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -65,7 +65,7 @@ public final class NameCommand extends AbstractFunnyCommand {
         }
 
         guild.setName(args[1]);
-        sendMessage(sender, StringUtils.replace(messages.adminNameChanged, "{GUILD}", guild.getName()));
+        sendMessage(sender, FunnyFormatter.formatOnce(messages.adminNameChanged, "{GUILD}", guild.getName()));
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }

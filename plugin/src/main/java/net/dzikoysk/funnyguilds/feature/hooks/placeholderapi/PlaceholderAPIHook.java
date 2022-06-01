@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.rank.placeholders.RankPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import panda.std.Option;
 
 public class PlaceholderAPIHook extends AbstractPluginHook {
@@ -28,15 +29,15 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         return HookInitResult.SUCCESS;
     }
 
-    public String replacePlaceholders(Player user, String base) {
+    public static String replacePlaceholders(Player user, String base) {
         return PlaceholderAPI.setPlaceholders(user, base);
     }
 
-    public String replacePlaceholders(Player userOne, Player userTwo, String base) {
+    public static String replacePlaceholders(Player userOne, Player userTwo, String base) {
         return PlaceholderAPI.setRelationalPlaceholders(userOne, userTwo, base);
     }
 
-    private static class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
+    private static final class FunnyGuildsPlaceholder extends PlaceholderExpansion implements Relational {
 
         private final FunnyGuilds plugin;
         private final RankPlaceholdersService rankPlaceholdersService;
@@ -49,7 +50,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         }
 
         @Override
-        public String onPlaceholderRequest(Player player, String identifier) {
+        public String onPlaceholderRequest(Player player, @NotNull String identifier) {
             if (player == null) {
                 return "";
             }
@@ -100,12 +101,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         }
 
         @Override
-        public String getAuthor() {
+        public @NotNull String getAuthor() {
             return "FunnyGuilds Team";
         }
 
         @Override
-        public String getIdentifier() {
+        public @NotNull String getIdentifier() {
             return "funnyguilds";
         }
 
@@ -115,7 +116,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
         }
 
         @Override
-        public String getVersion() {
+        public @NotNull String getVersion() {
             return funnyguildsVersion;
         }
 

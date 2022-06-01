@@ -42,6 +42,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
                 : config.baseItems;
 
         if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+            sendMessage(player, messages.baseItems);
             return;
         }
 
@@ -85,8 +86,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
             }
         }, 0L, 10L));
 
-
-        user.sendMessage(FunnyFormatter.of("{TIME}", time.getSeconds()).format(messages.baseDontMove));
+        user.sendMessage(FunnyFormatter.formatOnce(messages.baseDontMove, "{TIME}", time.getSeconds()));
     }
 
 }

@@ -30,6 +30,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
         copy.placeholders.put(name, placeholder);
+
         return copy;
     }
 
@@ -45,6 +46,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
         copy.placeholders.putAll(placeholders);
+
         return copy;
     }
 
@@ -55,8 +57,11 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
     public <M> P map(Placeholders<M, ?> toMap, Function<String, String> nameMapper, BiFunction<T, Placeholder<M>, Object> dataMapper) {
         P copy = this.create();
         copy.placeholders.putAll(this.placeholders);
-        toMap.getPlaceholders().forEach((key, placeholder) ->
-                copy.placeholders.put(nameMapper.apply(key), new Placeholder<>(data -> dataMapper.apply(data, placeholder))));
+
+        toMap.getPlaceholders().forEach((key, placeholder) -> {
+            copy.placeholders.put(nameMapper.apply(key), new Placeholder<>(data -> dataMapper.apply(data, placeholder)));
+        });
+
         return copy;
     }
 
@@ -76,8 +81,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String format(String text, T data) {
-        return this.toFormatter(data)
-                .format(text);
+        return this.toFormatter(data).format(text);
     }
 
     public FunnyFormatter toFormatter(T data) {
@@ -92,8 +96,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String formatVariables(String text, T data) {
-        return this.toVariablesFormatter(data)
-                .format(text);
+        return this.toVariablesFormatter(data).format(text);
     }
 
     public FunnyFormatter toVariablesFormatter(T data) {
@@ -111,8 +114,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
      * @return formatted text
      */
     public String formatCustom(String text, T data, String prefix, String suffix, Function<String, String> nameModifier) {
-        return this.toCustomFormatter(data, prefix, suffix, nameModifier)
-                .format(text);
+        return this.toCustomFormatter(data, prefix, suffix, nameModifier).format(text);
     }
 
     public FunnyFormatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {

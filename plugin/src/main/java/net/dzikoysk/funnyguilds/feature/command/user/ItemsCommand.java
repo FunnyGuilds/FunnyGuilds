@@ -2,16 +2,15 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.config.RawString;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.gui.GuiWindow;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -54,25 +53,22 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                 int enderChestAmount = ItemUtils.getItemAmount(item, player.getEnderChest());
 
                 List<String> lore = meta.getLore();
-
                 if (lore == null) {
                     lore = new ArrayList<>(config.guiItemsLore.size());
                 }
 
-                for (RawString rawLine : config.guiItemsLore) {
-                    String line = rawLine.getValue();
-                    line = StringUtils.replace(line, "{REQ-AMOUNT}", Integer.toString(requiredAmount));
-                    line = StringUtils.replace(line, "{PINV-AMOUNT}", Integer.toString(inventoryAmount));
-                    line = StringUtils.replace(line, "{PINV-PERCENT}", ChatUtils.getPercent(inventoryAmount, requiredAmount));
-                    line = StringUtils.replace(line, "{EC-AMOUNT}", Integer.toString(enderChestAmount));
-                    line = StringUtils.replace(line, "{EC-PERCENT}", ChatUtils.getPercent(enderChestAmount, requiredAmount));
-                    line = StringUtils.replace(line, "{ALL-AMOUNT}", Integer.toString(inventoryAmount + enderChestAmount));
-                    line = StringUtils.replace(line, "{ALL-PERCENT}", ChatUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
+                FunnyFormatter formatter = new FunnyFormatter()
+                        .register("{REQ-AMOUNT}", requiredAmount)
+                        .register("{PINV-AMOUNT}", inventoryAmount)
+                        .register("{PINV-PERCENT}", ChatUtils.getPercent(inventoryAmount, requiredAmount))
+                        .register("{EC-AMOUNT}", enderChestAmount)
+                        .register("{EC-PERCENT}", ChatUtils.getPercent(enderChestAmount, requiredAmount))
+                        .register("{ALL-AMOUNT}", inventoryAmount + enderChestAmount)
+                        .register("{ALL-PERCENT}", ChatUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
 
-                    lore.add(line);
-                }
+                lore.addAll(config.guiItemsLore.stream().map(line -> formatter.format(line.getValue())).collect(Collectors.toList()));
 
-                if (!Objects.equals(config.guiItemsName, "")) {
+                if (!config.guiItemsName.isEmpty()) {
                     meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName.getValue(), null, item));
                 }
 

@@ -28,7 +28,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         int lives = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(FunnyFormatter.of("{ERROR}", args[1]).format(messages.adminErrorInNumber));
+            return new ValidationException(FunnyFormatter.formatOnce(messages.adminErrorInNumber, "{ERROR}", args[1]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);

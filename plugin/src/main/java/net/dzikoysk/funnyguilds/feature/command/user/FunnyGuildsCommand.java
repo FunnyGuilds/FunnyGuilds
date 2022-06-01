@@ -8,7 +8,7 @@ import net.dzikoysk.funnyguilds.concurrency.requests.FunnybinRequest;
 import net.dzikoysk.funnyguilds.concurrency.requests.ReloadRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
-import org.bukkit.ChatColor;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
@@ -27,9 +27,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        String parameter = args.length > 0
-                ? args[0].toLowerCase()
-                : "";
+        String parameter = args.length > 0 ? args[0].toLowerCase() : "";
 
         switch (parameter) {
             case "reload":
@@ -47,14 +45,11 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
                 post(sender, args);
                 break;
             case "help":
-                sender.sendMessage(ChatColor.AQUA + "FunnyGuilds Help:");
-                sender.sendMessage(ChatColor.GRAY + "/funnyguilds (reload|rl) - przeladuj plugin");
-                sender.sendMessage(ChatColor.GRAY + "/funnyguilds (update|check) - sprawdz dostepnosc aktualizacji");
-                sender.sendMessage(ChatColor.GRAY + "/funnyguilds save-all - zapisz wszystko");
-                sender.sendMessage(ChatColor.GRAY + "/funnyguilds funnybin - zapisz konfigurację online (~ usprawnia pomoc na https://github.com/FunnyGuilds/FunnyGuilds/issues)");
+                messages.funnyguildsHelp.forEach(sender::sendMessage);
                 break;
             default:
-                sender.sendMessage(ChatColor.GRAY + "FunnyGuilds " + ChatColor.AQUA + plugin.getVersion().getFullVersion() + ChatColor.GRAY + " by " + ChatColor.AQUA + "FunnyGuilds Team");
+                sender.sendMessage(FunnyFormatter.formatOnce(messages.funnyguildsVersion, "{VERSION}",
+                        plugin.getVersion().getFullVersion()));
                 break;
         }
 
@@ -63,18 +58,17 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
     private void reload(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.reload"), messages.permission);
 
-        sender.sendMessage(ChatColor.GRAY + "Przeladowywanie...");
+        sender.sendMessage(messages.reloadReloading);
         this.plugin.getConcurrencyManager().postRequests(new ReloadRequest(this.plugin, sender));
     }
 
     private void saveAll(CommandSender sender) {
         when(!sender.hasPermission("funnyguilds.admin"), messages.permission);
 
-        sender.sendMessage(ChatColor.GRAY + "Zapisywanie...");
+        sender.sendMessage(messages.saveallSaving);
         long currentTime = System.currentTimeMillis();
 
         DataModel dataModel = this.dataModel;
-
         try {
             dataModel.save(false);
             this.plugin.getInvitationPersistenceHandler().saveInvitations();
@@ -84,7 +78,8 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             return;
         }
 
-        sender.sendMessage(ChatColor.GRAY + "Zapisano (" + ChatColor.AQUA + (System.currentTimeMillis() - currentTime) / 1000.0F + "s" + ChatColor.GRAY + ")!");
+        String time = String.format("%.2f", (System.currentTimeMillis() - currentTime) / 1000.0D);
+        sender.sendMessage(FunnyFormatter.formatOnce(messages.saveallSaved, "{TIME}", time));
     }
 
     private void post(CommandSender sender, String[] args) {
@@ -96,12 +91,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
             return;
         }
 
-        sender.sendMessage(ChatColor.RED + "Uzycie: ");
-        sender.sendMessage(ChatColor.RED + "/fg funnybin - domyslnie wysyla FunnyGuilds/config.yml i logs/latest.log");
-        sender.sendMessage(ChatColor.RED + "/fg funnybin config - wysyla FunnyGuilds/config.yml");
-        sender.sendMessage(ChatColor.RED + "/fg funnybin log - wysyla logs/latest.log");
-        sender.sendMessage(ChatColor.RED + "/fg funnybin custom <path> - wysyla dowolny plik z folderu serwera na funnybina");
-        sender.sendMessage(ChatColor.RED + "/fg funnybin bundle <file1> <fileN...> - wysyla dowolne pliki z folderu serwera na funnybina");
+        messages.funnybinHelp.forEach(sender::sendMessage);
     }
 
 }

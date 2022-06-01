@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,7 +62,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void broadcast(String message) {
-        this.getMembers().forEach(user -> user.sendMessage(message));
+        this.members.forEach(user -> user.sendMessage(message));
     }
 
     public void deserializationUpdate() {
@@ -139,9 +138,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Option<Location> getCenter() {
-        return this.region
-                .map(Region::getCenter)
-                .map(Location::clone);
+        return this.region.map(Region::getCenter).map(Location::clone);
     }
 
     public Option<Location> getEnderCrystal() {
@@ -337,6 +334,8 @@ public class Guild extends AbstractMutableEntity {
         return this.validity;
     }
 
+    @Deprecated
+    @ApiStatus.ScheduledForRemoval(inVersion = "5.0")
     public Date getValidityDate() {
         return this.validityDate == null ? this.validityDate = new Date(this.validity) : this.validityDate;
     }
@@ -367,7 +366,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean canBeAttacked() {
-        return this.getProtection() < System.currentTimeMillis();
+        return this.protection < System.currentTimeMillis();
     }
 
     public void setProtection(long protection) {
@@ -413,7 +412,7 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public boolean getPvP() {
+    public boolean hasPvPEnabled() {
         return this.pvp;
     }
 
@@ -422,17 +421,26 @@ public class Guild extends AbstractMutableEntity {
         this.markChanged();
     }
 
-    public boolean getPvP(Guild alliedGuild) {
-        return this.allies.contains(alliedGuild) && this.alliedFFGuilds.contains(alliedGuild.getUUID());
+    public boolean togglePvP() {
+        this.pvp = !this.pvp;
+        this.markChanged();
+        return this.pvp;
     }
 
-    public void setPvP(Guild alliedGuild, boolean enablePvp) {
-        if (enablePvp) {
-            this.alliedFFGuilds.add(alliedGuild.getUUID());
+    public boolean hasAllyPvPEnabled(Guild alliedGuild) {
+        return this.allies.contains(alliedGuild) && this.alliedFFGuilds.contains(alliedGuild.uuid);
+    }
+
+    public boolean toggleAllyPvP(Guild alliedGuild) {
+        boolean enabled = false;
+
+        if (!this.alliedFFGuilds.remove(alliedGuild.uuid)) {
+            this.alliedFFGuilds.add(alliedGuild.uuid);
+            enabled = true;
         }
-        else {
-            this.alliedFFGuilds.remove(alliedGuild.getUUID());
-        }
+
+        this.markChanged();
+        return enabled;
     }
 
     @Override
@@ -442,7 +450,7 @@ public class Guild extends AbstractMutableEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return uuid.hashCode();
     }
 
     @Override

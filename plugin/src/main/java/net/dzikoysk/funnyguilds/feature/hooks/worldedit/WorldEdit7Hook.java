@@ -12,8 +12,8 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.Location;
 
@@ -34,7 +34,7 @@ public class WorldEdit7Hook extends WorldEditHook {
             BlockVector3 pasteLocation = BlockVector3.at(location.getX(), location.getY(), location.getZ());
             World pasteWorld = BukkitAdapter.adapt(location.getWorld());
 
-            Clipboard clipboard = ClipboardFormats.findByFile(schematicFile).getReader(new FileInputStream(schematicFile)).read();
+            Clipboard clipboard = ClipboardFormats.findByFile(schematicFile).getReader(Files.newInputStream(schematicFile.toPath())).read();
             ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard);
 
             EditSession editSession = WorldEdit.getInstance().newEditSession(pasteWorld);

@@ -200,7 +200,7 @@ public class FunnyGuilds extends JavaPlugin {
         DescriptionChanger descriptionChanger = new DescriptionChanger(super.getDescription());
         descriptionChanger.rename(pluginConfiguration.pluginName);
 
-        this.concurrencyManager = new ConcurrencyManager(this, pluginConfiguration.concurrencyThreads);
+        this.concurrencyManager = new ConcurrencyManager(pluginConfiguration.concurrencyThreads);
         this.concurrencyManager.printStatus();
 
         this.dynamicListenerManager = new DynamicListenerManager(this);

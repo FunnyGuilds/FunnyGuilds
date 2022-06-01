@@ -39,11 +39,13 @@ public final class ChatUtils {
         if (!text.contains(before)) {
             return StringUtils.EMPTY;
         }
+
         return ChatColor.getLastColors(StringUtils.split(text, before)[0]);
     }
 
     public static String toString(Collection<String> list, boolean send) {
         StringBuilder builder = new StringBuilder();
+
         for (String s : list) {
             builder.append(s);
             builder.append(',');
@@ -77,11 +79,11 @@ public final class ChatUtils {
     }
 
     public static String appendDigit(int number) {
-        return number > 9 ? "" + number : "0" + number;
+        return number > 9 ? Integer.toString(number) : "0" + number;
     }
 
     public static String appendDigit(String number) {
-        return number.length() > 1 ? "" + number : "0" + number;
+        return number.length() > 1 ? number : "0" + number;
     }
 
     public static String getPercent(double dividend, double divisor) {
@@ -96,6 +98,7 @@ public final class ChatUtils {
         if (message == null || message.isEmpty()) {
             return;
         }
+
         sender.sendMessage(message);
     }
 
@@ -103,6 +106,7 @@ public final class ChatUtils {
         if (message == null || message.isEmpty()) {
             return;
         }
+
         Bukkit.broadcastMessage(message);
     }
 

@@ -11,6 +11,7 @@ import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.feature.invitation.guild.GuildInvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.panda_lang.utilities.inject.annotations.Inject;
@@ -34,8 +35,14 @@ public final class InviteCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{AMOUNT}", config.maxMembersInGuild)
+                .register("{OWNER}", player.getName())
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
         when(args.length < 1, messages.generalNoNickGiven);
-        when(guild.getMembers().size() >= config.maxMembersInGuild, messages.inviteAmount.replace("{AMOUNT}", Integer.toString(config.maxMembersInGuild)));
+        when(guild.getMembers().size() >= config.maxMembersInGuild, formatter.format(messages.inviteAmount));
 
         User invitedUser = UserValidation.requireUserByName(args[0]);
         Option<Player> invitedPlayerOption = funnyServer.getPlayer(invitedUser.getUUID());
@@ -47,7 +54,8 @@ public final class InviteCommand extends AbstractFunnyCommand {
 
             guildInvitationList.expireInvitation(guild, invitedUser);
             user.sendMessage(messages.inviteCancelled);
-            when(invitedPlayerOption.isPresent(), messages.inviteCancelledToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+
+            when(invitedPlayerOption.isPresent(), formatter.format(messages.inviteCancelledToInvited));
             return;
         }
 
@@ -61,8 +69,8 @@ public final class InviteCommand extends AbstractFunnyCommand {
         guildInvitationList.createInvitation(guild, invitedUser);
 
         Player invitedPlayer = invitedPlayerOption.get();
-        user.sendMessage(messages.inviteToOwner.replace("{PLAYER}", invitedPlayer.getName()));
-        sendMessage(invitedPlayer, messages.inviteToInvited.replace("{OWNER}", player.getName()).replace("{GUILD}", guild.getName()).replace("{TAG}", guild.getTag()));
+        user.sendMessage(FunnyFormatter.formatOnce(messages.inviteToOwner, "{PLAYER}", invitedPlayer.getName()));
+        sendMessage(invitedPlayer, formatter.format(messages.inviteToInvited));
     }
 
 }

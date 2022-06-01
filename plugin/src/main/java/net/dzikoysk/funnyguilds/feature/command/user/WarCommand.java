@@ -9,10 +9,9 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.GuildValidation;
 import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.entity.Player;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -30,35 +29,35 @@ public final class WarCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
         when(args.length < 1, messages.enemyCorrectUse);
-
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
+
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{GUILD}", enemyGuild.getName())
+                .register("{TAG}", enemyGuild.getTag())
+                .register("{AMOUNT}", config.maxEnemiesBetweenGuilds);
 
         when(guild.equals(enemyGuild), messages.enemySame);
         when(guild.isAlly(enemyGuild), messages.enemyAlly);
         when(guild.isEnemy(enemyGuild), messages.enemyAlready);
-        when(guild.getEnemies().size() >= config.maxEnemiesBetweenGuilds, () -> messages.enemyMaxAmount.replace("{AMOUNT}", Integer.toString(config.maxEnemiesBetweenGuilds)));
+        when(guild.getEnemies().size() >= config.maxEnemiesBetweenGuilds, formatter.format(messages.enemyMaxAmount));
 
         if (enemyGuild.getEnemies().size() >= config.maxEnemiesBetweenGuilds) {
-            Formatter formatter = new Formatter()
-                    .register("{GUILD}", enemyGuild.getName())
-                    .register("{TAG}", enemyGuild.getTag())
-                    .register("{AMOUNT}", config.maxEnemiesBetweenGuilds);
-
             user.sendMessage(formatter.format(messages.enemyMaxTargetAmount));
             return;
         }
 
         guild.addEnemy(enemyGuild);
 
-        String allyDoneMessage = messages.enemyDone;
-        allyDoneMessage = StringUtils.replace(allyDoneMessage, "{GUILD}", enemyGuild.getName());
-        allyDoneMessage = StringUtils.replace(allyDoneMessage, "{TAG}", enemyGuild.getTag());
-        user.sendMessage(allyDoneMessage);
+        FunnyFormatter enemyFormatter = new FunnyFormatter()
+                .register("{GUILD}", enemyGuild.getName())
+                .register("{TAG}", enemyGuild.getTag());
 
-        String allyIDoneMessage = messages.enemyIDone;
-        allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{GUILD}", guild.getName());
-        allyIDoneMessage = StringUtils.replace(allyIDoneMessage, "{TAG}", guild.getTag());
-        enemyGuild.getOwner().sendMessage(allyIDoneMessage);
+        FunnyFormatter enemyIFormatter = new FunnyFormatter()
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
+
+        user.sendMessage(enemyFormatter.format(messages.enemyDone));
+        enemyGuild.getOwner().sendMessage(enemyIFormatter.format(messages.enemyIDone));
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 

@@ -20,7 +20,8 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
     private final UserPlaceholdersService userPlaceholdersService;
     private final GuildPlaceholdersService guildPlaceholdersService;
 
-    public TablistPlaceholdersService(BasicPlaceholdersService basicPlaceholdersService, TimePlaceholdersService timePlaceholdersService, UserPlaceholdersService userPlaceholdersService, GuildPlaceholdersService guildPlaceholdersService) {
+    public TablistPlaceholdersService(BasicPlaceholdersService basicPlaceholdersService,TimePlaceholdersService timePlaceholdersService,
+                                      UserPlaceholdersService userPlaceholdersService, GuildPlaceholdersService guildPlaceholdersService) {
         this.basicPlaceholdersService = basicPlaceholdersService;
         this.timePlaceholdersService = timePlaceholdersService;
         this.userPlaceholdersService = userPlaceholdersService;
@@ -33,6 +34,7 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
         text = timePlaceholdersService.format(text, OffsetDateTime.now());
         text = userPlaceholdersService.format(text, user);
         text = guildPlaceholdersService.formatCustom(text, user.getGuild().orNull(), "{G-", "}", String::toUpperCase);
+
         return text;
     }
 
@@ -45,13 +47,12 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
                 basicPlaceholdersService.getPlaceholdersKeys(),
                 timePlaceholdersService.getPlaceholdersKeys(),
                 userPlaceholdersService.getPlaceholdersKeys(),
-                guildPlaceholdersService.getPlaceholdersKeys().stream()
-                        .map(key -> "{G-" + key)
-                        .collect(Collectors.toSet())
+                guildPlaceholdersService.getPlaceholdersKeys().stream().map(key -> "{G-" + key).collect(Collectors.toSet())
         );
-        return PandaStream.of(keys)
-                .flatMap(streamKeys -> streamKeys)
-                .toSet();
+
+        try (PandaStream<Set<String>> keysStream = PandaStream.of(keys)) {
+            return keysStream.flatMap(streamKeys -> streamKeys).toSet();
+        }
     }
 
 }

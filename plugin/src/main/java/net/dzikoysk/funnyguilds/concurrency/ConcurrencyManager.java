@@ -8,12 +8,10 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 
 public class ConcurrencyManager {
 
-    private final FunnyGuilds funnyGuilds;
     private final int threads;
     private final ExecutorService executor;
 
-    public ConcurrencyManager(FunnyGuilds funnyGuilds, int threads) {
-        this.funnyGuilds = funnyGuilds;
+    public ConcurrencyManager(int threads) {
         this.threads = threads;
         this.executor = Executors.newFixedThreadPool(threads);
     }
@@ -34,14 +32,14 @@ public class ConcurrencyManager {
             this.executor.awaitTermination(timeout.getSeconds(), TimeUnit.SECONDS);
         }
         catch (InterruptedException ex) {
-            funnyGuilds.getPluginLogger().error("ConcurrencyManager termination failed", ex);
+            FunnyGuilds.getPluginLogger().error("ConcurrencyManager termination failed", ex);
         }
     }
 
     public void printStatus() {
-        funnyGuilds.getPluginLogger().info("Available Processors: " + Runtime.getRuntime().availableProcessors());
-        funnyGuilds.getPluginLogger().info("Active Threads: " + Thread.activeCount());
-        funnyGuilds.getPluginLogger().info("Pool size: " + threads);
+        FunnyGuilds.getPluginLogger().info("Available Processors: " + Runtime.getRuntime().availableProcessors());
+        FunnyGuilds.getPluginLogger().info("Active Threads: " + Thread.activeCount());
+        FunnyGuilds.getPluginLogger().info("Pool size: " + threads);
     }
 
 }

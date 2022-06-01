@@ -16,19 +16,12 @@ public final class FunnyFormatter {
     }
 
     public String format(String message) {
+        if (message.isEmpty()) {
+            return message;
+        }
+
         for (Pair<String, Supplier<?>> placeholderPair : this.placeholders) {
-            String key = placeholderPair.getFirst();
-
-            if (!message.contains(key)) {
-                continue;
-            }
-
-            Object value = placeholderPair.getSecond().get();
-            if (value == null) {
-                throw new NullPointerException("Placeholder " + key + " returns null value");
-            }
-
-            message = StringUtils.replace(message, key, Objects.toString(value));
+            message = formatOnce(message, placeholderPair.getFirst(), placeholderPair.getSecond());
         }
 
         return message;
@@ -38,8 +31,8 @@ public final class FunnyFormatter {
         return this.register(placeholder, value::toString);
     }
 
-    public FunnyFormatter register(String placeholder, Supplier<?> value) {
-        this.placeholders.add(Pair.of(placeholder, value));
+    public FunnyFormatter register(String placeholder, Supplier<?> valueSupplier) {
+        this.placeholders.add(Pair.of(placeholder, valueSupplier));
         return this;
     }
 
@@ -47,8 +40,29 @@ public final class FunnyFormatter {
         return of(placeholder, value::toString);
     }
 
-    public static FunnyFormatter of(String placeholder, Supplier<?> value) {
-        return new FunnyFormatter().register(placeholder, value);
+    public static FunnyFormatter of(String placeholder, Supplier<?> valueSupplier) {
+        return new FunnyFormatter().register(placeholder, valueSupplier);
+    }
+
+    public static String formatOnce(String message, String placeholder, Object value) {
+        return formatOnce(message, placeholder, value::toString);
+    }
+
+    public static String formatOnce(String message, String placeholder, Supplier<?> valueSupplier) {
+        if (message.isEmpty()) {
+            return message;
+        }
+
+        if (!message.contains(placeholder)) {
+            return message;
+        }
+
+        Object value = valueSupplier.get();
+        if (value == null) {
+            throw new NullPointerException("Placeholder " + placeholder + " returns null value");
+        }
+
+        return StringUtils.replace(message, placeholder, Objects.toString(value));
     }
 
 }

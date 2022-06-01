@@ -16,12 +16,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
+import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.telemetry.FunnyTelemetry;
 import net.dzikoysk.funnyguilds.telemetry.FunnybinResponse;
 import net.dzikoysk.funnyguilds.telemetry.PasteType;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.Nullable;
 
 public final class FunnybinRequest extends DefaultConcurrencyRequest {
 
@@ -35,6 +37,7 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
+        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         List<FunnybinResponse> sentPastes = new ArrayList<>();
 
         for (int i = 0; i < files.size(); i++) {
@@ -43,7 +46,12 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
             String content = null;
             PasteType type = PasteType.OTHER;
 
-            sender.sendMessage(ChatColor.GREEN + "Wysylam plik: " + ChatColor.AQUA + (i + 1) + ChatColor.GREEN + "/" + ChatColor.AQUA + files.size() + ChatColor.GREEN + "...");
+            FunnyFormatter formatter = new FunnyFormatter()
+                    .register("{NUM}", i + 1)
+                    .register("{TOTAL}", files.size())
+                    .register("{FILE}", fileName);
+
+            sender.sendMessage(formatter.format(messages.funnybinSendingFile));
 
             if ("log".equals(fileName)) {
                 file = new File("logs/latest.log");
@@ -75,11 +83,11 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                     content = Files.asCharSource(file, StandardCharsets.UTF_8).read();
                 }
                 catch (FileNotFoundException e) {
-                    sender.sendMessage(ChatColor.RED + "Podany plik: " + fileName + " nie istnieje");
+                    sender.sendMessage(formatter.format(messages.funnybinFileNotFound));
                     continue;
                 }
                 catch (IOException e) {
-                    sender.sendMessage(ChatColor.RED + "Podany plik: " + fileName + " nie mogl być otworzony (szczegoly w konsoli)");
+                    sender.sendMessage(formatter.format(messages.funnybinFileNotOpened));
                     FunnyGuilds.getPluginLogger().error("Failed to open a file: " + fileName, e);
                     continue;
                 }
@@ -89,28 +97,29 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 sentPastes.add(FunnyTelemetry.postToFunnybin(content, type, fileName));
             }
             catch (IOException e) {
-                sender.sendMessage(ChatColor.RED + "Podany plik: " + fileName + " nie mogl byc wyslany (szczegoly w konsoli)");
+                sender.sendMessage(formatter.format(messages.funnybinFileNotSent));
                 FunnyGuilds.getPluginLogger().error("Failed to submit a paste: " + fileName, e);
             }
         }
 
         if (sentPastes.size() == 1) {
-            sender.sendMessage(ChatColor.GREEN + "Plik wyslany. Link: " + ChatColor.AQUA + sentPastes.get(0).getShortUrl());
+            sender.sendMessage(FunnyFormatter.formatOnce(messages.funnybinFileSent, "{LINK}", sentPastes.get(0).getShortUrl()));
             return;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Tworze paczke z wyslanych plikow...");
+        sender.sendMessage(messages.funnybinBuildingBundle);
 
         try {
             FunnybinResponse response = FunnyTelemetry.createBundle(sentPastes.stream().map(FunnybinResponse::getUuid).collect(Collectors.toList()));
-            sender.sendMessage(ChatColor.GREEN + "Paczka wyslana. Link: " + ChatColor.AQUA + response.getShortUrl());
+            sender.sendMessage(FunnyFormatter.formatOnce(messages.funnybinBundleSent, "{LINK}", response.getShortUrl()));
         }
         catch (IOException e) {
-            sender.sendMessage(ChatColor.RED + "Wystapil blad podczas tworzenia paczki. ");
+            sender.sendMessage(messages.funnybinBundleNotBuilt);
             FunnyGuilds.getPluginLogger().error("Failed to submit a bundle. Files: " + files, e);
         }
     }
 
+    @Nullable
     private static FunnybinRequest ofData(CommandSender sender, String[] args) {
         if (args.length == 1) {
             return new FunnybinRequest(sender, Arrays.asList("config", "log"));
@@ -126,13 +135,16 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                     if (args.length >= 3) {
                         new FunnybinRequest(sender, Collections.singletonList(args[2]));
                     }
+
                     break;
                 case "bundle":
                     if (args.length >= 3) {
                         return new FunnybinRequest(sender, Arrays.asList(args).subList(2, args.length));
                     }
+
                     break;
-                default: return null;
+                default:
+                    return null;
             }
         }
 

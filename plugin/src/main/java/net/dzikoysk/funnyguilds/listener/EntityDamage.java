@@ -58,7 +58,7 @@ public class EntityDamage extends AbstractFunnyListener {
                 Guild attackerGuild = attackerUser.getGuild().get();
 
                 if (victimGuild.equals(attackerGuild)) {
-                    if (!victimGuild.getPvP()) {
+                    if (!victimGuild.hasPvPEnabled()) {
                         event.setCancelled(true);
                         return;
                     }
@@ -70,7 +70,7 @@ public class EntityDamage extends AbstractFunnyListener {
                         return;
                     }
 
-                    if (!(attackerGuild.getPvP(victimGuild) && victimGuild.getPvP(attackerGuild))) {
+                    if (!(attackerGuild.hasAllyPvPEnabled(victimGuild) && victimGuild.hasAllyPvPEnabled(attackerGuild))) {
                         event.setCancelled(true);
                         return;
                     }

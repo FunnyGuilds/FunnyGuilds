@@ -68,11 +68,11 @@ public abstract class AbstractFunnyCommand {
     @Inject
     public RankPlaceholdersService rankPlaceholdersService;
 
-    protected void sendMessage(CommandSender sender, String message) {
+    protected static void sendMessage(CommandSender sender, String message) {
         ChatUtils.sendMessage(sender, message);
     }
 
-    protected void broadcastMessage(String message) {
+    protected static void broadcastMessage(String message) {
         ChatUtils.broadcastMessage(message);
     }
 

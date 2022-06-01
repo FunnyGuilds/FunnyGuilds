@@ -5,13 +5,14 @@ import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.feature.security.SecurityUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.MinecraftServerUtils;
 import net.dzikoysk.funnyguilds.shared.bukkit.PingUtils;
-import net.dzikoysk.funnyguilds.user.UserUtils;
+import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
-public class SecurityReach {
+public final class SecurityReach {
 
     private static final DecimalFormat FORMAT = new DecimalFormat("##.##");
     private static final double CREATIVE_REACH = 4.5;
@@ -23,11 +24,14 @@ public class SecurityReach {
     }
 
     public static void on(Player player, double distance) {
-        MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
-        PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyGuilds funnyGuilds = FunnyGuilds.getInstance();
+        MessageConfiguration messages = funnyGuilds.getMessageConfiguration();
+        PluginConfiguration config = funnyGuilds.getPluginConfiguration();
+        UserManager userManager = funnyGuilds.getUserManager();
+
         double ping = PingUtils.getPing(player);
         double tpsDelayMs = (1000.0 / MinecraftServerUtils.getTpsInLastMinute() - 50.0);
-        double compensation = player.getGameMode().equals(GameMode.CREATIVE) ? CREATIVE_REACH : SURVIVAL_REACH;
+        double compensation = player.getGameMode() == GameMode.CREATIVE ? CREATIVE_REACH : SURVIVAL_REACH;
 
         compensation += config.reachCompensation;
         compensation += SecurityUtils.compensationMs(IMPORTANCE_OF_PING * ping);
@@ -37,8 +41,10 @@ public class SecurityReach {
             return;
         }
 
-        String message = messages.securitySystemReach.replace("{DISTANCE}", FORMAT.format(distance));
-        SecurityUtils.addViolationLevel(UserUtils.get(player.getUniqueId()));
+        String message = FunnyFormatter.formatOnce(messages.securitySystemReach, "{DISTANCE}", FORMAT.format(distance));
+
+        SecurityUtils.addViolationLevel(userManager.findByPlayer(player).orNull());
         SecurityUtils.sendToOperator(player, "Reach", message);
     }
+
 }

@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
-import java.util.List;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.config.sections.HeartConfiguration;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -53,7 +52,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         }
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                FunnyFormatter.of("{DISTANCE}", distance).format(messages.createSpawn));
+                FunnyFormatter.formatOnce(messages.createSpawn, "{DISTANCE}", distance));
         when(this.regionManager.isNearRegion(location), messages.createIsNear);
 
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
@@ -80,13 +79,10 @@ public final class MoveCommand extends AbstractFunnyCommand {
                 .orElseGet(() -> new Region(guild, location, config.regionSize));
 
         if (heartConfig.createCenterSphere) {
-            List<Location> sphere = SpaceUtils.sphere(location, 3, 3, false, true, 0);
-
-            for (Location locationInSphere : sphere) {
-                if (locationInSphere.getBlock().getType() != Material.BEDROCK) {
-                    locationInSphere.getBlock().setType(Material.AIR);
-                }
-            }
+            SpaceUtils.sphere(location, 3, 3, false, true, 0).stream()
+                    .map(Location::getBlock)
+                    .filter(block -> block.getType() != Material.BEDROCK)
+                    .forEach(block -> block.setType(Material.AIR));
         }
 
         plugin.getGuildEntityHelper().spawnGuildEntity(guild);

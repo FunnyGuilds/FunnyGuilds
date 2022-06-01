@@ -140,7 +140,7 @@ public final class DatabaseGuild {
         statement.set("validity", guild.getValidity());
         statement.set("attacked", guild.getProtection()); //TODO: [FG 5.0] attacked -> protection
         statement.set("ban", guild.getBan());
-        statement.set("pvp", guild.getPvP());
+        statement.set("pvp", guild.hasPvPEnabled());
         statement.set("info", "");
 
         statement.executeUpdate();

@@ -9,6 +9,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.Region;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +35,8 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         when(enlarge > config.enlargeItems.size() - 1, messages.enlargeMaxSize);
 
         ItemStack need = config.enlargeItems.get(enlarge);
-        when(!player.getInventory().containsAtLeast(need, need.getAmount()), messages.enlargeItem.replace("{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
+        when(!player.getInventory().containsAtLeast(need, need.getAmount()), FunnyFormatter.formatOnce(messages.enlargeItem,
+                "{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
         when(this.regionManager.isNearRegion(region.getCenter()), messages.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, guild))) {
@@ -45,9 +47,11 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
         region.setEnlarge(++enlarge);
         region.setSize(region.getSize() + config.enlargeSize);
 
-        guild.broadcast(messages.enlargeDone
-                .replace("{SIZE}", Integer.toString(region.getSize()))
-                .replace("{LEVEL}", Integer.toString(region.getEnlarge())));
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{SIZE}", region.getSize())
+                .register("{LEVEL}", region.getEnlarge());
+
+        guild.broadcast(formatter.format(messages.enlargeDone));
     }
 
 }

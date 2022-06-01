@@ -68,4 +68,5 @@ public class VaultHook extends AbstractPluginHook {
     public static boolean hasPermission(OfflinePlayer player, String permission) {
         return permissionHook.playerHas(null, player, permission);
     }
+
 }

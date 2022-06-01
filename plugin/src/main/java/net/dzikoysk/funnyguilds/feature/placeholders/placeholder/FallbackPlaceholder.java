@@ -18,6 +18,7 @@ public class FallbackPlaceholder<T> extends Placeholder<T> {
         if (data == null) {
             return this.getRawFallback();
         }
+
         return super.getRaw(data);
     }
 

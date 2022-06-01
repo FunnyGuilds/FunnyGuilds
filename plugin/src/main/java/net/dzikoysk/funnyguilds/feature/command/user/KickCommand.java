@@ -11,9 +11,9 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.feature.command.CanManage;
 import net.dzikoysk.funnyguilds.feature.command.UserValidation;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
-import panda.utilities.text.Formatter;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -50,7 +50,7 @@ public final class KickCommand extends AbstractFunnyCommand {
             concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player));
         }
 
-        Formatter formatter = new Formatter()
+        FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", formerUser.getName())
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());

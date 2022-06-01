@@ -19,4 +19,5 @@ public class AllyInvitation extends Invitation<Guild, Guild> {
     public UUID getToUUID() {
         return this.to.getUUID();
     }
+
 }
