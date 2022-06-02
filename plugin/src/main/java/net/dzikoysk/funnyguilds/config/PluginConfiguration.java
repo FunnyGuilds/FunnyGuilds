@@ -101,7 +101,7 @@ public class PluginConfiguration extends OkaeriConfig {
 
     @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest się jej czlonkiem.")
     @Comment("Zostaw puste, aby wylaczyc.")
-    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
+    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
     public Set<Material> placingBlocksBypassOnRegion = Collections.emptySet();
 
     @Comment("Zablokuj rozlewanie się wody i lawy poza terenem gildii")
@@ -176,9 +176,9 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Kolor musi byc podany w postaci: \"R_G_B\"")
     @Comment(" ")
     @Comment(
-            "UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
+            "UWAGA: Nazwy przedmiotow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
     @Comment(
-            "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html")
+            "UWAGA: Typ jajka musi pasowac do typow entity podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html")
     @CustomKey("items")
     public List<ItemStack> createItems = ItemUtils.parseItems("5 stone", "5 dirt", "5 tnt");
 
@@ -299,7 +299,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public long buggedBlocksTimer = 20L;
 
     @Comment("Bloki, ktorych nie mozna 'bugowac'")
-    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/Material.html")
+    @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
     public Set<Material> buggedBlocksExclude = MaterialUtils.parseMaterials(false,
             // Ban basic
             "TNT", "STATIONARY_LAVA", "STATIONARY_WATER",
@@ -423,7 +423,7 @@ public class PluginConfiguration extends OkaeriConfig {
     public int regionExplode = 120;
 
     @Comment("Lista entity, ktorych wybuch nie powinien powodowac blokady budowania na terenie gildii")
-    @Comment("Nazwy entity musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.eu/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchaja)")
+    @Comment("Nazwy entity musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/entity/EntityType.html (nie wszystkie entity wybuchaja)")
     public Set<EntityType> regionExplodeExcludeEntities = EntityUtils.parseEntityTypes(true,  "CREEPER", "WITHER", "WITHER_SKULL", "FIREBALL");
 
     @Comment("Czy blokada po wybuchu ma obejmowac rowniez budowanie")

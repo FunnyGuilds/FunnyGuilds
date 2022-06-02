@@ -12,9 +12,9 @@ dependencies {
     implementation "net.dzikoysk:funnycommands:0.5.3"
 
     // okaeri config library
-    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.0-beta18"
-    implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.0-beta18"
-    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.0-beta18"
+    implementation "eu.okaeri:okaeri-configs-yaml-bukkit:4.0.0-beta24"
+    implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.0-beta24"
+    implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.0-beta24"
     // okaeri holographicdisplays commons
     implementation "eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.13"
 
@@ -58,9 +58,9 @@ dependencies {
     testImplementation 'org.jetbrains.kotlin:kotlin-test:1.6.21'
     testImplementation 'org.spigotmc:spigot-api:1.16.2-R0.1-SNAPSHOT'
     testImplementation 'com.mojang:authlib:3.2.38'
-    testImplementation 'org.mockito:mockito-core:4.5.1'
-    testImplementation 'org.mockito:mockito-junit-jupiter:4.5.1'
-    testImplementation 'org.mockito:mockito-inline:4.5.1'
+    testImplementation 'org.mockito:mockito-core:4.6.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.6.0'
+    testImplementation 'org.mockito:mockito-inline:4.6.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'org.panda-lang:expressible-junit:1.1.20'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
