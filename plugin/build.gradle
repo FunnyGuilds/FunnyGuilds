@@ -16,7 +16,7 @@ dependencies {
     implementation "eu.okaeri:okaeri-configs-serdes-commons:4.0.0-beta24"
     implementation "eu.okaeri:okaeri-configs-validator-okaeri:4.0.0-beta24"
     // okaeri holographicdisplays commons
-    implementation "eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.13"
+    implementation "eu.okaeri:okaeri-commons-bukkit-holographicdisplays:0.2.14"
 
     // general stuff
     //noinspection GradlePackageUpdate
