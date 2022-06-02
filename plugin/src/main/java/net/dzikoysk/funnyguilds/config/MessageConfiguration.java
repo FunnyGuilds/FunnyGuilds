@@ -58,6 +58,8 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankAssistEntry = "&b{PLAYER} &7(&a+{+}&7, {SHARE}% dmg)";
     @Comment("Znaki oddzielajace kolejne wpisy o asystujacych graczach")
     public String rankAssistDelimiter = "&8, ";
+    @Comment("Dostepne zmienne: {ITEM}, {ITEMS}")
+    public String rankResetItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}";
     @Comment("Dostepne zmienne: {LAST-RANK}, {CURRENT-RANK}")
     public String rankResetMessage = "&7Zresetowales swoj ranking z poziomu &c{LAST-RANK} &7do poziomu &c{CURRENT-RANK}&7.";
 

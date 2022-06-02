@@ -1,28 +1,15 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
-import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.guild.GuildUtils;
 
 public class DatabaseFixAlliesRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() {
-        for (Guild guild : GuildUtils.getGuilds()) {
-            fixAllies(guild);
-        }
-    }
-
-    private static void fixAllies(Guild guild) {
-        for (Guild ally : guild.getAllies()) {
-            fixAlly(guild, ally);
-        }
-    }
-
-    private static void fixAlly(Guild guild, Guild ally) {
-        if (!ally.isAlly(guild)) {
-            ally.addAlly(guild);
-        }
+        FunnyGuilds.getInstance().getGuildManager().getGuilds().forEach(guild -> {
+            guild.getAllies().forEach(ally -> ally.addAlly(guild));
+        });
     }
 
 }

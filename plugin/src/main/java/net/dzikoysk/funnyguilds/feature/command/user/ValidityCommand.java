@@ -41,7 +41,7 @@ public final class ValidityCommand extends AbstractFunnyCommand {
         }
 
         List<ItemStack> requiredItems = config.validityItems;
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, messages.validityItems)) {
             return;
         }
 

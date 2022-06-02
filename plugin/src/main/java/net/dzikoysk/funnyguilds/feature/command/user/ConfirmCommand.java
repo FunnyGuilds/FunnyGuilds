@@ -11,7 +11,6 @@ import net.dzikoysk.funnyguilds.feature.command.IsOwner;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
@@ -45,8 +44,8 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        user.sendMessage(formatter.format(messages.deleteSuccessful));
-        Bukkit.getServer().broadcastMessage(formatter.format(messages.broadcastDelete));
+        sendMessage(player, formatter.format(messages.deleteSuccessful));
+        broadcastMessage(formatter.format(messages.broadcastDelete));
     }
 
 }

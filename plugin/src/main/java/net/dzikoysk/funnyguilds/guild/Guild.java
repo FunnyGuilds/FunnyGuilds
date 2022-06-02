@@ -273,12 +273,12 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addAlly(Guild guild) {
-        this.markChanged();
         if (this.allies.contains(guild)) {
             return;
         }
 
         this.allies.add(guild);
+        this.markChanged();
     }
 
     public void removeAlly(Guild guild) {

@@ -41,8 +41,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
                 ? Collections.emptyList()
                 : config.baseItems;
 
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
-            sendMessage(player, messages.baseItems);
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, messages.baseItems)) {
             return;
         }
 
@@ -51,7 +50,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
         if (config.baseDelay.isZero()) {
             guild.teleportHome(player);
-            user.sendMessage(messages.baseTeleport);
+            sendMessage(player, messages.baseTeleport);
             return;
         }
 
@@ -72,7 +71,7 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                user.sendMessage(messages.baseMove);
+                sendMessage(player, messages.baseMove);
                 cache.setTeleportation(null);
                 player.getInventory().addItem(items);
                 return;
@@ -80,13 +79,13 @@ public final class BaseCommand extends AbstractFunnyCommand {
 
             if (Duration.between(teleportStart, Instant.now()).compareTo(time) > 0) {
                 cache.getTeleportation().cancel();
-                user.sendMessage(messages.baseTeleport);
+                sendMessage(player, messages.baseTeleport);
                 guild.teleportHome(player);
                 cache.setTeleportation(null);
             }
         }, 0L, 10L));
 
-        user.sendMessage(FunnyFormatter.formatOnce(messages.baseDontMove, "{TIME}", time.getSeconds()));
+        sendMessage(player, FunnyFormatter.formatOnce(messages.baseDontMove, "{TIME}", time.getSeconds()));
     }
 
 }

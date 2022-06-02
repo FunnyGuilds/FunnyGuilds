@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
@@ -24,6 +23,7 @@ import net.dzikoysk.funnyguilds.telemetry.FunnybinResponse;
 import net.dzikoysk.funnyguilds.telemetry.PasteType;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
+import panda.std.Option;
 
 public final class FunnybinRequest extends DefaultConcurrencyRequest {
 
@@ -151,8 +151,8 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
         return null;
     }
 
-    public static Optional<FunnybinRequest> of(CommandSender sender, String[] args) {
-        return Optional.ofNullable(ofData(sender, args));
+    public static Option<FunnybinRequest> of(CommandSender sender, String[] args) {
+        return Option.of(ofData(sender, args));
     }
 
 }

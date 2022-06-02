@@ -103,7 +103,6 @@ public final class CreateCommand extends AbstractFunnyCommand {
             }
 
             int distance = config.regionSize + config.createDistance;
-
             if (config.enlargeItems != null) {
                 distance += config.enlargeItems.size() * config.enlargeSize;
             }
@@ -124,7 +123,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
                         .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat))
                         .register("{POINTS}", points);
 
-                player.sendMessage(formatter.format(messages.createRank));
+                sendMessage(player, formatter.format(messages.createRank));
                 return;
             }
         }
@@ -140,21 +139,21 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 : config.requiredMoney;
 
         if (player.getTotalExperience() < requiredExperience) {
-            player.sendMessage(FunnyFormatter.formatOnce(messages.createExperience, "{EXP}", requiredExperience));
+            sendMessage(player, FunnyFormatter.formatOnce(messages.createExperience, "{EXP}", requiredExperience));
             return;
         }
 
         if (VaultHook.isEconomyHooked() && !VaultHook.canAfford(player, requiredMoney)) {
-            player.sendMessage(FunnyFormatter.formatOnce(messages.createMoney, "{MONEY}", requiredMoney));
+            sendMessage(player, FunnyFormatter.formatOnce(messages.createMoney, "{MONEY}", requiredMoney));
             return;
         }
 
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, messages.createItems)) {
             return;
         }
 
         if (HookManager.WORLD_GUARD.isPresent() && HookManager.WORLD_GUARD.get().isInNonGuildsRegion(guildLocation)) {
-            player.sendMessage(messages.invalidGuildLocation);
+            sendMessage(player, messages.invalidGuildLocation);
             return;
         }
 
@@ -181,7 +180,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
 
             // border box does not contain guild box
             if (!bbox.contains(gbox)) {
-                player.sendMessage(FunnyFormatter.formatOnce(messages.createNotEnoughDistanceFromBorder,
+                sendMessage(player, FunnyFormatter.formatOnce(messages.createNotEnoughDistanceFromBorder,
                         "{BORDER-MIN-DISTANCE}", config.createMinDistanceFromBorder));
                 return;
             }
@@ -198,7 +197,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             EconomyResponse withdrawResult = VaultHook.withdrawFromPlayerBank(player, requiredMoney);
 
             if (!withdrawResult.transactionSuccess()) {
-                player.sendMessage(FunnyFormatter.formatOnce(messages.withdrawError, "{ERROR}", withdrawResult.errorMessage));
+                sendMessage(player, FunnyFormatter.formatOnce(messages.withdrawError, "{ERROR}", withdrawResult.errorMessage));
                 return;
             }
         }
@@ -207,7 +206,7 @@ public final class CreateCommand extends AbstractFunnyCommand {
             if (heartConfig.pasteSchematicOnCreation) {
                 HookManager.WORLD_EDIT.peek(worldEdit -> {
                     if (worldEdit.pasteSchematic(heartConfig.guildSchematicFile, guildLocation, heartConfig.pasteSchematicWithAir)) {
-                        player.sendMessage(messages.createGuildCouldNotPasteSchematic);
+                        sendMessage(player, messages.createGuildCouldNotPasteSchematic);
                     }
                 });
             }
@@ -252,21 +251,21 @@ public final class CreateCommand extends AbstractFunnyCommand {
                 .register("{TAG}", tag)
                 .register("{PLAYER}", player.getName());
 
-        player.sendMessage(formatter.format(messages.createGuild));
+        sendMessage(player, formatter.format(messages.createGuild));
         broadcastMessage(formatter.format(messages.broadcastCreate));
 
-        if (!config.giveRewardsForFirstGuild) {
+        if (!config.giveRewardsForFirstGuild || this.guildManager.countGuilds() > 1) {
             return;
         }
 
-        for (ItemStack item : config.firstGuildRewards) {
+        config.firstGuildRewards.forEach(item -> {
             if (player.getInventory().firstEmpty() == -1) {
                 player.getWorld().dropItemNaturally(player.getLocation(), item);
-                continue;
+                return;
             }
 
             player.getInventory().addItem(item);
-        }
+        });
     }
 
 }

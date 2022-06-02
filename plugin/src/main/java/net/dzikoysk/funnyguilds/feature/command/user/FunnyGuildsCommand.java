@@ -1,6 +1,5 @@
 package net.dzikoysk.funnyguilds.feature.command.user;
 
-import java.util.Optional;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -11,6 +10,7 @@ import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.bukkit.command.CommandSender;
 import org.panda_lang.utilities.inject.annotations.Inject;
+import panda.std.Option;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -84,7 +84,7 @@ public final class FunnyGuildsCommand extends AbstractFunnyCommand {
 
     private void post(CommandSender sender, String[] args) {
         when(!sender.hasPermission("funnyguilds.admin"), messages.permission);
-        Optional<FunnybinRequest> request = FunnybinRequest.of(sender, args);
+        Option<FunnybinRequest> request = FunnybinRequest.of(sender, args);
 
         if (request.isPresent()) {
             this.plugin.getConcurrencyManager().postRequests(request.get());

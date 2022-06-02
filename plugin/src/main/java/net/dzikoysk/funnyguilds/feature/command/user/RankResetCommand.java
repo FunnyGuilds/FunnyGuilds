@@ -23,8 +23,7 @@ public final class RankResetCommand extends AbstractFunnyCommand {
     )
     public void execute(Player player, User user) {
         List<ItemStack> requiredItems = config.rankResetItems;
-
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, messages.rankResetItems)) {
             return;
         }
 
@@ -36,7 +35,7 @@ public final class RankResetCommand extends AbstractFunnyCommand {
                 .register("{LAST-RANK}", lastRank)
                 .register("{CURRENT-RANK}", user.getRank().getPoints());
 
-        user.sendMessage(formatter.format(messages.rankResetMessage));
+        sendMessage(player, formatter.format(messages.rankResetMessage));
     }
 
 }

@@ -2,17 +2,17 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.EggTypeChanger;
 import net.dzikoysk.funnyguilds.nms.Reflections;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.spigot.ItemComponentUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -25,8 +25,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
+import panda.std.Option;
 import panda.std.Pair;
-import panda.std.stream.PandaStream;
 import panda.utilities.text.Joiner;
 
 public final class ItemUtils {
@@ -52,7 +52,7 @@ public final class ItemUtils {
     private ItemUtils() {
     }
 
-    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems) {
+    public static boolean playerHasEnoughItems(Player player, List<ItemStack> requiredItems, String message) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
 
@@ -66,10 +66,10 @@ public final class ItemUtils {
             }
 
             if (config.enableItemComponent) {
-                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(messages.createItems, requiredItems, requiredItem));
+                player.spigot().sendMessage(ItemComponentUtils.translateComponentPlaceholder(message, requiredItems, requiredItem));
             }
             else {
-                player.sendMessage(ItemUtils.translateTextPlaceholder(messages.createItems, requiredItems, requiredItem));
+                player.sendMessage(ItemUtils.translateTextPlaceholder(message, requiredItems, requiredItem));
             }
 
             return false;
@@ -79,41 +79,26 @@ public final class ItemUtils {
     }
 
     public static String translateTextPlaceholder(String message, Collection<ItemStack> items, ItemStack item) {
-        StringBuilder contentBuilder = new StringBuilder();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
+        FunnyFormatter formatter = new FunnyFormatter();
 
         if (message.contains("{ITEM}")) {
-            contentBuilder.append(item.getAmount());
-            contentBuilder.append(config.itemAmountSuffix + " ");
-            contentBuilder.append(MaterialUtils.getMaterialName(item.getType()));
-
-            message = StringUtils.replace(message, "{ITEM}", contentBuilder.toString());
+            formatter.register("{ITEM}", item.getAmount() + config.itemAmountSuffix.getValue() + " " +
+                    MaterialUtils.getMaterialName(item.getType()));
         }
 
         if (message.contains("{ITEMS}")) {
-            Collection<String> translatedItems = new ArrayList<>();
-
-            for (ItemStack itemStack : items) {
-                contentBuilder.setLength(0);
-
-                contentBuilder.append(itemStack.getAmount());
-                contentBuilder.append(config.itemAmountSuffix + " ");
-                contentBuilder.append(MaterialUtils.getMaterialName(itemStack.getType()));
-
-                translatedItems.add(contentBuilder.toString());
-            }
-
-            message = StringUtils.replace(message, "{ITEMS}", ChatUtils.toString(translatedItems, true));
+            formatter.register("{ITEMS}", ChatUtils.toString(items.stream()
+                    .map(itemStack -> itemStack.getAmount() + config.itemAmountSuffix.getValue() + " " +
+                            MaterialUtils.getMaterialName(itemStack.getType()))
+                    .collect(Collectors.toList()), true));
         }
 
         if (message.contains("{ITEM-NO-AMOUNT}")) {
-            contentBuilder.setLength(0);
-            contentBuilder.append(MaterialUtils.getMaterialName(item.getType()));
-
-            message = StringUtils.replace(message, "{ITEM-NO-AMOUNT}", contentBuilder.toString());
+            formatter.register("{ITEM-NO-AMOUNT}", MaterialUtils.getMaterialName(item.getType()));
         }
 
-        return message;
+        return formatter.format(message);
     }
 
     public static ItemStack parseItem(String itemString) {
@@ -137,6 +122,7 @@ public final class ItemUtils {
         }
 
         ItemBuilder item = new ItemBuilder(material, stack, data);
+        FunnyFormatter formatter = new FunnyFormatter().register("_", "").register("{HASH}", "#");
 
         for (int index = 2; index < split.length; index++) {
             String[] itemAttribute = split[index].split(":", 2);
@@ -147,15 +133,11 @@ public final class ItemUtils {
             switch (attributeName.toLowerCase()) {
                 case "name":
                 case "displayname":
-                    item.setName(attributeValue.replace("_", " "), true);
+                    item.setName(formatter.format(attributeName), true);
                     continue;
                 case "lore":
-                    String[] lores = String.join(":", attributeValue).split("#");
-
-                    List<String> lore = PandaStream.of(lores)
-                            .map(line -> line.replace("_", " "))
-                            .map(line -> line.replace("{HASH}", "#"))
-                            .toList();
+                    String[] loreLines = String.join(":", attributeValue).split("#");
+                    List<String> lore = Arrays.stream(loreLines).map(formatter::format).collect(Collectors.toList());
 
                     item.setLore(lore, true);
                     continue;
@@ -166,7 +148,7 @@ public final class ItemUtils {
                     continue;
                 case "enchants":
                 case "enchantments":
-                    PandaStream.of(attributeValue.split(","))
+                    Arrays.stream(attributeValue.split(","))
                             .map(ItemUtils::parseEnchant)
                             .filter(enchant -> enchant.getFirst() != null)
                             .forEach(enchant -> item.addEnchant(enchant.getFirst(), enchant.getSecond()));
@@ -176,6 +158,7 @@ public final class ItemUtils {
                         ((SkullMeta) item.getMeta()).setOwner(attributeValue);
                         item.refreshMeta();
                     }
+
                     continue;
                 case "flags":
                 case "itemflags":
@@ -184,13 +167,13 @@ public final class ItemUtils {
                     for (String flag : flags) {
                         flag = flag.trim();
 
-                        ItemFlag matchedFlag = matchItemFlag(flag);
-                        if (matchedFlag == null) {
+                        Option<ItemFlag> matchedFlag = matchItemFlag(flag);
+                        if (matchedFlag.isEmpty()) {
                             FunnyGuilds.getPluginLogger().parser("Unknown item flag: " + flag);
                             continue;
                         }
 
-                        item.setFlag(matchedFlag);
+                        item.setFlag(matchedFlag.get());
                     }
 
                     continue;
@@ -214,7 +197,8 @@ public final class ItemUtils {
                     continue;
                 case "eggtype":
                     if (!EggTypeChanger.needsSpawnEggMeta()) {
-                        FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, no need to use eggtype in item creation!");
+                        FunnyGuilds.getPluginLogger().info("This MC version supports metadata for spawnGuildHeart egg type, " +
+                                "no need to use eggtype in item creation!");
                         continue;
                     }
 
@@ -232,8 +216,6 @@ public final class ItemUtils {
                         EggTypeChanger.applyChanges(item.getMeta(), type);
                         item.refreshMeta();
                     }
-
-                    continue;
             }
         }
 
@@ -241,9 +223,7 @@ public final class ItemUtils {
     }
 
     public static List<ItemStack> parseItems(List<String> itemStrings) {
-        return PandaStream.of(itemStrings)
-                .map(ItemUtils::parseItem)
-                .toList();
+        return itemStrings.stream().map(ItemUtils::parseItem).collect(Collectors.toList());
     }
 
     public static List<ItemStack> parseItems(String... itemStrings) {
@@ -256,41 +236,32 @@ public final class ItemUtils {
         int amount = item.getAmount();
 
         StringBuilder itemString = new StringBuilder(amount + " " + material + (durability > 0 ? ":" + durability : ""));
+        FunnyFormatter formatter = new FunnyFormatter().register("_", "").register("{HASH}", "#");
 
         ItemMeta meta = item.getItemMeta();
-
         if (meta == null) {
             return itemString.toString();
         }
 
         if (meta.hasDisplayName()) {
-            itemString.append(" name:").append(ChatUtils.decolor(meta.getDisplayName()).replace(" ", "_"));
+            itemString.append(" name:").append(formatter.format(ChatUtils.decolor(meta.getDisplayName())));
         }
 
         if (meta.hasLore()) {
-            List<String> lore = PandaStream.of(meta.getLore())
-                    .map(ChatUtils::decolor)
-                    .map(line -> line.replace(" ", "_"))
-                    .map(line -> line.replace("#", "{HASH}"))
-                    .toList();
-
+            List<String> lore = meta.getLore().stream().map(ChatUtils::decolor).map(formatter::format).collect(Collectors.toList());
             itemString.append(" lore:").append(Joiner.on("#").join(lore));
         }
 
         if (meta.hasEnchants()) {
-            List<String> enchants = PandaStream.of(meta.getEnchants().entrySet())
+            List<String> enchants = meta.getEnchants().entrySet().stream()
                     .map(entry -> getEnchantName(entry.getKey()).toLowerCase() + ":" + entry.getValue())
-                    .toList();
+                    .collect(Collectors.toList());
 
             itemString.append(" enchants:").append(Joiner.on(",").join(enchants));
         }
 
-        if (meta.getItemFlags().size() > 0) {
-            List<String> flags = PandaStream.of(meta.getItemFlags())
-                    .map(ItemFlag::name)
-                    .map(String::toLowerCase)
-                    .toList();
-
+        if (!meta.getItemFlags().isEmpty()) {
+            List<String> flags = meta.getItemFlags().stream().map(ItemFlag::name).map(String::toLowerCase).collect(Collectors.toList());
             itemString.append(" flags:").append(Joiner.on(",").join(flags));
         }
 
@@ -306,16 +277,13 @@ public final class ItemUtils {
             Color color = armorMeta.getColor();
 
             String colorString = color.getRed() + "_" + color.getGreen() + "_" + color.getBlue();
-
             itemString.append(" armorcolor:").append(colorString);
         }
 
         if (EggTypeChanger.needsSpawnEggMeta()) {
             if (meta instanceof SpawnEggMeta) {
                 SpawnEggMeta eggMeta = (SpawnEggMeta) meta;
-
                 String entityType = eggMeta.getSpawnedType().name().toLowerCase();
-
                 itemString.append(" eggtype:").append(entityType);
             }
         }
@@ -353,6 +321,7 @@ public final class ItemUtils {
             catch (InvocationTargetException | IllegalAccessException ignored) {
             }
         }
+
         return enchantment.getName();
     }
 
@@ -376,14 +345,13 @@ public final class ItemUtils {
         return Pair.of(enchant, level);
     }
 
-    private static ItemFlag matchItemFlag(String flagName) {
-        for (ItemFlag flag : ItemFlag.values()) {
-            if (flag.name().equalsIgnoreCase(flagName)) {
-                return flag;
-            }
+    private static Option<ItemFlag> matchItemFlag(String flagName) {
+        try {
+            return Option.of(ItemFlag.valueOf(flagName.toUpperCase()));
         }
-
-        return null;
+        catch (IllegalArgumentException exception) {
+            return Option.none();
+        }
     }
 
     public static int getItemAmount(ItemStack item, Inventory inv) {

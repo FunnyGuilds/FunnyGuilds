@@ -57,8 +57,7 @@ public final class JoinCommand extends AbstractFunnyCommand {
         when(!guildInvitationList.hasInvitation(guild, user), messages.joinHasNotInvitationTo);
 
         List<ItemStack> requiredItems = config.joinItems;
-
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems)) {
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, messages.joinItems)) {
             return;
         }
 

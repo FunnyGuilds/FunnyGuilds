@@ -37,7 +37,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
 
         if (args.length < 1) {
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", ChatUtils.toString(Entity.names(guild.getAllies()), true));
-            messages.breakAlliesList.forEach(line -> user.sendMessage(formatter.format(line)));
+            messages.breakAlliesList.forEach(line -> sendMessage(player, formatter.format(line)));
             return;
         }
 
@@ -64,19 +64,13 @@ public final class BreakCommand extends AbstractFunnyCommand {
         oppositeGuild.removeAlly(guild);
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-
-        for (User member : guild.getMembers()) {
-            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild));
-        }
-
-        for (User member : oppositeGuild.getMembers()) {
-            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
-        }
+        guild.getMembers().forEach(member -> taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild)));
+        oppositeGuild.getMembers().forEach(member -> taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild)));
 
         ConcurrencyTask task = taskBuilder.build();
         this.concurrencyManager.postTask(task);
 
-        user.sendMessage(breakFormatter.format(messages.breakDone));
+        sendMessage(player, breakFormatter.format(messages.breakDone));
         oppositeGuild.getOwner().sendMessage(breakIFormatter.format(messages.breakIDone));
     }
 
