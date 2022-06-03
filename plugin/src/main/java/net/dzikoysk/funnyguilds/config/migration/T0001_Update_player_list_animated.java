@@ -22,4 +22,5 @@ public class T0001_Update_player_list_animated extends NamedMigration {
                 )
         );
     }
+
 }

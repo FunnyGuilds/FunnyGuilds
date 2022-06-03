@@ -12,7 +12,6 @@ import net.dzikoysk.funnyguilds.event.guild.GuildHeartInteractEvent.Click;
 import net.dzikoysk.funnyguilds.feature.command.user.InfoCommand;
 import net.dzikoysk.funnyguilds.feature.security.SecuritySystem;
 import net.dzikoysk.funnyguilds.guild.Guild;
-import net.dzikoysk.funnyguilds.nms.api.entity.FakeEntity;
 import net.dzikoysk.funnyguilds.nms.heart.GuildEntityHelper;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
@@ -25,9 +24,7 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
     private final FunnyGuilds plugin;
     private final PluginConfiguration config;
     private final GuildEntityHelper guildEntityHelper;
-
     private InfoCommand infoExecutor;
-
     private final User user;
     private final int entityId;
 
@@ -49,16 +46,17 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        try (PandaStream<Entry<Guild, FakeEntity>> entries = PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())) {
-            entries.filter(entry -> entry.getValue().getId() == this.entityId)
-                    .map(Entry::getKey)
-                    .mapOpt(guild -> plugin.getFunnyServer().getPlayer(user.getUUID()).map(player -> Pair.of(player, guild)))
-                    .forEach(playerToGuild -> displayGuildInfo(playerToGuild.getFirst(), playerToGuild.getSecond()));
-        }
+        PandaStream.of(this.guildEntityHelper.getGuildEntities().entrySet())
+                .filter(entry -> entry.getValue().getId() == this.entityId)
+                .map(Entry::getKey)
+                .mapOpt(guild -> this.plugin.getFunnyServer().getPlayer(this.user.getUUID())
+                        .map(player -> Pair.of(player, guild))
+                )
+                .forEach(playerToGuild -> this.displayGuildInfo(playerToGuild.getFirst(), playerToGuild.getSecond()));
     }
 
     private void displayGuildInfo(Player player, Guild guild) {
-        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, user, guild, Click.RIGHT,
+        GuildHeartInteractEvent interactEvent = new GuildHeartInteractEvent(EventCause.USER, this.user, guild, Click.RIGHT,
                 !SecuritySystem.onHitCrystal(player, guild));
         SimpleEventHandler.handle(interactEvent);
 
@@ -66,12 +64,12 @@ public class WarInfoRequest extends DefaultConcurrencyRequest {
             return;
         }
 
-        if (config.informationMessageCooldowns.cooldown(player, config.infoPlayerCooldown)) {
+        if (this.config.informationMessageCooldowns.cooldown(player, this.config.infoPlayerCooldown)) {
             return;
         }
 
         try {
-            infoExecutor.execute(player, new String[] {guild.getTag()});
+            this.infoExecutor.execute(player, new String[] {guild.getTag()});
         }
         catch (ValidationException validatorException) {
             validatorException.getValidationMessage().peek(message -> ChatUtils.sendMessage(player, message));

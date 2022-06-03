@@ -23,11 +23,11 @@ public final class KillsCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
-        when(args.length < 2, messages.adminNoKillsGiven);
+        when(args.length < 1, this.messages.generalNoNickGiven);
+        when(args.length < 2, this.messages.adminNoKillsGiven);
 
         int kills = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(FunnyFormatter.formatOnce(messages.adminErrorInNumber, "{ERROR}", args[1]));
+            return new ValidationException(FunnyFormatter.formatOnce(this.messages.adminErrorInNumber, "{ERROR}", args[1]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);
@@ -48,7 +48,7 @@ public final class KillsCommand extends AbstractFunnyCommand {
                 .register("{PLAYER}", user.getName())
                 .register("{KILLS}", finalKills);
 
-        sendMessage(sender, formatter.format(messages.adminKillsChanged));
+        sendMessage(sender, formatter.format(this.messages.adminKillsChanged));
     }
 
 }

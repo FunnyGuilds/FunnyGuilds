@@ -27,17 +27,17 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
-        when(!config.regionsEnabled, messages.regionsDisabled);
+        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
 
-        Region region = when(guild.getRegion(), messages.regionsDisabled);
+        Region region = when(guild.getRegion(), this.messages.regionsDisabled);
 
         int enlarge = region.getEnlarge();
-        when(enlarge > config.enlargeItems.size() - 1, messages.enlargeMaxSize);
+        when(enlarge > this.config.enlargeItems.size() - 1, this.messages.enlargeMaxSize);
 
-        ItemStack need = config.enlargeItems.get(enlarge);
-        when(!player.getInventory().containsAtLeast(need, need.getAmount()), FunnyFormatter.formatOnce(messages.enlargeItem,
+        ItemStack need = this.config.enlargeItems.get(enlarge);
+        when(!player.getInventory().containsAtLeast(need, need.getAmount()), FunnyFormatter.formatOnce(this.messages.enlargeItem,
                 "{ITEM}", need.getAmount() + " " + need.getType().toString().toLowerCase()));
-        when(this.regionManager.isNearRegion(region.getCenter()), messages.enlargeIsNear);
+        when(this.regionManager.isNearRegion(region.getCenter()), this.messages.enlargeIsNear);
 
         if (!SimpleEventHandler.handle(new GuildEnlargeEvent(EventCause.USER, user, guild))) {
             return;
@@ -45,13 +45,13 @@ public final class EnlargeCommand extends AbstractFunnyCommand {
 
         player.getInventory().removeItem(need);
         region.setEnlarge(++enlarge);
-        region.setSize(region.getSize() + config.enlargeSize);
+        region.setSize(region.getSize() + this.config.enlargeSize);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{SIZE}", region.getSize())
                 .register("{LEVEL}", region.getEnlarge());
 
-        guild.broadcast(formatter.format(messages.enlargeDone));
+        guild.broadcast(formatter.format(this.messages.enlargeDone));
     }
 
 }

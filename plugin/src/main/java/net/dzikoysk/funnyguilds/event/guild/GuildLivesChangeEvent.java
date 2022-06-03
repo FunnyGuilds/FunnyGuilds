@@ -3,14 +3,15 @@ package net.dzikoysk.funnyguilds.event.guild;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildLivesChangeEvent extends GuildEvent {
 
-    private final int newLives;
     private static final HandlerList handlers = new HandlerList();
+    private final int newLives;
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -20,7 +21,6 @@ public class GuildLivesChangeEvent extends GuildEvent {
 
     public GuildLivesChangeEvent(EventCause eventCause, User doer, Guild guild, int newLives) {
         super(eventCause, doer, guild);
-
         this.newLives = newLives;
     }
 

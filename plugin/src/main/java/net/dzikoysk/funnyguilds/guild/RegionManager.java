@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.shared.bukkit.FunnyBox;
@@ -30,7 +30,6 @@ import panda.std.stream.PandaStream;
 public class RegionManager {
 
     private final PluginConfiguration pluginConfiguration;
-
     private final Map<String, Region> regionsMap = new ConcurrentHashMap<>();
 
     public RegionManager(PluginConfiguration pluginConfiguration) {
@@ -51,6 +50,13 @@ public class RegionManager {
     }
 
     /**
+     * Deletes all loaded regions data
+     */
+    public void clearRegions() {
+        this.regionsMap.clear();
+    }
+
+    /**
      * Gets the region.
      *
      * @param name       the name of region (probably name of guild)
@@ -58,7 +64,9 @@ public class RegionManager {
      * @return the guild
      */
     public Option<Region> findByName(String name, boolean ignoreCase) {
-        return PandaStream.of(regionsMap.entrySet())
+
+
+        return PandaStream.of(this.regionsMap.entrySet())
                 .find(entry -> ignoreCase
                         ? entry.getValue().getName().equalsIgnoreCase(name)
                         : entry.getValue().getName().equals(name))
@@ -82,7 +90,7 @@ public class RegionManager {
      * @return the region
      */
     public Option<Region> findRegionAtLocation(Location location) {
-        return PandaStream.of(regionsMap.entrySet())
+        return PandaStream.of(this.regionsMap.entrySet())
                 .find(entry -> entry.getValue().isIn(location))
                 .map(Map.Entry::getValue);
     }
@@ -98,7 +106,7 @@ public class RegionManager {
     }
 
     public boolean isAnyPlayerInRegion(Region region, Collection<UUID> ignoredUuids) {
-        if (!pluginConfiguration.regionsEnabled) {
+        if (!this.pluginConfiguration.regionsEnabled) {
             return false;
         }
 
@@ -120,17 +128,17 @@ public class RegionManager {
     }
 
     public boolean isAnyPlayerInRegion(Region region) {
-        return isAnyPlayerInRegion(region, Collections.emptySet());
+        return this.isAnyPlayerInRegion(region, Collections.emptySet());
     }
 
     public boolean isAnyUserInRegion(Region region, Collection<User> ignoredUsers) {
-        return isAnyPlayerInRegion(region, ignoredUsers.stream()
+        return this.isAnyPlayerInRegion(region, ignoredUsers.stream()
                 .map(User::getUUID)
                 .collect(Collectors.toSet()));
     }
 
     public boolean isAnyUserInRegion(Option<Region> regionOption, Collection<User> ignoredUsers) {
-        return regionOption.map(region -> isAnyUserInRegion(region, ignoredUsers))
+        return regionOption.map(region -> this.isAnyUserInRegion(region, ignoredUsers))
                 .orElseGet(false);
     }
 
@@ -220,7 +228,7 @@ public class RegionManager {
         }
 
         if (dataModel instanceof SQLDataModel) {
-            DatabaseRegion.delete(region);
+            DatabaseRegionSerializer.delete(region);
         }
 
         this.removeRegion(region);

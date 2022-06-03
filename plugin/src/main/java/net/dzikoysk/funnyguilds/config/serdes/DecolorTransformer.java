@@ -10,10 +10,11 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 public class DecolorTransformer extends ObjectTransformer<String, String> {
 
     @Exclude
-    private static final ObjectTransformer<String, String> TRANSFORMER = SimpleObjectTransformer.of(String.class, String.class, ChatUtils::decolor);
+    private static final ObjectTransformer<String, String> TRANSFORMER = SimpleObjectTransformer.of(String.class,
+            String.class, ChatUtils::decolor);
 
     @Override
-    public GenericsPair getPair() {
+    public GenericsPair<String, String> getPair() {
         return TRANSFORMER.getPair();
     }
 

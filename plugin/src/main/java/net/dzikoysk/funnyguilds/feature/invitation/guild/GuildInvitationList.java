@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.feature.invitation.InvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -42,9 +41,10 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
     }
 
     public Set<String> getInvitationGuildNames(UUID to) {
-        try (PandaStream<GuildInvitation> invitations = PandaStream.of(this.getInvitationsFor(to))) {
-            return invitations.map(GuildInvitation::getFrom).map(Guild::getName).collect(Collectors.toSet());
-        }
+        return PandaStream.of(this.getInvitationsFor(to))
+                .map(GuildInvitation::getFrom)
+                .map(Guild::getName)
+                .toSet();
     }
 
     public Set<String> getInvitationGuildNames(User to) {
@@ -52,9 +52,10 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
     }
 
     public Set<String> getInvitationGuildTags(UUID to) {
-        try (PandaStream<GuildInvitation> invitations = PandaStream.of(this.getInvitationsFor(to))) {
-            return invitations.map(GuildInvitation::getFrom).map(Guild::getTag).collect(Collectors.toSet());
-        }
+        return PandaStream.of(this.getInvitationsFor(to))
+                .map(GuildInvitation::getFrom)
+                .map(Guild::getTag)
+                .toSet();
     }
 
     public Set<String> getInvitationGuildTags(User to) {
@@ -63,8 +64,8 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
 
     @Override
     public void createInvitation(UUID from, UUID to) {
-        Option<Guild> fromOption = guildManager.findByUuid(from);
-        Option<User> toOption = userManager.findByUuid(to);
+        Option<Guild> fromOption = this.guildManager.findByUuid(from);
+        Option<User> toOption = this.userManager.findByUuid(to);
 
         if (fromOption.isEmpty() || toOption.isEmpty()) {
             return;
@@ -74,14 +75,14 @@ public class GuildInvitationList implements InvitationList<GuildInvitation> {
     }
 
     public void createInvitation(Guild from, User to) {
-        invitations.add(new GuildInvitation(from, to));
+        this.invitations.add(new GuildInvitation(from, to));
     }
 
     @Override
     public void expireInvitation(UUID from, UUID to) {
-        try (PandaStream<GuildInvitation> invitations = PandaStream.of(this.getInvitationsFor(to))) {
-            invitations.filter(invitation -> invitation.getToUUID().equals(to)).forEach(this.invitations::remove);
-        }
+        PandaStream.of(this.getInvitationsFor(to))
+                .filter(invitation -> invitation.getToUUID().equals(to))
+                .forEach(this.invitations::remove);
     }
 
     public void expireInvitation(Guild from, User to) {

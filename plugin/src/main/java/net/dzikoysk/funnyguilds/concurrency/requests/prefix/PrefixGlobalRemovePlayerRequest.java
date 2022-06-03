@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 public class PrefixGlobalRemovePlayerRequest extends DefaultConcurrencyRequest {
 
     private final IndividualPrefixManager individualPrefixManager;
-
     private final String player;
 
     public PrefixGlobalRemovePlayerRequest(IndividualPrefixManager individualPrefixManager, String player) {
@@ -16,7 +15,7 @@ public class PrefixGlobalRemovePlayerRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        this.individualPrefixManager.removePlayer(player);
+        this.individualPrefixManager.removePlayer(this.player);
     }
 
 }

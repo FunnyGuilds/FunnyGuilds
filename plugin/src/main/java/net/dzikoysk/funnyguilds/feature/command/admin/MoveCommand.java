@@ -30,10 +30,10 @@ public final class MoveCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, User admin, String[] args) {
-        when(!config.regionsEnabled, messages.regionsDisabled);
-        when(args.length < 1, messages.generalNoTagGiven);
+        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
+        when(args.length < 1, this.messages.generalNoTagGiven);
 
-        HeartConfiguration heartConfig = config.heart;
+        HeartConfiguration heartConfig = this.config.heart;
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         Location location = player.getLocation().getBlock().getLocation();
         World world = player.getWorld();
@@ -46,14 +46,14 @@ public final class MoveCommand extends AbstractFunnyCommand {
             location.setY(location.getBlockY() + 2);
         }
 
-        int distance = config.regionSize + config.createDistance;
-        if (config.enlargeItems != null) {
-            distance = config.enlargeItems.size() * config.enlargeSize + distance;
+        int distance = this.config.regionSize + this.config.createDistance;
+        if (this.config.enlargeItems != null) {
+            distance = this.config.enlargeItems.size() * this.config.enlargeSize + distance;
         }
 
         when(distance > LocationUtils.flatDistance(player.getWorld().getSpawnLocation(), location),
-                FunnyFormatter.formatOnce(messages.createSpawn, "{DISTANCE}", distance));
-        when(this.regionManager.isNearRegion(location), messages.createIsNear);
+                FunnyFormatter.formatOnce(this.messages.createSpawn, "{DISTANCE}", distance));
+        when(this.regionManager.isNearRegion(location), this.messages.createIsNear);
 
         if (!SimpleEventHandler.handle(new GuildMoveEvent(AdminUtils.getCause(admin), admin, guild, location))) {
             return;
@@ -62,7 +62,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
         Region region = guild.getRegion()
                 .peek(peekRegion -> {
                     if (heartConfig.createEntityType != null) {
-                        plugin.getGuildEntityHelper().despawnGuildEntity(guild);
+                        this.plugin.getGuildEntityHelper().despawnGuildEntity(guild);
                     }
                     else if (heartConfig.createMaterial != null && heartConfig.createMaterial.getLeft() != Material.AIR) {
                         peekRegion.getHeartBlock()
@@ -76,7 +76,7 @@ public final class MoveCommand extends AbstractFunnyCommand {
                             .map(homeLocation -> homeLocation.subtract(0.0D, 1.0D, 0.0D))
                             .peek(guild::setHome);
                 })
-                .orElseGet(() -> new Region(guild, location, config.regionSize));
+                .orElseGet(() -> new Region(guild, location, this.config.regionSize));
 
         if (heartConfig.createCenterSphere) {
             SpaceUtils.sphere(location, 3, 3, false, true, 0).stream()
@@ -85,13 +85,13 @@ public final class MoveCommand extends AbstractFunnyCommand {
                     .forEach(block -> block.setType(Material.AIR));
         }
 
-        plugin.getGuildEntityHelper().spawnGuildEntity(guild);
+        this.plugin.getGuildEntityHelper().spawnGuildEntity(guild);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{REGION}", region.getName());
 
-        admin.sendMessage(formatter.format(messages.adminGuildRelocated));
+        admin.sendMessage(formatter.format(this.messages.adminGuildRelocated));
     }
 
 }

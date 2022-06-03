@@ -25,7 +25,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
 
     @Override
     public HookInitResult init() {
-        new FunnyGuildsPlaceholder(plugin).register();
+        new FunnyGuildsPlaceholder(this.plugin).register();
         return HookInitResult.SUCCESS;
     }
 
@@ -64,12 +64,12 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
             String lowerIdentifier = identifier.toLowerCase();
 
             if (lowerIdentifier.contains("position-")) {
-                return rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase() + "}", user);
+                return this.rankPlaceholdersService.formatTopPosition("{" + identifier.toUpperCase() + "}", user);
             }
             else if (lowerIdentifier.contains("top-")) {
-                String temp = rankPlaceholdersService.formatTop("{" + identifier.toUpperCase() + "}", user);
+                String temp = this.rankPlaceholdersService.formatTop("{" + identifier.toUpperCase() + "}", user);
                 if (this.plugin.getPluginConfiguration().top.enableLegacyPlaceholders) {
-                    temp = rankPlaceholdersService.formatRank(temp, user);
+                    temp = this.rankPlaceholdersService.formatRank(temp, user);
                 }
 
                 return temp;
@@ -117,7 +117,7 @@ public class PlaceholderAPIHook extends AbstractPluginHook {
 
         @Override
         public @NotNull String getVersion() {
-            return funnyguildsVersion;
+            return this.funnyguildsVersion;
         }
 
         @Override

@@ -10,12 +10,11 @@ public abstract class GuildAllyEvent extends GuildEvent {
 
     public GuildAllyEvent(EventCause eventCause, User doer, Guild guild, Guild alliedGuild) {
         super(eventCause, doer, guild);
-
         this.alliedGuild = alliedGuild;
     }
 
     public Guild getAlliedGuild() {
-        return alliedGuild;
+        return this.alliedGuild;
     }
 
 }

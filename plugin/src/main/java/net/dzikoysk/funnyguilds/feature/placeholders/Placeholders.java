@@ -119,7 +119,7 @@ public abstract class Placeholders<T, P extends Placeholders<T, P>> {
 
     public FunnyFormatter toCustomFormatter(T data, String prefix, String suffix, Function<String, String> nameModifier) {
         FunnyFormatter formatter = new FunnyFormatter();
-        placeholders.forEach((key, placeholder) -> formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(data)));
+        this.placeholders.forEach((key, placeholder) -> formatter.register(prefix + nameModifier.apply(key) + suffix, placeholder.get(data)));
         return formatter;
     }
 

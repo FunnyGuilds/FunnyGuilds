@@ -15,26 +15,27 @@ public class SQLElement {
     }
 
     public String getKey() {
-        return key;
+        return this.key;
     }
 
     public String getKeyGraveAccent() {
-        return "`" + key + "`";
+        return "`" + this.key + "`";
     }
 
     public String getKeyValuesAssignment() {
-        return getKeyGraveAccent() + "=VALUES(" + getKeyGraveAccent() + ")";
+        return this.getKeyGraveAccent() + "=VALUES(" + this.getKeyGraveAccent() + ")";
     }
 
     public String getType() {
-        return size != -1 ? type.getName() + "(" + size + ")" : type.getName();
+        return this.size != -1 ? this.type.getName() + "(" + this.size + ")" : this.type.getName();
     }
 
     public SQLType getSQLType() {
-        return type;
+        return this.type;
     }
 
     public boolean isNotNull() {
-        return notNull;
+        return this.notNull;
     }
+
 }

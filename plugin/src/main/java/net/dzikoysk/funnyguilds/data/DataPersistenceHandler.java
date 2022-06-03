@@ -21,8 +21,9 @@ public class DataPersistenceHandler {
             this.dataPersistenceHandlerTask.cancel();
         }
 
-        this.dataPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin,
-                () -> this.plugin.getConcurrencyManager().postRequests(new DataSaveRequest(this.plugin.getDataModel(), false)), interval, interval);
+        this.dataPersistenceHandlerTask = Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, () -> {
+            this.plugin.getConcurrencyManager().postRequests(new DataSaveRequest(this.plugin.getDataModel(), false));
+        }, interval, interval);
     }
 
     public void stopHandler() {

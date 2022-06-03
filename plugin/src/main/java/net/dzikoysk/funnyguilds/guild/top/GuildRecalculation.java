@@ -24,9 +24,10 @@ public class GuildRecalculation implements BiFunction<String, TopComparator<Guil
         GuildRankManager rankManager = FunnyGuilds.getInstance().getGuildRankManager();
         NavigableSet<GuildRank> guildsRank = new TreeSet<>(topComparator);
 
-        try (PandaStream<Guild> guilds = PandaStream.of(guildManager.getGuilds())) {
-            guilds.filter(rankManager::isRankedGuild).map(Guild::getRank).forEach(guildsRank::add);
-        }
+        PandaStream.of(this.guildManager.getGuilds())
+                .filter(rankManager::isRankedGuild)
+                .map(Guild::getRank)
+                .forEach(guildsRank::add);
 
         int position = 0;
         for (GuildRank guildRank : guildsRank) {

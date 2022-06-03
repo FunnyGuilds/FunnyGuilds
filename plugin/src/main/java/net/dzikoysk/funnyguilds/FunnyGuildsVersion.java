@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
-import net.dzikoysk.funnyguilds.shared.IOUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyIOUtils;
 import org.bukkit.command.CommandSender;
 
 public final class FunnyGuildsVersion {
@@ -44,14 +44,14 @@ public final class FunnyGuildsVersion {
         this.funnyGuilds.getServer().getScheduler().runTaskAsynchronously(this.funnyGuilds, () -> {
             if (funnyGuilds.getPluginConfiguration().updateNightlyInfo) {
                 try {
-                    String ghResponse = IOUtils.getContent(GH_COMMITS_URL);
+                    String ghResponse = FunnyIOUtils.getContent(GH_COMMITS_URL);
                     JsonArray ghCommits = GSON.fromJson(ghResponse, JsonArray.class);
 
                     if (ghCommits.size() == 0) {
                         return;
                     }
 
-                    String latestNightlyVersion = IOUtils.getContent(NIGHTLY_VERSION_FILE_URL);
+                    String latestNightlyVersion = FunnyIOUtils.getContent(NIGHTLY_VERSION_FILE_URL);
                     JsonObject latestCommit = ghCommits.get(0).getAsJsonObject();
                     String latestCommitHash = latestCommit.get("sha").getAsString().substring(0, 7);
 
@@ -67,7 +67,7 @@ public final class FunnyGuildsVersion {
                 }
             }
             else {
-                String latestRelease = IOUtils.getContent(VERSION_FILE_URL);
+                String latestRelease = FunnyIOUtils.getContent(VERSION_FILE_URL);
 
                 if (latestRelease == null) {
                     return;

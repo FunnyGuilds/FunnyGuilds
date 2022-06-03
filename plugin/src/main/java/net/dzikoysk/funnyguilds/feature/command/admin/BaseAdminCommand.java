@@ -21,23 +21,23 @@ public final class BaseAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
+        when(args.length < 1, this.messages.generalNoNickGiven);
 
         User userToTeleport = UserValidation.requireUserByName(args[0]);
-        when(!userToTeleport.isOnline(), messages.generalNotOnline);
-        when(!userToTeleport.hasGuild(), messages.generalPlayerHasNoGuild);
+        when(!userToTeleport.isOnline(), this.messages.generalNotOnline);
+        when(!userToTeleport.hasGuild(), this.messages.generalPlayerHasNoGuild);
+
         Guild guild = userToTeleport.getGuild().get();
+        when(!guild.hasHome(), this.messages.adminGuildHasNoHome);
 
-        when(!guild.hasHome(), messages.adminGuildHasNoHome);
         Location guildHome = guild.getHome().get();
-
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{ADMIN}", sender.getName())
                 .register("{PLAYER}", userToTeleport.getName());
 
         userToTeleport.getProfile().teleport(PositionConverter.adapt(guildHome));
-        userToTeleport.sendMessage(formatter.format(messages.adminTeleportedToBase));
-        sendMessage(sender, formatter.format(messages.adminTargetTeleportedToBase));
+        userToTeleport.sendMessage(formatter.format(this.messages.adminTeleportedToBase));
+        sendMessage(sender, formatter.format(this.messages.adminTargetTeleportedToBase));
     }
 
 }

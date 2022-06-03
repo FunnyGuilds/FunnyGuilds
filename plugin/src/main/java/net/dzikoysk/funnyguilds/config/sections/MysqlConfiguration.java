@@ -36,7 +36,9 @@ public class MysqlConfiguration extends OkaeriConfig {
     public MysqlConfiguration() {
     }
 
-    public MysqlConfiguration(String hostname, int port, String database, String user, String password, int poolSize, int connectionTimeout, boolean useSSL, String usersTableName, String guildsTableName, String regionsTableName) {
+    public MysqlConfiguration(String hostname, int port, String database, String user, String password, int poolSize,
+                              int connectionTimeout, boolean useSSL, String usersTableName, String guildsTableName,
+                              String regionsTableName) {
         this.hostname = hostname;
         this.port = port;
         this.database = database;

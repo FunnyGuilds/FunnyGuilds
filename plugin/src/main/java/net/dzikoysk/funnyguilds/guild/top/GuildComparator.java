@@ -33,12 +33,13 @@ public final class GuildComparator implements TopComparator<GuildRank> {
         if (result == 0) {
             result = Rank.compareName(o1, o2);
         }
+
         return result;
     }
 
     @Override
     public Number getValue(GuildRank rank) {
-        return valueFunction.apply(rank);
+        return this.valueFunction.apply(rank);
     }
 
 }

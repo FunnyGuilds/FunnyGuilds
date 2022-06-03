@@ -11,13 +11,11 @@ public abstract class GuildEvent extends FunnyEvent {
 
     public GuildEvent(EventCause eventCause, User doer, Guild guild) {
         super(eventCause, doer, !Bukkit.isPrimaryThread());
-
         this.guild = guild;
     }
 
     public GuildEvent(EventCause eventCause, User doer, Guild guild, boolean isAsync) {
         super(eventCause, doer, isAsync);
-
         this.guild = guild;
     }
 

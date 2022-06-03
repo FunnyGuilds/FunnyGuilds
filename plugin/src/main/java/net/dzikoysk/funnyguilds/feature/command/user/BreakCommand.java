@@ -17,6 +17,7 @@ import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
+import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -33,11 +34,11 @@ public final class BreakCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
-        when(!guild.hasAllies(), messages.breakHasNotAllies);
+        when(!guild.hasAllies(), this.messages.breakHasNotAllies);
 
         if (args.length < 1) {
             FunnyFormatter formatter = FunnyFormatter.of("{GUILDS}", ChatUtils.toString(Entity.names(guild.getAllies()), true));
-            messages.breakAlliesList.forEach(line -> sendMessage(player, formatter.format(line)));
+            this.messages.breakAlliesList.forEach(line -> sendMessage(player, formatter.format(line)));
             return;
         }
 
@@ -46,7 +47,7 @@ public final class BreakCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", oppositeGuild.getName())
                 .register("{TAG}", guild.getTag());
 
-        when(!guild.isAlly(oppositeGuild), () -> formatter.format(messages.breakAllyExists));
+        when(!guild.isAlly(oppositeGuild), () -> formatter.format(this.messages.breakAllyExists));
 
         if (!SimpleEventHandler.handle(new GuildBreakAllyEvent(EventCause.USER, user, guild, oppositeGuild))) {
             return;
@@ -64,14 +65,20 @@ public final class BreakCommand extends AbstractFunnyCommand {
         oppositeGuild.removeAlly(guild);
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
-        guild.getMembers().forEach(member -> taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild)));
-        oppositeGuild.getMembers().forEach(member -> taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild)));
+
+        PandaStream.of(guild.getMembers()).forEach(member -> {
+            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, oppositeGuild));
+        });
+
+        PandaStream.of(oppositeGuild.getMembers()).forEach(member -> {
+            taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
+        });
 
         ConcurrencyTask task = taskBuilder.build();
         this.concurrencyManager.postTask(task);
 
-        sendMessage(player, breakFormatter.format(messages.breakDone));
-        oppositeGuild.getOwner().sendMessage(breakIFormatter.format(messages.breakIDone));
+        sendMessage(player, breakFormatter.format(this.messages.breakDone));
+        oppositeGuild.getOwner().sendMessage(breakIFormatter.format(this.messages.breakIDone));
     }
 
 }

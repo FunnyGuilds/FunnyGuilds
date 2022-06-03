@@ -12,7 +12,6 @@ public abstract class AbstractMutableEntity implements MutableEntity {
     @Override
     public boolean wasChanged() {
         boolean changedState = this.wasChanged;
-
         if (changedState) {
             this.wasChanged = false;
         }

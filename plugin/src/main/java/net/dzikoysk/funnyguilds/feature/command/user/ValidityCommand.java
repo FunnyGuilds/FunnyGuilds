@@ -32,20 +32,21 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild) {
-        if (!config.validityWhen.isZero()) {
+        if (!this.config.validityWhen.isZero()) {
             long validity = guild.getValidity();
             Duration delta = Duration.between(Instant.now(), Instant.ofEpochMilli(validity));
 
-            when(delta.compareTo(config.validityWhen) > 0, FunnyFormatter.formatOnce(messages.validityWhen, "{TIME}",
-                    TimeUtils.getDurationBreakdown(delta.minus(config.validityWhen).toMillis())));
+            when(delta.compareTo(this.config.validityWhen) > 0, FunnyFormatter.formatOnce(this.messages.validityWhen, "{TIME}",
+                    TimeUtils.getDurationBreakdown(delta.minus(this.config.validityWhen).toMillis())));
         }
 
-        List<ItemStack> requiredItems = config.validityItems;
-        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, messages.validityItems)) {
+        List<ItemStack> requiredItems = this.config.validityItems;
+        if (!ItemUtils.playerHasEnoughItems(player, requiredItems, this.messages.validityItems)) {
             return;
         }
 
-        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, config.validityTime.toMillis()))) {
+        long validityTime = this.config.validityTime.toMillis();
+        if (!SimpleEventHandler.handle(new GuildExtendValidityEvent(EventCause.USER, user, guild, validityTime))) {
             return;
         }
 
@@ -56,10 +57,11 @@ public final class ValidityCommand extends AbstractFunnyCommand {
             validity = System.currentTimeMillis();
         }
 
-        validity += config.validityTime.toMillis();
-
+        validity += validityTime;
         guild.setValidity(validity);
-        user.sendMessage(FunnyFormatter.formatOnce(messages.validityDone, "{DATE}", messages.dateFormat.format(validity)));
+
+        String formattedValidity = this.messages.dateFormat.format(validity);
+        sendMessage(player, FunnyFormatter.formatOnce(this.messages.validityDone, "{DATE}", formattedValidity));
     }
 
 }

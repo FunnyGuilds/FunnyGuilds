@@ -7,24 +7,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class GuildRegionLeaveEvent extends GuildEvent {
 
-    private static final HandlerList HANDLERS = new HandlerList();
+    private static final HandlerList handlers = new HandlerList();
 
-    public GuildRegionLeaveEvent(EventCause cause, User doer, Guild guild) {
-        super(cause, doer, guild, true);
-    }
-
-    @NotNull
     @Override
-    public HandlerList getHandlers() {
-        return HANDLERS;
+    public @NotNull HandlerList getHandlers() {
+        return handlers;
     }
 
     public static HandlerList getHandlerList() {
-        return HANDLERS;
+        return handlers;
+    }
+
+    public GuildRegionLeaveEvent(EventCause cause, User doer, Guild guild) {
+        super(cause, doer, guild, true);
     }
 
     @Override
     public String getDefaultCancelMessage() {
         return "[FunnyGuilds] Guild region leave has been cancelled by the server!";
     }
+
 }

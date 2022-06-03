@@ -14,27 +14,27 @@ public class CompletableHook<T extends PluginHook> {
     }
 
     public PluginHook.HookInitResult earlyInit() throws Throwable {
-        return hook.earlyInit();
+        return this.hook.earlyInit();
     }
 
     public PluginHook.HookInitResult init() throws Throwable {
-        return hook.init();
+        return this.hook.init();
     }
 
     public void configUpdated() throws Throwable {
-        hook.configUpdated();
+        this.hook.configUpdated();
     }
 
     public void markAsCompleted() {
-        completableHook.complete(Option.of(hook));
+        this.completableHook.complete(Option.of(this.hook));
     }
 
     public void markAsNotCompleted() {
-        completableHook.complete(Option.none());
+        this.completableHook.complete(Option.none());
     }
 
     public boolean isCompleted() {
-        return completableHook.isReady();
+        return this.completableHook.isReady();
     }
 
 }

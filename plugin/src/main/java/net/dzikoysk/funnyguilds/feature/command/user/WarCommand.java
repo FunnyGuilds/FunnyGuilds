@@ -12,6 +12,7 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.entity.Player;
+import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -28,21 +29,21 @@ public final class WarCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild, String[] args) {
-        when(args.length < 1, messages.enemyCorrectUse);
+        when(args.length < 1, this.messages.enemyCorrectUse);
         Guild enemyGuild = GuildValidation.requireGuildByTag(args[0]);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", enemyGuild.getName())
                 .register("{TAG}", enemyGuild.getTag())
-                .register("{AMOUNT}", config.maxEnemiesBetweenGuilds);
+                .register("{AMOUNT}", this.config.maxEnemiesBetweenGuilds);
 
-        when(guild.equals(enemyGuild), messages.enemySame);
-        when(guild.isAlly(enemyGuild), messages.enemyAlly);
-        when(guild.isEnemy(enemyGuild), messages.enemyAlready);
-        when(guild.getEnemies().size() >= config.maxEnemiesBetweenGuilds, formatter.format(messages.enemyMaxAmount));
+        when(guild.equals(enemyGuild), this.messages.enemySame);
+        when(guild.isAlly(enemyGuild), this.messages.enemyAlly);
+        when(guild.isEnemy(enemyGuild), this.messages.enemyAlready);
+        when(guild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds, formatter.format(this.messages.enemyMaxAmount));
 
-        if (enemyGuild.getEnemies().size() >= config.maxEnemiesBetweenGuilds) {
-            user.sendMessage(formatter.format(messages.enemyMaxTargetAmount));
+        if (enemyGuild.getEnemies().size() >= this.config.maxEnemiesBetweenGuilds) {
+            sendMessage(player, formatter.format(this.messages.enemyMaxTargetAmount));
             return;
         }
 
@@ -56,18 +57,18 @@ public final class WarCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        user.sendMessage(enemyFormatter.format(messages.enemyDone));
-        enemyGuild.getOwner().sendMessage(enemyIFormatter.format(messages.enemyIDone));
+        sendMessage(player, enemyFormatter.format(this.messages.enemyDone));
+        enemyGuild.getOwner().sendMessage(enemyIFormatter.format(this.messages.enemyIDone));
 
         ConcurrencyTaskBuilder taskBuilder = ConcurrencyTask.builder();
 
-        for (User member : guild.getMembers()) {
+        PandaStream.of(guild.getMembers()).forEach(member -> {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, enemyGuild));
-        }
+        });
 
-        for (User member : enemyGuild.getMembers()) {
+        PandaStream.of(enemyGuild.getMembers()).forEach(member -> {
             taskBuilder.delegate(new PrefixUpdateGuildRequest(member, guild));
-        }
+        });
 
         this.concurrencyManager.postTask(taskBuilder.build());
     }

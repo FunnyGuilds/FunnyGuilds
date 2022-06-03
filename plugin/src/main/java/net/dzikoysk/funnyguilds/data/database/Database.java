@@ -8,13 +8,9 @@ import net.dzikoysk.funnyguilds.config.sections.MysqlConfiguration;
 
 public class Database {
 
-    private static Database instance;
-
     private final HikariDataSource dataSource;
 
     public Database() {
-        instance = this;
-
         this.dataSource = new HikariDataSource();
         MysqlConfiguration c = FunnyGuilds.getInstance().getPluginConfiguration().mysql;
 
@@ -38,23 +34,12 @@ public class Database {
         this.dataSource.addDataSourceProperty("useServerPrepStmts", true);
     }
 
-    public static Database getInstance() {
-        if (instance == null) {
-            return new Database();
-        }
-
-        return instance;
-    }
-
-    public HikariDataSource getDataSource() {
-        return dataSource;
-    }
-
-    public static Connection getConnection() throws SQLException {
-        return getInstance().getDataSource().getConnection();
+    public Connection getConnection() throws SQLException {
+        return this.dataSource.getConnection();
     }
 
     public void shutdown() {
         this.dataSource.close();
     }
+
 }

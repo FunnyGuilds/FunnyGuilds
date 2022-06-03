@@ -41,23 +41,23 @@ public class WorldEdit6Hook extends WorldEditHook {
         Class<?> worldDataClass = Reflections.getClass("com.sk89q.worldedit.world.registry.WorldData");
         Class<?> vectorClass = Reflections.getClass("com.sk89q.worldedit.Vector");
 
-        schematicReaderConstructor = Reflections.getConstructor(schematicReaderClass, Reflections.getClass("com.sk89q.jnbt.NBTInputStream"));
-        pasteConstructor = Reflections.getConstructor(PasteBuilder.class, ClipboardHolder.class, Extent.class, worldDataClass);
-        clipboardHolderConstructor = Reflections.getConstructor(ClipboardHolder.class, Clipboard.class, worldDataClass);
-        vectorConstructor = Reflections.getConstructor(vectorClass, double.class, double.class, double.class);
+        this.schematicReaderConstructor = Reflections.getConstructor(schematicReaderClass, Reflections.getClass("com.sk89q.jnbt.NBTInputStream"));
+        this.pasteConstructor = Reflections.getConstructor(PasteBuilder.class, ClipboardHolder.class, Extent.class, worldDataClass);
+        this.clipboardHolderConstructor = Reflections.getConstructor(ClipboardHolder.class, Clipboard.class, worldDataClass);
+        this.vectorConstructor = Reflections.getConstructor(vectorClass, double.class, double.class, double.class);
 
-        schematicReaderConstructor.setAccessible(true);
-        pasteConstructor.setAccessible(true);
-        clipboardHolderConstructor.setAccessible(true);
-        vectorConstructor.setAccessible(true);
+        this.schematicReaderConstructor.setAccessible(true);
+        this.pasteConstructor.setAccessible(true);
+        this.clipboardHolderConstructor.setAccessible(true);
+        this.vectorConstructor.setAccessible(true);
 
-        getWorldData = com.sk89q.worldedit.world.World.class.getDeclaredMethod("getWorldData");
-        readSchematic = schematicReaderClass.getDeclaredMethod("read", worldDataClass);
-        pasteBuilderSetTo = PasteBuilder.class.getDeclaredMethod("to", vectorClass);
+        this.getWorldData = com.sk89q.worldedit.world.World.class.getDeclaredMethod("getWorldData");
+        this.readSchematic = schematicReaderClass.getDeclaredMethod("read", worldDataClass);
+        this.pasteBuilderSetTo = PasteBuilder.class.getDeclaredMethod("to", vectorClass);
 
-        getWorldData.setAccessible(true);
-        readSchematic.setAccessible(true);
-        pasteBuilderSetTo.setAccessible(true);
+        this.getWorldData.setAccessible(true);
+        this.readSchematic.setAccessible(true);
+        this.pasteBuilderSetTo.setAccessible(true);
 
         return HookInitResult.SUCCESS;
     }
@@ -65,20 +65,20 @@ public class WorldEdit6Hook extends WorldEditHook {
     @Override
     public boolean pasteSchematic(File schematicFile, Location location, boolean withAir) {
         try {
-            Object pasteLocation = vectorConstructor.newInstance(location.getX(), location.getY(), location.getZ());
+            Object pasteLocation = this.vectorConstructor.newInstance(location.getX(), location.getY(), location.getZ());
             com.sk89q.worldedit.world.World pasteWorld = new BukkitWorld(location.getWorld());
-            Object pasteWorldData = getWorldData.invoke(pasteWorld);
+            Object pasteWorldData = this.getWorldData.invoke(pasteWorld);
 
             NBTInputStream nbtStream = new NBTInputStream(new GZIPInputStream(Files.newInputStream(schematicFile.toPath())));
-            Object reader = schematicReaderConstructor.newInstance(nbtStream);
-            Object clipboard = readSchematic.invoke(reader, pasteWorldData);
+            Object reader = this.schematicReaderConstructor.newInstance(nbtStream);
+            Object clipboard = this.readSchematic.invoke(reader, pasteWorldData);
 
             @SuppressWarnings("deprecation")
             EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(pasteWorld, -1);
 
-            ClipboardHolder clipboardHolder = (ClipboardHolder) clipboardHolderConstructor.newInstance(clipboard, pasteWorldData);
-            PasteBuilder builder = ((PasteBuilder) pasteConstructor.newInstance(clipboardHolder, editSession, pasteWorldData));
-            builder = (PasteBuilder) pasteBuilderSetTo.invoke(builder, pasteLocation);
+            ClipboardHolder clipboardHolder = (ClipboardHolder) this.clipboardHolderConstructor.newInstance(clipboard, pasteWorldData);
+            PasteBuilder builder = ((PasteBuilder) this.pasteConstructor.newInstance(clipboardHolder, editSession, pasteWorldData));
+            builder = (PasteBuilder) this.pasteBuilderSetTo.invoke(builder, pasteLocation);
             builder = builder.ignoreAirBlocks(!withAir);
 
             Operations.completeLegacy(builder.build());

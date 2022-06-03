@@ -42,6 +42,14 @@ public class UserManager {
     }
 
     /**
+     * Deletes all loaded users data
+     */
+    public void clearUsers() {
+        this.usersByUuid.clear();
+        this.usersByName.clear();
+    }
+
+    /**
      * Gets the set of users from collection of strings (names).
      *
      * @param names collection of names

@@ -19,7 +19,7 @@ final class MemberValidator implements Validator<IsMember, User, ValidationExcep
 
     @Override
     public boolean validate(Context context, IsMember annotation, Property property, User user) throws ValidationException {
-        return isMember(user);
+        return this.isMember(user);
     }
 
     boolean isMember(User user) {

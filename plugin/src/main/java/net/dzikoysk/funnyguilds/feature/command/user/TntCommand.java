@@ -20,22 +20,22 @@ public final class TntCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        when(!config.tntProtection.time.enabled, messages.tntProtectDisable);
+        when(!this.config.tntProtection.time.enabled, this.messages.tntProtectDisable);
 
         LocalTime now = LocalTime.now();
-        LocalTime start = config.tntProtection.time.startTime.getTime();
-        LocalTime end = config.tntProtection.time.endTime.getTime();
+        LocalTime start = this.config.tntProtection.time.startTime.getTime();
+        LocalTime end = this.config.tntProtection.time.endTime.getTime();
 
-        boolean isWithinTimeframe = config.tntProtection.time.passingMidnight
+        boolean isWithinTimeframe = this.config.tntProtection.time.passingMidnight
                 ? now.isAfter(start) || now.isBefore(end)
                 : now.isAfter(start) && now.isBefore(end);
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{PROTECTION_START}", config.tntProtection.time.startTime.getFormattedTime())
-                .register("{PROTECTION_END}", config.tntProtection.time.endTime.getFormattedTime());
+                .register("{PROTECTION_START}", this.config.tntProtection.time.startTime.getFormattedTime())
+                .register("{PROTECTION_END}", this.config.tntProtection.time.endTime.getFormattedTime());
 
-        sendMessage(sender, formatter.format(messages.tntInfo));
-        sendMessage(sender, isWithinTimeframe ? messages.tntNowDisabled : messages.tntNowEnabled);
+        sendMessage(sender, formatter.format(this.messages.tntInfo));
+        sendMessage(sender, isWithinTimeframe ? this.messages.tntNowDisabled : this.messages.tntNowEnabled);
     }
 
 }

@@ -30,10 +30,10 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
 
     @Override
     public String format(String text, User user) {
-        text = basicPlaceholdersService.format(text, null);
-        text = timePlaceholdersService.format(text, OffsetDateTime.now());
-        text = userPlaceholdersService.format(text, user);
-        text = guildPlaceholdersService.formatCustom(text, user.getGuild().orNull(), "{G-", "}", String::toUpperCase);
+        text = this.basicPlaceholdersService.format(text, null);
+        text = this.timePlaceholdersService.format(text, OffsetDateTime.now());
+        text = this.userPlaceholdersService.format(text, user);
+        text = this.guildPlaceholdersService.formatCustom(text, user.getGuild().orNull(), "{G-", "}", String::toUpperCase);
 
         return text;
     }
@@ -44,15 +44,13 @@ public class TablistPlaceholdersService implements PlaceholdersService<User> {
 
     public Set<String> getPlaceholdersKeys() {
         List<Set<String>> keys = Arrays.asList(
-                basicPlaceholdersService.getPlaceholdersKeys(),
-                timePlaceholdersService.getPlaceholdersKeys(),
-                userPlaceholdersService.getPlaceholdersKeys(),
-                guildPlaceholdersService.getPlaceholdersKeys().stream().map(key -> "{G-" + key).collect(Collectors.toSet())
+                this.basicPlaceholdersService.getPlaceholdersKeys(),
+                this.timePlaceholdersService.getPlaceholdersKeys(),
+                this.userPlaceholdersService.getPlaceholdersKeys(),
+                this.guildPlaceholdersService.getPlaceholdersKeys().stream().map(key -> "{G-" + key).collect(Collectors.toSet())
         );
 
-        try (PandaStream<Set<String>> keysStream = PandaStream.of(keys)) {
-            return keysStream.flatMap(streamKeys -> streamKeys).toSet();
-        }
+        return PandaStream.of(keys).flatMap(streamKeys -> streamKeys).toSet();
     }
 
 }

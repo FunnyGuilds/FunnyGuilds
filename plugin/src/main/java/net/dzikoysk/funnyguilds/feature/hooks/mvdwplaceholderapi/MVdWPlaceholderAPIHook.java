@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import net.dzikoysk.funnyguilds.user.UserRankManager;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import panda.std.stream.PandaStream;
 import panda.utilities.StringUtils;
 
 public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
@@ -34,7 +35,7 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
         TablistPlaceholdersService tablistPlaceholdersService = this.plugin.getTablistPlaceholdersService();
 
         tablistPlaceholdersService.getPlaceholdersKeys().forEach(key ->
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_" + key.toLowerCase(), event -> {
+                PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_" + key.toLowerCase(), event -> {
                     OfflinePlayer target = event.getOfflinePlayer();
                     if (target == null) {
                         return StringUtils.EMPTY;
@@ -50,16 +51,16 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
         // User TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
-            final int position = i;
+            int position = i;
 
-            userTopIds.forEach(id ->
-                    PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + id + "-" + position, event -> {
+            PandaStream.of(userTopIds).forEach(id ->
+                    PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_ptop-" + id + "-" + position, event -> {
                         User user = userManager.findByPlayer(event.getPlayer()).orNull();
                         return rankPlaceholdersService.formatTop("{PTOP-" + id.toUpperCase() + "-" + position + "}", user);
                     }));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_ptop-" + position, event -> {
+                PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_ptop-" + position, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).orNull();
                     return rankPlaceholdersService.formatRank("{PTOP-" + position + "}", user);
                 });
@@ -68,30 +69,30 @@ public class MVdWPlaceholderAPIHook extends AbstractPluginHook {
 
         // Guild TOP, positions 1-100
         for (int i = 1; i <= 100; i++) {
-            final int position = i;
+            int position = i;
 
-            guildTopIds.forEach(id ->
-                    PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + id + "-" + position, event -> {
+            PandaStream.of(guildTopIds).forEach(id ->
+                    PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_gtop-" + id + "-" + position, event -> {
                         User user = userManager.findByPlayer(event.getPlayer()).orNull();
                         return rankPlaceholdersService.formatTop("{GTOP-" + id.toUpperCase() + "-" + position + "}", user);
                     }));
 
             if (pluginConfiguration.top.enableLegacyPlaceholders) {
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_gtop-" + position, event -> {
+                PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_gtop-" + position, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).orNull();
                     return rankPlaceholdersService.formatRank("{GTOP-" + position + "}", user);
                 });
             }
         }
 
-        userTopIds.forEach(id ->
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_position-" + id, event -> {
+        PandaStream.of(userTopIds).forEach(id ->
+                PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_position-" + id, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).orNull();
                     return rankPlaceholdersService.formatTopPosition("{POSITION-" + id.toUpperCase() + "}", user);
                 }));
 
-        guildTopIds.forEach(id ->
-                PlaceholderAPI.registerPlaceholder(plugin, "funnyguilds_g-position-" + id, event -> {
+        PandaStream.of(guildTopIds).forEach(id ->
+                PlaceholderAPI.registerPlaceholder(this.plugin, "funnyguilds_g-position-" + id, event -> {
                     User user = userManager.findByPlayer(event.getPlayer()).orNull();
                     return rankPlaceholdersService.formatTopPosition("{G-POSITION-" + id.toUpperCase() + "}", user);
                 }));

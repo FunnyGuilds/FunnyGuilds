@@ -16,7 +16,7 @@ public class PrefixUpdateGuildRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() {
-        user.getCache().getIndividualPrefix().peek(prefix -> prefix.addGuild(guild));
+        this.user.getCache().getIndividualPrefix().peek(prefix -> prefix.addGuild(this.guild));
     }
 
 }

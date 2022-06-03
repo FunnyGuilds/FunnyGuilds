@@ -112,8 +112,8 @@ public final class ItemComponentUtils {
         TextComponent itemComponent = new TextComponent();
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        BaseComponent[] extras = TextComponent.fromLegacyText(messageColor + item.getAmount() + config.itemAmountSuffix
-                + " " + MaterialUtils.getMaterialName(item.getType()));
+        BaseComponent[] extras = TextComponent.fromLegacyText(messageColor + item.getAmount() + config.itemAmountSuffix +
+                " " + MaterialUtils.getMaterialName(item.getType()));
         for (BaseComponent extra : extras) {
             itemComponent.addExtra(extra);
         }

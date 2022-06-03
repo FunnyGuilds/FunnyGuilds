@@ -23,8 +23,8 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
     /**
      * Register placeholders set.
      *
-     * @param plugin plugin which register placeholders set
-     * @param name name of placeholders set
+     * @param plugin       plugin which register placeholders set
+     * @param name         name of placeholders set
      * @param placeholders placeholders set
      */
     public void register(JavaPlugin plugin, String name, P placeholders) {
@@ -35,9 +35,9 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
      * @return all placeholders key of all sets
      */
     public Set<String> getPlaceholdersKeys() {
-        try (PandaStream<P> values = PandaStream.of(this.placeholders.values())) {
-            return values.flatMap(placeholders -> placeholders.getPlaceholders().keySet()).toSet();
-        }
+        return PandaStream.of(this.placeholders.values())
+                .flatMap(placeholders -> placeholders.getPlaceholders().keySet())
+                .toSet();
     }
 
     /**
@@ -47,15 +47,11 @@ public abstract class AbstractPlaceholdersService<T, P extends Placeholders<T, P
      * @return placeholder
      */
     public Option<Placeholder<T>> getPlaceholder(String name) {
-        for (P placeholders : this.placeholders.values()) {
-            Option<Placeholder<T>> placeholder = placeholders.getPlaceholder(name);
-
-            if (placeholder.isPresent()) {
-                return placeholder;
-            }
-        }
-
-        return Option.none();
+        return PandaStream.of(this.placeholders.values())
+                .map(value -> value.getPlaceholder(name))
+                .filter(Option::isPresent)
+                .head()
+                .orElseGet(Option.none());
     }
 
     /**

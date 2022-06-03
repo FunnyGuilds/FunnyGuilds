@@ -30,24 +30,24 @@ public final class KickCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @CanManage User user, Guild guild, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
+        when(args.length < 1, this.messages.generalNoNickGiven);
 
         User formerUser = UserValidation.requireUserByName(args[0]);
-        when(!formerUser.hasGuild(), messages.generalPlayerHasNoGuild);
-        when(!guild.equals(formerUser.getGuild().get()), messages.kickOtherGuild);
-        when(formerUser.isOwner(), messages.kickOwner);
+        when(!formerUser.hasGuild(), this.messages.generalPlayerHasNoGuild);
+        when(!guild.equals(formerUser.getGuild().get()), this.messages.kickOtherGuild);
+        when(formerUser.isOwner(), this.messages.kickOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberKickEvent(EventCause.USER, user, guild, formerUser))) {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, formerUser.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, formerUser.getName()));
 
         guild.removeMember(formerUser);
         formerUser.removeGuild();
 
         if (formerUser.isOnline()) {
-            concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player));
+            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player));
         }
 
         FunnyFormatter formatter = new FunnyFormatter()
@@ -55,10 +55,10 @@ public final class KickCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag());
 
-        user.sendMessage(formatter.format(messages.kickToOwner));
-        broadcastMessage(formatter.format(messages.broadcastKick));
+        sendMessage(player, formatter.format(this.messages.kickToOwner));
+        broadcastMessage(formatter.format(this.messages.broadcastKick));
 
-        formerUser.sendMessage(formatter.format(messages.kickToPlayer));
+        formerUser.sendMessage(formatter.format(this.messages.kickToPlayer));
     }
 
 }

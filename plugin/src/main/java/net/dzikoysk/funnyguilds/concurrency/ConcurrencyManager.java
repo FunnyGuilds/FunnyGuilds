@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.FunnyGuildsLogger;
 
 public class ConcurrencyManager {
 
@@ -29,17 +30,21 @@ public class ConcurrencyManager {
         this.executor.shutdown();
 
         try {
-            this.executor.awaitTermination(timeout.getSeconds(), TimeUnit.SECONDS);
+            if (!this.executor.awaitTermination(timeout.getSeconds(), TimeUnit.SECONDS)) {
+                this.executor.shutdownNow();
+            }
         }
-        catch (InterruptedException ex) {
-            FunnyGuilds.getPluginLogger().error("ConcurrencyManager termination failed", ex);
+        catch (InterruptedException exception) {
+            FunnyGuilds.getPluginLogger().error("ConcurrencyManager termination failed", exception);
         }
     }
 
     public void printStatus() {
-        FunnyGuilds.getPluginLogger().info("Available Processors: " + Runtime.getRuntime().availableProcessors());
-        FunnyGuilds.getPluginLogger().info("Active Threads: " + Thread.activeCount());
-        FunnyGuilds.getPluginLogger().info("Pool size: " + threads);
+        FunnyGuildsLogger logger = FunnyGuilds.getPluginLogger();
+
+        logger.info("Available Processors: " + Runtime.getRuntime().availableProcessors());
+        logger.info("Active Threads: " + Thread.activeCount());
+        logger.info("Pool size: " + this.threads);
     }
 
 }

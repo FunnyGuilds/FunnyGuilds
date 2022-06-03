@@ -24,11 +24,11 @@ public final class PointsCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
-        when(args.length < 2, messages.adminNoPointsGiven);
+        when(args.length < 1, this.messages.generalNoNickGiven);
+        when(args.length < 2, this.messages.adminNoPointsGiven);
 
         int points = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(FunnyFormatter.formatOnce(messages.adminErrorInNumber, "{ERROR}", args[1]));
+            return new ValidationException(FunnyFormatter.formatOnce(this.messages.adminErrorInNumber, "{ERROR}", args[1]));
         });
 
         User user = UserValidation.requireUserByName(args[0]);
@@ -47,10 +47,10 @@ public final class PointsCommand extends AbstractFunnyCommand {
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", user.getName())
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, config.pointsFormat))
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(finalPoints, this.config.pointsFormat))
                 .register("{POINTS}", finalPoints);
 
-        sendMessage(sender, formatter.format(messages.adminPointsChanged));
+        sendMessage(sender, formatter.format(this.messages.adminPointsChanged));
     }
 
 }

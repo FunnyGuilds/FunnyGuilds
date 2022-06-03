@@ -26,7 +26,7 @@ public class PlayerChat extends AbstractFunnyListener {
     public void onChat(AsyncPlayerChatEvent event) {
         Player player = event.getPlayer();
 
-        Option<User> userOption = userManager.findByPlayer(player);
+        Option<User> userOption = this.userManager.findByPlayer(player);
         if (userOption.isEmpty()) {
             return;
         }
@@ -39,7 +39,7 @@ public class PlayerChat extends AbstractFunnyListener {
         if (isGuildChat) {
             event.setCancelled(true);
 
-            if (config.logGuildChat) {
+            if (this.config.logGuildChat) {
                 FunnyGuilds.getPluginLogger().info("[Guild Chat] " + player.getName() + ": " + event.getMessage());
             }
 
@@ -49,18 +49,18 @@ public class PlayerChat extends AbstractFunnyListener {
         int points = user.getRank().getPoints();
 
         FunnyFormatter formatter = new FunnyFormatter()
-                .register("{RANK}", config.chatRank.getValue())
+                .register("{RANK}", this.config.chatRank.getValue())
                 .register("{RANK}", user.getRank().getPosition(DefaultTops.USER_POINTS_TOP))
-                .register("{POINTS}", config.chatPoints.getValue())
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, config.pointsFormat))
+                .register("{POINTS}", this.config.chatPoints.getValue())
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(points, this.config.pointsFormat))
                 .register("{POINTS}", points);
 
         user.getGuild()
                 .peek(guild -> {
-                    formatter.register("{TAG}", config.chatGuild.getValue());
+                    formatter.register("{TAG}", this.config.chatGuild.getValue());
                     formatter.register("{TAG}", guild.getTag());
-                    formatter.register("{POS}", config.chatPosition.getValue());
-                    formatter.register("{POS}", UserUtils.getUserPosition(config, user));
+                    formatter.register("{POS}", this.config.chatPosition.getValue());
+                    formatter.register("{POS}", UserUtils.getUserPosition(this.config, user));
                 })
                 .onEmpty(() -> {
                     formatter.register("{TAG}", "");
@@ -83,28 +83,27 @@ public class PlayerChat extends AbstractFunnyListener {
     }
 
     private void spy(Player player, Guild playerGuild, String message) {
-        String spyMessage = this.formatChatDesign(player, playerGuild, config.chatSpyDesign.getValue(), message);
+        String spyMessage = this.formatChatDesign(player, playerGuild, this.config.chatSpyDesign.getValue(), message);
 
-        try (PandaStream<? extends Player> players = PandaStream.of(Bukkit.getOnlinePlayers())) {
-            players.flatMap(onlinePlayer -> userManager.findByPlayer(onlinePlayer))
-                    .filter(user -> user.getCache().isSpy())
-                    .forEach(user -> user.sendMessage(spyMessage));
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .flatMap(onlinePlayer -> this.userManager.findByPlayer(onlinePlayer))
+                .filter(user -> user.getCache().isSpy())
+                .forEach(user -> user.sendMessage(spyMessage));
     }
 
     private boolean sendMessageToGuildMembers(Player player, Guild guild, String message) {
-        return this.sendMessageToGuilds(player, guild, config.chatPrivDesign.getValue(), config.chatPriv, message, Collections.singletonList(guild));
+        return this.sendMessageToGuilds(player, guild, this.config.chatPrivDesign.getValue(), this.config.chatPriv, message, Collections.singletonList(guild));
     }
 
     private boolean sendMessageToGuildAllies(Player player, Guild guild, String message) {
         Set<Guild> allies = new HashSet<>(guild.getAllies());
         allies.add(guild);
 
-        return this.sendMessageToGuilds(player, guild, config.chatAllyDesign.getValue(), config.chatAlly, message, allies);
+        return this.sendMessageToGuilds(player, guild, this.config.chatAllyDesign.getValue(), this.config.chatAlly, message, allies);
     }
 
     private boolean sendMessageToAllGuilds(Player player, Guild guild, String message) {
-        return this.sendMessageToGuilds(player, guild, config.chatGlobalDesign.getValue(), config.chatGlobal, message, this.guildManager.getGuilds());
+        return this.sendMessageToGuilds(player, guild, this.config.chatGlobalDesign.getValue(), this.config.chatGlobal, message, this.guildManager.getGuilds());
     }
 
     private boolean sendMessageToGuilds(Player player, Guild playerGuild, String chatDesign, String prefix, String message, Collection<Guild> receivers) {
@@ -124,9 +123,9 @@ public class PlayerChat extends AbstractFunnyListener {
     }
 
     private void sendMessageToGuild(Guild guild, String message) {
-        try (PandaStream<User> members = PandaStream.of(guild.getMembers())) {
-            members.filterNot(member -> member.getCache().isSpy()).forEach(member -> member.sendMessage(message));
-        }
+        PandaStream.of(guild.getMembers())
+                .filterNot(member -> member.getCache().isSpy())
+                .forEach(member -> member.sendMessage(message));
     }
 
     private String formatChatDesign(Player player, Guild playerGuild, String chatDesign, String message) {
@@ -134,7 +133,7 @@ public class PlayerChat extends AbstractFunnyListener {
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", player.getName())
                 .register("{TAG}", playerGuild.getTag())
-                .register("{POS}", config.chatPosition.replace("{POS}", UserUtils.getUserPosition(config, user)))
+                .register("{POS}", this.config.chatPosition.replace("{POS}", UserUtils.getUserPosition(this.config, user)))
                 .register("{MESSAGE}", message);
 
         return HookUtils.replacePlaceholders(player, formatter.format(chatDesign));

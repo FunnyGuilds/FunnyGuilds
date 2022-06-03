@@ -5,14 +5,6 @@ import panda.std.stream.PandaStream;
 
 public interface Entity {
 
-    enum EntityType {
-        GUILD,
-        OFFLINE_USER,
-        RANK,
-        REGION,
-        USER
-    }
-
     EntityType getType();
 
     String getName();
@@ -21,6 +13,10 @@ public interface Entity {
         return PandaStream.of(entities)
                 .map(Entity::getName)
                 .toSet();
+    }
+
+    enum EntityType {
+        GUILD, OFFLINE_USER, RANK, REGION, USER
     }
 
 }

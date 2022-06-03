@@ -33,8 +33,8 @@ public final class NotificationUtil {
                     ? Array.get(CREATE_BASE_COMPONENT_CRAFTBUKKIT.invoke(null, text0, true), 0)
                     : CREATE_BASE_COMPONENT_NMS.invoke(null, StringUtils.replace(BASE_COMPONENT_JSON_PATTERN, "{TEXT}", text0));
         }
-        catch (IllegalAccessException | InvocationTargetException ex) {
-            FunnyGuilds.getPluginLogger().error("Could not create base component", ex);
+        catch (IllegalAccessException | InvocationTargetException exception) {
+            FunnyGuilds.getPluginLogger().error("Could not create base component", exception);
             return null;
         }
     }

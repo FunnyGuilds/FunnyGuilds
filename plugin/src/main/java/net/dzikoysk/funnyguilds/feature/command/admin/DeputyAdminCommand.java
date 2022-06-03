@@ -22,13 +22,13 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(args.length < 2, messages.generalNoNickGiven);
+        when(args.length < 2, this.messages.generalNoNickGiven);
 
         User userToMove = UserValidation.requireUserByName(args[1]);
-        when(!guild.isMember(userToMove), messages.adminUserNotMemberOf);
+        when(!guild.isMember(userToMove), this.messages.adminUserNotMemberOf);
 
         User admin = AdminUtils.getAdminUser(sender);
         if (!SimpleEventHandler.handle(new GuildMemberDeputyEvent(AdminUtils.getCause(admin), admin, guild, userToMove))) {
@@ -39,20 +39,20 @@ public final class DeputyAdminCommand extends AbstractFunnyCommand {
 
         if (userToMove.isDeputy()) {
             guild.removeDeputy(userToMove);
-            sendMessage(sender, messages.deputyRemove);
-            userToMove.sendMessage(messages.deputyMember);
+            sendMessage(sender, this.messages.deputyRemove);
+            userToMove.sendMessage(this.messages.deputyMember);
 
-            String message = formatter.format(messages.deputyNoLongerMembers);
+            String message = formatter.format(this.messages.deputyNoLongerMembers);
             guild.getOnlineMembers().forEach(member -> member.sendMessage(message));
 
             return;
         }
 
         guild.addDeputy(userToMove);
-        sendMessage(sender, messages.deputySet);
-        userToMove.sendMessage(messages.deputyOwner);
+        sendMessage(sender, this.messages.deputySet);
+        userToMove.sendMessage(this.messages.deputyOwner);
 
-        String message = formatter.format(messages.deputyMembers);
+        String message = formatter.format(this.messages.deputyMembers);
         guild.getOnlineMembers().forEach(member -> member.sendMessage(message));
     }
 

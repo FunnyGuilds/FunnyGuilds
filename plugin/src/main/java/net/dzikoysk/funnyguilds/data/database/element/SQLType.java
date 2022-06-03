@@ -1,6 +1,7 @@
 package net.dzikoysk.funnyguilds.data.database.element;
 
 public enum SQLType {
+
     INT("int"),
     BIGINT("bigint"),
     VARCHAR("varchar"),
@@ -14,6 +15,7 @@ public enum SQLType {
     }
 
     public String getName() {
-        return type;
+        return this.type;
     }
+
 }

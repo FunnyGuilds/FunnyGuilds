@@ -66,7 +66,10 @@ import panda.utilities.text.Joiner;
 
 public final class FunnyCommandsConfiguration {
 
-    public FunnyCommands createFunnyCommands(FunnyGuilds plugin) {
+    private FunnyCommandsConfiguration() {
+    }
+
+    public static FunnyCommands createFunnyCommands(FunnyGuilds plugin) {
         Server server = plugin.getServer();
 
         PluginConfiguration config = plugin.getPluginConfiguration();
@@ -135,8 +138,7 @@ public final class FunnyCommandsConfiguration {
                 .registerDefaultComponents()
                 .placeholders(userCommands.placeholders)
                 .placeholders(adminCommands.placeholders)
-                .injector(plugin.getInjector().fork(resources -> {
-                }))
+                .injector(plugin.getInjector().fork(resources -> {}))
                 .bind(new UserBind(userManager))
                 .bind(new GuildBind(messages, userManager))
                 .type(new PlayerType(server))
@@ -165,9 +167,9 @@ public final class FunnyCommandsConfiguration {
 
         private CommandComponents command(String name, CommandsConfiguration.FunnyCommand configuration, Class<?> command) {
             if (configuration.enabled) {
-                this.placeholders.put(group + "." + name + ".name", key -> configuration.name);
-                this.placeholders.put(group + "." + name + ".aliases", key -> Joiner.on(", ").join(configuration.aliases).toString());
-                this.placeholders.put(group + "." + name + ".description", key -> "");
+                this.placeholders.put(this.group + "." + name + ".name", key -> configuration.name);
+                this.placeholders.put(this.group + "." + name + ".aliases", key -> Joiner.on(", ").join(configuration.aliases).toString());
+                this.placeholders.put(this.group + "." + name + ".description", key -> "");
                 this.commands.add(command);
             }
 
@@ -175,7 +177,7 @@ public final class FunnyCommandsConfiguration {
         }
 
         private CommandComponents command(String name, String alias, Class<?> command) {
-            this.placeholders.put(group + "." + name + ".name", key -> alias);
+            this.placeholders.put(this.group + "." + name + ".name", key -> alias);
             this.commands.add(command);
             return this;
         }

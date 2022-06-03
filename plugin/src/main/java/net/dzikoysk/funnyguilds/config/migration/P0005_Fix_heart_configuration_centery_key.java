@@ -21,4 +21,5 @@ public class P0005_Fix_heart_configuration_centery_key extends NamedMigration {
                 move("heart-configuration.use-player-position-for-centery", "heart-configuration.use-player-position-for-center-y")
         );
     }
+
 }

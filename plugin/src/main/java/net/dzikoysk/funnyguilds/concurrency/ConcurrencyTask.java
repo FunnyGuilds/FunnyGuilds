@@ -17,11 +17,11 @@ public class ConcurrencyTask implements Runnable {
 
     @Override
     public void run() {
-        for (ConcurrencyRequest request : requests) {
+        for (ConcurrencyRequest request : this.requests) {
             boolean result = execute(request);
 
             if (!result) {
-                FunnyGuilds.getPluginLogger().warning("Task #" + id + " has been interrupted");
+                FunnyGuilds.getPluginLogger().warning("Task #" + this.id + " has been interrupted");
                 return;
             }
         }

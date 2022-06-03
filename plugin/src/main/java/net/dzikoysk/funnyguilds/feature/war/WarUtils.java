@@ -3,8 +3,8 @@ package net.dzikoysk.funnyguilds.feature.war;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.TimeUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public final class WarUtils {
 
@@ -24,16 +24,13 @@ public final class WarUtils {
                 message = messages.warAlly;
                 break;
             case WAIT:
-                message = messages.warWait;
-                message = StringUtils.replace(message, "{TIME}", TimeUtils.getDurationBreakdown((long) values[0]));
+                message = FunnyFormatter.formatOnce(messages.warWait, "{TIME}", TimeUtils.getDurationBreakdown((long) values[0]));
                 break;
             case ATTACKER:
-                message = messages.warAttacker;
-                message = StringUtils.replace(message, "{ATTACKED}", ((Guild) values[0]).getTag());
+                message = FunnyFormatter.formatOnce(messages.warAttacker, "{ATTACKED}", ((Guild) values[0]).getTag());
                 break;
             case ATTACKED:
-                message = messages.warAttacked;
-                message = StringUtils.replace(message, "{ATTACKER}", ((Guild) values[0]).getTag());
+                message = FunnyFormatter.formatOnce(messages.warAttacked, "{ATTACKER}", ((Guild) values[0]).getTag());
                 break;
             case DISABLED:
                 message = messages.warDisabled;
@@ -47,30 +44,27 @@ public final class WarUtils {
 
     @Deprecated // TODO: to remove
     public enum Message {
-        NO_HAS_GUILD,
-        ALLY,
-        WAIT,
-        ATTACKER,
-        ATTACKED,
-        DISABLED
+        NO_HAS_GUILD, ALLY, WAIT, ATTACKER, ATTACKED, DISABLED
     }
 
     public static String getWinMessage(Guild conqueror, Guild loser) {
-        return FunnyGuilds.getInstance().getMessageConfiguration().warWin
-                .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag());
+        return formatMessage(FunnyGuilds.getInstance().getMessageConfiguration().warWin, conqueror, loser);
     }
 
     public static String getLoseMessage(Guild conqueror, Guild loser) {
-        return FunnyGuilds.getInstance().getMessageConfiguration().warLose
-                .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag());
+        return formatMessage(FunnyGuilds.getInstance().getMessageConfiguration().warLose, conqueror, loser);
     }
 
     public static String getBroadcastMessage(Guild conqueror, Guild loser) {
-        return FunnyGuilds.getInstance().getMessageConfiguration().broadcastWar
-                .replace("{WINNER}", conqueror.getTag())
-                .replace("{LOSER}", loser.getTag());
+        return formatMessage(FunnyGuilds.getInstance().getMessageConfiguration().broadcastWar, conqueror, loser);
+    }
+
+    private static String formatMessage(String message, Guild conqueror, Guild loser) {
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{WINNER}", conqueror.getTag())
+                .register("{LOSER}", loser.getTag());
+
+        return formatter.format(message);
     }
 
 }

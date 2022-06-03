@@ -13,13 +13,12 @@ public class ConcurrencyTaskBuilder {
     }
 
     public ConcurrencyTaskBuilder delegate(ConcurrencyRequest... delegatedRequests) {
-        Collections.addAll(requests, delegatedRequests);
+        Collections.addAll(this.requests, delegatedRequests);
         return this;
     }
 
     public ConcurrencyTask build() {
-        ConcurrencyRequest[] requestArray = new ConcurrencyRequest[requests.size()];
-        return new ConcurrencyTask(requests.toArray(requestArray));
+        return new ConcurrencyTask(this.requests.toArray(new ConcurrencyRequest[0]));
     }
 
 }

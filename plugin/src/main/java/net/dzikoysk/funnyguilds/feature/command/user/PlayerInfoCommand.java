@@ -13,6 +13,7 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserRank;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import panda.std.stream.PandaStream;
 
 import static net.dzikoysk.funnyguilds.feature.command.DefaultValidation.when;
 
@@ -28,12 +29,12 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length == 0 && !(sender instanceof Player), messages.playerOnly);
+        when(args.length == 0 && !(sender instanceof Player), this.messages.playerOnly);
 
         String name = args.length == 0 ? sender.getName() : args[0];
-        User user = when(userManager.findByName(name, config.playerLookupIgnorecase), messages.generalNotPlayedBefore);
+        User user = when(this.userManager.findByName(name, this.config.playerLookupIgnorecase), this.messages.generalNotPlayedBefore);
 
-        sendInfoMessage(messages.playerInfoList, user, sender);
+        this.sendInfoMessage(this.messages.playerInfoList, user, sender);
     }
 
     public void sendInfoMessage(List<String> baseMessage, User infoUser, CommandSender messageTarget) {
@@ -41,7 +42,7 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
         
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{PLAYER}", infoUser.getName())
-                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(rank.getPoints(), config.pointsFormat))
+                .register("{POINTS-FORMAT}", NumberRange.inRangeToString(rank.getPoints(), this.config.pointsFormat))
                 .register("{POINTS}", rank.getPoints())
                 .register("{KILLS}", rank.getKills())
                 .register("{DEATHS}", rank.getDeaths())
@@ -56,11 +57,11 @@ public final class PlayerInfoCommand extends AbstractFunnyCommand {
             formatter.register("{TAG}", guild.getTag());
         }
         else {
-            formatter.register("{GUILD}", messages.gNameNoValue);
-            formatter.register("{TAG}", messages.gTagNoValue);
+            formatter.register("{GUILD}", this.messages.gNameNoValue);
+            formatter.register("{TAG}", this.messages.gTagNoValue);
         }
 
-        baseMessage.forEach(line -> sendMessage(messageTarget, formatter.format(line)));
+        PandaStream.of(baseMessage).forEach(line -> sendMessage(messageTarget, formatter.format(line)));
     }
 
 }

@@ -2,10 +2,13 @@ package net.dzikoysk.funnyguilds.feature.notification.bossbar.provider;
 
 import com.google.common.collect.Sets;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Set;
+import net.dzikoysk.funnyguilds.FunnyGuilds;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
+import panda.std.stream.PandaStream;
 
 public final class BossBarOptions {
 
@@ -42,35 +45,36 @@ public final class BossBarOptions {
         private Set<BarFlag> barFlags = Sets.newHashSet();
 
         public Builder color(String barColor) {
-            for (BarColor loopColor : BarColor.values()) {
-                if (loopColor.name().equalsIgnoreCase(barColor)) {
-                    this.barColor = loopColor;
-                    break;
-                }
+            try {
+                this.barColor = BarColor.valueOf(barColor.toUpperCase(Locale.ROOT));
+            }
+            catch (IllegalArgumentException exception) {
+                FunnyGuilds.getPluginLogger().warning("No BarColor of value " + barColor + " found");
             }
 
             return this;
         }
 
         public Builder style(String barStyle) {
-            for (BarStyle loopStyle : BarStyle.values()) {
-                if (loopStyle.name().equalsIgnoreCase(barStyle)) {
-                    this.barStyle = loopStyle;
-                    break;
-                }
+            try {
+                this.barStyle = BarStyle.valueOf(barStyle.toUpperCase(Locale.ROOT));
+            }
+            catch (IllegalArgumentException exception) {
+                FunnyGuilds.getPluginLogger().warning("No BarStyle of value " + barStyle + " found");
             }
 
             return this;
         }
 
         public Builder flags(Collection<? extends String> barFlags) {
-            for (String flag : barFlags) {
-                for (BarFlag barFlag : BarFlag.values()) {
-                    if (barFlag.name().equalsIgnoreCase(flag)) {
-                        this.barFlags.add(barFlag);
-                    }
+            PandaStream.of(barFlags).forEach(barFlag -> {
+                try {
+                    this.barFlags.add(BarFlag.valueOf(barFlag.toUpperCase(Locale.ROOT)));
                 }
-            }
+                catch (IllegalArgumentException exception) {
+                    FunnyGuilds.getPluginLogger().warning("No BarFlag of value " + barFlag + " found");
+                }
+            });
 
             return this;
         }

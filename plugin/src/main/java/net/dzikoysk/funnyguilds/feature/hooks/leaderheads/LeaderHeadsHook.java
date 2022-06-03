@@ -23,7 +23,7 @@ public class LeaderHeadsHook extends AbstractPluginHook {
 
     @Override
     public HookInitResult init() {
-        new TopRankCollector(plugin);
+        new TopRankCollector(this.plugin);
         return HookInitResult.SUCCESS;
     }
 

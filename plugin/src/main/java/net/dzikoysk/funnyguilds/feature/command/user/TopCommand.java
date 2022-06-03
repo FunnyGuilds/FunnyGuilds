@@ -5,6 +5,7 @@ import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.feature.command.AbstractFunnyCommand;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.command.CommandSender;
+import panda.std.stream.PandaStream;
 
 @FunnyComponent
 public final class TopCommand extends AbstractFunnyCommand {
@@ -17,12 +18,12 @@ public final class TopCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender) {
-        User targetUser = userManager.findByName(sender.getName()).orNull();
+        User targetUser = this.userManager.findByName(sender.getName()).orNull();
 
-        for (String messageLine : messages.topList) {
-            String parsedRank = rankPlaceholdersService.format(messageLine, targetUser);
-            sendMessage(sender, (parsedRank == null ? messageLine : parsedRank));
-        }
+        PandaStream.of(this.messages.topList).forEach(line -> {
+            String parsedRank = this.rankPlaceholdersService.format(line, targetUser);
+            sendMessage(sender, (parsedRank == null ? line : parsedRank));
+        });
     }
 
 }

@@ -5,6 +5,7 @@ import eu.okaeri.configs.serdes.BidirectionalTransformer;
 import eu.okaeri.configs.serdes.SerdesContext;
 import net.dzikoysk.funnyguilds.config.RangeFormatting;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class RangeFormattingTransformer extends BidirectionalTransformer<String, RangeFormatting> {
 
@@ -14,12 +15,12 @@ public class RangeFormattingTransformer extends BidirectionalTransformer<String,
     }
 
     @Override
-    public RangeFormatting leftToRight(String data, SerdesContext serdesContext) {
+    public RangeFormatting leftToRight(@NotNull String data, @NotNull SerdesContext serdesContext) {
         return new RangeFormatting(ChatUtils.colored(data));
     }
 
     @Override
-    public String rightToLeft(RangeFormatting data, SerdesContext serdesContext) {
+    public String rightToLeft(RangeFormatting data, @NotNull SerdesContext serdesContext) {
         return ChatUtils.decolor(data.toString());
     }
 

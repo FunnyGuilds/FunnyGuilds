@@ -11,7 +11,7 @@ import org.bukkit.inventory.InventoryHolder;
 public class GuiActionHandler extends AbstractFunnyListener {
 
     @EventHandler
-    public void onClick(final InventoryClickEvent event) {
+    public void onClick(InventoryClickEvent event) {
         Inventory inventory = event.getInventory();
         if (inventory.getType() != InventoryType.CHEST) {
             return;
@@ -29,7 +29,7 @@ public class GuiActionHandler extends AbstractFunnyListener {
     }
 
     @EventHandler
-    public void onInteract(final InventoryInteractEvent event) {
+    public void onInteract(InventoryInteractEvent event) {
         Inventory inventory = event.getInventory();
         if (inventory.getType() != InventoryType.CHEST) {
             return;

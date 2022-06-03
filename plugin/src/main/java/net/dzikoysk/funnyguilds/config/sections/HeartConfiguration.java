@@ -9,6 +9,7 @@ import eu.okaeri.configs.annotation.NameStrategy;
 import eu.okaeri.configs.annotation.Names;
 import java.io.File;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import net.dzikoysk.funnyguilds.shared.bukkit.MaterialUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
@@ -40,7 +41,7 @@ public class HeartConfiguration extends OkaeriConfig {
     @CustomKey("create-center-y")
     public int createCenterY = 60;
 
-    @Comment("Konfiguracja hologramu nad sercem gildii.")
+    @Comment("Konfiguracja hologramu nad sercem gildii")
     public HologramConfiguration hologram = new HologramConfiguration();
 
     @Comment("Czy ma sie tworzyc kula z obsydianu dookola centrum gildii")
@@ -65,15 +66,17 @@ public class HeartConfiguration extends OkaeriConfig {
 
     public void loadProcessedProperties() {
         try {
-            this.createEntityType = EntityType.valueOf(this.createType.toUpperCase().replace(" ", "_"));
+
+            this.createEntityType = EntityType.valueOf(FunnyFormatter.formatOnce(this.createType.toUpperCase(), " ", "_"));
         }
-        catch (Exception materialThen) {
+        catch (IllegalArgumentException materialThen) {
             this.createMaterial = MaterialUtils.parseMaterialData(this.createType, true);
         }
 
         if (this.pasteSchematicOnCreation) {
             if (this.guildSchematicFileName == null || this.guildSchematicFileName.isEmpty()) {
-                FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field \"paste-schematic-on-creation\" is set to true!");
+                FunnyGuilds.getPluginLogger().error("The field named \"guild-schematic-file-name\" is empty, but field " +
+                        "\"paste-schematic-on-creation\" is set to true!");
                 this.pasteSchematicOnCreation = false;
             }
             else {

@@ -34,7 +34,7 @@ public abstract class FunnyEvent extends Event implements Cancellable {
 
     public String getCancelMessage() {
         if (this.cancelMessage == null || this.cancelMessage.isEmpty()) {
-            return getDefaultCancelMessage();
+            return this.getDefaultCancelMessage();
         }
 
         return this.cancelMessage;
@@ -56,16 +56,12 @@ public abstract class FunnyEvent extends Event implements Cancellable {
 
     public void notifyDoer() {
         if (this.doer != null) {
-            this.doer.sendMessage(getCancelMessage());
+            this.doer.sendMessage(this.getCancelMessage());
         }
     }
 
     public enum EventCause {
-        ADMIN,
-        CONSOLE,
-        SYSTEM,
-        USER,
-        UNKNOWN;
+        ADMIN, CONSOLE, SYSTEM, USER, UNKNOWN
     }
 
 }

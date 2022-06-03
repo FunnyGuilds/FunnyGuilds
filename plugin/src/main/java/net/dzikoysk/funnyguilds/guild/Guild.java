@@ -37,7 +37,7 @@ public class Guild extends AbstractMutableEntity {
     private Set<User> deputies = ConcurrentHashMap.newKeySet();
     private Set<Guild> allies = ConcurrentHashMap.newKeySet();
     private Set<Guild> enemies = ConcurrentHashMap.newKeySet();
-    private Set<UUID> alliedFFGuilds = ConcurrentHashMap.newKeySet();
+    private Set<UUID> alliedPvPGuilds = ConcurrentHashMap.newKeySet();
 
     private long born;
     private long validity;
@@ -66,7 +66,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void deserializationUpdate() {
-        owner.setGuild(this);
+        this.owner.setGuild(this);
         this.members.forEach(user -> user.setGuild(this));
     }
 
@@ -152,7 +152,7 @@ public class Guild extends AbstractMutableEntity {
     @Deprecated
     @ApiStatus.ScheduledForRemoval(inVersion = "4.11.0")
     public boolean isSomeoneInRegion() {
-        return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(region, new HashSet<>(members));
+        return FunnyGuilds.getInstance().getRegionManager().isAnyUserInRegion(this.region, new HashSet<>(this.members));
     }
 
     /**
@@ -210,10 +210,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addMember(User user) {
-        if (this.members.contains(user)) {
-            return;
-        }
-
         this.members.add(user);
         this.markChanged();
     }
@@ -242,10 +238,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addDeputy(User user) {
-        if (this.deputies.contains(user)) {
-            return;
-        }
-
         this.deputies.add(user);
         this.markChanged();
     }
@@ -273,10 +265,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addAlly(Guild guild) {
-        if (this.allies.contains(guild)) {
-            return;
-        }
-
         this.allies.add(guild);
         this.markChanged();
     }
@@ -287,7 +275,7 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public Set<Guild> getEnemies() {
-        return enemies;
+        return this.enemies;
     }
 
     public boolean hasEnemies() {
@@ -304,10 +292,6 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public void addEnemy(Guild guild) {
-        if (this.enemies.contains(guild)) {
-            return;
-        }
-
         this.enemies.add(guild);
         this.markChanged();
     }
@@ -428,14 +412,14 @@ public class Guild extends AbstractMutableEntity {
     }
 
     public boolean hasAllyPvPEnabled(Guild alliedGuild) {
-        return this.allies.contains(alliedGuild) && this.alliedFFGuilds.contains(alliedGuild.uuid);
+        return this.allies.contains(alliedGuild) && this.alliedPvPGuilds.contains(alliedGuild.uuid);
     }
 
     public boolean toggleAllyPvP(Guild alliedGuild) {
         boolean enabled = false;
 
-        if (!this.alliedFFGuilds.remove(alliedGuild.uuid)) {
-            this.alliedFFGuilds.add(alliedGuild.uuid);
+        if (!this.alliedPvPGuilds.remove(alliedGuild.uuid)) {
+            this.alliedPvPGuilds.add(alliedGuild.uuid);
             enabled = true;
         }
 
@@ -450,7 +434,7 @@ public class Guild extends AbstractMutableEntity {
 
     @Override
     public int hashCode() {
-        return uuid.hashCode();
+        return this.uuid.hashCode();
     }
 
     @Override

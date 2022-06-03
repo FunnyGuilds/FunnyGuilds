@@ -13,12 +13,12 @@ public class GuildInvitation extends Invitation<Guild, User> {
 
     @Override
     public UUID getFromUUID() {
-        return from.getUUID();
+        return this.from.getUUID();
     }
 
     @Override
     public UUID getToUUID() {
-        return to.getUUID();
+        return this.to.getUUID();
     }
 
 }

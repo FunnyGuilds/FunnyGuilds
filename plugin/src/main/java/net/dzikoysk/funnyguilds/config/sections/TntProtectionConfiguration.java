@@ -41,10 +41,10 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
     public static class BuildConfig extends OkaeriConfig {
 
-        @Comment("Minimalna wysokosc od ktorej mozna stawiac TNT.")
+        @Comment("Minimalna wysokosc od ktorej mozna stawiac TNT")
         public int minHeight = 0;
 
-        @Comment("Maksymalna wysokosc do ktorej mozna stawiac TNT.")
+        @Comment("Maksymalna wysokosc do ktorej mozna stawiac TNT")
         public int maxHeight = 255;
 
     }
@@ -53,10 +53,10 @@ public class TntProtectionConfiguration extends OkaeriConfig {
 
     public static class ExplodeConfig extends OkaeriConfig {
 
-        @Comment("Minimalna wysokosc od ktorej TNT wybucha.")
+        @Comment("Minimalna wysokosc od ktorej TNT wybucha")
         public int minHeight = 0;
 
-        @Comment("Maksymalna wysokosc do ktorej TNT wybucha.")
+        @Comment("Maksymalna wysokosc do ktorej TNT wybucha")
         public int maxHeight = 255;
 
     }

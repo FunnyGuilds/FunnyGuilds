@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.invitation;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import panda.std.stream.PandaStream;
 
 public interface InvitationList<T extends Invitation<?, ?>> {
@@ -10,21 +9,21 @@ public interface InvitationList<T extends Invitation<?, ?>> {
     Set<T> getInvitations();
 
     default Set<T> getInvitationsFrom(UUID from) {
-        try (PandaStream<T> invitations = PandaStream.of(this.getInvitations())) {
-            return invitations.filter(invitation -> invitation.getFromUUID().equals(from)).collect(Collectors.toSet());
-        }
+        return PandaStream.of(this.getInvitations())
+                .filter(invitation -> invitation.getFromUUID().equals(from))
+                .toSet();
     }
 
     default Set<T> getInvitationsFor(UUID to) {
-        try (PandaStream<T> invitations = PandaStream.of(this.getInvitations())) {
-            return invitations.filter(invitation -> invitation.getToUUID().equals(to)).collect(Collectors.toSet());
-        }
+        return PandaStream.of(this.getInvitations())
+                .filter(invitation -> invitation.getToUUID().equals(to))
+                .toSet();
     }
 
     default boolean hasInvitation(UUID from, UUID to) {
-        try (PandaStream<T> invitations = PandaStream.of(this.getInvitationsFrom(from))) {
-            return invitations.find(invitation -> invitation.getToUUID().equals(to)).isPresent();
-        }
+        return PandaStream.of(this.getInvitationsFrom(from))
+                .find(invitation -> invitation.getToUUID().equals(to))
+                .isPresent();
     }
 
     default boolean hasInvitationFor(UUID to) {

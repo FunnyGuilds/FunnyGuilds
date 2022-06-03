@@ -36,9 +36,9 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
     @Override
     public HookInitResult init() {
         Runnable updateTask = () -> this.plugin.getGuildManager().getGuilds().forEach(this::update);
-        long updateInterval = config.heart.hologram.updateInterval;
+        long updateInterval = this.config.heart.hologram.updateInterval;
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, updateTask, 100L, updateInterval);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this.plugin, updateTask, 100L, updateInterval);
         Bukkit.getPluginManager().registerEvents(this, this.plugin);
 
         return HookInitResult.SUCCESS;
@@ -64,19 +64,17 @@ public final class HolographicDisplaysHook extends HologramsHook implements List
             holo.appendItem(new ItemStack(holoConfig.item));
         }
 
-        try (PandaStream<String> lines = PandaStream.of(holoConfig.displayedLines)) {
-            holo.appendTexts(lines
-                    .map(line -> this.plugin.getGuildPlaceholdersService().format(line, guild))
-                    .map(ChatUtils::colored)
-                    .toList());
-        }
+        holo.appendTexts(PandaStream.of(holoConfig.displayedLines)
+                .map(line -> this.plugin.getGuildPlaceholdersService().format(line, guild))
+                .map(ChatUtils::colored)
+                .toList());
 
         holo.update();
     }
 
     @Override
     public void configUpdated() {
-        if (config.heart.hologram.enabled) {
+        if (this.config.heart.hologram.enabled) {
             return;
         }
 

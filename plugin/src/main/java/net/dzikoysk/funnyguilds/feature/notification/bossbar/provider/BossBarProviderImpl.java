@@ -22,7 +22,7 @@ public final class BossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void sendNotification(String text, BossBarOptions options, int timeout) {
-        Option.of(Bukkit.getPlayer(user.getUUID())).peek(player -> {
+        Option.of(Bukkit.getPlayer(this.user.getUUID())).peek(player -> {
             this.bossBar.setTitle(text);
             this.bossBar.setColor(options.getColor());
             this.bossBar.setStyle(options.getStyle());
@@ -46,7 +46,7 @@ public final class BossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void removeNotification() {
-        Option.of(Bukkit.getPlayer(user.getUUID())).peek(player -> {
+        Option.of(Bukkit.getPlayer(this.user.getUUID())).peek(player -> {
             this.bossBar.removePlayer(player);
             this.bossBar.setVisible(false);
         });

@@ -1,9 +1,10 @@
 package net.dzikoysk.funnyguilds.feature.command.admin;
 
+import java.io.File;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
 import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
@@ -31,11 +32,11 @@ public final class NameCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
-        when(args.length < 2, messages.adminNoNewNameGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(args.length < 2, this.messages.adminNoNewNameGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(guildManager.nameExists(args[1]), messages.createNameExists);
+        when(this.guildManager.nameExists(args[1]), this.messages.createNameExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -47,10 +48,10 @@ public final class NameCommand extends AbstractFunnyCommand {
         guild.getRegion().peek(region -> {
             if (this.dataModel instanceof FlatDataModel) {
                 FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-                dataModel.getRegionFile(region).delete();
+                dataModel.getRegionFile(region).peek(File::delete);
             }
             else if (this.dataModel instanceof SQLDataModel) {
-                DatabaseRegion.delete(region);
+                DatabaseRegionSerializer.delete((SQLDataModel) this.dataModel, region);
             }
 
             region.setName(args[1]);
@@ -58,14 +59,14 @@ public final class NameCommand extends AbstractFunnyCommand {
 
         if (this.dataModel instanceof FlatDataModel) {
             FlatDataModel dataModel = (FlatDataModel) this.dataModel;
-            dataModel.getGuildFile(guild).delete();
+            dataModel.getGuildFile(guild).peek(File::delete);
         }
         else if (this.dataModel instanceof SQLDataModel) {
-            DatabaseGuild.delete(guild);
+            DatabaseGuildSerializer.delete((SQLDataModel) this.dataModel, guild);
         }
 
         guild.setName(args[1]);
-        sendMessage(sender, FunnyFormatter.formatOnce(messages.adminNameChanged, "{GUILD}", guild.getName()));
+        sendMessage(sender, FunnyFormatter.formatOnce(this.messages.adminNameChanged, "{GUILD}", guild.getName()));
 
         SimpleEventHandler.handle(new GuildRenameEvent(AdminUtils.getCause(admin), admin, guild, oldName, args[1]));
     }

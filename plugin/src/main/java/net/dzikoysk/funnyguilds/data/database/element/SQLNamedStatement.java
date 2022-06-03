@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
-import net.dzikoysk.funnyguilds.data.database.Database;
 import panda.std.function.ThrowingConsumer;
 
 public class SQLNamedStatement {
@@ -24,53 +23,73 @@ public class SQLNamedStatement {
 
     public void set(String key, Object value) {
         key = key.toLowerCase(Locale.ROOT);
-        if (!keyMapIndex.containsKey(key)) {
+
+        if (!this.keyMapIndex.containsKey(key)) {
             return;
         }
 
-        placeholders.put(key, value);
+        this.placeholders.put(key, value);
     }
 
     public void executeUpdate() {
-        try (Connection con = Database.getConnection();
-                PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
-            statement.executeUpdate();
-        }
-        catch (SQLException sqlException) {
-            FunnyGuilds.getPluginLogger().error("Could not execute update", sqlException);
-        }
+        this.executeUpdate(false);
     }
 
     public void executeUpdate(boolean ignoreFails) {
-        try (Connection con = Database.getConnection();
-                PreparedStatement statement = setPlaceholders(con.prepareStatement(sql))) {
-            statement.executeUpdate();
+        try (Connection connection = FunnyGuilds.getInstance().getDatabase().getConnection()) {
+            if (connection == null) {
+                throw new SQLException("Connection is null");
+            }
+
+            try (PreparedStatement statement = this.setPlaceholders(connection.prepareStatement(this.sql))) {
+                statement.executeUpdate();
+            }
         }
-        catch (SQLException sqlException) {
+        catch (SQLException exception) {
             if (ignoreFails) {
                 FunnyGuilds.getPluginLogger().debug("Could not execute update (ignoreFails)");
                 return;
             }
 
-            FunnyGuilds.getPluginLogger().error("Could not execute update", sqlException);
+            FunnyGuilds.getPluginLogger().error("Could not execute update", exception);
         }
     }
 
     public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer) {
-        try (Connection con = Database.getConnection();
-                PreparedStatement statement = setPlaceholders(con.prepareStatement(sql));
-                ResultSet resultSet = statement.executeQuery()) {
-            consumer.accept(resultSet);
+        this.executeQuery(consumer, false);
+    }
+
+    public void executeQuery(ThrowingConsumer<ResultSet, SQLException> consumer, boolean ignoreFails) {
+        try (Connection connection = FunnyGuilds.getInstance().getDatabase().getConnection()) {
+            if (connection == null) {
+                throw new SQLException("Connection is null");
+            }
+
+            try (PreparedStatement statement = this.setPlaceholders(connection.prepareStatement(this.sql))) {
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    consumer.accept(resultSet);
+                }
+            }
         }
-        catch (SQLException sqlException) {
-            FunnyGuilds.getPluginLogger().error("Could not execute query", sqlException);
+        catch (SQLException exception) {
+            if (ignoreFails) {
+                FunnyGuilds.getPluginLogger().debug("Could not execute query (ignoreFails)");
+                return;
+            }
+
+            FunnyGuilds.getPluginLogger().error("Could not execute query", exception);
         }
     }
 
-    private PreparedStatement setPlaceholders(PreparedStatement preparedStatement) throws SQLException {
-        for (Map.Entry<String, Object> placeholder : placeholders.entrySet()) {
-            preparedStatement.setObject(keyMapIndex.get(placeholder.getKey().toLowerCase(Locale.ROOT)), placeholder.getValue());
-        }
+    private PreparedStatement setPlaceholders(PreparedStatement preparedStatement) {
+        this.placeholders.forEach((key, value) -> {
+            try {
+                preparedStatement.setObject(this.keyMapIndex.get(key.toLowerCase(Locale.ROOT)), value);
+            }
+            catch (SQLException exception) {
+                FunnyGuilds.getPluginLogger().error("Could not prepare query", exception);
+            }
+        });
 
         return preparedStatement;
     }

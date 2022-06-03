@@ -51,6 +51,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import panda.std.Option;
 
 @Header("~-~-~-~-~-~-~-~-~-~-~-~~-~-~-~~ #")
 @Header("                                #")
@@ -85,7 +86,7 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Ta opcja działa tylko wtedy, gdy także jest włączona opcja 'update-info'")
     public boolean updateNightlyInfo = true;
 
-    @Comment("Czas w godzinach o, który ma zostać przesunięty czas w np. placeholderach. Przyjmuje zarówno wartości dodatnie jak i ujemne.")
+    @Comment("Czas w godzinach. o który ma zostać przesunięty czas w np. placeholderach. Przyjmuje zarówno wartości dodatnie jak i ujemne")
     @Comment("Opcja przydatna, kiedy strefa czasowa ustawiona na serwerze jest inna niz w kraju docelowym (np. serwer ma ustawiona strefe czasowa \"Europe/London\", a gracze są z Polski - wystąpi wtedy godzina różnicy czasu)")
     public int timeOffset = 0;
 
@@ -99,8 +100,8 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("Wylaczenie tej opcji nie powinno spowodowac zadnych bledow, jesli juz sa utworzone regiony gildii")
     public boolean regionsEnabled = true;
 
-    @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest się jej czlonkiem.")
-    @Comment("Zostaw puste, aby wylaczyc.")
+    @Comment("Bloki, ktore mozna stawiac na terenie gildii niezaleznie od tego, czy jest się jej czlonkiem")
+    @Comment("Zostaw puste, aby wylaczyc")
     @Comment("Nazwy blokow musza pasowac do nazw podanych tutaj: https://spigotdocs.okaeri.cloud/select/org/bukkit/Material.html")
     public Set<Material> placingBlocksBypassOnRegion = Collections.emptySet();
 
@@ -841,8 +842,8 @@ public class PluginConfiguration extends OkaeriConfig {
     @CustomKey("check-for-restricted-guild-names")
     public boolean checkForRestrictedGuildNames = false;
 
-    @Comment("Jesli ustawione na false, nazwy i tagi z list 'restricted-guild-names', 'restricted-guild-tags' beda niedozwolone.")
-    @Comment("Jesli ustawione na true, 'restricted-guild-names', 'restricted-guild-tags' beda traktowane jako whitelist.")
+    @Comment("Jesli ustawione na false, nazwy i tagi z list 'restricted-guild-names', 'restricted-guild-tags' beda niedozwolone")
+    @Comment("Jesli ustawione na true, 'restricted-guild-names', 'restricted-guild-tags' beda traktowane jako whitelist")
     @Comment("Przydatne kiedy chcesz ograniczyc tworzenie np. do 2 gildii \"RED\", \"BLUE\"")
     @CustomKey("whitelist")
     public boolean whitelist = false;
@@ -985,62 +986,47 @@ public class PluginConfiguration extends OkaeriConfig {
     @Comment("3. Zmien nazwy tabel w bazie uzywajac np. phpMyAdmin")
     public MysqlConfiguration mysql = new MysqlConfiguration("localhost", 3306, "db", "root", "passwd", 5, 30000, true, "users", "guilds", "regions");
 
-    private List<ItemStack> loadItemStackList(List<String> strings) {
-        List<ItemStack> items = new ArrayList<>();
-        for (String item : strings) {
-            if (item == null || "".equals(item)) {
-                continue;
-            }
-
-            ItemStack itemstack = ItemUtils.parseItem(item);
-            if (itemstack != null) {
-                items.add(itemstack);
-            }
-        }
-
-        return items;
-    }
-
     private List<ItemStack> loadGUI(List<String> contents) {
         List<ItemStack> items = new ArrayList<>();
 
-        for (String var : contents) {
+        for (String guiEntry : contents) {
             ItemStack item = null;
 
-            if (var.contains("GUI-")) {
-                int index = LegacyUtils.getIndex(var);
+            if (guiEntry.contains("GUI-")) {
+                int index = LegacyUtils.getIndex(guiEntry);
                 if (index > 0 && index <= items.size()) {
                     item = items.get(index - 1);
                 }
             }
-            else if (var.contains("VIPITEM-")) {
+            else if (guiEntry.contains("VIPITEM-")) {
                 try {
-                    int index = LegacyUtils.getIndex(var);
-                    if (index > 0 && index <= createItemsVip.size()) {
-                        item = createItemsVip.get(index - 1);
+                    int index = LegacyUtils.getIndex(guiEntry);
+                    if (index > 0 && index <= this.createItemsVip.size()) {
+                        item = this.createItemsVip.get(index - 1);
                     }
                 }
                 catch (IndexOutOfBoundsException e) {
-                    FunnyGuilds.getPluginLogger().parser("Index given in " + var + " is > " + createItemsVip.size() + " or <= 0");
+                    FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItemsVip.size() + " or <= 0");
                 }
             }
-            else if (var.contains("ITEM-")) {
+            else if (guiEntry.contains("ITEM-")) {
                 try {
-                    int index = LegacyUtils.getIndex(var);
-                    if (index > 0 && index <= createItems.size()) {
-                        item = createItems.get(index - 1);
+                    int index = LegacyUtils.getIndex(guiEntry);
+                    if (index > 0 && index <= this.createItems.size()) {
+                        item = this.createItems.get(index - 1);
                     }
                 }
                 catch (IndexOutOfBoundsException e) {
-                    FunnyGuilds.getPluginLogger().parser("Index given in " + var + " is > " + createItems.size() + " or <= 0");
+                    FunnyGuilds.getPluginLogger().parser("Index given in " + guiEntry + " is > " + this.createItems.size() + " or <= 0");
                 }
             }
             else {
-                item = ItemUtils.parseItem(var);
+                item = ItemUtils.parseItem(guiEntry);
             }
 
             if (item == null) {
-                item = new ItemBuilder(MaterialUtils.matchMaterial("stained_glass_pane"), 1, 14).setName("&c&lERROR IN GUI CREATION: " + var, true).getItem();
+                item = new ItemBuilder(MaterialUtils.matchMaterial("stained_glass_pane"), 1, 14)
+                        .setName("&c&lERROR IN GUI CREATION: " + guiEntry, true).getItem();
             }
 
             items.add(item);
@@ -1053,17 +1039,17 @@ public class PluginConfiguration extends OkaeriConfig {
     public OkaeriConfig load() throws OkaeriException {
         super.load();
 
-        heart.loadProcessedProperties();
+        this.heart.loadProcessedProperties();
         this.loadProcessedProperties();
 
         return this;
     }
 
     public void loadProcessedProperties() {
-        this.guiItems = loadGUI(this.guiItems_);
+        this.guiItems = this.loadGUI(this.guiItems_);
 
-        if (!useCommonGUI) {
-            this.guiItemsVip = loadGUI(this.guiItemsVip_);
+        if (!this.useCommonGUI) {
+            this.guiItemsVip = this.loadGUI(this.guiItemsVip_);
         }
 
         if (this.heart.createMaterial != null && MaterialUtils.hasGravity(this.heart.createMaterial.getLeft())) {
@@ -1076,25 +1062,23 @@ public class PluginConfiguration extends OkaeriConfig {
         }
 
         if (this.rankSystem == RankSystem.Type.ELO) {
-            Map<NumberRange, Integer> parsedData = new HashMap<>();
+            this.eloConstants = new HashMap<>();
 
-            for (Entry<NumberRange, String> entry : NumberRange.parseIntegerRange(this.eloConstants_, false).entrySet()) {
-                try {
-                    parsedData.put(entry.getKey(), Integer.parseInt(entry.getValue()));
-                }
-                catch (NumberFormatException e) {
-                    FunnyGuilds.getPluginLogger().parser("\"" + entry.getValue() + "\" is not a valid elo constant!");
-                }
-            }
+            NumberRange.parseIntegerRange(this.eloConstants_, false).forEach((key, value) -> {
+                int constant = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(value)).orElseGet(() -> {
+                    FunnyGuilds.getPluginLogger().parser("\"" + value + "\" is not a valid elo constant!");
+                    return 0;
+                });
 
-            this.eloConstants = parsedData;
+                this.eloConstants.put(key, constant);
+            });
         }
 
-        if (blockTeleportOnRegion.neutral || blockTeleportOnRegion.enemy || blockTeleportOnRegion.ally) {
+        if (this.blockTeleportOnRegion.neutral || this.blockTeleportOnRegion.enemy || this.blockTeleportOnRegion.ally) {
             this.eventTeleport = true;
         }
 
-        Map<Material, Double> map = new EnumMap<>(Material.class);
+        this.explodeMaterials = new EnumMap<>(Material.class);
         for (Entry<String, Double> entry : this.explodeMaterials_.entrySet()) {
             double chance = entry.getValue();
             if (chance < 0) {
@@ -1112,9 +1096,8 @@ public class PluginConfiguration extends OkaeriConfig {
                 continue;
             }
 
-            map.put(material, chance);
+            this.explodeMaterials.put(material, chance);
         }
-        this.explodeMaterials = map;
 
         this.tntProtection.time.passingMidnight = this.tntProtection.time.startTime.getTime().isAfter(this.tntProtection.time.endTime.getTime());
 
@@ -1128,8 +1111,7 @@ public class PluginConfiguration extends OkaeriConfig {
     }
 
     public enum DataModel {
-        FLAT,
-        MYSQL
+        FLAT, MYSQL
     }
 
 }

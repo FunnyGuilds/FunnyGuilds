@@ -16,11 +16,11 @@ public class HologramConfiguration extends OkaeriConfig {
     @Comment("Czy ta sekcja ma być włączona?")
     public boolean enabled = true;
 
-    @Comment("Co ile tick'ów ma być aktualizowany hologram? (20 tick = 1 sekunda)")
+    @Comment("Co ile ticków ma być aktualizowany hologram? (20 tick = 1 sekunda)")
     public long updateInterval = 400L;
 
-    @Comment("Item ozdobny nad hologramem.")
-    @Comment("Jeśli ustawiony na AIR to opcja jest wyłączona.")
+    @Comment("Item ozdobny nad hologramem")
+    @Comment("Jeśli ustawiony na AIR to opcja jest wyłączona")
     public Material item = Material.AIR;
 
     @Comment("Tekst wyświetlany przez hologram")
@@ -35,7 +35,7 @@ public class HologramConfiguration extends OkaeriConfig {
             .add("&7&m-------------------")
             .build();
 
-    @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji.")
+    @Comment("Korekcja lokalizacji hologramu względem startowej lokalizacji")
     public Vector locationCorrection = new Vector(0.5, 2.5, 0.5);
 
 }

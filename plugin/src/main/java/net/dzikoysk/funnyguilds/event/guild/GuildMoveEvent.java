@@ -4,14 +4,15 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.Location;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildMoveEvent extends GuildEvent {
 
-    private final Location newLocation;
     private static final HandlerList handlers = new HandlerList();
+    private final Location newLocation;
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -21,7 +22,6 @@ public class GuildMoveEvent extends GuildEvent {
 
     public GuildMoveEvent(EventCause eventCause, User doer, Guild guild, Location newLocation) {
         super(eventCause, doer, guild);
-
         this.newLocation = newLocation;
     }
 

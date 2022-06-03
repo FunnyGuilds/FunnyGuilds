@@ -3,13 +3,14 @@ package net.dzikoysk.funnyguilds.event.guild;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildCreateEvent extends GuildEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -23,12 +24,12 @@ public class GuildCreateEvent extends GuildEvent {
 
     @Override
     public void setCancelled(boolean cancelled) {
-        throw new UnsupportedOperationException("GuildCreateEvent cannot be cancelled, use GuildPreCreateEvent.");
+        throw new UnsupportedOperationException("GuildCreateEvent cannot be cancelled, use GuildPreCreateEvent");
     }
 
     @Override
     public String getDefaultCancelMessage() {
-        throw new UnsupportedOperationException("GuildCreateEvent cannot be cancelled, use GuildPreCreateEvent.");
+        throw new UnsupportedOperationException("GuildCreateEvent cannot be cancelled, use GuildPreCreateEvent");
     }
 
 }

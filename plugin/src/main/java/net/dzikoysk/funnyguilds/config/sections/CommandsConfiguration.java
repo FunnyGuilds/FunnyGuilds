@@ -44,10 +44,8 @@ public class CommandsConfiguration extends OkaeriConfig {
     public FunnyCommand rankReset = new FunnyCommand("rankreset", Collections.singletonList("resetrank"));
     @Comment
     public FunnyCommand tnt = new FunnyCommand("tnt");
-
     @Comment
     public FunnyCommand break_ = new FunnyCommand("rozwiaz");
-
     @Comment
     public FunnyCommand info = new FunnyCommand("info");
     @Comment
@@ -67,7 +65,8 @@ public class CommandsConfiguration extends OkaeriConfig {
     @Comment
     public FunnyCommand pvp = new FunnyCommand("pvp", Collections.singletonList("ustawpvp"));
 
-    @Comment({"", "Komendy administratora"})
+    @Comment
+    @Comment("Komendy administratora")
     public AdminCommands admin = new CommandsConfiguration.AdminCommands();
 
     @Names(strategy = NameStrategy.IDENTITY)

@@ -1,19 +1,24 @@
 package net.dzikoysk.funnyguilds.user;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.util.YamlWrapper;
+import net.dzikoysk.funnyguilds.shared.FunnyValidator;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.ApiStatus;
+import panda.std.Option;
 
 public final class UserUtils {
-
-    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{3,16}$");
-    private static final Pattern UUID_PATTERN = Pattern.compile("^[{]?[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}[}]?$");
 
     private UserUtils() {
     }
@@ -111,26 +116,6 @@ public final class UserUtils {
         return set;
     }
 
-    /**
-     * Validate username.
-     *
-     * @param name username to validate
-     * @return if username is valid
-     */
-    public static boolean validateUsername(String name) {
-        return USERNAME_PATTERN.matcher(name).matches();
-    }
-
-    /**
-     * Validate universally unique identifier.
-     *
-     * @param uuid universally unique identifier to validate
-     * @return if universally unique identifier is valid
-     */
-    public static boolean validateUUID(String uuid) {
-        return UUID_PATTERN.matcher(uuid).matches();
-    }
-
     public static String getUserPosition(PluginConfiguration pluginConfiguration, @Nullable User user) {
         if (user == null) {
             return "";
@@ -145,6 +130,57 @@ public final class UserUtils {
         }
 
         return pluginConfiguration.chatPositionMember;
+    }
+
+    /**
+     * Check if user file is correct and if not - try migrating it
+     *
+     * @param file user file
+     * @return A final (source or migrated) user file
+     */
+    public static Option<File> checkUserFile(File file) {
+        String filenameWithoutExtension = StringUtils.removeEnd(file.getName(), ".yml");
+        if (FunnyValidator.validateUUID(filenameWithoutExtension)) {
+            return Option.of(file);
+        }
+
+        if (FunnyValidator.validateUsername(filenameWithoutExtension)) {
+            return migrateUserFile(file).orElse(Option.none());
+        }
+
+        return Option.none();
+    }
+
+    /**
+     * Try migrating a user file to a new name
+     *
+     * @param file user file
+     * @return Migrated user file
+     */
+    public static Option<File> migrateUserFile(File file) {
+        YamlWrapper wrapper = new YamlWrapper(file);
+        String id = wrapper.getString("uuid");
+
+        if (id == null || !FunnyValidator.validateUUID(id)) {
+            FunnyGuilds.getPluginLogger().error("Migration of user file '" + file.getName() + "' failed, UUID is invalid");
+            return Option.none();
+        }
+
+        Path source = file.toPath();
+        Path target = source.resolveSibling(String.format("%s.yml", id));
+
+        if (Files.exists(target)) {
+            return Option.of(target.toFile());
+        }
+
+        try {
+            return Option.of(Files.move(source, target, StandardCopyOption.REPLACE_EXISTING).toFile());
+        }
+        catch (IOException exception) {
+            FunnyGuilds.getPluginLogger().error("Could not move file '" + source + "' to '" + target + "': ", exception.getCause());
+        }
+
+        return Option.none();
     }
 
 }

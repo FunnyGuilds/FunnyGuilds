@@ -1,4 +1,4 @@
-package net.dzikoysk.funnyguilds.data.database;
+package net.dzikoysk.funnyguilds.data.database.serializer;
 
 import com.google.common.collect.Sets;
 import java.sql.ResultSet;
@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.UUID;
 import net.dzikoysk.funnyguilds.Entity;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
+import net.dzikoysk.funnyguilds.config.PluginConfiguration;
+import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
 import net.dzikoysk.funnyguilds.data.database.element.SQLNamedStatement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
@@ -21,38 +23,42 @@ import net.dzikoysk.funnyguilds.user.User;
 import net.dzikoysk.funnyguilds.user.UserManager;
 import panda.std.Option;
 
-public final class DatabaseGuild {
+public final class DatabaseGuildSerializer {
 
-    public static Guild deserialize(ResultSet rs) {
-        if (rs == null) {
-            return null;
+    private DatabaseGuildSerializer() {
+    }
+
+    public static Option<Guild> deserialize(ResultSet resultSet) {
+        if (resultSet == null) {
+            return Option.none();
         }
 
         String id = null;
         String name = null;
 
         try {
-            id = rs.getString("uuid");
-            name = rs.getString("name");
-            String tag = rs.getString("tag");
-            String os = rs.getString("owner");
-            String dp = rs.getString("deputy");
-            String home = rs.getString("home");
-            String regionName = rs.getString("region");
-            String membersString = rs.getString("members");
-            boolean pvp = rs.getBoolean("pvp");
-            long born = rs.getLong("born");
-            long validity = rs.getLong("validity");
-            long attacked = rs.getLong("attacked");
-            long ban = rs.getLong("ban");
-            int lives = rs.getInt("lives");
+            id = resultSet.getString("uuid");
+            name = resultSet.getString("name");
+            String tag = resultSet.getString("tag");
+            String os = resultSet.getString("owner");
+            String dp = resultSet.getString("deputy");
+            String home = resultSet.getString("home");
+            String regionName = resultSet.getString("region");
+            String membersString = resultSet.getString("members");
+            boolean pvp = resultSet.getBoolean("pvp");
+            long born = resultSet.getLong("born");
+            long validity = resultSet.getLong("validity");
+            long attacked = resultSet.getLong("attacked");
+            long ban = resultSet.getLong("ban");
+            int lives = resultSet.getInt("lives");
 
             FunnyGuilds plugin = FunnyGuilds.getInstance();
+            PluginConfiguration config = plugin.getPluginConfiguration();
             UserManager userManager = plugin.getUserManager();
 
             if (name == null || tag == null || os == null) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: uuid/name/tag/owner is null");
-                return null;
+                return Option.none();
             }
 
             UUID uuid = UUID.randomUUID();
@@ -63,7 +69,7 @@ public final class DatabaseGuild {
             Option<User> ownerOption = userManager.findByName(os);
             if (ownerOption.isEmpty()) {
                 FunnyGuilds.getPluginLogger().error("Cannot deserialize guild! Caused by: owner (user instance) doesn't exist");
-                return null;
+                return Option.none();
             }
 
             Set<User> deputies = new HashSet<>();
@@ -81,15 +87,14 @@ public final class DatabaseGuild {
             }
 
             if (validity == 0) {
-                validity = Instant.now().plus(plugin.getPluginConfiguration().validityStart).toEpochMilli();
+                validity = Instant.now().plus(config.validityStart).toEpochMilli();
             }
 
             if (lives == 0) {
-                lives = plugin.getPluginConfiguration().warLives;
+                lives = config.warLives;
             }
 
-            final Object[] values = new Object[17];
-
+            Object[] values = new Object[17];
             values[0] = uuid;
             values[1] = name;
             values[2] = tag;
@@ -109,19 +114,20 @@ public final class DatabaseGuild {
 
             return DeserializationUtils.deserializeGuild(plugin.getPluginConfiguration(), plugin.getGuildManager(), values);
         }
-        catch (Exception ex) {
-            FunnyGuilds.getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", ex);
+        catch (Exception exception) {
+            FunnyGuilds.getPluginLogger().error("Could not deserialize guild (id: " + id + ", name: " + name + ")", exception);
         }
 
-        return null;
+        return Option.none();
     }
 
-    public static void save(Guild guild) {
+    public static void serialize(SQLDataModel dataModel, Guild guild) {
+        SQLNamedStatement statement = SQLBasicUtils.getInsert(dataModel.getUsersTable());
+
         String members = ChatUtils.toString(Entity.names(guild.getMembers()), false);
         String deputies = ChatUtils.toString(Entity.names(guild.getDeputies()), false);
         String allies = ChatUtils.toString(Entity.names(guild.getAllies()), false);
         String enemies = ChatUtils.toString(Entity.names(guild.getEnemies()), false);
-        SQLNamedStatement statement = SQLBasicUtils.getInsert(SQLDataModel.tabGuilds);
 
         statement.set("uuid", guild.getUUID().toString());
         statement.set("name", guild.getName());
@@ -146,23 +152,20 @@ public final class DatabaseGuild {
         statement.executeUpdate();
     }
 
-    public static void delete(Guild guild) {
-        SQLNamedStatement statement = SQLBasicUtils.getDelete(SQLDataModel.tabGuilds);
+    public static void delete(SQLDataModel dataModel, Guild guild) {
+        SQLNamedStatement statement = SQLBasicUtils.getDelete(dataModel.getGuildsTable());
 
         statement.set("uuid", guild.getUUID().toString());
         statement.executeUpdate();
     }
 
-    public static void updatePoints(Guild guild) {
-        SQLTable table = SQLDataModel.tabGuilds;
-        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points"));
+    public static void updatePoints(SQLDataModel dataModel, Guild guild) {
+        SQLTable table = dataModel.getGuildsTable();
+        SQLNamedStatement statement = SQLBasicUtils.getUpdate(table, table.getSQLElement("points").orNull());
 
         statement.set("points", guild.getRank().getAveragePoints());
         statement.set("uuid", guild.getUUID().toString());
         statement.executeUpdate();
-    }
-
-    private DatabaseGuild() {
     }
 
 }

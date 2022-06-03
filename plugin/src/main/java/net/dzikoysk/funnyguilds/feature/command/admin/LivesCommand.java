@@ -23,12 +23,12 @@ public final class LivesCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
-        when(args.length < 2, messages.adminNoLivesGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(args.length < 2, this.messages.adminNoLivesGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         int lives = Option.attempt(NumberFormatException.class, () -> Integer.parseInt(args[1])).orThrow(() -> {
-            return new ValidationException(FunnyFormatter.formatOnce(messages.adminErrorInNumber, "{ERROR}", args[1]));
+            return new ValidationException(FunnyFormatter.formatOnce(this.messages.adminErrorInNumber, "{ERROR}", args[1]));
         });
 
         User admin = AdminUtils.getAdminUser(sender);
@@ -42,7 +42,7 @@ public final class LivesCommand extends AbstractFunnyCommand {
                 .register("{GUILD}", guild.getTag())
                 .register("{LIVES}", lives);
 
-        sendMessage(sender, formatter.format(messages.adminLivesChanged));
+        sendMessage(sender, formatter.format(this.messages.adminLivesChanged));
     }
 
 }

@@ -4,10 +4,12 @@ import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import net.dzikoysk.funnyguilds.guild.placeholders.GuildPlaceholdersService;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.jetbrains.annotations.NotNull;
+import panda.std.stream.PandaStream;
 
 public class IndividualPrefix {
 
@@ -20,10 +22,10 @@ public class IndividualPrefix {
     }
 
     protected void addPlayer(String player) {
-        plugin.getUserManager().findByName(player)
+        this.plugin.getUserManager().findByName(player)
                 .filter(User::hasGuild)
                 .peek(byName -> {
-                    Scoreboard scoreboard = getScoreboard();
+                    Scoreboard scoreboard = this.getScoreboard();
                     Team team = scoreboard.getEntryTeam(player);
                     Guild guild = byName.getGuild().get();
 
@@ -33,7 +35,7 @@ public class IndividualPrefix {
 
                     team = scoreboard.getTeam(guild.getTag());
                     if (team == null) {
-                        addGuild(guild);
+                        this.addGuild(guild);
                         team = scoreboard.getTeam(guild.getTag());
                     }
 
@@ -44,7 +46,7 @@ public class IndividualPrefix {
 
                     if (this.user.hasGuild()) {
                         if (this.user.equals(byName) || guild.isMember(byName)) {
-                            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur.getValue(), guild));
+                            team.setPrefix(preparePrefix(this.plugin.getPluginConfiguration().prefixOur.getValue(), guild));
                         }
                     }
 
@@ -57,13 +59,13 @@ public class IndividualPrefix {
             return;
         }
 
-        Scoreboard scoreboard = getScoreboard();
+        Scoreboard scoreboard = this.getScoreboard();
 
-        if (user.hasGuild()) {
-            Guild guild = user.getGuild().get();
+        if (this.user.hasGuild()) {
+            Guild guild = this.user.getGuild().get();
 
             if (guild.equals(to)) {
-                initialize();
+                this.initialize();
                 return;
             }
 
@@ -78,7 +80,7 @@ public class IndividualPrefix {
                 }
             }
 
-            team.setPrefix(chooseAndPreparePrefix(plugin.getPluginConfiguration(), guild, to));
+            team.setPrefix(chooseAndPreparePrefix(this.plugin.getPluginConfiguration(), guild, to));
         }
         else {
             Team team = scoreboard.getTeam(to.getTag());
@@ -92,17 +94,17 @@ public class IndividualPrefix {
                 }
             }
 
-            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOther.getValue(), to));
+            team.setPrefix(preparePrefix(this.plugin.getPluginConfiguration().prefixOther.getValue(), to));
         }
     }
 
     protected void removePlayer(String playerName) {
-        Team team = getScoreboard().getEntryTeam(playerName);
+        Team team = this.getScoreboard().getEntryTeam(playerName);
         if (team != null) {
             team.removeEntry(playerName);
         }
 
-        plugin.getUserManager().findByName(playerName).peek(this::registerSoloTeam);
+        this.plugin.getUserManager().findByName(playerName).peek(this::registerSoloTeam);
     }
 
     protected void removeGuild(Guild guild) {
@@ -119,17 +121,15 @@ public class IndividualPrefix {
                 .map(scoreboard -> scoreboard.getTeam(tag))
                 .peek(Team::unregister);
 
-        for (User member : guild.getMembers()) {
-            registerSoloTeam(member);
-        }
+        PandaStream.of(guild.getMembers()).forEach(this::registerSoloTeam);
     }
 
     public void initialize() {
-        Set<Guild> guilds = plugin.getGuildManager().getGuilds();
-        Scoreboard scoreboard = getScoreboard();
+        Set<Guild> guilds = this.plugin.getGuildManager().getGuilds();
+        Scoreboard scoreboard = this.getScoreboard();
 
-        if (user.hasGuild()) {
-            Guild userGuild = user.getGuild().get();
+        if (this.user.hasGuild()) {
+            Guild userGuild = this.user.getGuild().get();
             guilds.remove(userGuild);
 
             Team team = scoreboard.getTeam(userGuild.getTag());
@@ -143,7 +143,7 @@ public class IndividualPrefix {
                 }
             }
 
-            team.setPrefix(preparePrefix(plugin.getPluginConfiguration().prefixOur.getValue(), userGuild));
+            team.setPrefix(preparePrefix(this.plugin.getPluginConfiguration().prefixOur.getValue(), userGuild));
 
             for (Guild otherGuild : guilds) {
                 if (otherGuild == null || otherGuild.getTag() == null) {
@@ -161,12 +161,12 @@ public class IndividualPrefix {
                     }
                 }
 
-                team.setPrefix(chooseAndPreparePrefix(plugin.getPluginConfiguration(), userGuild, otherGuild));
+                team.setPrefix(chooseAndPreparePrefix(this.plugin.getPluginConfiguration(), userGuild, otherGuild));
             }
         }
         else {
-            String other = plugin.getPluginConfiguration().prefixOther.getValue();
-            registerSoloTeam(this.user);
+            String other = this.plugin.getPluginConfiguration().prefixOther.getValue();
+            this.registerSoloTeam(this.user);
 
             for (Guild one : guilds) {
                 if (one == null || one.getTag() == null) {
@@ -191,7 +191,7 @@ public class IndividualPrefix {
 
     private void registerSoloTeam(User soloUser) {
         String teamName = soloUser.getName() + "_solo";
-        Set<Guild> guilds = plugin.getGuildManager().getGuilds();
+        Set<Guild> guilds = this.plugin.getGuildManager().getGuilds();
 
         if (teamName.length() > 16) {
             teamName = soloUser.getName();
@@ -203,9 +203,9 @@ public class IndividualPrefix {
             }
         }
 
-        Team team = getScoreboard().getTeam(teamName);
+        Team team = this.getScoreboard().getTeam(teamName);
         if (team == null) {
-            team = getScoreboard().registerNewTeam(teamName);
+            team = this.getScoreboard().registerNewTeam(teamName);
         }
 
         if (!team.hasEntry(soloUser.getName())) {
@@ -238,7 +238,7 @@ public class IndividualPrefix {
     }
 
     public static String preparePrefix(String text, Guild guild) {
-        String formatted = FunnyGuilds.getInstance().getGuildPlaceholdersService().getSimplePlaceholders()
+        String formatted = GuildPlaceholdersService.getSimplePlaceholders()
                 .map(placeholders -> placeholders.formatVariables(text, guild))
                 .orElseGet(text);
 

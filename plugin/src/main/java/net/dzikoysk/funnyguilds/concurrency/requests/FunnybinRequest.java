@@ -18,12 +18,14 @@ import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.config.MessageConfiguration;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
+import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.telemetry.FunnyTelemetry;
 import net.dzikoysk.funnyguilds.telemetry.FunnybinResponse;
 import net.dzikoysk.funnyguilds.telemetry.PasteType;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.Nullable;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public final class FunnybinRequest extends DefaultConcurrencyRequest {
 
@@ -40,18 +42,18 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
         MessageConfiguration messages = FunnyGuilds.getInstance().getMessageConfiguration();
         List<FunnybinResponse> sentPastes = new ArrayList<>();
 
-        for (int i = 0; i < files.size(); i++) {
-            String fileName = files.get(i);
+        for (int i = 0; i < this.files.size(); i++) {
+            String fileName = this.files.get(i);
             File file;
             String content = null;
             PasteType type = PasteType.OTHER;
 
             FunnyFormatter formatter = new FunnyFormatter()
                     .register("{NUM}", i + 1)
-                    .register("{TOTAL}", files.size())
+                    .register("{TOTAL}", this.files.size())
                     .register("{FILE}", fileName);
 
-            sender.sendMessage(formatter.format(messages.funnybinSendingFile));
+            ChatUtils.sendMessage(this.sender, formatter.format(messages.funnybinSendingFile));
 
             if ("log".equals(fileName)) {
                 file = new File("logs/latest.log");
@@ -78,16 +80,16 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
                 file = new File(fileName);
             }
 
-            if (content == null) {
+            if (content == null && file != null) {
                 try {
                     content = Files.asCharSource(file, StandardCharsets.UTF_8).read();
                 }
                 catch (FileNotFoundException e) {
-                    sender.sendMessage(formatter.format(messages.funnybinFileNotFound));
+                    ChatUtils.sendMessage(this.sender, formatter.format(messages.funnybinFileNotFound));
                     continue;
                 }
                 catch (IOException e) {
-                    sender.sendMessage(formatter.format(messages.funnybinFileNotOpened));
+                    ChatUtils.sendMessage(this.sender, formatter.format(messages.funnybinFileNotOpened));
                     FunnyGuilds.getPluginLogger().error("Failed to open a file: " + fileName, e);
                     continue;
                 }
@@ -96,26 +98,36 @@ public final class FunnybinRequest extends DefaultConcurrencyRequest {
             try {
                 sentPastes.add(FunnyTelemetry.postToFunnybin(content, type, fileName));
             }
-            catch (IOException e) {
-                sender.sendMessage(formatter.format(messages.funnybinFileNotSent));
-                FunnyGuilds.getPluginLogger().error("Failed to submit a paste: " + fileName, e);
+            catch (IOException exception) {
+                ChatUtils.sendMessage(this.sender, formatter.format(messages.funnybinFileNotSent));
+                FunnyGuilds.getPluginLogger().error("Failed to submit a paste: " + fileName, exception);
             }
         }
 
         if (sentPastes.size() == 1) {
-            sender.sendMessage(FunnyFormatter.formatOnce(messages.funnybinFileSent, "{LINK}", sentPastes.get(0).getShortUrl()));
+            String message = FunnyFormatter.formatOnce(messages.funnybinFileSent, "{LINK}", sentPastes.get(0).getShortUrl());
+            ChatUtils.sendMessage(this.sender, message);
             return;
         }
 
-        sender.sendMessage(messages.funnybinBuildingBundle);
+        ChatUtils.sendMessage(this.sender, messages.funnybinBuildingBundle);
 
         try {
-            FunnybinResponse response = FunnyTelemetry.createBundle(sentPastes.stream().map(FunnybinResponse::getUuid).collect(Collectors.toList()));
-            sender.sendMessage(FunnyFormatter.formatOnce(messages.funnybinBundleSent, "{LINK}", response.getShortUrl()));
+            FunnybinResponse response = FunnyTelemetry.createBundle(PandaStream.of(sentPastes)
+                    .map(FunnybinResponse::getUuid)
+                    .collect(Collectors.toList())
+            );
+
+            if (response == null) {
+                throw new IOException("Response for FunnyTelemetry bundle is null");
+            }
+
+            String message = FunnyFormatter.formatOnce(messages.funnybinBundleSent, "{LINK}", response.getShortUrl());
+            ChatUtils.sendMessage(this.sender, message);
         }
-        catch (IOException e) {
-            sender.sendMessage(messages.funnybinBundleNotBuilt);
-            FunnyGuilds.getPluginLogger().error("Failed to submit a bundle. Files: " + files, e);
+        catch (IOException exception) {
+            ChatUtils.sendMessage(this.sender, messages.funnybinBundleNotBuilt);
+            FunnyGuilds.getPluginLogger().error("Failed to submit a bundle. Files: " + this.files, exception);
         }
     }
 

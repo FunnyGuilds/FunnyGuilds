@@ -27,19 +27,20 @@ public final class LeaderCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsOwner User owner, Guild guild, String[] args) {
-        when(args.length < 1, messages.generalNoNickGiven);
+        when(args.length < 1, this.messages.generalNoNickGiven);
 
         User leaderUser = UserValidation.requireUserByName(args[0]);
-        when(owner.equals(leaderUser), messages.leaderMustBeDifferent);
-        when(!guild.isMember(leaderUser), messages.generalIsNotMember);
+        when(owner.equals(leaderUser), this.messages.leaderMustBeDifferent);
+        when(!guild.isMember(leaderUser), this.messages.generalIsNotMember);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaderEvent(EventCause.USER, owner, guild, leaderUser))) {
             return;
         }
 
         guild.setOwner(leaderUser);
-        owner.sendMessage(messages.leaderSet);
-        leaderUser.sendMessage(messages.leaderOwner);
+
+        sendMessage(player, this.messages.leaderSet);
+        leaderUser.sendMessage(this.messages.leaderOwner);
     }
 
 }

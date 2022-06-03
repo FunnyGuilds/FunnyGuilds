@@ -40,9 +40,7 @@ public class RawString {
     }
 
     public static List<RawString> listOf(String... values) {
-        try (PandaStream<String> valuesStream = PandaStream.of(values)) {
-            return valuesStream.map(RawString::new).toList();
-        }
+        return PandaStream.of(values).map(RawString::new).toList();
     }
 
 }

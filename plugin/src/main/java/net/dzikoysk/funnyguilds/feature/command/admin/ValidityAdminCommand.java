@@ -22,15 +22,15 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
-        when(args.length < 2, messages.adminNoValidityTimeGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
+        when(args.length < 2, this.messages.adminNoValidityTimeGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
-        when(guild.isBanned(), messages.adminGuildBanned);
+        when(guild.isBanned(), this.messages.adminGuildBanned);
 
         long time = TimeUtils.parseTime(args[1]);
         if (time < 1) {
-            sendMessage(sender, messages.adminTimeError);
+            sendMessage(sender, this.messages.adminTimeError);
             return;
         }
 
@@ -49,9 +49,9 @@ public final class ValidityAdminCommand extends AbstractFunnyCommand {
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
-                .register("{VALIDITY}", messages.dateFormat.format(validity));
+                .register("{VALIDITY}", this.messages.dateFormat.format(validity));
 
-        sendMessage(sender, formatter.format(messages.adminNewValidity));
+        sendMessage(sender, formatter.format(this.messages.adminNewValidity));
     }
 
 }

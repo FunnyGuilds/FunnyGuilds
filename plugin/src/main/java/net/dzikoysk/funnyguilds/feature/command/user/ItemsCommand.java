@@ -2,7 +2,6 @@ package net.dzikoysk.funnyguilds.feature.command.user;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnycommands.stereotypes.FunnyCommand;
 import net.dzikoysk.funnycommands.stereotypes.FunnyComponent;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
@@ -14,6 +13,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ItemUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import panda.std.stream.PandaStream;
 
 @FunnyComponent
 public final class ItemsCommand extends AbstractFunnyCommand {
@@ -27,25 +27,24 @@ public final class ItemsCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player) {
-        List<ItemStack> guiItems = config.guiItems;
-        String title = config.guiItemsTitle.getValue();
+        List<ItemStack> guiItems = this.config.guiItems;
+        String title = this.config.guiItemsTitle.getValue();
 
-        if (!config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
-            guiItems = config.guiItemsVip;
-            title = config.guiItemsVipTitle.getValue();
+        if (!this.config.useCommonGUI && player.hasPermission("funnyguilds.vip.items")) {
+            guiItems = this.config.guiItemsVip;
+            title = this.config.guiItemsVipTitle.getValue();
         }
 
         GuiWindow gui = new GuiWindow(title, guiItems.size() / 9 + (guiItems.size() % 9 != 0 ? 1 : 0));
-
-        for (ItemStack item : guiItems) {
+        PandaStream.of(guiItems).forEach(item -> {
             item = item.clone();
 
-            if (config.addLoreLines && (config.createItems.contains(item) || config.createItemsVip.contains(item))) {
+            if (this.config.addLoreLines && (this.config.createItems.contains(item) || this.config.createItemsVip.contains(item))) {
                 ItemMeta meta = item.getItemMeta();
 
                 if (meta == null) {
                     FunnyGuilds.getPluginLogger().warning("Item meta is not defined (" + item + ")");
-                    continue;
+                    return;
                 }
 
                 int requiredAmount = item.getAmount();
@@ -54,7 +53,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
 
                 List<String> lore = meta.getLore();
                 if (lore == null) {
-                    lore = new ArrayList<>(config.guiItemsLore.size());
+                    lore = new ArrayList<>(this.config.guiItemsLore.size());
                 }
 
                 FunnyFormatter formatter = new FunnyFormatter()
@@ -66,10 +65,10 @@ public final class ItemsCommand extends AbstractFunnyCommand {
                         .register("{ALL-AMOUNT}", inventoryAmount + enderChestAmount)
                         .register("{ALL-PERCENT}", ChatUtils.getPercent(inventoryAmount + enderChestAmount, requiredAmount));
 
-                lore.addAll(config.guiItemsLore.stream().map(line -> formatter.format(line.getValue())).collect(Collectors.toList()));
+                lore.addAll(PandaStream.of(this.config.guiItemsLore).map(line -> formatter.format(line.getValue())).toList());
 
-                if (!config.guiItemsName.isEmpty()) {
-                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(config.guiItemsName.getValue(), null, item));
+                if (!this.config.guiItemsName.isEmpty()) {
+                    meta.setDisplayName(ItemUtils.translateTextPlaceholder(this.config.guiItemsName.getValue(), null, item));
                 }
 
                 meta.setLore(lore);
@@ -77,7 +76,7 @@ public final class ItemsCommand extends AbstractFunnyCommand {
             }
 
             gui.setToNextFree(item);
-        }
+        });
 
         gui.open(player);
     }

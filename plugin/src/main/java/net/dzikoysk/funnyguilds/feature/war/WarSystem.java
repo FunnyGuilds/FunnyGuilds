@@ -14,6 +14,7 @@ import net.dzikoysk.funnyguilds.user.UserManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class WarSystem {
 
@@ -92,28 +93,21 @@ public class WarSystem {
         }
     }
 
-    public void conquer(Guild conqueror, Guild loser, User attacker) {
+    public static void conquer(Guild conqueror, Guild loser, User attacker) {
         if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, attacker, loser))) {
             loser.updateLives(lives -> lives + 1);
             return;
         }
 
-        String message = WarUtils.getWinMessage(conqueror, loser);
+        String winMessage = WarUtils.getWinMessage(conqueror, loser);
+        String loseMessage = WarUtils.getLoseMessage(conqueror, loser);
 
-        for (User user : conqueror.getMembers()) {
-            user.sendMessage(message);
-        }
-
-        message = WarUtils.getLoseMessage(conqueror, loser);
-
-        for (User user : loser.getMembers()) {
-            user.sendMessage(message);
-        }
+        PandaStream.of(conqueror.getMembers()).forEach(member -> member.sendMessage(winMessage));
+        PandaStream.of(loser.getMembers()).forEach(member -> member.sendMessage(loseMessage));
 
         FunnyGuilds.getInstance().getGuildManager().deleteGuild(FunnyGuilds.getInstance(), loser);
         conqueror.updateLives(lives -> lives + 1);
 
-        message = WarUtils.getBroadcastMessage(conqueror, loser);
-        Bukkit.broadcastMessage(message);
+        Bukkit.broadcastMessage(WarUtils.getBroadcastMessage(conqueror, loser));
     }
 }

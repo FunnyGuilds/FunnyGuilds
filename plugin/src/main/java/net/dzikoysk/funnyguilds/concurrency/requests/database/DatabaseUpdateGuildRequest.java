@@ -1,18 +1,18 @@
 package net.dzikoysk.funnyguilds.concurrency.requests.database;
 
-import java.util.stream.Stream;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.concurrency.util.DefaultConcurrencyRequest;
 import net.dzikoysk.funnyguilds.data.DataModel;
-import net.dzikoysk.funnyguilds.data.database.DatabaseGuild;
-import net.dzikoysk.funnyguilds.data.database.DatabaseRegion;
-import net.dzikoysk.funnyguilds.data.database.DatabaseUser;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
 import net.dzikoysk.funnyguilds.data.database.SQLDataModel;
 import net.dzikoysk.funnyguilds.data.flat.FlatDataModel;
-import net.dzikoysk.funnyguilds.data.flat.FlatGuild;
-import net.dzikoysk.funnyguilds.data.flat.FlatRegion;
-import net.dzikoysk.funnyguilds.data.flat.FlatUser;
+import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatGuildSerializer;
+import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatRegionSerializer;
+import net.dzikoysk.funnyguilds.data.flat.seralizer.FlatUserSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
+import panda.std.stream.PandaStream;
 
 public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
 
@@ -28,28 +28,31 @@ public class DatabaseUpdateGuildRequest extends DefaultConcurrencyRequest {
     public void execute() {
         try {
             if (this.dataModel instanceof SQLDataModel) {
-                DatabaseGuild.save(guild);
-                guild.getRegion().peek(DatabaseRegion::save);
-                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner())).forEach(DatabaseUser::save);
+                SQLDataModel sqlDataModel = (SQLDataModel) this.dataModel;
+                DatabaseGuildSerializer.serialize(sqlDataModel, this.guild);
+
+                this.guild.getRegion()
+                        .peek(region -> DatabaseRegionSerializer.serialize(sqlDataModel, region));
+
+                PandaStream.of(this.guild.getMembers())
+                        .forEach(member -> DatabaseUserSerializer.serialize(sqlDataModel, member));
 
                 return;
             }
 
             if (this.dataModel instanceof FlatDataModel) {
-                FlatGuild flatGuild = new FlatGuild(guild);
-                flatGuild.serialize((FlatDataModel) this.dataModel);
+                FlatDataModel flatDataModel = (FlatDataModel) this.dataModel;
+                FlatGuildSerializer.serialize(flatDataModel, this.guild);
 
-                guild.getRegion()
-                        .map(FlatRegion::new)
-                        .peek(flatRegion -> flatRegion.serialize((FlatDataModel) this.dataModel));
+                this.guild.getRegion()
+                        .peek(region -> FlatRegionSerializer.serialize(flatDataModel, region));
 
-                Stream.concat(guild.getMembers().stream(), Stream.of(guild.getOwner()))
-                        .map(FlatUser::new)
-                        .forEach(flatUser -> flatUser.serialize((FlatDataModel) this.dataModel));
+                PandaStream.of(this.guild.getMembers())
+                        .forEach(member -> FlatUserSerializer.serialize(flatDataModel, member));
             }
         }
-        catch (Throwable th) {
-            FunnyGuilds.getPluginLogger().error("Could not update guild", th);
+        catch (Throwable throwable) {
+            FunnyGuilds.getPluginLogger().error("Could not update guild", throwable);
         }
     }
 

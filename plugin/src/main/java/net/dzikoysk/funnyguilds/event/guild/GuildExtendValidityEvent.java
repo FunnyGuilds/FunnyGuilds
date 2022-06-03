@@ -3,14 +3,16 @@ package net.dzikoysk.funnyguilds.event.guild;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.user.User;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GuildExtendValidityEvent extends GuildEvent {
 
-    private final long extendTime;
     private static final HandlerList handlers = new HandlerList();
+    private final long extendTime;
+
 
     @Override
-    public HandlerList getHandlers() {
+    public @NotNull HandlerList getHandlers() {
         return handlers;
     }
 
@@ -20,7 +22,6 @@ public class GuildExtendValidityEvent extends GuildEvent {
 
     public GuildExtendValidityEvent(EventCause eventCause, User doer, Guild guild, long extendTime) {
         super(eventCause, doer, guild);
-
         this.extendTime = extendTime;
     }
 

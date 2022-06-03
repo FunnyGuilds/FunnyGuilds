@@ -31,9 +31,9 @@ public class GuiWindow {
         this.setToNextFree(item, 0);
     }
 
-    public void setToNextFree(final ItemStack item, int start) {
-        for (int slot = start; slot < inv.getSize(); slot++) {
-            if (inv.getItem(slot) == null) {
+    public void setToNextFree(ItemStack item, int start) {
+        for (int slot = start; slot < this.inv.getSize(); slot++) {
+            if (this.inv.getItem(slot) == null) {
                 this.inv.setItem(slot, item);
                 break;
             }
@@ -41,14 +41,14 @@ public class GuiWindow {
     }
 
     public void open(HumanEntity entity) {
-        entity.openInventory(inv);
+        entity.openInventory(this.inv);
     }
 
     //TODO: Use this method in the future. (Add ItemStack to configuration for fill inventory)
-    public void fillEmpty(final ItemStack itemStack) {
-        for (int slot = 0; slot < inv.getSize(); slot++) {
-            if (inv.getItem(slot) == null) {
-                inv.setItem(slot, itemStack);
+    public void fillEmpty(ItemStack itemStack) {
+        for (int slot = 0; slot < this.inv.getSize(); slot++) {
+            if (this.inv.getItem(slot) == null) {
+                this.inv.setItem(slot, itemStack);
             }
         }
     }

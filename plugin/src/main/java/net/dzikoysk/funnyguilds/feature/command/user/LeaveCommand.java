@@ -28,7 +28,7 @@ public final class LeaveCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsMember User user, Guild guild) {
-        when(user.isOwner(), messages.leaveIsOwner);
+        when(user.isOwner(), this.messages.leaveIsOwner);
 
         if (!SimpleEventHandler.handle(new GuildMemberLeaveEvent(EventCause.USER, user, guild, user))) {
             return;
@@ -38,8 +38,8 @@ public final class LeaveCommand extends AbstractFunnyCommand {
         user.removeGuild();
 
         this.concurrencyManager.postRequests(
-                new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()),
-                new PrefixGlobalUpdatePlayer(individualPrefixManager, player)
+                new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, user.getName()),
+                new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player)
         );
 
         FunnyFormatter formatter = new FunnyFormatter()
@@ -47,8 +47,8 @@ public final class LeaveCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        user.sendMessage(formatter.format(messages.leaveToUser));
-        broadcastMessage(formatter.format(messages.broadcastLeave));
+        sendMessage(player, formatter.format(this.messages.leaveToUser));
+        broadcastMessage(formatter.format(this.messages.broadcastLeave));
     }
 
 }

@@ -6,6 +6,7 @@ import net.dzikoysk.funnyguilds.event.SimpleEventHandler;
 import net.dzikoysk.funnyguilds.event.guild.GuildDeleteEvent;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
+import panda.std.stream.PandaStream;
 
 public class GuildValidationHandler implements Runnable {
 
@@ -22,41 +23,31 @@ public class GuildValidationHandler implements Runnable {
 
     @Override
     public void run() {
-        if (++validateGuildsCounter >= 10) {
+        if (++this.validateGuildsCounter >= 10) {
             this.validateGuildLifetime();
         }
 
-        if (++banGuildsCounter >= 7) {
+        if (++this.banGuildsCounter >= 7) {
             this.validateGuildBans();
         }
     }
 
     private void validateGuildLifetime() {
-        for (Guild guild : this.guildManager.getGuilds()) {
-            if (guild.isValid()) {
-                continue;
-            }
-
-            if (!SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, null, guild))) {
-                continue;
-            }
-
-            ValidityUtils.broadcast(guild);
-            this.guildManager.deleteGuild(this.plugin, guild);
-        }
+        PandaStream.of(this.guildManager.getGuilds())
+                .filter(Guild::isValid)
+                .filter(guild -> SimpleEventHandler.handle(new GuildDeleteEvent(EventCause.SYSTEM, null, guild)))
+                .forEach(guild -> {
+                    ValidityUtils.broadcast(guild);
+                    this.guildManager.deleteGuild(this.plugin, guild);
+                });
 
         this.validateGuildsCounter = 0;
     }
 
     private void validateGuildBans() {
-        for (Guild guild : this.guildManager.getGuilds()) {
-            if (guild.getBan() > System.currentTimeMillis()) {
-                continue;
-            }
-
-            guild.setBan(0);
-            guild.markChanged();
-        }
+        PandaStream.of(this.guildManager.getGuilds())
+                .filter(guild -> guild.getBan() <= System.currentTimeMillis())
+                .forEach(guild -> guild.setBan(0));
 
         this.banGuildsCounter = 0;
     }

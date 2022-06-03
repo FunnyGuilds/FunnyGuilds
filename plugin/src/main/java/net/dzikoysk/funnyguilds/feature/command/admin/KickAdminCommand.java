@@ -23,11 +23,11 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
 
         User user = UserValidation.requireUserByName(args[0]);
-        when(!user.hasGuild(), messages.generalPlayerHasNoGuild);
-        when(user.isOwner(), messages.adminGuildOwner);
+        when(!user.hasGuild(), this.messages.generalPlayerHasNoGuild);
+        when(user.isOwner(), this.messages.adminGuildOwner);
 
         Guild guild = user.getGuild().get();
         User admin = AdminUtils.getAdminUser(sender);
@@ -36,7 +36,7 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(individualPrefixManager, user.getName()));
+        this.concurrencyManager.postRequests(new PrefixGlobalRemovePlayerRequest(this.individualPrefixManager, user.getName()));
 
         guild.removeMember(user);
         user.removeGuild();
@@ -46,12 +46,12 @@ public final class KickAdminCommand extends AbstractFunnyCommand {
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", user.getName());
 
-        sendMessage(sender, formatter.format(messages.kickToOwner));
-        broadcastMessage(formatter.format(messages.broadcastKick));
-        user.sendMessage(formatter.format(messages.kickToPlayer));
+        sendMessage(sender, formatter.format(this.messages.kickToOwner));
+        broadcastMessage(formatter.format(this.messages.broadcastKick));
+        user.sendMessage(formatter.format(this.messages.kickToPlayer));
 
         this.funnyServer.getPlayer(user.getUUID()).peek(player -> {
-            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(individualPrefixManager, player));
+            this.concurrencyManager.postRequests(new PrefixGlobalUpdatePlayer(this.individualPrefixManager, player));
         });
     }
 

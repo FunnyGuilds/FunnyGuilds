@@ -90,7 +90,7 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void sendNotification(String text, BossBarOptions options, int timeout) {
-        Option.of(Bukkit.getPlayer(user.getUUID())).peek(player -> {
+        Option.of(Bukkit.getPlayer(this.user.getUUID())).peek(player -> {
             if (this.bossBarHandleTask != null) {
                 this.bossBarHandleTask.cancel();
                 this.removeBossBar(player);
@@ -103,7 +103,7 @@ public class LegacyBossBarProviderImpl implements BossBarProvider {
 
     @Override
     public void removeNotification() {
-        Option.of(Bukkit.getPlayer(user.getUUID())).peek(this::removeBossBar);
+        Option.of(Bukkit.getPlayer(this.user.getUUID())).peek(this::removeBossBar);
     }
 
     private void createBossBar(Player player, String text, int timeout) {

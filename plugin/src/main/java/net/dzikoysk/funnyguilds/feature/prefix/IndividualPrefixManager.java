@@ -34,7 +34,7 @@ public class IndividualPrefixManager {
             return;
         }
 
-        Option<User> userOption = userManager.findByPlayer(player);
+        Option<User> userOption = this.userManager.findByPlayer(player);
         if (userOption.isEmpty()) {
             return;
         }
@@ -52,10 +52,10 @@ public class IndividualPrefixManager {
         }).onEmpty(() -> {
             FunnyGuilds.getPluginLogger().debug("We're trying to update player scoreboard, but cached scoreboard is null (server has been reloaded?)");
 
-            Bukkit.getScheduler().runTask(plugin, () -> {
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
                 Scoreboard scoreboard;
 
-                if (pluginConfiguration.useSharedScoreboard) {
+                if (this.pluginConfiguration.useSharedScoreboard) {
                     scoreboard = player.getScoreboard();
                 }
                 else {
@@ -65,7 +65,7 @@ public class IndividualPrefixManager {
 
                 cache.setScoreboard(scoreboard);
 
-                if (pluginConfiguration.guildTagEnabled) {
+                if (this.pluginConfiguration.guildTagEnabled) {
                     IndividualPrefix prefix = new IndividualPrefix(user);
                     prefix.initialize();
                     cache.setIndividualPrefix(prefix);
@@ -77,51 +77,47 @@ public class IndividualPrefixManager {
     }
 
     public void addGuild(Guild guild) {
-        try (PandaStream<? extends Player> players = PandaStream.of(Bukkit.getOnlinePlayers())) {
-            players.map(Player::getUniqueId)
-                    .flatMap(userManager::findByUuid)
-                    .map(User::getCache)
-                    .mapOpt(UserCache::getIndividualPrefix)
-                    .forEach(prefix -> prefix.addGuild(guild));
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .map(Player::getUniqueId)
+                .flatMap(this.userManager::findByUuid)
+                .map(User::getCache)
+                .mapOpt(UserCache::getIndividualPrefix)
+                .forEach(prefix -> prefix.addGuild(guild));
 
-        updatePlayers();
+        this.updatePlayers();
     }
 
     public void addPlayer(String player) {
-        try (PandaStream<? extends Player> players = PandaStream.of(Bukkit.getOnlinePlayers())) {
-            players.map(Player::getUniqueId)
-                    .flatMap(userManager::findByUuid)
-                    .map(User::getCache)
-                    .mapOpt(UserCache::getIndividualPrefix)
-                    .forEach(prefix -> prefix.addPlayer(player));
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .map(Player::getUniqueId)
+                .flatMap(this.userManager::findByUuid)
+                .map(User::getCache)
+                .mapOpt(UserCache::getIndividualPrefix)
+                .forEach(prefix -> prefix.addPlayer(player));
 
-        updatePlayers();
+        this.updatePlayers();
     }
 
     public void removeGuild(Guild guild) {
-        try (PandaStream<? extends Player> players = PandaStream.of(Bukkit.getOnlinePlayers())) {
-            players.map(Player::getUniqueId)
-                    .flatMap(userManager::findByUuid)
-                    .map(User::getCache)
-                    .mapOpt(UserCache::getIndividualPrefix)
-                    .forEach(prefix -> prefix.removeGuild(guild));
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .map(Player::getUniqueId)
+                .flatMap(this.userManager::findByUuid)
+                .map(User::getCache)
+                .mapOpt(UserCache::getIndividualPrefix)
+                .forEach(prefix -> prefix.removeGuild(guild));
 
-        updatePlayers();
+        this.updatePlayers();
     }
 
     public void removePlayer(String player) {
-        try (PandaStream<? extends Player> players = PandaStream.of(Bukkit.getOnlinePlayers())) {
-            players.map(Player::getUniqueId)
-                    .flatMap(userManager::findByUuid)
-                    .map(User::getCache)
-                    .mapOpt(UserCache::getIndividualPrefix)
-                    .forEach(prefix -> prefix.removePlayer(player));
-        }
+        PandaStream.of(Bukkit.getOnlinePlayers())
+                .map(Player::getUniqueId)
+                .flatMap(this.userManager::findByUuid)
+                .map(User::getCache)
+                .mapOpt(UserCache::getIndividualPrefix)
+                .forEach(prefix -> prefix.removePlayer(player));
 
-        updatePlayers();
+        this.updatePlayers();
     }
 
 }

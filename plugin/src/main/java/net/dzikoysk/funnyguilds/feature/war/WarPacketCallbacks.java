@@ -18,7 +18,9 @@ public class WarPacketCallbacks implements PacketCallbacks {
 
     @Override
     public void handleRightClickEntity(int entityId, boolean isMainHand) {
-        plugin.getConcurrencyManager().postRequests(new WarInfoRequest(plugin, this.plugin.getGuildEntityHelper(), user, entityId));
+        this.plugin.getConcurrencyManager().postRequests(
+                new WarInfoRequest(this.plugin, this.plugin.getGuildEntityHelper(), this.user, entityId)
+        );
     }
 
     @Override
@@ -27,7 +29,9 @@ public class WarPacketCallbacks implements PacketCallbacks {
             return;
         }
 
-        plugin.getConcurrencyManager().postRequests(new WarAttackRequest(plugin, plugin.getGuildEntityHelper(), user, entityId));
+        this.plugin.getConcurrencyManager().postRequests(
+                new WarAttackRequest(this.plugin, this.plugin.getGuildEntityHelper(), this.user, entityId)
+        );
     }
 
 }

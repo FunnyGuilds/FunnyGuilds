@@ -29,25 +29,25 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, User user) {
-        when(!config.regionsEnabled, messages.regionsDisabled);
-        when(!config.escapeEnable || !config.baseEnable, messages.escapeDisabled);
-        when(user.getCache().getTeleportation() != null, messages.escapeInProgress);
+        when(!this.config.regionsEnabled, this.messages.regionsDisabled);
+        when(!this.config.escapeEnable || !this.config.baseEnable, this.messages.escapeDisabled);
+        when(user.getCache().getTeleportation() != null, this.messages.escapeInProgress);
 
         Location playerLocation = player.getLocation();
         Option<Region> regionOption = this.regionManager.findRegionAtLocation(playerLocation);
-        when(regionOption.isEmpty(), messages.escapeNoNeedToRun);
+        when(regionOption.isEmpty(), this.messages.escapeNoNeedToRun);
 
         Region region = regionOption.get();
-        int time = config.escapeDelay;
+        int time = this.config.escapeDelay;
 
         if (!user.hasGuild()) {
-            when(!config.escapeSpawn, messages.escapeNoUserGuild);
-            scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {});
+            when(!this.config.escapeSpawn, this.messages.escapeNoUserGuild);
+            this.scheduleTeleportation(player, user, player.getWorld().getSpawnLocation(), time, () -> {});
             return;
         }
 
         Guild guild = user.getGuild().get();
-        when(guild.equals(region.getGuild()), messages.escapeOnYourRegion);
+        when(guild.equals(region.getGuild()), this.messages.escapeOnYourRegion);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{TIME}", time)
@@ -57,13 +57,13 @@ public final class EscapeCommand extends AbstractFunnyCommand {
                 .register("{Z}", playerLocation.getBlockZ());
 
         if (time >= 1) {
-            user.sendMessage(formatter.format(messages.escapeStartedUser));
-            region.getGuild().broadcast(formatter.format(messages.escapeStartedOpponents));
+            sendMessage(player, formatter.format(this.messages.escapeStartedUser));
+            region.getGuild().broadcast(formatter.format(this.messages.escapeStartedOpponents));
         }
 
-        guild.getHome().peek(home -> scheduleTeleportation(player, user, home, time, () -> {
+        guild.getHome().peek(home -> this.scheduleTeleportation(player, user, home, time, () -> {
             region.getGuild().getMembers().forEach(member -> {
-                member.sendMessage(formatter.format(messages.escapeSuccessfulOpponents));
+                member.sendMessage(formatter.format(this.messages.escapeSuccessfulOpponents));
             });
         }));
     }
@@ -82,7 +82,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
 
             if (!LocationUtils.equals(player.getLocation(), before)) {
                 cache.getTeleportation().cancel();
-                user.sendMessage(messages.escapeCancelled);
+                sendMessage(player, this.messages.escapeCancelled);
                 cache.setTeleportation(null);
                 return;
             }
@@ -90,7 +90,7 @@ public final class EscapeCommand extends AbstractFunnyCommand {
             if (timeCounter.getAndIncrement() > time) {
                 cache.getTeleportation().cancel();
                 player.teleport(destination);
-                user.sendMessage(messages.escapeSuccessfulUser);
+                sendMessage(player, this.messages.escapeSuccessfulUser);
                 onSuccess.run();
                 cache.setTeleportation(null);
             }

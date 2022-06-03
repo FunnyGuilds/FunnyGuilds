@@ -13,7 +13,7 @@ import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 public class MessageConfiguration extends OkaeriConfig {
 
     @Comment("<------- Global Date Format -------> #")
-    public SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+    public SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"); //TODO change to new datetime API
 
     @Comment("")
     @Comment("<------- No Value Messages -------> #")
@@ -46,10 +46,8 @@ public class MessageConfiguration extends OkaeriConfig {
     public String rankLastAttackerA = "&7Ten gracz byl ostatnio zabity przez Ciebie, punkty nie zostaja dodane!";
     public String rankIPVictim = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja odjete!";
     public String rankIPAttacker = "&7Ten gracz ma taki sam adres IP, punkty nie zostaja dodane!";
-    @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, " +
-            "{VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
-    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) " +
-            "uzywajac &b{WEAPON} {WEAPON-NAME}";
+    @Comment("Dostepne zmienne: {ATTACKER}, {VICTIM}, {-}, {+}, {MINUS-FORMATTED}, {PLUS-FORMATTED}, {POINTS}, {POINTS-FORMAT}, {VTAG}, {ATAG}, {WEAPON}, {WEAPON-NAME}, {REMAINING-HEALTH}, {REMAINING-HEARTS}, {ASSISTS}")
+    public String rankDeathMessage = "{ATAG}&b{ATTACKER} &7({PLUS-FORMATTED}&7) zabil {VTAG}&b{VICTIM} &7({MINUS-FORMATTED}&7) uzywajac &b{WEAPON} {WEAPON-NAME}";
     public String rankKillTitle = "&cZabiles gracza {VICTIM}";
     public String rankKillSubtitle = "&7+{+}";
     @Comment("Zamiast zmiennej {ASSISTS} wstawiane sa kolejne wpisy o asystujacych graczach")
@@ -93,35 +91,35 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("")
     @Comment("<------- Bossbar Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationBossbarIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    public String notificationBossbarIntruderEnterGuildRegion = this.notificationActionbarIntruderEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationBossbarEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    public String notificationBossbarEnterGuildRegion = this.notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationBossbarLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    public String notificationBossbarLeaveGuildRegion = this.notificationActionbarLeaveGuildRegion;
 
     @Comment("")
     @Comment("<------- Chat Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationChatIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    public String notificationChatIntruderEnterGuildRegion = this.notificationActionbarIntruderEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationChatEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    public String notificationChatEnterGuildRegion = this.notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationChatLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    public String notificationChatLeaveGuildRegion = this.notificationActionbarLeaveGuildRegion;
 
     @Comment("")
     @Comment("<------- Title Region Messages -------> #")
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationTitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    public String notificationTitleIntruderEnterGuildRegion = this.notificationActionbarIntruderEnterGuildRegion;
     @Comment("Dostepne zmienne: {PLAYER}")
-    public String notificationSubtitleIntruderEnterGuildRegion = notificationActionbarIntruderEnterGuildRegion;
+    public String notificationSubtitleIntruderEnterGuildRegion = this.notificationActionbarIntruderEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationTitleEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    public String notificationTitleEnterGuildRegion = this.notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationSubtitleEnterGuildRegion = notificationActionbarEnterGuildRegion;
+    public String notificationSubtitleEnterGuildRegion = this.notificationActionbarEnterGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationTitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    public String notificationTitleLeaveGuildRegion = this.notificationActionbarLeaveGuildRegion;
     @Comment("Dostepne zmienne: {GUILD}, {TAG}")
-    public String notificationSubtitleLeaveGuildRegion = notificationActionbarLeaveGuildRegion;
+    public String notificationSubtitleLeaveGuildRegion = this.notificationActionbarLeaveGuildRegion;
 
     @Comment("")
     @Comment("<------- Broadcast Messages -------> #")
@@ -226,9 +224,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String infoTag = "&cPodaj tag gildii!";
     public String infoExists = "&cGildia o takim tagu nie istnieje!";
 
-    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, " +
-            "{POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, " +
-            "{ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
+    @Comment("Dostepne zmienne: {GUILD}, {TAG}, {OWNER}, {DEPUTIES}, {MEMBERS}, {MEMBERS-ONLINE}, {MEMBERS-ALL}, {REGION-SIZE}, {POINTS}, {POINTS-FORMAT}, {KILLS}, {DEATHS}, {ASSISTS}, {LOGOUTS}, {KDR}, {ALLIES}, {ALLIES-TAGS}, {ENEMIES}, {ENEMIES-TAGS}, {RANK}, {VALIDITY}, {LIVES}, {LIVES-SYMBOL}, {LIVES-SYMBOL-ALL}, {GUILD-PROTECTION}")
     public List<String> infoList = Arrays.asList(
             "&8-------------------------------",
             "&7Gildia: &c{GUILD} &8[&c{TAG}&8]",
@@ -338,8 +334,7 @@ public class MessageConfiguration extends OkaeriConfig {
     @Comment("Dostepne zmienne: {POINTS}, {POINTS-FORMAT}, {REQUIRED}, {REQUIRED-FORMAT}")
     public String createRank = "&cAby zalozyc gildie, wymagane jest przynajmniej &7{REQUIRED} &cpunktow.";
     @Comment("Dostepne zmienne: {ITEM}, {ITEMS}")
-    public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}&c. " +
-            "Najedz na przedmiot, aby dowiedziec sie wiecej";
+    public String createItems = "&cNie masz wszystkich przedmiotow! Obecnie brakuje Ci &7{ITEM} &cz &7{ITEMS}&c. Najedz na przedmiot, aby dowiedziec sie wiecej";
     @Comment("Dostepne zmienne: {EXP}")
     public String createExperience = "&cNie posiadasz wymaganego doswiadczenia do zalozenia gildii: &7{EXP}";
     @Comment("Dostepne zmienne: {MONEY}")
@@ -349,8 +344,7 @@ public class MessageConfiguration extends OkaeriConfig {
     public String createGuild = "&7Zalozono gildie o nazwie &a{GUILD} &7i tagu &a{TAG}&7!";
     public String createGuildCouldNotPasteSchematic = "&cWystapil blad podczas tworzenia terenu gildii, zglos sie do administracji.";
     @Comment("Dostepne zmienne: {BORDER-MIN-DISTANCE}")
-    public String createNotEnoughDistanceFromBorder = "&cJestes zbyt blisko granicy mapy aby zalozyc gildie! " +
-            "(Minimalna odleglosc: {BORDER-MIN-DISTANCE})";
+    public String createNotEnoughDistanceFromBorder = "&cJestes zbyt blisko granicy mapy aby zalozyc gildie! (Minimalna odleglosc: {BORDER-MIN-DISTANCE})";
 
     @Comment("")
     @Comment("<------- Delete Guild Messages -------> #")
@@ -362,7 +356,6 @@ public class MessageConfiguration extends OkaeriConfig {
 
     @Comment("")
     @Comment("<------- Invite Messages -------> #")
-    public String invitePlayerExists = "&cNie ma takiego gracza na serwerze!";
     @Comment("Dostepne zmienne: {AMOUNT}")
     public String inviteAmount = "&7Osiagnieto juz &cmaksymalna &7liczbe czlonkow w gildii! (&c{AMOUNT}&7)";
     public String inviteAmountJoin = "&7Ta gildia osiagnela juz &cmaksymalna &7liczbe czlonkow! (&c{AMOUNT}&7)";

@@ -27,9 +27,9 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
             playerOnly = true
     )
     public void execute(Player player, @IsOwner User user, Guild guild) {
-        when(config.guildDeleteCancelIfSomeoneIsOnRegion && regionManager.isAnyUserInRegion(guild.getRegion().orNull(),
-                guild.getMembers()), messages.deleteSomeoneIsNear);
-        when(!ConfirmationList.contains(user.getUUID()), messages.deleteToConfirm);
+        when(this.config.guildDeleteCancelIfSomeoneIsOnRegion && this.regionManager.isAnyUserInRegion(guild.getRegion().orNull(),
+                guild.getMembers()), this.messages.deleteSomeoneIsNear);
+        when(!ConfirmationList.contains(user.getUUID()), this.messages.deleteToConfirm);
 
         ConfirmationList.remove(user.getUUID());
 
@@ -37,15 +37,15 @@ public final class ConfirmCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.guildManager.deleteGuild(plugin, guild);
+        this.guildManager.deleteGuild(this.plugin, guild);
 
         FunnyFormatter formatter = new FunnyFormatter()
                 .register("{GUILD}", guild.getName())
                 .register("{TAG}", guild.getTag())
                 .register("{PLAYER}", player.getName());
 
-        sendMessage(player, formatter.format(messages.deleteSuccessful));
-        broadcastMessage(formatter.format(messages.broadcastDelete));
+        sendMessage(player, formatter.format(this.messages.deleteSuccessful));
+        broadcastMessage(formatter.format(this.messages.broadcastDelete));
     }
 
 }

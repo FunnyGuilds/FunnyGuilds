@@ -7,152 +7,120 @@ import net.dzikoysk.funnyguilds.concurrency.requests.prefix.PrefixGlobalUpdateRe
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.data.DataModel;
 import net.dzikoysk.funnyguilds.data.database.element.SQLBasicUtils;
-import net.dzikoysk.funnyguilds.data.database.element.SQLElement;
 import net.dzikoysk.funnyguilds.data.database.element.SQLTable;
 import net.dzikoysk.funnyguilds.data.database.element.SQLType;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseGuildSerializer;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseRegionSerializer;
+import net.dzikoysk.funnyguilds.data.database.serializer.DatabaseUserSerializer;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
-import net.dzikoysk.funnyguilds.guild.Region;
-import net.dzikoysk.funnyguilds.guild.RegionUtils;
+import net.dzikoysk.funnyguilds.guild.RegionManager;
+import net.dzikoysk.funnyguilds.shared.FunnyValidator;
 import net.dzikoysk.funnyguilds.shared.bukkit.ChatUtils;
 import net.dzikoysk.funnyguilds.user.User;
-import net.dzikoysk.funnyguilds.user.UserUtils;
 import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class SQLDataModel implements DataModel {
 
-    private static SQLDataModel instance;
+    private final FunnyGuilds plugin;
 
-    public static SQLTable tabUsers;
-    public static SQLTable tabRegions;
-    public static SQLTable tabGuilds;
+    private final SQLTable usersTable;
+    private final SQLTable guildsTable;
+    private final SQLTable regionsTable;
 
-    public SQLDataModel() {
-        instance = this;
-        loadModels();
+
+    public SQLDataModel(FunnyGuilds plugin) {
+        PluginConfiguration pluginConfiguration = plugin.getPluginConfiguration();
+
+        this.plugin = plugin;
+        this.usersTable = new SQLTable(pluginConfiguration.mysql.usersTableName);
+        this.guildsTable = new SQLTable(pluginConfiguration.mysql.guildsTableName);
+        this.regionsTable = new SQLTable(pluginConfiguration.mysql.regionsTableName);
+
+        this.prepareTables();
     }
 
-    public static SQLDataModel getInstance() {
-        if (instance != null) {
-            return instance;
-        }
+    public void prepareTables() {
+        this.usersTable.add("uuid", SQLType.VARCHAR, 36, true);
+        this.usersTable.add("name", SQLType.TEXT, true);
+        this.usersTable.add("points", SQLType.INT, true);
+        this.usersTable.add("kills", SQLType.INT, true);
+        this.usersTable.add("deaths", SQLType.INT, true);
+        this.usersTable.add("assists", SQLType.INT, true);
+        this.usersTable.add("logouts", SQLType.INT, true);
+        this.usersTable.add("ban", SQLType.BIGINT);
+        this.usersTable.add("reason", SQLType.TEXT);
+        this.usersTable.setPrimaryKey("uuid");
 
-        return new SQLDataModel();
-    }
+        this.guildsTable.add("uuid", SQLType.VARCHAR, 100, true);
+        this.guildsTable.add("name", SQLType.TEXT, true);
+        this.guildsTable.add("tag", SQLType.TEXT, true);
+        this.guildsTable.add("owner", SQLType.TEXT, true);
+        this.guildsTable.add("home", SQLType.TEXT, true);
+        this.guildsTable.add("region", SQLType.TEXT, true);
+        this.guildsTable.add("regions", SQLType.TEXT, true);
+        this.guildsTable.add("members", SQLType.TEXT, true);
+        this.guildsTable.add("points", SQLType.INT, true);
+        this.guildsTable.add("lives", SQLType.INT, true);
+        this.guildsTable.add("ban", SQLType.BIGINT, true);
+        this.guildsTable.add("born", SQLType.BIGINT, true);
+        this.guildsTable.add("validity", SQLType.BIGINT, true);
+        this.guildsTable.add("pvp", SQLType.BOOLEAN, true);
+        this.guildsTable.add("attacked", SQLType.BIGINT); //TODO: [FG 5.0] attacked -> protection
+        this.guildsTable.add("allies", SQLType.TEXT);
+        this.guildsTable.add("enemies", SQLType.TEXT);
+        this.guildsTable.add("info", SQLType.TEXT);
+        this.guildsTable.add("deputy", SQLType.TEXT);
+        this.guildsTable.setPrimaryKey("uuid");
 
-    public static void loadModels() {
-        PluginConfiguration pluginConfiguration = FunnyGuilds.getInstance().getPluginConfiguration();
-        tabUsers = new SQLTable(pluginConfiguration.mysql.usersTableName);
-        tabRegions = new SQLTable(pluginConfiguration.mysql.regionsTableName);
-        tabGuilds = new SQLTable(pluginConfiguration.mysql.guildsTableName);
-
-        tabUsers.add("uuid", SQLType.VARCHAR, 36, true);
-        tabUsers.add("name", SQLType.TEXT, true);
-        tabUsers.add("points", SQLType.INT, true);
-        tabUsers.add("kills", SQLType.INT, true);
-        tabUsers.add("deaths", SQLType.INT, true);
-        tabUsers.add("assists", SQLType.INT, true);
-        tabUsers.add("logouts", SQLType.INT, true);
-        tabUsers.add("ban", SQLType.BIGINT);
-        tabUsers.add("reason", SQLType.TEXT);
-        tabUsers.setPrimaryKey("uuid");
-
-        tabRegions.add("name", SQLType.VARCHAR, 100, true);
-        tabRegions.add("center", SQLType.TEXT, true);
-        tabRegions.add("size", SQLType.INT, true);
-        tabRegions.add("enlarge", SQLType.INT, true);
-        tabRegions.setPrimaryKey("name");
-
-        tabGuilds.add("uuid", SQLType.VARCHAR, 100, true);
-        tabGuilds.add("name", SQLType.TEXT, true);
-        tabGuilds.add("tag", SQLType.TEXT, true);
-        tabGuilds.add("owner", SQLType.TEXT, true);
-        tabGuilds.add("home", SQLType.TEXT, true);
-        tabGuilds.add("region", SQLType.TEXT, true);
-        tabGuilds.add("regions", SQLType.TEXT, true);
-        tabGuilds.add("members", SQLType.TEXT, true);
-        tabGuilds.add("points", SQLType.INT, true);
-        tabGuilds.add("lives", SQLType.INT, true);
-        tabGuilds.add("ban", SQLType.BIGINT, true);
-        tabGuilds.add("born", SQLType.BIGINT, true);
-        tabGuilds.add("validity", SQLType.BIGINT, true);
-        tabGuilds.add("pvp", SQLType.BOOLEAN, true);
-        tabGuilds.add("attacked", SQLType.BIGINT); //TODO: [FG 5.0] attacked -> protection
-        tabGuilds.add("allies", SQLType.TEXT);
-        tabGuilds.add("enemies", SQLType.TEXT);
-        tabGuilds.add("info", SQLType.TEXT);
-        tabGuilds.add("deputy", SQLType.TEXT);
-        tabGuilds.setPrimaryKey("uuid");
+        this.regionsTable.add("name", SQLType.VARCHAR, 100, true);
+        this.regionsTable.add("center", SQLType.TEXT, true);
+        this.regionsTable.add("size", SQLType.INT, true);
+        this.regionsTable.add("enlarge", SQLType.INT, true);
+        this.regionsTable.setPrimaryKey("name");
     }
 
     public void load() throws SQLException {
-        createTableIfNotExists(tabUsers);
-        createTableIfNotExists(tabRegions);
-        createTableIfNotExists(tabGuilds);
+        createTableIfNotExists(this.usersTable);
+        createTableIfNotExists(this.regionsTable);
+        createTableIfNotExists(this.guildsTable);
 
-        loadUsers();
-        loadRegions();
-        loadGuilds();
+        this.loadUsers();
+        this.loadRegions();
+        this.loadGuilds();
 
-        ConcurrencyManager concurrencyManager = FunnyGuilds.getInstance().getConcurrencyManager();
-        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest(FunnyGuilds.getInstance().getIndividualPrefixManager()));
+        ConcurrencyManager concurrencyManager = this.plugin.getConcurrencyManager();
+        concurrencyManager.postRequests(new PrefixGlobalUpdateRequest(this.plugin.getIndividualPrefixManager()));
     }
 
     public void loadUsers() {
-        SQLBasicUtils.getSelectAll(SQLDataModel.tabUsers).executeQuery(result -> {
+        SQLBasicUtils.getSelectAll(this.usersTable).executeQuery(result -> {
             while (result.next()) {
                 String userName = result.getString("name");
 
-                if (!UserUtils.validateUsername(userName)) {
-                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "'. Name is invalid.");
+                if (!FunnyValidator.validateUsername(userName)) {
+                    FunnyGuilds.getPluginLogger().warning("Skipping loading of user '" + userName + "' - name is invalid");
                     continue;
                 }
 
-                User user = DatabaseUser.deserialize(result);
-
-                if (user != null) {
-                    user.wasChanged();
-                }
+                DatabaseUserSerializer.deserialize(result).peek(User::wasChanged);
             }
         });
 
-        FunnyGuilds.getPluginLogger().info("Loaded users: " + UserUtils.getUsers().size());
+        FunnyGuilds.getPluginLogger().info("Loaded users: " + this.plugin.getUserManager().countUsers());
     }
 
-    public void loadRegions() throws SQLException {
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
-            FunnyGuilds.getPluginLogger().info("Regions are disabled and thus - not loaded");
-            return;
-        }
+    public void loadGuilds() {
+        GuildManager guildManager = this.plugin.getGuildManager();
 
-        SQLBasicUtils.getSelectAll(SQLDataModel.tabRegions).executeQuery(result -> {
-            while (result.next()) {
-                Region region = DatabaseRegion.deserialize(result);
-
-                if (region != null) {
-                    region.wasChanged();
-                    FunnyGuilds.getInstance().getRegionManager().addRegion(region);
-                }
-            }
-        });
-
-        FunnyGuilds.getPluginLogger().info("Loaded regions: " + RegionUtils.getRegions().size());
-    }
-
-    public void loadGuilds() throws SQLException {
-        GuildManager guildManager = FunnyGuilds.getInstance().getGuildManager();
-
-        SQLBasicUtils.getSelectAll(SQLDataModel.tabGuilds).executeQuery(resultAll -> {
+        SQLBasicUtils.getSelectAll(this.guildsTable).executeQuery(resultAll -> {
             while (resultAll.next()) {
-                Guild guild = DatabaseGuild.deserialize(resultAll);
-
-                if (guild != null) {
-                    guild.wasChanged();
-                }
+                DatabaseGuildSerializer.deserialize(resultAll).peek(Guild::wasChanged);
             }
         });
 
-        SQLBasicUtils.getSelect(SQLDataModel.tabGuilds, "tag", "allies", "enemies").executeQuery(result -> {
+        SQLBasicUtils.getSelect(this.guildsTable, "tag", "allies", "enemies").executeQuery(result -> {
             while (result.next()) {
                 Option<Guild> guildOption = guildManager.findByTag(result.getString("tag"));
                 if (guildOption.isEmpty()) {
@@ -160,67 +128,80 @@ public class SQLDataModel implements DataModel {
                 }
 
                 Guild guild = guildOption.get();
-
                 String alliesList = result.getString("allies");
                 String enemiesList = result.getString("enemies");
 
-                if (alliesList != null && !alliesList.equals("")) {
+                if (alliesList != null && !alliesList.isEmpty()) {
                     guild.setAllies(guildManager.findByNames(ChatUtils.fromString(alliesList)));
                 }
 
-                if (enemiesList != null && !enemiesList.equals("")) {
+                if (enemiesList != null && !enemiesList.isEmpty()) {
                     guild.setEnemies(guildManager.findByNames(ChatUtils.fromString(enemiesList)));
                 }
             }
         });
 
-        for (Guild guild : guildManager.getGuilds()) {
-            if (guild.getOwner() != null) {
-                continue;
-            }
-
-            guildManager.deleteGuild(FunnyGuilds.getInstance(), guild);
-        }
+        PandaStream.of(guildManager.getGuilds())
+                .filter(guild -> guild.getOwner() == null)
+                .forEach(guild -> guildManager.deleteGuild(FunnyGuilds.getInstance(), guild));
 
         FunnyGuilds.getPluginLogger().info("Loaded guilds: " + guildManager.countGuilds());
     }
 
-    @Override
-    public void save(boolean ignoreNotChanged) {
-        for (User user : FunnyGuilds.getInstance().getUserManager().getUsers()) {
-            if (ignoreNotChanged && !user.wasChanged()) {
-                continue;
-            }
-
-            DatabaseUser.save(user);
-        }
-
-        for (Guild guild : FunnyGuilds.getInstance().getGuildManager().getGuilds()) {
-            if (ignoreNotChanged && !guild.wasChanged()) {
-                continue;
-            }
-
-            DatabaseGuild.save(guild);
-        }
-
-        if (!FunnyGuilds.getInstance().getPluginConfiguration().regionsEnabled) {
+    public void loadRegions() {
+        if (!this.plugin.getPluginConfiguration().regionsEnabled) {
+            FunnyGuilds.getPluginLogger().info("Regions are disabled and thus - not loaded");
             return;
         }
 
-        for (Region region : RegionUtils.getRegions()) {
-            if (ignoreNotChanged && !region.wasChanged()) {
-                continue;
+        RegionManager regionManager = this.plugin.getRegionManager();
+
+        SQLBasicUtils.getSelectAll(this.regionsTable).executeQuery(result -> {
+            while (result.next()) {
+                DatabaseRegionSerializer.deserialize(result).peek(region -> {
+                    region.wasChanged();
+                    regionManager.addRegion(region);
+                });
             }
+        });
 
-            DatabaseRegion.save(region);
-        }
+        FunnyGuilds.getPluginLogger().info("Loaded regions: " + regionManager.countRegions());
     }
 
-    public void createTableIfNotExists(SQLTable table) {
+    @Override
+    public void save(boolean ignoreNotChanged) {
+        PandaStream.of(this.plugin.getUserManager().getUsers())
+                .filter(user -> !ignoreNotChanged || user.wasChanged())
+                .forEach(user -> DatabaseUserSerializer.serialize(this, user));
+
+        PandaStream.of(this.plugin.getGuildManager().getGuilds())
+                .filter(guild -> !ignoreNotChanged || guild.wasChanged())
+                .forEach(guild -> DatabaseGuildSerializer.serialize(this, guild));
+
+        if (!this.plugin.getPluginConfiguration().regionsEnabled) {
+            return;
+        }
+
+        PandaStream.of(this.plugin.getRegionManager().getRegions())
+                .filter(region -> !ignoreNotChanged || region.wasChanged())
+                .forEach(region -> DatabaseRegionSerializer.serialize(this, region));
+    }
+
+    public SQLTable getUsersTable() {
+        return this.usersTable;
+    }
+
+    public SQLTable getGuildsTable() {
+        return this.guildsTable;
+    }
+
+    public SQLTable getRegionsTable() {
+        return this.regionsTable;
+    }
+
+    private static void createTableIfNotExists(SQLTable table) {
         SQLBasicUtils.getCreate(table).executeUpdate();
-
-        for (SQLElement sqlElement : table.getSqlElements()) {
-            SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true);
-        }
+        PandaStream.of(table.getSqlElements()).forEach(sqlElement -> SQLBasicUtils.getAlter(table, sqlElement).executeUpdate(true));
     }
+
 }

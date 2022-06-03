@@ -33,13 +33,12 @@ public final class InfoCommand extends AbstractFunnyCommand {
                         .filter(User::hasGuild)
                         .flatMap(User::getGuild)
                         .map(Guild::getTag))
-                .orThrow(() -> new ValidationException(messages.infoTag));
+                .orThrow(() -> new ValidationException(this.messages.infoTag));
 
         Guild guild = GuildValidation.requireGuildByTag(tag);
-
-        try (PandaStream<String> message = PandaStream.of(messages.infoList)) {
-            message.map(line -> guildPlaceholdersService.format(line, guild)).forEach(sender::sendMessage);
-        }
+        PandaStream.of(this.messages.infoList)
+                .map(line -> this.guildPlaceholdersService.format(line, guild))
+                .forEach(line -> sendMessage(sender, line));
     }
 
 }

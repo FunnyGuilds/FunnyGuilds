@@ -12,13 +12,15 @@ import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
 import org.bukkit.Location;
 import org.bukkit.World;
+import panda.std.Option;
+import panda.std.stream.PandaStream;
 
 public class WorldGuard6Hook extends WorldGuardHook {
 
@@ -39,9 +41,6 @@ public class WorldGuard6Hook extends WorldGuardHook {
         }
     }
 
-    private Method getInstance;
-    private Method getFlagRegistry;
-
     private WorldGuardPlugin worldGuard;
     private StateFlag noPointsFlag;
     private StateFlag noGuildsFlag;
@@ -52,18 +51,18 @@ public class WorldGuard6Hook extends WorldGuardHook {
 
     @Override
     public HookInitResult earlyInit() {
-        worldGuard = WorldGuardPlugin.inst();
-        noPointsFlag = new StateFlag("fg-no-points", false);
-        noGuildsFlag = new StateFlag("fg-no-guilds", false);
+        this.worldGuard = WorldGuardPlugin.inst();
+        this.noPointsFlag = new StateFlag("fg-no-points", false);
+        this.noGuildsFlag = new StateFlag("fg-no-guilds", false);
 
         Class<?> worldGuardPluginClass = Reflections.getClass("com.sk89q.worldguard.bukkit.WorldGuardPlugin");
 
-        getInstance = Reflections.getMethod(worldGuardPluginClass, "inst");
-        getFlagRegistry = Reflections.getMethod(worldGuardPluginClass, "getFlagRegistry");
+        Method getInstance = Reflections.getMethod(worldGuardPluginClass, "inst");
+        Method getFlagRegistry = Reflections.getMethod(worldGuardPluginClass, "getFlagRegistry");
 
         try {
-            ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(noPointsFlag);
-            ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(noGuildsFlag);
+            ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(this.noPointsFlag);
+            ((FlagRegistry) getFlagRegistry.invoke(getInstance.invoke(null))).register(this.noGuildsFlag);
         }
         catch (FlagConflictException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
             FunnyGuilds.getPluginLogger().error("An error occurred while registering an \"fg-no-points\" worldguard flag", ex);
@@ -75,81 +74,75 @@ public class WorldGuard6Hook extends WorldGuardHook {
 
     @Override
     public boolean isInNonPointsRegion(Location location) {
-        ApplicableRegionSet regionSet = getRegionSet(location);
-        if (regionSet == null) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
             return false;
         }
 
-        for (ProtectedRegion region : regionSet) {
-            if (region.getFlag(noPointsFlag) == StateFlag.State.ALLOW) {
-                return true;
-            }
-        }
-
-        return false;
+        return PandaStream.of(regionSet.get().getRegions())
+                .find(region -> region.getFlag(this.noPointsFlag) == StateFlag.State.ALLOW)
+                .isPresent();
     }
 
     @Override
     public boolean isInNonGuildsRegion(Location location) {
-        ApplicableRegionSet regionSet = getRegionSet(location);
-        if (regionSet == null) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
             return false;
         }
 
-        for (ProtectedRegion region : regionSet) {
-            if (region.getFlag(noGuildsFlag) == StateFlag.State.ALLOW) {
-                return true;
-            }
-        }
-
-        return false;
+        return PandaStream.of(regionSet.get().getRegions())
+                .find(region -> region.getFlag(this.noGuildsFlag) == StateFlag.State.ALLOW)
+                .isPresent();
     }
 
     @Override
     public boolean isInIgnoredRegion(Location location) {
         PluginConfiguration config = FunnyGuilds.getInstance().getPluginConfiguration();
 
-        ApplicableRegionSet regionSet = getRegionSet(location);
-        if (regionSet == null) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
             return false;
         }
 
-        return regionSet.getRegions()
-                .stream()
-                .anyMatch(region -> config.assistsRegionsIgnored.contains(region.getId()));
+        return PandaStream.of(regionSet.get().getRegions())
+                .find(region -> config.assistsRegionsIgnored.contains(region.getId()))
+                .isPresent();
     }
 
     @Override
     public boolean isInRegion(Location location) {
-        ApplicableRegionSet regionSet = getRegionSet(location);
-        if (regionSet == null) {
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
             return false;
         }
 
-        return regionSet.size() != 0;
+        return regionSet.get().size() != 0;
     }
 
     @Override
-    public ApplicableRegionSet getRegionSet(Location location) {
-        if (location == null || worldGuard == null) {
-            return null;
+    public Option<ApplicableRegionSet> getRegionSet(Location location) {
+        if (location == null || this.worldGuard == null) {
+            return Option.none();
         }
 
         try {
-            RegionManager regionManager = (RegionManager) GET_REGION_MANAGER.invokeExact(worldGuard, location.getWorld());
-            return (ApplicableRegionSet) GET_APPLICABLE_REGIONS.invokeExact(regionManager, location);
+            RegionManager regionManager = (RegionManager) GET_REGION_MANAGER.invokeExact(this.worldGuard, location.getWorld());
+            return Option.of((ApplicableRegionSet) GET_APPLICABLE_REGIONS.invokeExact(regionManager, location));
         }
-        catch (Throwable ex) {
-            return null;
+        catch (Throwable throwable) {
+            return Option.none();
         }
     }
 
     @Override
     public List<String> getRegionNames(Location location) {
-        ApplicableRegionSet regionSet = getRegionSet(location);
+        Option<ApplicableRegionSet> regionSet = this.getRegionSet(location);
+        if (regionSet.isEmpty()) {
+            return Collections.emptyList();
+        }
 
-        return regionSet == null ? null : regionSet.getRegions().stream()
-                .map(ProtectedRegion::getId)
-                .collect(Collectors.toList());
+        return PandaStream.of(regionSet.get().getRegions()).map(ProtectedRegion::getId).toList();
     }
+
 }

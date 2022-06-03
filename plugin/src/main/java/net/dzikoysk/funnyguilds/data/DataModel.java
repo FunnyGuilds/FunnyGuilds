@@ -60,11 +60,12 @@ public interface DataModel {
         }
     }
 
-    static DataModel create(FunnyGuilds funnyGuilds, PluginConfiguration.DataModel dataModel) {
-        if (dataModel == PluginConfiguration.DataModel.MYSQL) {
-            return new SQLDataModel();
+    static DataModel create(FunnyGuilds plugin, PluginConfiguration.DataModel modelType) {
+        if (modelType == PluginConfiguration.DataModel.MYSQL) {
+            return new SQLDataModel(plugin);
         }
 
-        return new FlatDataModel(funnyGuilds);
+        return new FlatDataModel(plugin);
     }
+
 }

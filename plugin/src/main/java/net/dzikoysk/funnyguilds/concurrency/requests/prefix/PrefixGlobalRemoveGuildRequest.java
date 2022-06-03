@@ -7,7 +7,6 @@ import net.dzikoysk.funnyguilds.guild.Guild;
 public class PrefixGlobalRemoveGuildRequest extends DefaultConcurrencyRequest {
 
     private final IndividualPrefixManager individualPrefixManager;
-
     private final Guild guild;
 
     public PrefixGlobalRemoveGuildRequest(IndividualPrefixManager individualPrefixManager, Guild guild) {
@@ -17,7 +16,7 @@ public class PrefixGlobalRemoveGuildRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        this.individualPrefixManager.removeGuild(guild);
+        this.individualPrefixManager.removeGuild(this.guild);
     }
 
 }

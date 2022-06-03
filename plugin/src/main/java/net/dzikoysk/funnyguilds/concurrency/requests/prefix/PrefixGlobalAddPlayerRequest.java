@@ -6,7 +6,6 @@ import net.dzikoysk.funnyguilds.feature.prefix.IndividualPrefixManager;
 public class PrefixGlobalAddPlayerRequest extends DefaultConcurrencyRequest {
 
     private final IndividualPrefixManager individualPrefixManager;
-
     private final String player;
 
     public PrefixGlobalAddPlayerRequest(IndividualPrefixManager individualPrefixManager, String player) {
@@ -16,7 +15,7 @@ public class PrefixGlobalAddPlayerRequest extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        this.individualPrefixManager.addPlayer(player);
+        this.individualPrefixManager.addPlayer(this.player);
     }
 
 }

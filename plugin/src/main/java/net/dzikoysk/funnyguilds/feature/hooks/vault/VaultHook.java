@@ -10,6 +10,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicesManager;
 
 public class VaultHook extends AbstractPluginHook {
 
@@ -22,8 +23,9 @@ public class VaultHook extends AbstractPluginHook {
 
     @Override
     public HookInitResult init() {
-        RegisteredServiceProvider<Economy> economyProvider = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
-        RegisteredServiceProvider<Permission> permissionProvider = Bukkit.getServer().getServicesManager().getRegistration(Permission.class);
+        ServicesManager servicesManager = Bukkit.getServicesManager();
+        RegisteredServiceProvider<Economy> economyProvider = servicesManager.getRegistration(Economy.class);
+        RegisteredServiceProvider<Permission> permissionProvider = servicesManager.getRegistration(Permission.class);
 
         if (economyProvider != null) {
             economyHook = economyProvider.getProvider();

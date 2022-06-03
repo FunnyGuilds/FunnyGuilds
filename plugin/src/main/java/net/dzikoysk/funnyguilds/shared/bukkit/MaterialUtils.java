@@ -2,11 +2,12 @@ package net.dzikoysk.funnyguilds.shared.bukkit;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Locale;
 import java.util.Set;
 import net.dzikoysk.funnyguilds.FunnyGuilds;
 import net.dzikoysk.funnyguilds.config.PluginConfiguration;
 import net.dzikoysk.funnyguilds.nms.Reflections;
-import org.apache.commons.lang3.StringUtils;
+import net.dzikoysk.funnyguilds.shared.FunnyFormatter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -85,7 +86,7 @@ public final class MaterialUtils {
             return ChatUtils.colored(config.translatedMaterials.get(material));
         }
 
-        return StringUtils.replaceChars(material.toString().toLowerCase(), '_', ' ');
+        return FunnyFormatter.formatOnce(material.toString().toLowerCase(Locale.ROOT), "_", " ");
     }
 
     public static String getItemCustomName(ItemStack itemStack) {
@@ -94,7 +95,6 @@ public final class MaterialUtils {
         }
 
         ItemMeta itemMeta = itemStack.getItemMeta();
-
         if (itemMeta == null) {
             return "";
         }

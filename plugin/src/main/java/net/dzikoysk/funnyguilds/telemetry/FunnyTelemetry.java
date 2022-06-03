@@ -9,7 +9,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
 import java.util.List;
-import net.dzikoysk.funnyguilds.shared.IOUtils;
+import panda.std.Result;
+import panda.utilities.IOUtils;
 
 /**
  * TODO: Move this to a separate library.
@@ -57,9 +58,14 @@ public class FunnyTelemetry {
         connection.addRequestProperty("User-Agent", "FunnyGuilds");
         connection.addRequestProperty("Content-Type", "text/plain");
         connection.setRequestProperty("Content-Length", String.valueOf(bodyBytes.length));
-
         connection.getOutputStream().write(bodyBytes);
-        return gson.fromJson(IOUtils.toString(connection.getInputStream(), "UTF-8"), response);
+
+        Result<String, IOException> input = IOUtils.convertStreamToString(connection.getInputStream(), StandardCharsets.UTF_8);
+        if (input.isOk()) {
+            return gson.fromJson(input.get(), response);
+        }
+
+        throw input.getError();
     }
 
     private static String encodeUTF8(String str) throws UnsupportedEncodingException {

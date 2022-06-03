@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import net.dzikoysk.funnyguilds.feature.invitation.InvitationList;
 import net.dzikoysk.funnyguilds.guild.Guild;
 import net.dzikoysk.funnyguilds.guild.GuildManager;
@@ -38,9 +37,10 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     }
 
     public Set<String> getInvitationGuildNames(UUID to) {
-        try (PandaStream<AllyInvitation> invitations = PandaStream.of(this.getInvitationsFor(to))) {
-            return invitations.map(AllyInvitation::getFrom).map(Guild::getName).collect(Collectors.toSet());
-        }
+        return PandaStream.of(this.getInvitationsFor(to))
+                .map(AllyInvitation::getFrom)
+                .map(Guild::getName)
+                .toSet();
     }
 
     public Set<String> getInvitationGuildNames(Guild to) {
@@ -48,9 +48,10 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
     }
 
     public Set<String> getInvitationGuildTags(UUID to) {
-        try (PandaStream<AllyInvitation> invitations = PandaStream.of(this.getInvitationsFor(to))) {
-            return invitations.map(AllyInvitation::getFrom).map(Guild::getTag).collect(Collectors.toSet());
-        }
+        return PandaStream.of(this.getInvitationsFor(to))
+                .map(AllyInvitation::getFrom)
+                .map(Guild::getTag)
+                .toSet();
     }
 
     public Set<String> getInvitationGuildTags(Guild to) {
@@ -75,9 +76,9 @@ public class AllyInvitationList implements InvitationList<AllyInvitation> {
 
     @Override
     public void expireInvitation(UUID from, UUID to) {
-        try (PandaStream<AllyInvitation> invitations = PandaStream.of(this.getInvitationsFrom(from))) {
-            invitations.filter(invitation -> invitation.getToUUID().equals(to)).forEach(this.invitations::remove);
-        }
+        PandaStream.of(this.getInvitationsFrom(from))
+                .filter(invitation -> invitation.getToUUID().equals(to))
+                .forEach(this.invitations::remove);
     }
 
     public void expireInvitation(Guild from, Guild to) {

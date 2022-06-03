@@ -10,6 +10,9 @@ import panda.std.Option;
 
 public final class RegionUtils {
 
+    private RegionUtils() {
+    }
+
     /**
      * Gets the copied set of regions.
      *
@@ -130,7 +133,7 @@ public final class RegionUtils {
     }
 
     public static String toString(Option<Region> region) {
-        return toString(region.getOrNull());
+        return toString(region.orNull());
     }
 
 }

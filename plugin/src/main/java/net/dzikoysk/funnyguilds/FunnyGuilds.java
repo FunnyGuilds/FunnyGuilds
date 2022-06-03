@@ -144,6 +144,7 @@ public class FunnyGuilds extends JavaPlugin {
 
     private BossBarService bossBarService;
 
+    private Database database;
     private DataModel dataModel;
     private DataPersistenceHandler dataPersistenceHandler;
     private InvitationPersistenceHandler invitationPersistenceHandler;
@@ -183,10 +184,9 @@ public class FunnyGuilds extends JavaPlugin {
         }
 
         try {
-            ConfigurationFactory configurationFactory = new ConfigurationFactory();
-            this.messageConfiguration = configurationFactory.createMessageConfiguration(messageConfigurationFile);
-            this.pluginConfiguration = configurationFactory.createPluginConfiguration(pluginConfigurationFile);
-            this.tablistConfiguration = configurationFactory.createTablistConfiguration(tablistConfigurationFile);
+            this.messageConfiguration = ConfigurationFactory.createMessageConfiguration(this.messageConfigurationFile);
+            this.pluginConfiguration = ConfigurationFactory.createPluginConfiguration(this.pluginConfigurationFile);
+            this.tablistConfiguration = ConfigurationFactory.createTablistConfiguration(this.tablistConfigurationFile);
         }
         catch (Exception exception) {
             logger.error("Could not load plugin configuration", exception);
@@ -245,10 +245,10 @@ public class FunnyGuilds extends JavaPlugin {
         this.guildPlaceholdersService.register(this, "allies_enemies", GuildPlaceholdersService.createAlliesEnemiesPlaceholders(this));
 
         this.rankPlaceholdersService = new RankPlaceholdersService(logger, this.pluginConfiguration, this.messageConfiguration, this.tablistConfiguration, this.userRankManager, this.guildRankManager);
-
         this.tablistPlaceholdersService = new TablistPlaceholdersService(basicPlaceholdersService, timePlaceholdersService, userPlaceholdersService, guildPlaceholdersService);
 
         this.bossBarService = new BossBarService();
+        this.database = new Database();
 
         try {
             this.dataModel = DataModel.create(this, this.pluginConfiguration.dataModel);
@@ -305,7 +305,7 @@ public class FunnyGuilds extends JavaPlugin {
 
         try {
             FunnyCommandsConfiguration commandsConfiguration = new FunnyCommandsConfiguration();
-            this.funnyCommands = commandsConfiguration.createFunnyCommands(this);
+            this.funnyCommands = FunnyCommandsConfiguration.createFunnyCommands(this);
         }
         catch (Exception exception) {
             logger.error("Could not register commands", exception);
@@ -408,15 +408,14 @@ public class FunnyGuilds extends JavaPlugin {
         this.invitationPersistenceHandler.stopHandler();
 
         this.getServer().getScheduler().cancelTasks(this);
-        this.getConcurrencyManager().awaitTermination(this.pluginConfiguration.pluginTaskTerminationTimeout);
+        this.concurrencyManager.awaitTermination(this.pluginConfiguration.pluginTaskTerminationTimeout);
 
-        Database.getInstance().shutdown();
-
+        this.database.shutdown();
         plugin = null;
     }
 
     public void shutdown(String content) {
-        if (this.isDisabling() || this.forceDisabling) {
+        if (this.isDisabling || this.forceDisabling) {
             return;
         }
 
@@ -476,6 +475,10 @@ public class FunnyGuilds extends JavaPlugin {
 
     public File getPluginDataFolder() {
         return this.pluginDataFolderFile;
+    }
+
+    public Database getDatabase() {
+        return this.database;
     }
 
     public DataModel getDataModel() {

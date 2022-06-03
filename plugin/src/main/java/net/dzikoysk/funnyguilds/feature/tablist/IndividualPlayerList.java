@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import panda.std.Option;
+import panda.utilities.text.Joiner;
 
 public class IndividualPlayerList {
 
@@ -40,8 +41,8 @@ public class IndividualPlayerList {
 
     private final boolean enableLegacyPlaceholders;
 
-    private int cycle = 0;
-    private int currentPage = 0;
+    private int cycle;
+    private int currentPage;
 
     public IndividualPlayerList(User user, PlayerListAccessor playerListAccessor, Map<Integer, String> unformattedCells, String header,
                                 String footer, boolean animated, List<TablistPage> pages, Map<NumberRange, SkinTexture> cellTextures,
@@ -115,7 +116,7 @@ public class IndividualPlayerList {
 
         SkinTexture[] preparedCellsTextures = this.putTexturePrepareCells();
 
-        Option.of(Bukkit.getPlayer(user.getUUID())).peek(player -> {
+        Option.of(Bukkit.getPlayer(this.user.getUUID())).peek(player -> {
             this.playerList.send(player, preparedCells, preparedHeader, preparedFooter, preparedCellsTextures, this.cellPing, Collections.emptySet());
         });
     }
@@ -129,7 +130,7 @@ public class IndividualPlayerList {
         allCells[PlayerListConstants.DEFAULT_CELL_COUNT] = header;
         allCells[PlayerListConstants.DEFAULT_CELL_COUNT + 1] = footer;
 
-        String mergedCells = StringUtils.join(allCells, '\0');
+        String mergedCells = Joiner.on("\0").join(allCells).toString();
         return StringUtils.splitPreserveAllTokens(this.putVars(mergedCells), '\0');
     }
 

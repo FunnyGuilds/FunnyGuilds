@@ -22,11 +22,11 @@ public final class TagCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 2, messages.generalNoTagGiven);
+        when(args.length < 2, this.messages.generalNoTagGiven);
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
 
         String tag = args[1];
-        when(guildManager.tagExists(tag), messages.createTagExists);
+        when(this.guildManager.tagExists(tag), this.messages.createTagExists);
 
         User admin = AdminUtils.getAdminUser(sender);
 
@@ -41,7 +41,7 @@ public final class TagCommand extends AbstractFunnyCommand {
                 .register("{OLD_TAG}", oldTag)
                 .register("{TAG}", guild.getTag());
 
-        sendMessage(sender, formatter.format(messages.adminTagChanged));
+        sendMessage(sender, formatter.format(this.messages.adminTagChanged));
         SimpleEventHandler.handle(new GuildTagChangeEvent(AdminUtils.getCause(admin), admin, guild, oldTag, tag));
     }
 

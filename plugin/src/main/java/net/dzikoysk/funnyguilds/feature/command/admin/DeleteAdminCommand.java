@@ -21,7 +21,7 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
             acceptsExceeded = true
     )
     public void execute(CommandSender sender, String[] args) {
-        when(args.length < 1, messages.generalNoTagGiven);
+        when(args.length < 1, this.messages.generalNoTagGiven);
 
         Guild guild = GuildValidation.requireGuildByTag(args[0]);
         User admin = AdminUtils.getAdminUser(sender);
@@ -30,19 +30,17 @@ public final class DeleteAdminCommand extends AbstractFunnyCommand {
             return;
         }
 
-        this.guildManager.deleteGuild(plugin, guild);
+        this.guildManager.deleteGuild(this.plugin, guild);
 
-        FunnyFormatter formatter = guildPlaceholdersService.getSimplePlaceholders()
-                .map(placeholders -> placeholders
-                        .property("admin", sender::getName)
-                        .property("player", sender::getName)
-                )
-                .map(placeholders -> placeholders.toVariablesFormatter(guild))
-                .orElseGet(new FunnyFormatter());
+        FunnyFormatter formatter = new FunnyFormatter()
+                .register("{PLAYER}", sender.getName())
+                .register("{ADMIN}", sender.getName())
+                .register("{GUILD}", guild.getName())
+                .register("{TAG}", guild.getTag());
 
-        guild.getOwner().sendMessage(formatter.format(messages.adminGuildBroken));
-        sendMessage(sender, formatter.format(messages.deleteSuccessful));
-        broadcastMessage(formatter.format(messages.broadcastDelete));
+        guild.getOwner().sendMessage(formatter.format(this.messages.adminGuildBroken));
+        sendMessage(sender, formatter.format(this.messages.deleteSuccessful));
+        broadcastMessage(formatter.format(this.messages.broadcastDelete));
     }
 
 }

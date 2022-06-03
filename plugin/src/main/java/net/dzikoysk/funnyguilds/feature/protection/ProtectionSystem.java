@@ -74,9 +74,7 @@ public final class ProtectionSystem {
     }
 
     public enum ProtectionType {
-        UNAUTHORIZED,
-        LOCKED,
-        HEART
+        UNAUTHORIZED, LOCKED, HEART
     }
 
 }

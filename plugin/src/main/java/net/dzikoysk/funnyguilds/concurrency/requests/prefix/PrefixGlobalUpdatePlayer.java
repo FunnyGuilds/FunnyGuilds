@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 public class PrefixGlobalUpdatePlayer extends DefaultConcurrencyRequest {
 
     private final IndividualPrefixManager individualPrefixManager;
-
     private final Player player;
 
     public PrefixGlobalUpdatePlayer(IndividualPrefixManager individualPrefixManager, Player player) {
@@ -17,7 +16,7 @@ public class PrefixGlobalUpdatePlayer extends DefaultConcurrencyRequest {
 
     @Override
     public void execute() throws Exception {
-        this.individualPrefixManager.updatePlayer(player);
+        this.individualPrefixManager.updatePlayer(this.player);
     }
 
 }
